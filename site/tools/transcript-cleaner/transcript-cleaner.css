@@ -30,8 +30,11 @@
 .tc-opts summary:focus-visible, .tc-more summary:focus-visible, .tc-paste summary:focus-visible, .tc-preview summary:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
 .tc-opts-body { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: 12px 22px; padding: 0 16px 16px; }
 .tc-opt { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 2px 10px; align-items: start; font-size: 0.95rem; cursor: pointer; }
-.tc-opt input[type="checkbox"] { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--purple); }
-.tc-opt input[type="checkbox"]:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
+.tc-opt input[type="checkbox"], .tc-opt input[type="radio"] { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--purple); }
+.tc-opt input[type="checkbox"]:focus-visible, .tc-opt input[type="radio"]:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
+.tc-opt:has(input:disabled) { cursor: default; color: var(--muted); }
+.tc-output { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: 10px 22px; border: 0; margin: 0; padding: 0 0 12px; border-bottom: 1px solid var(--line); }
+.tc-output legend { padding: 0; margin-bottom: 8px; font-weight: 600; font-size: 0.95rem; }
 .tc-opt-hint { grid-column: 2; color: var(--muted); font-size: 0.86rem; }
 
 /* network meter and status */
@@ -87,6 +90,7 @@
 .tc-list-plain { padding-left: 1.2em; display: grid; gap: 12px; margin: 0; }
 .tc-list-plain li { overflow-wrap: anywhere; }
 .tool-howto a, .tool-faq a, .tc-sections a { color: var(--purple); }
+.tc-sections code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.88em; overflow-wrap: anywhere; }
 
 @media (prefers-reduced-motion: no-preference) {
   .tc-drop { transition: border-color 0.2s, background-color 0.2s; }

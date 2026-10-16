@@ -85,7 +85,14 @@ test("CSP: no inline styles, no inline scripts or handlers, and every asset is t
   assert.doesNotMatch(html, /\son[a-z]+\s*=\s*"/);
   const scripts = [...html.matchAll(/<script\b([^>]*)>/g)].map((m) => m[1]);
   for (const a of scripts) assert.ok(/src="\//.test(a) || /type="application\/ld\+json"/.test(a), "inline script: " + a);
+  // Plain links (not loads) to the NVivo and MAXQDA help pages the timestamped outputs follow.
+  const HELP = new Set([
+    "https://help-nv.qsrinternational.com/15/mac/Content/files/import-audio-video-transcripts.htm",
+    "https://help-nv.qsrinternational.com/15/win/Content/files/import-audio-video-transcripts.htm",
+    "https://www.maxqda.com/help/import/transcripts",
+  ]);
   for (const m of html.matchAll(/(?:src|href)="(https?:\/\/[^"]+)"/g)) {
+    if (HELP.has(m[1])) { assert.match(html, new RegExp('<a href="' + m[1].replace(/[.*+?^${}()|[\]\\/]/g, "\\$&") + '" rel="noopener">')); continue; }
     assert.match(m[1], /^https:\/\/(purplelink\.llc\/|buymeacoffee\.com\/bampel|www\.linkedin\.com\/company\/purplelink-llc\/$)/, "external reference " + m[1]);
   }
   assert.doesNotMatch(html, /<script[^>]+src="https?:/);
@@ -159,4 +166,26 @@ test("the page's local assets exist and carry a content hash", () => {
     assert.ok(existsSync(join(SITE, m[1])), m[1]);
   }
   assert.match(html, /transcript-cleaner-core\.js\?v=[0-9a-f]{10}/);
+});
+
+test("NVivo and MAXQDA output: a keyboard-usable radio group, plain copy that does not claim an import test", () => {
+  assert.match(html, /<fieldset class="tc-output">\s*<legend>Output<\/legend>/);
+  const radios = [...html.matchAll(/<input type="radio" name="tc-output" value="([^"]+)"( checked)?>/g)];
+  assert.deepEqual(radios.map((m) => m[1]), ["text", "qda", "nvivo-tsv"]);
+  assert.equal(radios[0][2], " checked", "readable text stays the default");
+  assert.match(visibleText, /They have not been tried in a copy of either program/);
+  assert.doesNotMatch(visibleText, /(tested|verified|confirmed) (in|with) (NVivo|MAXQDA)/i);
+});
+
+test("NVivo and MAXQDA output: the core writes the layouts the help pages describe", async () => {
+  const { default: fs } = await import("node:fs");
+  const mod = { exports: {} };
+  new Function("module", "exports", fs.readFileSync(join(SITE, "tools/transcript-cleaner/transcript-cleaner-core.js"), "utf8"))(mod, mod.exports);
+  const TC = mod.exports;
+  const src = "WEBVTT\n\n00:00:03.120 --> 00:00:06.480\nJane Doe: Thanks for making time.\n\n00:00:07.000 --> 00:00:09.400\nJane Doe: Let's start with the survey.\n\n00:00:09.900 --> 00:00:12.000\nAlex Sample: Sure.\n";
+  assert.equal(TC.clean(src, "e.vtt", { output: "qda" }).txt,
+    "Jane Doe: Thanks for making time. Let's start with the survey. #00:00:09-4#\n\nAlex Sample: Sure. #00:00:12-0#\n");
+  assert.equal(TC.clean(src, "e.vtt", { output: "nvivo-tsv" }).txt,
+    "00:00:03.1-00:00:09.4\tJane Doe\tThanks for making time. Let's start with the survey.\r\n00:00:09.9-00:00:12.0\tAlex Sample\tSure.\r\n");
+  assert.equal(TC.clean(src, "e.vtt", {}).txt, TC.clean(src, "e.vtt", { output: "text" }).txt);
 });

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>Clean a Zoom or Teams Transcript (VTT) in Your Browser | Purplelink</title>
-    <meta name="description" content="Turn a Zoom or Teams .vtt, an .srt or a labelled .txt into readable text without cue numbers or timestamps. Free, and the file never leaves your browser.">
+    <meta name="description" content="Turn a Zoom or Teams .vtt, an .srt or a labelled .txt into readable text, or keep the timestamps in a layout NVivo and MAXQDA describe for import. Free, in your browser.">
     <link rel="canonical" href="https://purplelink.llc/tools/transcript-cleaner/">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Clean a Zoom or Teams transcript (VTT), free">
@@ -26,7 +26,7 @@
       "@type": "WebApplication",
       "name": "Transcript Cleaner",
       "url": "https://purplelink.llc/tools/transcript-cleaner/",
-      "description": "Turn a Zoom or Teams .vtt, an .srt or a labelled .txt into readable text without cue numbers or timestamps. Free, and the file never leaves your browser.",
+      "description": "Turn a Zoom or Teams .vtt, an .srt or a labelled .txt into readable text, or keep the timestamps in a layout NVivo and MAXQDA describe for import. Free, in your browser.",
       "applicationCategory": "UtilitiesApplication",
       "operatingSystem": "Any",
       "offers": {
@@ -42,6 +42,7 @@
         "Removes the WEBVTT header, cue numbers and timestamps",
         "Joins consecutive lines by the same speaker",
         "Keeps speaker names and a time per turn if you choose",
+        "Can keep the timestamps in the layouts the NVivo and MAXQDA help pages describe for importing transcripts",
         "Exports plain text and Markdown",
         "Runs in the browser; files are never uploaded"
       ]
@@ -65,7 +66,7 @@
         {
           "@type": "HowToStep",
           "name": "Pick the options",
-          "text": "Keep speaker names, put a time before each turn, join each turn into one paragraph, and remove bracketed sound tags such as [inaudible]. Changing an option updates every file at once."
+          "text": "Choose readable text, or keep the timestamps for NVivo or MAXQDA. Then keep speaker names, put a time before each turn, join each turn into one paragraph, and remove bracketed sound tags such as [inaudible]. Changing an option updates every file at once."
         },
         {
           "@type": "HowToStep",
@@ -104,6 +105,14 @@
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "It reads .vtt (WebVTT), .srt (SubRip) and .txt files. In a VTT or SRT file, speaker names are taken from voice tags such as <v Jane Doe> (the layout Microsoft Teams uses) or from a name and colon at the start of each cue, such as Jane Doe: (the layout Zoom uses). A .txt file can use Name: lines, or a line such as [Jane Doe] 00:00:05 above each turn. It was built and tested on sample files written from the published formats, not on real exports. If a real Zoom or Teams file comes out wrong, send the first few lines with the names changed to ben@purplelink.llc."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I import the result into NVivo or MAXQDA?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "That is what the two \"Keep timestamps\" outputs are for. Your file needs times. The layouts follow the NVivo 15 and MAXQDA help pages, read on 16 October 2026. They have not been tried in a copy of either program, so check a few rows after importing. If one does not import, send the first few lines with the names changed to ben@purplelink.llc. The steps for each program are under \"Import into NVivo or MAXQDA\" above."
           }
         },
         {
@@ -191,10 +200,10 @@
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <script src="/site.js?v=fb682a98eb" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
-    <link rel="stylesheet" href="/tools/transcript-cleaner/transcript-cleaner.css?v=931dd60339">
+    <link rel="stylesheet" href="/tools/transcript-cleaner/transcript-cleaner.css?v=5ea3c7ea59">
     <link rel="prefetch" as="script" data-tc-worker href="/tools/transcript-cleaner/transcript-cleaner-worker.js?v=b91de4093d">
-    <script src="/tools/transcript-cleaner/transcript-cleaner-core.js?v=618b278e84" defer></script>
-    <script src="/tools/transcript-cleaner/transcript-cleaner.js?v=3183c83f3d" defer></script>
+    <script src="/tools/transcript-cleaner/transcript-cleaner-core.js?v=96ba5fa395" defer></script>
+    <script src="/tools/transcript-cleaner/transcript-cleaner.js?v=590b978bcc" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -216,7 +225,7 @@
       <div class="tools-hero">
         <p class="eyebrow">Free web tool</p>
         <h1>Transcript Cleaner</h1>
-        <p>Turn a Zoom or Microsoft Teams transcript (.vtt), a subtitle file (.srt) or a text file with speaker labels into plain text you can read and quote. The WEBVTT header, cue numbers and timestamps are removed, and each speaker's lines are joined into one paragraph. It does not summarise, correct or reword anything. <strong>Everything runs in your browser. Your file is never uploaded.</strong></p>
+        <p>Turn a Zoom or Microsoft Teams transcript (.vtt), a subtitle file (.srt) or a text file with speaker labels into plain text you can read and quote. The WEBVTT header, cue numbers and timestamps are removed, and each speaker's lines are joined into one paragraph. If you code interviews in NVivo or MAXQDA, you can keep the timestamps instead, in the layout that program's help describes for importing a transcript. It does not summarise, correct or reword anything. <strong>Everything runs in your browser. Your file is never uploaded.</strong></p>
       </div>
 
       <figure class="tc-demo">
@@ -266,8 +275,14 @@ Alex Sample: Sure.</pre>
         <details class="tc-opts" open>
           <summary>Options</summary>
           <div class="tc-opts-body">
+            <fieldset class="tc-output">
+              <legend>Output</legend>
+              <label class="tc-opt"><input type="radio" name="tc-output" value="text" checked><span>Readable text</span><span class="tc-opt-hint">Timestamps removed. Plain text or Markdown.</span></label>
+              <label class="tc-opt"><input type="radio" name="tc-output" value="qda"><span>Keep timestamps for NVivo for Mac or MAXQDA</span><span class="tc-opt-hint">Each turn ends with its end time, written as #00:00:11-2#.</span></label>
+              <label class="tc-opt"><input type="radio" name="tc-output" value="nvivo-tsv"><span>Keep timestamps for NVivo for Windows</span><span class="tc-opt-hint">One line per turn: time span, speaker and text, separated by tabs.</span></label>
+            </fieldset>
             <label class="tc-opt"><input type="checkbox" id="tc-opt-speakers" checked><span>Keep speaker names</span><span class="tc-opt-hint">Turns stay separate when this is off.</span></label>
-            <label class="tc-opt"><input type="checkbox" id="tc-opt-times"><span>Put a time before each turn</span><span class="tc-opt-hint">Shown as [00:01:35]. Needs a file with times.</span></label>
+            <label class="tc-opt"><input type="checkbox" id="tc-opt-times"><span>Put a time before each turn</span><span class="tc-opt-hint">Shown as [00:01:35]. Needs a file with times. Readable text only.</span></label>
             <label class="tc-opt"><input type="checkbox" id="tc-opt-para" checked><span>Join each turn into one paragraph</span><span class="tc-opt-hint">When this is off, each cue keeps its own line.</span></label>
             <label class="tc-opt"><input type="checkbox" id="tc-opt-tags"><span>Remove bracketed sound tags</span><span class="tc-opt-hint">A fixed list such as [inaudible], [crosstalk] and [laughter]. Other bracketed text, such as [NAME], stays.</span></label>
           </div>
@@ -308,12 +323,22 @@ Alex Sample: Sure.</pre>
         </ul>
       </section>
 
+      <section class="tc-sections" aria-labelledby="tc-qda-h">
+        <h2 id="tc-qda-h">Import into NVivo or MAXQDA</h2>
+        <p>The two "Keep timestamps" outputs keep one time per turn, so a coded passage in NVivo or MAXQDA can play the matching part of the recording. The words are cleaned as described above. The file needs times, so this works with .vtt and .srt files and with text that has a time on each speaker line. The layouts come from the programs' help pages, read on 16 October 2026. They have not been tried in a copy of either program.</p>
+        <ul class="tc-list-plain">
+          <li><strong>NVivo for Mac or MAXQDA.</strong> Each turn is a paragraph that ends with its end time, such as <code>Jane Doe: Thanks for making time. #00:00:06-5#</code> for 6.5 seconds. Both programs read a time at the end of a paragraph as the end of that text and the start of the next. In NVivo 15 for Mac, open the audio or video file, turn on edit mode, and choose Import, then Files, then Transcript Rows (<a href="https://help-nv.qsrinternational.com/15/mac/Content/files/import-audio-video-transcripts.htm" rel="noopener">NVivo help</a>). NVivo for Mac puts any text before a colon and a space into the Speaker column, so the result lists turns that have one. In MAXQDA, choose Import, then Transcripts, and pick the f4 and f5transcript entry, which uses this time format, or Transcript with Timestamps (<a href="https://www.maxqda.com/help/import/transcripts" rel="noopener">MAXQDA help</a>).</li>
+          <li><strong>NVivo for Windows.</strong> NVivo 15 for Windows reads a .txt transcript only as delimited lines, so this output writes one line per turn: the time span, such as 00:00:03.1-00:00:06.5, a tab, the speaker, a tab, and the text. Open the audio or video file, turn on edit mode, click Import Rows on the Edit tab, set "Create one transcript row for each" to Tab Delimited Line, untick "File includes header row", and map Field 1 to Timespan, Field 2 to Speaker and Field 3 to Content (<a href="https://help-nv.qsrinternational.com/15/win/Content/files/import-audio-video-transcripts.htm" rel="noopener">NVivo help</a>).</li>
+          <li><strong>Times.</strong> Times are rounded to a tenth of a second, the smallest step NVivo keeps. When people talk over each other, the NVivo for Mac and MAXQDA output raises a time that would come before the one above it to match it, because MAXQDA drops a time that goes backwards, and the page lists those turns so you can check them. The NVivo for Windows output gives every line its own start and end, so overlapping turns keep their real times. The "Put a time before each turn" option does not apply to these outputs.</li>
+        </ul>
+      </section>
+
       <section class="tool-howto">
         <h2>How to clean a Zoom or Teams transcript</h2>
         <ol>
           <li><strong>Get the transcript file.</strong> Download the transcript as a .vtt file. Zoom saves the transcript of a cloud recording as .vtt, and Microsoft Teams lets you download a meeting transcript as .vtt. An .srt file or a .txt file with speaker labels works too.</li>
           <li><strong>Add the file.</strong> Drop it on the page or choose it. You can add several files at once.</li>
-          <li><strong>Pick the options.</strong> Keep speaker names, put a time before each turn, join each turn into one paragraph, and remove bracketed sound tags such as [inaudible]. Changing an option updates every file at once.</li>
+          <li><strong>Pick the options.</strong> Choose readable text, or keep the timestamps for NVivo or MAXQDA. Then keep speaker names, put a time before each turn, join each turn into one paragraph, and remove bracketed sound tags such as [inaudible]. Changing an option updates every file at once.</li>
           <li><strong>Check the preview.</strong> Read a few turns and compare them with your original file. The cleaner does not correct the words, so any error in the transcript is still there.</li>
           <li><strong>Copy or download.</strong> Copy the text, or download it as a .txt or .md file.</li>
         </ol>
@@ -325,6 +350,7 @@ Alex Sample: Sure.</pre>
         <details><summary>Is my file uploaded?</summary><div class="faq-body">No. The page reads the file with your browser and cleans it in a background worker on your device. The meter on the page counts the requests the page makes while it works. The only one is an anonymous usage count that names the file type (vtt, srt or text), never the file name or any of its text.</div></details>
         <details><summary>Does it change the words?</summary><div class="faq-body">No. It does not summarise, correct, translate or reword anything. Spelling, grammar, false starts and filler words stay as they are. The changes to the text itself are small: line breaks inside a cue become spaces, repeated spaces become one, the HTML codes for ampersand, less-than, greater-than and non-breaking space that VTT files use are turned back into characters, and caption tags such as italics are removed. If you tick the sound tag option, a fixed list of bracketed tags is removed too.</div></details>
         <details><summary>Which files and layouts can it read?</summary><div class="faq-body">It reads .vtt (WebVTT), .srt (SubRip) and .txt files. In a VTT or SRT file, speaker names are taken from voice tags such as &lt;v Jane Doe&gt; (the layout Microsoft Teams uses) or from a name and colon at the start of each cue, such as Jane Doe: (the layout Zoom uses). A .txt file can use Name: lines, or a line such as [Jane Doe] 00:00:05 above each turn. It was built and tested on sample files written from the published formats, not on real exports. If a real Zoom or Teams file comes out wrong, send the first few lines with the names changed to ben@purplelink.llc.</div></details>
+        <details><summary>Can I import the result into NVivo or MAXQDA?</summary><div class="faq-body">That is what the two &quot;Keep timestamps&quot; outputs are for. Your file needs times. The layouts follow the NVivo 15 and MAXQDA help pages, read on 16 October 2026. They have not been tried in a copy of either program, so check a few rows after importing. If one does not import, send the first few lines with the names changed to ben@purplelink.llc. The steps for each program are under &quot;Import into NVivo or MAXQDA&quot; above.</div></details>
         <details><summary>How does it decide who is speaking?</summary><div class="faq-body">Voice tags are taken as written. For Name: labels, the start of a line counts as a speaker only when at least half of the cues start with a label, or when at least two different capitalised names each appear three times or more. Ordinary text such as Note: see page 4 is not mistaken for a speaker. A cue with no name stays with the speaker above it.</div></details>
         <details><summary>What happens when people talk over each other?</summary><div class="faq-body">Cues stay in the order they appear in the file. If one cue holds two voice tags, or two lines with different names, each speaker gets their own turn. If a cue starts before the previous speaker's cue has ended, the result says how many times that happened.</div></details>
         <details><summary>What does it do when there are no speaker names?</summary><div class="faq-body">A pause of more than three seconds between cues starts a new paragraph. In a text file with no times, the blank lines you already have are kept as paragraph breaks.</div></details>

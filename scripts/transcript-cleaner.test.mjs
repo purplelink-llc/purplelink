@@ -334,3 +334,111 @@ test("a file of one enormous line does not hang", () => {
   assert.ok(Date.now() - t0 < 3000);
   assert.equal(r.txt.length, line.trim().length + 1);
 });
+
+// ---------- timestamped output for NVivo and MAXQDA ----------
+// The expected layouts come from the NVivo 15 help (Mac and Windows) and the MAXQDA help on importing
+// transcripts, read 2026-10-16. They have not been import-tested in either program.
+
+test("NVivo for Mac / MAXQDA: each turn ends with its end time as #hh:mm:ss-t#", () => {
+  const r = TC.clean(fx("zoom-style.vtt"), "meeting.vtt", { output: "qda" });
+  assert.equal(r.txt, [
+    "Jane Doe: Thanks for making time today. I would like to start with how you came to the project. #00:00:06-5#",
+    "Alex Sample: Sure. I joined in 2021, after the second round of hiring, and I was on the data side at first. Then the team moved and I took over the survey work. #00:00:15-2#",
+    "Jane Doe: Did that change how you saw your role? [inaudible] #00:00:21-0#",
+    "Alex Sample: Yes. [laughter] Well, mostly. I stopped thinking of it as a side job and said so to my manager. #00:00:27-3#",
+    "Sam Rivera: Can I add something here? #00:00:28-4#",
+    "Alex Sample: Of course, go ahead. #00:01:37-0#",
+  ].join("\n\n") + "\n");
+  assert.equal(r.md, r.txt);
+  assert.equal(r.stats.colonRows, 0);
+  assert.equal(r.stats.untimedRows, 0);
+});
+
+test("NVivo for Windows: timespan TAB speaker TAB text, CRLF lines, two tabs on every line", () => {
+  const r = TC.clean(fx("teams-style.vtt"), "t.vtt", { output: "nvivo-tsv" });
+  assert.equal(r.txt,
+    "00:00:00.0-00:00:04.6\tJane Doe\tThanks for making time today.\r\n" +
+    "00:00:04.6-00:00:12.0\tAlex Sample\tSure. I joined in 2021 & started on the data side. Then I moved to the survey team, which was a bigger change than I expected.\r\n" +
+    "00:00:12.0-00:00:14.8\tJane Doe\tWas that your choice?\r\n" +
+    "00:00:14.8-00:00:16.0\tAlex Sample\tPartly. 5 < 6 hires left, so yes.\r\n");
+  const bare = TC.clean(fx("plain.srt"), "p.srt", { output: "nvivo-tsv" });
+  for (const line of bare.txt.split("\r\n").filter(Boolean)) assert.equal(line.split("\t").length, 3, line);
+  assert.match(bare.txt, /^00:00:01\.0-00:00:06\.0\t\tWelcome back\./);
+});
+
+test("timed outputs: tenths match NVivo's documented conversion (#00:09:33-5# is 9 min 33.5 s)", () => {
+  const src = "WEBVTT\n\n00:09:30.000 --> 00:09:33.500\n<v Ann Lee>One.</v>\n\n00:09:33.500 --> 01:22:30.040\n<v Bo Chan>Two.</v>\n";
+  assert.equal(TC.clean(src, "a.vtt", { output: "qda" }).txt, "Ann Lee: One. #00:09:33-5#\n\nBo Chan: Two. #01:22:30-0#\n");
+  assert.equal(TC.clean(src, "a.vtt", { output: "nvivo-tsv" }).txt, "00:09:30.0-00:09:33.5\tAnn Lee\tOne.\r\n00:09:33.5-01:22:30.0\tBo Chan\tTwo.\r\n");
+});
+
+test("timed outputs on overlapping cues: MAXQDA times never go backwards and the clamped turn is counted; NVivo for Windows keeps real spans", () => {
+  const src = "WEBVTT\n\n00:00:01.000 --> 00:00:08.000\n<v Ann Lee>Long turn.</v>\n\n00:00:03.000 --> 00:00:05.000\n<v Bo Chan>Short overlap.</v>\n\n00:00:09.000 --> 00:00:10.000\n<v Ann Lee>After.</v>\n";
+  const q = TC.clean(src, "o.vtt", { output: "qda" });
+  assert.equal(q.txt, "Ann Lee: Long turn. #00:00:08-0#\n\nBo Chan: Short overlap. #00:00:08-0#\n\nAnn Lee: After. #00:00:10-0#\n");
+  assert.equal(q.stats.sameTimeRows, 1);
+  const w = TC.clean(src, "o.vtt", { output: "nvivo-tsv" });
+  assert.equal(w.txt, "00:00:01.0-00:00:08.0\tAnn Lee\tLong turn.\r\n00:00:03.0-00:00:05.0\tBo Chan\tShort overlap.\r\n00:00:09.0-00:00:10.0\tAnn Lee\tAfter.\r\n");
+  assert.equal(w.stats.sameTimeRows, 0);
+  assert.equal(w.stats.startOnlyRows, 0);
+});
+
+test("timed outputs: a colon in the text is counted only when no speaker name is written before it", () => {
+  const src = "WEBVTT\n\n00:00:01.000 --> 00:00:04.000\n<v Ann Lee>One thing: we started late.</v>\n\n00:00:05.000 --> 00:00:07.000\n<v Bo Chan>Fine.</v>\n";
+  assert.equal(TC.clean(src, "c.vtt", { output: "qda" }).stats.colonRows, 0);
+  assert.equal(TC.clean(src, "c.vtt", { output: "qda", speakers: false }).stats.colonRows, 1);
+});
+
+test("timed outputs: a header time earlier than the one above is counted and never used as an end", () => {
+  const src = "[Jane Doe] 00:05:00\nFirst.\n\n[Alex Sample] 00:04:00\nSecond.\n\n[Jane Doe] 00:06:00\nThird.\n";
+  const q = TC.clean(src, "b.txt", { output: "qda" });
+  assert.equal(q.stats.backwardsTimes, 1);
+  assert.doesNotMatch(q.txt, /^Jane Doe: First\. #00:04:00-0#/);
+  const w = TC.clean(src, "b.txt", { output: "nvivo-tsv" });
+  assert.equal(w.stats.backwardsTimes, 1);
+  assert.match(w.txt, /^00:05:00\.0\tJane Doe\tFirst\.\r\n/);
+});
+
+test("timed outputs from text with '[Name] time' headers: a turn ends where the next starts; the last has no end", () => {
+  const q = TC.clean(fx("zoom-audio-transcript.txt"), "a.txt", { output: "qda" });
+  assert.equal(q.txt, "Jane Doe: Thanks for making time today. #00:00:07-0#\n\nAlex Sample: Sure. I joined in 2021. Then the team moved. I took over the survey work. #00:00:19-0#\n\nJane Doe: Did that change how you saw your role?\n");
+  assert.equal(q.stats.untimedRows, 1);
+  const w = TC.clean(fx("zoom-audio-transcript.txt"), "a.txt", { output: "nvivo-tsv" });
+  assert.equal(w.txt, "00:00:03.0-00:00:07.0\tJane Doe\tThanks for making time today.\r\n00:00:07.0-00:00:19.0\tAlex Sample\tSure. I joined in 2021. Then the team moved. I took over the survey work.\r\n00:00:19.0\tJane Doe\tDid that change how you saw your role?\r\n");
+  assert.equal(w.stats.untimedRows, 0);
+  assert.equal(w.stats.startOnlyRows, 1);
+});
+
+test("timed outputs: paragraphs off gives one row per cue with the speaker on each; speakers off drops names", () => {
+  const r = TC.clean(fx("teams-style.vtt"), "t.vtt", { output: "qda", paragraphs: false });
+  assert.equal(r.txt.split("\n\n")[1], "Alex Sample: Sure. I joined in 2021 & started on the data side. #00:00:09-1#");
+  assert.equal(r.txt.split("\n\n")[2], "Alex Sample: Then I moved to the survey team, which was a bigger change than I expected. #00:00:12-0#");
+  const n = TC.clean(fx("teams-style.vtt"), "t.vtt", { output: "qda", speakers: false });
+  assert.match(n.txt, /^Thanks for making time today\. #00:00:04-6#\n\nSure\./);
+  const t = TC.clean(fx("teams-style.vtt"), "t.vtt", { output: "nvivo-tsv", speakers: false });
+  assert.match(t.txt, /^00:00:00\.0-00:00:04\.6\t\tThanks/);
+});
+
+test("timed outputs: the [00:01:35] time option is ignored; colons in the text are counted for NVivo for Mac", () => {
+  const a = TC.clean(fx("zoom-style.vtt"), "z.vtt", { output: "qda", timestamps: true });
+  assert.equal(a.txt, TC.clean(fx("zoom-style.vtt"), "z.vtt", { output: "qda" }).txt);
+  assert.doesNotMatch(a.txt, /\[00:/);
+  assert.equal(TC.clean(fx("plain.srt"), "p.srt", { output: "qda" }).stats.colonRows, 1);
+});
+
+test("timed outputs on a file with no times: no timestamps and every row counted as untimed", () => {
+  const r = TC.clean("Interviewer: Hi.\nParticipant: Hello.\n", "c.txt", { output: "qda" });
+  assert.equal(r.txt, "Interviewer: Hi.\n\nParticipant: Hello.\n");
+  assert.equal(r.stats.hasTimes, false);
+  assert.equal(r.stats.untimedRows, 2);
+});
+
+test("readable text is unchanged when the output option is left at its default", () => {
+  for (const f of ["zoom-style.vtt", "teams-style.vtt", "plain.srt", "interview.srt", "labelled.txt", "zoom-audio-transcript.txt"]) {
+    for (const o of [{}, { timestamps: true }, { paragraphs: false, speakers: false }]) {
+      const a = TC.clean(fx(f), f, o), b = TC.clean(fx(f), f, Object.assign({ output: "text" }, o));
+      assert.equal(a.txt, b.txt, f); assert.equal(a.md, b.md, f);
+    }
+  }
+  assert.equal(TC.DEFAULTS.output, "text");
+});

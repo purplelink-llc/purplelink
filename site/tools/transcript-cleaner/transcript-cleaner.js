@@ -33,14 +33,26 @@
   // ---------- saved options ----------
   var KEY = "tc-options";
   var IDS = { speakers: "tc-opt-speakers", timestamps: "tc-opt-times", paragraphs: "tc-opt-para", tags: "tc-opt-tags" };
-  function options() {
-    return { speakers: $(IDS.speakers).checked, timestamps: $(IDS.timestamps).checked, paragraphs: $(IDS.paragraphs).checked, tags: $(IDS.tags).checked };
+  var OUTPUTS = { text: 1, qda: 1, "nvivo-tsv": 1 };
+  var outputRadios = document.querySelectorAll('input[name="tc-output"]');
+  function outputChoice() {
+    for (var i = 0; i < outputRadios.length; i++) if (outputRadios[i].checked) return outputRadios[i].value;
+    return "text";
   }
+  function options() {
+    return { speakers: $(IDS.speakers).checked, timestamps: $(IDS.timestamps).checked, paragraphs: $(IDS.paragraphs).checked, tags: $(IDS.tags).checked, output: outputChoice() };
+  }
+  // The "[00:01:35]" time before each turn belongs to readable text only.
+  function syncOutput() { $(IDS.timestamps).disabled = outputChoice() !== "text"; }
   function saveOptions() { try { localStorage.setItem(KEY, JSON.stringify(options())); } catch (e) { /* storage can be blocked; the page works without it */ } }
   (function restore() {
     var s = {};
     try { s = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { s = {}; }
     Object.keys(IDS).forEach(function (k) { if (typeof s[k] === "boolean") $(IDS[k]).checked = s[k]; });
+    if (typeof s.output === "string" && OUTPUTS[s.output]) {
+      Array.prototype.forEach.call(outputRadios, function (r) { r.checked = r.value === s.output; });
+    }
+    syncOutput();
   })();
 
   // ---------- network meter: counts what the page itself sends while it works ----------
@@ -82,14 +94,15 @@
       u.searchParams.set("c", new URL(core.src).searchParams.get("v") || "");
       worker = new Worker(u.href);
       worker.onmessage = function (e) {
-        var m = e.data, p = pending[m.id];
+        // The worker answers in the order it was asked, so each reply belongs to the oldest open request for that file.
+        var m = e.data, q = pending[m.id], p = q && q.shift();
         if (!p) return;
-        delete pending[m.id];
+        if (!q.length) delete pending[m.id];
         if (m.ok) p.resolve(m.res); else p.reject(new Error(m.message));
       };
       worker.onerror = function () {
         workerBroken = true; worker = null;
-        Object.keys(pending).forEach(function (id) { var p = pending[id]; delete pending[id]; p.reject(Object.assign(new Error("worker"), { workerFailed: true })); });
+        Object.keys(pending).forEach(function (id) { var q = pending[id]; delete pending[id]; q.forEach(function (p) { p.reject(Object.assign(new Error("worker"), { workerFailed: true })); }); });
       };
       return worker;
     } catch (e) { workerBroken = true; return null; }
@@ -101,7 +114,7 @@
     var w = getWorker();
     if (w) {
       return new Promise(function (resolve, reject) {
-        pending[item.id] = { resolve: resolve, reject: reject };
+        (pending[item.id] = pending[item.id] || []).push({ resolve: resolve, reject: reject });
         w.postMessage(msg);
       }).catch(function (err) {
         if (!err.workerFailed) throw err;
@@ -145,7 +158,18 @@
   }
   function notesFor(item) {
     var st = item.res.stats, o = item.optsUsed, notes = [];
-    if (o.timestamps && !st.hasTimes) notes.push({ warn: false, text: "This file has no timestamps, so none were added." });
+    var timed = o.output === "qda" || o.output === "nvivo-tsv";
+    if (o.timestamps && !timed && !st.hasTimes) notes.push({ warn: false, text: "This file has no timestamps, so none were added." });
+    if (timed && !st.hasTimes) notes.push({ warn: true, text: "This file has no timestamps, so the output has none. NVivo and MAXQDA need times to link the text to the recording." });
+    else if (timed && st.untimedRows) {
+      notes.push({ warn: true, text: o.output === "qda"
+        ? plural(st.untimedRows, "turn has", "turns have") + " no end time in the file, so no timestamp was written after " + (st.untimedRows === 1 ? "it." : "them.")
+        : plural(st.untimedRows, "line comes", "lines come") + " before the first time in the file and " + (st.untimedRows === 1 ? "has" : "have") + " no time. NVivo needs a time on every line." });
+    }
+    if (st.sameTimeRows) notes.push({ warn: true, text: plural(st.sameTimeRows, "turn ends", "turns end") + " at or before the end of the turn above, usually because people talk over each other. MAXQDA needs times that never go backwards, so " + (st.sameTimeRows === 1 ? "it gets" : "they get") + " the same time as the turn above and play no audio of " + (st.sameTimeRows === 1 ? "its" : "their") + " own. Check " + (st.sameTimeRows === 1 ? "that turn" : "those turns") + " after importing." });
+    if (st.startOnlyRows) notes.push({ warn: true, text: plural(st.startOnlyRows, "line has", "lines have") + " a start time but no end time after it. The NVivo help shows a start and an end on every line, so check " + (st.startOnlyRows === 1 ? "that line" : "those lines") + " after importing." });
+    if (st.backwardsTimes) notes.push({ warn: true, text: plural(st.backwardsTimes, "time in the file is", "times in the file are") + " earlier than the time above. Check the times in the original file, since the output keeps them in the order they appear." });
+    if (st.colonRows) notes.push({ warn: true, text: plural(st.colonRows, "turn has", "turns have") + " a colon followed by a space in the text. NVivo for Mac reads text before a colon and a space as a speaker name, so check " + (st.colonRows === 1 ? "that turn" : "those turns") + " after importing." });
     if (o.tags && st.tagsRemoved) notes.push({ warn: false, text: plural(st.tagsRemoved, "bracketed sound tag", "bracketed sound tags") + " removed." });
     if (st.emptyDropped) notes.push({ warn: false, text: plural(st.emptyDropped, "empty cue", "empty cues") + " skipped." });
     st.warnings.forEach(function (w) { notes.push({ warn: true, text: w }); });
@@ -190,11 +214,13 @@
     copy.addEventListener("click", function () { copyText(item, copy); });
     var dtxt = el("button", "btn btn-ghost tc-small", "Download .txt");
     dtxt.type = "button";
-    dtxt.addEventListener("click", function () { download(item.res.txt, baseName(item.name) + "-clean.txt", "text/plain"); });
+    var suffix = item.optsUsed.output === "qda" ? "-nvivo-maxqda.txt" : item.optsUsed.output === "nvivo-tsv" ? "-nvivo-windows.txt" : "-clean.txt";
+    dtxt.addEventListener("click", function () { download(item.res.txt, baseName(item.name) + suffix, "text/plain"); });
     var dmd = el("button", "btn btn-ghost tc-small", "Download .md");
     dmd.type = "button";
     dmd.addEventListener("click", function () { download(item.res.md, baseName(item.name) + "-clean.md", "text/markdown"); });
-    act.appendChild(copy); act.appendChild(dtxt); act.appendChild(dmd);
+    act.appendChild(copy); act.appendChild(dtxt);
+    if (item.optsUsed.output === "text") act.appendChild(dmd);
     li.appendChild(act);
     paintPreview(item);
   }
@@ -232,7 +258,8 @@
 
   function updateBar() {
     bar.hidden = items.length === 0;
-    $("tc-view").hidden = !items.some(function (i) { return i.state === "done"; });
+    // Markdown is a readable-text format; the NVivo and MAXQDA layouts are plain text only.
+    $("tc-view").hidden = outputChoice() !== "text" || !items.some(function (i) { return i.state === "done"; });
   }
 
   function add(entries, skipNote) {
@@ -293,7 +320,11 @@
     }
   }
 
+  // Each option change starts a new pass; a pass that a newer one has replaced stops and keeps none of its late results,
+  // so a file's text, notes and download name always come from the same options.
+  var renderPass = 0;
   async function rerender() {
+    var pass = ++renderPass;
     var done = items.filter(function (i) { return i.state === "done"; });
     if (!done.length) return;
     statusEl.classList.add("is-busy");
@@ -301,9 +332,13 @@
     for (var i = 0; i < done.length; i++) {
       var item = done[i];
       try {
-        item.optsUsed = options();
-        item.res = await process(item, false);
+        var opts = options();
+        var res = await process(item, false);
+        if (pass !== renderPass) return;
+        item.optsUsed = opts;
+        item.res = res;
       } catch (err) {
+        if (pass !== renderPass) return;
         item.state = "error";
         item.error = "This file could not be updated (" + ((err && err.message) || "unknown error") + ").";
       }
@@ -346,6 +381,9 @@
   });
 
   Object.keys(IDS).forEach(function (k) { $(IDS[k]).addEventListener("change", function () { saveOptions(); rerender(); }); });
+  Array.prototype.forEach.call(outputRadios, function (r) {
+    r.addEventListener("change", function () { syncOutput(); saveOptions(); updateBar(); rerender(); });
+  });
   Array.prototype.forEach.call(document.querySelectorAll('input[name="tc-view"]'), function (r) {
     r.addEventListener("change", function () {
       view = r.value;
