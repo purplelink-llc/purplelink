@@ -8,7 +8,7 @@ GUIDE = "/guides/best-mac-latex-editors/"
 def pages():
     out = sorted((SITE / "latex-errors").glob("*/index.html"))
     out.append(SITE / "latex-errors" / "index.html")
-    out += [SITE / "templates" / s / "index.html" for s in ("acm-acmart", "apa7", "elsevier-elsarticle", "ieee-conference", "neurips")]
+    out += [SITE / "templates" / s / "index.html" for s in ("acm-acmart", "apa7", "elsevier-elsarticle", "ieee-conference", "neurips", "latex-article-template", "latex-thesis-template")]
     return out
 
 

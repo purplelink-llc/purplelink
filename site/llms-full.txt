@@ -743,7 +743,7 @@ Only when you click it on a build error. By default it runs on Apple Intelligenc
 
 Does it work with my journal's or university's class file?
 
-Any class you can compile with LaTeX works: put the class file in the project folder. ModernTex also bundles starter templates for several information systems journals, computer science conferences and a generic thesis. The free starters on this site for ACM, IEEE, Elsevier, APA 7 and the academic CV each compiled with TinyTeX and latexmk when I tested them on October 15, 2026, after the publisher class was installed with tlmgr. The NeurIPS starter needs the current year's style file from the conference, so I make no compile claim for it.
+Any class you can compile with LaTeX works: put the class file in the project folder. ModernTex also bundles starter templates for several information systems journals, computer science conferences and a generic thesis. The free starters on this site for ACM, IEEE, Elsevier, APA 7 and the academic CV each compiled with TinyTeX and latexmk when I tested them on October 15, 2026, after the publisher class was installed with tlmgr. For a project with no required class there are two plain CC0 starters, a multi-file thesis and a single-file article, which compiled the same way on the same day. The NeurIPS starter needs the current year's style file from the conference, so I make no compile claim for it.
 
 ## Try it on your own manuscript.
 
