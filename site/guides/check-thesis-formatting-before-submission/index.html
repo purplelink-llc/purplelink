@@ -125,6 +125,8 @@
           </li>
         </ol>
 
+        <p>If you write the thesis in LaTeX and the page checks keep failing, the cause is usually a setting in the preamble. Our <a href="/templates/latex-thesis-template/">free LaTeX thesis template</a> keeps margins, spacing and font size in one block at the top of <code>main.tex</code>, and its README says where to plug in your university's own class. It is a neutral starting point, so the numbers you enter above still come from your graduate school.</p>
+
         <h2>What happens under the hood</h2>
 
         <p>The checker reads your PDF with <a href="https://mozilla.github.io/pdf.js/" rel="noopener">pdf.js</a> (a PDF reader library), which runs in your browser. The file is never uploaded, not even to Purplelink's servers. The checker measures where the text layer sits on each page for margins, reads font metadata for size and embedding, and reads printed page numbers for sequence. Front matter detection matches short lines against common heading patterns in the first 40 pages and skips anything shaped like a table-of-contents entry. A scanned thesis has no text layer, so the checker has nothing to measure.</p>

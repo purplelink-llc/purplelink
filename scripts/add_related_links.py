@@ -104,6 +104,8 @@ CLUSTERS: dict[str, list[str]] = {
         "/templates/apa7/",
         "/templates/elsevier-elsarticle/",
         "/templates/ieee-conference/",
+        "/templates/latex-article-template/",
+        "/templates/latex-thesis-template/",
         "/templates/neurips/",
     ],
     "mac-latex": [
