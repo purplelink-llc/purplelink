@@ -65,7 +65,7 @@
 - **Permissions explained:** https://purplelink.llc/guides/mac-privacy-permissions-explained/ (what Full Disk Access allows, what Apple said about it on 2026-10-02, how to review it; Legroom never requires it)
 
 ### Keyfeel (macOS)
-- **Platform:** macOS 13 or later, Apple silicon and Intel
+- **Platform:** macOS 13 or later, Apple silicon and Intel. Tested on macOS 27.2 with version 1.5.3 on October 16, 2026: key, mouse-click and scroll sounds played.
 - **Category:** Typing and sound utility, menu bar
 - **Description:** A Mac menu-bar app that plays recorded keyboard-switch sounds when you press a key, with mouse-click sounds, speed-aware scroll ticks and optional trackpad haptics (only while a finger is on the trackpad). Recorded profiles Tactile, Cherry MX Brown and Dome, a different recording each press, per-key pitch and left-to-right stereo, sounds for the space bar and Return, a click ripple, per-app silence, silence while the microphone is in use, and import of your own sound.
 - **Pricing:** Free 7-day trial (the complete app, no account), then $9.99 once to keep, updates included. One download for everyone: after the trial the app asks for a license key, sent in the receipt email. 14-day refund.

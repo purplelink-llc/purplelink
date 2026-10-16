@@ -1352,7 +1352,7 @@ Pick Mechvibes or Thock if you want it free. Pick Klack if you want a simple app
 
 What does it need to run?
 
-macOS 13 (Ventura) or later, on Apple silicon or Intel, and the macOS Input Monitoring permission. I tested version 1.5.2 on macOS 27.2 on October 13, 2026. It heard key presses, clicks and scrolls.
+macOS 13 (Ventura) or later, on Apple silicon or Intel, and the macOS Input Monitoring permission. I tested version 1.5.3 on macOS 27.2 on October 16, 2026. Key, mouse-click and scroll sounds played.
 
 Does it read what I type?
 
