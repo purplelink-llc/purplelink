@@ -1,7 +1,7 @@
 # Test dependencies. Mirrors the pip_install list of the Modal image in
 # app.py so the suite can import app.py and every tool module locally and in CI.
-pytest==8.3.3
-pytest-asyncio==0.24.0
+pytest==9.0.3
+pytest-asyncio==1.3.0
 # Tests only use Modal's local handles (no credentials needed). 1.6 dropped
 # Function.get_raw_f(), which test_validate_bib_ssrf_guard.py relies on.
 modal>=1.0,<1.6
@@ -17,4 +17,4 @@ pdf2image>=1.17,<2
 pillow>=12.3,<13
 pypdf>=6.19,<7
 # Citation MCP server (citation_mcp_app.py); same pin as its Modal image.
-mcp==1.27.2
+mcp==1.28.1
