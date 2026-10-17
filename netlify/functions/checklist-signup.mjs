@@ -4,12 +4,16 @@
  *
  * POST /.netlify/functions/checklist-signup
  *   body: { email, page?: "<path the form was on>", website?: "<honeypot>" }
- *   200 { ok: true }                     stored and emailed
- *   200 { ok: true, already: true }      same address within a day: nothing sent
+ *   200 { ok: true, confirm: true }      a confirmation email was sent; nothing is stored yet
+ *   200 { ok: true, already: true }      same address already confirmed within a day: nothing sent
  *   400 { error: "invalid_json" | "invalid_email" }
  *   403 { error: "forbidden_origin" }    Origin header present and not this site
  *   429 { error: "rate_limited" }        per IP or per address, per UTC day
  *   502 { error: "send_failed" }         Resend refused; nothing is kept
+ *
+ * Double opt-in: the address is added, and the checklist PDF sent, only after it clicks the signed link in
+ * the confirmation email (3 days; netlify/lib/confirm-token.mjs) and presses the button on the page that
+ * link opens (confirm-signup.mjs, which calls completeChecklistSignup below). Nothing is stored before then.
  *
  * GET or POST /.netlify/functions/checklist-signup?u=<token>
  *   One-click unsubscribe (the POST form is RFC 8058, for the
@@ -26,11 +30,12 @@
  *
  * The address is never logged; errors log a code only.
  *
- * Env: RESEND_API_KEY (the key the order and recovery emails already use).
+ * Env: RESEND_API_KEY (the key the order and recovery emails already use), SUBSCRIBE_SECRET (signs the link).
  */
 
 import { createHash, randomBytes } from "node:crypto";
 import { getStore } from "@netlify/blobs";
+import { signConfirmToken } from "../lib/confirm-token.mjs";
 
 const SITE_ORIGIN = "https://purplelink.llc";
 const ALLOWED_ORIGINS = new Set([SITE_ORIGIN, "https://www.purplelink.llc"]);
@@ -146,6 +151,80 @@ async function sendChecklist(to, token) {
   }
 }
 
+async function sendConfirmation(to, link) {
+  const apiKey = Netlify.env.get("RESEND_API_KEY");
+  if (!apiKey) return "no_api_key";
+  const mail = {
+    from: FROM_ADDRESS,
+    reply_to: REPLY_TO,
+    to: [to],
+    subject: "Confirm your email for the submission checklist",
+    text:
+      `Someone, probably you, asked for the Purplelink submission checklist at this address. ` +
+      `Confirm with this link and the checklist is sent right away:\n\n${link}\n\n` +
+      `The link works for 3 days. Confirming also puts the address on the Purplelink researcher list, which sends a short note when a tool changes and nothing daily. ` +
+      `If you did not ask, ignore this email and nothing happens.\n\nPurplelink LLC, Atlanta, Georgia`,
+    html:
+      `<p>Someone, probably you, asked for the Purplelink submission checklist at this address. Confirm with this link and the checklist is sent right away:</p>` +
+      `<p><a href="${link}">Confirm my email</a></p>` +
+      `<p>The link works for 3 days. Confirming also puts the address on the Purplelink researcher list, which sends a short note when a tool changes and nothing daily. If you did not ask, ignore this email and nothing happens.</p>` +
+      `<p>Purplelink LLC, Atlanta, Georgia</p>`,
+  };
+  try {
+    const resp = await fetch(RESEND_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify(mail),
+    });
+    return resp.ok ? null : `resend_${resp.status}`;
+  } catch (_) {
+    return "resend_unreachable";
+  }
+}
+
+const CONFIRM_REPEAT_MS = 10 * 60 * 1000;
+
+/**
+ * Called by confirm-signup.mjs after the address confirmed: stores the record and sends the checklist.
+ * Returns "sent", "repeat" (confirmed a moment ago, nothing sent again) or "failed" (nothing kept).
+ */
+export async function completeChecklistSignup(email, source) {
+  const list = getStore("researcher-list");
+  const tokens = getStore("researcher-list-tokens");
+  const raw = await list.get(email);
+  let existing = null;
+  try { existing = raw ? JSON.parse(raw) : null; } catch (_) { existing = null; }
+  const now = Date.now();
+  const lastSent = existing && existing.lastSentAt ? Date.parse(existing.lastSentAt) : 0;
+  if (lastSent && now - lastSent < CONFIRM_REPEAT_MS) return "repeat";
+
+  const record = {
+    email,
+    source: (existing && existing.source) || sourcePath(source),
+    createdAt: (existing && existing.createdAt) || new Date(now).toISOString(),
+    confirmedAt: (existing && existing.confirmedAt) || new Date(now).toISOString(),
+    unsubscribeToken: (existing && existing.unsubscribeToken) || randomBytes(24).toString("hex"),
+    lastSentAt: new Date(now).toISOString(),
+  };
+  // Written before the send, so a second click arriving while the first is still sending sees lastSentAt.
+  await list.set(email, JSON.stringify(record));
+  await tokens.set(record.unsubscribeToken, email);
+
+  const failure = await sendChecklist(email, record.unsubscribeToken);
+  if (failure) {
+    console.error("checklist-signup: email failed", failure);
+    // Nobody is kept on a list they got no email (and no unsubscribe link) from.
+    if (existing) {
+      await list.set(email, JSON.stringify(existing));
+    } else {
+      await list.delete(email);
+      await tokens.delete(record.unsubscribeToken);
+    }
+    return "failed";
+  }
+  return "sent";
+}
+
 function page(title, bodyHtml, status = 200) {
   return new Response(`<!doctype html>
 <html lang="en">
@@ -253,7 +332,6 @@ export default async function handler(request) {
     }
 
     const list = getStore("researcher-list");
-    const tokens = getStore("researcher-list-tokens");
     const raw = await list.get(email);
     let existing = null;
     try { existing = raw ? JSON.parse(raw) : null; } catch (_) { existing = null; }
@@ -264,31 +342,20 @@ export default async function handler(request) {
       return json(200, { ok: true, already: true }, origin);
     }
 
-    const record = {
-      email,
-      source: (existing && existing.source) || sourcePath(body.page),
-      createdAt: (existing && existing.createdAt) || new Date(now).toISOString(),
-      unsubscribeToken: (existing && existing.unsubscribeToken) || randomBytes(24).toString("hex"),
-      lastSentAt: new Date(now).toISOString(),
-    };
-    // Written before the send, so a second submission that arrives while the
-    // first is still sending sees lastSentAt and does not send again.
-    await list.set(email, JSON.stringify(record));
-    await tokens.set(record.unsubscribeToken, email);
-
-    const failure = await sendChecklist(email, record.unsubscribeToken);
+    // Nothing is stored yet: the request travels inside the signed link.
+    const secret = process.env.SUBSCRIBE_SECRET;
+    if (!secret) {
+      console.error("checklist-signup: SUBSCRIBE_SECRET not set");
+      return json(500, { error: "server_error" }, origin);
+    }
+    const token = signConfirmToken("checklist-confirm", { e: email, p: sourcePath(body.page) }, secret);
+    const link = `${SITE_ORIGIN}/.netlify/functions/confirm-signup?t=${encodeURIComponent(token)}`;
+    const failure = await sendConfirmation(email, link);
     if (failure) {
-      console.error("checklist-signup: email failed", failure);
-      // Nobody is kept on a list they got no email (and no unsubscribe link) from.
-      if (existing) {
-        await list.set(email, JSON.stringify(existing));
-      } else {
-        await list.delete(email);
-        await tokens.delete(record.unsubscribeToken);
-      }
+      console.error("checklist-signup: confirmation email failed", failure);
       return json(502, { error: "send_failed" }, origin);
     }
-    return json(200, { ok: true }, origin);
+    return json(200, { ok: true, confirm: true }, origin);
   } catch (_) {
     console.error("checklist-signup: storage failed");
     return json(500, { error: "server_error" }, origin);
