@@ -25,16 +25,33 @@ import logging
 import re
 from typing import Optional
 
+import os
+
 from latextools.papercheck import (
     _anthropic_message,
-    _parse_json_findings,
+    _call_json_findings,
     _string_overlap,
+    _TRUNCATION_NOTE,
+    DEFAULT_MODEL,
     PaperStructure,
     PERSONA_MAX_OUTPUT_TOKENS,
 )
 from latextools import safety as _safety
 
 logger = logging.getLogger(__name__)
+
+# Each tool can be pointed at a different model without a code change (set the variable in the Modal secret,
+# then redeploy). All default to DEFAULT_MODEL, so nothing changes until Ben decides from a measured run
+# (scripts/ai_review_eval.py) that a cheaper model holds quality for a task. The 5.x models think before they
+# answer and thinking counts against max_tokens, so the output caps below leave room for it.
+COVER_LETTER_MODEL = os.environ.get("COVER_LETTER_MODEL", DEFAULT_MODEL)
+ANONYMITY_MODEL = os.environ.get("ANONYMITY_MODEL", DEFAULT_MODEL)
+CITATION_GAP_MODEL = os.environ.get("CITATION_GAP_MODEL", DEFAULT_MODEL)
+REVISION_REVIEW_MODEL = os.environ.get("REVISION_REVIEW_MODEL", DEFAULT_MODEL)
+
+# A 350-word letter is about 600 tokens, but at 1,500 the thinking share could cut it off mid-sentence.
+COVER_LETTER_MAX_OUTPUT_TOKENS = 6_000
+REVISION_REVIEW_MAX_OUTPUT_TOKENS = 12_000
 
 
 # ---------------------------------------------------------------------------
@@ -91,15 +108,22 @@ async def run_cover_letter(
         user_text += _safety.wrap_user_content(note_clean, "author_note") + "\n\n"
     user_text += "Draft the cover letter now."
 
+    truncated: list[bool] = []
     try:
         raw = await _anthropic_message(
             client,
             system=_safety.SAFETY_PREAMBLE + "\n\n" + _COVER_LETTER_SYSTEM,
             user_content=[{"type": "text", "text": user_text}],
-            max_tokens=1500,
+            max_tokens=COVER_LETTER_MAX_OUTPUT_TOKENS,
+            model=COVER_LETTER_MODEL,
+            on_truncated=lambda _m: truncated.append(True),
         )
     except Exception:
         logger.exception("cover letter generation failed")
+        return {"status": "error", "text": ""}
+    if truncated:
+        # Never hand over a letter that stops mid-sentence as if it were finished.
+        logger.warning("cover letter hit the output limit")
         return {"status": "error", "text": ""}
     return {"status": "ok", "text": raw.strip()}
 
@@ -165,16 +189,22 @@ async def run_anonymity_check(
         + "Scan for anonymity leaks and output the JSON array now."
     )
     try:
-        raw = await _anthropic_message(
+        leaks, call_status = await _call_json_findings(
             client,
             system=_safety.SAFETY_PREAMBLE + "\n\n" + _ANONYMITY_SYSTEM,
             user_content=[{"type": "text", "text": user_text}],
             max_tokens=PERSONA_MAX_OUTPUT_TOKENS,
+            model=ANONYMITY_MODEL,
+            message_fn=_anthropic_message,
         )
     except Exception:
         logger.exception("anonymity check failed")
         return {"status": "error", "leaks": []}
-    leaks = _parse_json_findings(raw)
+    if call_status == "unparsed":
+        # Two unreadable replies is a failed check, not "no leaks found": do not tell an author their
+        # manuscript is clean when the scan never produced a result.
+        logger.warning("anonymity check returned no readable JSON twice")
+        return {"status": "error", "leaks": []}
     return {
         "status": "ok",
         "leaks": leaks,
@@ -314,16 +344,20 @@ async def run_citation_gap(
         + "Now identify the citation gaps and output the JSON array."
     )
     try:
-        raw = await _anthropic_message(
+        gaps, call_status = await _call_json_findings(
             client,
             system=_safety.SAFETY_PREAMBLE + "\n\n" + _CITATION_GAP_SYSTEM,
             user_content=[{"type": "text", "text": user_text}],
             max_tokens=PERSONA_MAX_OUTPUT_TOKENS,
+            model=CITATION_GAP_MODEL,
+            message_fn=_anthropic_message,
         )
     except Exception:
         logger.exception("citation gap analysis failed")
         return {"status": "error", "gaps": []}
-    gaps = _parse_json_findings(raw)
+    if call_status == "unparsed":
+        logger.warning("citation gap analysis returned no readable JSON twice")
+        return {"status": "error", "gaps": []}
 
     if gaps:
         verified = await asyncio.gather(
@@ -493,18 +527,23 @@ async def run_revision_review(
         + _safety.wrap_user_content(body, "revised_manuscript_body") + "\n\n"
         + "Produce the Markdown revision-review report now."
     )
+    truncated: list[bool] = []
     try:
         raw = await _anthropic_message(
             client,
             system=_safety.SAFETY_PREAMBLE + "\n\n" + _REVISION_SYSTEM,
             user_content=[{"type": "text", "text": user_text}],
-            max_tokens=4_000,
+            max_tokens=REVISION_REVIEW_MAX_OUTPUT_TOKENS,
+            model=REVISION_REVIEW_MODEL,
+            on_truncated=lambda _m: truncated.append(True),
         )
     except Exception:
         logger.exception("revision review failed")
         return {"status": "error", "markdown": ""}
 
     markdown = raw.strip()
+    if truncated:
+        markdown += _TRUNCATION_NOTE
     mismatch = _MISMATCH_TOKEN_RE.search(markdown)
     if mismatch:
         return {

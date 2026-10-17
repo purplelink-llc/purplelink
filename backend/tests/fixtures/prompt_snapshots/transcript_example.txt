@@ -1,0 +1,24 @@
+## Panel Transcript
+
+_Each reviewer's findings as raised. It is normal for some of these to be absent from Critical Blind Spots above: a single reviewer's low-confidence finding should not dominate the summary._
+
+### Methodology Critic
+- [critical] UNIQUE-MARKER-123 never ablated. (quote not found in the extracted text)
+
+### Statistical Skeptic
+- (no findings)
+
+### Data Integrity Officer
+- (no findings)
+
+### Editor-in-Chief
+- (no findings)
+
+### Equation Analyst
+- (no findings)
+
+### Literature Auditor
+- (no findings)
+
+### Numerical Realist
+- (no findings)

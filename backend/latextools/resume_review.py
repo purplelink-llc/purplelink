@@ -38,6 +38,9 @@ from latextools import safety as _safety
 
 logger = logging.getLogger(__name__)
 
+# Thinking shares this budget on the 5.x models; 5,000 could cut the report off.
+RESUME_SYNTHESIS_MAX_OUTPUT_TOKENS = 12_000
+
 MAX_RESUME_CHARS = 15_000  # resumes are 1-3 pages; this is generous headroom
 
 
@@ -320,7 +323,7 @@ async def run_resume_review(
                 client,
                 system=_safety.SAFETY_PREAMBLE + "\n\n" + _RESUME_SYNTHESIS_SYSTEM,
                 user_content=[{"type": "text", "text": synth_user}],
-                max_tokens=5_000,
+                max_tokens=RESUME_SYNTHESIS_MAX_OUTPUT_TOKENS,
             )
         except Exception:
             logger.exception("resume review synthesis failed")

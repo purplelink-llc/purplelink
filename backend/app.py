@@ -325,6 +325,22 @@ if os.environ.get("ALLOW_LOCAL_CORS") == "1":
     ALLOWED_ORIGINS.append("http://localhost:4200")
 
 
+def _order_cost_ceiling(product_key: str) -> float | None:
+    """Most the model calls for one order may cost: what the customer paid for it (a pack token is one unit
+    of the pack), times ORDER_COST_CEILING_FACTOR (default 1.0). A normal order costs well under its price, so
+    this only stops a runaway loop or an oversized input from spending more than the order brought in.
+    Returns None (no ceiling) for a product with no price on file."""
+    entry = PAID_PRODUCTS.get(product_key, {})
+    amount = entry.get("amount")
+    if not amount:
+        return None
+    try:
+        factor = float(os.environ.get("ORDER_COST_CEILING_FACTOR", "1.0"))
+    except ValueError:
+        factor = 1.0
+    return (amount / 100.0) / max(1, entry.get("qty", 1)) * factor
+
+
 def _write_usage_ledger(token: str, product_key: str, status: str, usage) -> None:
     """Persist a permanent per-job cost record. `usage` is a
     papercheck.UsageTracker collected around the job's LLM calls (may have
@@ -339,6 +355,8 @@ def _write_usage_ledger(token: str, product_key: str, status: str, usage) -> Non
         "status": status,
         "price_charged_usd": entry.get("amount", 0) / 100.0,
         "input_tokens": usage.total_input_tokens,
+        "cache_read_tokens": usage.total_cache_read_tokens,
+        "cache_creation_tokens": usage.total_cache_creation_tokens,
         "output_tokens": usage.total_output_tokens,
         "cost_usd": round(usage.total_cost_usd, 4),
         "models": usage.models_used(),
@@ -521,7 +539,7 @@ async def _credit_referral(referrer_email: str, referee_email: str) -> None:
 
 @app.function(
     image=image,
-    timeout=900,         # 15 min cap — deep tier can take 10+ min
+    timeout=1200,        # 20 min cap — deep tier can take 10+ min (was 900; the 7-call panel now warms a cache first)
     cpu=2.0,
     memory=4096,
     max_containers=4,
@@ -561,7 +579,7 @@ def paper_review_pipeline(
         paper_jobs_dict[token] = d
 
     async def _run():
-        with papercheck.UsageTracker() as usage:
+        with papercheck.UsageTracker(max_cost_usd=_order_cost_ceiling(product_key)) as usage:
             try:
                 final = await papercheck.run_review_pipeline(
                     pdf_bytes, domain=domain, on_progress=_persist,
@@ -691,7 +709,7 @@ def adjacent_tool_pipeline(
         paper_jobs_dict[token] = progress_dict
 
     async def _run():
-      with papercheck.UsageTracker() as usage:
+      with papercheck.UsageTracker(max_cost_usd=_order_cost_ceiling(product)) as usage:
         try:
             if product == "cover-letter":
                 # Cover letter uses pasted abstract + journal only — privacy-
@@ -706,7 +724,7 @@ def adjacent_tool_pipeline(
                     "started_at": _time.time(),
                 }
                 async with httpx.AsyncClient(
-                    timeout=httpx.Timeout(connect=10.0, read=60.0, write=10.0, pool=10.0),
+                    timeout=httpx.Timeout(connect=10.0, read=180.0, write=10.0, pool=10.0),
                 ) as client:
                     res = await paperreview_extras.run_cover_letter(
                         client, struct, journal_name or "the target journal",
@@ -733,7 +751,7 @@ def adjacent_tool_pipeline(
                     "progress_pct": 50, "stage": "analysing",
                 }
                 async with httpx.AsyncClient(
-                    timeout=httpx.Timeout(connect=10.0, read=120.0, write=10.0, pool=10.0),
+                    timeout=httpx.Timeout(connect=10.0, read=300.0, write=10.0, pool=10.0),
                 ) as client:
                     if product == "anonymity-check":
                         res = await paperreview_extras.run_anonymity_check(
@@ -766,7 +784,7 @@ def adjacent_tool_pipeline(
                     "progress_pct": 50, "stage": "comparing",
                 }
                 async with httpx.AsyncClient(
-                    timeout=httpx.Timeout(connect=10.0, read=120.0, write=10.0, pool=10.0),
+                    timeout=httpx.Timeout(connect=10.0, read=300.0, write=10.0, pool=10.0),
                 ) as client:
                     res = await paperreview_extras.run_revision_review(
                         client, struct, original_review_md or "",
