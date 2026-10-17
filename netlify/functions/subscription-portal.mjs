@@ -37,7 +37,7 @@ function requestForm(note = "") {
         <input type="email" name="email" required autocomplete="email" aria-label="Email address" placeholder="you@example.com" maxlength="254">
         <button type="submit" class="btn btn-primary">Email me the link</button>
       </form>
-      <p><a href="/blog/digest/">Back to Daily Digest</a></p>`,
+      <p><a href="/blog/">Back to the blog</a></p>`,
   )
 }
 
@@ -75,7 +75,7 @@ export default async function handler(request, context) {
     else await work
     return page(
       "Check your email", "Check your email",
-      `<p class="post-lede">If ${escapeHtml(email)} has a paid Daily Digest subscription, we have emailed a link to it. The link works for 30 minutes.</p><p>Nothing arrived? Check spam, or email ben@purplelink.llc.</p><p><a href="/blog/digest/">Back to Daily Digest</a></p>`,
+      `<p class="post-lede">If ${escapeHtml(email)} has a paid Daily Digest subscription, we have emailed a link to it. The link works for 30 minutes.</p><p>Nothing arrived? Check spam, or email ben@purplelink.llc.</p><p><a href="/blog/">Back to the blog</a></p>`,
     )
   }
 
@@ -95,7 +95,7 @@ export default async function handler(request, context) {
       console.error("subscription-portal: lookup failed", err?.message)
     }
     if (!customer) return requestForm("<p>No paid subscription is on file for that address. If you think that is wrong, email ben@purplelink.llc.</p>")
-    const portal = await createPortalSession(customer, `${SITE_ORIGIN}/blog/digest/`, stripeKey)
+    const portal = await createPortalSession(customer, `${SITE_ORIGIN}/blog/`, stripeKey)
     if (!portal) {
       return page("Billing page unavailable", "Billing page unavailable", "<p>We could not open the billing page. Try again in a minute, or email ben@purplelink.llc and we will cancel or update it for you.</p>", 502)
     }

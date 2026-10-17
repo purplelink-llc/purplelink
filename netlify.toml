@@ -99,11 +99,10 @@
 # The stamp is what makes `immutable` correct here, so it must never be
 # skipped: deploy.sh runs the script on every deploy, and the fingerprints are
 # committed so a git-triggered build publishes the same HTML.
-# These four are the exception: site/blog/digest/ is generated and committed by
-# the Modal cron, which emits them unstamped, so their bare URLs must stay
-# refreshable or an archive reader would hold year-old CSS. Fingerprinted pages
-# still get a fix instantly, because ?v= makes the changed asset a new URL that
-# no cached copy can answer; the day here only bounds the digest pages.
+# These four keep a one-day cache for any page that loads them unstamped (the
+# removed digest archive was the original reason). Fingerprinted pages still get
+# a fix instantly, because ?v= makes the changed asset a new URL that no cached
+# copy can answer.
 [[headers]]
   for = "/styles.css"
   [headers.values]
@@ -222,6 +221,23 @@
 # `force = true` because the file still exists on disk; without it Netlify
 # would serve the existing file rather than apply this redirect.
 # Backend endpoint names that crawlers lifted from tool JS; send them to the tool pages.
+# The Daily Digest archive (machine-compiled summaries, June 22 to October 17, 2026) was removed on 2026-10-17
+# before the AdSense re-review. Old issue links go to the post that explains why it ended; the feed goes to the blog feed.
+[[redirects]]
+  from = "/blog/digest/feed.xml"
+  to = "/blog/feed.xml"
+  status = 301
+
+[[redirects]]
+  from = "/blog/digest/*"
+  to = "/blog/keeping-up-when-your-research-crosses-fields/"
+  status = 301
+
+[[redirects]]
+  from = "/blog/digest"
+  to = "/blog/keeping-up-when-your-research-crosses-fields/"
+  status = 301
+
 # Frontlink was briefly a daily game here; it is now a standalone project, so its old address goes to the hub.
 [[redirects]]
   from = "/games/frontlink/*"
