@@ -89,6 +89,18 @@ MODELS_WITHOUT_TEMPERATURE = {"claude-fable-5", "claude-mythos-5"}
 _NO_TEMPERATURE_RE = re.compile(r"^claude-(?:fable|mythos|opus|sonnet|haiku)-5(?:-\d+)?$")
 
 
+# Effort for every 5.x model unless a call passes its own (Ben, 2026-10-17: Opus 5.5 at medium). Opus 5.5's
+# API default is also medium, but setting it keeps cost and depth stable if the default ever moves.
+DEFAULT_EFFORT = os.environ.get("REVIEW_EFFORT", "medium").strip() or None
+
+
+def effort_for(model: str, effort: Optional[str]) -> Optional[str]:
+    """The effort to send: the call's own value, else DEFAULT_EFFORT for 5.x models (older models get none)."""
+    if effort:
+        return effort
+    return DEFAULT_EFFORT if _NO_TEMPERATURE_RE.match(model or "") else None
+
+
 def accepts_temperature(model: str) -> bool:
     return model not in MODELS_WITHOUT_TEMPERATURE and not _NO_TEMPERATURE_RE.match(model or "")
 
@@ -1278,6 +1290,7 @@ async def _anthropic_message_once(
     }
     if accepts_temperature(model):
         body["temperature"] = temperature
+    effort = effort_for(model, effort)
     if effort:
         # How much the model thinks before and while answering. Thinking counts against max_tokens.
         body["output_config"] = {"effort": effort}

@@ -670,3 +670,43 @@ def test_prompt_snapshot(name):
     assert text == path.read_text(encoding="utf-8"), (
         f"{name} changed. If the edit is intended, regenerate with UPDATE_PROMPT_SNAPSHOTS=1 and review the diff."
     )
+
+
+# ---------------------------------------------------------------------------
+# Default effort (Ben, 2026-10-17: Opus 5.5 at medium)
+# ---------------------------------------------------------------------------
+
+def test_effort_defaults_to_medium_for_5x_models_and_respects_overrides(monkeypatch):
+    assert p.effort_for("claude-opus-5-5", None) == p.DEFAULT_EFFORT == "medium"
+    assert p.effort_for("claude-sonnet-5-5", None) == "medium"
+    assert p.effort_for("claude-haiku-5-5", None) == "medium"
+    assert p.effort_for("claude-opus-5-5", "high") == "high"          # a call's own effort wins
+    assert p.effort_for("claude-opus-4-8", None) is None               # older models: no effort sent by default
+    monkeypatch.setattr(p, "DEFAULT_EFFORT", None)
+    assert p.effort_for("claude-opus-5-5", None) is None               # REVIEW_EFFORT="" turns the default off
+
+
+@pytest.mark.asyncio
+async def test_every_request_carries_the_same_effort_so_the_cache_prefix_matches(monkeypatch):
+    from latextools import response_review as rr
+    s = _structure(body="manuscript " * 2_000)
+    monkeypatch.setattr(rr, "extract_paper", lambda pdf: s)
+
+    def handler(body, n):
+        if body["max_tokens"] == 0:
+            return _Resp(200, _payload("", stop="max_tokens", out=0, cw=5_000))
+        return _Resp(200, _payload("[]" if "persona name" in body["messages"][0]["content"][-1]["text"] else "# Review\nok"))
+
+    client = _Client(handler)
+
+    class _CM:
+        async def __aenter__(self_):
+            return client
+
+        async def __aexit__(self_, *a):
+            return False
+
+    monkeypatch.setattr(httpx, "AsyncClient", lambda *a, **k: _CM())
+    await rr.run_response_review(b"pdf", "Reviewer 1:\n1. Please add a baseline.", "We added a baseline.")
+    efforts = {json.dumps(b.get("output_config")) for b in client.bodies if b["model"].startswith("claude-") and "-5" in b["model"]}
+    assert efforts == {json.dumps({"effort": "medium"})}
