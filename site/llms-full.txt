@@ -475,6 +475,12 @@ Paste a range from Excel or Google Sheets straight into the right cells. Resize 
 
 Built in Swift for macOS 14+. It has native dark and light mode, system fonts, and standard keyboard shortcuts.
 
+This is exactly the integration I was hoping for.
+
+Leszek
+Independent LaTeX enthusiast working on his first technical book
+On the opt-in project .latexmkrc support added in ModernTex 1.10, for a book built with LuaLaTeX, PythonTeX, Biber and texindy.
+
 Plain-language errors
 
 ## From a cryptic error to a fix
