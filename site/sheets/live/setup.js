@@ -111,10 +111,10 @@
   $("manage-btn").addEventListener("click", function () {
     var btn = this;
     btn.disabled = true;
-    say($("manage-status"), "Opening Stripe…");
+    say($("manage-status"), "Sending the link…");
     call("POST", { session_id: sessionId, action: "portal" }).then(function (r) {
-      if (r.ok && r.body.url) { window.location.assign(r.body.url); return; }
       btn.disabled = false;
+      if (r.ok && r.body.status === "emailed") { say($("manage-status"), r.body.detail || "We emailed a billing link to the address on the order."); return; }
       say($("manage-status"), (r.body && r.body.detail) || "Could not open the billing page. Email ben@purplelink.llc.", true);
     }).catch(function () {
       btn.disabled = false;
@@ -123,6 +123,10 @@
   });
 
   if (!/^cs_[A-Za-z0-9_]{10,200}$/.test(sessionId)) {
+    if (new URLSearchParams(window.location.search).get("portal") === "expired") {
+      say(status, "That billing link has expired or was already replaced. Open this page from the link in your subscription email and ask for a new billing link.", true);
+      return;
+    }
     say(status, "Open this page from the link in your subscription email. Lost it? Use Find a purchase at purplelink.llc/recover/.", true);
     return;
   }
