@@ -202,11 +202,9 @@ class Confirmed(GuardCase):
                 g.dry_run("pixelhearth", "ambient", registry=reg, service=svc)
             self.assertEqual(svc.calls, [])
 
-    def test_the_shipped_registry_is_unconfirmed_for_pixelhearth_until_ben_confirms(self):
-        # flip this assertion together with the registry when Ben confirms the id
-        self.assertIs(self.real["pixelhearth"]["confirmed"], False)
-        with self.assertRaises(g.ChannelGuardError):
-            g.guarded_upload("pixelhearth", "ambient", __file__, "t", service=FakeService(), lock_path=self.dir / "l")
+    def test_the_shipped_registry_entries_are_confirmed(self):
+        for key, ch in self.real.items():
+            self.assertIs(ch["confirmed"], True, key)
 
 
 class KindAndIdentity(GuardCase):

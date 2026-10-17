@@ -15,7 +15,7 @@
       "token": "~/.config/purplelink/yt_token_pixelhearth.json",
       "kinds": ["ambient", "photo-quiz"],
       "default_category": "10",
-      "confirmed": false
+      "confirmed": true
     }
   }
 }
