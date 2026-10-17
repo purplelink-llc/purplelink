@@ -14,7 +14,7 @@
  */
 
 export const TOOL_SLUGS = [
-  "abstract-checker", "anonymity-check", "bib-builder", "bib-validator", "camera-ready-checker", "citation-gap",
+  "abstract-checker", "academic-email-signature", "anonymity-check", "bib-builder", "bib-validator", "camera-ready-checker", "citation-gap",
   "citation-generator", "cover-letter", "equation-renderer", "file-to-markdown", "latex-diff", "latex-table-generator",
   "latex-to-pdf", "latex-to-word", "markdown-to-pdf", "metadata-cleaner", "paper-review", "pdf-structure", "pdf-tools",
   "reference-converter", "reproducibility-checker", "response-letter-template", "response-review", "resume-review",

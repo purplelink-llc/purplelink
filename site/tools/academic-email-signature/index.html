@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Academic Email Signature Generator (Free) | Purplelink LLC</title>
+    <meta name="description" content="Free academic email signature generator with ORCID iD, Google Scholar, lab site and latest paper. Copy it into Apple Mail, Gmail or Outlook. In your browser, nothing uploaded.">
+    <link rel="canonical" href="https://purplelink.llc/tools/academic-email-signature/">
+    <meta property="og:title" content="Academic Email Signature Generator">
+    <meta property="og:description" content="Make an email signature for a PhD student, postdoc or professor. ORCID iD is checked for typos. Works in Apple Mail, Gmail, Outlook and Thunderbird. Runs in your browser.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/tools/academic-email-signature/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/academic-email-signature.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Academic Email Signature Generator">
+    <meta name="twitter:description" content="Make an email signature for a PhD student, postdoc or professor. ORCID iD is checked for typos. Works in Apple Mail, Gmail, Outlook and Thunderbird. Runs in your browser.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/academic-email-signature.png">
+    <meta name="twitter:image:alt" content="Academic Email Signature Generator">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "Academic Email Signature Generator",
+          "url": "https://purplelink.llc/tools/academic-email-signature/",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "Any (web-based)",
+          "browserRequirements": "Requires JavaScript",
+          "image": "https://purplelink.llc/assets/og/academic-email-signature.png",
+          "description": "A free email signature generator for researchers. Enter your name, role, institution, ORCID iD, Google Scholar profile, lab site and latest paper, then copy an email-safe signature for Apple Mail, Gmail, Outlook or Thunderbird. Runs in your browser; nothing is uploaded.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "featureList": [
+            "ORCID iD field with check digit validation",
+            "Google Scholar, lab site and latest paper with DOI",
+            "Four plain layouts and an accent colour",
+            "Copy as rich text, HTML source or plain text",
+            "Install steps for Apple Mail, Gmail, Outlook and Thunderbird",
+            "Runs in your browser; nothing is uploaded"
+          ],
+          "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Does the signature work in Apple Mail?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes, with one setting. In Mail, open Settings, then Signatures, add a signature, and untick Always match my default message font before you paste. If it stays ticked, Mail strips the fonts and colours. The small preview in that window often looks wrong, so check the result in a new message." }
+            },
+            {
+              "@type": "Question",
+              "name": "Why is my ORCID iD rejected?",
+              "acceptedAnswer": { "@type": "Answer", "text": "The last character of an ORCID iD is a check digit worked out from the other fifteen (ISO 7064 MOD 11-2). If it does not match, the iD has a typo. This tool checks it as you type, so a wrong digit is caught before it goes out in every email. It cannot tell you whether the iD exists, only that it is well formed." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does it use images?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Only one, and only if you choose it: ORCID's own 16 pixel iD icon, unaltered. Many mail apps block images until the reader allows them, so the iD is always written out as a full link as well. Turn the icon off and the signature has no images at all." }
+            },
+            {
+              "@type": "Question",
+              "name": "Is anything uploaded or stored?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. The signature is built by JavaScript in this page and nothing is sent to a server. If you tick Remember my entries, they are saved in this browser's local storage and nowhere else. If you leave the ORCID icon on, a reader's mail app will request that 16 pixel image from purplelink.llc when it shows your message. That request does not contain anything you typed." }
+            },
+            {
+              "@type": "Question",
+              "name": "Will it look right in dark mode?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Mail apps handle dark mode differently. Some invert colours, some leave them alone, and Gmail does a bit of both. The signature sets no background colour and has no white boxes. By default its text follows the message, so only the accent colour is fixed. If you untick Use my mail app's text colour, the text is dark grey, which apps that do not adjust colours will show as dark on dark. The dark preview shows that worst case." }
+            },
+            {
+              "@type": "Question",
+              "name": "Why no photo, logo or social icons?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Research advice for academic signatures is to keep to a few lines. Photos and logos arrive as images that many readers never see, add weight to every message, and your institution may have rules about its logo. Links to your ORCID, Scholar profile and lab site carry the same information." }
+            },
+            {
+              "@type": "Question",
+              "name": "Why not the Google Scholar logo?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Google's logo is theirs and is not offered for this use, so Scholar appears as a plain text link. It accepts only a scholar.google profile address." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does it work on an iPhone?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Apple does not document what the iPhone signature box accepts, and pasted HTML is unreliable there. Copy the plain text version and paste it into Settings, Mail, Signature. Set up the formatted one on your Mac or in Gmail or Outlook on the web." }
+            },
+            {
+              "@type": "Question",
+              "name": "What is Gmail's size limit?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Gmail allows 10,000 characters in a signature, counting the HTML. A signature from this tool is usually 3,000 to 4,500. The count is shown under the preview." }
+            }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://purplelink.llc/tools/" },
+            { "@type": "ListItem", "position": 3, "name": "Academic Email Signature Generator", "item": "https://purplelink.llc/tools/academic-email-signature/" }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=07d8025cab"></script>
+    <link rel="stylesheet" href="/styles.css?v=054f96962c">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=9a7562fde8" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+    <link rel="stylesheet" href="/tools/academic-email-signature/academic-email-signature.css?v=11e6f2db16">
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">← All tools</a>
+      <div class="tools-hero">
+        <p class="eyebrow">Free web tool</p>
+        <h1>Academic Email Signature Generator</h1>
+        <p>Make an email signature for a PhD student, postdoc or professor. It has fields for your ORCID iD, Google Scholar profile, lab site and latest paper, and it checks the ORCID iD for typos. Copy it into Apple Mail, Gmail, Outlook or Thunderbird. Runs in your browser.</p>
+      </div>
+
+      <div class="tool-app sig-app">
+        <div class="sig-layout">
+          <form class="sig-form" id="sig-form" novalidate autocomplete="off">
+            <fieldset class="sig-group">
+              <legend>Start from</legend>
+              <div class="sig-presets" role="radiogroup" aria-label="Starting point">
+                <label class="sig-chip"><input type="radio" name="preset" value="phd"><span>PhD student</span></label>
+                <label class="sig-chip"><input type="radio" name="preset" value="postdoc"><span>Postdoc</span></label>
+                <label class="sig-chip"><input type="radio" name="preset" value="faculty" checked><span>Faculty</span></label>
+              </div>
+              <p class="sig-hint">A starting point sets a typical job title and the order of your links. It does not add lines you leave empty.</p>
+            </fieldset>
+
+            <fieldset class="sig-group">
+              <legend>You</legend>
+            <div class="sig-field">
+              <label for="name">Name</label>
+              <input class="sig-input" type="text" id="name" name="name" placeholder="Alex Rivera" maxlength="300" autocomplete="name" aria-describedby="name-err" data-field="name">
+              <p class="sig-err" id="name-err" role="alert"></p>
+            </div>
+            <div class="sig-field">
+              <label for="pronouns">Pronouns (optional)</label>
+              <input class="sig-input" type="text" id="pronouns" name="pronouns" placeholder="they/them" maxlength="300" autocomplete="off" aria-describedby="pronouns-err" data-field="pronouns">
+              <p class="sig-err" id="pronouns-err" role="alert"></p>
+            </div>
+            <div class="sig-field">
+              <label for="title">Title</label>
+              <input class="sig-input" type="text" id="title" name="title" placeholder="Associate Professor" maxlength="300" autocomplete="organization-title" aria-describedby="title-err" data-field="title">
+              <p class="sig-err" id="title-err" role="alert"></p>
+            </div>
+            <div class="sig-field">
+              <label for="dept">Department</label>
+              <input class="sig-input" type="text" id="dept" name="dept" placeholder="Department of Sociology" maxlength="300" autocomplete="off" aria-describedby="dept-err" data-field="dept">
+              <p class="sig-err" id="dept-err" role="alert"></p>
+            </div>
+            <div class="sig-field">
+              <label for="institution">Institution</label>
+              <input class="sig-input" type="text" id="institution" name="institution" placeholder="Example University" maxlength="300" autocomplete="organization" aria-describedby="institution-err" data-field="institution">
+              <p class="sig-err" id="institution-err" role="alert"></p>
+            </div>
+            </fieldset>
+
+            <fieldset class="sig-group">
+              <legend>Contact</legend>
+            <div class="sig-field">
+              <label for="email">Email</label>
+              <input class="sig-input" type="email" id="email" name="email" placeholder="alex.rivera@example.edu" maxlength="300" autocomplete="email" aria-describedby="email-hint email-err" data-field="email">
+              <p class="sig-hint" id="email-hint">Your institutional address, not a personal one.</p><p class="sig-err" id="email-err" role="alert"></p>
+            </div>
+            <div class="sig-field">
+              <label for="phone">Phone (optional)</label>
+              <input class="sig-input" type="tel" id="phone" name="phone" placeholder="+1 555 0100" maxlength="300" autocomplete="tel" aria-describedby="phone-err" data-field="phone">
+              <p class="sig-err" id="phone-err" role="alert"></p>
+            </div>
+            </fieldset>
+
+            <fieldset class="sig-group">
+              <legend>Research links</legend>
+            <div class="sig-field">
+              <label for="orcid">ORCID iD</label>
+              <input class="sig-input" type="text" id="orcid" name="orcid" placeholder="0000-0002-1825-0097" maxlength="300" autocomplete="off" aria-describedby="orcid-hint orcid-err" data-field="orcid">
+              <p class="sig-hint" id="orcid-hint">The 16 characters, or the full orcid.org link. The last character is checked.</p><p class="sig-err" id="orcid-err" role="alert"></p>
+            </div>
+            <div class="sig-field">
+              <label for="scholar">Google Scholar profile</label>
+              <input class="sig-input" type="url" id="scholar" name="scholar" placeholder="https://scholar.google.com/citations?user=..." maxlength="300" autocomplete="off" aria-describedby="scholar-hint scholar-err" data-field="scholar">
+              <p class="sig-hint" id="scholar-hint">Shown as a plain text link.</p><p class="sig-err" id="scholar-err" role="alert"></p>
+            </div>
+            <div class="sig-field">
+              <label for="website">Lab or personal website</label>
+              <input class="sig-input" type="url" id="website" name="website" placeholder="https://example.edu/rivera-lab" maxlength="300" autocomplete="off" aria-describedby="website-err" data-field="website">
+              <p class="sig-err" id="website-err" role="alert"></p>
+            </div>
+            </fieldset>
+
+            <fieldset class="sig-group">
+              <legend>Extra lines (optional)</legend>
+            <div class="sig-field">
+              <label for="paperTitle">Latest paper, title</label>
+              <input class="sig-input" type="text" id="paperTitle" name="paperTitle" placeholder="Title of the paper" maxlength="300" autocomplete="off" aria-describedby="paperTitle-err" data-field="paperTitle">
+              <p class="sig-err" id="paperTitle-err" role="alert"></p>
+            </div>
+            <div class="sig-field">
+              <label for="paperDoi">Latest paper, DOI or link</label>
+              <input class="sig-input" type="text" id="paperDoi" name="paperDoi" placeholder="10.1000/xyz123" maxlength="300" autocomplete="off" aria-describedby="paperDoi-hint paperDoi-err" data-field="paperDoi">
+              <p class="sig-hint" id="paperDoi-hint">A DOI becomes a https://doi.org link.</p><p class="sig-err" id="paperDoi-err" role="alert"></p>
+            </div>
+            <div class="sig-field">
+              <label for="office">Office hours</label>
+              <input class="sig-input" type="text" id="office" name="office" placeholder="Tue 2 to 4 pm, Hall 214, or by appointment" maxlength="300" autocomplete="off" aria-describedby="office-err" data-field="office">
+              <p class="sig-err" id="office-err" role="alert"></p>
+            </div>
+            <div class="sig-field">
+              <label for="hoursNote">Working-hours note</label>
+              <input class="sig-input" type="text" id="hoursNote" name="hoursNote" placeholder="I work flexible hours. Please reply when it suits you." maxlength="300" autocomplete="off" aria-describedby="hoursNote-err" data-field="hoursNote">
+              <p class="sig-err" id="hoursNote-err" role="alert"></p>
+            </div>
+            <div class="sig-field">
+              <label for="custom">One more line</label>
+              <input class="sig-input" type="text" id="custom" name="custom" placeholder="Your own text, such as a land acknowledgement" maxlength="300" autocomplete="off" aria-describedby="custom-err" data-field="custom">
+              <p class="sig-err" id="custom-err" role="alert"></p>
+            </div>
+            </fieldset>
+
+            <fieldset class="sig-group">
+              <legend>Look</legend>
+              <div class="sig-field">
+                <label for="template">Layout</label>
+                <select class="sig-input" id="template" name="template">
+                  <option value="classic" selected>Classic, with a rule above</option>
+                  <option value="minimal">Minimal, plain stacked lines</option>
+                  <option value="compact">Compact, two lines</option>
+                  <option value="twocol">Two columns</option>
+                </select>
+              </div>
+              <div class="sig-field">
+                <span class="sig-label" id="accent-label">Accent colour</span>
+                <div class="sig-swatches" role="radiogroup" aria-labelledby="accent-label">
+              <label class="sig-swatch sw-purple"><input type="radio" name="accent" value="purple" checked><span class="sig-swatch-dot" aria-hidden="true"></span><span class="sig-swatch-name">Purple</span></label>
+              <label class="sig-swatch sw-blue"><input type="radio" name="accent" value="blue"><span class="sig-swatch-dot" aria-hidden="true"></span><span class="sig-swatch-name">Blue</span></label>
+              <label class="sig-swatch sw-teal"><input type="radio" name="accent" value="teal"><span class="sig-swatch-dot" aria-hidden="true"></span><span class="sig-swatch-name">Teal</span></label>
+              <label class="sig-swatch sw-burgundy"><input type="radio" name="accent" value="burgundy"><span class="sig-swatch-dot" aria-hidden="true"></span><span class="sig-swatch-name">Burgundy</span></label>
+              <label class="sig-swatch sw-graphite"><input type="radio" name="accent" value="graphite"><span class="sig-swatch-dot" aria-hidden="true"></span><span class="sig-swatch-name">Graphite</span></label>
+                  <label class="sig-swatch sw-custom"><input type="radio" name="accent" value="custom"><span class="sig-swatch-dot" aria-hidden="true"></span><span class="sig-swatch-name">Custom</span></label>
+                </div>
+                <div class="sig-custom" id="custom-wrap" hidden>
+                  <label for="custom-color">Custom colour</label>
+                  <input type="color" id="custom-color" value="#5b2a86">
+                  <p class="sig-hint" id="contrast-note" aria-live="polite"></p>
+                </div>
+              </div>
+              <div class="sig-row">
+                <div class="sig-field">
+                  <label for="font">Font</label>
+                  <select class="sig-input" id="font" name="font">
+                    <option value="sans" selected>Arial</option>
+                    <option value="serif">Georgia</option>
+                  </select>
+                </div>
+                <div class="sig-field">
+                  <label for="size">Size</label>
+                  <select class="sig-input" id="size" name="size">
+                    <option value="14" selected>14 px</option>
+                    <option value="13">13 px</option>
+                  </select>
+                </div>
+              </div>
+              <div class="sig-check"><input type="checkbox" id="icon" checked><label for="icon">Show ORCID's iD icon (one 16 pixel image)</label></div>
+              <p class="sig-hint">Turn it off for a signature with no images. The iD is written out as a link either way. The icon is ORCID's own file, unaltered. ORCID and the iD icon are trademarks of ORCID, Inc.</p>
+              <div class="sig-check"><input type="checkbox" id="inherit" checked><label for="inherit">Use my mail app's text colour</label></div>
+              <p class="sig-hint">Safest in dark mode: the text follows the message instead of being fixed dark grey. Untick it to fix the text and notes in grey.</p>
+              <div class="sig-check"><input type="checkbox" id="remember"><label for="remember">Remember my entries in this browser</label></div>
+              <p class="sig-hint">Saved only on this device. Untick it to delete the saved copy.</p>
+            </fieldset>
+
+            <div class="sig-actions">
+              <button class="btn" id="example" type="button">Fill with an example</button>
+              <button class="btn" id="clear" type="button">Clear everything</button>
+            </div>
+          </form>
+
+          <section class="sig-out" aria-labelledby="preview-h">
+            <div class="sig-out-inner">
+              <div class="sig-out-head">
+                <h2 id="preview-h">Preview</h2>
+                <div class="sig-bg" role="radiogroup" aria-label="Preview background">
+                  <label class="sig-chip"><input type="radio" name="bg" value="light" checked><span>Light</span></label>
+                  <label class="sig-chip"><input type="radio" name="bg" value="dark"><span>Dark, unadjusted</span></label>
+                </div>
+              </div>
+              <iframe class="sig-frame" id="frame" title="Signature preview" sandbox="allow-same-origin" tabindex="-1"></iframe>
+              <p class="sig-empty" id="empty">Type your name to see the signature.</p>
+              <p class="sig-count" id="count" aria-live="polite"></p>
+              <div class="sig-copy">
+                <button class="btn btn-primary" id="copy-rich" type="button">Copy signature</button>
+                <button class="btn" id="copy-html" type="button">Copy HTML source</button>
+                <button class="btn" id="copy-text" type="button">Copy plain text</button>
+                <button class="btn" id="download" type="button">Download .html</button>
+              </div>
+              <p class="tool-status" id="status" aria-live="polite"></p>
+              <p class="sig-hint">The dark preview is the worst case: a dark page where the mail app changes no colours. Apple Mail and Gmail usually adjust colours themselves, so test in your own app.</p>
+            </div>
+          </section>
+        </div>
+        <p class="tool-privacy">Your details never leave your browser. There is no upload, no account, and nothing you type is sent anywhere.</p>
+      </div>
+
+      <section class="tool-howto sig-install" id="install">
+        <h2>Put it in your mail app</h2>
+        <p class="sig-lead">Press <strong>Copy signature</strong> first, then follow the steps for your app. Paste with Cmd+V on a Mac or Ctrl+V on Windows.</p>
+        <details open><summary>Apple Mail on a Mac</summary><div class="faq-body"><ol>
+          <li>Open Mail, then <strong>Mail, Settings, Signatures</strong>.</li>
+          <li>Click <strong>+</strong> and name the signature. Delete the sample text in the right pane.</li>
+          <li><strong>Untick &ldquo;Always match my default message font&rdquo; now, before you paste.</strong> If it is ticked, Mail removes the fonts and colours.</li>
+          <li>Paste into the right pane. Drag the signature onto an account on the left if you want it used for that account.</li>
+          <li>The preview in this window can look wrong. Write a new message to check it. Under Settings, Composing, the format should be Rich Text.</li>
+        </ol></div></details>
+        <details><summary>iPhone and iPad</summary><div class="faq-body"><ol>
+          <li>Press <strong>Copy plain text</strong> and send it to yourself, or use Universal Clipboard from your Mac.</li>
+          <li>Open <strong>Settings, Mail, Signature</strong> and paste.</li>
+          <li>Apple does not document what this box accepts, and pasted HTML is unreliable there. A plain text signature is the safe choice on a phone.</li>
+        </ol></div></details>
+        <details><summary>Gmail</summary><div class="faq-body"><ol>
+          <li>Click the gear, then <strong>See all settings</strong>, then the <strong>General</strong> tab.</li>
+          <li>Scroll to <strong>Signature</strong>, choose <strong>Create new</strong> and name it.</li>
+          <li>Paste into the box, set it as the default for new emails and replies if you like, and click <strong>Save Changes</strong> at the very bottom.</li>
+          <li>Gmail stops at 10,000 characters of HTML. The count under the preview shows where you are.</li>
+        </ol></div></details>
+        <details><summary>Outlook (new Outlook, classic Outlook, Outlook on the web)</summary><div class="faq-body"><ol>
+          <li><strong>New Outlook or Outlook on the web:</strong> Settings, Accounts, Signatures (or Mail, Compose and reply). Create a signature and paste.</li>
+          <li><strong>Classic Outlook for Windows:</strong> File, Options, Mail, Signatures, New. Paste into the editing box and click OK.</li>
+          <li><strong>Outlook for Mac:</strong> Outlook, Settings, Signatures, then the + button.</li>
+          <li>If the layout breaks in classic Outlook for Windows, go to File, Options, Mail, Editor Options, Advanced. Set &ldquo;Pasting from other programs&rdquo; to <strong>Keep Source Formatting</strong>, restart Outlook, and paste again.</li>
+        </ol></div></details>
+        <details><summary>Thunderbird</summary><div class="faq-body"><ol>
+          <li>Press <strong>Download .html</strong> and keep the file somewhere permanent.</li>
+          <li>Open <strong>Account Settings</strong>, pick your account, and tick <strong>Attach the signature from a file</strong>. Choose the .html file.</li>
+          <li>Thunderbird reads the file when it builds a message, so move the file and the signature disappears.</li>
+          <li>Pasting into the signature text box gives plain text only, which is why the file route is used.</li>
+        </ol></div></details>
+      </section>
+
+      <section class="tool-faq sig-guide" id="what-to-include">
+        <h2>What to put in an academic email signature</h2>
+        <p>Keep it to four to six lines. The aim is that a stranger who gets your email can tell who you are and find your work.</p>
+        <h3>Include</h3>
+        <ul>
+          <li><strong>Name and role.</strong> Full name, current title and department. Students write &ldquo;PhD Candidate&rdquo; with the department, not just &ldquo;Student&rdquo;.</li>
+          <li><strong>Institution and institutional email.</strong> It tells readers where you work and that the message is genuine.</li>
+          <li><strong>ORCID iD.</strong> University libraries recommend adding it, because it ties your name to your papers. Write it as the full https://orcid.org/ link.</li>
+          <li><strong>One place to see your work.</strong> A lab site, a Google Scholar profile or a university page. Two links at most.</li>
+          <li><strong>Pronouns,</strong> if you want them shown.</li>
+        </ul>
+        <h3>Add only if useful</h3>
+        <ul>
+          <li>A phone number or office location, if people visit or call.</li>
+          <li>Office hours, for faculty and teaching assistants.</li>
+          <li>Your latest paper with its DOI, if you want it read.</li>
+          <li>A short note on working hours, so no one feels a reply is due the same evening.</li>
+          <li>A land acknowledgement, if your institution asks for one.</li>
+        </ul>
+        <h3>Leave out</h3>
+        <ul>
+          <li>Photos, logos and rows of social icons. Many readers never see images, and they make every message heavier.</li>
+          <li>Quotes, long disclaimers and several colours or fonts.</li>
+          <li>&ldquo;Sent from my iPhone&rdquo; lines. Clear them in your phone's settings.</li>
+        </ul>
+        <h3>Three examples</h3>
+        <div class="sig-examples">
+          <figure><figcaption>PhD student</figcaption><pre>Alex Rivera (they/them)
+PhD Candidate, Department of Sociology
+Example University
+alex.rivera@example.edu
+ORCID iD: https://orcid.org/0000-0002-1825-0097
+Google Scholar</pre></figure>
+          <figure><figcaption>Postdoc</figcaption><pre>Dr. Priya Nair
+Postdoctoral Researcher, Department of Biology
+Example University
+priya.nair@example.edu
+example.edu/nair-lab
+Latest paper: Title of the paper https://doi.org/10.1000/xyz123</pre></figure>
+          <figure><figcaption>Faculty</figcaption><pre>Dr. Sam Okafor
+Associate Professor, Department of Economics
+Example University
+sam.okafor@example.edu | +1 555 0100
+example.edu/okafor
+Office hours: Tuesdays 2 to 4 pm, Hall 214</pre></figure>
+        </div>
+        <p class="sig-note">The iD in the first example is ORCID's own sample iD, not a real person.</p>
+      </section>
+
+      <section class="tool-faq">
+        <h2>About this tool</h2>
+        <p>The signature is built from tables with inline styles and system fonts, because mail apps ignore most other styling. Everything you type is escaped before it goes into the HTML, and links are limited to http, https, mailto and tel. Nothing runs on a server.</p>
+        <details><summary>Does the signature work in Apple Mail?</summary><div class="faq-body">Yes, with one setting. In Mail, open Settings, then Signatures, add a signature, and untick <strong>Always match my default message font</strong> before you paste. If it stays ticked, Mail strips the fonts and colours. The small preview in that window often looks wrong, so check the result in a new message.</div></details>
+        <details><summary>Why is my ORCID iD rejected?</summary><div class="faq-body">The last character of an ORCID iD is a check digit worked out from the other fifteen (ISO 7064 MOD 11-2). If it does not match, the iD has a typo. This tool checks it as you type, so a wrong digit is caught before it goes out in every email. It cannot tell you whether the iD exists, only that it is well formed.</div></details>
+        <details><summary>Does it use images?</summary><div class="faq-body">Only one, and only if you choose it: ORCID's own 16 pixel iD icon, unaltered. Many mail apps block images until the reader allows them, so the iD is always written out as a full link as well. Turn the icon off and the signature has no images at all.</div></details>
+        <details><summary>Is anything uploaded or stored?</summary><div class="faq-body">No. The signature is built by JavaScript in this page and nothing is sent to a server. If you tick <em>Remember my entries</em>, they are saved in this browser's local storage and nowhere else. If you leave the ORCID icon on, a reader's mail app will request that 16 pixel image from purplelink.llc when it shows your message. That request does not contain anything you typed.</div></details>
+        <details><summary>Will it look right in dark mode?</summary><div class="faq-body">Mail apps handle dark mode differently. Some invert colours, some leave them alone, and Gmail does a bit of both. The signature sets no background colour and has no white boxes. By default its text follows the message, so only the accent colour is fixed. If you untick <em>Use my mail app's text colour</em>, the text is dark grey, which apps that do not adjust colours will show as dark on dark. The dark preview shows that worst case.</div></details>
+        <details><summary>Why no photo, logo or social icons?</summary><div class="faq-body">Research advice for academic signatures is to keep to a few lines. Photos and logos arrive as images that many readers never see, add weight to every message, and your institution may have rules about its logo. Links to your ORCID, Scholar profile and lab site carry the same information.</div></details>
+        <details><summary>Why not the Google Scholar logo?</summary><div class="faq-body">Google's logo is theirs and is not offered for this use, so Scholar appears as a plain text link. It accepts only a scholar.google profile address.</div></details>
+        <details><summary>Does it work on an iPhone?</summary><div class="faq-body">Apple does not document what the iPhone signature box accepts, and pasted HTML is unreliable there. Copy the plain text version and paste it into Settings, Mail, Signature. Set up the formatted one on your Mac or in Gmail or Outlook on the web.</div></details>
+        <details><summary>What is Gmail's size limit?</summary><div class="faq-body">Gmail allows 10,000 characters in a signature, counting the HTML. A signature from this tool is usually 3,000 to 4,500. The count is shown under the preview.</div></details>
+      </section>
+
+      <!-- tool-offer -->
+      <aside class="tool-offer" aria-label="About Vitae" data-offer="vitae">
+        <p class="tool-offer-hook">This makes one signature and keeps no record of you.</p>
+        <p>Vitae keeps your submissions, grants and positions in one record on your Mac, and your CV fills itself from it.</p>
+        <p class="tool-offer-meta">The app is free, with no limits on your record. Needs macOS 15 or later.</p>
+        <a class="tool-offer-link" href="/vitae/?utm_source=tool-academic-email-signature&amp;utm_medium=tool&amp;utm_campaign=vitae" data-track="offer_click" data-track-meta="vitae">See Vitae</a>
+      </aside>
+      <!-- /tool-offer -->
+
+      <nav class="tool-related" aria-label="Related tools">
+        <h2>More free tools</h2>
+        <ul>
+          <li><a href="/tools/abstract-checker/">Abstract checker</a></li>
+          <li><a href="/tools/response-letter-template/">Response letter template</a></li>
+          <li><a href="/tools/submission-checklist/">Submission checklist</a></li>
+          <li><a href="/tools/word-counter/">Word &amp; character counter</a></li>
+          <li><a href="/tools/">All tools</a></li>
+        </ul>
+      </nav>
+
+      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a>. It helps keep these tools free and online.</p>
+
+      <script src="/tools/academic-email-signature/signature-core.js?v=d70eba737d"></script>
+      <script src="/tools/academic-email-signature/academic-email-signature.js?v=e2a0936588"></script>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=3bd23e4dde" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>
