@@ -25,7 +25,7 @@
   function dayScoreText(game, v) {
     if (v >= 99) return "X";
     var text = SCORE_TEXT.get(game);
-    return text ? text(v) : plural(v, "guess", "guesses");
+    return typeof text === "function" ? text(v) : plural(v, "guess", "guesses");
   }
   function puzzleIdx() { return G.dayIndex(new Date(), EPOCH) - (st.board === "yday" ? 1 : 0); }
   var RATED_BOARDS = [["all", "Rating"], ["week", "This week"]];
