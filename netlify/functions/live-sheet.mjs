@@ -4,6 +4,8 @@
  *   GET  ?session_id=cs_…                 -> { product, configured, config, feeds }
  *   POST { session_id, config }           -> { product, config, feeds }  (set up or change)
  *   GET  ?k=<feed key>&tab=<tab>          -> text/csv for IMPORTDATA / Excel From Web
+ *   POST { session_id, action: "portal" } -> emails a 30-minute billing link to the order's address
+ *   GET  ?portal=<token>                  -> that emailed link: 303 to a restricted Stripe billing portal
  *
  * A subscriber pays through checkout.mjs (live-scholar, live-funding: yearly,
  * 7-day trial) and lands on /sheets/live/setup/ with the session id. Setup
@@ -22,6 +24,8 @@
  */
 import { randomBytes } from "node:crypto";
 import { getStore } from "@netlify/blobs";
+import { clientIp, overDailyLimit } from "../lib/ratelimit.mjs";
+import { SITE_ORIGIN, createPortalSession, sendPortalEmail, signPortalToken, verifyPortalToken } from "../lib/portal-link.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 const STORE = "live-sheets";
@@ -399,6 +403,15 @@ async function serveFeed(key, tab) {
 // ------------------------------------------------------------------ handler
 export default async function handler(request) {
   const url = new URL(request.url);
+  if (request.method === "GET" && url.searchParams.get("portal")) {
+    // The emailed billing link: opens a restricted Stripe portal for the customer in a valid token.
+    const secret = process.env.SUBSCRIBE_SECRET;
+    const customer = verifyPortalToken("live-portal", url.searchParams.get("portal"), secret);
+    const stripeKey = Netlify.env.get("STRIPE_SECRET_KEY");
+    const portal = customer && stripeKey ? await createPortalSession(customer, `${SITE_ORIGIN}/sheets/live/`, stripeKey) : null;
+    if (!portal) return Response.redirect(`${SITE_ORIGIN}/sheets/live/setup/?portal=expired`, 303);
+    return new Response(null, { status: 303, headers: { Location: portal, "Cache-Control": "no-store", "Referrer-Policy": "no-referrer" } });
+  }
   if (request.method === "GET" && url.searchParams.get("k")) {
     return serveFeed(url.searchParams.get("k"), url.searchParams.get("tab") || "");
   }
@@ -418,18 +431,25 @@ export default async function handler(request) {
     let body;
     try { body = await request.json(); } catch (_) { return json(400, { error: "bad_json" }); }
     if (body?.action === "portal") {
-      // Manage or cancel: Stripe's hosted customer portal. Allowed whatever the
-      // subscription's state, so an ended trial can still update its card.
+      // Manage or cancel. The session id is only a bearer of the order, so it does not open Stripe's
+      // billing portal itself: it emails a 30-minute link to the address on the order (GET ?portal=).
+      // Allowed whatever the subscription's state, so an ended trial can still update its card.
       const sid = body.session_id;
       if (!/^cs_[A-Za-z0-9_]{10,200}$/.test(sid || "")) return json(400, { error: "bad_session_id" });
+      if (await overDailyLimit("live-portal-ip", clientIp(request), 10)) return json(429, { error: "rate_limited", detail: "Too many requests today. Email ben@purplelink.llc and we will cancel it for you." });
       const s = await stripe(`/checkout/sessions/${sid}`);
-      if (!s || !TABS[s.metadata?.product || ""] || !s.customer) return json(403, { error: "session_not_found" });
-      const portal = await stripePost("/billing_portal/sessions", {
-        customer: s.customer,
-        return_url: `https://purplelink.llc/sheets/live/setup/?session_id=${sid}`,
-      });
-      if (!portal?.url) return json(502, { error: "portal_unavailable", detail: "Stripe could not open the billing page. Email ben@purplelink.llc and we will cancel it for you." });
-      return json(200, { url: portal.url });
+      const customer = typeof s?.customer === "string" ? s.customer : s?.customer?.id;
+      if (!s || !TABS[s.metadata?.product || ""] || !customer) return json(403, { error: "session_not_found" });
+      const to = s.customer_details?.email;
+      if (!to) return json(502, { error: "portal_unavailable", detail: "There is no email address on this order. Email ben@purplelink.llc and we will cancel it for you." });
+      if (await overDailyLimit("live-portal-customer", customer, 3)) return json(429, { error: "rate_limited", detail: "A link was already emailed several times today. Check your inbox and spam." });
+      const secret = process.env.SUBSCRIBE_SECRET;
+      if (!secret) return json(500, { error: "server_error" });
+      const link = `${FEED_BASE}?portal=${encodeURIComponent(signPortalToken("live-portal", customer, secret))}`;
+      if (!(await sendPortalEmail(to, link, "your Purplelink live sheet subscription"))) {
+        return json(502, { error: "portal_unavailable", detail: "We could not send the email. Email ben@purplelink.llc and we will cancel it for you." });
+      }
+      return json(200, { status: "emailed", detail: "We emailed a billing link to the address on the order. It works for 30 minutes." });
     }
     const { product, sub, error } = await liveSession(body?.session_id);
     if (error) return error;
