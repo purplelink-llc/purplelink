@@ -755,6 +755,12 @@ Does it work with my journal's or university's class file?
 
 Any class you can compile with LaTeX works: put the class file in the project folder. ModernTex also bundles starter templates for several information systems journals, computer science conferences and a generic thesis. The free starters on this site for ACM, IEEE, Elsevier, APA 7 and the academic CV each compiled with TinyTeX and latexmk when I tested them on October 15, 2026, after the publisher class was installed with tlmgr. For a project with no required class there are two plain CC0 starters, a multi-file thesis and a single-file article, which compiled the same way on the same day. The NeurIPS starter needs the current year's style file from the conference, so I make no compile claim for it.
 
+## Write to Ben
+
+A question about ModernTex that this page does not answer? Write to Ben here.
+
+Prefer your own mail app? Write to ben@purplelink.llc. The form delivers your message by email through Resend and does not store it on this site. Privacy.
+
 ## Try it on your own manuscript.
 
 Seven days of the full app, no account and nothing to enter. If it earns a place in your workflow, it's $19.99 once, with all updates included, forever.
@@ -925,6 +931,12 @@ Email ben@purplelink.llc within 14 days of purchase. See the terms.
 How do I get help?
 
 Email ben@purplelink.llc. If you lose your download link or your license key, the Find a purchase page emails them again to the address you paid with.
+
+## Write to Ben
+
+A question about Outbound Veil that this page does not answer? Write to Ben here.
+
+Prefer your own mail app? Write to ben@purplelink.llc. The form delivers your message by email through Resend and does not store it on this site. Privacy.
 
 ## Try it for a week.
 
@@ -1189,6 +1201,12 @@ Why not the macOS Storage settings, or a cleaner like CleanMyMac?
 
 Try the Storage settings first, because they are free and built in. They show categories but not a map of your own folders. CleanMyMac is an all-in-one cleaner with a free trial and prices that start at $3.33 a month on its page. Legroom is narrower: it frees disk space, it does not make your Mac faster, and it costs $9.99 once after a 7-day trial.
 
+## Write to Ben
+
+A question about Legroom that this page does not answer? Write to Ben here.
+
+Prefer your own mail app? Write to ben@purplelink.llc. The form delivers your message by email through Resend and does not store it on this site. Privacy.
+
 ## Try it for a week.
 
 Seven days of the full app, with no account. Then decide whether to keep it.
@@ -1407,6 +1425,12 @@ You do not have to. Both are free and open source, and Thock mutes itself during
 Does it work offline?
 
 Yes. Keyfeel runs in the menu bar and works offline, and pasting a license key works offline too. It reads which key was pressed, not the characters, and it does not send your typing anywhere.
+
+## Write to Ben
+
+A question about Keyfeel that this page does not answer? Write to Ben here.
+
+Prefer your own mail app? Write to ben@purplelink.llc. The form delivers your message by email through Resend and does not store it on this site. Privacy.
 
 ## Try it for a week.
 
@@ -1677,6 +1701,12 @@ Is it more accurate than other apps?
 
 Tapefolio has not been compared with other apps for accuracy, so this page makes no claim. The measured results on this page are for Tapefolio's own speech models on two meeting recordings, with word error rates between 21% and 39%. Whichever app you use, check any quoted text against the recording.
 
+## Write to Ben
+
+A question about Tapefolio that this page does not answer? Write to Ben here.
+
+Prefer your own mail app? Write to ben@purplelink.llc. The form delivers your message by email through Resend and does not store it on this site. Privacy.
+
 ## Try it on one recording.
 
 Seven days of the complete app, no account and nothing to enter. Then decide whether to keep it.
@@ -1807,6 +1837,12 @@ Download the DMG, open it, drag Vitae into your Applications folder, and launch 
 How does Vitae compare to Interfolio, ORCID, or a spreadsheet?
 
 Vitae keeps your own record between deadlines. If your university requires Interfolio or Watermark for tenure review, you still submit there, using what Vitae exports. See how to track your academic CV and tenure case for a comparison of sixteen options, or best software for tracking your research record for submission trackers, spreadsheets and profile systems.
+
+## Write to Ben
+
+A question about Vitae that this page does not answer? Write to Ben here.
+
+Prefer your own mail app? Write to ben@purplelink.llc. The form delivers your message by email through Resend and does not store it on this site. Privacy.
 
 Vitae is free. If it saves you time, you can get the optional Vitae Plus, leave a tip or support it monthly. It helps keep it maintained.
 

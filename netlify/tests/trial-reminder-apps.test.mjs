@@ -284,8 +284,9 @@ for (const app of APPS) {
     assert.match(html, /<script src="\/trial-reminder\.js\?v=[0-9a-f]+" defer>/);
     assert.match(html, /Optional\. Two emails, then nothing/);
     assert.doesNotMatch(html, /<form[^>]*\sstyle\s*=/i);
+    // (The support box's own field, id sb-email, is not a trial form.)
     // Each form has its own email field id and a labelled, non-required-looking honeypot.
-    const ids = [...html.matchAll(/<input type="email" id="([^"]+)"/g)].map((m) => m[1]);
+    const ids = [...html.matchAll(/<input type="email" id="((?!sb-)[^"]+)"/g)].map((m) => m[1]);
     assert.equal(new Set(ids).size, ids.length);
     assert.equal(ids.length, forms.length);
   });

@@ -5590,3 +5590,97 @@ dialog, [role="dialog"], [aria-modal="true"], .sales-scroll { overscroll-behavio
 @media (max-width: 720px) {
   .guide-mtx-card { grid-template-columns: 1fr; }
 }
+
+/* Write to Ben: the support box on /support/ and the app pages (support-box.js,
+   markup stamped by scripts/apply_support_box.py). Tokens only, so both themes
+   are covered. Without JavaScript the form stays hidden and the mailto link shows. */
+.support-box {
+  box-sizing: border-box;
+  padding: 22px clamp(18px, 3vw, 28px);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: color-mix(in oklch, var(--purple) 4%, var(--bg));
+}
+.support-box--page { margin: 8px 0 32px; }
+.support-box--compact {
+  width: min(760px, calc(100% - 2 * clamp(24px, 6vw, 80px)));
+  margin: 0 auto clamp(48px, 8vw, 96px);
+}
+.support-box [hidden] { display: none; }
+.support-box .support-box-head {
+  margin: 0 0 6px;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--ink);
+}
+.support-box .support-box-lede {
+  margin: 0 0 16px;
+  max-width: 60ch;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.support-box-form { display: grid; gap: 16px; }
+.support-box-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.support-box-field label { font-size: 0.9rem; font-weight: 600; color: var(--ink); }
+.support-box-field input,
+.support-box-field select,
+.support-box-field textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+}
+.support-box-field textarea { min-height: 8.5rem; line-height: 1.5; resize: vertical; }
+.support-box-field input:focus-visible,
+.support-box-field select:focus-visible,
+.support-box-field textarea:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+  border-color: var(--purple);
+}
+.support-box-field [aria-invalid="true"] { border-color: var(--ink); }
+.support-box .support-box-hint,
+.support-box .support-box-error {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.support-box .support-box-error { color: var(--ink); font-weight: 600; }
+.support-box-form .btn { justify-self: start; min-height: 44px; }
+.support-box-form .btn:disabled { opacity: 0.5; cursor: default; transform: none; }
+.support-box .support-box-status {
+  margin: 10px 0 0;
+  min-height: 1.5em;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.support-box .support-box-status.is-error { color: var(--ink); font-weight: 600; }
+.support-box.is-done .support-box-status { margin-top: 4px; color: var(--ink); }
+.support-box .support-box-status:focus { outline: none; }
+.support-box .support-box-status:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
+.support-box .support-box-fine {
+  margin: 8px 0 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.support-box a { color: var(--purple); text-decoration: underline; }
+@media (max-width: 520px) {
+  .support-box--compact { width: calc(100% - 32px); }
+  .support-box-form .btn { justify-self: stretch; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .support-box-form .btn { transition: none; }
+  .support-box-form .btn:hover { transform: none; }
+}
+@media print { .support-box { display: none; } }
