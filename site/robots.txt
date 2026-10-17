@@ -2,10 +2,9 @@
 
 User-agent: *
 Allow: /
-# /blog/digest/ is deliberately NOT disallowed. Digest pages carry
-# <meta name="robots" content="noindex, follow">, and a crawler can only obey a
-# noindex it is allowed to fetch. Blocking the path here would let Google list
-# the bare URLs from links ("Indexed, though blocked by robots.txt").
+# /blog/digest/ is deliberately NOT disallowed. The archive was removed on
+# 2026-10-17 and its URLs redirect (netlify.toml); crawlers must be able to fetch
+# them to see the redirect.
 
 # AI crawlers — explicitly welcome
 User-agent: GPTBot

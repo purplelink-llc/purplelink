@@ -75,7 +75,7 @@ export default async function handler(request) {
   if (!secret || !email || !token) {
     return page(
       "Invalid link", "Invalid link",
-      "<p>This unsubscribe link is missing required parameters.</p><p><a href='/blog/digest/'>Back to Daily Digest</a></p>",
+      "<p>This unsubscribe link is missing required parameters.</p><p><a href='/blog/'>Back to the blog</a></p>",
       400,
     )
   }
@@ -94,7 +94,7 @@ export default async function handler(request) {
   if (!valid) {
     return page(
       "Invalid link", "Invalid link",
-      "<p>This unsubscribe link is not valid. It may have been altered.</p><p><a href='/blog/digest/'>Back to Daily Digest</a></p>",
+      "<p>This unsubscribe link is not valid. It may have been altered.</p><p><a href='/blog/'>Back to the blog</a></p>",
       400,
     )
   }
@@ -108,7 +108,7 @@ export default async function handler(request) {
         <input type="hidden" name="token" value="${escapeHtml(token)}">
         <button type="submit" class="btn btn-primary">Unsubscribe</button>
       </form>
-      <p><a href="/blog/digest/">Keep my subscription</a></p>`,
+      <p><a href="/blog/">Keep my subscription</a></p>`,
     )
   }
 
@@ -130,6 +130,6 @@ export default async function handler(request) {
 
   return page(
     "Unsubscribed", "Unsubscribed",
-    `<p class="post-lede">You've been removed from the Daily Digest. No more emails will be sent to ${escapeHtml(email)}.</p><p><a href="/blog/digest/">Back to Daily Digest</a></p>`,
+    `<p class="post-lede">You've been removed from the Daily Digest. No more emails will be sent to ${escapeHtml(email)}.</p><p><a href="/blog/">Back to the blog</a></p>`,
   )
 }

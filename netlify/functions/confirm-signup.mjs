@@ -22,7 +22,7 @@ const EMAIL_PATTERN = /^[^\s@<>"`\\]{1,64}@[^\s@<>"`\\]{1,190}\.[^\s@<>"`\\]{2,}
 function expired() {
   return page(
     "Link expired", "This link has expired",
-    `<p class="post-lede">Confirmation links work for 3 days, and this one is past that or not valid. Sign up again and we will send a fresh one.</p><p><a href="/blog/digest/">Daily Digest</a> &middot; <a href="/checklist/">Submission checklist</a></p>`,
+    `<p class="post-lede">Confirmation links work for 3 days, and this one is past that or not valid. Sign up again and we will send a fresh one.</p><p><a href="/blog/">Daily Digest</a> &middot; <a href="/checklist/">Submission checklist</a></p>`,
     400,
   )
 }
@@ -70,12 +70,12 @@ export default async function handler(request) {
   try {
     if (who.kind === "digest") {
       const code = await addDigestSubscriber(who.email, who.ref, secret)
-      const share = `${SITE_ORIGIN}/blog/digest/?ref=${encodeURIComponent(code)}`
+      const share = `${SITE_ORIGIN}/blog/?ref=${encodeURIComponent(code)}`
       return page(
         "Subscribed", "You are subscribed",
         `<p class="post-lede">${escapeHtml(who.email)} will get the next Daily Digest. Every email has an unsubscribe link.</p>
         <p>Know someone who would like it? Your referral link: <a href="${escapeHtml(share)}">${escapeHtml(share)}</a></p>
-        <p><a href="/blog/digest/">Back to Daily Digest</a></p>`,
+        <p><a href="/blog/">Back to the blog</a></p>`,
       )
     }
     const result = await completeChecklistSignup(who.email, who.source)

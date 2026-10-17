@@ -232,7 +232,6 @@
 - GlobePin (iOS, free with ads, Pro $14.99 once, shipping): https://purplelink.llc/globepin/
 - Haea (iOS, in development): https://purplelink.llc/haea/
 - Kits (downloadable automation systems): https://purplelink.llc/kits/
-- Daily Digest archive (no longer published; issues from June 22 to October 17, 2026): https://purplelink.llc/blog/digest/
 - About: https://purplelink.llc/about/
 - Support (how to reach Ben, refunds, lost keys and purchases, update notes, data handling): https://purplelink.llc/support/
 - Blog: https://purplelink.llc/blog/

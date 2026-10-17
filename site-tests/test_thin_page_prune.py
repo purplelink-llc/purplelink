@@ -75,12 +75,15 @@ class DigestPolicy(unittest.TestCase):
             if ln.strip().lower().startswith("disallow:"):
                 self.assertNotIn("/blog/digest", ln)
 
-    def test_every_published_digest_page_is_noindex(self):
-        pages = list((SITE / "blog" / "digest").rglob("*.html"))
-        self.assertGreater(len(pages), 50)
-        bad = [str(p.relative_to(SITE)) for p in pages
-               if not has_noindex(p.read_text(encoding="utf-8", errors="ignore"))]
-        self.assertEqual(bad, [])
+    def test_digest_archive_removed_and_redirected(self):
+        # Removed 2026-10-17 before the AdSense re-review: no pages left, old URLs redirect.
+        self.assertFalse((SITE / "blog" / "digest").exists())
+        toml = (SITE.parent / "netlify.toml").read_text(encoding="utf-8")
+        self.assertIn('from = "/blog/digest/*"', toml)
+        self.assertIn('from = "/blog/digest/feed.xml"', toml)
+        linking = [str(p.relative_to(SITE)) for p in SITE.rglob("*.html")
+                   if 'href="/blog/digest' in p.read_text(encoding="utf-8", errors="ignore")]
+        self.assertEqual(linking, [])
 
     def test_digest_not_in_sitemap(self):
         self.assertFalse([p for p in sitemap_paths() if p.startswith("/blog/digest")])
