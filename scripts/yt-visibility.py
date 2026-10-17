@@ -29,10 +29,11 @@ for vid in ids:
         tab.wait_idle(8)
         ytu.wait_for(tab, "document.querySelectorAll('#textbox').length >= 2", 60)
         time.sleep(1.5)
-        # open the visibility dialog: the dropdown shows the current state (Public/Unlisted/Private)
+        # open the visibility dialog: tap the whole visibility block, scrolled into view. Tapping the small
+        # #visibility-text label without scrolling (it sits below the fold) did not open it (2026-10-17).
         pos = tab.eval("""(()=>{const all=[];(function walk(r){for(const e of r.querySelectorAll('*')){all.push(e);if(e.shadowRoot)walk(e.shadowRoot);}})(document);
-          const e=all.find(x=>x.id==='visibility-text'); if(!e) return null;
-          const b=e.getBoundingClientRect(); return [b.x+b.width/2,b.y+b.height/2]})()""")
+          const e=all.find(x=>x.tagName==='YTCP-VIDEO-METADATA-VISIBILITY'); if(!e) return null;
+          e.scrollIntoView({block:'center'}); const b=e.getBoundingClientRect(); return [b.x+b.width/2,b.y+b.height/2]})()""")
         if not pos:
             print(vid, "visibility control not found"); continue
         tab.tap(pos[0], pos[1], pause=1.5)

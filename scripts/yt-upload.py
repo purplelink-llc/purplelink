@@ -157,6 +157,8 @@ def main():
     ap.add_argument("--title", required=True)
     ap.add_argument("--description", default="")
     ap.add_argument("--public", action="store_true", help="publish public (default unlisted)")
+    ap.add_argument("--channel", default=CHANNEL,
+                    help="channel ID to upload to (default: the Purplelink channel). The automation Chrome's account must manage it.")
     ap.add_argument("--dry-run", action="store_true", help="open the dialog, find the input, stop")
     ap.add_argument("--thumbnail", help="custom thumbnail (1280x720 JPEG under 2 MB, from video/build-thumbs.mjs) set after publishing")
     ap.add_argument("--ab-thumbnails", nargs=3, metavar=("A", "B", "C"),
@@ -180,12 +182,17 @@ def main():
     # Foreground on purpose: Chrome gives a hidden tab no layout, so every
     # rect is 0x0 and Input events land nowhere. Studio's fields need real clicks.
     ensure_chrome()
-    tab = Tab.new(UPLOAD_URL)
+    tab = Tab.new(f"https://studio.youtube.com/channel/{a.channel}/videos/upload?d=ud")
     try:
         urllib.request.urlopen(f"http://127.0.0.1:9340/json/activate/{tab.info['id']}").read()
         tab.wait_idle(8)
         if "permission" in tab.text().lower() and "Oops" in (tab.eval("document.title") or ""):
             print("automation Chrome is not signed in to an account that manages the channel", file=sys.stderr)
+            sys.exit(2)
+        # Studio can silently show a different channel than the URL asked for: refuse to upload anywhere else
+        on = tab.eval("location.pathname")
+        if f"/channel/{a.channel}/" not in (on or ""):
+            print(f"Studio opened {on!r}, not channel {a.channel}; not uploading", file=sys.stderr)
             sys.exit(2)
         tab.send("DOM.enable")
         doc = tab.send("DOM.getDocument", depth=0)["root"]["nodeId"]
