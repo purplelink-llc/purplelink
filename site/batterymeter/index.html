@@ -26,10 +26,12 @@
     <script src="/theme.js?v=07d8025cab"></script>
     <link rel="stylesheet" href="/styles.css?v=14f0b4ea49">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <link rel="stylesheet" href="/product-flair.css?v=0d40001388">
     <link rel="stylesheet" href="/batterymeter/batterymeter.css?v=8d5265bd73">
     <script src="/site.js?v=9a7562fde8" defer></script>
     <script src="/support-box.js?v=07f98ddb93" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
+    <script src="/product-flair.js?v=7ecbf83f91" defer></script>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -167,31 +169,45 @@
       </details>
     </section>
 
-    <section class="screenshots-section bm-gallery" aria-labelledby="look-h">
-      <h2 id="look-h">What it shows</h2>
-      <p class="section-intro">The first screenshot, at the top of this page, is a live reading from a MacBook. The three below are not. The app drew them with sample values, and each says "Sample values, not a live reading" in the image.</p>
-      <div class="bm-gallery-grid">
-        <figure class="bm-shot">
-          <h3>On battery, sample</h3>
-          <div class="frame-soft">
-            <img src="/batterymeter/img/sample-draining-1120.webp" srcset="/batterymeter/img/sample-draining-560.webp 560w, /batterymeter/img/sample-draining-1120.webp 1120w" sizes="(max-width: 900px) 92vw, 46vw" alt="Sample values, not a live reading. The menu bar shows a white battery icon, 64%, a down arrow and minus 11.0 W, and the open menu reads On battery with time to empty and the rate in percent per hour." width="1120" height="732" loading="lazy" decoding="async">
+    <section class="flair-scene flair-scene--swap" id="what-it-shows" data-flair="steps" aria-labelledby="look-h">
+      <div class="flair-track" data-flair-track>
+        <div class="flair-stage">
+          <div class="flair-head">
+            <h2 id="look-h">What it shows</h2>
+            <p>The first screenshot, at the top of this page, is a live reading from a MacBook. The three here are not. The app drew them with sample values, and each says "Sample values, not a live reading" in the image.</p>
           </div>
-          <figcaption>Sample values. The arrow points down while the charge falls.</figcaption>
-        </figure>
-        <figure class="bm-shot">
-          <h3>Low charge, sample</h3>
-          <div class="frame-soft">
-            <img src="/batterymeter/img/sample-low-1120.webp" srcset="/batterymeter/img/sample-low-560.webp 560w, /batterymeter/img/sample-low-1120.webp 1120w" sizes="(max-width: 900px) 92vw, 46vw" alt="Sample values, not a live reading. The menu bar shows an orange battery icon, 16%, a down arrow and minus 7.2 W, and the open menu reads On battery with 1 h 36 min to empty." width="1120" height="732" loading="lazy" decoding="async">
+          <div class="flair-steps-wrap">
+            <ol class="flair-steps flair-steps--tour">
+              <li data-step>
+                <div class="flair-step-text">
+                  <h3>On battery, sample</h3>
+                </div>
+                <figure class="flair-step-shot">
+                  <img src="/batterymeter/img/sample-draining-1120.webp" srcset="/batterymeter/img/sample-draining-560.webp 560w, /batterymeter/img/sample-draining-1120.webp 1120w" sizes="(min-width: 900px) 60vw, 92vw" alt="Sample values, not a live reading. The menu bar shows a white battery icon, 64%, a down arrow and minus 11.0 W, and the open menu reads On battery with time to empty and the rate in percent per hour." width="1120" height="732" loading="lazy" decoding="async">
+                  <figcaption>Sample values. The arrow points down while the charge falls.</figcaption>
+                </figure>
+              </li>
+              <li data-step>
+                <div class="flair-step-text">
+                  <h3>Low charge, sample</h3>
+                </div>
+                <figure class="flair-step-shot">
+                  <img src="/batterymeter/img/sample-low-1120.webp" srcset="/batterymeter/img/sample-low-560.webp 560w, /batterymeter/img/sample-low-1120.webp 1120w" sizes="(min-width: 900px) 60vw, 92vw" alt="Sample values, not a live reading. The menu bar shows an orange battery icon, 16%, a down arrow and minus 7.2 W, and the open menu reads On battery with 1 h 36 min to empty." width="1120" height="732" loading="lazy" decoding="async">
+                  <figcaption>Sample values. The icon turns orange at 20 percent or below on battery, and red at 10 percent or below.</figcaption>
+                </figure>
+              </li>
+              <li data-step>
+                <div class="flair-step-text">
+                  <h3>Full and on power, sample</h3>
+                </div>
+                <figure class="flair-step-shot">
+                  <img src="/batterymeter/img/sample-full-1120.webp" srcset="/batterymeter/img/sample-full-560.webp 560w, /batterymeter/img/sample-full-1120.webp 1120w" sizes="(min-width: 900px) 60vw, 92vw" alt="Sample values, not a live reading. The menu bar shows a green battery icon, 100%, a dot and +0.0 W, and the open menu reads Fully charged, on power with the adapter rating of 30 W." width="1120" height="732" loading="lazy" decoding="async">
+                  <figcaption>Sample values. A dot means the charge is steady.</figcaption>
+                </figure>
+              </li>
+            </ol>
           </div>
-          <figcaption>Sample values. The icon turns orange at 20 percent or below on battery, and red at 10 percent or below.</figcaption>
-        </figure>
-        <figure class="bm-shot">
-          <h3>Full and on power, sample</h3>
-          <div class="frame-soft">
-            <img src="/batterymeter/img/sample-full-1120.webp" srcset="/batterymeter/img/sample-full-560.webp 560w, /batterymeter/img/sample-full-1120.webp 1120w" sizes="(max-width: 900px) 92vw, 46vw" alt="Sample values, not a live reading. The menu bar shows a green battery icon, 100%, a dot and +0.0 W, and the open menu reads Fully charged, on power with the adapter rating of 30 W." width="1120" height="732" loading="lazy" decoding="async">
-          </div>
-          <figcaption>Sample values. A dot means the charge is steady.</figcaption>
-        </figure>
+        </div>
       </div>
     </section>
 
@@ -260,7 +276,7 @@
       <div class="features-header">
         <h2 id="privacy-h">Privacy</h2>
       </div>
-      <div class="features-grid">
+      <div class="features-grid" data-motion="stagger">
         <div class="feature-item">
           <h3>One source, read locally</h3>
           <p>BatteryMeter reads one entry in the macOS I/O registry (the list of hardware and its readings), the AppleSmartBattery entry. The Terminal command <code>ioreg -rn AppleSmartBattery</code> reads the same source. For the power list it runs <code>/usr/bin/top</code> and <code>/bin/ps</code> on your Mac when you open the menu.</p>

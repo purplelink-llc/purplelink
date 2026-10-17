@@ -26,10 +26,12 @@
     <script src="/theme.js?v=07d8025cab"></script>
     <link rel="stylesheet" href="/styles.css?v=14f0b4ea49">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <link rel="stylesheet" href="/product-flair.css?v=0d40001388">
     <link rel="stylesheet" href="/panely/panely.css?v=af48f9573f">
     <script src="/site.js?v=9a7562fde8" defer></script>
     <script src="/support-box.js?v=07f98ddb93" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
+    <script src="/product-flair.js?v=7ecbf83f91" defer></script>
     <script src="/panely/launch.js?v=285a8f5909" defer></script>
     <script src="/tools/paper-review/paid-tool-landing.js?v=41be4deb54" defer></script>
     <script type="application/ld+json">
@@ -251,6 +253,48 @@
       </details>
     </section>
 
+    <section class="flair-scene flair-scene--swap" id="three-ways" data-flair="steps" aria-labelledby="ways-h">
+      <div class="flair-track" data-flair-track>
+        <div class="flair-stage">
+          <div class="flair-head">
+            <h2 id="ways-h">A drag, a shortcut and your own areas</h2>
+            <p>Windows and desktops drawn for this page are marked as illustrations. The Settings windows are Panely's own screens, drawn offscreen with invented sample data.</p>
+          </div>
+          <div class="flair-steps-wrap">
+            <ol class="flair-steps flair-steps--tour">
+              <li data-step>
+                <div class="flair-step-text">
+                  <h3>Drag, with a preview</h3>
+                </div>
+                <figure class="flair-step-shot">
+                  <img src="/panely/img/drag-to-corner.webp" alt="An illustration of a screen with a tall window on the left half, one window on the top right quarter, and a third window being dragged into the bottom right corner with a purple preview of the quarter it will fill" width="1600" height="1000" loading="lazy" decoding="async">
+                  <figcaption>Illustration, not a screenshot.</figcaption>
+                </figure>
+              </li>
+              <li data-step>
+                <div class="flair-step-text">
+                  <h3>Click a shortcut, press the keys</h3>
+                </div>
+                <figure class="flair-step-shot">
+                  <img src="/panely/img/settings-shortcut-recorder.webp" alt="Panely's Settings window, Shortcuts list, with each action beside its shortcut, such as Control-Option-U for the top left quarter, and the Left third button reading Press keys while it waits for new keys" width="1080" height="896" loading="lazy" decoding="async">
+                  <figcaption>The app's own Settings window, drawn offscreen with sample data.</figcaption>
+                </figure>
+              </li>
+              <li data-step>
+                <div class="flair-step-text">
+                  <h3>Areas of your own</h3>
+                </div>
+                <figure class="flair-step-shot">
+                  <img src="/panely/img/settings-custom-areas.webp" alt="Panely's Settings window, Custom areas, with three sample areas named Reading column, Notes strip and Video call, each with a shortcut button and sliders for left, top, width and height shown as percentages" width="1080" height="856" loading="lazy" decoding="async">
+                  <figcaption>The app's own Settings window, drawn offscreen with sample data.</figcaption>
+                </figure>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="screenshots-section pf-gallery" aria-labelledby="look-h">
       <h2 id="look-h">A closer look</h2>
       <p class="section-intro">Windows and desktops drawn for this page are marked as illustrations. The Settings windows are Panely's own screens, drawn offscreen with invented sample data.</p>
@@ -268,27 +312,6 @@
           <figcaption>Illustration: the same windows as thirds, quarters, sixths and a custom area, then back to halves.</figcaption>
         </figure>
         <figure class="pf-shot">
-          <h3>Drag, with a preview</h3>
-          <div class="frame-soft">
-            <img src="/panely/img/drag-to-corner.webp" alt="An illustration of a screen with a tall window on the left half, one window on the top right quarter, and a third window being dragged into the bottom right corner with a purple preview of the quarter it will fill" width="1600" height="1000" loading="lazy" decoding="async">
-          </div>
-          <figcaption>Illustration, not a screenshot.</figcaption>
-        </figure>
-        <figure class="pf-shot">
-          <h3>Click a shortcut, press the keys</h3>
-          <div class="frame-soft">
-            <img src="/panely/img/settings-shortcut-recorder.webp" alt="Panely's Settings window, Shortcuts list, with each action beside its shortcut, such as Control-Option-U for the top left quarter, and the Left third button reading Press keys while it waits for new keys" width="1080" height="896" loading="lazy" decoding="async">
-          </div>
-          <figcaption>The app's own Settings window, drawn offscreen with sample data.</figcaption>
-        </figure>
-        <figure class="pf-shot">
-          <h3>Areas of your own</h3>
-          <div class="frame-soft">
-            <img src="/panely/img/settings-custom-areas.webp" alt="Panely's Settings window, Custom areas, with three sample areas named Reading column, Notes strip and Video call, each with a shortcut button and sliders for left, top, width and height shown as percentages" width="1080" height="856" loading="lazy" decoding="async">
-          </div>
-          <figcaption>The app's own Settings window, drawn offscreen with sample data.</figcaption>
-        </figure>
-        <figure class="pf-shot">
           <h3>Apps it never moves</h3>
           <div class="frame-soft">
             <img src="/panely/img/menu-ignored-app.webp" alt="An illustration of the Panely menu-bar drop-down with its submenus for Halves, Quarters, Thirds, Fourths, Sixths and Size and display, then Layouts, Custom areas, and a checked item reading Never move windows of Callroom" width="1600" height="1000" loading="lazy" decoding="async">
@@ -302,7 +325,7 @@
       <div class="features-header">
         <h2 id="how-h">How it works</h2>
       </div>
-      <div class="features-grid">
+      <div class="features-grid" data-motion="stagger">
         <div class="feature-item">
           <h3>You ask for a place</h3>
           <p>Press a shortcut, choose an action from the menu bar, or drag a window to a screen edge or corner. While you drag, a preview shows where the window will land.</p>

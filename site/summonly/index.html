@@ -26,10 +26,12 @@
     <script src="/theme.js?v=07d8025cab"></script>
     <link rel="stylesheet" href="/styles.css?v=14f0b4ea49">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <link rel="stylesheet" href="/product-flair.css?v=0d40001388">
     <link rel="stylesheet" href="/summonly/summonly.css?v=899f62d3ec">
     <script src="/site.js?v=9a7562fde8" defer></script>
     <script src="/support-box.js?v=07f98ddb93" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
+    <script src="/product-flair.js?v=7ecbf83f91" defer></script>
     <script src="/summonly/launch.js?v=af41e66ee3" defer></script>
     <script src="/tools/paper-review/paid-tool-landing.js?v=41be4deb54" defer></script>
     <script type="application/ld+json">
@@ -246,7 +248,7 @@
       <div class="features-header">
         <h2 id="how-h">How it works</h2>
       </div>
-      <div class="features-grid">
+      <div class="features-grid" data-motion="stagger">
         <div class="feature-item">
           <h3>It indexes in the background</h3>
           <p>Summonly reads file names, and the start of text files, PDFs and Office documents, in the folders you choose, and keeps a small searchable index on your Mac. If you turn on question search it also reads whole documents. macOS tells it when files change, so the index stays current.</p>
@@ -262,34 +264,55 @@
       </div>
     </section>
 
+    <section class="flair-scene flair-scene--swap" id="search-box" data-flair="steps" aria-labelledby="box-h">
+      <div class="flair-track" data-flair-track>
+        <div class="flair-stage">
+          <div class="flair-head">
+            <h2 id="box-h">Files, questions and the clipboard</h2>
+            <p>Each picture is the app's own interface, drawn on invented sample files in a throwaway home folder. None of it is from a real Mac.</p>
+          </div>
+          <div class="flair-steps-wrap">
+            <ol class="flair-steps flair-steps--tour">
+              <li data-step>
+                <div class="flair-step-text">
+                  <h3>Ask a question</h3>
+                  <p>Optional, and off until you turn it on. Summonly shows the file and the passage, with the page number for a PDF. It finds the words you use, so a question worded very differently from the document is found less often.</p>
+                </div>
+                <figure class="flair-step-shot">
+                  <img src="/summonly/img/panel-question.webp" alt="The Summonly search box with the question which file mentions the refund policy typed in. The first answer is Customer terms.pdf, marked page 3, with the start of its refund policy passage. The second is a notes file with a matching passage." width="1600" height="900" loading="lazy" decoding="async">
+                  <figcaption>Sample data.</figcaption>
+                </figure>
+              </li>
+              <li data-step>
+                <div class="flair-step-text">
+                  <h3>Leave words out</h3>
+                  <p>A minus sign before a word leaves out files that contain it. Here invoice -draft lists two invoices and not the draft.</p>
+                </div>
+                <figure class="flair-step-shot">
+                  <img src="/summonly/img/panel-operators.webp" alt="The Summonly search box with invoice -draft typed in. Two invoice PDFs are listed, Invoice 1043 and Invoice 1042. The file named Invoice 1043 draft is not listed." width="1600" height="900" loading="lazy" decoding="async">
+                  <figcaption>Sample data.</figcaption>
+                </figure>
+              </li>
+              <li data-step>
+                <div class="flair-step-text">
+                  <h3>Clipboard history</h3>
+                  <p>Press Option-Shift-V, or type clip. A pinned item comes first, then recent ones with how long ago you copied them. History is off until you turn it on.</p>
+                </div>
+                <figure class="flair-step-shot">
+                  <img src="/summonly/img/panel-clipboard.webp" alt="Clipboard history opened by typing clip: one pinned item, then five recent items such as a link, a short note and an invoice total, each with how long ago it was copied." width="1600" height="900" loading="lazy" decoding="async">
+                  <figcaption>Sample data.</figcaption>
+                </figure>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="screenshots-section sm-gallery" aria-labelledby="look-h">
       <h2 id="look-h">A closer look</h2>
       <p class="section-intro">Each picture is the app's own interface, drawn on invented sample files in a throwaway home folder. None of it is from a real Mac.</p>
       <div class="sm-shots">
-        <figure class="sm-shot">
-          <h3>Ask a question</h3>
-          <p>Optional, and off until you turn it on. Summonly shows the file and the passage, with the page number for a PDF. It finds the words you use, so a question worded very differently from the document is found less often.</p>
-          <div class="frame-soft">
-            <img src="/summonly/img/panel-question.webp" alt="The Summonly search box with the question which file mentions the refund policy typed in. The first answer is Customer terms.pdf, marked page 3, with the start of its refund policy passage. The second is a notes file with a matching passage." width="1600" height="900" loading="lazy" decoding="async">
-          </div>
-          <figcaption>Sample data.</figcaption>
-        </figure>
-        <figure class="sm-shot">
-          <h3>Leave words out</h3>
-          <p>A minus sign before a word leaves out files that contain it. Here invoice -draft lists two invoices and not the draft.</p>
-          <div class="frame-soft">
-            <img src="/summonly/img/panel-operators.webp" alt="The Summonly search box with invoice -draft typed in. Two invoice PDFs are listed, Invoice 1043 and Invoice 1042. The file named Invoice 1043 draft is not listed." width="1600" height="900" loading="lazy" decoding="async">
-          </div>
-          <figcaption>Sample data.</figcaption>
-        </figure>
-        <figure class="sm-shot">
-          <h3>Clipboard history</h3>
-          <p>Press Option-Shift-V, or type clip. A pinned item comes first, then recent ones with how long ago you copied them. History is off until you turn it on.</p>
-          <div class="frame-soft">
-            <img src="/summonly/img/panel-clipboard.webp" alt="Clipboard history opened by typing clip: one pinned item, then five recent items such as a link, a short note and an invoice total, each with how long ago it was copied." width="1600" height="900" loading="lazy" decoding="async">
-          </div>
-          <figcaption>Sample data.</figcaption>
-        </figure>
         <figure class="sm-shot sm-shot-small">
           <h3>Why isn't it found?</h3>
           <p>In Settings, choose a file and Summonly says which rule applies. This file is outside the folders it searches.</p>

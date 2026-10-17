@@ -26,10 +26,12 @@
     <script src="/theme.js?v=07d8025cab"></script>
     <link rel="stylesheet" href="/styles.css?v=14f0b4ea49">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <link rel="stylesheet" href="/product-flair.css?v=0d40001388">
     <link rel="stylesheet" href="/buy.css?v=589347358c">
     <script src="/site.js?v=9a7562fde8" defer></script>
     <script src="/support-box.js?v=07f98ddb93" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
+    <script src="/product-flair.js?v=7ecbf83f91" defer></script>
     <script src="/outbound-veil/trial.js?v=64038c76e9" defer></script>
     <script src="/tools/paper-review/paid-tool-landing.js?v=41be4deb54" defer></script>
     <script type="application/ld+json">
@@ -201,7 +203,7 @@
       <div class="features-header">
         <h2 id="how-h">How it works</h2>
       </div>
-      <div class="features-grid">
+      <div class="features-grid" data-motion="stagger">
         <div class="feature-item">
           <h3>It watches the field you are typing in</h3>
           <p>Outbound Veil reads the text field that has focus, on your Mac, through macOS Accessibility. It does not look at other windows.</p>
@@ -227,33 +229,44 @@
       </div>
     </section>
 
-    <section class="screenshots-section">
-      <h2>A closer look</h2>
-      <div class="screenshot-block">
-        <div class="screenshot-callout" data-motion="reveal">
-          <h3>Marked where it is</h3>
-          <p>Each finding is highlighted on the text itself, in a colour, opacity and style you choose, and the highlight follows the text as you edit. The badge shows how many findings the field has. Turn highlighting off from the menu or with Control-Option-H.</p>
-        </div>
-        <div class="screenshot-wide frame-soft">
-          <img src="/assets/outbound-veil-screens/marked.webp" srcset="/assets/outbound-veil-screens/marked-800.webp 800w, /assets/outbound-veil-screens/marked-1440.webp 1440w, /assets/outbound-veil-screens/marked.webp 2200w" sizes="(max-width: 1500px) 92vw, 1470px" alt="A text field holding a fictional client note, with the name, date of birth, Social Security number, phone number, email address and card number highlighted, and an orange badge showing 7 findings" width="2200" height="1124" decoding="async" loading="lazy">
-        </div>
-      </div>
-      <div class="screenshot-block">
-        <div class="screenshot-callout" data-motion="reveal">
-          <h3>Every finding, in a list</h3>
-          <p>Click the badge to see what was found and what kind of detail it is. Ignore a finding, redact all of them, or switch checking off for that app.</p>
-        </div>
-        <div class="screenshot-wide frame-soft">
-          <img src="/assets/outbound-veil-screens/findings.webp" srcset="/assets/outbound-veil-screens/findings-800.webp 800w, /assets/outbound-veil-screens/findings-1440.webp 1440w, /assets/outbound-veil-screens/findings.webp 2200w" sizes="(max-width: 1500px) 92vw, 1470px" alt="The Outbound Veil findings list open over the text field, listing a first name, last name, date of birth, Social Security number, phone number, email address and card number, each with an Ignore button, and Redact all and Not in this app buttons" width="2200" height="1124" decoding="async" loading="lazy">
-        </div>
-      </div>
-      <div class="screenshot-block">
-        <div class="screenshot-callout" data-motion="reveal">
-          <h3>Redacted, still readable</h3>
-          <p>Redact all rewrites the field in place. Each detail becomes a labelled placeholder, such as [SSN_1] or [EMAIL_1], so the text still reads sensibly when you send it.</p>
-        </div>
-        <div class="screenshot-wide frame-soft">
-          <img src="/assets/outbound-veil-screens/redacted.webp" srcset="/assets/outbound-veil-screens/redacted-800.webp 800w, /assets/outbound-veil-screens/redacted-1440.webp 1440w, /assets/outbound-veil-screens/redacted.webp 2200w" sizes="(max-width: 1500px) 92vw, 1470px" alt="The same text field after Redact all, with the details replaced by placeholders such as GIVEN_NAME_1, SSN_1, PHONE_1, EMAIL_1 and CREDIT_CARD_1, and a green badge showing nothing left to flag" width="2200" height="1124" decoding="async" loading="lazy">
+    <section class="flair-scene flair-scene--swap" id="closer-look" data-flair="steps" aria-labelledby="look-h">
+      <div class="flair-track" data-flair-track>
+        <div class="flair-stage">
+          <div class="flair-head">
+            <h2 id="look-h">Marked, listed, redacted</h2>
+            <p>The same fictional client note at each step. Every name and number is invented.</p>
+          </div>
+          <div class="flair-steps-wrap">
+            <ol class="flair-steps">
+              <li data-step>
+                <div class="flair-step-text">
+                  <h3>Marked where it is</h3>
+                  <p>Each finding is highlighted on the text itself, in a colour, opacity and style you choose, and the highlight follows the text as you edit. The badge shows how many findings the field has. Turn highlighting off from the menu or with Control-Option-H.</p>
+                </div>
+                <figure class="flair-step-shot">
+                  <img src="/assets/outbound-veil-screens/marked.webp" srcset="/assets/outbound-veil-screens/marked-800.webp 800w, /assets/outbound-veil-screens/marked-1440.webp 1440w, /assets/outbound-veil-screens/marked.webp 2200w" sizes="(min-width: 900px) 62vw, 92vw" alt="A text field holding a fictional client note, with the name, date of birth, Social Security number, phone number, email address and card number highlighted, and an orange badge showing 7 findings" width="2200" height="1124" decoding="async" loading="lazy">
+                </figure>
+              </li>
+              <li data-step>
+                <div class="flair-step-text">
+                  <h3>Every finding, in a list</h3>
+                  <p>Click the badge to see what was found and what kind of detail it is. Ignore a finding, redact all of them, or switch checking off for that app.</p>
+                </div>
+                <figure class="flair-step-shot">
+                  <img src="/assets/outbound-veil-screens/findings.webp" srcset="/assets/outbound-veil-screens/findings-800.webp 800w, /assets/outbound-veil-screens/findings-1440.webp 1440w, /assets/outbound-veil-screens/findings.webp 2200w" sizes="(min-width: 900px) 62vw, 92vw" alt="The Outbound Veil findings list open over the text field, listing a first name, last name, date of birth, Social Security number, phone number, email address and card number, each with an Ignore button, and Redact all and Not in this app buttons" width="2200" height="1124" decoding="async" loading="lazy">
+                </figure>
+              </li>
+              <li data-step>
+                <div class="flair-step-text">
+                  <h3>Redacted, still readable</h3>
+                  <p>Redact all rewrites the field in place. Each detail becomes a labelled placeholder, such as [SSN_1] or [EMAIL_1], so the text still reads sensibly when you send it.</p>
+                </div>
+                <figure class="flair-step-shot">
+                  <img src="/assets/outbound-veil-screens/redacted.webp" srcset="/assets/outbound-veil-screens/redacted-800.webp 800w, /assets/outbound-veil-screens/redacted-1440.webp 1440w, /assets/outbound-veil-screens/redacted.webp 2200w" sizes="(min-width: 900px) 62vw, 92vw" alt="The same text field after Redact all, with the details replaced by placeholders such as GIVEN_NAME_1, SSN_1, PHONE_1, EMAIL_1 and CREDIT_CARD_1, and a green badge showing nothing left to flag" width="2200" height="1124" decoding="async" loading="lazy">
+                </figure>
+              </li>
+            </ol>
+          </div>
         </div>
       </div>
     </section>
