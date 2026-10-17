@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>BibTeX Validator Online: Required Fields and DOIs</title>
-    <meta name="description" content="Free online BibTeX validator. Checks required fields per entry type. Optional: DOIs resolve, and titles, authors and years match CrossRef.">
+    <meta name="description" content="Free online BibTeX validator. Checks required fields and duplicate keys. Optional: DOIs resolve, and titles and authors match CrossRef.">
     <link rel="canonical" href="https://purplelink.llc/tools/bib-validator/">
     <meta property="og:title" content="BibTeX Validator Online: Required Fields and DOIs">
-    <meta property="og:description" content="Free online BibTeX validator. Checks required fields per entry type. Optional: DOIs resolve, and titles, authors and years match CrossRef.">
+    <meta property="og:description" content="Free online BibTeX validator. Checks required fields and duplicate keys. Optional: DOIs resolve, and titles and authors match CrossRef.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/tools/bib-validator/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/bib-validator.png">
@@ -16,7 +16,7 @@
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="BibTeX Validator Online: Required Fields and DOIs">
-    <meta name="twitter:description" content="Free online BibTeX validator. Checks required fields per entry type. Optional: DOIs resolve, and titles, authors and years match CrossRef.">
+    <meta name="twitter:description" content="Free online BibTeX validator. Checks required fields and duplicate keys. Optional: DOIs resolve, and titles and authors match CrossRef.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/bib-validator.png">
     <meta name="twitter:image:alt" content="BibTeX Validator Online: Required Fields and DOIs">
     <script type="application/ld+json">
@@ -31,10 +31,11 @@
           "operatingSystem": "Any (web-based)",
           "browserRequirements": "Requires JavaScript",
           "image": "https://purplelink.llc/assets/og/bib-validator.png",
-          "description": "A free online BibTeX validator. Upload or paste a .bib file to check required fields for each entry type, and optionally verify DOIs resolve, and cross-reference titles, authors, and publication years against CrossRef and Semantic Scholar to catch AI-hallucinated citations. Download a corrected .bib for high-confidence matches.",
+          "description": "A free online BibTeX validator. Upload or paste a .bib file to check required fields for each entry type and duplicate citation keys, and optionally verify DOIs resolve, and cross-reference titles, authors, and publication years against CrossRef and Semantic Scholar to catch AI-hallucinated citations. Download a corrected .bib for high-confidence matches.",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
           "featureList": [
             "Syntax and required-field validation per BibTeX entry type",
+            "Duplicate citation key detection, including keys that differ only in letter case",
             "DOI resolution check (verifies the link is alive)",
             "CrossRef title verification (catches hallucinated papers)",
             "Semantic Scholar title verification",
@@ -54,7 +55,7 @@
             {
               "@type": "Question",
               "name": "What does this tool check?",
-              "acceptedAnswer": { "@type": "Answer", "text": "It checks four things: (1) BibTeX syntax and required fields per entry type, (2) whether DOIs in your file actually resolve, (3) whether titles match real papers in CrossRef, (4) whether titles match real papers in Semantic Scholar. The last three are opt-in because they send data to external APIs." }
+              "acceptedAnswer": { "@type": "Answer", "text": "It checks five things: (1) BibTeX syntax and required fields per entry type, (2) duplicate citation keys, (3) whether DOIs in your file actually resolve, (4) whether titles match real papers in CrossRef, (5) whether titles match real papers in Semantic Scholar. The first two run on every file and send nothing anywhere. The last three are opt-in because they send data to external APIs." }
             },
             {
               "@type": "Question",
@@ -69,7 +70,7 @@
             {
               "@type": "Question",
               "name": "What does the annotated .bib download contain?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Your original .bib file with a comment line prepended to each entry showing its validation status: missing fields, DOI result, title and author confidence scores, and any year mismatch. You can paste it straight back into your editor." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Your original .bib file with a comment line prepended to each entry showing its validation status: missing fields, duplicate keys, DOI result, title and author confidence scores, and any year mismatch. You can paste it straight back into your editor." }
             },
             {
               "@type": "Question",
@@ -120,7 +121,7 @@
       <div class="tools-hero">
         <p class="eyebrow">Free web tool</p>
         <h1>BibTeX Validator</h1>
-        <p>Upload or paste a <code>.bib</code> file to check syntax, missing fields, and dead DOIs. The tool also verifies that your citations exist and that the authors and years are correct. Download a corrected <code>.bib</code> where CrossRef returns a confident match. The checks catch AI-hallucinated references (citations a language model made up). <strong>Files are never stored.</strong></p>
+        <p>Upload or paste a <code>.bib</code> file to check syntax, missing fields, duplicate citation keys, and dead DOIs. The tool also verifies that your citations exist and that the authors and years are correct. Download a corrected <code>.bib</code> where CrossRef returns a confident match. The checks catch AI-hallucinated references (citations a language model made up). <strong>Files are never stored.</strong></p>
       </div>
 
       <div class="tool-app">
@@ -154,7 +155,7 @@
           <div class="bib-checks">
             <label>
               <input type="checkbox" checked disabled>
-              <span>Syntax &amp; required fields <em class="u-faint">(always on)</em></span>
+              <span>Syntax, required fields &amp; duplicate keys <em class="u-faint">(always on)</em></span>
             </label>
             <label>
               <input type="checkbox" id="check-doi">
@@ -186,7 +187,7 @@
         <h2>How to validate a BibTeX file online</h2>
         <ol>
           <li>Upload your <code>.bib</code> file (drag-and-drop or click), or switch to <strong>Paste text</strong> and drop the BibTeX directly. Up to 2 MB.</li>
-          <li>Syntax and required-field checks run automatically. Enable DOI resolution and/or CrossRef / Semantic Scholar checks to verify your citations actually exist (and that authors and years match).</li>
+          <li>Syntax, required-field and duplicate-key checks run automatically. Enable DOI resolution and/or CrossRef / Semantic Scholar checks to verify your citations actually exist (and that authors and years match).</li>
           <li>Click <strong>Validate .bib</strong>. A color-coded table shows each entry. Click any row to see the original BibTeX, plus the corrected version when CrossRef returned a confident match. Use the filter chips to focus on warnings or errors.</li>
           <li>Download the <strong>annotated</strong> <code>.bib</code> (your file with status comments) or the <strong>corrected</strong> <code>.bib</code> (entries rewritten from CrossRef metadata where confidence is high).</li>
         </ol>
@@ -195,7 +196,7 @@
 
       <section class="tool-howto bib-demo" id="see-it-catch-faults">
         <h2>See it catch real faults</h2>
-        <p>This is a small <code>.bib</code> file with common faults added on purpose. The output below is what the validator's own code returned for it, with only the always-on syntax and required-field check enabled.</p>
+        <p>This is a small <code>.bib</code> file with common faults added on purpose. The output below is what the validator's own code returned for it, with only the always-on checks (syntax, required fields and duplicate keys) enabled.</p>
         <h3>Input</h3>
         <pre class="bib-demo-code"><code>@article{ampel2023trust,
   author  = {Ampel, Benjamin and Doe, Jane},
@@ -236,26 +237,24 @@
   year    = {2019},
 }</code></pre>
         <h3>Output</h3>
-        <p>Summary: 2 OK, 0 warnings, 3 errors, 5 entries total. The annotated <code>.bib</code> puts one comment line above each entry:</p>
+        <p>Summary: 1 OK, 0 warnings, 4 errors, 5 entries total. The annotated <code>.bib</code> puts one comment line above each entry:</p>
         <pre class="bib-demo-code"><code>% [bib-validator] OK | fields OK
 % [bib-validator] ERROR | MISSING: journal
 % [bib-validator] ERROR | MISSING: year
 % [bib-validator] ERROR | MISSING: publisher
-% [bib-validator] OK | fields OK</code></pre>
+% [bib-validator] ERROR | fields OK | DUPLICATE KEY: ampel2023trust is already used at line 1</code></pre>
+        <p>The last entry is the one that reuses <code>ampel2023trust</code>. Only the second use is flagged, and the message names the line of the first. Keys are compared without regard to letter case, so <code>Ampel2023Trust</code> would be flagged too. BibTeX and biber treat them as the same key.</p>
         <h3>What it did not report</h3>
-        <ul>
-          <li>The file has six entries and the table lists five. The last entry, with the unclosed brace in its title, is skipped by the parser and gets no message.</li>
-          <li>The second <code>ampel2023trust</code> entry reuses the first entry's key. The validator does not check for duplicate keys, so it is marked OK.</li>
-        </ul>
-        <p>Check those two by hand, or with your LaTeX build log. The guide on how to <a href="/guides/fix-bibtex-errors/">fix common BibTeX errors</a> covers both. If your entries are missing fields because they were typed by hand, <a href="/guides/build-bibtex-from-dois/">build BibTeX from DOIs</a> instead.</p>
+        <p>The file has six entries and the table lists five. The last entry, with the unclosed brace in its title, is skipped by the parser and gets no message. Check that one by hand, or with your LaTeX build log. The guide on how to <a href="/guides/fix-bibtex-errors/">fix common BibTeX errors</a> covers it. If your entries are missing fields because they were typed by hand, <a href="/guides/build-bibtex-from-dois/">build BibTeX from DOIs</a> instead.</p>
       </section>
 
       <section class="tool-faq">
         <h2>About this tool</h2>
-        <p>This tool validates BibTeX files in layers: syntax and completeness (always), DOI resolution (opt-in), and existence checks against CrossRef and Semantic Scholar (opt-in). When you enable the database checks, it also compares authors and publication years and can produce a corrected <code>.bib</code> for high-confidence matches. This catches AI-hallucinated citations, which have plausible-looking metadata but do not correspond to real papers.</p>
+        <p>This tool validates BibTeX files in layers: syntax, completeness and duplicate keys (always, with no external calls), DOI resolution (opt-in), and existence checks against CrossRef and Semantic Scholar (opt-in). When you enable the database checks, it also compares authors and publication years and can produce a corrected <code>.bib</code> for high-confidence matches. This catches AI-hallucinated citations, which have plausible-looking metadata but do not correspond to real papers.</p>
         <details><summary>Can it detect AI-hallucinated citations?</summary><div class="faq-body">Yes. Enable the CrossRef and/or Semantic Scholar checks. For each entry with a title, the tool queries the database. It reports how closely the title and author list match a real paper and whether the year is off. Low-confidence title matches (below 50%) and author mismatches on otherwise-confident matches are flagged as likely hallucinations. For the full workflow and how the detection methods compare, see the guide on <a href="/guides/catch-ai-hallucinated-citations/">catching AI-hallucinated citations</a>.</div></details>
         <details><summary>Are my files stored?</summary><div class="faq-body">No. Your .bib file is validated in an ephemeral container and discarded immediately. When you enable DOI or database checks, titles and authors are sent to those external services. This is disclosed before you run the check.</div></details>
-        <details><summary>What does the annotated .bib contain?</summary><div class="faq-body">Your original .bib file with a comment line above each entry. The comment shows the validation status: missing required fields, DOI result, title and author confidence scores, and any year mismatch. Paste it straight back into your editor.</div></details>
+        <details><summary>How does the duplicate-key check work?</summary><div class="faq-body">It compares the citation keys of all entries in the file, ignoring letter case, because BibTeX does. Every entry after the first that reuses a key is marked as an error, and the message gives the line of the first use. <code>@string</code>, <code>@preamble</code> and <code>@comment</code> blocks are not entries and are ignored. Separately, an entry with a different key but the same DOI, or the same title, as an earlier entry gets a "possible duplicate" note. That note does not change the entry's status, because the same paper can legitimately appear twice.</div></details>
+        <details><summary>What does the annotated .bib contain?</summary><div class="faq-body">Your original .bib file with a comment line above each entry. The comment shows the validation status: missing required fields, duplicate keys, DOI result, title and author confidence scores, and any year mismatch. Paste it straight back into your editor.</div></details>
         <details><summary>What is the corrected .bib?</summary><div class="faq-body">The corrected .bib covers each entry where CrossRef returned a high-confidence match (title similarity at least 85%). It replaces the entry's fields with CrossRef metadata: title, author list, year, DOI, journal or booktitle, volume, issue, pages, and publisher. Entries without a confident match are passed through unchanged. Each rewritten entry is marked with a "CORRECTED from CrossRef" comment so you can audit the changes.</div></details>
         <details><summary>How does the author check work?</summary><div class="faq-body">Names are normalized to canonical last-name tokens (folding "John Smith", "Smith, John", "J. Smith", and "Müller" → "muller" all to the same key) and compared as a set against the authoritative author list. The score is the Jaccard overlap, so partial matches still get partial credit.</div></details>
         <details><summary>What BibTeX entry types are supported?</summary><div class="faq-body">article, book, inproceedings, proceedings, phdthesis, mastersthesis, techreport, misc, incollection, inbook, booklet, manual, conference, unpublished, and thesis.</div></details>
@@ -292,6 +291,7 @@
         var chosen = null;                  // File from upload mode
         var annotatedBib = null;
         var correctedBib = null;
+        var lastEntries = [];               // entries of the last run, for repeated-key lookups
         var lastSourceBib = "";             // full .bib text we just sent (for per-entry extraction)
         var statusEl  = document.getElementById("status");
         var resultEl  = document.getElementById("result");
@@ -407,11 +407,16 @@
         // ---------------------- Results rendering -------------------------
         function renderResults(data) {
           var s = data.summary;
+          lastEntries = data.entries;
           var html = '<div class="bib-summary">';
           html += badge("ok",   s.ok      + " OK");
           html += badge("warn", s.warning + " warning" + (s.warning !== 1 ? "s" : ""));
           html += badge("err",  s.error   + " error"   + (s.error   !== 1 ? "s" : ""));
-          html += ' <span class="bib-total">' + s.total + " entries total</span></div>";
+          html += ' <span class="bib-total">' + s.total + " entries total</span>";
+          if (s.duplicate_keys) {
+            html += ' <span class="bib-total">' + s.duplicate_keys + " repeated key" + (s.duplicate_keys !== 1 ? "s" : "") + "</span>";
+          }
+          html += "</div>";
 
           html += '<div class="bib-filter-row" role="group" aria-label="Filter results">';
           html += '<button type="button" class="bib-filter-chip" data-filter="all"  aria-pressed="true">All</button>';
@@ -425,9 +430,11 @@
           var s2Col  = data.entries.some(function (e) { return e.s2_confidence !== null; });
           var auCol  = data.entries.some(function (e) { return e.author_match !== null && e.author_match !== undefined; });
           var yrCol  = data.entries.some(function (e) { return e.year_mismatch === true; });
+          var dupCol = data.entries.some(function (e) { return !!(e.duplicate_of || e.possible_duplicate_of); });
 
           html += '<div class="bib-table-wrap"><table class="bib-table">';
           html += '<thead><tr><th class="u-w-12" scope="col"></th><th scope="col">Entry key</th><th scope="col">Type</th><th scope="col">Fields</th>';
+          if (dupCol) html += '<th scope="col">Duplicates</th>';
           if (doiCol) html += '<th scope="col">DOI</th>';
           if (crCol)  html += '<th scope="col">CrossRef</th>';
           if (s2Col)  html += '<th scope="col">Semantic Scholar</th>';
@@ -437,12 +444,13 @@
 
           data.entries.forEach(function (e, idx) {
             var rowClass = "row-data row-" + (e.overall === "ok" ? "ok" : e.overall === "warning" ? "warn" : "err");
-            var colspan = 5 + (doiCol?1:0) + (crCol?1:0) + (s2Col?1:0) + (auCol?1:0) + (yrCol?1:0);
+            var colspan = 5 + (dupCol?1:0) + (doiCol?1:0) + (crCol?1:0) + (s2Col?1:0) + (auCol?1:0) + (yrCol?1:0);
             html += '<tr class="' + rowClass + '" data-status="' + e.overall + '" data-idx="' + idx + '">';
             html += '<td><span class="bib-row-expander" aria-hidden="true">▶</span></td>';
             html += "<td><span class='bib-key'>" + escapeHtml(e.key) + "</span></td>";
             html += "<td>" + escapeHtml(e.type) + "</td>";
             html += "<td>" + fieldsCell(e) + "</td>";
+            if (dupCol) html += "<td>" + dupCell(e) + "</td>";
             if (doiCol) html += "<td>" + doiCell(e) + "</td>";
             if (crCol)  html += "<td>" + confCell(e.crossref_confidence, e.crossref_title, e.crossref_doi) + "</td>";
             if (s2Col)  html += "<td>" + confCell(e.s2_confidence,       e.s2_title,       null)           + "</td>";
@@ -550,9 +558,10 @@
 
         // ---------------- Detail panel: original vs corrected -------------
         function detailPanel(e) {
-          var orig = extractEntryFromText(lastSourceBib, e.key);
+          var nth = nthWithKey(e);
+          var orig = extractEntryFromText(lastSourceBib, e.key, nth);
           var corr = (correctedBib && e.crossref_confidence !== null && e.crossref_confidence >= 0.85)
-            ? extractEntryFromText(correctedBib, e.key)
+            ? extractEntryFromText(correctedBib, e.key, nth)
             : "";
           var hasCorr = !!corr && corr !== orig;
           var html = '<div class="bib-detail-grid' + (hasCorr ? "" : " single") + '">';
@@ -565,12 +574,16 @@
         }
 
         // Pull a single @entry{key,...} block out of bib text. Brace-counting.
-        function extractEntryFromText(text, key) {
+        // When a key repeats, `nth` picks the nth entry with that key (1-based).
+        function extractEntryFromText(text, key, nth) {
           if (!text) return "";
           // Match @<type>{<key>, ...   then walk braces.
-          var re = new RegExp("@\\w+\\s*\\{\\s*" + escapeRe(key) + "\\b", "i");
-          var m = re.exec(text);
-          if (!m) return "";
+          var re = new RegExp("@\\w+\\s*\\{\\s*" + escapeRe(key) + "\\b", "ig");
+          var m = null;
+          for (var n = 0; n < (nth || 1); n++) {
+            m = re.exec(text);
+            if (!m) return "";
+          }
           var start = m.index;
           var depth = 0, seenOpen = false;
           for (var i = start; i < text.length; i++) {
@@ -579,6 +592,16 @@
             else if (c === "}") { depth--; if (seenOpen && depth === 0) return text.slice(start, i + 1); }
           }
           return text.slice(start);
+        }
+
+        // Which occurrence of its key (ignoring case) is this entry in the results list?
+        function nthWithKey(e) {
+          var k = String(e.key).toLowerCase(), n = 0;
+          for (var i = 0; i < lastEntries.length; i++) {
+            if (String(lastEntries[i].key).toLowerCase() === k) n++;
+            if (lastEntries[i] === e) return n;
+          }
+          return 1;
         }
 
         function escapeRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
@@ -592,6 +615,21 @@
           if (e.parse_error) return '<span class="bib-err">parse error</span>';
           if (!e.missing_fields.length) return '<span class="bib-ok">✓</span>';
           return '<span class="bib-err">✗ missing: ' + escapeHtml(e.missing_fields.join(", ")) + "</span>";
+        }
+
+        function dupCell(e) {
+          function where(line, pos) { return line ? "line " + line : "entry " + pos; }
+          if (e.duplicate_of) {
+            var t = e.duplicate_case_only
+              ? "same key as " + e.duplicate_of + " (" + where(e.duplicate_of_line, e.duplicate_of_position) + ") apart from letter case"
+              : "key already used at " + where(e.duplicate_of_line, e.duplicate_of_position);
+            return '<span class="bib-err">✗ ' + escapeHtml(t) + "</span>";
+          }
+          if (e.possible_duplicate_of) {
+            var what = e.possible_duplicate_reason === "doi" ? "DOI" : "title";
+            return '<span class="bib-warn">possible duplicate: same ' + what + " as " + escapeHtml(e.possible_duplicate_of) + " (" + where(e.possible_duplicate_line, e.possible_duplicate_position) + ")</span>";
+          }
+          return '<span class="bib-ok">✓</span>';
         }
 
         function doiCell(e) {

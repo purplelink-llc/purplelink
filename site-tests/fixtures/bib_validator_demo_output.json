@@ -1,15 +1,18 @@
 {
   "summary": {
-    "ok": 2,
+    "ok": 1,
     "warning": 0,
-    "error": 3,
-    "total": 5
+    "error": 4,
+    "total": 5,
+    "duplicate_keys": 1,
+    "possible_duplicates": 0
   },
   "entries": [
     {
       "key": "ampel2023trust",
       "type": "article",
       "missing_fields": [],
+      "duplicate_of": "",
       "overall": "ok"
     },
     {
@@ -18,6 +21,7 @@
       "missing_fields": [
         "journal"
       ],
+      "duplicate_of": "",
       "overall": "error"
     },
     {
@@ -26,6 +30,7 @@
       "missing_fields": [
         "year"
       ],
+      "duplicate_of": "",
       "overall": "error"
     },
     {
@@ -34,14 +39,16 @@
       "missing_fields": [
         "publisher"
       ],
+      "duplicate_of": "",
       "overall": "error"
     },
     {
       "key": "ampel2023trust",
       "type": "article",
       "missing_fields": [],
-      "overall": "ok"
+      "duplicate_of": "ampel2023trust",
+      "overall": "error"
     }
   ],
-  "annotated_bib": "% [bib-validator] OK | fields OK\n@article{ampel2023trust,\n  author  = {Ampel, Benjamin and Doe, Jane},\n  title   = {Trust in automated review tools},\n  journal = {Journal of Examples},\n  year    = {2023},\n}\n\n% [bib-validator] ERROR | MISSING: journal\n@article{smith2021missing,\n  author  = {Smith, Alex},\n  title   = {A study with no journal},\n  year    = {2021},\n}\n\n% [bib-validator] ERROR | MISSING: year\n@inproceedings{lee2022noyear,\n  author    = {Lee, Sam},\n  title     = {A conference paper with no year},\n  booktitle = {Proceedings of the Example Conference},\n}\n\n% [bib-validator] ERROR | MISSING: publisher\n@book{ng2020book,\n  author = {Ng, Priya},\n  title  = {A book with no publisher},\n  year   = {2020},\n}\n\n% [bib-validator] OK | fields OK\n@article{ampel2023trust,\n  author  = {Ampel, Benjamin},\n  title   = {A second paper that reuses the first key},\n  journal = {Journal of Examples},\n  year    = {2024},\n}\n\n@article{brown2019brace,\n  author  = {Brown, Kim},\n  title   = {An entry with an unclosed brace,\n  journal = {Journal of Examples},\n  year    = {2019},\n}\n"
+  "annotated_bib": "% [bib-validator] OK | fields OK\n@article{ampel2023trust,\n  author  = {Ampel, Benjamin and Doe, Jane},\n  title   = {Trust in automated review tools},\n  journal = {Journal of Examples},\n  year    = {2023},\n}\n\n% [bib-validator] ERROR | MISSING: journal\n@article{smith2021missing,\n  author  = {Smith, Alex},\n  title   = {A study with no journal},\n  year    = {2021},\n}\n\n% [bib-validator] ERROR | MISSING: year\n@inproceedings{lee2022noyear,\n  author    = {Lee, Sam},\n  title     = {A conference paper with no year},\n  booktitle = {Proceedings of the Example Conference},\n}\n\n% [bib-validator] ERROR | MISSING: publisher\n@book{ng2020book,\n  author = {Ng, Priya},\n  title  = {A book with no publisher},\n  year   = {2020},\n}\n\n% [bib-validator] ERROR | fields OK | DUPLICATE KEY: ampel2023trust is already used at line 1\n@article{ampel2023trust,\n  author  = {Ampel, Benjamin},\n  title   = {A second paper that reuses the first key},\n  journal = {Journal of Examples},\n  year    = {2024},\n}\n\n@article{brown2019brace,\n  author  = {Brown, Kim},\n  title   = {An entry with an unclosed brace,\n  journal = {Journal of Examples},\n  year    = {2019},\n}\n"
 }
