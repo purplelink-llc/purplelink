@@ -9,5 +9,17 @@
   "sources": [
    "https://email.esm.psu.edu/pipermail/macosx-tex/2026-March/059196.html"
   ]
+ },
+ {
+  "slug": "howto-brew-cleanup-not-freeing-space",
+  "app": "legroom",
+  "date": "2026-10-17",
+  "title": "brew cleanup not freeing space on Mac (Homebrew cache fix)",
+  "long_id": "Xpd5GhF9uUY",
+  "short_id": "tgTyuRMa25c",
+  "sources": [
+   "https://garrit.xyz/posts/2024-06-03-i-just-cleaned-up-40-gb-of-brew-caches",
+   "https://davidwalsh.name/brew-cleanup"
+  ]
  }
 ]

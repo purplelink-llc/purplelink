@@ -1,0 +1,47 @@
+{
+ "id": "howto-brew-cleanup-not-freeing-space",
+ "app": "legroom",
+ "title": "brew cleanup not freeing space on Mac (Homebrew cache fix)",
+ "short_title": "brew cleanup frees almost nothing? Clear the Homebrew cache",
+ "url": "purplelink.llc/legroom",
+ "page": "https://purplelink.llc/legroom/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://garrit.xyz/posts/2024-06-03-i-just-cleaned-up-40-gb-of-brew-caches",
+  "https://davidwalsh.name/brew-cleanup"
+ ],
+ "verify": {
+  "runs": [
+   {"cmd": "cd ~/Library/Caches && du -sh Homebrew", "output": "789M\tHomebrew"},
+   {"cmd": "/opt/homebrew/bin/brew cleanup --dry-run 2>&1 | tail -1", "output": "==> This operation would free approximately 22.9MB of disk space."},
+   {"cmd": "/opt/homebrew/bin/brew cleanup --prune=all --dry-run 2>&1 | tail -1", "output": "==> This operation would free approximately 780.6MB of disk space."}
+  ],
+  "docs": ["https://docs.brew.sh/Manpage"],
+  "notes": "Homebrew 7.0.9 on Ben's Mac, 2026-10-17. Only dry runs were executed; nothing was removed. The manpage says plain cleanup removes downloads more than 120 days old (HOMEBREW_CLEANUP_MAX_AGE_DAYS) and --prune=all removes every cache file. 723M of the 789M cache is the downloads folder."
+ },
+ "scenes": [
+  {"type": "hook", "short": true, "kicker": "Mac disk space", "title": "brew cleanup frees almost nothing", "sub": "The Homebrew cache stays large.",
+   "narration": "If you run brew cleanup on a Mac and it frees almost nothing, while the Homebrew cache is still hundreds of megabytes, here is why, and how to clear it."},
+  {"type": "symptom", "short": true, "label": "Terminal",
+   "lines": ["$ cd ~/Library/Caches && du -sh Homebrew", "789M\tHomebrew", "$ brew cleanup --dry-run", "==> This operation would free approximately 22.9MB of disk space."],
+   "narration": "On this Mac the Homebrew cache holds 789 megabytes. A preview of a plain brew cleanup says it would free about 23 of them."},
+  {"type": "cause", "text": "Plain brew cleanup only removes downloads more than 120 days old.",
+   "narration": "By default, brew cleanup only removes downloads that are more than 120 days old. Everything you installed or upgraded recently stays in the cache."},
+  {"type": "steps", "short": true, "label": "Terminal",
+   "lines": ["$ brew cleanup --prune=all --dry-run", "$ brew cleanup --prune=all"],
+   "ui": "Installed packages stay installed. A reinstall downloads its files again.",
+   "narration": "Add prune equals all. Run it with dry run first to see the list, then run it again without dry run. Your installed packages stay installed; a reinstall simply downloads its files again."},
+  {"type": "check", "short": true, "label": "Terminal", "ok": "Nearly the whole cache",
+   "lines": ["$ brew cleanup --prune=all --dry-run", "==> This operation would free approximately 780.6MB of disk space."],
+   "narration": "Here the preview with prune all says it would free about 780 megabytes, nearly the whole cache, instead of 23."},
+  {"type": "app", "name": "Legroom", "line": "Knows the Homebrew downloads cache. Shows a preview, and cleans only what you approve.",
+   "url": "purplelink.llc/legroom", "img": "site/legroom/img/clean-now.webp", "icon": "site/assets/legroom-icon.webp",
+   "narration": "Legroom is a menu bar app for Mac disk space. It knows caches such as Homebrew downloads, Xcode DerivedData and the npm cache. A rule shows a preview of exactly what it would remove, and nothing goes until you approve it. It can run on a schedule, or when free space drops below a line you set. There is a free seven day trial."}
+ ],
+ "thumbs": {
+  "A": {"kind": "error", "pill": "Homebrew cache", "msg": "brew cleanup frees almost nothing"},
+  "B": {"kind": "long", "pill": "Homebrew cache", "msg": "Homebrew cache: 789M", "n": 1, "unit": "flag", "sub": "clears nearly all of it"},
+  "C": {"kind": "product", "name": "Legroom", "line": "Clear the Homebrew cache", "img": "site/legroom/img/clean-now.webp", "icon": "site/assets/legroom-icon.webp", "zoom": 1.25, "pos": "0% 45%"}
+ }
+}
