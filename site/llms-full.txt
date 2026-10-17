@@ -5120,6 +5120,10 @@ TeXstudio is free, open source and runs on macOS, Windows and Linux. It has more
 
 Texifier is the established paid native Mac editor, with an iOS app for writing on an iPad. It can typeset as you type and does not require a separate MacTeX install. That makes it the smoothest move for someone leaving Overleaf who does not want to manage a distribution. It is a one-time purchase, not a subscription. Check the developer's site for the current price. Choose it if you want a polished Mac app and an iPad companion.
 
+### LatteX
+
+LatteX is a newer editor for macOS and Windows with typesetting built in, so there is no TeX distribution to install. The pages refresh as you pause, and each document is a .tex file on disk. It costs $29.99 once for one device after a 7-day trial, according to its developer's page (read October 17, 2026). The same page says it loads no LaTeX packages or custom class files and does not support \newcommand or TikZ. That rules it out for most Overleaf projects built on a journal template. Choose it if you write short papers, homework or letters and never want to install TeX. I have not tested it.
+
 ### VS Code with LaTeX Workshop
 
 If you already write code in VS Code, the LaTeX Workshop extension gives you a capable LaTeX setup with build recipes, an embedded PDF viewer with SyncTeX, citation completion and Git in the sidebar. Microsoft's Live Share extension lets a co-author join a live editing session. That is the closest a desktop editor gets to Overleaf. However, it is a session you host, not a shared document that is always there. Choose it if VS Code is already open all day.
@@ -6198,13 +6202,13 @@ Use File, Submit, choose a journal or service, and select Download project ZIP w
 ---
 
 Source: https://purplelink.llc/guides/best-mac-latex-editors/
-Title: LaTeX Editor for Mac: Best macOS Editors of 2026, 16 Compared
+Title: LaTeX Editor for Mac: Best macOS Editors of 2026, 17 Compared
 
 ← All guides
 
 Comparison
 
-# LaTeX editor for Mac: the best macOS LaTeX editors of 2026, 3 tested and 16 compared
+# LaTeX editor for Mac: the best macOS LaTeX editors of 2026, 3 tested and 17 compared
 
 By Benjamin Ampel · May 31, 2026, updated October 15, 2026
 
@@ -6285,9 +6289,11 @@ Neovim or Vim with VimTeXFreeAnythingNot statedForward and inverse search with a
 
 texspark$39.99 one-time, free 14-day trialmacOS 14+Not statedSyncTeX across multiple files (⌘-click in the PDF), preview details not statedUpdates cover releases before 1.0 per its page, license activates on up to 3 Macs, not tested
 
+LatteX$29.99 once for one device, free 7-day trial, or in the developer's catalog from $1.99 a monthmacOS and WindowsYes: typesetting is built in, no TeX distribution to installLive preview about a quarter second after you stop typing, jump between source and previewLoads no LaTeX packages or custom .cls and .sty files, and no \newcommand or TikZ, so most journal templates will not compile
+
 OleaflyFree, open source (AGPL-3.0)macOS (Apple Silicon), Windows, LinuxNot statedPDF pane, SyncTeX not stated on the pages readParts of the app are labeled beta on its page, not tested
 
-Sources for the added rows, read October 9, 2026. texspark: texspark.io. Oleafly: oleafly.com and its editor documentation. I did not install or test either one, and they are in the table only, not in the sections below. All other rows use the facts stated in this guide.
+Sources for the added rows, read October 9, 2026. texspark: texspark.io. Oleafly: oleafly.com and its editor documentation. LatteX, read October 17, 2026: its page at getapps.cafe (version 2.1.0); AlternativeTo lists it as a monthly subscription, but the developer's page offers the one-off price. I did not install or test any of the three, and they are in the table only, not in the sections below. All other rows use the facts stated in this guide.
 
 ## What each option costs per year
 
@@ -8863,6 +8869,8 @@ Pick Summonly if you want finding, opening, copying and calculating from one box
 - You may not need to leave Spotlight. Check its calculator, conversions and clipboard history on your version of macOS before you pay.
 
 - A launcher is not always a file search tool. Some tools use Spotlight's index and some keep their own, and the vendor pages I read mostly did not say which. If Spotlight misses files, the guide on finding files on a Mac when Spotlight cannot covers the causes and the tools built for that.
+
+- If clipboard history is all you want, a launcher is more than you need. Maccy is a free, open-source (MIT) clipboard manager for macOS 14 or later that does only that: it keeps your copy history, searches it from the keyboard, and stores it on your Mac. Its page says it also removes a copied password when your password manager clears it (read October 17, 2026).
 
 - Raycast and Alfred prices are not directly comparable. One lists a subscription in dollars, the other lists a one-time license in pounds. Compare over the years you expect to use it.
 

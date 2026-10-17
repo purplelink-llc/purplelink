@@ -47,6 +47,7 @@
 - **Pricing:** Free 7-day trial (the complete app, no account), then $29.99 once to keep, updates included. One download for everyone: after the trial the app asks for a license key, sent in the receipt email.
 - **Privacy:** The checking runs on the Mac. Nothing typed is stored or sent, there are no accounts and no analytics. Apart from the download, the only network use is the update check.
 - **Limits:** Latin-script names only; it also flags public figures' names; it will miss some things; it cannot read the body of a new message in Apple Mail. It lowers the chance of a mistake and is not a compliance product.
+- **Status:** Shipping, version 1.2.0. Notarized download, no App Store required.
 - **Credit:** The detection model is Rampart by National Design Studio (CC BY 4.0), https://github.com/nationaldesignstudio/rampart. Purplelink ported its processing code to Swift and added rules for dates of birth, medical record numbers and IBANs; the model file is unchanged.
 - **Trial and purchase:** https://purplelink.llc/outbound-veil/
 - **Setup guide:** https://purplelink.llc/outbound-veil/start/ (first ten minutes: install, Accessibility, a first check on a made-up note, redacting, choosing apps, trial and updates)
@@ -60,6 +61,7 @@
 - **Pricing:** Free 7-day trial, then $9.99 once to keep. After the trial the menu-bar readout and low-space alerts stay free, and a license key (sent in the receipt email) unlocks the rest, including the Uninstaller, in the same download.
 - **Privacy:** No account, no analytics. Measurements, rules and the trial clock stay on the Mac. The only network use is the daily update check that every copy makes and the Buy link.
 - **Limits:** It does not speed up a Mac, does not run commands (leftovers in the system Library are shown with a command to copy and are not removed), does not clean inside system folders apart from the Uninstaller's items in the user Library, and does not scan as an administrator. The Uninstaller never offers Apple apps, system apps or Legroom itself. Full Disk Access is optional; without it the Uninstaller skips the Containers, Group Containers and Cookies folders.
+- **Status:** Shipping, version 1.2.1. Notarized download, no App Store required.
 - **Trial and purchase:** https://purplelink.llc/legroom/
 - **Guide:** https://purplelink.llc/guides/show-free-disk-space-mac-menu-bar/ (how to see free space with Finder, Storage settings, Disk Utility and df, and the menu-bar apps compared)
 - **Permissions explained:** https://purplelink.llc/guides/mac-privacy-permissions-explained/ (what Full Disk Access allows, what Apple said about it on 2026-10-02, how to review it; Legroom never requires it)
@@ -95,7 +97,7 @@
 - **Pricing:** Free 7-day trial (the complete app, no account), then $9.99 once, every update included. One download for everyone: after the trial the app asks for a license key, sent in the receipt email. One key works on two Macs. 14-day refund.
 - **Privacy:** Works offline. It needs the macOS Accessibility permission to move other apps' windows and reads each window's position, size and title, never what is inside a window. Shortcuts use macOS's own global shortcut system, so it needs no Input Monitoring and does not see other keys. Its only network use is its check for a new version.
 - **Limits:** It does not use AI. It does not move windows between Spaces (macOS offers no way to). If macOS's own edge tiling is on as well, a drag to an edge may snap twice; Settings says so and opens the right pane. Shortcuts can be re-recorded, reset or turned off.
-- **Status:** Shipping. Notarized download, no App Store required.
+- **Status:** Shipping, version 1.0.4 (October 14, 2026). Notarized download, no App Store required.
 - **Trial and purchase:** https://purplelink.llc/panely/
 
 ### Summonly (macOS)
@@ -105,7 +107,7 @@
 - **Pricing:** Free 7-day trial (the complete app, no account), then $9.99 once, every update included. One download for everyone: after the trial the app asks for a license key, sent in the receipt email. One key works on two Macs. 14-day refund.
 - **Privacy:** Works offline. The index and the clipboard history stay on the Mac, in Summonly's own folder. macOS asks permission before Summonly reads Desktop, Documents and Downloads; it does not need Full Disk Access. Web searches and assistant prompts (claude, gpt, ppl, ask, and last rows for Google, Claude and ChatGPT) open in the browser only when you press Return, and the words go to that site, not through Summonly. Its only other network use is its check for a new version.
 - **Limits:** It searches the folders you choose, not Mail, Messages, Contacts or Calendar. Word and Pages documents are found by name only. Find by meaning is English only, optional, and helpful rather than exact. No workflows, scripts or extensions in this version.
-- **Status:** Shipping. Notarized download, no App Store required.
+- **Status:** Shipping, version 1.3.1 (October 16, 2026). Notarized download, no App Store required.
 - **Trial and purchase:** https://purplelink.llc/summonly/
 
 ### BatteryMeter (macOS)
@@ -129,7 +131,7 @@
 - **Category:** Academic research management
 - **Description:** A local-first Mac app for academics: track journal and conference submissions, grants, projects and collaborators, and generate your CV from that record.
 - **Pricing:** Free. Optional Vitae Plus subscription, $2.99/month or $23.99/year with a 7-day free trial, adds reports, Word templates, a revision workspace and Shareables. Core record-keeping stays free.
-- **Status:** Shipping, version 1.0.4. Apple-notarized download, no App Store required.
+- **Status:** Shipping, version 1.2.0. Apple-notarized download, no App Store required.
 - **Product page:** https://purplelink.llc/vitae/
 - **Vitae Plus:** https://purplelink.llc/vitae/plus/
 
@@ -141,7 +143,7 @@
 - **Target users:** Frequent travelers who want a complete personal travel record
 - **Pricing:** Free to download, with small ads served by Google AdMob. A one-time Pro purchase of $14.99 removes the ads. No subscription.
 - **Sync:** iCloud sync via CloudKit (no Purplelink account required)
-- **Status:** Shipping. Version 1.0 released on the App Store 2026-09-03.
+- **Status:** Shipping. Version 1.0 released on the App Store 2026-09-03; current version 1.2 (2026-09-28).
 - **Download:** https://apps.apple.com/us/app/globepin/id6762313540
 - **Product page:** https://purplelink.llc/globepin/
 - **Requirements:** iPhone or iPad running iOS 17.0 or later
