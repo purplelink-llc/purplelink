@@ -1,0 +1,21 @@
+{
+  "_comment": "The only place a YouTube channel is defined. New channels are added here, never hard-coded in a script. A channel is used only while \"confirmed\" is true (Ben confirms the id). Tokens live outside the repo (the repo is public); see video/README.md, section YouTube API uploads.",
+  "channels": {
+    "purplelink": {
+      "id": "UCUv28P5SUzT4RLQOmi3EK8w",
+      "title": "Purplelink",
+      "token": "~/.config/purplelink/yt_token_purplelink.json",
+      "kinds": ["howto", "howto-short", "product", "tutorial", "latex"],
+      "default_category": "28",
+      "confirmed": true
+    },
+    "pixelhearth": {
+      "id": "UC2epO3ZuPku8fabf9XO4wmw",
+      "title": "Pixel Hearth",
+      "token": "~/.config/purplelink/yt_token_pixelhearth.json",
+      "kinds": ["ambient", "photo-quiz"],
+      "default_category": "10",
+      "confirmed": false
+    }
+  }
+}
