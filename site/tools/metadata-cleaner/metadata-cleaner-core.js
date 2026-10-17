@@ -1287,10 +1287,18 @@
 
   const ZIP_EXT = /\.(docx|xlsx|pptx|docm|xlsm|pptm)$/;
   const ODF_EXT = /\.(odt|ods|odp|odg|ott|ots|otp)$/;
-  // Comments are stripped first: a repeated (<!--...-->)* group in one regex can backtrack
-  // exponentially on a crafted file and freeze the tab.
+  // A file starts as an SVG when, after optional whitespace, an XML declaration, comments
+  // and a DOCTYPE, the first element is <svg>. Scanned with indexOf: one regex with a
+  // repeated (<!--...-->)* group backtracks exponentially on a crafted file and freezes the tab.
   function looksLikeSvg(head) {
-    return /^\s*(<\?xml[^>]*>\s*)?(<!DOCTYPE[^>]*>\s*)?<svg[\s>]/.test(head.replace(/<!--[\s\S]*?-->/g, ""));
+    let i = 0;
+    const skipSpace = () => { while (i < head.length && /\s/.test(head[i])) i += 1; };
+    const skipPast = (end) => { const e = head.indexOf(end, i); if (e < 0) return false; i = e + end.length; skipSpace(); return true; };
+    skipSpace();
+    if (head.startsWith("<?xml", i) && !skipPast(">")) return false;
+    while (head.startsWith("<!--", i)) { i += 4; if (!skipPast("-->")) return false; }
+    if (head.startsWith("<!DOCTYPE", i) && !skipPast(">")) return false;
+    return /^<svg[\s>]/.test(head.slice(i, i + 5));
   }
 
   function kindOf(name, bytes) {

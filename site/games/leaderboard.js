@@ -16,15 +16,16 @@
   function plural(n, one, many) { return n + " " + (n === 1 ? one : many); }
   // Keys come from the URL, so look up own entries only ("constructor" and the like are not games).
   function own(o, k) { return typeof k === "string" && Object.prototype.hasOwnProperty.call(o, k); }
-  var SCORE_TEXT = {
+  var SCORE_TEXT = new Map(Object.entries({
     crossword: function (v) { return "about " + clock(v * 20); }, sudoku: function (v) { return "about " + clock(v * 30); },
     "daily-five": function (v) { return v ? plural(v, "miss", "misses") : "perfect"; }, "daily-photo": function (v) { return v ? plural(v, "miss", "misses") : "perfect"; },
     "daily-chess": function (v) { return v ? plural(v, "slip", "slips") : "clean"; }, lockerlink: function (v) { return v ? "par +" + v : "par"; },
     gridlink: function (v) { return v ? plural(v, "empty cell", "empty cells") : "complete"; }, "under-the-cap": function (v) { return plural(v, "loss", "losses"); }
-  };
+  }));
   function dayScoreText(game, v) {
     if (v >= 99) return "X";
-    return own(SCORE_TEXT, game) ? SCORE_TEXT[game](v) : plural(v, "guess", "guesses");
+    var text = SCORE_TEXT.get(game);
+    return text ? text(v) : plural(v, "guess", "guesses");
   }
   function puzzleIdx() { return G.dayIndex(new Date(), EPOCH) - (st.board === "yday" ? 1 : 0); }
   var RATED_BOARDS = [["all", "Rating"], ["week", "This week"]];
