@@ -283,7 +283,7 @@ test("the retired digest plans return 400 and never reach Stripe", async () => {
     let stripeCalled = false;
     const originalFetch = globalThis.fetch;
     globalThis.fetch = async (url) => {
-      if (String(url).includes("api.stripe.com")) stripeCalled = true;
+      if (String(url).startsWith("https://api.stripe.com/")) stripeCalled = true;
       throw new Error(`Unexpected fetch to ${url}`);
     };
     try {
