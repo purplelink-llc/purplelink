@@ -17,4 +17,4 @@ pdf2image>=1.17,<2
 pillow>=12.3,<13
 pypdf>=6.19,<7
 # Citation MCP server (citation_mcp_app.py); same pin as its Modal image.
-mcp==1.28.1
+mcp==1.30.0
