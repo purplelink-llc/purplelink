@@ -23,13 +23,29 @@ inputs_changed() {
 
 msg=$(git log -1 --format=%B "${COMMIT_REF:-HEAD}" 2>/dev/null || true)
 
+# Server code: what a checkout, delivery or security fix changes. Page text and version strings are not urgent.
+CODE=(netlify netlify.toml package.json package-lock.json)
+code_changed() {
+  ! git diff --quiet "${CACHED_COMMIT_REF:-}" "${COMMIT_REF:-HEAD}" -- "${CODE[@]}" 2>/dev/null
+}
+
 case "$msg" in
-  *"[deploy now]"*|"chore(digest): Daily Digest"*)
+  "chore(digest): Daily Digest"*)
     if inputs_changed; then
-      echo "netlify_ignore: building now (digest or [deploy now])"
+      echo "netlify_ignore: building now (digest)"
       exit 1
     fi
     echo "netlify_ignore: no build inputs changed"
+    exit 0
+    ;;
+  *"[deploy now]"*)
+    # Honoured only for server-code changes (2026-10-17: 10 of 12 [deploy now] builds in two days were page text,
+    # mostly app version strings, which can wait for the slot). Urgent page text: netlify-batch-build.sh manual.
+    if code_changed; then
+      echo "netlify_ignore: building now ([deploy now] with server-code changes)"
+      exit 1
+    fi
+    echo "netlify_ignore: [deploy now] on a page-text change waits for the next scheduled build"
     exit 0
     ;;
 esac

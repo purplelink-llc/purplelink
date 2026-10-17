@@ -82,14 +82,17 @@ Not covered: the Modal digest cron (`backend/digest`), which commits digest file
 
 - **Builds are batched (2026-10-15).** A push to `main` does not build. `scripts/netlify_ignore.sh` (netlify.toml
   `build.ignore`) skips every git-triggered build except (a) the digest cron's final commit `chore(digest): Daily
-  Digest #N`, so emailed digest links are live, and (b) a commit whose message contains `[deploy now]`; both still build
-  only when a build input changed. Everything else is published by the "scheduled" build hook, which the launchd job
+  Digest #N`, so emailed digest links are live, and (b) a commit whose message contains `[deploy now]` AND changes
+  server code (`netlify/`, `netlify.toml`, `package*.json`); the digest builds only when a build input changed. A marker
+  on a page-text-only change (app version strings, copy, changelog) is ignored and waits for the slot (2026-10-17: 10 of
+  12 marked builds in two days were version text). Everything else is published by the "scheduled" build hook, which the launchd job
   `com.purplelink.netlify-batch` calls at 06:00 and 17:00 US Eastern (it fires at 03:00, 04:00, 14:00 and 15:00 Phoenix and
   runs each Eastern slot once, or late after a wake) when `main` has
   unpublished site changes (`~/.purplelink/bin/netlify-batch-build.sh`; hook URLs in
   `~/.config/purplelink/netlify-build-hooks.json`, never print them; log `~/Library/Logs/purplelink-netlify-batch.log`).
-  To ship something now (a checkout, delivery or security fix): put `[deploy now]` in the PR title or squash message,
-  or run `bash ~/.purplelink/bin/netlify-batch-build.sh manual` after the merge. Do not call `netlify api
+  To ship a server fix now (checkout, delivery, security): put `[deploy now]` in the PR title or squash message. For
+  page text that truly cannot wait (a wrong price, a broken claim), run `bash ~/.purplelink/bin/netlify-batch-build.sh
+  manual` after the merge. App releases never need either: version text on the site can wait for the slot. Do not call `netlify api
   createSiteBuild` after merges any more. Verifying a change live means waiting for the next scheduled build or using
   one of those two. Netlify Starter allows 300 build minutes a month.
   App updates do not wait for a build: every app, BatteryMeter included (PR 129), serves its Sparkle feed and
