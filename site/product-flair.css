@@ -1,0 +1,367 @@
+/* Product page scroll scenes (linked next to motion.css on product pages that
+   use them; product-flair.js drives the pinned scene).
+
+   Same rules as motion.css: everything here enhances content that is already
+   fully visible. Anything that moves sits inside prefers-reduced-motion:
+   no-preference, and scroll-linked effects also sit inside
+   @supports (animation-timeline: view()), so browsers without scroll-driven
+   animations and visitors who ask for less motion get the final state.
+   The pinned scene only pins once product-flair.js adds .is-pinned. */
+
+/* ─── Hero: a soft light behind the product window ───────────────────── */
+
+.app-hero:has(.app-hero-window) { position: relative; isolation: isolate; }
+
+.app-hero-window { position: relative; }
+.app-hero-window::before {
+  content: "";
+  position: absolute;
+  inset: 4% -4% -2%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in oklch, var(--purple) 34%, transparent), transparent);
+  filter: blur(36px);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* ─── Pinned scene: data-flair="steps" ───────────────────────────────── */
+
+.flair-scene {
+  --flair-topbar: 73px;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in oklch, var(--purple) 4%, var(--bg));
+}
+
+.flair-track { position: relative; }
+
+.flair-stage {
+  display: grid;
+  gap: clamp(20px, 3vw, 36px);
+  padding: clamp(56px, 7vw, 96px) clamp(24px, 6vw, 80px);
+  max-width: 1600px;
+  margin-inline: auto;
+}
+
+.flair-head h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.6vw, 3.8rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  max-width: 16ch;
+}
+.flair-head p {
+  margin-top: 14px;
+  max-width: 56ch;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.4vw, 1.12rem);
+  line-height: 1.6;
+}
+
+.flair-shot {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  box-shadow:
+    0 40px 90px oklch(20% 0.08 310 / 0.28),
+    0 6px 18px oklch(20% 0.08 310 / 0.12);
+}
+.flair-shot img { display: block; width: 100%; height: auto; }
+
+/* The spotlight: a rounded hole in a dark wash over the screenshot. Its
+   position comes from the step (see the data-active rules below). Hidden
+   until the scene is pinned, so a static page shows the plain screenshot. */
+.flair-spot {
+  position: absolute;
+  inset: var(--spot-t, 0) var(--spot-r, 0) var(--spot-b, 0) var(--spot-l, 0);
+  border-radius: 10px;
+  outline: 2px solid var(--purple);
+  outline-offset: -1px;
+  box-shadow: 0 0 0 200vmax oklch(12% 0.04 310 / 0.6);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.flair-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px 32px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: flair-step;
+}
+.flair-steps li { counter-increment: flair-step; }
+.flair-steps h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2vw, 1.6rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+/* A real sequence (open, write, jump), so the numbers carry meaning. */
+.flair-steps h3::before {
+  content: counter(flair-step);
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 1.7em;
+  height: 1.7em;
+  border-radius: 50%;
+  border: 1px solid var(--purple-dim);
+  color: var(--purple);
+  font-family: var(--font-body, inherit);
+  font-size: 0.62em;
+  font-weight: 700;
+  letter-spacing: 0;
+  translate: 0 -0.12em;
+}
+.flair-steps p { color: var(--muted); line-height: 1.6; max-width: 46ch; }
+
+.flair-progress { display: none; }
+.flair-marks { display: none; }
+
+/* Where the spotlight sits for each step, as insets of the screenshot. */
+.flair-scene[data-active="1"] { --spot-t: 9.6%; --spot-r: 88.1%; --spot-b: 3.2%; --spot-l: 0.4%; }
+.flair-scene[data-active="2"] { --spot-t: 9.6%; --spot-r: 44.3%; --spot-b: 3.2%; --spot-l: 12.1%; }
+.flair-scene[data-active="3"] { --spot-t: 9.6%; --spot-r: 0.4%;  --spot-b: 3.2%; --spot-l: 56.1%; }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Scroll distance: about two thirds of a screen per step. */
+  .flair-scene.is-pinned .flair-track { height: calc(100svh + var(--flair-steps, 3) * 68svh); }
+
+  .flair-scene.is-pinned .flair-stage {
+    position: sticky;
+    top: var(--flair-topbar);
+    height: calc(100svh - var(--flair-topbar));
+    padding-block: clamp(20px, 4vh, 48px);
+    align-content: center;
+  }
+
+  .flair-scene.is-pinned .flair-marks {
+    position: absolute;
+    inset: 50svh 0;
+    display: flex;
+    flex-direction: column;
+    pointer-events: none;
+  }
+  .flair-scene.is-pinned .flair-marks > span { flex: 1; }
+
+  /* Only the current caption shows; the others wait in the same cell, so
+     the stage never changes height between steps. */
+  .flair-scene.is-pinned .flair-steps { grid-template-columns: minmax(0, 1fr); }
+  .flair-scene.is-pinned .flair-steps li {
+    grid-area: 1 / 1;
+    opacity: 0;
+    translate: 0 12px;
+    transition: opacity 0.45s var(--motion-ease), translate 0.6s var(--motion-ease);
+  }
+  .flair-scene.is-pinned .flair-steps li[data-current] {
+    opacity: 1;
+    translate: none;
+    transition-delay: 0.12s;
+  }
+
+  .flair-scene.is-pinned .flair-spot {
+    opacity: 1;
+    transition:
+      inset 0.7s var(--motion-ease),
+      opacity 0.4s var(--motion-ease);
+  }
+
+  .flair-scene.is-pinned .flair-progress {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 18px;
+  }
+  .flair-progress span {
+    width: 28px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--line);
+    transition: background-color 0.4s var(--motion-ease);
+  }
+  .flair-scene[data-active="1"] .flair-progress span:nth-child(-n+1),
+  .flair-scene[data-active="2"] .flair-progress span:nth-child(-n+2),
+  .flair-scene[data-active="3"] .flair-progress span:nth-child(-n+3) { background: var(--purple); }
+
+  /* Wide screens: captions on the left, the window large on the right. The
+     window is capped by the screen's height so the whole stage fits. */
+  @media (min-width: 900px) {
+    .flair-scene.is-pinned .flair-stage {
+      grid-template-columns: minmax(240px, 1fr) minmax(0, 2.4fr);
+      grid-template-areas: "head shot" "steps shot";
+      align-items: center;
+      column-gap: clamp(32px, 4vw, 64px);
+    }
+    .flair-scene.is-pinned .flair-head { grid-area: head; align-self: end; }
+    .flair-scene.is-pinned .flair-head h2 { font-size: clamp(1.9rem, 3.2vw, 3rem); }
+    .flair-scene.is-pinned .flair-steps-wrap { grid-area: steps; align-self: start; }
+    .flair-scene.is-pinned .flair-shot {
+      grid-area: shot;
+      width: min(100%, calc((100svh - var(--flair-topbar) - 96px) * 1.818));
+      justify-self: center;
+    }
+  }
+
+  /* Phones: heading, window, caption, top to bottom, sized to one screen. */
+  @media (max-width: 899px) {
+    .flair-scene.is-pinned .flair-stage { gap: 16px; }
+    /* No room for the intro line on a phone screen; screen readers still get it. */
+    .flair-scene.is-pinned .flair-head p {
+      position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+      overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+    }
+    .flair-scene.is-pinned .flair-head h2 { font-size: clamp(1.6rem, 7vw, 2.2rem); }
+  }
+}
+
+/* ─── Feature chapters: screenshots that open up as they arrive ──────── */
+
+.flair-chapters .screenshot-block { max-width: 1470px; margin-inline: auto; }
+.flair-chapters .screenshot-callout { max-width: none; margin-bottom: clamp(20px, 3vw, 32px); }
+.flair-chapters .screenshot-callout h3 {
+  font-size: clamp(1.8rem, 3.6vw, 2.8rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin-bottom: 12px;
+}
+.flair-chapters .screenshot-callout p { font-size: clamp(1rem, 1.3vw, 1.08rem); max-width: 62ch; }
+.flair-chapters .screenshot-block + .screenshot-block { margin-top: clamp(72px, 10vw, 140px); }
+.flair-chapters .screenshot-wide img {
+  border-radius: 14px;
+  box-shadow:
+    0 40px 90px oklch(20% 0.08 310 / 0.24),
+    0 6px 18px oklch(20% 0.08 310 / 0.1);
+}
+
+@media (min-width: 1000px) {
+  .flair-chapters .screenshot-callout {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: 48px;
+    align-items: start;
+  }
+  .flair-chapters .screenshot-callout h3 { margin-bottom: 0; }
+}
+
+/* ─── Statement: one large sentence that inks in as it is read ───────── */
+
+.flair-statement-wrap {
+  padding: clamp(80px, 12vw, 180px) clamp(24px, 6vw, 80px);
+  border-bottom: 1px solid var(--line);
+}
+
+.flair-statement {
+  max-width: 24ch;
+  margin-inline: auto;
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 4.6vw, 4rem);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+  color: var(--ink);
+}
+
+/* ─── Closing call to action ─────────────────────────────────────────── */
+
+.closing-cta { position: relative; isolation: isolate; overflow: hidden; }
+.closing-cta::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: clamp(40px, 6vw, 80px);
+  width: min(720px, 120vw);
+  aspect-ratio: 1;
+  translate: -50% -30%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in oklch, var(--purple) 26%, transparent), transparent);
+  pointer-events: none;
+}
+.closing-cta img { width: 104px; height: 104px; border-radius: 24px; }
+.closing-cta h2 { font-size: clamp(2.2rem, 5.4vw, 4.2rem); }
+
+/* ─── Scroll-linked touches (CSS only, where supported) ──────────────── */
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* The hero window turns to face the reader over the first part of the
+       scroll. Skipped on the hero experiment's B days, whose layout sets no
+       tilt (see exp-moderntex-hero.js and buy.css). */
+    @keyframes flair-face {
+      from { transform: perspective(1600px) rotateY(-6deg) rotateX(2deg); }
+      to   { transform: perspective(1600px) rotateY(0deg) rotateX(0deg) scale(1.03); }
+    }
+    @media (min-width: 1100px) {
+      .app-hero:not(.exp-hero-shot) .app-hero-window .frame-soft {
+        animation: flair-face linear both;
+        animation-timeline: scroll(root block);
+        animation-range: 0 70vh;
+      }
+    }
+
+    /* Feature screenshots open from a smaller rounded crop to the full
+       window as they scroll in, and finish well before the middle of the
+       screen, so the whole image is visible while it is being read. */
+    @keyframes flair-unveil {
+      from { clip-path: inset(7% 9% 7% 9% round 28px); scale: 0.94; }
+      to   { clip-path: inset(0 0 0 0 round 14px); scale: 1; }
+    }
+    .flair-chapters .screenshot-wide img {
+      animation: flair-unveil linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 35%;
+    }
+
+    /* Each clause of the statement goes from faint to full ink as it rises
+       into the lower half of the screen; by the middle it is fully inked. */
+    @keyframes flair-ink {
+      from { color: color-mix(in oklch, var(--ink) 22%, var(--bg)); }
+      to   { color: var(--ink); }
+    }
+    .flair-statement > span {
+      animation: flair-ink linear both;
+      animation-timeline: view();
+      animation-range: entry 60% cover 42%;
+    }
+
+    /* The pinned window settles in as the scene arrives. */
+    @keyframes flair-settle {
+      from { scale: 0.92; translate: 0 40px; }
+      to   { scale: 1; translate: none; }
+    }
+    .flair-scene .flair-shot {
+      animation: flair-settle linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 80%;
+    }
+    .flair-scene.is-pinned .flair-shot { animation-timeline: --flair-scene; animation-range: entry 0% entry 60%; }
+    .flair-scene.is-pinned .flair-track { view-timeline: --flair-scene block; }
+
+    /* The closing icon rises as the call to action comes into view. */
+    @keyframes flair-rise {
+      from { translate: 0 30px; scale: 0.9; }
+      to   { translate: none; scale: 1; }
+    }
+    .closing-cta img {
+      animation: flair-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 40%;
+    }
+  }
+}
+
+@media print {
+  .flair-spot, .flair-progress, .flair-marks { display: none; }
+}
