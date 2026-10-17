@@ -1954,6 +1954,10 @@ Vitae keeps your own record between deadlines. If your university requires Inter
 
 - Import your CV and publications into Faculty Success.
 
+- How to list manuscripts under review on an academic CV.
+
+- Export your ORCID works to BibTeX or RIS and what to fix first.
+
 - Build your annual report from your own record: a year-end checklist.
 
 - Track your academic CV and tenure case and best software for tracking your research record.
