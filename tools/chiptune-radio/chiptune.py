@@ -215,10 +215,12 @@ def pick_sound(seed: int, era: str | None = None) -> dict:
                 chorus=era != "8bit" and r.random() < 0.8)
 
 
-def plan(seed: int, era: str | None = None, mood: float | None = None) -> Track:
+def plan(seed: int, era: str | None = None, mood: float | None = None, mode_weights: dict | None = None) -> Track:
+    """`mode_weights` (mode name -> weight) lets a caller bias the modes, e.g. minor and dorian for an autumn video; the draw still
+    consumes exactly one random number, so only the mode (and what follows from it) changes; without weights nothing changes at all."""
     r = random.Random(seed * 7919 + 13)
     key = r.choice(list(KEYS))
-    mode = r.choices(list(MODES), weights=[4, 4, 3, 2, 1])[0]
+    mode = r.choices(list(MODES), weights=[mode_weights.get(m, 0) for m in MODES] if mode_weights else [4, 4, 3, 2, 1])[0]
     bpm = r.randint(72, 94)
     mood = 0.35 if mood is None else max(0.0, min(1.0, mood))
     # lofi sits near 62 BPM and boss music near 94; the jitter comes from the seed, not from r, so the notes do not change
