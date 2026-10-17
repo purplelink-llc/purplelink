@@ -1,0 +1,9 @@
+# name | method | url | acceptable status codes (comma separated)
+# A check passes when the response status is one of the listed codes. Nothing here creates anything:
+# every request is a GET that the target answers (or refuses) before doing any work.
+site-home|GET|https://purplelink.llc/|200
+functions-health|GET|https://purplelink.llc/.netlify/functions/health|200
+checkout-reachable|GET|https://purplelink.llc/.netlify/functions/checkout|405
+stripe-webhook-reachable|GET|https://purplelink.llc/.netlify/functions/stripe-webhook|405
+modal-latextools|GET|https://ben-ampel--purplelink-latextools-web.modal.run/paper-review/status|422
+modal-citation-mcp|GET|https://ben-ampel--purplelink-citation-mcp-web.modal.run/health|200
