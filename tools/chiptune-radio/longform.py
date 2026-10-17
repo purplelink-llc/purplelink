@@ -6,6 +6,7 @@
     python3.12 longform.py --theme study --hours 2 --pomodoro 25/5 --out study-2h.mp4
     python3.12 longform.py --theme halloween --seconds 40 --out test.mp4          # a short test file
     python3.12 longform.py --theme winter --preview-frame 1800 --out frame.png    # one 1920x1080 frame, no video
+    python3.12 longform.py --theme campfire --hours 10 --loop-min 20 --sound brown --dark 300 --out b.mp4   # another sound (sounds.py), screen dims after 300 s
 
 The file is 1920x1080, 30 fps H.264, AAC 192 kbps at 48 kHz, -14 LUFS integrated, true peak under -1 dBTP, faststart. Nothing is loaded from
 disk or the network: the music is composed and the sounds and pictures are drawn by code, so there is nothing to license.
@@ -39,6 +40,7 @@ from PIL import Image
 import ambience
 import chiptune as c
 import px
+import sounds
 import themes
 
 SR = c.SR
@@ -50,6 +52,14 @@ TARGET_LUFS, TARGET_TP, TARGET_LRA = -14.0, -2.0, 20.0     # a true-peak ceiling
 MUSIC_RMS = 0.13               # each track is levelled to this before mixing (the same level the 24/7 stream uses)
 PRE_RMS = 0.15                 # the pre-master's RMS: about -14 LUFS for this kind of music, so the loudness pass only trims a little
 MAX_BPM_STEP = 8
+SOUND_RMS = 0.13               # a synthetic sound (noise, rain, drone...) is levelled to this before the bed is added, as music is to MUSIC_RMS
+DARK_FADE = 20.0               # seconds the picture takes to dim to near black in a --dark video
+DARK_COLOR = "0x040404"
+DARK_SEGMENT = 600.0           # seconds in the one black clip that a dark video repeats by stream copy
+# the lofi sound: the chiptune engine, slowed and softened (a warm electric-piano lead, soft kit with vinyl crackle, a duller top end)
+LOFI_CFG = {"modes": {"major": 3, "dorian": 3, "lydian": 1, "mixolydian": 2}, "eras": ["16bit"], "mood": (0.0, 0.1),
+            "sound": {"lead": ["fm_ep", "flute"], "arp": ["fm_ep", "pluck"], "pad": "warm_pad", "bass": "sub_sine", "kit": "lofi", "wet": 0.3, "cut": 5200,
+                      "crackle": True, "duck": False, "risers": False, "spark": False, "chorus": True}}
 VIDEO_SIZE = (1920, 1080)
 HD = VIDEO_SIZE[0] // px.W      # 6
 FFMPEG = os.environ.get("FFMPEG", "ffmpeg")
@@ -68,10 +78,15 @@ def mood_wave(frac_time: float, seconds: float, lo: float, hi: float, period: fl
     return lo + (hi - lo) * x
 
 
-def plan_tracks(theme_cls, seconds: float, seed: int) -> list[dict]:
+def music_cfg(theme_cls, sound: str = "chiptune") -> dict:
+    """The music settings for a sound: the theme's own for chiptune, the slowed and softened ones for lofi."""
+    return LOFI_CFG if sound == "lofi" else theme_cls.music
+
+
+def plan_tracks(theme_cls, seconds: float, seed: int, cfg: dict | None = None) -> list[dict]:
     """The tracks for a video, in order, as dicts with seed, era, mood, start (seconds into the video), seconds, key, mode, bpm. The next track is
     skipped if it repeats the previous key or jumps the tempo by more than MAX_BPM_STEP, so the music wanders instead of lurching."""
-    cfg = theme_cls.music
+    cfg = cfg or theme_cls.music
     lo, hi = cfg["mood"]
     out, total, s, prev = [], 0.0, seed * 1000, None
     while total < seconds + 2.0:
@@ -127,14 +142,24 @@ def soft_clip(x: np.ndarray, knee: float = 0.7) -> np.ndarray:
     return y
 
 
-def build_audio(theme, tracks: list[dict], seconds: float, work: Path, music: bool, workers: int, pomodoro: bool, loop_tail: float = 0.0) -> dict:
+def build_audio(theme, tracks: list[dict], seconds: float, work: Path, music: bool, workers: int, pomodoro: bool, loop_tail: float = 0.0,
+                sound: str = "chiptune", bed_on: bool = True, seed: int = 1) -> dict:
     """Mixes music, ambience and (for a Pomodoro video) chimes into float32 on disk, then writes the pre-master as s16 PCM. Returns stats.
     With `loop_tail` the mix runs that many seconds past the loop, the overrun is crossfaded (equal power) into the start, and the pre-master is the
     loop alone with no fades: played end to start it has no click or gap."""
     n = int(round(seconds * SR))
     mm_path = work / "mix.f32"
     mm = np.memmap(mm_path, dtype=np.float32, mode="w+", shape=(2, n))
-    cfg = type(theme).music
+    cfg = music_cfg(type(theme), sound)
+    sp = sounds.spec(sound)
+    step = SR * 60
+    src = None
+    if sp.build is not None:                                       # a synthetic sound instead of music: noise, binaural beats, rain...
+        period = n - int(round(loop_tail * SR)) if loop_tail > 0 else n
+        src = sounds.make(sound, seconds, seed, period)
+        for i in range(0, n, step):
+            j = min(n, i + step)
+            mm[:, i:j] += src.block(j - i) * np.float32(SOUND_RMS)
     if music:
         xf = int(XFADE * SR)
         fade_in = np.sin(np.linspace(0, np.pi / 2, xf)).astype(np.float32)
@@ -160,15 +185,19 @@ def build_audio(theme, tracks: list[dict], seconds: float, work: Path, music: bo
                     mm[:, s0 + k:s0 + m] = a[:, k:]
                 log(f"audio: track {i + 1}/{len(tracks)} in place ({spec['key']} {spec['mode']}, {spec['bpm']} BPM, {spec['era']}), {s0 / SR / 3600:.2f} h")
     # ambience bed
-    layers = dict(theme.bed if music else (theme.bed_solo or theme.bed))
-    level = theme.music_bed_level if music else 1.0
+    if src is not None:
+        layers = {k: v for k, v in (theme.bed_solo or theme.bed).items() if k not in sp.drop}
+        level = sp.bed_level
+    else:
+        layers = dict(theme.bed if music else (theme.bed_solo or theme.bed))
+        level = theme.music_bed_level if music else 1.0
     layers = {k: v * level for k, v in layers.items()}
-    layers["room"] = max(layers.get("room", 0.0), 0.3)
-    bed = ambience.Bed(layers, seconds, seed=theme.seed, events=theme.audio_events(), rain=theme.rain_spans())
-    step = SR * 60
-    for i in range(0, n, step):
-        j = min(n, i + step)
-        mm[:, i:j] += bed.block(j - i)
+    layers["room"] = max(layers.get("room", 0.0), 0.3 if src is None else 0.05)
+    if bed_on and level > 0:
+        bed = ambience.Bed(layers, seconds, seed=theme.seed, events=theme.audio_events(), rain=theme.rain_spans() if "rain" not in sp.drop else [])
+        for i in range(0, n, step):
+            j = min(n, i + step)
+            mm[:, i:j] += bed.block(j - i)
     if pomodoro:
         import chime
         for t0 in np.arange(0.0, seconds, chime.CYCLE):
@@ -187,15 +216,22 @@ def build_audio(theme, tracks: list[dict], seconds: float, work: Path, music: bo
         head = np.asarray(mm[:, :xf], dtype=np.float64)
         tail = np.asarray(mm[:, n:n + xf], dtype=np.float64)
         mm[:, :xf] = (head * np.sin(k * np.pi / 2) + tail * np.cos(k * np.pi / 2)).astype(np.float32)
+    if src is not None:                                             # tones and swells repeat exactly once per loop, so they go in after the crossfade
+        for i in range(0, n, step):
+            j = min(n, i + step)
+            mm[:, i:j] += src.periodic(i, j - i) * np.float32(SOUND_RMS)
     mm.flush()
     # loudness of the raw mix, then the pre-master with fades and a soft clip
-    ss, cnt = 0.0, 0
+    ss, cnt, pk = 0.0, 0, 0.0
     for i in range(0, n, step):
         x = np.asarray(mm[:, i:min(n, i + step)], dtype=np.float64)
         ss += float((x ** 2).sum())
         cnt += x.size
+        pk = max(pk, float(np.abs(x).max()))
     rms = math.sqrt(ss / max(1, cnt))
     gain = PRE_RMS / rms if rms > 0 else 1.0
+    if src is not None and pk > 0:                                  # rain drops and thunder are far peakier than music: keep the pre-master out of the soft clip
+        gain = min(gain, 0.85 / pk)
     pcm_path = work / "audio.pcm"
     fi, fo = (0, 0) if loop_tail > 0 else (int(FADE_IN_AUDIO * SR), int(FADE_OUT_AUDIO * SR))
     peak = 0.0
@@ -230,8 +266,10 @@ def measure_loudness(pcm: Path) -> dict:
     return {"input_i": m[-1], "method": "ebur128"}
 
 
-def audio_stage(theme, tracks, seconds, work: Path, music: bool, workers: int, pomodoro: bool, loop_tail: float = 0.0) -> None:
-    stats = build_audio(theme, tracks, seconds, work, music, workers, pomodoro, loop_tail)
+def audio_stage(theme, tracks, seconds, work: Path, music: bool, workers: int, pomodoro: bool, loop_tail: float = 0.0,
+                sound: str = "chiptune", bed_on: bool = True, seed: int = 1) -> None:
+    stats = build_audio(theme, tracks, seconds, work, music, workers, pomodoro, loop_tail, sound, bed_on, seed)
+    stats["sound"], stats["target_lufs"] = sound, sounds.target_lufs(sound)
     meas = measure_loudness(work / "audio.pcm")
     stats["loudnorm"] = meas
     (work / "audio.json").write_text(json.dumps(stats, indent=1))
@@ -239,13 +277,36 @@ def audio_stage(theme, tracks, seconds, work: Path, music: bool, workers: int, p
 
 
 # ------------------------------------------------------------------------------------------------------------------------ video
-def video_cmd(seconds: float, fps: int, out: Path, fades: bool = True) -> list[str]:
-    fade = (f"fps=30,fade=t=in:st=0:d={FADE_IN_VIDEO},fade=t=out:st={max(0.0, seconds - FADE_OUT_VIDEO):.3f}:d={FADE_OUT_VIDEO},format=yuv420p"
-            if fades else "fps=30,format=yuv420p")
+X264 = ["-c:v", "libx264", "-preset", "veryfast", "-tune", "animation", "-crf", "19", "-profile:v", "high", "-level", "4.1",
+        "-maxrate", "9M", "-bufsize", "18M", "-g", "60", "-keyint_min", "60", "-sc_threshold", "0", "-r", "30", "-an"]
+
+
+def video_cmd(seconds: float, fps: int, out: Path, fades: bool = True, dark: float = 0.0) -> list[str]:
+    """`dark` (seconds, with `seconds` = dark + DARK_FADE): the picture fades in, then dims to near black from `dark` to the end of the clip."""
+    if dark:
+        fade = (f"fps=30,fade=t=in:st=0:d={FADE_IN_VIDEO},fade=t=out:st={dark:.3f}:d={DARK_FADE}:color={DARK_COLOR},format=yuv420p")
+    elif fades:
+        fade = f"fps=30,fade=t=in:st=0:d={FADE_IN_VIDEO},fade=t=out:st={max(0.0, seconds - FADE_OUT_VIDEO):.3f}:d={FADE_OUT_VIDEO},format=yuv420p"
+    else:
+        fade = "fps=30,format=yuv420p"
     return [FFMPEG, "-hide_banner", "-loglevel", "warning", "-y",
             "-f", "rawvideo", "-pix_fmt", "rgb24", "-video_size", f"{VIDEO_SIZE[0]}x{VIDEO_SIZE[1]}", "-framerate", str(fps), "-i", "pipe:0",
-            "-vf", fade, "-c:v", "libx264", "-preset", "veryfast", "-tune", "animation", "-crf", "19", "-profile:v", "high", "-level", "4.1",
-            "-maxrate", "9M", "-bufsize", "18M", "-g", "60", "-keyint_min", "60", "-sc_threshold", "0", "-r", "30", "-an", str(out)]
+            "-vf", fade, *X264, str(out)]
+
+
+def black_cmd(seconds: float, fps: int, out: Path) -> list[str]:
+    """A near-black clip encoded exactly like the picture (same size, rate and x264 settings), so the two can be joined by stream copy."""
+    return [FFMPEG, "-hide_banner", "-loglevel", "warning", "-y", "-f", "lavfi", "-i", f"color=c={DARK_COLOR}:s={VIDEO_SIZE[0]}x{VIDEO_SIZE[1]}:r={fps}",
+            "-t", f"{seconds:.3f}", "-vf", "fps=30,format=yuv420p", *X264, str(out)]
+
+
+def write_dark_list(work: Path, intro_s: float, final_s: float, black_s: float) -> Path:
+    """The ffmpeg concat list for a dark video: the intro once, then the black clip as many times as the length needs."""
+    reps = max(1, int(math.ceil((final_s - intro_s) / black_s)) + 1)
+    lines = [f"file '{work / 'intro.mp4'}'"] + [f"file '{work / 'black.mp4'}'"] * reps
+    p = work / "dark.txt"
+    p.write_text("\n".join(lines) + "\n")
+    return p
 
 
 _THEME_CACHE: dict = {}
@@ -269,14 +330,15 @@ def render_chunk(theme_name: str, seed: int, seconds: float, options: dict, trac
     return out
 
 
-def video_stage(theme, seconds: float, work: Path, spec: dict, workers: int = 2, chunk_seconds: float = 30.0, loop: bool = False) -> None:
+def video_stage(theme, seconds: float, work: Path, spec: dict, workers: int = 2, chunk_seconds: float = 30.0, loop: bool = False, dark: float = 0.0,
+                final_s: float = 0.0) -> None:
     """Draws the frames in worker processes (a chunk of `chunk_seconds` each, handed back in order), enlarges each exactly 6x here, draws any overlay,
     and pipes it to x264. With `loop` the picture is a loop (loop.mp4, no fades) that the mux repeats by stream copy."""
     fps = theme.fps
     assert 30 % fps == 0, "the video rate must divide 30 so every frame is shown the same number of times"
-    drawn = seconds
-    out = work / ("loop.mp4" if loop else "video.mp4")
-    proc = subprocess.Popen(video_cmd(drawn, fps, out, fades=not loop), stdin=subprocess.PIPE)
+    drawn = dark + DARK_FADE if dark else seconds                  # a dark video only draws the part that is seen, then the black clip takes over
+    out = work / ("intro.mp4" if dark else "loop.mp4" if loop else "video.mp4")
+    proc = subprocess.Popen(video_cmd(drawn, fps, out, fades=not loop, dark=dark), stdin=subprocess.PIPE)
     total = int(round(drawn * fps))
     per = max(1, int(chunk_seconds * fps))
     bounds = [(n, min(total, n + per)) for n in range(0, total, per)]
@@ -288,7 +350,7 @@ def video_stage(theme, seconds: float, work: Path, spec: dict, workers: int = 2,
             for i, (n0, n1) in enumerate(bounds):
                 while nxt < len(bounds) and nxt < i + workers + 1:
                     futs[nxt] = pool.submit(render_chunk, spec["theme"], spec["seed"], spec["seconds"], spec["options"], spec["tracks"], *bounds[nxt],
-                                            seconds if loop else 0.0)
+                                            seconds if loop and not dark else 0.0)
                     nxt += 1
                 for k, raw in enumerate(futs.pop(i).result()):
                     ts = (n0 + k) / fps
@@ -305,25 +367,38 @@ def video_stage(theme, seconds: float, work: Path, spec: dict, workers: int = 2,
         rc = proc.wait()
     if rc != 0:
         raise RuntimeError(f"ffmpeg video encode failed with exit {rc}")
-    (work / "video.json").write_text(json.dumps({"frames": total, "loop_seconds": drawn if loop else 0,
+    if dark:
+        black_s = min(DARK_SEGMENT, max(10.0, (final_s or seconds) - drawn + 5.0))
+        subprocess.run(black_cmd(black_s, fps, work / "black.mp4"), check=True)
+        write_dark_list(work, drawn, final_s or seconds, black_s)
+    (work / "video.json").write_text(json.dumps({"frames": total, "loop_seconds": seconds if loop else 0, "dark_seconds": dark,
                                                  "seconds_of_work": round(time.time() - t0, 1)}))
 
 
 # ------------------------------------------------------------------------------------------------------------------------ mux
-def master_af(meas: dict) -> str:
+def master_af(meas: dict, limit_db: float = TARGET_TP, target: float = TARGET_LUFS) -> str:
     """A fixed gain to the loudness target and a limiter under the true-peak ceiling: what loudnorm's linear mode does, without its 192 kHz resample."""
-    gain = TARGET_LUFS - float(meas["input_i"])
-    return f"volume={gain:.2f}dB,alimiter=limit={10 ** (TARGET_TP / 20):.4f}:attack=5:release=50:level=0,aresample=48000"
+    gain = target - float(meas["input_i"])
+    return f"volume={gain:.2f}dB,alimiter=limit={10 ** (limit_db / 20):.4f}:attack=5:release=50:level=0,aresample=48000"
 
 
-def mux_cmd(work: Path, meas: dict, seconds: float, out: Path, title: str | None = None, loop: bool = False, fades: bool = False) -> list[str]:
+def true_peak(path: Path) -> float | None:
+    """True peak of a finished file's audio in dBTP (ebur128, 4x oversampled)."""
+    r = subprocess.run([FFMPEG, "-hide_banner", "-nostats", "-i", str(path), "-vn", "-af", "ebur128=peak=true:framelog=quiet", "-f", "null", "-"],
+                       capture_output=True, text=True)
+    m = re.findall(r"Peak:\s+(-?[\d.]+) dBFS", r.stderr[r.stderr.rfind("Summary:"):])
+    return float(m[-1]) if m else None
+
+
+def mux_cmd(work: Path, meas: dict, seconds: float, out: Path, title: str | None = None, loop: bool = False, fades: bool = False,
+            limit_db: float = TARGET_TP, target: float = TARGET_LUFS, video_in: list | None = None) -> list[str]:
     """The finished file. `loop`: repeat loop.mp4 (stream copy) and the PCM loop (raw samples, so the repeats join with no encoder gap) to `seconds`,
     with one AAC encode of the whole length. `fades`: an audio fade in and out at the ends of the full-length file."""
-    af = master_af(meas)
+    af = master_af(meas, limit_db, target)
     if fades:
         af += f",afade=t=in:d={FADE_IN_AUDIO},afade=t=out:st={max(0.0, seconds - FADE_OUT_AUDIO):.3f}:d={FADE_OUT_AUDIO}"
     rep = ["-stream_loop", "-1"] if loop else []
-    video = rep + ["-i", str(work / ("loop.mp4" if loop else "video.mp4"))]
+    video = video_in if video_in is not None else rep + ["-i", str(work / ("loop.mp4" if loop else "video.mp4"))]
     audio = rep + ["-f", "s16le", "-ar", str(SR), "-ac", "2", "-i", str(work / "audio.pcm")]
     cmd = [FFMPEG, "-hide_banner", "-loglevel", "warning", "-y", *video, *audio,
            "-map", "0:v:0", "-map", "1:a:0", "-c:v", "copy", "-af", af, "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-t", f"{seconds:.3f}",
@@ -340,19 +415,35 @@ def loop_path(out: Path, loop_s: float) -> Path:
 def mux_stage(work: Path, seconds: float, out: Path) -> None:
     """Writes under a temporary name and renames, so an interrupted mux leaves no finished-looking file. For a loop render it writes two files: the
     bare loop (`<name>-loop<L>min.mp4`, which plays seamlessly on repeat) and the full length."""
-    meas = json.loads((work / "audio.json").read_text())["loudnorm"]
+    aj = json.loads((work / "audio.json").read_text())
+    meas, target = aj["loudnorm"], float(aj.get("target_lufs", TARGET_LUFS))
     vj = work / "video.json"                                        # the finished picture says which file it is; a stale partial file never decides
-    loop_s = float(json.loads(vj.read_text()).get("loop_seconds") or 0) if vj.exists() else 0.0
+    vinfo = json.loads(vj.read_text()) if vj.exists() else {}
+    loop_s, dark = float(vinfo.get("loop_seconds") or 0), float(vinfo.get("dark_seconds") or 0)
     jobs = [(loop_path(out, loop_s), loop_s, False), (out, seconds, True)] if loop_s else [(out, seconds, False)]
-    for dest, length, fades in jobs:
+    limit_db = TARGET_TP
+    for k, (dest, length, fades) in enumerate(jobs):
         part = dest.with_name(dest.stem + ".part" + dest.suffix)
-        subprocess.run(mux_cmd(work, meas, length, part, loop=bool(loop_s), fades=fades), check=True)
+        video_in = None
+        if dark:                                                    # the bare loop shows the black clip; the full file is the dimming intro, then black
+            video_in = (["-f", "concat", "-safe", "0", "-i", str(work / "dark.txt")] if length == seconds
+                        else ["-stream_loop", "-1", "-i", str(work / "black.mp4")])
+        for _ in range(4):
+            subprocess.run(mux_cmd(work, meas, length, part, loop=bool(loop_s), fades=fades, limit_db=limit_db, target=target, video_in=video_in), check=True)
+            if k or not loop_s:
+                break
+            # sharp transients (fire crackle) can overshoot the limiter after AAC: measure the loop, pull the limiter down by the excess
+            tp = true_peak(part)
+            if tp is None or tp <= TARGET_TP + 0.8:
+                break
+            limit_db -= tp - TARGET_TP
+            log(f"loop true peak {tp:+.1f} dBTP; limiter lowered to {limit_db:.1f} dB")
         part.replace(dest)
 
 
 def clean_work(work: Path) -> None:
     """Removes the work files by name (never a pattern or a variable-rooted wildcard), then the folder if nothing else is in it."""
-    for name in ("mix.f32", "audio.pcm", "audio.json", "video.mp4", "loop.mp4", "video.json", "plan.json"):
+    for name in ("mix.f32", "audio.pcm", "audio.json", "video.mp4", "loop.mp4", "intro.mp4", "black.mp4", "dark.txt", "video.json", "plan.json"):
         p = work / name
         if p.is_file():
             p.unlink()
@@ -377,7 +468,7 @@ def build_theme(args, tracks=None):
         options["pomodoro"] = (f, b)
     if args.season:
         options["season"] = args.season
-    tracks = tracks if tracks is not None else plan_tracks(cls, seconds, args.seed)
+    tracks = tracks if tracks is not None else plan_tracks(cls, seconds, args.seed, music_cfg(cls, args.sound))
     return cls(args.seed, seconds, bpm_at=bpm_lookup(tracks), options=options), tracks, seconds
 
 
@@ -388,7 +479,12 @@ def main(argv=None) -> None:
     ap.add_argument("--seconds", type=float, default=0.0, help="a length in seconds instead of --hours (tests)")
     ap.add_argument("--out", required=True, help="the .mp4 to write (or a .png with --preview-frame)")
     ap.add_argument("--seed", type=int, default=None, help="changes the music, the events and the details of the scene; the default depends on the theme")
-    ap.add_argument("--no-music", action="store_true", help="ambience only: no chiptune")
+    ap.add_argument("--no-music", action="store_true", help="ambience only: no chiptune (same as a synthetic --sound, which never has music)")
+    ap.add_argument("--sound", default="chiptune", choices=sounds.NAMES,
+                    help="what plays: chiptune (the default), lofi, brown/pink/white noise, binaural-alpha/theta/delta, synth, rain, thunderstorm, fireplace, ocean, wind, fan, airplane")
+    ap.add_argument("--no-bed", action="store_true", help="drop the theme's ambience bed (fire, wind, crickets) from the sound")
+    ap.add_argument("--dark", type=float, default=0.0, metavar="SECONDS",
+                    help="dim the picture to near black after this many seconds (the sound goes on); for sleep videos")
     ap.add_argument("--pomodoro", default="", help="study themes only: draw a Pomodoro timer, FOCUS/BREAK minutes, for example 25/5")
     ap.add_argument("--season", default="", help="study theme: halloween, christmas or newyear decor")
     ap.add_argument("--workers", type=int, default=2, help="processes rendering music, and separately drawing frames, at once")
@@ -418,19 +514,23 @@ def main(argv=None) -> None:
     seconds = final
     work = out.parent / (out.name + ".work")
     work.mkdir(parents=True, exist_ok=True)
-    music = not a.no_music
+    music = sounds.spec(a.sound).musical and not a.no_music
+    if a.dark and loop_s and a.dark + DARK_FADE > loop_s:
+        sys.exit("--dark plus its 20 s fade must be shorter than the loop (--loop-min)")
+    kind = f"{a.sound} sound" if not sounds.spec(a.sound).musical else ("music + ambience" if music else "ambience only")
     log(f"{a.theme}: {seconds / 3600:.2f} h{f' from a {loop_s / 60:g} min loop' if loop_s else ''}, seed {a.seed}, "
-        f"{'music + ambience' if music else 'ambience only'}, {len(tracks)} tracks planned")
-    (work / "plan.json").write_text(json.dumps({"theme": a.theme, "seed": a.seed, "seconds": seconds, "music": music, "tracks": tracks if music else [],
+        f"{kind}{'' if not a.dark else f', dark after {a.dark:g} s'}, {len(tracks)} tracks planned")
+    (work / "plan.json").write_text(json.dumps({"theme": a.theme, "seed": a.seed, "seconds": seconds, "music": music, "sound": a.sound, "dark": a.dark, "tracks": tracks if music else [],
                                                 "events": theme.events}, indent=1))
     spec = {"theme": a.theme, "seed": a.seed, "options": theme.options, "tracks": tracks, "seconds": render_s}
     t0 = time.time()
 
     def do_audio():
-        audio_stage(theme, tracks, render_s, work, music, a.workers, bool(a.pomodoro), loop_tail=LOOP_XF if loop_s else 0.0)
+        audio_stage(theme, tracks, render_s, work, music, a.workers, bool(a.pomodoro), loop_tail=LOOP_XF if loop_s else 0.0,
+                    sound=a.sound, bed_on=not a.no_bed, seed=a.seed)
 
     def do_video():
-        video_stage(theme, loop_s or seconds, work, spec, a.workers, loop=bool(loop_s))
+        video_stage(theme, loop_s or seconds, work, spec, a.workers, loop=bool(loop_s), dark=a.dark, final_s=seconds)
 
     if a.stage == "audio":
         do_audio()
