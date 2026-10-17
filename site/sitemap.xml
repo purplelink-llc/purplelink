@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://purplelink.llc/about/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -20,7 +20,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/batterymeter/</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -38,7 +38,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/blog/checking-your-response-letter-before-resubmission/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>never</changefreq>
     <priority>0.7</priority>
   </url>
@@ -62,13 +62,13 @@
   </url>
   <url>
     <loc>https://purplelink.llc/blog/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/blog/keeping-up-when-your-research-crosses-fields/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>never</changefreq>
     <priority>0.7</priority>
   </url>
@@ -92,7 +92,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/blog/running-your-manuscript-through-paper-review/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>never</changefreq>
     <priority>0.7</priority>
   </url>
@@ -188,7 +188,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/changelog/</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -560,19 +560,19 @@
   </url>
   <url>
     <loc>https://purplelink.llc/guides/ai-paper-review-tools-compared/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/guides/ai-policy-checking-your-own-manuscript/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/guides/anonymity-check-double-blind-manuscript/</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -590,13 +590,13 @@
   </url>
   <url>
     <loc>https://purplelink.llc/guides/best-alfred-alternatives-for-mac/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/guides/best-chrome-extensions-for-google-scholar/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -620,7 +620,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/guides/best-mac-latex-editors/</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -674,7 +674,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/guides/check-mac-battery-health-voltage-and-cycle-count/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -686,25 +686,25 @@
   </url>
   <url>
     <loc>https://purplelink.llc/guides/check-response-letter-before-resubmitting/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/guides/check-revisions-addressed-findings/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/guides/check-thesis-formatting-before-submission/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/guides/citation-gap-scan-before-submitting/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -769,6 +769,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://purplelink.llc/guides/faculty-annual-report-import-faculty180-faculty-success/</loc>
+    <lastmod>2026-10-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://purplelink.llc/guides/find-files-on-mac-when-spotlight-cant/</loc>
     <lastmod>2026-10-14</lastmod>
     <changefreq>monthly</changefreq>
@@ -788,13 +794,13 @@
   </url>
   <url>
     <loc>https://purplelink.llc/guides/generate-journal-cover-letter/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/guides/get-feedback-on-a-paper-before-submitting/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -811,8 +817,20 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://purplelink.llc/guides/import-cv-and-publications-into-faculty-success/</loc>
+    <lastmod>2026-10-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://purplelink.llc/guides/import-publications-into-faculty180/</loc>
+    <lastmod>2026-10-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://purplelink.llc/guides/</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -908,13 +926,13 @@
   </url>
   <url>
     <loc>https://purplelink.llc/guides/overleaf-alternative-mac/</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/guides/overleaf-compile-timeout/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -938,7 +956,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/guides/review-resume-before-applying/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -1010,7 +1028,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/guides/use-paper-review-before-submitting/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -1034,13 +1052,13 @@
   </url>
   <url>
     <loc>https://purplelink.llc/</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/keyfeel/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -1072,7 +1090,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/labs/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -1156,13 +1174,13 @@
   </url>
   <url>
     <loc>https://purplelink.llc/legroom/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/moderntex/</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -1174,7 +1192,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/outbound-veil/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -1198,7 +1216,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/panely/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -1294,13 +1312,13 @@
   </url>
   <url>
     <loc>https://purplelink.llc/privacy/</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/products/</loc>
-    <lastmod>2026-10-13</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -1312,7 +1330,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/scholar-utility-belt/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -1324,7 +1342,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/security/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -1389,19 +1407,19 @@
   </url>
   <url>
     <loc>https://purplelink.llc/summonly/</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/support/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/tapefolio/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
@@ -1461,14 +1479,9 @@
   </url>
   <url>
     <loc>https://purplelink.llc/terms/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/tools/academic-email-signature/</loc>
-    <lastmod>2026-10-17</lastmod>
-    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/tools/abstract-checker/</loc>
@@ -1476,8 +1489,13 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://purplelink.llc/tools/academic-email-signature/</loc>
+    <lastmod>2026-10-17</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://purplelink.llc/tools/anonymity-check/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
@@ -1497,7 +1515,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/tools/citation-gap/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
@@ -1507,7 +1525,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/tools/cover-letter/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
@@ -1522,7 +1540,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/tools/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -1532,7 +1550,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/tools/latex-table-generator/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
@@ -1557,22 +1575,22 @@
   </url>
   <url>
     <loc>https://purplelink.llc/tools/paper-review/biomedicine/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/tools/paper-review/chemistry/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/tools/paper-review/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/tools/paper-review/machine-learning/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
@@ -1582,12 +1600,12 @@
   </url>
   <url>
     <loc>https://purplelink.llc/tools/paper-review/psychology/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/tools/paper-review/revision/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <priority>0.85</priority>
   </url>
   <url>
@@ -1622,12 +1640,12 @@
   </url>
   <url>
     <loc>https://purplelink.llc/tools/response-review/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/tools/resume-review/</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
@@ -1647,7 +1665,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/tools/transcript-cleaner/</loc>
-    <lastmod>2026-10-14</lastmod>
+    <lastmod>2026-10-16</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
@@ -1662,7 +1680,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/vitae/</loc>
-    <lastmod>2026-10-15</lastmod>
+    <lastmod>2026-10-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
