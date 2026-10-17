@@ -44,7 +44,7 @@ beforeEach(() => {
   globalThis.fetch = async (url, init = {}) => {
     const u = String(url);
     fetchCalls.push({ url: u, method: init.method || "GET", body: init.body });
-    if (u.includes("api.resend.com")) { sentMail.push(JSON.parse(init.body)); return new Response("{}", { status: 200 }); }
+    if (u.startsWith("https://api.resend.com/")) { sentMail.push(JSON.parse(init.body)); return new Response("{}", { status: 200 }); }
     if (u.endsWith("/billing_portal/configurations")) return new Response(JSON.stringify({ id: "bpc_1" }), { status: 200 });
     if (u.endsWith("/billing_portal/sessions")) return new Response(JSON.stringify({ url: "https://billing.stripe.com/p/session/abc" }), { status: 200 });
     if (u.includes("/checkout/sessions/")) {
