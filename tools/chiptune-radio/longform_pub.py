@@ -155,7 +155,8 @@ DISCLOSURE = {
 }
 
 
-def build_metadata(theme_name: str, seconds: float, slug: str, music: bool, pomodoro: bool, seed: int, tracks: list | None = None) -> dict:
+def build_metadata(theme_name: str, seconds: float, slug: str, music: bool, pomodoro: bool, seed: int, tracks: list | None = None,
+                   loop_min: float = 0.0) -> dict:
     cls = themes.get(theme_name)
     cp = COPY[theme_name]
     dur = hours_text(seconds)
@@ -171,6 +172,8 @@ def build_metadata(theme_name: str, seconds: float, slug: str, music: bool, pomo
     else:
         lines += ["There is no music. A program synthesises every sound (fire, wind, crickets) from noise and sine waves and draws the picture. "
                   "Nothing in this video is sampled, recorded, or taken from a sound or image library.", ""]
+    if loop_min:
+        lines += [f"The picture and sound are one {loop_min:g} minute loop, joined so it repeats without a gap, and played for the full {dur.lower()}.", ""]
     lines += [f"Good for {cp['use']}. It is a fixed-length video that ends with a fade.", ""]
     chapters = []
     if pomodoro:
@@ -239,8 +242,14 @@ def extract_frames(video: Path, out_dir: Path, slug: str, duration: float, fract
     return paths
 
 
-def verify(video: Path, frames_dir: Path | None, slug: str, fade_allowance: float = 12.0) -> dict:
+def verify(video: Path, frames_dir: Path | None, slug: str, fade_allowance: float = 12.0, quick: bool = False) -> dict:
     info = probe(video)
+    if quick:
+        report = {"file": video.name, **info, "quick": True,
+                  "checks": {"1080p": (info["width"], info["height"]) == (1920, 1080), "h264": info["video_codec"] == "h264", "aac": info["audio_codec"] == "aac"}}
+        if frames_dir is not None:
+            report["frames"] = extract_frames(video, frames_dir, slug, info["duration"])
+        return report
     loud = loudness_and_silence(video)
     bad = [s for s in loud["silences"] if s["duration"] is None or s["start"] < info["duration"] - fade_allowance]
     report = {"file": video.name, **info, **{k: loud[k] for k in ("integrated_lufs", "lra", "true_peak_dbtp")},
@@ -262,6 +271,7 @@ def _common(ap):
     ap.add_argument("--no-music", action="store_true")
     ap.add_argument("--pomodoro", default="")
     ap.add_argument("--season", default="")
+    ap.add_argument("--loop-min", type=float, default=0.0)
 
 
 def main(argv=None) -> None:
@@ -278,10 +288,11 @@ def main(argv=None) -> None:
     v.add_argument("--video", required=True)
     v.add_argument("--frames-dir")
     v.add_argument("--out")
+    v.add_argument("--quick", action="store_true", help="format, length and frames only; skip the loudness and silence pass (for a long file made of a verified loop)")
     a = ap.parse_args(argv)
     if a.cmd == "verify":
         video = Path(a.video)
-        rep = verify(video, Path(a.frames_dir) if a.frames_dir else None, video.stem)
+        rep = verify(video, Path(a.frames_dir) if a.frames_dir else None, video.stem, quick=a.quick)
         text = json.dumps(rep, indent=2)
         if a.out:
             Path(a.out).write_text(text)
@@ -296,8 +307,10 @@ def main(argv=None) -> None:
         p = make_thumbnail(a.theme, seconds, seed, Path(a.out), options, music=not a.no_music)
         print(p, p.stat().st_size)
     else:
-        tracks = lf.plan_tracks(themes.get(a.theme), seconds, seed) if not a.no_music else []
-        meta = build_metadata(a.theme, seconds, a.slug, not a.no_music, bool(a.pomodoro), seed, tracks)
+        loop_min = a.loop_min if 0 < a.loop_min * 60 < seconds else 0.0
+        music_s = loop_min * 60 + lf.LOOP_XF if loop_min else seconds   # a loop render composes only the loop's tracks
+        tracks = lf.plan_tracks(themes.get(a.theme), music_s, seed) if not a.no_music else []
+        meta = build_metadata(a.theme, seconds, a.slug, not a.no_music, bool(a.pomodoro), seed, tracks, loop_min)
         Path(a.out).write_text(json.dumps(meta, indent=2) + "\n")
         print(meta["title"])
 
