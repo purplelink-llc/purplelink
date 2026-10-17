@@ -221,6 +221,17 @@ class Dashboard(unittest.TestCase):
         self.assertIn("none yet", out)
         td.print_marketplaces(s)
 
+    def test_rerender_keeps_newer_api_reading(self):
+        old = (NOW - dt.timedelta(days=8)).isoformat()
+        td.MARKETPLACES_PATH.write_text(json.dumps({"orders": {}, "asOf": {"gumroad": old},
+                                                     "status": {"gumroad": "ok"}, "errors": []}))
+        hist = {"ledger": {}, "marketplaceMeta": {"gumroad": {"asOf": NOW.isoformat(), "status": "ok", "api": "ok"}}}
+        td.marketplace_step(hist, {}, fetch=False)
+        self.assertEqual(hist["marketplaceMeta"]["gumroad"]["asOf"], NOW.isoformat())
+        hist["marketplaceMeta"]["gumroad"]["asOf"] = (NOW - dt.timedelta(days=9)).isoformat()
+        td.marketplace_step(hist, {}, fetch=False)                  # a newer browser reading still wins
+        self.assertEqual(hist["marketplaceMeta"]["gumroad"]["asOf"], old)
+
     def test_stale_reading_is_a_gap(self):
         old = (NOW - dt.timedelta(days=5)).isoformat()
         hist = {"marketplaceMeta": {"etsy": {"asOf": old, "status": "ok"},
