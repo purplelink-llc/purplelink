@@ -24,7 +24,14 @@ test("the address is HTML-escaped on the confirmation page", async () => {
   const email = `x"><img src=x onerror=alert(1)>@example.com`;
   const token = createHmac("sha256", process.env.SUBSCRIBE_SECRET).update(email).digest("hex");
   const url = `https://purplelink.llc/.netlify/functions/unsubscribe?email=${encodeURIComponent(email)}&token=${token}`;
-  const res = await unsubscribe(new Request(url));
+  // GET only shows the confirm page (it must not delete); the escaping applies there and after the POST.
+  const confirm = await unsubscribe(new Request(url));
+  const confirmHtml = await confirm.text();
+  assert.equal(confirm.status, 200);
+  assert.equal(confirmHtml.includes("<img src=x"), false);
+  assert.ok(confirmHtml.includes("&lt;img src=x onerror=alert(1)&gt;@example.com"));
+  assert.deepEqual(deleted, []);
+  const res = await unsubscribe(new Request(url, { method: "POST" }));
   const html = await res.text();
   assert.equal(res.status, 200);
   assert.equal(html.includes("<img src=x"), false);
