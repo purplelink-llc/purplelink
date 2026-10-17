@@ -164,6 +164,17 @@ def main():
     ap.add_argument("--ab-thumbnails", nargs=3, metavar=("A", "B", "C"),
                     help="three thumbnails for a Test & Compare test started after publishing (long-form public videos; A is the control)")
     a = ap.parse_args()
+    # Studio needs a browser-wide channel switch, which is how content could reach the wrong channel. It is kept for
+    # Purplelink only; every other channel goes through the API with its own token (scripts/yt-api-upload.py).
+    import yt_guard  # lazy: ~/.purplelink/yt-abtest holds a copy of this file that only imports its helpers
+    try:
+        purplelink_id = yt_guard.load_registry()["purplelink"]["id"]
+    except (yt_guard.ChannelGuardError, KeyError) as e:
+        print(f"CHANNEL GUARD: cannot read the Purplelink id from scripts/yt-channels.json ({e}); not uploading", file=sys.stderr)
+        sys.exit(3)
+    if a.channel != purplelink_id:
+        print("Studio uploads are Purplelink-only; use yt-api-upload.py for other channels", file=sys.stderr)
+        sys.exit(3)
     path = os.path.abspath(a.file)
     if not os.path.isfile(path):
         sys.exit(f"no such file: {path}")

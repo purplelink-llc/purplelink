@@ -112,6 +112,33 @@ Never publish it without Ben's approval of that specific video; `scripts/yt-uplo
 
 Output: `out/latex-errors/<slug>/<slug>-16x9.mp4`, `-9x16.mp4`, `-poster.jpg`, `frames/`. Code is 36 px in both formats. In 9:16 the log's continuation line keeps its text but is indented less so it fits the panel, and long source lines soft-wrap. The build fails if narration overlaps a bumper and warns outside 20 to 25 s. Run one build at a time.
 
+## YouTube API uploads and the channel guard
+
+Content must never land on the wrong channel, so every channel other than Purplelink uploads through the Data API with
+its own OAuth token, not through Studio (Studio needs a browser-wide channel switch).
+
+- **Registry:** `scripts/yt-channels.json` is the only place a channel is defined: id, title, token path, the content
+  kinds it may carry, a default category and `confirmed`. New channels are added to the registry only, never hard-coded
+  in a script. An entry is used only while `"confirmed": true` (Ben has checked the id). Kinds today: Purplelink
+  `howto, howto-short, product, tutorial, latex`; Pixel Hearth `ambient, photo-quiz`.
+- **Tokens** live in `~/.config/purplelink/yt_token_<channel>.json` (chmod 600), never in this public repo; the registry
+  loader refuses a token path inside the repo. The OAuth client secret is `~/.tiktok_pipeline/youtube_client_secret.json`.
+- **Login:** `python3 scripts/yt-login.py --channel pixelhearth` opens the browser; choose the named channel when Google
+  asks which account or channel. The token is saved (atomically) only if `channels.list(mine=True)` returns exactly that
+  registry id; otherwise nothing is written and the exit code is 3.
+- **Upload:** `python3 scripts/yt-api-upload.py --channel pixelhearth --kind ambient FILE --title "..." [--description-file F]
+  [--tags a,b] [--category N] [--privacy public|unlisted|private] [--publish-at ISO] [--thumbnail F] [--not-synthetic]
+  [--dry-run]`. Default privacy is unlisted. Ambient and photo-quiz uploads are marked as synthetic media unless
+  `--not-synthetic`. It prints the URL and `verified channel: <id> (<title>)`.
+- **The checks** (`scripts/yt_guard.py`, all raise `ChannelGuardError`, exit 3): the kind must be in the channel's list
+  (before any API call); the token's channel must be exactly the registry id (before any insert); after the insert,
+  `videos.list` must report the registry channel, or the video is set Private at once, a macOS notification appears, and
+  the upload fails. A video with the same title uploaded to that channel in the last 24 h is returned instead of
+  uploaded again. One upload runs at a time (`~/.purplelink/yt-upload.lock`). Other exit codes: 1 failed, 2 bad
+  arguments, 4 YouTube quota or upload cap. Every insert is Private: the requested public or unlisted visibility is set only
+  after the channel check passes, so a video is never visible anywhere before its channel is verified.
+- `scripts/yt-upload.py` (Studio) now refuses any `--channel` other than the Purplelink id (exit 3).
+
 ## YouTube thumbnails
 
 `src/Thumb.jsx` (composition `Thumb`, 1280x720) has three templates: `error` (the LaTeX error as the log prints it, plus
