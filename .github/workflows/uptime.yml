@@ -1,0 +1,39 @@
+name: Uptime
+
+# Every 15 minutes: probe the site, the Netlify functions, Stripe webhook reachability and both Modal
+# backends (scripts/uptime-checks.txt). A check that fails twice, 60 seconds apart, opens or updates one
+# GitHub issue labelled "uptime"; it closes itself when everything passes. Uses only GITHUB_TOKEN.
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: uptime
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          sparse-checkout: scripts
+          sparse-checkout-cone-mode: true
+      - name: Probe
+        id: probe
+        run: bash scripts/uptime_check.sh
+        continue-on-error: true
+      - name: Open, update or close the uptime issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash scripts/uptime_issue.sh uptime-failed.txt
+      - name: Fail the run when a check failed
+        if: steps.probe.outcome == 'failure'
+        run: exit 1

@@ -21,7 +21,7 @@ app = modal.App("purplelink-citation-mcp")
 image = (
     modal.Image.debian_slim(python_version="3.11")
     .pip_install(
-        "mcp==1.28.1",
+        "mcp==1.30.0",
         "httpx==0.27.2",
         "bibtexparser>=1.3,<2",
     )

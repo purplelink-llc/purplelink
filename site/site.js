@@ -146,7 +146,7 @@
 
       if (res.ok) {
         const data = await res.json().catch(() => ({}));
-        status.textContent = "Subscribed. You'll get the next issue in your inbox.";
+        status.textContent = "Check your email to confirm. You'll get the next issue after you click the link.";
         status.classList.add("subscribe-status--ok");
         form.reset();
         if (data.referralCode) {
@@ -921,7 +921,7 @@
         status.appendChild(document.createTextNode("."));
       }
     };
-    const done = () => {
+    const done = (already) => {
       // Hold the height so nothing below the block jumps when the form goes.
       box.style.minHeight = box.offsetHeight + "px";
       box.classList.add("is-done");
@@ -929,7 +929,9 @@
         if (child !== status && !child.matches(".list-signup-head")) child.remove();
       });
       status.classList.remove("is-error");
-      status.textContent = "Sent. Check your inbox. You can also ";
+      status.textContent = already
+        ? "That address already got the checklist today. Check your inbox. You can also "
+        : "Check your email to confirm. The checklist is sent when you click the link. You can also ";
       status.appendChild(pdfLink("download it now"));
       status.appendChild(document.createTextNode("."));
       status.setAttribute("tabindex", "-1");
@@ -959,8 +961,9 @@
           body: JSON.stringify({ email, page: location.pathname, website: form.website.value }),
         });
         if (!r.ok) throw new Error(String(r.status));
+        const data = await r.json().catch(() => ({}));
         remember();
-        done();
+        done(!!data.already);
         if (window.plTrack) window.plTrack("checklist_signup", "");
       } catch (err) {
         btn.disabled = false;
