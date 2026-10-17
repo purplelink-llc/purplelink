@@ -52,11 +52,11 @@ function json(status, body) {
   });
 }
 
-function csvCell(v) {
+export function csvCell(v) {
   if (v === null || v === undefined) return "";
   let s = String(v).replace(/\r?\n/g, " ").trim();
   // A value a spreadsheet would read as a formula must stay text.
-  if (/^[=+@]/.test(s)) s = " " + s;
+  if (/^[=+\-@\t\r]/.test(s)) s = " " + s;
   return /[",]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
 

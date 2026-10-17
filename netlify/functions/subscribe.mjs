@@ -23,6 +23,13 @@
  */
 import { getStore } from "@netlify/blobs"
 import { createHmac } from "node:crypto"
+import { clientIp, overDailyLimit } from "../lib/ratelimit.mjs"
+
+// Abuse limits (security baseline 2026-10-16). Generous for a real person on a shared
+// network; they stop a script from filling the list or mailing one address repeatedly.
+export const PER_IP_DAILY = 30
+export const PER_EMAIL_DAILY = 5
+const ALLOWED_ORIGINS = new Set(["https://purplelink.llc", "https://www.purplelink.llc"])
 
 function json(status, body) {
   return new Response(JSON.stringify(body), {
@@ -40,6 +47,16 @@ export default async function handler(request) {
     return json(405, { error: "method_not_allowed" })
   }
 
+  // A browser on another site sends its own Origin; curl and same-origin posts may send none.
+  const origin = request.headers.get("origin")
+  if (origin && !ALLOWED_ORIGINS.has(origin)) {
+    const preview = [process.env.DEPLOY_PRIME_URL, process.env.DEPLOY_URL]
+    if (!preview.includes(origin)) return json(403, { error: "forbidden_origin" })
+  }
+  if (await overDailyLimit("subscribe-ip", clientIp(request), PER_IP_DAILY)) {
+    return json(429, { error: "rate_limited" })
+  }
+
   let body
   try {
     body = await request.json()
@@ -48,8 +65,11 @@ export default async function handler(request) {
   }
 
   const email = (body?.email ?? "").toLowerCase().trim()
-  if (!email || !/^[^\s@<>"`\\]+@[^\s@<>"`\\]+\.[^\s@<>"`\\]+$/.test(email)) {
+  if (!email || email.length > 254 || !/^[^\s@<>"`\\]+@[^\s@<>"`\\]+\.[^\s@<>"`\\]+$/.test(email)) {
     return json(400, { error: "invalid_email" })
+  }
+  if (await overDailyLimit("subscribe-email", email, PER_EMAIL_DAILY)) {
+    return json(429, { error: "rate_limited" })
   }
   const refCode = typeof body?.ref === "string" ? body.ref.trim().slice(0, 32) : ""
 
