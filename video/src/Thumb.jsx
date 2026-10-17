@@ -7,6 +7,7 @@ import { Backdrop, useFonts } from "./V2.jsx";
 //   error    - one LaTeX error or warning, as it reads in the log, with "How to fix it" (the series)
 //   long     - an error plus a numbered promise ("5 causes") that the video keeps
 //   split    - before and after: the error, an arrow, the page that compiles (a Test & Compare variant)
+//   (error and long take `pill` to label a non-LaTeX problem, e.g. "Homebrew cache")
 //   product  - an app's real screen (site screenshot or a frame of its own promo) with a 2-4 word outcome
 // Rules (research 2026-10-14): show only what the video shows; 1-5 words of display text; large type that reads at
 // 168x94; no prices (they go stale); the bottom-right corner (x > 1080, y > 620) stays empty for the duration stamp.
@@ -47,13 +48,13 @@ function Pill({ text, color }) {
   );
 }
 
-function ErrorThumb({ level = "error", msg }) {
+function ErrorThumb({ level = "error", msg, pill }) {
   const size = fit(msg, [[12, 140], [18, 124], [26, 106], [36, 90], [48, 76], [99, 64]]);
   const tone = level === "warning" ? WARN : ERR;
   return (
     <Dark>
       <div style={{ position: "absolute", left: 80, top: 70, right: 80, display: "grid", gap: 34 }}>
-        <Pill text={level === "warning" ? "LaTeX warning" : "LaTeX error"} color={tone} />
+        <Pill text={pill || (level === "warning" ? "LaTeX warning" : "LaTeX error")} color={tone} />
         <div style={{ fontFamily: MONO, fontWeight: 700, fontSize: size, lineHeight: 1.12, color: CODE, letterSpacing: "-0.02em", wordBreak: "break-word" }}>
           <span style={{ color: tone }}>! </span>{msg}
         </div>
@@ -66,11 +67,11 @@ function ErrorThumb({ level = "error", msg }) {
   );
 }
 
-function LongThumb({ msg, n = 5, unit = "causes", sub = "and the fix for each" }) {
+function LongThumb({ msg, n = 5, unit = "causes", sub = "and the fix for each", pill = "LaTeX error" }) {
   return (
     <Dark>
       <div style={{ position: "absolute", left: 80, top: 70, width: 700, display: "grid", gap: 30 }}>
-        <Pill text="LaTeX error" color={ERR} />
+        <Pill text={pill} color={ERR} />
         <div style={{ fontFamily: MONO, fontWeight: 700, fontSize: fit(msg, [[14, 104], [22, 86], [99, 68]]), lineHeight: 1.1, color: CODE, letterSpacing: "-0.02em" }}>
           <span style={{ color: ERR }}>! </span>{msg}
         </div>
