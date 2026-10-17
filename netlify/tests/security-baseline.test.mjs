@@ -20,6 +20,7 @@ try { mock.module("@netlify/blobs", { exports: blobsModule }); } catch { mock.mo
 const env = { STRIPE_SECRET_KEY: "sk_test_dummy", INDEXNOW_WEBHOOK_TOKEN: "right-token", SUBSCRIBE_SECRET: "s3cret-for-tests" };
 globalThis.Netlify = { env: { get: (k) => env[k] } };
 process.env.SUBSCRIBE_SECRET = env.SUBSCRIBE_SECRET;
+process.env.RESEND_API_KEY = "re_dummy";
 
 const { default: subscribe, PER_IP_DAILY, PER_EMAIL_DAILY } = await import("../functions/subscribe.mjs");
 const { default: kit, DAILY_LIMIT: KIT_LIMIT } = await import("../functions/kit-download.mjs");
@@ -34,6 +35,7 @@ beforeEach(() => {
   stripeCalls = 0;
   globalThis.fetch = async (url) => {
     if (String(url).startsWith("https://api.stripe.com/")) { stripeCalls++; return new Response("{}", { status: 404 }); }
+    if (String(url).startsWith("https://api.resend.com/")) return new Response("{}", { status: 200 });
     throw new Error(`Unexpected fetch to ${url}`);
   };
 });
@@ -47,7 +49,8 @@ const sub = (email, { ip = "203.0.113.5", origin } = {}) => subscribe(new Reques
 test("subscribe: a normal sign-up works, with or without an Origin header", async () => {
   assert.equal((await sub("a@example.com")).status, 200);
   assert.equal((await sub("b@example.com", { origin: "https://purplelink.llc" })).status, 200);
-  assert.ok(blobs.has("subscribers/a@example.com"));
+  // Double opt-in: a request stores nothing until the address confirms (confirm-signup.test.mjs).
+  assert.equal(blobs.has("subscribers/a@example.com"), false);
 });
 
 test("subscribe: a foreign Origin is refused and nothing is stored", async () => {
