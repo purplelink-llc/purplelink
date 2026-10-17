@@ -162,3 +162,14 @@ def test_metadata_is_plain_and_honest(name, music, pomo):
     assert "#" in m["description"] and sum(len(t) for t in m["tags"]) < 480
     assert bool(m["chapters"]) == pomo
     json.dumps(m)
+
+
+def test_a_looped_picture_fills_the_full_length_with_unique_sound(tmp_path):
+    out = tmp_path / "loop.mp4"
+    lf.main(["--theme", "campfire", "--seconds", "24", "--no-music", "--video-loop", "0.1", "--out", str(out)])   # a 6 s picture, 4 times
+    rep = pub.verify(out, tmp_path / "frames", "loop")
+    assert abs(rep["duration"] - 24) < 0.3 and rep["width"] == 1920 and rep["fps"] == "30/1"
+    assert abs(rep["integrated_lufs"] + 14.0) <= 0.7, rep
+    assert not (tmp_path / "loop.mp4.work" / "loop.mp4").exists()
+    v = " ".join(lf.video_cmd(360, 10, __import__("pathlib").Path("l.mp4"), fades=False))
+    assert "fade" not in v

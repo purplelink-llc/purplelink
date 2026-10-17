@@ -228,8 +228,9 @@ def audio_stage(theme, tracks, seconds, work: Path, music: bool, workers: int, p
 
 
 # ------------------------------------------------------------------------------------------------------------------------ video
-def video_cmd(seconds: float, fps: int, out: Path) -> list[str]:
-    fade = (f"fps=30,fade=t=in:st=0:d={FADE_IN_VIDEO},fade=t=out:st={max(0.0, seconds - FADE_OUT_VIDEO):.3f}:d={FADE_OUT_VIDEO},format=yuv420p")
+def video_cmd(seconds: float, fps: int, out: Path, fades: bool = True) -> list[str]:
+    fade = (f"fps=30,fade=t=in:st=0:d={FADE_IN_VIDEO},fade=t=out:st={max(0.0, seconds - FADE_OUT_VIDEO):.3f}:d={FADE_OUT_VIDEO},format=yuv420p"
+            if fades else "fps=30,format=yuv420p")
     return [FFMPEG, "-hide_banner", "-loglevel", "warning", "-y",
             "-f", "rawvideo", "-pix_fmt", "rgb24", "-video_size", f"{VIDEO_SIZE[0]}x{VIDEO_SIZE[1]}", "-framerate", str(fps), "-i", "pipe:0",
             "-vf", fade, "-c:v", "libx264", "-preset", "veryfast", "-tune", "animation", "-crf", "19", "-profile:v", "high", "-level", "4.1",
@@ -250,14 +251,17 @@ def render_chunk(theme_name: str, seed: int, seconds: float, options: dict, trac
     return [th.frame(n / th.fps).tobytes() for n in range(n0, n1)]
 
 
-def video_stage(theme, seconds: float, work: Path, spec: dict, workers: int = 2, chunk_seconds: float = 30.0) -> None:
+def video_stage(theme, seconds: float, work: Path, spec: dict, workers: int = 2, chunk_seconds: float = 30.0, loop_s: float = 0.0) -> None:
     """Draws the frames in worker processes (a chunk of `chunk_seconds` each, handed back in order), enlarges each exactly 6x here, draws any overlay,
-    and pipes it to x264."""
+    and pipes it to x264. With `loop_s` only the first `loop_s` seconds are drawn (no fades) and repeated to the full length by stream copy, with no
+    re-encode: about seconds/loop_s times less drawing. The audio stays unique for the whole length and carries the fade in and out."""
     fps = theme.fps
     assert 30 % fps == 0, "the video rate must divide 30 so every frame is shown the same number of times"
-    out = work / "video.mp4"
-    proc = subprocess.Popen(video_cmd(seconds, fps, out), stdin=subprocess.PIPE)
-    total = int(round(seconds * fps))
+    looping = 0 < loop_s < seconds
+    drawn = loop_s if looping else seconds
+    out = work / ("loop.mp4" if looping else "video.mp4")
+    proc = subprocess.Popen(video_cmd(drawn, fps, out, fades=not looping), stdin=subprocess.PIPE)
+    total = int(round(drawn * fps))
     per = max(1, int(chunk_seconds * fps))
     bounds = [(n, min(total, n + per)) for n in range(0, total, per)]
     t0 = time.time()
@@ -275,7 +279,7 @@ def video_stage(theme, seconds: float, work: Path, spec: dict, workers: int = 2,
                     theme.overlay(hd, ts)
                     proc.stdin.write(hd.tobytes())
                 el = time.time() - t0
-                log(f"video: {n1 / fps / 60:.0f} of {seconds / 60:.0f} min drawn, {el / (n1 / fps / 3600):.0f} s of work per hour of video so far")
+                log(f"video: {n1 / fps / 60:.0f} of {drawn / 60:.0f} min drawn, {el / (n1 / fps / 3600):.0f} s of work per hour of video so far")
     finally:
         try:
             proc.stdin.close()
@@ -284,7 +288,13 @@ def video_stage(theme, seconds: float, work: Path, spec: dict, workers: int = 2,
         rc = proc.wait()
     if rc != 0:
         raise RuntimeError(f"ffmpeg video encode failed with exit {rc}")
-    (work / "video.json").write_text(json.dumps({"frames": total, "seconds_of_work": round(time.time() - t0, 1)}))
+    if looping:
+        subprocess.run([FFMPEG, "-hide_banner", "-loglevel", "warning", "-y", "-stream_loop", "-1", "-i", str(out),
+                        "-t", f"{seconds:.3f}", "-c", "copy", str(work / "video.mp4")], check=True)
+        out.unlink()
+        log(f"video: {drawn / 60:.0f} min loop repeated to {seconds / 60:.0f} min")
+    (work / "video.json").write_text(json.dumps({"frames": total, "loop_seconds": drawn if looping else 0,
+                                                 "seconds_of_work": round(time.time() - t0, 1)}))
 
 
 # ------------------------------------------------------------------------------------------------------------------------ mux
@@ -302,12 +312,14 @@ def mux_cmd(work: Path, meas: dict, seconds: float, out: Path, title: str | None
 
 def mux_stage(work: Path, seconds: float, out: Path) -> None:
     meas = json.loads((work / "audio.json").read_text())["loudnorm"]
-    subprocess.run(mux_cmd(work, meas, seconds, out), check=True)
+    part = out.with_name(out.stem + ".part" + out.suffix)          # written under a temporary name, so an interrupted mux leaves no finished-looking file
+    subprocess.run(mux_cmd(work, meas, seconds, part), check=True)
+    part.replace(out)
 
 
 def clean_work(work: Path) -> None:
     """Removes the work files by name (never a pattern or a variable-rooted wildcard), then the folder if nothing else is in it."""
-    for name in ("mix.f32", "audio.pcm", "audio.json", "video.mp4", "video.json", "plan.json"):
+    for name in ("mix.f32", "audio.pcm", "audio.json", "video.mp4", "loop.mp4", "video.json", "plan.json"):
         p = work / name
         if p.is_file():
             p.unlink()
@@ -349,6 +361,7 @@ def main(argv=None) -> None:
     ap.add_argument("--workers", type=int, default=2, help="processes rendering music, and separately drawing frames, at once")
     ap.add_argument("--stage", choices=["all", "audio", "video", "mux"], default="all")
     ap.add_argument("--keep-work", action="store_true")
+    ap.add_argument("--video-loop", type=float, default=0.0, help="draw only this many minutes of picture and repeat it (the music stays unique)")
     ap.add_argument("--preview-frame", type=float, default=None, help="write one frame at this many seconds to --out as a PNG and stop")
     a = ap.parse_args(argv)
     if a.seed is None:
@@ -375,7 +388,7 @@ def main(argv=None) -> None:
         audio_stage(theme, tracks, seconds, work, music, a.workers, bool(a.pomodoro))
         return
     if a.stage == "video":
-        video_stage(theme, seconds, work, spec, a.workers)
+        video_stage(theme, seconds, work, spec, a.workers, loop_s=a.video_loop * 60)
         return
     if a.stage == "mux":
         mux_stage(work, seconds, out)
@@ -387,7 +400,7 @@ def main(argv=None) -> None:
         cmd = [sys.executable, str(Path(__file__).resolve())] + [x for x in (argv if argv is not None else sys.argv[1:])] + ["--stage", "audio"]
         child = subprocess.Popen(cmd)
     if not (work / "video.json").exists():
-        video_stage(theme, seconds, work, spec, a.workers)
+        video_stage(theme, seconds, work, spec, a.workers, loop_s=a.video_loop * 60)
     if child is not None and child.wait() != 0:
         sys.exit("the audio stage failed")
     mux_stage(work, seconds, out)
