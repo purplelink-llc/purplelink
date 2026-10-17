@@ -36,7 +36,13 @@ image = (
     .apt_install("poppler-utils")
     .apt_install("ghostscript")
     .pip_install(
-        "fastapi[standard]==0.115.2",
+        # Web stack pinned explicitly so the resolved starlette and multipart are known and scannable
+        # (security baseline 2026-10-16: fastapi 0.115.2 forced starlette 0.40.0 with open advisories).
+        "fastapi[standard]==0.143.3",
+        "starlette==1.8.0",
+        "python-multipart==0.0.32",
+        "anyio>=4.14.2",
+        "idna>=3.15",
         "python-docx==1.1.2",
         "lxml>=6.1.0,<7",
         "bibtexparser>=1.3,<2",
