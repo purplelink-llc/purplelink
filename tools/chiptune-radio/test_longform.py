@@ -123,7 +123,9 @@ def test_ffmpeg_commands_ask_for_the_right_file():
     assert "1920x1080" in v and "libx264" in v and "fps=30" in v and "-r 30" in v and "fade=t=out:st=7195.000" in v and "-an" in v
     meas = {"input_i": "-20.1", "input_tp": "-5.0", "input_lra": "4.0", "input_thresh": "-30.0", "target_offset": "0.2"}
     m = " ".join(lf.mux_cmd(Path("w"), meas, 7200, Path("o.mp4")))
-    assert "-c:v copy" in m and "-c:a aac" in m and "192k" in m and "+faststart" in m and "linear=true" in m and "I=-14.0" in m and "-ar 48000" in m
+    assert "-c:v copy" in m and "-c:a aac" in m and "192k" in m and "+faststart" in m and "volume=6.10dB" in m and "alimiter" in m and "-ar 48000" in m
+    assert "loudnorm" not in m and "-stream_loop" not in m
+    assert "-stream_loop -1" in " ".join(lf.mux_cmd(Path("w"), meas, 7200, Path("o.mp4"), loop=True))
 
 
 def test_a_short_ambience_render_meets_the_loudness_and_format_targets(tmp_path):

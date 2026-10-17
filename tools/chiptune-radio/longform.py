@@ -209,14 +209,15 @@ def build_audio(theme, tracks: list[dict], seconds: float, work: Path, music: bo
 
 
 def measure_loudness(pcm: Path) -> dict:
-    """ffmpeg's loudnorm in measuring mode: the numbers the second pass needs."""
+    """Integrated loudness of the pre-master with ffmpeg's ebur128 meter, one pass at the file's own rate. (loudnorm resamples everything to 192 kHz,
+    which took hours on a two-hour file.) The mux applies a fixed gain to the target and a limiter, which is what loudnorm's linear mode does."""
     cmd = [FFMPEG, "-hide_banner", "-nostats", "-f", "s16le", "-ar", str(SR), "-ac", "2", "-i", str(pcm),
-           "-af", f"loudnorm=I={TARGET_LUFS}:TP={TARGET_TP}:LRA={TARGET_LRA}:print_format=json", "-f", "null", "-"]
+           "-af", "ebur128=framelog=quiet", "-f", "null", "-"]
     r = subprocess.run(cmd, capture_output=True, text=True)
-    m = re.search(r"\{[^{}]*\"input_i\"[^{}]*\}", r.stderr, re.S)
+    m = re.findall(r"I:\s+(-?[\d.]+) LUFS", r.stderr)
     if not m:
-        raise RuntimeError("could not read loudnorm's measurement:\n" + r.stderr[-800:])
-    return json.loads(m.group(0))
+        raise RuntimeError("could not read the ebur128 measurement:\n" + r.stderr[-800:])
+    return {"input_i": m[-1], "method": "ebur128"}
 
 
 def audio_stage(theme, tracks, seconds, work: Path, music: bool, workers: int, pomodoro: bool) -> None:
@@ -224,7 +225,7 @@ def audio_stage(theme, tracks, seconds, work: Path, music: bool, workers: int, p
     meas = measure_loudness(work / "audio.pcm")
     stats["loudnorm"] = meas
     (work / "audio.json").write_text(json.dumps(stats, indent=1))
-    log(f"audio done: pre-master {meas['input_i']} LUFS, true peak {meas['input_tp']} dBTP, LRA {meas['input_lra']}")
+    log(f"audio done: pre-master {meas['input_i']} LUFS, sample peak {stats['peak']:.3f}")
 
 
 # ------------------------------------------------------------------------------------------------------------------------ video
@@ -289,21 +290,20 @@ def video_stage(theme, seconds: float, work: Path, spec: dict, workers: int = 2,
     if rc != 0:
         raise RuntimeError(f"ffmpeg video encode failed with exit {rc}")
     if looping:
-        subprocess.run([FFMPEG, "-hide_banner", "-loglevel", "warning", "-y", "-stream_loop", "-1", "-i", str(out),
-                        "-t", f"{seconds:.3f}", "-c", "copy", str(work / "video.mp4")], check=True)
-        out.unlink()
-        log(f"video: {drawn / 60:.0f} min loop repeated to {seconds / 60:.0f} min")
+        log(f"video: {drawn / 60:.0f} min loop drawn; the mux repeats it to {seconds / 60:.0f} min")
     (work / "video.json").write_text(json.dumps({"frames": total, "loop_seconds": drawn if looping else 0,
                                                  "seconds_of_work": round(time.time() - t0, 1)}))
 
 
 # ------------------------------------------------------------------------------------------------------------------------ mux
-def mux_cmd(work: Path, meas: dict, seconds: float, out: Path, title: str | None = None) -> list[str]:
-    ln = (f"loudnorm=I={TARGET_LUFS}:TP={TARGET_TP}:LRA={TARGET_LRA}:measured_I={meas['input_i']}:measured_TP={meas['input_tp']}:"
-          f"measured_LRA={meas['input_lra']}:measured_thresh={meas['input_thresh']}:offset={meas['target_offset']}:linear=true,aresample=48000")
-    cmd = [FFMPEG, "-hide_banner", "-loglevel", "warning", "-y", "-i", str(work / "video.mp4"),
+def mux_cmd(work: Path, meas: dict, seconds: float, out: Path, title: str | None = None, loop: bool = False) -> list[str]:
+    gain = TARGET_LUFS - float(meas["input_i"])
+    limit = 10 ** (TARGET_TP / 20)
+    af = f"volume={gain:.2f}dB,alimiter=limit={limit:.4f}:attack=5:release=50:level=0,aresample=48000"
+    video = ["-stream_loop", "-1", "-i", str(work / "loop.mp4")] if loop else ["-i", str(work / "video.mp4")]
+    cmd = [FFMPEG, "-hide_banner", "-loglevel", "warning", "-y", *video,
            "-f", "s16le", "-ar", str(SR), "-ac", "2", "-i", str(work / "audio.pcm"),
-           "-map", "0:v:0", "-map", "1:a:0", "-c:v", "copy", "-af", ln, "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-t", f"{seconds:.3f}",
+           "-map", "0:v:0", "-map", "1:a:0", "-c:v", "copy", "-af", af, "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-t", f"{seconds:.3f}",
            "-movflags", "+faststart"]
     if title:
         cmd += ["-metadata", f"title={title}"]
@@ -313,7 +313,8 @@ def mux_cmd(work: Path, meas: dict, seconds: float, out: Path, title: str | None
 def mux_stage(work: Path, seconds: float, out: Path) -> None:
     meas = json.loads((work / "audio.json").read_text())["loudnorm"]
     part = out.with_name(out.stem + ".part" + out.suffix)          # written under a temporary name, so an interrupted mux leaves no finished-looking file
-    subprocess.run(mux_cmd(work, meas, seconds, part), check=True)
+    loop = (work / "loop.mp4").exists() and not (work / "video.mp4").exists()
+    subprocess.run(mux_cmd(work, meas, seconds, part, loop=loop), check=True)
     part.replace(out)
 
 

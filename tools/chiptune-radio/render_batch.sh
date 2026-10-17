@@ -18,7 +18,13 @@ cd "$here" || exit 1
 if [ ! -f "$dir/$slug.mp4" ]; then
   nice -n 10 "$py" longform.py --theme "$theme" --hours "$hours" --out "$dir/$slug.mp4" "$@" >> "$dir/render.log" 2>&1 || { echo "render failed, see $dir/render.log"; exit 1; }
 fi
-pub_args=(--theme "$theme" --hours "$hours" "$@")
+pub_args=(--theme "$theme" --hours "$hours")
+skip=0
+for x in "$@"; do                      # longform_pub.py takes the scene options, not the render-only ones (--video-loop N, --workers N)
+  if [ "$skip" = 1 ]; then skip=0; continue; fi
+  case "$x" in --video-loop|--workers) skip=1; continue ;; esac
+  pub_args+=("$x")
+done
 nice -n 10 "$py" longform_pub.py thumb "${pub_args[@]}" --out "$dir/$slug-thumb.jpg" >> "$dir/render.log" 2>&1
 nice -n 10 "$py" longform_pub.py meta "${pub_args[@]}" --slug "$slug" --out "$dir/$slug.json" >> "$dir/render.log" 2>&1
 nice -n 10 "$py" longform_pub.py verify --video "$dir/$slug.mp4" --frames-dir "$dir" --out "$dir/$slug-verify.json" > /dev/null 2>> "$dir/render.log"
