@@ -153,6 +153,16 @@ async def fetch_hn_algolia(client, source_def) -> list[RawItem]:
     return items
 
 
+def _is_arxiv_url(value: str) -> bool:
+    """True only for an http(s) link whose host is arxiv.org or a subdomain of it.
+
+    A substring test would also pass "https://example.com/?arxiv.org", and the digest
+    publishes this link as is."""
+    parsed = urlparse(value.strip())
+    host = (parsed.hostname or "").lower()
+    return parsed.scheme in ("http", "https") and (host == "arxiv.org" or host.endswith(".arxiv.org"))
+
+
 async def fetch_arxiv_oai(client, source_def) -> list[RawItem]:
     """Fetch arXiv papers via OAI-PMH for each configured set."""
     import xml.etree.ElementTree as ET
@@ -198,7 +208,7 @@ async def fetch_arxiv_oai(client, source_def) -> list[RawItem]:
             desc = (dc.findtext("dc:description", namespaces=ns) or "").strip()[:500]
             date_str = dc.findtext("dc:date", namespaces=ns) or ""
             identifier = dc.findtext("dc:identifier", namespaces=ns) or ""
-            url = next((v for v in [identifier] if "arxiv.org" in v), "")
+            url = identifier if _is_arxiv_url(identifier) else ""
             if not url or not title:
                 continue
             pub = _parse_dt(date_str)

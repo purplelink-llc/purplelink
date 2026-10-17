@@ -1287,6 +1287,20 @@
 
   const ZIP_EXT = /\.(docx|xlsx|pptx|docm|xlsm|pptm)$/;
   const ODF_EXT = /\.(odt|ods|odp|odg|ott|ots|otp)$/;
+  // A file starts as an SVG when, after optional whitespace, an XML declaration, comments
+  // and a DOCTYPE, the first element is <svg>. Scanned with indexOf: one regex with a
+  // repeated (<!--...-->)* group backtracks exponentially on a crafted file and freezes the tab.
+  function looksLikeSvg(head) {
+    let i = 0;
+    const skipSpace = () => { while (i < head.length && /\s/.test(head[i])) i += 1; };
+    const skipPast = (end) => { const e = head.indexOf(end, i); if (e < 0) return false; i = e + end.length; skipSpace(); return true; };
+    skipSpace();
+    if (head.startsWith("<?xml", i) && !skipPast(">")) return false;
+    while (head.startsWith("<!--", i)) { i += 4; if (!skipPast("-->")) return false; }
+    if (head.startsWith("<!DOCTYPE", i) && !skipPast(">")) return false;
+    return /^<svg[\s>]/.test(head.slice(i, i + 5));
+  }
+
   function kindOf(name, bytes) {
     const lower = String(name).toLowerCase();
     const img = detectImage(bytes);
@@ -1299,7 +1313,7 @@
       if (ODF_EXT.test(lower)) return "odf";
     }
     if (bytes.length > 12 && ascii(bytes, 4, 8) === "ftyp") return "mp4";
-    if (/\.svg$/.test(lower) || (bytes[0] === 0x3c && /^\s*(<\?xml[^>]*>\s*)?(<!--[\s\S]*?-->\s*)*(<!DOCTYPE[^>]*>\s*)?<svg[\s>]/.test(utf8(bytes, 0, Math.min(bytes.length, 4096))))) return "svg";
+    if (/\.svg$/.test(lower) || (bytes[0] === 0x3c && looksLikeSvg(utf8(bytes, 0, Math.min(bytes.length, 4096))))) return "svg";
     if (/\.(doc|xls|ppt)$/.test(lower)) return "legacy";
     return null;
   }

@@ -330,3 +330,21 @@ test("unsupported inputs give a plain message", async () => {
   await assert.rejects(MC.clean("x.doc", new Uint8Array([0xd0, 0xcf, 0x11, 0xe0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]), libs, {}), /Old \.doc/);
   await assert.rejects(MC.clean("x.bin", new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]), libs, {}), /Not supported/);
 });
+
+test("kindOf sniffs an unnamed SVG and does not hang on a crafted comment run", () => {
+  const enc = (s) => new TextEncoder().encode(s);
+  assert.equal(MC.kindOf("drawing", enc('<?xml version="1.0"?>\n<!-- made by hand -->\n<svg xmlns="http://www.w3.org/2000/svg"></svg>')), "svg");
+  assert.equal(MC.kindOf("notes", enc("<html><body>not a drawing</body></html>")), null);
+  const t0 = Date.now();
+  // The old single-regex sniff took about 15 s on 26 repeats and doubled every two more.
+  assert.equal(MC.kindOf("crafted", enc("<!--" + "--><!--".repeat(40) + "x")), null);
+  assert.ok(Date.now() - t0 < 1000, "SVG sniff took over a second");
+});
+
+test("kindOf SVG sniff keeps the old rules for declaration, comments and DOCTYPE", () => {
+  const enc = (s) => new TextEncoder().encode(s);
+  assert.equal(MC.kindOf("a", enc('<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "x">\n<svg>')), "svg");
+  assert.equal(MC.kindOf("b", enc("<!-- one --><!-- two -->\n<svg viewBox='0 0 1 1'>")), "svg");
+  assert.equal(MC.kindOf("c", enc("<!-- never closed <svg>")), null);
+  assert.equal(MC.kindOf("d", enc("<svgfoo>")), null);
+});

@@ -850,7 +850,8 @@ export default async function handler(request) {
         `If Modal stays down for the full retry window (~3 days), this ` +
         `session's token will never be minted and must be registered manually.`
     );
-    return jsonResponse(502, { error: "modal_unreachable", detail: String(err) });
+    // The operator alert above carries the reason; Stripe only needs the 502 to retry.
+    return jsonResponse(502, { error: "modal_unreachable" });
   }
 
   if (!registerResp.ok) {
