@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-04",
+ "generated": "2026-10-17",
  "countries": [
   {
    "slug": "iceland",
@@ -11,7 +11,7 @@
      "slug": "skogafoss",
      "name": "Skógafoss",
      "intro": "Skógafoss drops about 60 metres off the old sea cliff on the south coast. The spray throws a rainbow across the base on any afternoon with sun, and a staircase on the east side climbs to the top of the fall.",
-     "fact": "Skógafoss is about 60 metres high and 25 metres wide; the cliff it falls over was once the coastline.",
+     "fact": "Skógafoss is about 60 metres high and 25 metres wide. The cliff it falls over was once the coastline.",
      "url": "https://purplelink.llc/photography/iceland/skogafoss/",
      "images": [
       {
@@ -155,7 +155,7 @@
      "slug": "jokulsarlon",
      "name": "Jökulsárlón glacier lagoon",
      "intro": "Icebergs calve off Breiðamerkurjökull and drift across the lagoon toward the sea, where the tide pushes them back onto the black sand of Diamond Beach. The ice is blue where it is dense and streaked black with ash.",
-     "fact": "The lagoon only formed in the 1930s as the glacier retreated; it is now Iceland's deepest lake.",
+     "fact": "The lagoon only formed in the 1930s as the glacier retreated. It is now Iceland's deepest lake.",
      "url": "https://purplelink.llc/photography/iceland/jokulsarlon/",
      "images": [
       {
@@ -352,7 +352,7 @@
      "slug": "dyrholaey",
      "name": "Dyrhólaey",
      "intro": "A headland near Vík with a natural arch big enough to sail through, cliffs full of puffins in summer and a view east along the black beaches toward Reynisdrangar.",
-     "fact": "Dyrhólaey is a 120-metre headland near Vík; its name means door-hill island, after the arch.",
+     "fact": "Dyrhólaey is a 120-metre headland near Vík. Its name means door-hill island, after the arch.",
      "url": "https://purplelink.llc/photography/iceland/dyrholaey/",
      "images": [
       {
@@ -1219,7 +1219,7 @@
     {
      "slug": "south-coast",
      "name": "South coast waterfalls",
-     "intro": "The road along the south coast passes one waterfall after another. Seljalandsfoss you can walk behind; Gljúfrabúi hides in a cleft a few hundred metres on.",
+     "intro": "The road along the south coast passes one waterfall after another. You can walk behind Seljalandsfoss. Gljúfrabúi hides in a cleft a few hundred metres on.",
      "fact": "Seljalandsfoss falls about 60 metres and a path runs behind the curtain of water.",
      "url": "https://purplelink.llc/photography/iceland/south-coast/",
      "images": [
@@ -2869,7 +2869,7 @@
     {
      "slug": "arashiyama",
      "name": "Arashiyama and the Hozu gorge",
-     "intro": "West of Kyoto the Hozu river comes out of its gorge under the Togetsukyo bridge. The bamboo grove is a short walk from the station; the monkey park climbs the hill opposite.",
+     "intro": "West of Kyoto the Hozu river comes out of its gorge under the Togetsukyo bridge. The bamboo grove is a short walk from the station. The monkey park climbs the hill opposite.",
      "fact": "The Sagano scenic railway follows the Hozu gorge for about seven kilometres between Saga and Kameoka.",
      "url": "https://purplelink.llc/photography/japan/arashiyama/",
      "images": [
@@ -4318,7 +4318,7 @@
      "slug": "miyajima",
      "name": "Miyajima and Hiroshima",
      "intro": "The great torii of Itsukushima Shrine stands in the sea at high tide and on wet sand at low tide. Hiroshima is a short ferry and train ride away.",
-     "fact": "The current torii at Itsukushima dates from 1875 and stands about 16 metres high; it is not fixed to the seabed but held by its own weight.",
+     "fact": "The current torii at Itsukushima dates from 1875 and stands about 16 metres high. It is not fixed to the seabed and stays upright under its own weight.",
      "url": "https://purplelink.llc/photography/japan/miyajima/",
      "images": [
       {
@@ -5388,7 +5388,7 @@
      "slug": "zermatt",
      "name": "Zermatt and the Matterhorn",
      "intro": "The Gornergrat railway climbs to 3,089 metres above Zermatt. From Rotenboden a short path leads to Riffelsee, where the Matterhorn reflects on a still morning, and the Gorner glacier fills the valley below.",
-     "fact": "The Matterhorn is 4,478 metres high; the Gornergrat railway, opened in 1898, was Switzerland's first electric cog railway.",
+     "fact": "The Matterhorn is 4,478 metres high. The Gornergrat railway, opened in 1898, was Switzerland's first electric cog railway.",
      "url": "https://purplelink.llc/photography/switzerland/zermatt/",
      "images": [
       {
@@ -6211,7 +6211,7 @@
      "slug": "bern",
      "name": "Bern",
      "intro": "The old town fills a loop of the Aare: arcaded streets, the Zytglogge clock tower, the cathedral spire and the red roofs seen from the Rose Garden.",
-     "fact": "Bern's old town has been a UNESCO World Heritage Site since 1983; its arcades run for about six kilometres.",
+     "fact": "Bern's old town has been a UNESCO World Heritage Site since 1983. Its arcades run for about six kilometres.",
      "url": "https://purplelink.llc/photography/switzerland/bern/",
      "images": [
       {
@@ -7268,7 +7268,7 @@
      "slug": "london",
      "name": "London",
      "intro": "Big Ben and the Houses of Parliament from the south bank at sunset, Westminster Abbey, Piccadilly Circus at night and the towers of Canary Wharf.",
-     "fact": "The Elizabeth Tower, usually called Big Ben after its bell, is 96 metres tall; the bell itself weighs 13.7 tonnes.",
+     "fact": "The Elizabeth Tower, usually called Big Ben after its bell, is 96 metres tall. The bell itself weighs 13.7 tonnes.",
      "url": "https://purplelink.llc/photography/united-kingdom/london/",
      "images": [
       {
@@ -8021,7 +8021,7 @@
      "slug": "copenhagen",
      "name": "Copenhagen",
      "intro": "Nyhavn's painted houses along the canal, Amalienborg at dusk, the Christmas lights on Hotel d'Angleterre and the red rooftops seen from the Round Tower.",
-     "fact": "Nyhavn was dug in the 1670s as a harbour canal; Hans Christian Andersen lived at three different addresses on it.",
+     "fact": "Nyhavn was dug in the 1670s as a harbour canal. Hans Christian Andersen lived at three different addresses on it.",
      "url": "https://purplelink.llc/photography/denmark/copenhagen/",
      "images": [
       {
@@ -8782,7 +8782,7 @@
      "slug": "amsterdam",
      "name": "Amsterdam",
      "intro": "The canals of the Jordaan, the Amstel river panorama, the Rijksmuseum and the basilica of Saint Nicholas by the station.",
-     "fact": "Amsterdam has about 165 canals and over 1,200 bridges; the canal ring is a UNESCO World Heritage Site.",
+     "fact": "Amsterdam has about 165 canals and over 1,200 bridges. The canal ring is a UNESCO World Heritage Site.",
      "url": "https://purplelink.llc/photography/netherlands/amsterdam/",
      "images": [
       {
@@ -11131,7 +11131,7 @@
      "slug": "hawaii",
      "name": "Hawaii",
      "intro": "Waipiʻo Valley from the lookout on the Hāmākua coast, the lava fields of Volcanoes National Park, Waikīkī from the water and Pearl Harbor.",
-     "fact": "Waipiʻo Valley's walls rise about 600 metres; the road down is one of the steepest in the United States.",
+     "fact": "Waipiʻo Valley's walls rise about 600 metres. The road down is one of the steepest in the United States.",
      "url": "https://purplelink.llc/photography/united-states/hawaii/",
      "images": [
       {
@@ -13242,7 +13242,7 @@
      "slug": "san-francisco",
      "name": "San Francisco",
      "intro": "The Golden Gate Bridge from the Marin headlands and the bay from the water.",
-     "fact": "The Golden Gate Bridge's towers stand 227 metres above the water; its colour is called International Orange.",
+     "fact": "The Golden Gate Bridge's towers stand 227 metres above the water. Its colour is called International Orange.",
      "url": "https://purplelink.llc/photography/united-states/san-francisco/",
      "images": [
       {
@@ -14684,7 +14684,7 @@
      "slug": "panama-city",
      "name": "Panama City and the canal",
      "intro": "Casco Viejo's balconies, the skyline across the bay from the causeway, and a ship rising in the Miraflores locks.",
-     "fact": "A ship takes eight to ten hours to pass through the Panama Canal; the Miraflores locks lift it about 16 metres.",
+     "fact": "A ship takes eight to ten hours to pass through the Panama Canal. The Miraflores locks lift it about 16 metres.",
      "url": "https://purplelink.llc/photography/panama/panama-city/",
      "images": [
       {
