@@ -310,16 +310,25 @@ def video_stage(theme, seconds: float, work: Path, spec: dict, workers: int = 2,
 
 
 # ------------------------------------------------------------------------------------------------------------------------ mux
-def master_af(meas: dict) -> str:
+def master_af(meas: dict, limit_db: float = TARGET_TP) -> str:
     """A fixed gain to the loudness target and a limiter under the true-peak ceiling: what loudnorm's linear mode does, without its 192 kHz resample."""
     gain = TARGET_LUFS - float(meas["input_i"])
-    return f"volume={gain:.2f}dB,alimiter=limit={10 ** (TARGET_TP / 20):.4f}:attack=5:release=50:level=0,aresample=48000"
+    return f"volume={gain:.2f}dB,alimiter=limit={10 ** (limit_db / 20):.4f}:attack=5:release=50:level=0,aresample=48000"
 
 
-def mux_cmd(work: Path, meas: dict, seconds: float, out: Path, title: str | None = None, loop: bool = False, fades: bool = False) -> list[str]:
+def true_peak(path: Path) -> float | None:
+    """True peak of a finished file's audio in dBTP (ebur128, 4x oversampled)."""
+    r = subprocess.run([FFMPEG, "-hide_banner", "-nostats", "-i", str(path), "-vn", "-af", "ebur128=peak=true:framelog=quiet", "-f", "null", "-"],
+                       capture_output=True, text=True)
+    m = re.findall(r"Peak:\s+(-?[\d.]+) dBFS", r.stderr[r.stderr.rfind("Summary:"):])
+    return float(m[-1]) if m else None
+
+
+def mux_cmd(work: Path, meas: dict, seconds: float, out: Path, title: str | None = None, loop: bool = False, fades: bool = False,
+            limit_db: float = TARGET_TP) -> list[str]:
     """The finished file. `loop`: repeat loop.mp4 (stream copy) and the PCM loop (raw samples, so the repeats join with no encoder gap) to `seconds`,
     with one AAC encode of the whole length. `fades`: an audio fade in and out at the ends of the full-length file."""
-    af = master_af(meas)
+    af = master_af(meas, limit_db)
     if fades:
         af += f",afade=t=in:d={FADE_IN_AUDIO},afade=t=out:st={max(0.0, seconds - FADE_OUT_AUDIO):.3f}:d={FADE_OUT_AUDIO}"
     rep = ["-stream_loop", "-1"] if loop else []
@@ -344,9 +353,19 @@ def mux_stage(work: Path, seconds: float, out: Path) -> None:
     vj = work / "video.json"                                        # the finished picture says which file it is; a stale partial file never decides
     loop_s = float(json.loads(vj.read_text()).get("loop_seconds") or 0) if vj.exists() else 0.0
     jobs = [(loop_path(out, loop_s), loop_s, False), (out, seconds, True)] if loop_s else [(out, seconds, False)]
-    for dest, length, fades in jobs:
+    limit_db = TARGET_TP
+    for k, (dest, length, fades) in enumerate(jobs):
         part = dest.with_name(dest.stem + ".part" + dest.suffix)
-        subprocess.run(mux_cmd(work, meas, length, part, loop=bool(loop_s), fades=fades), check=True)
+        for _ in range(4):
+            subprocess.run(mux_cmd(work, meas, length, part, loop=bool(loop_s), fades=fades, limit_db=limit_db), check=True)
+            if k or not loop_s:
+                break
+            # sharp transients (fire crackle) can overshoot the limiter after AAC: measure the loop, pull the limiter down by the excess
+            tp = true_peak(part)
+            if tp is None or tp <= TARGET_TP + 0.8:
+                break
+            limit_db -= tp - TARGET_TP
+            log(f"loop true peak {tp:+.1f} dBTP; limiter lowered to {limit_db:.1f} dB")
         part.replace(dest)
 
 
