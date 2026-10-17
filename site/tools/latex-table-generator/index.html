@@ -230,12 +230,12 @@
           var outputEl = document.getElementById("output");
 
           // Escape LaTeX special characters in cell content.
+          // One pass, so the braces added for a backslash are not escaped again.
+          var LATEX_ESCAPES = { "\\": "\\textbackslash{}", "~": "\\textasciitilde{}", "^": "\\textasciicircum{}" };
           function escapeLatex(s) {
-            return String(s)
-              .replace(/\\/g, "\\textbackslash{}")
-              .replace(/([&%$#_{}])/g, "\\$1")
-              .replace(/~/g, "\\textasciitilde{}")
-              .replace(/\^/g, "\\textasciicircum{}");
+            return String(s).replace(/[\\&%$#_{}~^]/g, function (c) {
+              return LATEX_ESCAPES[c] || "\\" + c;
+            });
           }
 
           // Parse one line of delimited text. Quoted-field handling applies to
