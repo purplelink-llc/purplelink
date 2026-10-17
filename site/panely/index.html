@@ -24,10 +24,11 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <script src="/theme.js?v=07d8025cab"></script>
-    <link rel="stylesheet" href="/styles.css?v=7dd899cd0a">
+    <link rel="stylesheet" href="/styles.css?v=14f0b4ea49">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <link rel="stylesheet" href="/panely/panely.css?v=af48f9573f">
     <script src="/site.js?v=fb682a98eb" defer></script>
+    <script src="/support-box.js?v=07f98ddb93" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
     <script src="/panely/launch.js?v=285a8f5909" defer></script>
     <script src="/tools/paper-review/paid-tool-landing.js?v=41be4deb54" defer></script>
@@ -469,6 +470,31 @@
         </details>
       </div>
     </section>
+
+    <!-- support-box:start -->
+    <section class="support-box support-box--compact" data-support-box data-support-topic="panely" aria-labelledby="sb-heading">
+      <h2 class="support-box-head" id="sb-heading">Write to Ben</h2>
+      <p class="support-box-lede">A question about Panely that this page does not answer? Write to Ben here.</p>
+      <form class="support-box-form" novalidate hidden>
+      <div class="support-box-field">
+        <label for="sb-email">Your email</label>
+        <input type="email" id="sb-email" name="email" autocomplete="email" inputmode="email" spellcheck="false" maxlength="254" required aria-describedby="sb-email-hint sb-email-error">
+        <p class="support-box-hint" id="sb-email-hint">Used only to reply to this message.</p>
+        <p class="support-box-error" id="sb-email-error" hidden></p>
+      </div>
+      <div class="support-box-field">
+        <label for="sb-message">Message</label>
+        <textarea id="sb-message" name="message" rows="6" maxlength="5000" required aria-describedby="sb-message-hint sb-message-error"></textarea>
+        <p class="support-box-hint" id="sb-message-hint">What you did, what you expected and what you saw. For a purchase, include the email you paid with.</p>
+        <p class="support-box-error" id="sb-message-error" hidden></p>
+      </div>
+      <input type="text" name="website" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <button type="submit" class="btn btn-primary">Send message</button>
+      </form>
+      <p class="support-box-status" data-sb-status role="status" aria-live="polite"></p>
+      <p class="support-box-fine">Prefer your own mail app? Write to <a href="mailto:ben@purplelink.llc?subject=Support%3A%20Panely">ben@purplelink.llc</a>. The form delivers your message by email through Resend and does not store it on this site. <a href="/privacy/#support-form">Privacy</a>.</p>
+    </section>
+    <!-- support-box:end -->
 
     <section class="closing-cta" data-motion="reveal" aria-labelledby="closing-cta-heading">
       <h2 id="closing-cta-heading">Try it for a week.</h2>
