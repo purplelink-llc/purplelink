@@ -1,5 +1,5 @@
 {
-  "version": "1.2.0",
-  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.2.0.dmg",
-  "releaseNotes": "You can now add and edit degrees, with location, start year, honors, dissertation title and advisor, and Tidy cleans up and merges duplicate degrees. Papers can be linked to the grants that support them, and the CV can list each grant's publications under it. Spotlight no longer keeps stale entries."
+  "version": "1.3.0",
+  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.3.0.dmg",
+  "releaseNotes": "The Annual Review now works for a calendar year, an academic year (you choose the start month) or custom dates, and your mentees appear in it as an Advising and Mentoring section. Export for Annual Report writes a folder with the period's publications as RIS and BibTeX. Vitae Plus adds a faculty activity Word file, a missing details check and a README in that folder."
 }
