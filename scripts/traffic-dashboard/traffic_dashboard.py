@@ -3439,6 +3439,10 @@ def marketplace_step(history: dict, cfg: dict[str, str], fetch: bool) -> tuple[l
             meta[m] = {"asOf": prior[m]["asOf"], "status": prior[m].get("status")}
         if (prior.get(m) or {}).get("api"):
             meta[m]["api"] = prior[m]["api"]
+            # A --no-fetch re-render must not roll an API reading back to an older browser
+            # reading left in marketplaces.json (Gumroad's froze there on 2026-10-09).
+            if prior[m]["api"] == "ok" and (prior[m].get("asOf") or "") > (meta[m]["asOf"] or ""):
+                meta[m] = {**prior[m]}
 
     if fetch:
         try:
