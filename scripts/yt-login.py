@@ -57,12 +57,14 @@ def main(argv=None, *, registry=None, flow=run_flow, build=service_for, secret=N
     except g.ChannelGuardError as e:
         print(f"CHANNEL GUARD: {e}", file=sys.stderr)
         return 3
-    secret = Path(secret or os.environ.get("YOUTUBE_CLIENT_SECRET") or g.CLIENT_SECRET_PATH)
-    if not secret.exists():
-        print(f"no OAuth client secret at {secret}", file=sys.stderr)
+    client_file = Path(secret or os.environ.get("YOUTUBE_CLIENT_SECRET") or g.CLIENT_SECRET_PATH)
+    if not client_file.exists():
+        # no path in the message: it can come from the environment, and CodeQL treats it as sensitive
+        print("no OAuth client file found: create ~/.tiktok_pipeline/youtube_client_secret.json or set YOUTUBE_CLIENT_SECRET",
+              file=sys.stderr)
         return 2
     print(f"In the browser, choose the {ch['title']} channel ({ch['id']}) when Google asks which account or channel.")
-    creds = flow(secret, g.SCOPES)
+    creds = flow(client_file, g.SCOPES)
     found = g.mine(build(creds))
     if len(found) != 1 or found[0]["id"] != ch["id"]:
         chosen = ", ".join(f"{c['id']} ({c['title']})" for c in found) or "no channel"
