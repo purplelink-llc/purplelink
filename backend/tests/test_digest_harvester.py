@@ -330,3 +330,13 @@ def test_harvest_all_source_failure_does_not_block(monkeypatch):
     monkeypatch.setattr("digest.harvester.fetch_huggingface_papers", AsyncMock(return_value=[]))
     items = asyncio.run(harvest_all(object()))
     assert items == []
+
+
+def test_is_arxiv_url_checks_the_host():
+    from digest.harvester import _is_arxiv_url
+    assert _is_arxiv_url("http://arxiv.org/abs/2606.12345")
+    assert _is_arxiv_url("https://export.arxiv.org/abs/2606.12345")
+    assert not _is_arxiv_url("https://example.com/?arxiv.org")
+    assert not _is_arxiv_url("https://arxiv.org.example.com/abs/1")
+    assert not _is_arxiv_url("javascript:alert(1)//arxiv.org")
+    assert not _is_arxiv_url("")

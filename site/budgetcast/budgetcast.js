@@ -113,7 +113,7 @@
     sum.textContent = 'Sample household, synthetic data. For ' + cat.toLowerCase() + ', the middle estimate for ' +
       label(f2.month) + ' is ' + money(f2.p50) + ', with a P10 to P90 range of ' + money(f2.p10) + ' to ' + money(f2.p90) + '.';
 
-    var rows = '<caption class="bc-vh">' + cat + ': sample past months and projected P10, P50, P90. Synthetic data.</caption>' +
+    var rows = '<caption class="bc-vh"></caption>' +
       '<thead><tr><th scope="col">Month</th><th scope="col">Type</th><th scope="col">P10</th><th scope="col">P50</th><th scope="col">P90</th></tr></thead><tbody>';
     hist.forEach(function (v, i) {
       rows += '<tr><th scope="row">' + label(histMonths[i]) + '</th><td>Sample actual</td><td>&ndash;</td><td>' + money(v) + '</td><td>&ndash;</td></tr>';
@@ -122,6 +122,7 @@
       rows += '<tr><th scope="row">' + label(r.month) + '</th><td>Projection</td><td>' + money(r.p10) + '</td><td>' + money(r.p50) + '</td><td>' + money(r.p90) + '</td></tr>';
     });
     table.innerHTML = rows + '</tbody>';
+    table.caption.textContent = cat + ': sample past months and projected P10, P50, P90. Synthetic data.';
   }
 
   fetch('/budgetcast/demo.json').then(function (r) { return r.json(); }).then(function (d) {

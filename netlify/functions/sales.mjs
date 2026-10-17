@@ -143,7 +143,8 @@ export default async function handler(request) {
       stripeList("/balance_transactions", [["type", "charge"]], key),
     ]);
   } catch (err) {
-    return json(502, { error: "stripe_unreachable", detail: String(err).slice(0, 300) });
+    console.error("sales: Stripe unreachable:", String(err).slice(0, 300));
+    return json(502, { error: "stripe_unreachable", detail: "Stripe could not be reached. The function log has the reason." });
   }
   const truncated = sessions.truncated || invoices.truncated || subs.truncated;
 

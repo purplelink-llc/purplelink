@@ -188,6 +188,8 @@ export default async function handler(request) {
     });
     return json(200, { generatedAt: new Date(now * 1000).toISOString(), ...result });
   } catch (err) {
-    return json(502, { error: "stripe_unreachable", detail: String(err?.message || err).slice(0, 200) });
+    // The reason goes to the function log, not the response: error text can carry internals.
+    console.error("delivery-health: Stripe unreachable:", String(err?.message || err).slice(0, 200));
+    return json(502, { error: "stripe_unreachable", detail: "Stripe could not be reached. The function log has the reason." });
   }
 }
