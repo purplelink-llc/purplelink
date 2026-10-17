@@ -10,6 +10,7 @@ anywhere, so there is nothing to license.
 | `scene.py` | The pixel room at 320x180: day and night cycle, rain, cat, lamp, steam, a focus timer that follows the clock (:00 to :25 focus, :25 to :30 break), now playing, the site name. |
 | `stream.py` | The 24/7 loop: audio and video threads into ffmpeg, restart with back-off, a test mode that writes a file. |
 | `qa.py`, `test_radio.py` | Checks. `python3.12 -m pytest -q test_radio.py` takes about 8 seconds. |
+| `longform.py`, `longform_pub.py`, `themes/`, `ambience.py`, `px.py` | Finished, fixed-length ambient videos for uploading (see Long-form videos below). `python3.12 -m pytest -q test_longform.py` takes a couple of minutes. |
 | `ops/` | A run script and launchd and systemd service files. |
 
 ## Try it without going live
@@ -110,3 +111,30 @@ whatever is live.
   ("network before the stop: ..."). That line is how to tell a network problem from YouTube closing the connection.
 - **Image contents.** Every module `stream.py` imports must be on the Dockerfile's COPY line; a test checks it, because a missing
   file crash-loops the container.
+
+## Long-form videos (uploaded, not live)
+
+The same generators make finished videos of 1 to 2 hours in several themes. Nothing is uploaded by this code.
+
+    python3.12 longform.py --theme campfire --hours 2 --out campfire-2h.mp4
+    python3.12 longform.py --theme campfire --hours 1 --no-music --out campfire-ambience-1h.mp4     # fire, wind and crickets only
+    python3.12 longform.py --theme study --hours 2 --pomodoro 25/5 --out study-2h.mp4               # study theme only
+    python3.12 longform.py --theme winter --preview-frame 1800 --out frame.png                       # one 1080p frame
+    python3.12 longform_pub.py thumb --theme winter --hours 2 --out winter-thumb.jpg                 # 1280x720 JPEG
+    python3.12 longform_pub.py meta  --theme winter --hours 2 --slug winter-2h --out winter-2h.json  # title, description, tags, disclosure
+    python3.12 longform_pub.py verify --video winter-2h.mp4 --frames-dir frames/                    # ffprobe, LUFS, true peak, silence, 4 frames
+
+Output is 1920x1080, 30 fps H.264, AAC 192 kbps, -14 LUFS integrated, true peak under -1 dBTP, faststart. Themes: `campfire`, `halloween`, `winter`, `study`.
+Run long renders with `nice -n 10`, at most two at once; a 2 hour video takes a few hours on a busy Mac (about 40 CPU-minutes of drawing and 100 of x264, plus
+about 12 CPU-minutes of music). Work files go in `<out>.work/` and are removed at the end; put the output outside the repo (the videos are gigabytes).
+
+- **Music.** `plan_tracks` picks seeds one after another. A track is skipped if it repeats the previous key or jumps tempo by more than 8 BPM, the mood
+  wanders slowly between the theme's low and high settings (about 45 minutes a wave), and tracks overlap by a 6 second crossfade, so there is no seam. A theme
+  chooses the modes (`chiptune.plan(..., mode_weights=)`), the eras and the instruments. The last 8 seconds fade out; the picture fades 5 seconds.
+- **Ambience.** `ambience.py` makes fire crackle, wind, rain, crickets, an owl and sleigh bells from noise and sine waves, in blocks that carry filter state, so there are no seams.
+  The events the picture draws (an owl landing, a log settling, a gust, a sleigh) come from one list, so the sound arrives when the thing is seen.
+- **Loudness.** Everything is mixed, soft-clipped and set to about -14 LUFS, then ffmpeg's `loudnorm` is run twice (measure, then linear apply) with a -2 dBTP ceiling.
+- **A new theme** is one file in `themes/`: subclass `Theme`, set `name`, `label`, `thumb_lines`, `music`, `bed`, write `frame(t)` (a 320x180 image, a pure function of `t`
+  apart from the flame in `px.Fire`), list its events with `schedule(...)`, and decorate it with `@register`. Add its words to `COPY` in `longform_pub.py` for the metadata.
+- **Frames** are drawn in worker processes in 30 second chunks. The flame is stepped frame to frame, so a chunk starts it fresh once every 30 seconds, which looks like
+  ordinary flicker. The video runs at 10 fps and every frame is shown three times, so the cadence is even.

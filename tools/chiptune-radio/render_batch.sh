@@ -1,0 +1,25 @@
+#!/bin/bash
+# One finished long-form video and everything around it: the render, the thumbnail, the upload metadata, and the check (ffprobe, loudness, silence, four frames).
+#   ./render_batch.sh campfire-2h campfire 2
+#   ./render_batch.sh campfire-ambience-1h campfire 1 --no-music
+#   ./render_batch.sh study-pomodoro-2h study 2 --pomodoro 25/5
+# Output goes outside the repo, in $AMBIENT_OUT (default /Volumes/Extreme SSD/PurplelinkVideos/ambient). Run at most two of these at once.
+set -u
+[ $# -ge 3 ] || { echo "usage: $0 SLUG THEME HOURS [longform.py options]"; exit 2; }
+slug=$1; theme=$2; hours=$3; shift 3
+root=${AMBIENT_OUT:-/Volumes/Extreme\ SSD/PurplelinkVideos/ambient}
+root=${root//\\/}
+here=$(cd "$(dirname "$0")" && pwd)
+py=${PYTHON:-/Library/Frameworks/Python.framework/Versions/3.12/bin/python3}
+[ -n "$slug" ] || exit 2
+dir="$root/$slug"
+mkdir -p "$dir" || exit 1
+cd "$here" || exit 1
+if [ ! -f "$dir/$slug.mp4" ]; then
+  nice -n 10 "$py" longform.py --theme "$theme" --hours "$hours" --out "$dir/$slug.mp4" "$@" >> "$dir/render.log" 2>&1 || { echo "render failed, see $dir/render.log"; exit 1; }
+fi
+pub_args=(--theme "$theme" --hours "$hours" "$@")
+nice -n 10 "$py" longform_pub.py thumb "${pub_args[@]}" --out "$dir/$slug-thumb.jpg" >> "$dir/render.log" 2>&1
+nice -n 10 "$py" longform_pub.py meta "${pub_args[@]}" --slug "$slug" --out "$dir/$slug.json" >> "$dir/render.log" 2>&1
+nice -n 10 "$py" longform_pub.py verify --video "$dir/$slug.mp4" --frames-dir "$dir" --out "$dir/$slug-verify.json" > /dev/null 2>> "$dir/render.log"
+echo "$slug done"
