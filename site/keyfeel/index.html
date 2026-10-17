@@ -26,11 +26,13 @@
     <script src="/theme.js?v=07d8025cab"></script>
     <link rel="stylesheet" href="/styles.css?v=14f0b4ea49">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <link rel="stylesheet" href="/product-flair.css?v=0d40001388">
     <link rel="stylesheet" href="/keyfeel/keyfeel.css?v=7ca6b12221">
     <script src="/site.js?v=9a7562fde8" defer></script>
     <script src="/support-box.js?v=07f98ddb93" defer></script>
     <script src="/trial-reminder.js?v=d43def6c9f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
+    <script src="/product-flair.js?v=7ecbf83f91" defer></script>
     <script src="/keyfeel/launch.js?v=cec246abfa" defer></script>
     <script src="/tools/paper-review/paid-tool-landing.js?v=41be4deb54" defer></script>
     <script type="application/ld+json">
@@ -217,7 +219,7 @@
       <div class="features-header">
         <h2 id="how-h">How it works</h2>
       </div>
-      <div class="features-grid">
+      <div class="features-grid" data-motion="stagger">
         <div class="feature-item">
           <h3>It hears that a key was pressed</h3>
           <p>Through the macOS Input Monitoring permission, Keyfeel is told when a key goes down and comes back up. It uses the key code, which says which key it was, and never the characters you typed.</p>
@@ -254,38 +256,54 @@
       </table>
     </section>
 
-    <section class="screenshots-section" aria-labelledby="feel-h">
-      <h2 id="feel-h">How it feels</h2>
-      <p class="section-intro">Four parts of the app, drawn rather than photographed. These are illustrations, not screenshots of the app.</p>
-      <div class="kf-feel" data-motion="stagger">
-        <figure class="kf-feel-item">
-          <div class="kf-feel-art">
-            <img src="/keyfeel/img/keyboard-typing.webp" alt="An illustration of two hands typing on a laptop keyboard, with rings of sound rising from three of the keys" width="753" height="566" loading="lazy" decoding="async">
+    <section class="flair-scene flair-scene--swap" id="how-it-feels" data-flair="steps" aria-labelledby="feel-h">
+      <div class="flair-track" data-flair-track>
+        <div class="flair-stage">
+          <div class="flair-head">
+            <h2 id="feel-h">How it feels</h2>
+            <p>Four parts of the app, drawn rather than photographed. These are illustrations, not screenshots of the app.</p>
           </div>
-          <h3>Typing</h3>
-          <p>Every key press plays a recording of a real switch, with its own pitch and a place in the stereo field. Releasing the key can make a sound too.</p>
-        </figure>
-        <figure class="kf-feel-item">
-          <div class="kf-feel-art">
-            <img src="/keyfeel/img/mouse-click.webp" alt="An illustration of a mouse and a pointer, with purple rings spreading from the point that was clicked" width="622" height="507" loading="lazy" decoding="async">
+          <div class="flair-steps-wrap">
+            <ol class="flair-steps flair-steps--tour">
+              <li data-step>
+                <div class="flair-step-text">
+                  <h3>Typing</h3>
+                  <p>Every key press plays a recording of a real switch, with its own pitch and a place in the stereo field. Releasing the key can make a sound too.</p>
+                </div>
+                <figure class="flair-step-shot">
+                  <img src="/keyfeel/img/keyboard-typing.webp" alt="An illustration of two hands typing on a laptop keyboard, with rings of sound rising from three of the keys" width="753" height="566" loading="lazy" decoding="async">
+                </figure>
+              </li>
+              <li data-step>
+                <div class="flair-step-text">
+                  <h3>Clicking</h3>
+                  <p>Mouse clicks have press and release sounds, and a ripple spreads on screen from the point you clicked. Scrolling ticks along at the speed you scroll.</p>
+                </div>
+                <figure class="flair-step-shot">
+                  <img src="/keyfeel/img/mouse-click.webp" alt="An illustration of a mouse and a pointer, with purple rings spreading from the point that was clicked" width="622" height="507" loading="lazy" decoding="async">
+                </figure>
+              </li>
+              <li data-step>
+                <div class="flair-step-text">
+                  <h3>Trackpad</h3>
+                  <p>Optional haptic feedback on scroll and click. Keyfeel produces it only while a finger is on the trackpad.</p>
+                </div>
+                <figure class="flair-step-shot">
+                  <img src="/keyfeel/img/trackpad-haptics.webp" alt="An illustration of a finger pressing a trackpad, with rings spreading from the fingertip" width="703" height="446" loading="lazy" decoding="async">
+                </figure>
+              </li>
+              <li data-step>
+                <div class="flair-step-text">
+                  <h3>Quiet when it should be</h3>
+                  <p>Choose apps where Keyfeel stays silent. It also goes quiet by itself while the microphone is in use, so key sounds are not played into a call or a recording.</p>
+                </div>
+                <figure class="flair-step-shot">
+                  <img src="/keyfeel/img/silent-calls.webp" alt="An illustration of a speaker with a sound wave next to a microphone with a line through it" width="516" height="344" loading="lazy" decoding="async">
+                </figure>
+              </li>
+            </ol>
           </div>
-          <h3>Clicking</h3>
-          <p>Mouse clicks have press and release sounds, and a ripple spreads on screen from the point you clicked. Scrolling ticks along at the speed you scroll.</p>
-        </figure>
-        <figure class="kf-feel-item">
-          <div class="kf-feel-art">
-            <img src="/keyfeel/img/trackpad-haptics.webp" alt="An illustration of a finger pressing a trackpad, with rings spreading from the fingertip" width="703" height="446" loading="lazy" decoding="async">
-          </div>
-          <h3>Trackpad</h3>
-          <p>Optional haptic feedback on scroll and click. Keyfeel produces it only while a finger is on the trackpad.</p>
-        </figure>
-        <figure class="kf-feel-item">
-          <div class="kf-feel-art">
-            <img src="/keyfeel/img/silent-calls.webp" alt="An illustration of a speaker with a sound wave next to a microphone with a line through it" width="516" height="344" loading="lazy" decoding="async">
-          </div>
-          <h3>Quiet when it should be</h3>
-          <p>Choose apps where Keyfeel stays silent. It also goes quiet by itself while the microphone is in use, so key sounds are not played into a call or a recording.</p>
-        </figure>
+        </div>
       </div>
     </section>
 

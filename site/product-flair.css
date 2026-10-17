@@ -72,9 +72,10 @@
 }
 .flair-shot img { display: block; width: 100%; height: auto; }
 
-/* The spotlight: a rounded hole in a dark wash over the screenshot. Its
-   position comes from the step (see the data-active rules below). Hidden
-   until the scene is pinned, so a static page shows the plain screenshot. */
+/* The spotlight: a rounded hole in a dark wash over the screenshot. Each
+   step's data-spot="top right bottom left" (percent insets of the screenshot)
+   is copied into --spot-* by product-flair.js. Hidden until the scene is
+   pinned, so a static page shows the plain screenshot. */
 .flair-spot {
   position: absolute;
   inset: var(--spot-t, 0) var(--spot-r, 0) var(--spot-b, 0) var(--spot-l, 0);
@@ -107,7 +108,7 @@
   line-height: 1.2;
   margin-bottom: 8px;
 }
-/* A real sequence (open, write, jump), so the numbers carry meaning. */
+/* Every scene is a real sequence, so the numbers carry meaning. */
 .flair-steps h3::before {
   content: counter(flair-step);
   flex: none;
@@ -125,14 +126,35 @@
   translate: 0 -0.12em;
 }
 .flair-steps p { color: var(--muted); line-height: 1.6; max-width: 46ch; }
+/* A tour (several views of one app, in no set order) has no numbers. */
+.flair-steps--tour h3::before { content: none; }
 
 .flair-progress { display: none; }
 .flair-marks { display: none; }
 
-/* Where the spotlight sits for each step, as insets of the screenshot. */
-.flair-scene[data-active="1"] { --spot-t: 9.6%; --spot-r: 88.1%; --spot-b: 3.2%; --spot-l: 0.4%; }
-.flair-scene[data-active="2"] { --spot-t: 9.6%; --spot-r: 44.3%; --spot-b: 3.2%; --spot-l: 12.1%; }
-.flair-scene[data-active="3"] { --spot-t: 9.6%; --spot-r: 0.4%;  --spot-b: 3.2%; --spot-l: 56.1%; }
+/* Swap scenes: each step carries its own screenshot. Static, they read as
+   an ordinary list of captioned screenshots; pinned, the steps crossfade in
+   one place, which is what changes the picture. */
+.flair-scene--swap .flair-steps { grid-template-columns: minmax(0, 1fr); gap: clamp(48px, 7vw, 96px); }
+.flair-scene--swap .flair-steps li { display: grid; gap: clamp(16px, 2.5vw, 28px); align-items: center; }
+.flair-step-shot { margin: 0; justify-self: center; }
+.flair-step-shot img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 78svh;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  box-shadow:
+    0 40px 90px oklch(20% 0.08 310 / 0.26),
+    0 6px 18px oklch(20% 0.08 310 / 0.1);
+}
+.flair-step-shot figcaption { margin-top: 10px; font-size: 0.82rem; color: var(--muted); text-align: center; }
+.flair-step-note { margin-top: 10px; font-size: 0.85rem; color: var(--muted); }
+@media (min-width: 900px) {
+  .flair-scene--swap .flair-steps li { grid-template-columns: minmax(240px, 1fr) minmax(0, 2.2fr); column-gap: clamp(32px, 4vw, 64px); }
+}
 
 @media (prefers-reduced-motion: no-preference) {
   /* Scroll distance: about two thirds of a screen per step. */
@@ -189,22 +211,20 @@
     background: var(--line);
     transition: background-color 0.4s var(--motion-ease);
   }
-  .flair-scene[data-active="1"] .flair-progress span:nth-child(-n+1),
-  .flair-scene[data-active="2"] .flair-progress span:nth-child(-n+2),
-  .flair-scene[data-active="3"] .flair-progress span:nth-child(-n+3) { background: var(--purple); }
+  .flair-progress span[data-on] { background: var(--purple); }
 
   /* Wide screens: captions on the left, the window large on the right. The
      window is capped by the screen's height so the whole stage fits. */
   @media (min-width: 900px) {
-    .flair-scene.is-pinned .flair-stage {
+    .flair-scene.is-pinned:not(.flair-scene--swap) .flair-stage {
       grid-template-columns: minmax(240px, 1fr) minmax(0, 2.4fr);
       grid-template-areas: "head shot" "steps shot";
       align-items: center;
       column-gap: clamp(32px, 4vw, 64px);
     }
-    .flair-scene.is-pinned .flair-head { grid-area: head; align-self: end; }
+    .flair-scene.is-pinned:not(.flair-scene--swap) .flair-head { grid-area: head; align-self: end; }
     .flair-scene.is-pinned .flair-head h2 { font-size: clamp(1.9rem, 3.2vw, 3rem); }
-    .flair-scene.is-pinned .flair-steps-wrap { grid-area: steps; align-self: start; }
+    .flair-scene.is-pinned:not(.flair-scene--swap) .flair-steps-wrap { grid-area: steps; align-self: start; }
     .flair-scene.is-pinned .flair-shot {
       grid-area: shot;
       width: min(100%, calc((100svh - var(--flair-topbar) - 96px) * 1.818));
@@ -221,6 +241,27 @@
       overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
     }
     .flair-scene.is-pinned .flair-head h2 { font-size: clamp(1.6rem, 7vw, 2.2rem); }
+  }
+
+  /* Pinned swap scenes: the heading, then one step at a time, its text
+     beside its screenshot. The screenshot is capped
+     by the screen's height so the stage always fits. */
+  .flair-scene--swap.is-pinned .flair-stage { gap: clamp(14px, 2.4vh, 28px); }
+  .flair-scene--swap.is-pinned .flair-steps li { gap: clamp(12px, 2vh, 24px); }
+  .flair-scene--swap.is-pinned .flair-step-shot img {
+    max-height: calc(100svh - var(--flair-topbar) - 360px);
+    scale: 0.97;
+    transition: scale 0.8s var(--motion-ease);
+  }
+  .flair-scene--swap.is-pinned .flair-steps li[data-current] .flair-step-shot img { scale: 1; }
+  .flair-scene--swap.is-pinned .flair-progress { margin-bottom: 0; }
+  /* The intro stays visible: on several pages it says what is sample data.
+     product-flair.js pins swap scenes only on screens big enough for it. */
+  .flair-scene--swap.is-pinned .flair-head p { margin-top: 8px; font-size: 0.95rem; }
+  /* Room under the stage for the floating call-to-action bar (site.js),
+     so it never covers a caption that says what is sample data. */
+  @media (min-width: 761px) {
+    .flair-scene--swap.is-pinned .flair-stage { padding-bottom: 96px; }
   }
 }
 
@@ -318,7 +359,8 @@
       from { clip-path: inset(7% 9% 7% 9% round 28px); scale: 0.94; }
       to   { clip-path: inset(0 0 0 0 round 14px); scale: 1; }
     }
-    .flair-chapters .screenshot-wide img {
+    .flair-chapters .screenshot-wide img,
+    .tf-shots .tf-shot img {
       animation: flair-unveil linear both;
       animation-timeline: view();
       animation-range: entry 5% cover 35%;

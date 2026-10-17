@@ -844,15 +844,23 @@ A client note typed into a text field, personal details marked as they appear, t
 
 Play the video on YouTube
 
-## A closer look
+## Marked, listed, redacted
+
+The same fictional client note at each step. Every name and number is invented.
+
+- 
 
 ### Marked where it is
 
 Each finding is highlighted on the text itself, in a colour, opacity and style you choose, and the highlight follows the text as you edit. The badge shows how many findings the field has. Turn highlighting off from the menu or with Control-Option-H.
 
+- 
+
 ### Every finding, in a list
 
 Click the badge to see what was found and what kind of detail it is. Ignore a finding, redact all of them, or switch checking off for that app.
+
+- 
 
 ### Redacted, still readable
 
@@ -1023,15 +1031,11 @@ The menu-bar readout, a cleaning rule with its preview, What Grew, the Space Map
 
 Play the video on YouTube
 
-## A closer look
+## From what grew to a clean
 
-Every screen below is a capture of the app running on sample data, not on a real Mac.
+Every screen here is a capture of the app running on sample data, not on a real Mac.
 
-### You approve every clean
-
-Clean Now lists each rule with the most it would remove and whether that goes to the Trash or is deleted for good. Permanent deletion is shown in red. A rule whose folders changed since you approved it is left out until you preview it again.
-
-Sample data.
+- 
 
 ### What grew since last week
 
@@ -1039,11 +1043,25 @@ Each folder that grew is listed with its size, its growth and a button for the n
 
 Sample data.
 
+- 
+
 ### Suggested rules, weekly or monthly
 
 Legroom looks at what grew, at your rules and at its list of known caches, and suggests rules. A suggestion never creates, approves or runs a rule. You see the rule editor and the preview first.
 
 Sample data.
+
+- 
+
+### You approve every clean
+
+Clean Now lists each rule with the most it would remove and whether that goes to the Trash or is deleted for good. Permanent deletion is shown in red. A rule whose folders changed since you approved it is left out until you preview it again.
+
+Sample data.
+
+## A closer look
+
+Every screen below is a capture of the app running on sample data, not on a real Mac.
 
 ### Space Map: where the space went
 
@@ -1318,17 +1336,25 @@ Privacy tabSettings, Privacy lists what Keyfeel looks at and what it does not. I
 
 Four parts of the app, drawn rather than photographed. These are illustrations, not screenshots of the app.
 
+- 
+
 ### Typing
 
 Every key press plays a recording of a real switch, with its own pitch and a place in the stereo field. Releasing the key can make a sound too.
+
+- 
 
 ### Clicking
 
 Mouse clicks have press and release sounds, and a ripple spreads on screen from the point you clicked. Scrolling ticks along at the speed you scroll.
 
+- 
+
 ### Trackpad
 
 Optional haptic feedback on scroll and click. Keyfeel produces it only while a finger is on the trackpad.
+
+- 
 
 ### Quiet when it should be
 
@@ -1797,19 +1823,29 @@ Submissions, grants, projects and co-authors tracked in one local record, with y
 
 Play the video on YouTube
 
-## A closer look
+## Submissions, CV, grants and tenure
+
+Every screen uses sample data.
+
+- 
 
 ### Every submission, every round
 
 One table holds the whole history: venue, date submitted, decision, and your own estimate of the odds. Open a submission to see its review rounds, manuscript versions, cover letter and submission checklist.
 
+- 
+
 ### A CV built from your records
 
 Pick a format, a length and a date range, and the CV fills itself from the papers, positions and grants you already track. Export to PDF, Word, rich text, HTML or Markdown.
 
+- 
+
 ### Grants from proposal to final report
 
 Requested and awarded amounts, your share, the project timeline and each reporting deadline. Awarded and pending totals sit at the top of the list.
+
+- 
 
 ### How close you are to tenure
 

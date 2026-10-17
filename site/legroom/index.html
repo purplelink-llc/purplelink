@@ -26,12 +26,14 @@
     <script src="/theme.js?v=07d8025cab"></script>
     <link rel="stylesheet" href="/styles.css?v=14f0b4ea49">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <link rel="stylesheet" href="/product-flair.css?v=0d40001388">
     <link rel="stylesheet" href="/buy.css?v=589347358c">
     <link rel="stylesheet" href="/legroom/legroom.css?v=f5c393de54">
     <script src="/site.js?v=9a7562fde8" defer></script>
     <script src="/support-box.js?v=07f98ddb93" defer></script>
     <script src="/trial-reminder.js?v=d43def6c9f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
+    <script src="/product-flair.js?v=7ecbf83f91" defer></script>
     <script src="/tools/paper-review/paid-tool-landing.js?v=41be4deb54" defer></script>
     <script type="application/ld+json">
     {
@@ -235,7 +237,7 @@
       <div class="features-header">
         <h2 id="how-h">What it does</h2>
       </div>
-      <div class="features-grid">
+      <div class="features-grid" data-motion="stagger">
         <div class="feature-item">
           <h3>It shows free space where you can see it</h3>
           <p>The menu bar shows what is free on your startup disk. The window under it adds the space available now, the space macOS says it can clear, and your other volumes. You set a line, and Legroom warns you when free space drops below it.</p>
@@ -265,48 +267,57 @@
       </div>
     </section>
 
+    <section class="flair-scene flair-scene--swap" id="clean-flow" data-flair="steps" aria-labelledby="flow-h">
+      <div class="flair-track" data-flair-track>
+        <div class="flair-stage">
+          <div class="flair-head">
+            <h2 id="flow-h">From what grew to a clean</h2>
+            <p>Every screen here is a capture of the app running on sample data, not on a real Mac.</p>
+          </div>
+          <div class="flair-steps-wrap">
+            <ol class="flair-steps">
+              <li data-step>
+                <div class="flair-step-text">
+                  <h3>What grew since last week</h3>
+                  <p>Each folder that grew is listed with its size, its growth and a button for the next step: clean it now, add a rule, preview a rule or see a command. Items that come from macOS, such as swap and local Time Machine snapshots, are listed separately with what Legroom can and cannot tell you about them.</p>
+                </div>
+                <figure class="flair-step-shot">
+                  <img src="/legroom/img/what-grew.webp" alt="The What Grew window set to 7 days, listing sample folders by growth, such as Movies up 12 GB and Xcode DerivedData up 11 GB, each with a button for its next step, and a From macOS section with swap use and local Time Machine snapshots" width="1200" height="1289" loading="lazy" decoding="async">
+                  <figcaption>Sample data.</figcaption>
+                </figure>
+              </li>
+              <li data-step>
+                <div class="flair-step-text">
+                  <h3>Suggested rules, weekly or monthly</h3>
+                  <p>Legroom looks at what grew, at your rules and at its list of known caches, and suggests rules. A suggestion never creates, approves or runs a rule. You see the rule editor and the preview first.</p>
+                </div>
+                <figure class="flair-step-shot">
+                  <img src="/legroom/img/suggestions.webp" alt="The Suggestions window with four sample suggestions, such as clearing the npm cache every Monday and a note that Homebrew grew 12 GB, each with Create Rule or Edit Rule and Not Now buttons" width="1200" height="1118" loading="lazy" decoding="async">
+                  <figcaption>Sample data.</figcaption>
+                </figure>
+              </li>
+              <li data-step>
+                <div class="flair-step-text">
+                  <h3>You approve every clean</h3>
+                  <p>Clean Now lists each rule with the most it would remove and whether that goes to the Trash or is deleted for good. Permanent deletion is shown in red. A rule whose folders changed since you approved it is left out until you preview it again.</p>
+                </div>
+                <figure class="flair-step-shot">
+                  <img src="/legroom/img/clean-now.webp" alt="Legroom's Clean now confirmation listing six sample rules, each with the most it would remove and whether it moves items to the Trash or deletes them permanently, with one rule marked as not included because its folders changed since it was approved" width="600" height="762" loading="lazy" decoding="async">
+                  <figcaption>Sample data.</figcaption>
+                </figure>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="screenshots-section lg-gallery" aria-labelledby="look-h">
       <h2 id="look-h">A closer look</h2>
       <p class="section-intro">Every screen below is a capture of the app running on sample data, not on a real Mac.</p>
 
-      <div class="lg-pair">
-        <figure class="lg-shot">
-          <div class="screenshot-callout" data-motion="reveal">
-            <h3>You approve every clean</h3>
-            <p>Clean Now lists each rule with the most it would remove and whether that goes to the Trash or is deleted for good. Permanent deletion is shown in red. A rule whose folders changed since you approved it is left out until you preview it again.</p>
-          </div>
-          <div class="frame-soft">
-            <img src="/legroom/img/clean-now.webp" alt="Legroom's Clean now confirmation listing six sample rules, each with the most it would remove and whether it moves items to the Trash or deletes them permanently, with one rule marked as not included because its folders changed since it was approved" width="600" height="762" loading="lazy" decoding="async">
-          </div>
-          <figcaption>Sample data.</figcaption>
-        </figure>
-      </div>
 
-      <div class="screenshot-block">
-        <div class="screenshot-callout" data-motion="reveal">
-          <h3>What grew since last week</h3>
-          <p>Each folder that grew is listed with its size, its growth and a button for the next step: clean it now, add a rule, preview a rule or see a command. Items that come from macOS, such as swap and local Time Machine snapshots, are listed separately with what Legroom can and cannot tell you about them.</p>
-        </div>
-        <figure class="lg-shot">
-          <div class="frame-soft">
-            <img src="/legroom/img/what-grew.webp" alt="The What Grew window set to 7 days, listing sample folders by growth, such as Movies up 12 GB and Xcode DerivedData up 11 GB, each with a button for its next step, and a From macOS section with swap use and local Time Machine snapshots" width="1200" height="1289" loading="lazy" decoding="async">
-          </div>
-          <figcaption>Sample data.</figcaption>
-        </figure>
-      </div>
 
-      <div class="screenshot-block">
-        <div class="screenshot-callout" data-motion="reveal">
-          <h3>Suggested rules, weekly or monthly</h3>
-          <p>Legroom looks at what grew, at your rules and at its list of known caches, and suggests rules. A suggestion never creates, approves or runs a rule. You see the rule editor and the preview first.</p>
-        </div>
-        <figure class="lg-shot">
-          <div class="frame-soft">
-            <img src="/legroom/img/suggestions.webp" alt="The Suggestions window with four sample suggestions, such as clearing the npm cache every Monday and a note that Homebrew grew 12 GB, each with Create Rule or Edit Rule and Not Now buttons" width="1200" height="1118" loading="lazy" decoding="async">
-          </div>
-          <figcaption>Sample data.</figcaption>
-        </figure>
-      </div>
 
       <div class="screenshot-block">
         <div class="screenshot-callout" data-motion="reveal">
