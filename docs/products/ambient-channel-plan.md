@@ -98,22 +98,24 @@ Cost to compare against: about 5 euro a month for the VPS if the live stream sta
 
 1. **Create the channel.** In YouTube Studio under his Google login, create a new channel as a **Brand Account** (not a new Google login), so the existing automation
    Chrome on port 9340 can switch to it from the account menu. Pick the name, handle and avatar. Do not give the new channel's login or any token to a script.
-2. **Decide the live stream's fate on the Purplelink channel.** Options: (a) leave it running until day 45 of the new channel, then decide; (b) end it now, which
-   stops the VPS cost and gives up its accumulated likes and chat; (c) keep it and also point it at the new channel with a pinned link. Its watch hours may not count toward monetization
-   (see policy item 4). I did not touch the stream or the server.
+2. **The live stream (decided 2026-10-16):** it stops once the first uploads are live on the new channel, and its final broadcast is then unlisted. The six
+   earlier stream recordings on the Purplelink channel were unlisted on 2026-10-16.
 3. **Watch each video before it goes public.** The files are checked by instruments (duration, loudness, true peak, silence, frames), not by ears. Listen to at least the
    first ten minutes and a stretch from the middle of each one.
 4. **Answer the Studio questionnaires**: made for kids: No; altered or synthetic content: Yes (see above); category per the JSON file.
 5. **Upload**, set the thumbnail variants, and schedule. Upload as private first.
 
-## What exists now (2026-10-16)
+## Render status (2026-10-16, evening)
 
-| Slug | Theme | Length | Music |
-|---|---|---|---|
-| campfire-2h | campfire | 2 h | yes |
-| campfire-ambience-1h | campfire | 1 h | none |
-| halloween-2h | halloween | 2 h | yes |
-| winter-2h | winter | 2 h | yes |
-| study-pomodoro-2h | study, 25/5 timer | 2 h | yes |
+Nothing has finished yet. The Mac rebooted mid-render, so renders now run one at a time through the shared overnight queue (`~/.purplelink/nightq`).
+Each 2 h video draws a 20 minute picture and repeats it by stream copy (`--video-loop 20`), while the music stays unique for the whole length.
 
-Each folder holds the `.mp4`, a `-thumb.jpg`, a `.json` of upload metadata, and four check frames. A pull request holds the code; the videos themselves are not in git.
+| Slug | Theme | Length | Music | Status |
+|---|---|---|---|---|
+| halloween-2h | halloween | 2 h | yes | queued first (Oct 31) |
+| campfire-2h | campfire | 2 h | yes | queued |
+| campfire-ambience-1h | campfire | 1 h | none | queued (15 minute picture loop) |
+| winter-2h | winter | 2 h | yes | deferred to a later night |
+| study-pomodoro-2h | study, 25/5 timer | 2 h | yes | not queued: the Pomodoro counter cannot repeat, so it needs a full render |
+
+Each finished folder holds the `.mp4`, a `-thumb.jpg`, a `.json` of upload metadata, and four check frames. The videos themselves are not in git.
