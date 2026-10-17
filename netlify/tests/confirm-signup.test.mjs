@@ -37,7 +37,7 @@ beforeEach(() => {
   resendOk = true;
   globalThis.fetch = async (url, init = {}) => {
     const u = String(url);
-    if (u.includes("api.resend.com")) {
+    if (u.startsWith("https://api.resend.com/")) {
       sent.push(JSON.parse(init.body));
       return new Response("{}", { status: resendOk ? 200 : 500 });
     }
