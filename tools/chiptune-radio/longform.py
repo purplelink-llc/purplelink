@@ -313,7 +313,8 @@ def mux_cmd(work: Path, meas: dict, seconds: float, out: Path, title: str | None
 def mux_stage(work: Path, seconds: float, out: Path) -> None:
     meas = json.loads((work / "audio.json").read_text())["loudnorm"]
     part = out.with_name(out.stem + ".part" + out.suffix)          # written under a temporary name, so an interrupted mux leaves no finished-looking file
-    loop = (work / "loop.mp4").exists() and not (work / "video.mp4").exists()
+    vj = work / "video.json"                                        # the finished picture says which file it is; a stale partial file never decides
+    loop = bool(json.loads(vj.read_text()).get("loop_seconds")) if vj.exists() else (work / "loop.mp4").exists()
     subprocess.run(mux_cmd(work, meas, seconds, part, loop=loop), check=True)
     part.replace(out)
 
