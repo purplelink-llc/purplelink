@@ -1,25 +1,32 @@
 /**
- * GET /.netlify/functions/unsubscribe?email=...&token=...
+ * /.netlify/functions/unsubscribe?email=...&token=...
  *
- * One-click unsubscribe. Token is HMAC-SHA256(SUBSCRIBE_SECRET, email).
- * Removes the subscriber from the Netlify Blobs store and returns
- * a confirmation page using the site's existing CSS.
+ * Token is HMAC-SHA256(SUBSCRIBE_SECRET, email), minted by the digest mailer (backend/digest/mailer.py)
+ * and stored on each subscriber record.
+ *
+ *   GET   Shows a confirm page with one button. It changes nothing, so a mail scanner or link prefetch
+ *         that follows the link cannot unsubscribe anyone or cancel a paid subscription. Every link
+ *         already sent keeps working: it lands on this page.
+ *   POST  Unsubscribes. Used by the confirm page's button (form post) and by RFC 8058 one-click
+ *         (List-Unsubscribe-Post: List-Unsubscribe=One-Click, posted by the mail client to the same URL
+ *         with the email and token in the query string; no page is needed). Removes the subscriber from
+ *         the Netlify Blobs store and shows a confirmation page.
  *
  * This is the ONLY unsubscribe link every digest email carries, regardless
- * of tier — free, legacy, and paid subscribers all get the same link. A
+ * of tier: free, legacy, and paid subscribers all get the same link. A
  * paid subscriber (tier: "paid", stripe_subscription_id set by
  * stripe-webhook.mjs on checkout.session.completed) has a real, billing
  * Stripe subscription behind their record. If we just deleted the record,
  * they'd stop receiving email but Stripe would keep charging them with no
- * remaining link between the orphaned subscription and a person — so this
- * handler cancels the Stripe subscription first for paid-tier subscribers.
- * There is no Customer Portal yet, so this link is currently their only
- * self-serve cancellation path.
+ * remaining link between the orphaned subscription and a person, so a POST
+ * cancels the Stripe subscription first for paid-tier subscribers.
+ * Billing details are handled separately by subscription-portal.mjs.
  *
  * Required env vars: SUBSCRIBE_SECRET, STRIPE_SECRET_KEY
  */
 import { getStore } from "@netlify/blobs"
 import { createHmac, timingSafeEqual } from "node:crypto"
+import { escapeHtml, page } from "../lib/fn-page.mjs"
 
 const STRIPE_API = "https://api.stripe.com/v1"
 
@@ -49,73 +56,20 @@ async function cancelStripeSubscription(subscriptionId) {
   }
 }
 
-function escapeHtml(v) {
-  return String(v).replace(/[&<>"'`]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;", "`": "&#96;" }[c]))
-}
-
-function page(title, heading, bodyHtml, status = 200) {
-  return new Response(`<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>${title} | Purplelink LLC</title>
-    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
-    <meta name="theme-color" content="#19141d">
-    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/styles.css">
-    <script src="/site.js" defer></script>
-  </head>
-  <body>
-    <a class="skip-link" href="#main-content">Skip to content</a>
-    <header class="topbar">
-      <a class="brand" href="/" aria-label="Purplelink home">
-        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
-        <span>Purplelink</span>
-      </a>
-      <nav aria-label="Primary navigation">
-        <a href="/#software">Software</a>
-        <a href="/#projects">Products</a>
-        <a href="/tools/">Tools</a>
-        <a href="/changelog/">Changelog</a>
-        <a href="/about/">About</a>
-        <a href="/#contact">Contact</a>
-      </nav>
-    </header>
-    <div id="main-content" class="post-hero">
-      <h1>${heading}</h1>
-      ${bodyHtml}
-    </div>
-    <footer class="footer">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
-          <span>Purplelink LLC</span>
-        </div>
-        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
-      </div>
-      <nav class="footer-links" aria-label="Footer navigation">
-        <a href="/about/">About</a>
-        <a href="/press/">Press</a>
-        <a href="/privacy/">Privacy</a>
-        <a href="/terms/">Terms</a>
-        <a href="/blog/">Blog</a>
-        <a href="/guides/">Guides</a>
-        <a href="/changelog/">Changelog</a>
-      </nav>
-    </footer>
-  </body>
-</html>`, {
-    status,
-    headers: { "Content-Type": "text/html; charset=utf-8" },
-  })
-}
-
 export default async function handler(request) {
+  if (request.method !== "GET" && request.method !== "HEAD" && request.method !== "POST") {
+    return new Response("Method not allowed", { status: 405, headers: { Allow: "GET, HEAD, POST" } })
+  }
   const url = new URL(request.url)
-  const email = (url.searchParams.get("email") ?? "").toLowerCase().trim()
-  const token = url.searchParams.get("token") ?? ""
+  let email = (url.searchParams.get("email") ?? "").toLowerCase().trim()
+  let token = url.searchParams.get("token") ?? ""
+
+  // The confirm page's form posts the same two fields in the body; one-click posts carry them in the URL.
+  if (request.method === "POST") {
+    const body = Object.fromEntries(new URLSearchParams(await request.text().catch(() => "")))
+    if (typeof body.email === "string" && body.email) email = body.email.toLowerCase().trim()
+    if (typeof body.token === "string" && body.token) token = body.token
+  }
 
   const secret = process.env.SUBSCRIBE_SECRET
   if (!secret || !email || !token) {
@@ -142,6 +96,19 @@ export default async function handler(request) {
       "Invalid link", "Invalid link",
       "<p>This unsubscribe link is not valid. It may have been altered.</p><p><a href='/blog/digest/'>Back to Daily Digest</a></p>",
       400,
+    )
+  }
+
+  if (request.method !== "POST") {
+    return page(
+      "Unsubscribe", "Unsubscribe from the Daily Digest",
+      `<p class="post-lede">Stop Daily Digest emails to ${escapeHtml(email)}? If you have a paid subscription, this also cancels it and stops billing.</p>
+      <form method="post" action="/.netlify/functions/unsubscribe">
+        <input type="hidden" name="email" value="${escapeHtml(email)}">
+        <input type="hidden" name="token" value="${escapeHtml(token)}">
+        <button type="submit" class="btn btn-primary">Unsubscribe</button>
+      </form>
+      <p><a href="/blog/digest/">Keep my subscription</a></p>`,
     )
   }
 
