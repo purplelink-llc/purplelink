@@ -2,27 +2,27 @@
  * POST /.netlify/functions/subscribe
  * body: { email: "...", ref?: "<referral code>" }
  *
- * Adds a subscriber to the Netlify Blobs "subscribers" store.
- * Idempotent — re-subscribing an existing email succeeds silently.
+ * Double opt-in. A new address is NOT added: it gets a confirmation email with a signed link that
+ * lasts 3 days (netlify/lib/confirm-token.mjs), and joins the "subscribers" Blobs store only when it
+ * confirms (confirm-signup.mjs, which calls netlify/lib/digest-signup.mjs). Nothing is stored before then,
+ * so a stranger cannot enrol or mail-bomb an address beyond one confirmation email, and the digest cron
+ * (which reads "subscribers") only ever mails confirmed addresses.
  *
- * Referral: every subscriber gets a stable referral code (HMAC of their
- * email, namespaced separately from the unsubscribe token so sharing one
- * can never be used to derive the other). If `ref` matches a known code,
- * a credit is recorded in the "referral-credits" store, keyed
- * `${refCode}:${referredEmail}` — one event per referred email, not a
- * mutated counter on the referrer's record, so two people signing up
- * through the same link at the same moment can't race and clobber each
- * other's increment (found 2026-09-21 backend audit: @netlify/blobs has no
- * conditional/compare-and-swap write, so a shared counter was genuinely
- * unsafe). This is a plain recommendation mechanic — no credits or rewards
- * are promised or tracked. Nothing reads a referrer's count yet; when
- * something does, it's `getStore("referral-credits").list({ prefix:
- * refCode + ":" }).blobs.length`.
+ * The answer is the same ({ ok: true, confirm: true }) whether the address is new or already subscribed,
+ * so the form does not reveal who subscribes; an address already on the list gets no email. Its
+ * missing referral code or tier is still backfilled quietly (the old behaviour). The referral link is
+ * shown on the page the confirmation link opens.
  *
- * Required env var: SUBSCRIBE_SECRET
+ * Paid digest subscriptions created by Stripe checkout skip this: payment is consent, and
+ * stripe-webhook.mjs writes those records directly.
+ *
+ * Abuse limits: Origin check, 30 requests per IP and 5 per address per day (netlify/lib/ratelimit.mjs).
+ *
+ * Required env vars: SUBSCRIBE_SECRET, RESEND_API_KEY
  */
 import { getStore } from "@netlify/blobs"
-import { createHmac } from "node:crypto"
+import { signConfirmToken } from "../lib/confirm-token.mjs"
+import { referralCode } from "../lib/digest-signup.mjs"
 import { clientIp, overDailyLimit } from "../lib/ratelimit.mjs"
 
 // Abuse limits (security baseline 2026-10-16). Generous for a real person on a shared
@@ -38,8 +38,25 @@ function json(status, body) {
   })
 }
 
-function referralCode(email, secret) {
-  return createHmac("sha256", secret).update(`ref:${email}`).digest("hex").slice(0, 10)
+const SITE_ORIGIN = "https://purplelink.llc"
+const FROM_EMAIL = "Purplelink Daily Digest <ben@purplelink.llc>"
+const RESEND_API_URL = "https://api.resend.com/emails"
+
+async function sendConfirmation(email, link) {
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) return false
+  const text = `Someone, probably you, asked for the Purplelink Daily Digest at this address. To get it, confirm with this link:\n\n${link}\n\nThe link works for 3 days. After you confirm you get one short email per day, and every email has an unsubscribe link. If you did not ask, ignore this email and nothing happens.\n\nPurplelink LLC, Atlanta, Georgia`
+  const html = `<p>Someone, probably you, asked for the Purplelink Daily Digest at this address. To get it, confirm with this link:</p><p><a href="${link}">Confirm my email</a></p><p>The link works for 3 days. After you confirm you get one short email per day, and every email has an unsubscribe link. If you did not ask, ignore this email and nothing happens.</p><p>Purplelink LLC, Atlanta, Georgia</p>`
+  try {
+    const resp = await fetch(RESEND_API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({ from: FROM_EMAIL, to: [email], subject: "Confirm your Daily Digest signup", text, html }),
+    })
+    return resp.ok
+  } catch {
+    return false
+  }
 }
 
 export default async function handler(request) {
@@ -79,58 +96,34 @@ export default async function handler(request) {
     return json(500, { error: "server_error" })
   }
 
-  const token = createHmac("sha256", secret).update(email).digest("hex")
-  const myRefCode = referralCode(email, secret)
   const store = getStore("subscribers")
-  const refIndex = getStore("referral-index")
-
   const existing = await store.get(email)
-  if (!existing) {
-    await store.set(email, JSON.stringify({
-      email,
-      token,
-      tier: "free",
-      referralCode: myRefCode,
-      referredBy: refCode || null,
-      subscribedAt: new Date().toISOString(),
-    }))
-    await refIndex.set(myRefCode, email)
-
-    // Credit the referrer, if the code matches a real subscriber. Best
-    // effort — a stale or mistyped ref code just means no credit, not
-    // a failed subscribe. See the file header for why this is a
-    // uniquely-keyed event rather than an incremented counter.
-    if (refCode) {
-      try {
-        const referrerEmail = await refIndex.get(refCode)
-        if (referrerEmail && referrerEmail !== email) {
-          const credits = getStore("referral-credits")
-          await credits.set(`${refCode}:${email}`, new Date().toISOString())
-        }
-      } catch (err) {
-        console.error("subscribe: referral credit failed", err)
-      }
-    }
-  } else {
-    // Backfill: subscribers who joined before the referral mechanic
-    // existed have a record with no referralCode. Add it on their next
-    // visit (re-submitting the form is idempotent and harmless) so their
-    // link starts working without needing a separate migration.
+  if (existing) {
+    // Already subscribed: no email, same answer. Backfill what older records lack, as before.
     try {
       const record = JSON.parse(existing)
+      let changed = false
       if (!record.referralCode) {
-        record.referralCode = myRefCode
-        await store.set(email, JSON.stringify(record))
-        await refIndex.set(myRefCode, email)
+        record.referralCode = referralCode(email, secret)
+        await getStore("referral-index").set(record.referralCode, email)
+        changed = true
       }
       if (!record.tier) {
         record.tier = "legacy"
-        await store.set(email, JSON.stringify(record))
+        changed = true
       }
+      if (changed) await store.set(email, JSON.stringify(record))
     } catch (err) {
-      console.error("subscribe: referral backfill failed", err)
+      console.error("subscribe: backfill failed", err)
     }
+    return json(200, { ok: true, confirm: true })
   }
 
-  return json(200, { ok: true, referralCode: myRefCode })
+  const token = signConfirmToken("digest-confirm", { e: email, r: refCode }, secret)
+  const link = `${SITE_ORIGIN}/.netlify/functions/confirm-signup?t=${encodeURIComponent(token)}`
+  if (!(await sendConfirmation(email, link))) {
+    console.error("subscribe: confirmation email failed")
+    return json(502, { error: "send_failed" })
+  }
+  return json(200, { ok: true, confirm: true })
 }
