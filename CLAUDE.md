@@ -80,6 +80,13 @@ Not covered: the Modal digest cron (`backend/digest`), which commits digest file
 
 ## Deploy
 
+- **Rule (Ben, 2026-10-17): never use `[deploy now]` or the manual batch build unless the change is needed live
+  immediately.** "Immediately necessary" means customers are harmed or blocked until it ships: a broken checkout,
+  download or license delivery, a security fix, or a wrong price or claim on a page. Not necessary: new pages and guides,
+  copy edits, app version text and changelog entries, redesigns, SEO changes, analytics, tests, anything that can wait
+  until the next 06:00 or 17:00 Eastern build. When in doubt, do not use it. Never put the marker in a commit message
+  just to describe it (the build script cannot tell a mention from a request).
+
 - **Builds are batched (2026-10-15).** A push to `main` does not build. `scripts/netlify_ignore.sh` (netlify.toml
   `build.ignore`) skips every git-triggered build except (a) the digest cron's final commit `chore(digest): Daily
   Digest #N`, so emailed digest links are live, and (b) a commit whose message contains `[deploy now]` AND changes
