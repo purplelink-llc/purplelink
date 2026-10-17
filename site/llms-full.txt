@@ -478,7 +478,7 @@ Built in Swift for macOS 14+. It has native dark and light mode, system fonts, a
 This is exactly the integration I was hoping for.
 
 Leszek
-Independent LaTeX enthusiast, working on his first technical book
+Independent LaTeX enthusiast working on his first technical book
 On the opt-in project .latexmkrc support added in ModernTex 1.10, for a book built with LuaLaTeX, PythonTeX, Biber and texindy.
 
 Plain-language errors
