@@ -107,7 +107,7 @@
 - **Pricing:** Free 7-day trial (the complete app, no account), then $9.99 once, every update included. One download for everyone: after the trial the app asks for a license key, sent in the receipt email. One key works on two Macs. 14-day refund.
 - **Privacy:** Works offline. The index and the clipboard history stay on the Mac, in Summonly's own folder. macOS asks permission before Summonly reads Desktop, Documents and Downloads; it does not need Full Disk Access. Web searches and assistant prompts (claude, gpt, ppl, ask, and last rows for Google, Claude and ChatGPT) open in the browser only when you press Return, and the words go to that site, not through Summonly. Its only other network use is its check for a new version.
 - **Limits:** It searches the folders you choose, not Mail, Messages, Contacts or Calendar. Word and Pages documents are found by name only. Find by meaning is English only, optional, and helpful rather than exact. No workflows, scripts or extensions in this version.
-- **Status:** Shipping, version 1.3.3 (October 17, 2026). Notarized download, no App Store required.
+- **Status:** Shipping, version 1.3.4 (October 17, 2026). Notarized download, no App Store required.
 - **Trial and purchase:** https://purplelink.llc/summonly/
 
 ### BatteryMeter (macOS)
