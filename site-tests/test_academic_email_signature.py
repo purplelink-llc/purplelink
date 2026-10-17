@@ -5,6 +5,7 @@ import html
 import json
 import re
 import shutil
+from html.parser import HTMLParser
 import subprocess
 import unittest
 
@@ -39,6 +40,51 @@ console.log(JSON.stringify(out));
 """
 
 
+class PageScan(HTMLParser):
+    """Collects visible text, JSON-LD blocks, and the attributes of every tag inside <main>."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.text = []
+        self.ld = []
+        self.main_tags = []
+        self._in_main = False
+        self._skip = 0
+        self._ld = False
+
+    def handle_starttag(self, tag, attrs):
+        d = dict(attrs)
+        if tag == "main":
+            self._in_main = True
+        if self._in_main:
+            self.main_tags.append((tag, d))
+        if tag in ("script", "style"):
+            self._skip += 1
+            self._ld = tag == "script" and d.get("type") == "application/ld+json"
+            if self._ld:
+                self.ld.append("")
+
+    def handle_endtag(self, tag):
+        if tag == "main":
+            self._in_main = False
+        if tag in ("script", "style") and self._skip:
+            self._skip -= 1
+            self._ld = False
+
+    def handle_data(self, data):
+        if self._ld:
+            self.ld[-1] += data
+        elif not self._skip:
+            self.text.append(data)
+
+
+def scan(page):
+    s = PageScan()
+    s.feed(page)
+    s.close()
+    return s
+
+
 def run_core():
     p = subprocess.run(["node", "-e", NODE_DRIVER, str(CORE)], capture_output=True, text=True, timeout=60)
     if p.returncode != 0:
@@ -53,21 +99,21 @@ class AcademicSignaturePage(unittest.TestCase):
     def test_head_and_schema(self):
         self.assertIn('<link rel="canonical" href="https://purplelink.llc/tools/academic-email-signature/">', self.page)
         self.assertTrue((SITE / "assets/og/academic-email-signature.png").is_file())
-        blocks = re.findall(r'<script type="application/ld\+json">(.*?)</script>', self.page, re.S)
-        graph = json.loads(blocks[0])["@graph"]
+        graph = json.loads(scan(self.page).ld[0])["@graph"]
         self.assertEqual({g["@type"] for g in graph}, {"WebApplication", "FAQPage", "BreadcrumbList"})
 
     def test_no_inline_styles_or_handlers_in_page_markup(self):
-        body = re.sub(r"<script\b[\s\S]*?</script\s*>", "", self.page, flags=re.I)
-        main = body[body.index("<main"):body.index("</main>")]
-        self.assertNotRegex(main, r'\sstyle\s*=')
-        self.assertNotRegex(main, r'\son[a-z]+\s*=')
+        tags = scan(self.page).main_tags
+        self.assertGreater(len(tags), 50)
+        for tag, attrs in tags:
+            self.assertNotIn("style", attrs, tag)
+            self.assertFalse([k for k in attrs if k.startswith("on")], tag)
 
     def test_copy_is_plain(self):
-        text = html.unescape(re.sub(r"<[^>]+>", " ", re.sub(r"<script\b[\s\S]*?</script\s*>", " ", self.page, flags=re.I)))
+        text = " ".join(scan(self.page).text)
         self.assertNotRegex(text, EMOJI)
-        self.assertNotIn("—", text)
-        self.assertNotIn("–", text)
+        self.assertNotIn("\u2014", text)
+        self.assertNotIn("\u2013", text)
 
     def test_registered_everywhere(self):
         self.assertIn("/tools/academic-email-signature/", read_site("tools/index.html"))
