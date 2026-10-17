@@ -1,4 +1,4 @@
-// Security baseline 2026-10-16: subscribe abuse limits, kit/photo download limiter,
+// Security baseline 2026-10-16: kit/photo download limiter,
 // indexnow token compare, spreadsheet-safe cells in live-sheet.
 //
 // Run with: node --experimental-test-module-mocks --test netlify/tests/security-baseline.test.mjs
@@ -22,7 +22,6 @@ globalThis.Netlify = { env: { get: (k) => env[k] } };
 process.env.SUBSCRIBE_SECRET = env.SUBSCRIBE_SECRET;
 process.env.RESEND_API_KEY = "re_dummy";
 
-const { default: subscribe, PER_IP_DAILY, PER_EMAIL_DAILY } = await import("../functions/subscribe.mjs");
 const { default: kit, DAILY_LIMIT: KIT_LIMIT } = await import("../functions/kit-download.mjs");
 const { default: photo, DAILY_LIMIT: PHOTO_LIMIT } = await import("../functions/photo-download.mjs");
 const { default: indexnow } = await import("../functions/indexnow-ping.mjs");
@@ -38,42 +37,6 @@ beforeEach(() => {
     if (String(url).startsWith("https://api.resend.com/")) return new Response("{}", { status: 200 });
     throw new Error(`Unexpected fetch to ${url}`);
   };
-});
-
-const sub = (email, { ip = "203.0.113.5", origin } = {}) => subscribe(new Request("https://purplelink.llc/.netlify/functions/subscribe", {
-  method: "POST",
-  headers: { "content-type": "application/json", "x-nf-client-connection-ip": ip, ...(origin ? { origin } : {}) },
-  body: JSON.stringify({ email }),
-}));
-
-test("subscribe: a normal sign-up works, with or without an Origin header", async () => {
-  assert.equal((await sub("a@example.com")).status, 200);
-  assert.equal((await sub("b@example.com", { origin: "https://purplelink.llc" })).status, 200);
-  // Double opt-in: a request stores nothing until the address confirms (confirm-signup.test.mjs).
-  assert.equal(blobs.has("subscribers/a@example.com"), false);
-});
-
-test("subscribe: a foreign Origin is refused and nothing is stored", async () => {
-  const r = await sub("c@example.com", { origin: "https://evil.example" });
-  assert.equal(r.status, 403);
-  assert.equal(blobs.has("subscribers/c@example.com"), false);
-});
-
-test("subscribe: one address is capped per day, another address is not", async () => {
-  for (let i = 0; i < PER_EMAIL_DAILY; i++) assert.equal((await sub("d@example.com", { ip: `198.51.100.${i}` })).status, 200);
-  assert.equal((await sub("d@example.com", { ip: "198.51.100.99" })).status, 429);
-  assert.equal((await sub("e@example.com", { ip: "198.51.100.98" })).status, 200);
-});
-
-test("subscribe: one IP is capped per day", async () => {
-  for (let i = 0; i < PER_IP_DAILY; i++) assert.equal((await sub(`u${i}@example.com`, { ip: "192.0.2.77" })).status, 200);
-  assert.equal((await sub("late@example.com", { ip: "192.0.2.77" })).status, 429);
-});
-
-test("subscribe: an over-long address is rejected; a down limiter store fails open", async () => {
-  assert.equal((await sub(`${"x".repeat(250)}@example.com`)).status, 400);
-  storeDown = true;
-  assert.equal((await sub("f@example.com")).status, 200);
 });
 
 for (const [name, handler, limit] of [["kit-download", kit, KIT_LIMIT], ["photo-download", photo, PHOTO_LIMIT]]) {

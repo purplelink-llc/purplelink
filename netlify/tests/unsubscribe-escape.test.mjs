@@ -39,11 +39,11 @@ test("the address is HTML-escaped on the confirmation page", async () => {
   assert.deepEqual(deleted, [email]);
 });
 
-test("subscribe rejects addresses with markup characters", async () => {
-  for (const email of ['a<b>@example.com', 'a"b@example.com', "a`b@example.com", "a\\b@example.com"]) {
+test("subscribe is retired: it answers 410 even for markup characters", async () => {
+  for (const email of ['a<b>@example.com', "a@example.com"]) {
     const res = await subscribe(new Request("https://purplelink.llc/.netlify/functions/subscribe", {
       method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ email }),
     }));
-    assert.equal(res.status, 400, email);
+    assert.equal(res.status, 410, email);
   }
 });

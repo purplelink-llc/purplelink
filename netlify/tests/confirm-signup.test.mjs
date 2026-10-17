@@ -1,4 +1,4 @@
-// Double opt-in for the digest (subscribe.mjs) and the researcher checklist (checklist-signup.mjs):
+// Double opt-in for the retired digest (confirm links already sent still work; subscribe.mjs returns 410) and the researcher checklist (checklist-signup.mjs):
 // nothing is stored or sent until the signed link is confirmed with a POST. Resend and Blobs are stubbed.
 //
 // Run with: node --experimental-test-module-mocks --test netlify/tests/confirm-signup.test.mjs
@@ -45,7 +45,7 @@ beforeEach(() => {
   };
 });
 
-const post = (name, body, ip = "203.0.113.1") => (name === "subscribe" ? subscribe : checklist)(new Request(`${fn}/${name}`, {
+const post = (name, body, ip = "203.0.113.1") => checklist(new Request(`${fn}/${name}`, {
   method: "POST", headers: { "content-type": "application/json", "x-nf-client-connection-ip": ip }, body: JSON.stringify(body),
 }));
 const linkIn = (mail) => mail.text.match(/confirm-signup\?t=(\S+)/)[1];
@@ -53,20 +53,23 @@ const confirmPost = (t) => confirm(new Request(`${fn}/confirm-signup`, {
   method: "POST", body: new URLSearchParams({ t: decodeURIComponent(t) }), headers: { "content-type": "application/x-www-form-urlencoded" },
 }));
 
-test("digest: a signup stores nothing and emails a confirmation link to that address", async () => {
-  const res = await post("subscribe", { email: "new@example.com" });
-  assert.equal(res.status, 200);
-  assert.deepEqual(await res.json(), { ok: true, confirm: true });
-  assert.equal(blobs.has("subscribers/new@example.com"), false);
-  assert.equal(sent.length, 1);
-  assert.deepEqual(sent[0].to, ["new@example.com"]);
-  assert.match(sent[0].text, /Confirm|confirm/);
+const digestLink = (email, ref = "") => encodeURIComponent(signConfirmToken("digest-confirm", { e: email, r: ref }, SECRET));
+
+test("digest: the retired subscribe endpoint answers 410, stores nothing and sends nothing", async () => {
+  for (const method of ["POST", "GET"]) {
+    const res = await subscribe(new Request(`${fn}/subscribe`, {
+      method, headers: { "content-type": "application/json" }, ...(method === "POST" ? { body: JSON.stringify({ email: "new@example.com" }) } : {}),
+    }));
+    assert.equal(res.status, 410);
+    assert.equal((await res.json()).error, "gone");
+  }
+  assert.equal(blobs.size, 0);
+  assert.equal(sent.length, 0);
 });
 
-test("digest: GET on the link changes nothing; the POST adds the subscriber once, with the referral", async () => {
+test("digest: a confirmation link sent before retirement still works: GET changes nothing, the POST adds the subscriber once", async () => {
   blobs.set("referral-index/abc1234567", "referrer@example.com");
-  await post("subscribe", { email: "new@example.com", ref: "abc1234567" });
-  const t = linkIn(sent[0]);
+  const t = digestLink("new@example.com", "abc1234567");
   const page = await confirm(new Request(`${fn}/confirm-signup?t=${t}`));
   assert.equal(page.status, 200);
   assert.ok((await page.text()).includes('method="post"'));
@@ -81,22 +84,6 @@ test("digest: GET on the link changes nothing; the POST adds the subscriber once
   assert.ok(blobs.has("referral-credits/abc1234567:new@example.com"));
   const again = await confirmPost(t);
   assert.equal(again.status, 200);
-});
-
-test("digest: an address already subscribed gets the same answer, no email, and is unaffected", async () => {
-  const before = JSON.stringify({ email: "old@example.com", tier: "paid", referralCode: "r", token: "x", stripe_customer_id: "cus_1" });
-  blobs.set("subscribers/old@example.com", before);
-  const res = await post("subscribe", { email: "old@example.com" });
-  assert.deepEqual(await res.json(), { ok: true, confirm: true });
-  assert.equal(sent.length, 0);
-  assert.equal(blobs.get("subscribers/old@example.com"), before);
-});
-
-test("digest: a failed confirmation email is a 502 and stores nothing", async () => {
-  resendOk = false;
-  const res = await post("subscribe", { email: "new@example.com" });
-  assert.equal(res.status, 502);
-  assert.equal(blobs.has("subscribers/new@example.com"), false);
 });
 
 test("tokens: expired, tampered, wrong-kind and unsigned links confirm nothing", async () => {
