@@ -63,7 +63,7 @@ def test_mail_digest_does_not_mark_sent_when_delayed_send_fails(monkeypatch):
 
     send_calls = []
 
-    async def fake_send_one(client, email, subject, html, resend_key):
+    async def fake_send_one(client, email, subject, html, resend_key, unsubscribe_url=None):
         send_calls.append(email)
         # Simulate a transient Resend failure (5xx / network blip) for one
         # subscriber only -- exactly the failure mode _send_one's own
@@ -113,7 +113,7 @@ def test_mail_digest_same_day_sent_count_reflects_confirmed_sends_only(monkeypat
     async def fake_get_subscribers(client, secret):
         return subscribers
 
-    async def fake_send_one(client, email, subject, html, resend_key):
+    async def fake_send_one(client, email, subject, html, resend_key, unsubscribe_url=None):
         return email != "paid-fails@x.com"
 
     async def fake_mark_sent(client, email, slug, secret):
@@ -138,3 +138,35 @@ def test_mail_digest_same_day_sent_count_reflects_confirmed_sends_only(monkeypat
     )
 
     assert sent == 1
+
+
+
+def test_send_one_adds_one_click_unsubscribe_headers():
+    """Gmail and Apple Mail show their own Unsubscribe button only with RFC 2369/8058 headers."""
+    import asyncio
+
+    sent = {}
+
+    class _Resp:
+        status_code = 200
+
+        def raise_for_status(self):
+            pass
+
+        def json(self):
+            return {"id": "x"}
+
+    class _Client:
+        async def post(self, url, headers=None, json=None, timeout=None):
+            sent["json"] = json
+            return _Resp()
+
+    url = "https://purplelink.llc/.netlify/functions/unsubscribe?email=a%40b.c&token=t"
+    ok = asyncio.run(mailer._send_one(_Client(), "a@b.c", "s", "<p>h</p>", "k", unsubscribe_url=url))
+    assert ok
+    assert sent["json"]["headers"] == {
+        "List-Unsubscribe": f"<{url}>",
+        "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+    }
+    asyncio.run(mailer._send_one(_Client(), "a@b.c", "s", "<p>h</p>", "k"))
+    assert "headers" not in sent["json"]

@@ -101,7 +101,16 @@ async def _send_one(
     subject: str,
     html: str,
     resend_key: str,
+    unsubscribe_url: str | None = None,
 ) -> bool:
+    payload = {"from": FROM_EMAIL, "to": email, "subject": subject, "html": html}
+    if unsubscribe_url:
+        # RFC 2369 + RFC 8058: mail clients show their own Unsubscribe button and POST to this URL. The function
+        # treats a POST as the unsubscribe (a GET only shows a confirm page), so link scanners cannot unsubscribe.
+        payload["headers"] = {
+            "List-Unsubscribe": f"<{unsubscribe_url}>",
+            "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+        }
     try:
         resp = await client.post(
             RESEND_API,
@@ -109,7 +118,7 @@ async def _send_one(
                 "Authorization": f"Bearer {resend_key}",
                 "Content-Type": "application/json",
             },
-            json={"from": FROM_EMAIL, "to": email, "subject": subject, "html": html},
+            json=payload,
             timeout=15.0,
         )
         resp.raise_for_status()
@@ -156,7 +165,7 @@ async def mail_digest(
             unsub_url = _unsubscribe_url(email, subscribe_secret)
             manage_url = _manage_subscription_url(email, subscribe_secret) if tier == "paid" else ""
             html = render_email_html(digest, unsubscribe_url=unsub_url, tier=tier, manage_url=manage_url)
-            ok = await _send_one(client, email, subject, html, resend_key)
+            ok = await _send_one(client, email, subject, html, resend_key, unsubscribe_url=unsub_url)
             if ok:
                 sent += 1
 
@@ -166,7 +175,7 @@ async def mail_digest(
                 email = sub["email"]
                 unsub_url = _unsubscribe_url(email, subscribe_secret)
                 html = render_email_html(delayed_digest, unsubscribe_url=unsub_url, tier="free")
-                ok = await _send_one(client, email, delayed_subject, html, resend_key)
+                ok = await _send_one(client, email, delayed_subject, html, resend_key, unsubscribe_url=unsub_url)
                 if ok:
                     await _mark_sent(client, email, delayed_slug, subscribe_secret)
                     sent += 1
