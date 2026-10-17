@@ -185,6 +185,9 @@ def render_markdown(score: dict, evaluations: list[dict], items: list[dict]) -> 
 # Pipeline entry point
 # ---------------------------------------------------------------------------
 
+AISCORE_MAX_OUTPUT_TOKENS = 16_000
+
+
 async def run_aiscore(
     pdf_bytes: bytes,
     on_progress=None,
@@ -229,15 +232,16 @@ async def run_aiscore(
     _emit(30, "evaluating")
 
     async with httpx.AsyncClient(
-        timeout=httpx.Timeout(connect=10.0, read=180.0, write=10.0, pool=10.0),
+        timeout=httpx.Timeout(connect=10.0, read=400.0, write=10.0, pool=10.0),
     ) as client:
         raw = await _anthropic_message(
             client,
             system=SYSTEM,
             user_content=build_user_content(manuscript, items),
-            max_tokens=8192,
+            # 42 checklist items at about 60 tokens each is under 3,000 tokens, but thinking shares this
+            # budget on the 5.x models and 8,192 left little room for it.
+            max_tokens=AISCORE_MAX_OUTPUT_TOKENS,
             model=model or DEFAULT_MODEL,
-            temperature=0.1,
         )
 
     evaluations = _parse_json_findings(raw)

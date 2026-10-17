@@ -23,7 +23,12 @@ def test_l4_report_has_new_sections():
     assert "## Equation Audit" in core
     assert "## Literature & Citation Usage" in core
     assert "## Number Realism" in core
-    assert "### Equation Analyst" in core  # panel transcript
+    # The Panel Transcript is no longer written by the model: it is rendered from the raw findings
+    # (p.render_panel_transcript), so the prompt must not ask for it and the renderer must carry every persona.
+    assert "### Equation Analyst" not in core
+    transcript = p.render_panel_transcript({"panel": []})
+    assert transcript.startswith("## Panel Transcript")
+    assert "### Equation Analyst" in transcript
 
 
 # ---- caps and model for the persona calls (measured 2026-10-09) -------------------------------

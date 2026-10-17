@@ -58,19 +58,26 @@ DEFAULT_MODEL = os.environ.get("ANTHROPIC_MODEL", "claude-opus-5-5")
 FALLBACK_MODEL = os.environ.get("ANTHROPIC_FALLBACK_MODEL", "claude-opus-5-5")
 
 # $ per million tokens, base (non-cached) rates. Used only for cost
-# estimation/logging (UsageTracker below) — never sent to the API.
+# estimation/logging (UsageTracker below) and the per-order cost ceiling; never sent to the API.
+# Refreshed 2026-10-17 against the Claude API model table (Sonnet 5 had been listed at the Sonnet 4.x rate).
+# "cache_read" is the price of a prompt-cache read; a write costs 1.25x the base input rate (5-minute TTL).
+# A model without a "cache_read" entry is assumed to read at 0.1x its input rate.
 MODEL_PRICING_PER_MTOK: dict[str, dict[str, float]] = {
-    # 5.x family, per OpenRouter's catalogue on 2026-10-09 (Haiku 5.5 is 10x cheaper than Haiku 4.5).
-    "claude-fable-5-1": {"input": 10.0, "output": 50.0},
-    "claude-opus-5-5": {"input": 4.0, "output": 20.0},
-    "claude-sonnet-5-5": {"input": 2.0, "output": 10.0},
-    "claude-haiku-5-5": {"input": 0.10, "output": 0.50},
+    "claude-fable-5-1": {"input": 10.0, "output": 50.0, "cache_read": 0.25},
     "claude-fable-5": {"input": 10.0, "output": 50.0},
+    "claude-opus-5-5": {"input": 4.0, "output": 20.0, "cache_read": 0.20},
+    "claude-opus-5": {"input": 5.0, "output": 25.0},
     "claude-opus-4-8": {"input": 5.0, "output": 25.0},
+    "claude-opus-4-7": {"input": 5.0, "output": 25.0},
+    "claude-opus-4-6": {"input": 5.0, "output": 25.0},
+    "claude-sonnet-5-5": {"input": 2.0, "output": 10.0, "cache_read": 0.20},
+    "claude-sonnet-5": {"input": 2.0, "output": 10.0},
+    "claude-sonnet-4-6": {"input": 3.0, "output": 15.0},
     "claude-sonnet-4-5": {"input": 3.0, "output": 15.0},
-    "claude-sonnet-5": {"input": 3.0, "output": 15.0},
+    "claude-haiku-5-5": {"input": 0.10, "output": 0.50},
     "claude-haiku-4-5": {"input": 1.0, "output": 5.0},
 }
+CACHE_WRITE_MULTIPLIER = 1.25
 
 # Mythos-class models (Fable 5, Mythos 5) reject the `temperature` field
 # outright — 400 "`temperature` is deprecated for this model" — rather than
@@ -86,11 +93,21 @@ def accepts_temperature(model: str) -> bool:
     return model not in MODELS_WITHOUT_TEMPERATURE and not _NO_TEMPERATURE_RE.match(model or "")
 
 
-def _cost_usd(model: str, input_tokens: int, output_tokens: int) -> float:
+def _cost_usd(model: str, input_tokens: int, output_tokens: int,
+              cache_creation_tokens: int = 0, cache_read_tokens: int = 0) -> float:
     """Estimate USD cost for one API call. Falls back to Fable's (highest)
-    rate for unknown models so an untracked model never silently looks free."""
+    rate for unknown models so an untracked model never silently looks free.
+
+    *input_tokens* is the uncached input the API reports; cache writes and reads are billed on top of
+    it at their own rates (the API reports all three separately)."""
     rates = MODEL_PRICING_PER_MTOK.get(model, MODEL_PRICING_PER_MTOK["claude-fable-5"])
-    return (input_tokens * rates["input"] + output_tokens * rates["output"]) / 1_000_000
+    read_rate = rates.get("cache_read", rates["input"] * 0.1)
+    return (
+        input_tokens * rates["input"]
+        + cache_creation_tokens * rates["input"] * CACHE_WRITE_MULTIPLIER
+        + cache_read_tokens * read_rate
+        + output_tokens * rates["output"]
+    ) / 1_000_000
 
 
 # ----------------------------------------------------------------------------
@@ -108,30 +125,58 @@ _usage_ctx: contextvars.ContextVar[Optional[list]] = contextvars.ContextVar(
 )
 
 
+class CostCeilingExceeded(RuntimeError):
+    """The running job has already spent its per-order ceiling; no further model call is made."""
+
+
+class InputTooLargeError(ValueError):
+    """One request would carry more input than any normal order does; refused before it is sent."""
+
+
 class UsageTracker:
     """Context manager collecting Anthropic usage/cost for one job.
 
     Usage:
-        with UsageTracker() as usage:
+        with UsageTracker(max_cost_usd=7.5) as usage:
             final = await run_review_pipeline(...)
         # usage.records, usage.total_cost_usd now populated
+
+    *max_cost_usd* is a per-order ceiling: once the recorded spend reaches it, the next
+    _anthropic_message() raises CostCeilingExceeded instead of spending more. It is a backstop against a
+    runaway loop or an unforeseen oversized input, set by the caller to what the customer paid, so a
+    normal order (which costs well under its price) never meets it. None means no ceiling.
     """
 
-    def __init__(self) -> None:
+    def __init__(self, max_cost_usd: Optional[float] = None) -> None:
         self.records: list[dict] = []
+        self.max_cost_usd = max_cost_usd
         self._token: Optional[contextvars.Token] = None
+        self._ceiling_token: Optional[contextvars.Token] = None
 
     def __enter__(self) -> "UsageTracker":
         self._token = _usage_ctx.set(self.records)
+        self._ceiling_token = _ceiling_ctx.set(self)
         return self
 
     def __exit__(self, *exc_info) -> None:
         if self._token is not None:
             _usage_ctx.reset(self._token)
+        if self._ceiling_token is not None:
+            _ceiling_ctx.reset(self._ceiling_token)
 
     @property
     def total_input_tokens(self) -> int:
-        return sum(r["input_tokens"] for r in self.records)
+        """All input tokens: uncached, cache writes and cache reads."""
+        return sum(r["input_tokens"] + r.get("cache_creation_tokens", 0) + r.get("cache_read_tokens", 0)
+                   for r in self.records)
+
+    @property
+    def total_cache_read_tokens(self) -> int:
+        return sum(r.get("cache_read_tokens", 0) for r in self.records)
+
+    @property
+    def total_cache_creation_tokens(self) -> int:
+        return sum(r.get("cache_creation_tokens", 0) for r in self.records)
 
     @property
     def total_output_tokens(self) -> int:
@@ -140,6 +185,9 @@ class UsageTracker:
     @property
     def total_cost_usd(self) -> float:
         return sum(r["cost_usd"] for r in self.records)
+
+    def over_ceiling(self) -> bool:
+        return self.max_cost_usd is not None and self.total_cost_usd >= self.max_cost_usd
 
     def models_used(self) -> list[str]:
         seen: list[str] = []
@@ -152,21 +200,39 @@ class UsageTracker:
         return {
             "calls": len(self.records),
             "input_tokens": self.total_input_tokens,
+            "cache_read_tokens": self.total_cache_read_tokens,
+            "cache_creation_tokens": self.total_cache_creation_tokens,
             "output_tokens": self.total_output_tokens,
             "cost_usd": round(self.total_cost_usd, 4),
             "models": self.models_used(),
         }
 
 
-def _record_usage(model: str, input_tokens: int, output_tokens: int) -> None:
+_ceiling_ctx: contextvars.ContextVar[Optional[UsageTracker]] = contextvars.ContextVar(
+    "_ceiling_ctx", default=None
+)
+
+
+def _check_cost_ceiling() -> None:
+    tracker = _ceiling_ctx.get()
+    if tracker is not None and tracker.over_ceiling():
+        raise CostCeilingExceeded(
+            f"order cost ceiling ${tracker.max_cost_usd:.2f} reached (spent ${tracker.total_cost_usd:.2f})"
+        )
+
+
+def _record_usage(model: str, input_tokens: int, output_tokens: int,
+                  cache_creation_tokens: int = 0, cache_read_tokens: int = 0) -> None:
     sink = _usage_ctx.get()
     if sink is None:
         return
     sink.append({
         "model": model,
         "input_tokens": input_tokens,
+        "cache_creation_tokens": cache_creation_tokens,
+        "cache_read_tokens": cache_read_tokens,
         "output_tokens": output_tokens,
-        "cost_usd": _cost_usd(model, input_tokens, output_tokens),
+        "cost_usd": _cost_usd(model, input_tokens, output_tokens, cache_creation_tokens, cache_read_tokens),
     })
 
 # Low temperature — we want consistent reasoning, not creative writing.
@@ -1127,10 +1193,48 @@ class _ModelRejectedError(Exception):
     from other 4xx so the fallback-model retry only fires for this case."""
 
 
+# Transient server-side statuses worth retrying with backoff: rate limit (429), the API's own 500 api_error,
+# gateway errors, and 529 overloaded. A 4xx other than 429 is a request fault and is never retried.
+_RETRYABLE_STATUSES = frozenset({429, 500, 502, 503, 504, 529})
+
+# Hard backstop on one request's input. A normal order is under 30,000 tokens a call (80,000 characters of body
+# plus findings) plus about 1,600 tokens per rendered page, and the model's window is 1M tokens, so this only
+# fires on a bug or an oversized input that slipped past the upload caps.
+MAX_REQUEST_INPUT_TOKENS = int(os.environ.get("MAX_REQUEST_INPUT_TOKENS", "250000"))
+_CHARS_PER_TOKEN_ESTIMATE = 3.2      # deliberately low (more tokens than prose usually needs): errs toward refusing
+_IMAGE_TOKENS_ESTIMATE = 1_700
+
+
+def estimate_input_tokens(system, user_content: list[dict]) -> int:
+    """Offline estimate of a request's input tokens (no API call): characters / 3.2 for text, a flat
+    1,700 per image. Used for the input ceiling and for cost estimates, never for billing."""
+    chars = 0
+    images = 0
+    if isinstance(system, str):
+        chars += len(system)
+    else:
+        chars += sum(len(b.get("text", "")) for b in system or [])
+    for block in user_content or []:
+        if block.get("type") == "image":
+            images += 1
+        else:
+            chars += len(block.get("text", ""))
+    return int(chars / _CHARS_PER_TOKEN_ESTIMATE) + images * _IMAGE_TOKENS_ESTIMATE
+
+
+def _retry_delay(attempt: int, retry_after: Optional[str]) -> float:
+    import random
+    try:
+        base = float(retry_after) if retry_after else (attempt * attempt) * 2.0
+    except ValueError:
+        base = (attempt * attempt) * 2.0
+    return base + random.uniform(0.0, 0.5)
+
+
 async def _anthropic_message_once(
     client,
     *,
-    system: str,
+    system,
     user_content: list[dict],
     max_tokens: int,
     model: str,
@@ -1140,12 +1244,13 @@ async def _anthropic_message_once(
     """Call Anthropic's /v1/messages endpoint once (with same-model retries).
 
     *client* is an httpx.AsyncClient (the caller manages the lifecycle).
-    *user_content* is the raw Anthropic content-block list: text + image
-    blocks are both supported.
+    *system* is a string or a list of system content blocks. *user_content* is the raw Anthropic
+    content-block list: text + image blocks are both supported, and a block may carry
+    ``cache_control`` to mark the end of a prefix shared with other calls.
 
-    Retries transient failures (HTTP 429 rate-limit, 529 overloaded, and
-    network timeouts / connection drops) with exponential backoff, honoring
-    Retry-After. A long generation no longer surfaces as a read timeout the way
+    Retries transient failures (HTTP 429 rate-limit, 500/502/503/504 server errors, 529 overloaded, and
+    network timeouts / connection drops) with exponential backoff and jitter, honoring Retry-After.
+    A long generation no longer surfaces as a read timeout the way
     it did at read=120s — the client is configured with generous headroom and
     transient stalls are retried rather than fatal.
 
@@ -1153,10 +1258,16 @@ async def _anthropic_message_once(
     `model` field itself — the caller decides whether to fall back to a
     different model. Other non-transient HTTP errors are raised immediately.
 
-    Returns (text, usage_dict) where usage_dict has input_tokens/output_tokens.
+    Returns (text, usage_dict). usage_dict has input_tokens (uncached), cache_creation_tokens,
+    cache_read_tokens, output_tokens, thinking_tokens and truncated.
     """
     import asyncio
     import httpx
+
+    est = estimate_input_tokens(system, user_content)
+    if est > MAX_REQUEST_INPUT_TOKENS:
+        raise InputTooLargeError(f"request input is about {est} tokens, over the {MAX_REQUEST_INPUT_TOKENS} limit")
+    _check_cost_ceiling()
 
     api_key = os.environ["ANTHROPIC_API_KEY"]
     body = {
@@ -1185,17 +1296,12 @@ async def _anthropic_message_once(
             # Connection/read timeout or dropped connection — transient.
             last_exc = e
             if attempt < max_attempts:
-                await asyncio.sleep((attempt * attempt) * 2.0)  # 2s, 8s
+                await asyncio.sleep(_retry_delay(attempt, None))
                 continue
             raise
 
-        if resp.status_code in (429, 529) and attempt < max_attempts:
-            retry_after = resp.headers.get("retry-after")
-            try:
-                delay = float(retry_after) if retry_after else (attempt * attempt) * 2.0
-            except ValueError:
-                delay = (attempt * attempt) * 2.0
-            await asyncio.sleep(delay)
+        if resp.status_code in _RETRYABLE_STATUSES and attempt < max_attempts:
+            await asyncio.sleep(_retry_delay(attempt, resp.headers.get("retry-after")))
             continue
 
         if resp.status_code in (400, 403, 404):
@@ -1229,12 +1335,14 @@ async def _anthropic_message_once(
         usage = data.get("usage", {}) or {}
         usage_dict = {
             "input_tokens": int(usage.get("input_tokens", 0) or 0),
+            "cache_creation_tokens": int(usage.get("cache_creation_input_tokens", 0) or 0),
+            "cache_read_tokens": int(usage.get("cache_read_input_tokens", 0) or 0),
             "output_tokens": int(usage.get("output_tokens", 0) or 0),
             "truncated": data.get("stop_reason") == "max_tokens",
             "thinking_tokens": int((usage.get("output_tokens_details") or {}).get("thinking_tokens", 0) or 0),
         }
         text = "".join(parts).strip()
-        if usage_dict["truncated"]:
+        if usage_dict["truncated"] and max_tokens > 0:
             logger.warning("anthropic output cut off at max_tokens=%d: model=%s output_tokens=%d thinking_tokens=%d",
                            max_tokens, model, usage_dict["output_tokens"], usage_dict["thinking_tokens"])
         if data.get("stop_reason") == "refusal":
@@ -1245,25 +1353,25 @@ async def _anthropic_message_once(
             details = data.get("stop_details") or {}
             logger.warning("anthropic refusal: model=%s category=%r", model, details.get("category"))
             raise _ModelRejectedError(f"refusal: {details.get('category') or 'unknown'}")
-        if not text:
+        if not text and max_tokens > 0:
             # Only text blocks are collected above, so a response carrying no
             # text block returns "" and callers cannot tell an empty answer
             # from a refusal, a max_tokens stop with nothing emitted, or a
             # response made entirely of non-text blocks. Log what actually came
             # back, but only in the empty case so this stays quiet in normal
             # operation. Added while diagnosing the monthly guide's 'voice'
-            # pass returning 0 characters deterministically.
+            # pass returning 0 characters deterministically. Block CONTENT is
+            # not logged (it can quote the customer's manuscript); types and sizes are enough.
             blocks = data.get("content", []) or []
             logger.warning(
                 "anthropic empty text response: model=%s stop_reason=%r "
-                "stop_sequence=%r block_types=%s block_count=%d usage=%s first_block=%.300r",
+                "stop_sequence=%r block_types=%s block_count=%d usage=%s",
                 model,
                 data.get("stop_reason"),
                 data.get("stop_sequence"),
                 [b.get("type") for b in blocks],
                 len(blocks),
                 usage_dict,
-                blocks[0] if blocks else None,
             )
         return text, usage_dict
 
@@ -1275,7 +1383,7 @@ async def _anthropic_message_once(
 async def _anthropic_message(
     client,
     *,
-    system: str,
+    system,
     user_content: list[dict],
     max_tokens: int,
     model: str = DEFAULT_MODEL,
@@ -1313,7 +1421,8 @@ async def _anthropic_message(
                 )
                 continue
             raise
-        _record_usage(try_model, usage["input_tokens"], usage["output_tokens"])
+        _record_usage(try_model, usage["input_tokens"], usage["output_tokens"],
+                      usage.get("cache_creation_tokens", 0), usage.get("cache_read_tokens", 0))
         if usage.get("truncated") and on_truncated is not None:
             on_truncated(try_model)
         return text
@@ -1323,33 +1432,173 @@ async def _anthropic_message(
     raise RuntimeError("Anthropic request failed (no model succeeded).")
 
 
+async def _prewarm_cache(client, *, system, user_content: list[dict], model: str,
+                         effort: Optional[str] = None) -> bool:
+    """Write the prompt cache for a prefix that several parallel calls will share, before they start.
+
+    A cache entry only becomes readable once the first response begins, so seven calls launched together
+    each pay full price for the same manuscript. One ``max_tokens=0`` request (prefill only, no output
+    billed) writes the entry first. *user_content* must end at the block carrying ``cache_control``;
+    *system*, *model* and *effort* must match the real calls or the entry is never read.
+
+    Returns True when the API reported a cache write or read. Never raises: if the API refuses the
+    zero-token request, the caller falls back to running one real call first.
+    """
+    try:
+        _, usage = await _anthropic_message_once(
+            client, system=system, user_content=user_content, max_tokens=0,
+            model=model, temperature=TEMPERATURE, effort=effort,
+        )
+    except Exception as e:
+        logger.warning("cache pre-warm skipped: %s", type(e).__name__)
+        return False
+    _record_usage(model, usage["input_tokens"], usage["output_tokens"],
+                  usage.get("cache_creation_tokens", 0), usage.get("cache_read_tokens", 0))
+    return bool(usage.get("cache_creation_tokens") or usage.get("cache_read_tokens"))
+
+
+def _strip_fences(raw: str) -> str:
+    s = (raw or "").strip()
+    s = re.sub(r"^```(?:json)?\s*", "", s)
+    return re.sub(r"\s*```$", "", s)
+
+
+def _parse_json_findings_checked(raw: str) -> tuple[list[dict], bool]:
+    """Parse a JSON array out of an LLM response. Tolerant of fenced code.
+
+    Returns (findings, ok). ok is True when the text held a valid JSON array, including a
+    legitimate empty ``[]``; False when nothing parseable came back, which a caller can retry.
+    Never logs the response text (it can quote the customer's manuscript).
+    """
+    import json
+
+    s = _strip_fences(raw)
+    # Find the first '[' and the matching last ']'
+    start = s.find("[")
+    end = s.rfind("]")
+    if start == -1 or end == -1 or end < start:
+        return [], False
+    try:
+        parsed = json.loads(s[start : end + 1])
+    except json.JSONDecodeError:
+        logger.warning("model response did not parse as JSON (%d chars)", len(s))
+        return [], False
+    if not isinstance(parsed, list):
+        return [], False
+    # Drop entries that aren't dicts
+    return [f for f in parsed if isinstance(f, dict)], True
+
+
+def _salvage_json_objects(raw: str) -> list[dict]:
+    """Recover the complete objects from a JSON array that was cut off mid-way (output limit).
+
+    Walks the text after the first '[' and keeps every top-level ``{...}`` that closes and parses,
+    respecting strings and escapes. A half-written last object is dropped. Returns [] if none.
+    """
+    import json
+
+    s = _strip_fences(raw)
+    start = s.find("[")
+    if start == -1:
+        return []
+    out: list[dict] = []
+    depth = 0
+    obj_start = -1
+    in_str = False
+    esc = False
+    for i in range(start + 1, len(s)):
+        ch = s[i]
+        if in_str:
+            if esc:
+                esc = False
+            elif ch == "\\":
+                esc = True
+            elif ch == '"':
+                in_str = False
+            continue
+        if ch == '"':
+            in_str = True
+        elif ch == "{":
+            if depth == 0:
+                obj_start = i
+            depth += 1
+        elif ch == "}" and depth > 0:
+            depth -= 1
+            if depth == 0 and obj_start != -1:
+                try:
+                    obj = json.loads(s[obj_start : i + 1])
+                except json.JSONDecodeError:
+                    obj = None
+                if isinstance(obj, dict):
+                    out.append(obj)
+                obj_start = -1
+    return out
+
+
 def _parse_json_findings(raw: str) -> list[dict]:
     """Parse a JSON array out of an LLM response. Tolerant of fenced code.
 
     Returns [] on parse failure rather than raising — a malformed persona
     response shouldn't blow up the whole review.
     """
-    import json
+    return _parse_json_findings_checked(raw)[0]
 
-    s = raw.strip()
-    # Strip ```json ... ``` fences if present
-    s = re.sub(r"^```(?:json)?\s*", "", s)
-    s = re.sub(r"\s*```$", "", s)
-    # Find the first '[' and the matching last ']'
-    start = s.find("[")
-    end = s.rfind("]")
-    if start == -1 or end == -1 or end < start:
-        return []
-    blob = s[start : end + 1]
-    try:
-        parsed = json.loads(blob)
-    except json.JSONDecodeError:
-        logger.warning("persona response did not parse as JSON: %r", blob[:200])
-        return []
-    if not isinstance(parsed, list):
-        return []
-    # Drop entries that aren't dicts
-    return [f for f in parsed if isinstance(f, dict)]
+
+_RETRY_JSON_NOTE = (
+    "Your previous reply could not be read as a JSON array. Reply again with ONLY the JSON array "
+    "of finding objects: no prose before or after it and no code fences. Use [] if there is nothing to report."
+)
+
+
+async def _call_json_findings(
+    client,
+    *,
+    system,
+    user_content: list[dict],
+    max_tokens: int,
+    model: str = DEFAULT_MODEL,
+    effort: Optional[str] = None,
+    message_fn=None,
+) -> tuple[list[dict], str]:
+    """One model call that should return a JSON array of objects, with a single retry.
+
+    Returns (findings, status) where status is:
+      "ok"         a valid array (possibly empty) on the first try or after the retry
+      "salvaged"   the output hit the token limit; the complete objects before the cut are kept
+      "unparsed"   two replies in a row held no readable array (findings is [])
+    A transport or API error propagates, as it does from _anthropic_message.
+
+    The retry resends the same blocks plus a short reminder after them, so a cached prefix is still
+    read and the retry costs little. A truncated reply is not retried (it would be cut off again);
+    its complete objects are salvaged instead.
+    """
+    send = message_fn or _anthropic_message
+    truncated: list[bool] = []
+    raw = await send(
+        client, system=system, user_content=user_content, max_tokens=max_tokens, model=model,
+        on_truncated=lambda _m: truncated.append(True), effort=effort,
+    )
+    findings, ok = _parse_json_findings_checked(raw)
+    if ok:
+        return findings, "ok"
+    if truncated:
+        salvaged = _salvage_json_objects(raw)
+        if salvaged:
+            return salvaged, "salvaged"
+    retry_content = list(user_content) + [{"type": "text", "text": _RETRY_JSON_NOTE}]
+    truncated.clear()
+    raw = await send(
+        client, system=system, user_content=retry_content, max_tokens=max_tokens, model=model,
+        on_truncated=lambda _m: truncated.append(True), effort=effort,
+    )
+    findings, ok = _parse_json_findings_checked(raw)
+    if ok:
+        return findings, "ok"
+    if truncated:
+        salvaged = _salvage_json_objects(raw)
+        if salvaged:
+            return salvaged, "salvaged"
+    return [], "unparsed"
 
 
 # ----------------------------------------------------------------------------
@@ -1879,24 +2128,71 @@ def attach_audit(l2: dict, audit: dict) -> dict:
 # Layer 3 — Adversarial 4-persona debate
 # ----------------------------------------------------------------------------
 
-def _build_persona_user_content(
-    persona_prompt: str,
+_CACHE = {"type": "ephemeral"}
+
+
+def _compact_json(obj) -> str:
+    """JSON without indentation: the same data in roughly a fifth fewer tokens than indent=2."""
+    import json as _json
+    return _json.dumps(obj, separators=(",", ":"), ensure_ascii=False)
+
+
+def _compact_json_capped(items: list, max_chars: int) -> str:
+    """Compact JSON of a list, dropping whole trailing items (never cutting one in half) to fit max_chars."""
+    kept = list(items)
+    text = _compact_json(kept)
+    while kept and len(text) > max_chars:
+        kept = kept[: max(0, int(len(kept) * max_chars / len(text)) - 1)] if len(kept) > 1 else []
+        text = _compact_json(kept)
+    return text
+
+
+# One system prompt for every panel call, first pass and deep pass alike. The system prompt is the first
+# thing a cached prefix is matched on, so keeping it identical across all fourteen calls of a deep review
+# is what lets them share one cache entry for the manuscript. Anything that differs by persona or by pass
+# goes in the last user block, after the cache breakpoint.
+_PANEL_SYSTEM_CORE = """You are one reviewer on a seven-reviewer adversarial panel that red-teams an academic
+manuscript for its authors before they submit it. Stay strictly in the persona you are given at the end of the
+user message; the other reviewers cover the other lenses.
+
+How to write findings:
+- Quote the paper exactly in "claim_quoted", word for word as it appears in manuscript_body. Your quotes are
+  checked against the extracted text automatically, and a quote that cannot be found is treated as unreliable.
+- In "evidence", name the section, figure, table or equation that supports the concern and, where you
+  computed something, show the computation.
+- Severity: "critical" means the problem could invalidate a central claim or conclusion. "major" means a
+  careful referee would require a fix before accepting the claim. "minor" means a weakness in presentation or
+  completeness that does not change the conclusion.
+- Report only problems you can support from the text you were given. A sound paper should get few findings or
+  none; return [] when you find nothing in your lens. Do not pad the list to look thorough and do not invent a
+  flaw to be useful. If part of the paper strengthens it, you may say so in a finding only when your persona
+  asks for the big picture.
+- Never invent citations, DOIs, page numbers, sample sizes or statistics. If you rely on your memory of the
+  literature, say so and hedge ("appears", "warrants checking").
+- The earlier-layer blocks (vision findings, citation issues, retractions, citation support audit) are leads
+  for you to check against the manuscript, not ground truth. Citation audit verdicts were judged from
+  abstracts only.
+
+Style: plain, specific prose. No em dashes, no emojis, no praise or filler words.
+
+Output a JSON array of finding objects and nothing else: no preface, no closing remarks, no code fences."""
+
+PANEL_SYSTEM = _safety.SAFETY_PREAMBLE + "\n\n" + _PANEL_SYSTEM_CORE
+
+
+def _build_persona_shared_content(
     structure: PaperStructure,
     l1: dict,
     l2: dict,
     domain: str,
 ) -> list[dict]:
-    """Compose the user message for a single persona call.
-
-    The persona sees: domain module + paper structure + summarised L1 and L2
-    findings. We pass JSON-tagged sections so the model can navigate.
-    """
-    import json as _json
-
+    """The part of a panel call that is identical for every persona and both passes: the domain module,
+    paper metadata, figure inventory, earlier-layer findings and the manuscript. It comes first and carries
+    the cache breakpoint, so the manuscript is billed once per review at the write rate and read at a
+    fraction of the input price by the other calls. The long document leads and the instructions follow it."""
     domain_module = DOMAIN_MODULES.get(domain, _GENERAL_MODULE)
     text = (
         f"{domain_module}\n\n"
-        f"{persona_prompt}\n\n"
         + _safety.wrap_user_content(
             (
                 f"Title: {structure.title or '(not extracted)'}\n"
@@ -1911,29 +2207,78 @@ def _build_persona_user_content(
             structure.abstract or "(not extracted)", "abstract",
         ) + "\n\n"
         + _safety.wrap_user_content(
-            _json.dumps([f.to_dict() for f in structure.figures[:30]], indent=2),
+            _compact_json([f.to_dict() for f in structure.figures[:30]]),
             "figure_inventory",
         ) + "\n\n"
         + _safety.wrap_user_content(
-            _json.dumps(l1.get("findings", [])[:30], indent=2),
+            _compact_json(l1.get("findings", [])[:30]),
             "vision_findings_from_l1",
         ) + "\n\n"
         + _safety.wrap_user_content(
-            _json.dumps(l2.get("issues", [])[:30], indent=2),
+            _compact_json(l2.get("issues", [])[:30]),
             "citation_issues_from_l2",
         ) + "\n\n"
         + _safety.wrap_user_content(
-            _json.dumps(l2.get("retractions", [])[:20], indent=2),
+            _compact_json(l2.get("retractions", [])[:20]),
             "retracted_references_from_l2",
         ) + "\n\n"
         + _safety.wrap_user_content(
-            _json.dumps((l2.get("audit") or {}).get("findings", [])[:40], indent=2),
+            _compact_json((l2.get("audit") or {}).get("findings", [])[:40]),
             "citation_support_audit",
         ) + "\n\n"
-        + _safety.wrap_user_content(structure.body, "manuscript_body") + "\n\n"
-        + "Now produce your JSON array of findings."
+        + _safety.wrap_user_content(structure.body, "manuscript_body")
     )
-    return [{"type": "text", "text": text}]
+    return [{"type": "text", "text": text, "cache_control": dict(_CACHE)}]
+
+
+def _build_persona_user_content(
+    persona_prompt: str,
+    structure: PaperStructure,
+    l1: dict,
+    l2: dict,
+    domain: str,
+    tail: str = "",
+) -> list[dict]:
+    """Compose the user message for a single persona call: the shared, cached block, then this persona's
+    instructions (and, on the deep pass, the other reviewers' findings in *tail*).
+
+    The persona sees: domain module + paper structure + summarised L1 and L2
+    findings. We pass tagged sections so the model can navigate.
+    """
+    shared = _build_persona_shared_content(structure, l1, l2, domain)
+    return shared + [{
+        "type": "text",
+        "text": f"{persona_prompt}\n\n{tail}Now produce your JSON array of findings.",
+    }]
+
+
+_GENERIC_QUOTE_RE = re.compile(r"^\s*(overall|n/?a|none|\(none\))", re.I)
+
+
+def flag_unverified_quotes(findings: list[dict], body: str) -> int:
+    """Set ``quote_found`` on each finding that quotes the manuscript: True when the quote is in the
+    extracted text (after normalising case, punctuation and PDF hyphenation), False when it is not,
+    absent when the finding has no usable quote. Free, deterministic grounding: a quote the model cannot
+    have copied is the clearest sign of an invented concern. Findings are never dropped or reworded.
+    Returns the number flagged False. Never raises."""
+    try:
+        hay = _norm_for_match(body or "")
+        n_false = 0
+        for f in findings:
+            q = f.get("claim_quoted") or f.get("quoted_phrasing") or f.get("comment_quoted")
+            if not isinstance(q, str) or not q.strip() or _GENERIC_QUOTE_RE.match(q):
+                continue
+            parts = [p for p in re.split(r"\.{3}|\u2026", q) if len(_norm_for_match(p).split()) >= 3]
+            if not parts:
+                continue
+            found = all(_norm_for_match(p) in hay for p in parts)
+            f["quote_found"] = found
+            if not found:
+                n_false += 1
+        return n_false
+    except Exception:
+        logger.exception("quote verification failed (non-fatal)")
+        return 0
 
 
 async def _run_one_persona(
@@ -1948,17 +2293,10 @@ async def _run_one_persona(
     user_content = _build_persona_user_content(
         persona_prompt, structure, l1, l2, domain
     )
-    system = (
-        _safety.SAFETY_PREAMBLE + "\n\n" +
-        "You are part of a four-reviewer adversarial panel red-teaming an "
-        "academic manuscript. Stay strictly in your assigned persona. Quote "
-        "the paper exactly when you cite it. Output a JSON array of "
-        "findings and nothing else."
-    )
     try:
-        raw = await _anthropic_message(
+        findings, status = await _call_json_findings(
             client,
-            system=system,
+            system=PANEL_SYSTEM,
             user_content=user_content,
             max_tokens=PERSONA_MAX_OUTPUT_TOKENS,
             model=PERSONA_MODEL,
@@ -1966,12 +2304,18 @@ async def _run_one_persona(
     except Exception:
         logger.exception("persona %s failed", persona_key)
         return {"persona": persona_key, "findings": [], "status": "error"}
-    findings = _parse_json_findings(raw)
+    if status == "unparsed":
+        logger.warning("persona %s returned no readable JSON twice", persona_key)
+    flag_unverified_quotes(findings, structure.body)
     # Stamp each finding with its persona so the consensus filter can see
     # which reviewer raised it.
     for f in findings:
         f["persona"] = persona_key
-    return {"persona": persona_key, "findings": findings, "status": "ok"}
+    return {
+        "persona": persona_key, "findings": findings,
+        "status": "error" if status == "unparsed" else "ok",
+        **({"note": status} if status != "ok" else {}),
+    }
 
 
 def _consensus_filter(panel: list[dict]) -> dict:
@@ -2016,6 +2360,29 @@ def _consensus_filter(panel: list[dict]) -> dict:
     }
 
 
+# Below this many estimated tokens in the shared prefix (system prompt plus manuscript block) a cache pre-warm
+# saves too little to be worth one more request.
+_PREWARM_MIN_TOKENS = 4_000
+
+
+async def _run_panel(client, structure, l1, l2, domain, jobs: list) -> list:
+    """Run panel calls that share one cached manuscript prefix.
+
+    *jobs* is a list of zero-argument coroutine factories, one per persona. Seven simultaneous calls
+    cannot read each other's cache entry, so the entry is written first: a prefill-only pre-warm, or, if
+    the API refuses that, the first persona runs alone and the rest follow. Results keep job order.
+    """
+    shared = _build_persona_shared_content(structure, l1, l2, domain)
+    warmed = False
+    if len(jobs) > 1 and estimate_input_tokens(PANEL_SYSTEM, shared) >= _PREWARM_MIN_TOKENS:
+        warmed = await _prewarm_cache(client, system=PANEL_SYSTEM, user_content=shared, model=PERSONA_MODEL)
+    if warmed or len(jobs) <= 1:
+        return list(await asyncio.gather(*[j() for j in jobs], return_exceptions=True))
+    first = (await asyncio.gather(jobs[0](), return_exceptions=True))[0]
+    rest = list(await asyncio.gather(*[j() for j in jobs[1:]], return_exceptions=True))
+    return [first] + rest
+
+
 async def run_layer_3_personas(
     client,
     structure: PaperStructure,
@@ -2023,12 +2390,12 @@ async def run_layer_3_personas(
     l2: dict,
     domain: str,
 ) -> dict:
-    """Run the four personas in parallel and merge with the consensus filter."""
-    coros = [
-        _run_one_persona(client, key, prompt, structure, l1, l2, domain)
+    """Run the seven personas in parallel (after warming the shared cache) and merge with the consensus filter."""
+    jobs = [
+        (lambda key=key, prompt=prompt: _run_one_persona(client, key, prompt, structure, l1, l2, domain))
         for key, prompt in PERSONA_PROMPTS.items()
     ]
-    panel = await asyncio.gather(*coros, return_exceptions=True)
+    panel = await _run_panel(client, structure, l1, l2, domain, jobs)
     panel_clean: list[dict] = []
     for entry in panel:
         if isinstance(entry, Exception):
@@ -2048,7 +2415,7 @@ async def run_layer_3_personas(
 
 _DEEP_PASS_SUFFIX = """
 
-This is the SECOND pass. Below are the findings the other three reviewers
+This is the SECOND pass. Below are the findings the other six reviewers
 produced on their first independent pass. Now that you can see them:
 
 - If their findings reinforce something you flagged, push the severity up
@@ -2075,44 +2442,39 @@ async def _run_one_persona_deep(
     other_findings: list[dict],
     domain: str,
 ) -> dict:
-    """Second-pass call for one persona — sees the other personas' findings."""
-    import json as _json
+    """Second-pass call for one persona — sees the other personas' findings.
 
-    base_user = _build_persona_user_content(
-        persona_prompt + _DEEP_PASS_SUFFIX,
-        structure, l1, l2, domain,
-    )
-    # Append the other personas' findings as a tagged block
-    base_user[0]["text"] += (
-        "\n\n"
-        + _safety.wrap_user_content(
-            _json.dumps(other_findings, indent=2)[:30_000],
+    Uses the same system prompt and the same cached manuscript block as the first pass; only the final
+    block (this persona's instructions plus the other reviewers' findings) differs."""
+    tail = (
+        _safety.wrap_user_content(
+            _compact_json_capped(other_findings, 30_000),
             "other_personas_first_pass_findings",
         )
-        + "\n\nNow produce your SECOND-PASS JSON array of findings."
+        + "\n\nNow produce your SECOND-PASS JSON array of findings.\n\n"
     )
-    system = (
-        _safety.SAFETY_PREAMBLE + "\n\n" +
-        "You are part of a four-reviewer adversarial panel red-teaming an "
-        "academic manuscript, now on the second pass. Stay strictly in your "
-        "assigned persona but use the other reviewers' first-pass findings "
-        "to sharpen your own. Output a JSON array of findings only."
+    user_content = _build_persona_user_content(
+        persona_prompt + _DEEP_PASS_SUFFIX, structure, l1, l2, domain, tail=tail,
     )
     try:
-        raw = await _anthropic_message(
+        findings, status = await _call_json_findings(
             client,
-            system=system,
-            user_content=base_user,
+            system=PANEL_SYSTEM,
+            user_content=user_content,
             max_tokens=PERSONA_MAX_OUTPUT_TOKENS,
             model=PERSONA_MODEL,
         )
     except Exception:
         logger.exception("deep-pass persona %s failed", persona_key)
         return {"persona": persona_key, "findings": [], "status": "error"}
-    findings = _parse_json_findings(raw)
+    flag_unverified_quotes(findings, structure.body)
     for f in findings:
         f["persona"] = persona_key
-    return {"persona": persona_key, "findings": findings, "status": "ok"}
+    return {
+        "persona": persona_key, "findings": findings,
+        "status": "error" if status == "unparsed" else "ok",
+        **({"note": status} if status != "ok" else {}),
+    }
 
 
 async def run_layer_3_deep_pass(
@@ -2128,8 +2490,10 @@ async def run_layer_3_deep_pass(
     Returns a fresh consensus-filtered structure, replacing the first-pass
     one. The intent is sharpening, not piling on; deep_pass typically
     surfaces 0-3 new high-confidence findings the single-pass missed.
+    The manuscript block is byte-identical to the first pass, so these seven calls read the cache the
+    first pass wrote (the five-minute entry is refreshed by every read).
     """
-    coros = []
+    jobs = []
     for key, prompt in PERSONA_PROMPTS.items():
         # Everyone *except* this persona's own first-pass findings is shown
         # to this persona for the second pass.
@@ -2138,10 +2502,13 @@ async def run_layer_3_deep_pass(
             if entry.get("persona") == key:
                 continue
             others.extend(entry.get("findings", []))
-        coros.append(_run_one_persona_deep(
-            client, key, prompt, structure, l1, l2, others, domain,
-        ))
-    panel = await asyncio.gather(*coros, return_exceptions=True)
+        jobs.append(
+            lambda key=key, prompt=prompt, others=others: _run_one_persona_deep(
+                client, key, prompt, structure, l1, l2, others, domain,
+            )
+        )
+    # The first pass wrote the cache moments ago, so no pre-warm: just run the seven calls.
+    panel = await asyncio.gather(*[j() for j in jobs], return_exceptions=True)
     panel_clean: list[dict] = []
     for entry in panel:
         if isinstance(entry, Exception):
@@ -2161,7 +2528,10 @@ red-team report for the authors. You have access to:
 - The paper structure (title, abstract, body, figures, references).
 - Layer 1 vision findings (figure / table integrity).
 - Layer 2 citation cross-check (which references didn't verify).
-- Layer 3 seven-persona panel debate (merged findings, with consensus flags).
+- Layer 3 seven-persona panel debate (merged findings, each tagged with its persona and a consensus flag).
+  A finding with "quote_found": false quoted text that could not be found in the extracted manuscript. Do not
+  repeat such a quote as evidence and give the finding "low" confidence unless you can locate the passage
+  yourself in manuscript_body.
 
 Your job is to produce a single Markdown report with EXACTLY these sections
 (Claims and Evidence follows What's Working):
@@ -2201,8 +2571,9 @@ finding. If the manuscript states no testable claims, write exactly: "No
 testable claims were found in the extracted text." instead of a table.
 
 ## Critical Blind Spots
-The 3-7 most important issues the authors must address. Each is a top-level
-bullet with:
+The most important issues the authors must address, at most 7 and only ones the evidence supports. If the
+paper has fewer than three real problems, list just those and say plainly that the paper is otherwise sound;
+do not fill the list to reach a count. Each is a top-level bullet with:
 - **One-line summary** in bold, prefixed with a confidence tag in brackets:
   **[Confidence: high]**, **[Confidence: medium]**, or **[Confidence: low]**.
   "High" means at least two personas raised this independently AND you can
@@ -2285,42 +2656,16 @@ claim it was attached to. Produce:
 Keep wording hedged: "Not supported by abstract" means verify against the full
 text, not that the citation is wrong.
 
-## Panel Transcript
-A subsection per persona showing their raw findings as you received them.
-Format:
-
-### Methodology Critic
-- (one line per finding, with severity and a one-clause description)
-
-### Statistical Skeptic
-- ...
-
-### Data Integrity Officer
-- ...
-
-### Editor-in-Chief
-- ...
-
-### Equation Analyst
-- ...
-
-### Literature Auditor
-- ...
-
-### Numerical Realist
-- ...
-
-If a persona returned no findings, write "(no findings)" under its heading.
-This transcript is for transparency — it's normal for some persona findings
-to NOT appear in Critical Blind Spots above (because a single-persona
-low-confidence finding shouldn't dominate the summary). The transcript lets
-the author see what each reviewer actually said.
+The report ends after "Citation Support Audit". Do not write a Panel Transcript section: it is appended
+automatically from the reviewers' raw findings.
 
 Constraints:
 - Quote the paper exactly when challenging a claim.
 - Do not invent issues. If a layer reported nothing, say so honestly.
 - Hedged language for any integrity concern ("appears", "warrants review").
-- No emojis, no marketing language, no "I hope this helps" sign-offs.
+- No emojis, no marketing language, no "I hope this helps" sign-offs. Plain, specific prose; no em dashes.
+- Calibrate to the evidence. Do not manufacture weaknesses: where the paper's evidence matches its claim, say
+  "Supported" and say what is working. A sound paper should read as sound.
 - Output ONLY the Markdown report — no preamble, no JSON, no code fences.
 - Do NOT use Markdown image syntax (`![...](...)`), Markdown link syntax
   (`[text](url)`), or raw HTML in the output. Plain Markdown only.
@@ -2333,6 +2678,71 @@ _TRUNCATION_NOTE = (
     "\n\n---\n_This report was cut off by the model's output limit, so the last section may be incomplete. "
     "The findings above it are unaffected. Email ben@purplelink.llc if you want a refund or a re-run._\n"
 )
+_PERSONA_TITLES = {
+    "methodology_critic": "Methodology Critic",
+    "statistical_skeptic": "Statistical Skeptic",
+    "data_integrity_officer": "Data Integrity Officer",
+    "editor_in_chief": "Editor-in-Chief",
+    "equation_analyst": "Equation Analyst",
+    "literature_auditor": "Literature Auditor",
+    "numerical_realist": "Numerical Realist",
+}
+_TRANSCRIPT_HEADING_RE = re.compile(r"^##\s+Panel Transcript\s*$", re.I | re.M)
+_TRANSCRIPT_LINE_MAX = 260
+
+
+def _strip_panel_transcript(markdown: str) -> str:
+    """Drop a Panel Transcript section the model wrote anyway; the real one is appended from the findings."""
+    m = _TRANSCRIPT_HEADING_RE.search(markdown)
+    if not m:
+        return markdown
+    nxt = re.search(r"^##\s", markdown[m.end():], re.M)
+    end = m.end() + nxt.start() if nxt else len(markdown)
+    return (markdown[: m.start()].rstrip() + "\n\n" + markdown[end:].lstrip()).strip()
+
+
+def _transcript_text(value) -> str:
+    """One line of plain text from a model-written field: whitespace collapsed, no HTML or link syntax,
+    cut at a word boundary."""
+    t = re.sub(r"\s+", " ", str(value or "")).strip()
+    t = t.replace("<", " ").replace(">", " ").replace("](", "] (").replace("![", "[")
+    t = re.sub(r"\s{2,}", " ", t).strip()
+    if len(t) > _TRANSCRIPT_LINE_MAX:
+        t = t[:_TRANSCRIPT_LINE_MAX].rsplit(" ", 1)[0].rstrip(".,;: ") + "..."
+    return t
+
+
+def render_panel_transcript(l3: dict) -> str:
+    """The report's Panel Transcript: every finding each reviewer raised, as received, one line each.
+
+    Built from the findings in code rather than re-typed by the synthesis model. That keeps the section
+    complete and exact, removes about 2,000 to 4,000 output tokens (at Opus rates) from every review, and means a
+    report cut off by the output limit still carries its transcript."""
+    by_persona = {e.get("persona"): e for e in (l3 or {}).get("panel", [])}
+    lines = [
+        "## Panel Transcript",
+        "",
+        "_Each reviewer's findings as raised. It is normal for some of these to be absent from Critical Blind "
+        "Spots above: a single reviewer's low-confidence finding should not dominate the summary._",
+        "",
+    ]
+    for key in PERSONA_PROMPTS:
+        entry = by_persona.get(key)
+        lines.append(f"### {_PERSONA_TITLES.get(key, key.replace('_', ' ').title())}")
+        if entry is None or entry.get("status") == "error":
+            lines.append("- (this reviewer's pass did not complete)")
+        elif not entry.get("findings"):
+            lines.append("- (no findings)")
+        else:
+            for f in entry["findings"]:
+                sev = _transcript_text(f.get("severity") or "note").lower()
+                text = _transcript_text(f.get("issue") or f.get("summary") or f.get("claim_quoted"))
+                mark = " (quote not found in the extracted text)" if f.get("quote_found") is False else ""
+                lines.append(f"- [{sev}] {text}{mark}")
+        lines.append("")
+    return "\n".join(lines).rstrip() + "\n"
+
+
 _CLAIMS_HEADING_RE = re.compile(r"^##\s+Claims and Evidence\s*$", re.I | re.M)
 _QUOTED_RE = re.compile(r"[\u201c\"]([^\u201c\u201d\"]{6,}?)[\u201d\"]")
 _QUOTE_MARK = " (quote not found verbatim in the extracted text)"
@@ -2448,7 +2858,7 @@ async def run_layer_4_rectify(
         extras += (
             "\n"
             + _safety.wrap_user_content(
-                _json.dumps(sanitized_deterministic, indent=2)[:20_000], "deterministic_checks",
+                _compact_json(sanitized_deterministic)[:20_000], "deterministic_checks",
             )
             + "\n"
             + "The deterministic_checks above were computed by reproducible, non-AI engines "
@@ -2465,7 +2875,7 @@ async def run_layer_4_rectify(
         extras += (
             "\n"
             + _safety.wrap_user_content(
-                _json.dumps(anonymity, indent=2)[:8_000], "anonymity_check",
+                _compact_json(anonymity)[:8_000], "anonymity_check",
             )
             + "\n"
             + "If the anonymity_check reports concrete leaks, add a section "
@@ -2481,7 +2891,7 @@ async def run_layer_4_rectify(
         extras += (
             "\n"
             + _safety.wrap_user_content(
-                _json.dumps(compliance, indent=2)[:8_000], "journal_compliance",
+                _compact_json(compliance)[:8_000], "journal_compliance",
             )
             + "\n"
             + f"Add a section '## Journal Compliance ({journal_label})' "
@@ -2505,19 +2915,17 @@ async def run_layer_4_rectify(
             structure.abstract or "(not extracted)", "abstract",
         ) + "\n\n"
         + _safety.wrap_user_content(
-            _json.dumps(l1, indent=2)[:30_000], "layer_1_vision",
+            _compact_json(l1)[:30_000], "layer_1_vision",
         ) + "\n\n"
         + _safety.wrap_user_content(
-            _json.dumps(l2, indent=2)[:30_000], "layer_2_citations",
+            _compact_json(l2)[:30_000], "layer_2_citations",
         ) + "\n\n"
+        # Every finding once, tagged with its persona and consensus flag. The old input also carried the
+        # same findings a second time grouped by persona (the "panel" key) for the transcript, which now
+        # is rendered from the raw findings in code (render_panel_transcript). Trailing items drop whole,
+        # lowest consensus and severity first, instead of the JSON being cut off mid-object.
         + _safety.wrap_user_content(
-            _json.dumps(
-                {
-                    "merged_findings": l3.get("merged_findings", []),
-                    "panel": l3.get("panel", []),
-                },
-                indent=2,
-            )[:60_000],
+            _compact_json_capped(l3.get("merged_findings", []), 60_000),
             "layer_3_panel",
         ) + "\n"
         + f"{extras}\n"
@@ -2538,10 +2946,12 @@ async def run_layer_4_rectify(
     except Exception:
         logger.exception("L4 rectify call failed")
         return {"status": "error", "markdown": ""}
-    markdown = markdown.strip()
+    markdown = _strip_panel_transcript(markdown.strip())
     if truncated:
         markdown += _TRUNCATION_NOTE
-    return {"status": "ok", "markdown": verify_claim_quotes(markdown, structure.body)}
+    markdown = verify_claim_quotes(markdown, structure.body)
+    markdown += "\n\n" + render_panel_transcript(l3)
+    return {"status": "ok", "markdown": markdown}
 
 
 # ----------------------------------------------------------------------------
@@ -2639,7 +3049,7 @@ async def run_review_pipeline(
     _emit()
 
     async with httpx.AsyncClient(
-        timeout=httpx.Timeout(connect=10.0, read=300.0, write=10.0, pool=10.0),
+        timeout=httpx.Timeout(connect=10.0, read=600.0, write=10.0, pool=10.0),   # a 32k-token report is one non-streamed reply
         limits=httpx.Limits(max_connections=20, max_keepalive_connections=8),
     ) as client:
         # L1 + L2 + deep citation audit run concurrently — no inter-dependencies.
