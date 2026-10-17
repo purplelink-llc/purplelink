@@ -29,15 +29,32 @@ TRENDS_ROOT = Path(os.environ.get("TRENDS_ROOT", "/Volumes/Extreme SSD/TikTokPip
 FALLBACK_TAGS = ["macos", "mactips", "techtips"]
 
 
+# Content tag per app: what this video is about, after the two core tags (mac, macos).
+APP_TAGS = {
+    "moderntex": ["latex"], "legroom": ["macstorage"], "outbound-veil": ["dataprivacy"],
+    "panely": ["windowmanagement"], "summonly": ["spotlight"], "tapefolio": ["transcription"],
+    "keyfeel": ["typingsounds"], "batterymeter": ["macbattery"], "vitae": ["academiclife"],
+    "paper-review": ["academicwriting"], "scholar-utility-belt": ["googlescholar"],
+}
+
+
+def content_tags(sb: dict) -> list[str]:
+    """Per-video content tags: the app's tag, plus #overleaf when the storyboard mentions it."""
+    tags = list(APP_TAGS.get(str(sb.get("app", "")).lower(), []))
+    if "overleaf" in json.dumps(sb).lower() and "overleaf" not in tags:
+        tags.append("overleaf")
+    return tags[:2]
+
+
 def trend_tags(sb: dict, short: bool) -> str:
-    """Relevant hashtags for the description (shared trends system, topic mac_howto, YouTube list).
-    YouTube shows the first three hashtags above the title, so the order matters: topic tags first, and
-    #shorts only on the Short (last). latex/overleaf tags only when the storyboard is about LaTeX."""
+    """Hashtags for the description from the shared trends system (topic mac_howto, YouTube list):
+    2 core, the video's content tags, then trending. YouTube shows the first three above the title,
+    so core + content come first; the Short gets 3 and then #shorts, the long video 4."""
     tags = list(FALLBACK_TAGS)
     try:
-        r = subprocess.run([PY, "-m", "shared_media.trends.cli", "hashtags", "--topic", "mac_howto",
-                            "--platform", "youtube", "--k", "6"], cwd=TRENDS_ROOT, capture_output=True,
-                           text=True, timeout=60)
+        r = subprocess.run([PY, "-m", "shared_media.trends.cli", "assemble", "--topic", "mac_howto",
+                            "--platform", "youtube", "--content", ",".join(content_tags(sb))],
+                           cwd=TRENDS_ROOT, capture_output=True, text=True, timeout=60)
         got = r.stdout.split()
         if r.returncode == 0 and got:
             tags = got
