@@ -135,7 +135,8 @@ its own OAuth token, not through Studio (Studio needs a browser-wide channel swi
   `videos.list` must report the registry channel, or the video is set Private at once, a macOS notification appears, and
   the upload fails. A video with the same title uploaded to that channel in the last 24 h is returned instead of
   uploaded again. One upload runs at a time (`~/.purplelink/yt-upload.lock`). Other exit codes: 1 failed, 2 bad
-  arguments, 4 YouTube quota or upload cap.
+  arguments, 4 YouTube quota or upload cap. Every insert is Private: the requested public or unlisted visibility is set only
+  after the channel check passes, so a video is never visible anywhere before its channel is verified.
 - `scripts/yt-upload.py` (Studio) now refuses any `--channel` other than the Purplelink id (exit 3).
 
 ## YouTube thumbnails

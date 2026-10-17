@@ -11,6 +11,8 @@ Every upload goes through guarded_upload(). All of these are mandatory and raise
   e. verify    videos.list on the new id must report the registry channel id; otherwise the video is set Private at once,
                a macOS notification is shown, and the guard raises
   f. lock      one upload at a time across processes (fcntl lock on ~/.purplelink/yt-upload.lock)
+  g. private-first  every insert is Private; the requested visibility (public/unlisted) is applied only after check e
+               has confirmed the channel, so a video is never visible anywhere before its channel is verified
 
 Tokens live in ~/.config/purplelink/ and are refused if the registry points inside this (public) repo.
 Standard library only at import time; the Google client libraries are imported lazily, so the tests run without them.
@@ -348,9 +350,17 @@ def guarded_upload(channel_key, kind, path, title, description="", tags=None, ca
         channel_title = verify_identity(service, ch, channel_key)        # b. before any insert
         vid = _already_up(service, body["snippet"]["title"])             # c.
         duplicate = bool(vid)
+        want = body["status"]["privacyStatus"]
         if not vid:
-            vid = _insert(service, body, path, media_factory, sleep)     # d.
+            # d. always insert as Private, so nothing is ever visible before check e has confirmed the channel
+            private_body = {"snippet": body["snippet"], "status": dict(body["status"], privacyStatus="private")}
+            vid = _insert(service, private_body, path, media_factory, sleep)
         item = verify_landed(service, vid, ch, channel_key, notify, sleep)   # e.
+        if want != "private" and (item.get("status") or {}).get("privacyStatus") != want:
+            # g. only now, on the verified channel, give it the requested visibility
+            status = {k: v for k, v in body["status"].items() if k != "publishAt"}
+            service.videos().update(part="status", body={"id": vid, "status": dict(status, privacyStatus=want)}).execute()
+            item = verify_landed(service, vid, ch, channel_key, notify, sleep)
         thumb_ok = None
         if thumbnail and not duplicate:
             try:

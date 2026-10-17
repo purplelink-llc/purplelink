@@ -65,6 +65,7 @@ class FakeService:
         self.inserts = []
         self.updates = []
         self.thumbs = []
+        self.privacy = "public"      # what videos.list reports; insert and update change it
 
     def channels(self):
         svc = self
@@ -93,6 +94,7 @@ class FakeService:
             def insert(self, **kw):
                 svc.calls.append(("videos.insert", kw))
                 svc.inserts.append(kw)
+                svc.privacy = kw["body"]["status"]["privacyStatus"]
                 if svc.insert_error:
                     raise svc.insert_error
                 return Request(svc, kw["body"], kw["media_body"])
@@ -102,12 +104,13 @@ class FakeService:
                 return Exec(lambda: {"items": [{
                     "id": kw["id"],
                     "snippet": {"channelId": svc.landed, "channelTitle": "Whoever"},
-                    "status": {"privacyStatus": "public", "selfDeclaredMadeForKids": False,
+                    "status": {"privacyStatus": svc.privacy, "selfDeclaredMadeForKids": False,
                                "uploadStatus": "uploaded", "publishAt": "2026-12-01T00:00:00Z"}}]})
 
             def update(self, **kw):
                 svc.calls.append(("videos.update", kw))
                 svc.updates.append(kw)
+                svc.privacy = kw["body"]["status"]["privacyStatus"]
                 return Exec(lambda: {})
         return V()
 
@@ -268,7 +271,7 @@ class Uploading(GuardCase):
         r = self.up(svc, title="Rain", description="d", tags=["a", "b"], privacy="private",
                     publish_at="2026-12-01T09:00:00-05:00", thumbnail=str(self.video))
         self.assertEqual((r["id"], r["url"], r["channel_id"]), ("NEWVIDEO001", "https://youtu.be/NEWVIDEO001", PH))
-        self.assertEqual(r["privacy"], "public")
+        self.assertEqual(r["privacy"], "private")
         self.assertIn("channel_title", r)
         body = svc.inserts[0]["body"]
         self.assertEqual(svc.inserts[0]["part"], "snippet,status")
@@ -281,6 +284,24 @@ class Uploading(GuardCase):
         self.assertEqual(svc.thumbs[0]["videoId"], "NEWVIDEO001")
         self.assertEqual(svc.names().index("videos.list") > svc.names().index("videos.insert"), True)
         self.assertEqual(self.notes, [])
+
+    def test_public_upload_is_inserted_private_and_made_public_only_after_the_channel_check(self):
+        svc = FakeService()
+        r = self.up(svc, privacy="public")
+        self.assertEqual(svc.inserts[0]["body"]["status"]["privacyStatus"], "private")
+        names = svc.names()
+        self.assertLess(names.index("videos.insert"), names.index("videos.list"))
+        self.assertLess(names.index("videos.list"), names.index("videos.update"))
+        self.assertEqual(svc.updates[-1]["body"]["status"]["privacyStatus"], "public")
+        self.assertNotIn("publishAt", svc.updates[-1]["body"]["status"])
+        self.assertEqual(r["privacy"], "public")
+
+    def test_wrong_channel_is_never_made_public(self):
+        svc = FakeService(landed=PL)
+        with self.assertRaises(g.ChannelGuardError):
+            self.up(svc, privacy="public")
+        self.assertEqual(svc.inserts[0]["body"]["status"]["privacyStatus"], "private")
+        self.assertTrue(all(u["body"]["status"]["privacyStatus"] == "private" for u in svc.updates))
 
     def test_synthetic_flag_defaults_by_kind_and_can_be_turned_off(self):
         svc = FakeService()
@@ -370,7 +391,8 @@ class Cli(GuardCase):
         self.assertEqual(rc, 0)
         self.assertIn("https://youtu.be/NEWVIDEO001", out)
         self.assertIn(f"verified channel: {PH} (", out)
-        self.assertEqual(svc.inserts[0]["body"]["status"]["privacyStatus"], "unlisted")   # safe default
+        self.assertEqual(svc.inserts[0]["body"]["status"]["privacyStatus"], "private")    # private-first
+        self.assertEqual(svc.updates[-1]["body"]["status"]["privacyStatus"], "unlisted")  # then the safe default
 
     def test_dry_run_checks_but_never_inserts(self):
         svc = FakeService()
