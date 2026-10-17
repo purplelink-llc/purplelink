@@ -24,7 +24,7 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <script src="/theme.js?v=07d8025cab"></script>
-    <link rel="stylesheet" href="/styles.css?v=14f0b4ea49">
+    <link rel="stylesheet" href="/styles.css?v=054f96962c">
     <link rel="stylesheet" href="/motion.css?v=49cb63589a">
     <link rel="stylesheet" href="/product-flair.css?v=0d40001388">
     <link rel="stylesheet" href="/buy.css?v=589347358c">
@@ -254,6 +254,10 @@
           <h3>It removes an app and what it left behind</h3>
           <p>Choose an app and the Uninstaller lists the files it keeps in your Library folder, with their sizes. You tick what goes, confirm a sheet that measures everything again, and it all moves to the Trash. A second tab lists support files left by apps that are no longer installed.</p>
         </div>
+        <div class="feature-item feature-item--wide">
+          <h3>It clears temporary files</h3>
+          <p>A restart empties /private/tmp and your own temporary folder. Legroom does that part now, without the restart: it lists your items that no program is using and that have not changed lately, and deletes the ones you tick after you confirm. It also shows swap in use and which open apps hold the most memory, with a polite quit. In the menu it is Free what a restart frees.</p>
+        </div>
       </div>
     </section>
 
@@ -413,6 +417,7 @@
           <tr><th scope="row">Space Map</th><td>A sunburst chart of a folder or disk, with Reveal in Finder, Move to Trash and Add as a Rule.</td></tr>
           <tr><th scope="row">Find Files</th><td>Large, old and duplicate files. Trash only, and one copy of every duplicate always stays.</td></tr>
           <tr><th scope="row">Uninstaller</th><td>The files an app keeps in your Library folder, with sizes, and the support files of apps that are gone. Trash only, after you tick items and confirm.</td></tr>
+          <tr><th scope="row">Temporary files</th><td>Your own stale items in /private/tmp and your temporary folder, the ones a restart would empty, deleted after you tick them and confirm. Also swap in use, the apps holding the most memory with a polite quit, and a note when a macOS update is waiting. A rule can run it on a schedule.</td></tr>
         </tbody>
       </table>
     </section>
@@ -421,8 +426,8 @@
       <h2 id="not-h">What it does not do</h2>
       <table class="compare-table specs-table" data-motion="rows">
         <tbody>
-          <tr><th scope="row">Speed</th><td>It does not make your Mac faster. It frees disk space and does nothing else to performance.</td></tr>
-          <tr><th scope="row">System files</th><td>It does not clean inside system folders and the folders that hold your documents and settings. The one exception is the Uninstaller, which moves items an app left in your Library folder, and only the ones you tick and confirm.</td></tr>
+          <tr><th scope="row">Speed</th><td>It does not make your Mac faster. It frees disk space. The only thing it does about memory is ask the apps you tick to quit, the same as choosing Quit yourself; it never forces a quit.</td></tr>
+          <tr><th scope="row">System files</th><td>It does not clean inside system folders and the folders that hold your documents and settings. There are two exceptions, both limited to items you tick and confirm: the Uninstaller moves items an app left in your Library folder to the Trash, and Clear temporary files deletes your own items in /private/tmp and your temporary folder, which macOS would empty at the next restart anyway.</td></tr>
           <tr><th scope="row">Commands</th><td>It does not run commands. Where a fix needs Terminal, such as removing local Time Machine snapshots or a leftover in the system Library, it shows the command as text and you decide whether to run it.</td></tr>
           <tr><th scope="row">Hidden space</th><td>It does not scan as an administrator, so some space it cannot measure, such as local Time Machine snapshots. It lists those as size not reported rather than guessing.</td></tr>
           <tr><th scope="row">Unseen deletions</th><td>It does not remove anything you have not previewed and approved, and it does not remove duplicates without leaving one copy.</td></tr>
