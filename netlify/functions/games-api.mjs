@@ -30,6 +30,7 @@
  */
 
 import { createHash, randomBytes } from "node:crypto";
+import { safeEqual } from "../lib/auth.mjs";
 import { cleanData, cleanName, mergeData, percentile, dayIndexUTC, MAX_DATA_BYTES, SCORE_LIMITS, COMPLETION_GAMES, RANK_KEYS, BOARD_KEYS, boardKey, metricsOf, bucketMove, rankOf, upsertValueRow, upsertDayRow, histGet, DAY_BOARD_SIZE } from "../lib/games-logic.mjs";
 import { applyResult, boardRow, checkReport, DAILY_REPORT_CAP, SPORTS_GAMES, emptyRecord, publicNameOk, upsertRow, weekOf } from "../lib/ratings.mjs";
 import CHESS_INDEX from "../lib/chess-index.json" with { type: "json" };
@@ -329,7 +330,7 @@ export function createHandler({ getStore: rawGetStore, env, fetchFn = (...a) => 
         const acct = String(b.acct || ""), token = String(b.token || "");
         if (!/^[a-f0-9]{64}$/.test(acct) || !/^[a-f0-9]{32}$/.test(token)) return json(400, { error: "invalid_link" }, origin);
         const rec = await loadAccount(acct);
-        if (!rec || rec.remindToken !== token) return json(400, { error: "invalid_link" }, origin);
+        if (!rec || !safeEqual(token, rec.remindToken)) return json(400, { error: "invalid_link" }, origin);
         rec.remind = false;
         await accounts().setJSON(`acct:${acct}`, rec);
         return json(200, { ok: true }, origin);

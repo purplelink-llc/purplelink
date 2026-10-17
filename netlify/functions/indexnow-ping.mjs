@@ -22,6 +22,8 @@
  *            Default: ping only URLs whose lastmod is today's date.
  */
 
+import { safeEqual } from '../lib/auth.mjs';
+
 const INDEXNOW_KEY = '7c6ea98702bc415eccb029b334bc63fef6905e06458c01f93ea762fa140019cf';
 const HOST = 'purplelink.llc';
 const SITEMAP_URL = `https://${HOST}/sitemap.xml`;
@@ -48,7 +50,7 @@ export default async function handler(request, context) {
     });
   }
 
-  if (token !== expected) {
+  if (!safeEqual(token, expected)) {
     return jsonResponse(401, { status: 'unauthorized' });
   }
 

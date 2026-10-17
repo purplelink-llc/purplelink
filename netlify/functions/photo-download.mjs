@@ -19,6 +19,11 @@
  */
 import { getStore } from "@netlify/blobs";
 import { revocationFor, REVOKED_DETAIL } from "../lib/refunds.mjs";
+import { clientIp, overDailyLimit } from "../lib/ratelimit.mjs";
+
+// Every request with a well-formed session id costs one Stripe API call with the live key.
+// 200 a day covers a buyer who opens the page and fetches every file several times.
+export const DAILY_LIMIT = 200;
 
 const STRIPE_API = "https://api.stripe.com/v1";
 const FILE_STORE = "photo-files";
@@ -125,6 +130,10 @@ export default async function handler(request) {
   const fileKey = url.searchParams.get("file") || "";
   if (!/^cs_[A-Za-z0-9_]{10,200}$/.test(sessionId)) {
     return json(400, { error: "bad_session_id", detail: "Missing or malformed session_id." });
+  }
+
+  if (await overDailyLimit("photo", clientIp(request), DAILY_LIMIT)) {
+    return json(429, { error: "rate_limited", detail: "Too many requests from this address today." });
   }
 
   const { session, error } = await loadSession(sessionId);
