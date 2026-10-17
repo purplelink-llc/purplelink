@@ -5653,3 +5653,8 @@ dialog, [role="dialog"], [aria-modal="true"], .sales-scroll { overscroll-behavio
   .support-box-form .btn:hover { transform: none; }
 }
 @media print { .support-box { display: none; } }
+
+/* Vitae page: short answer block and guide list (2026-10-17) */
+.vitae-short, .vitae-guides { max-width: 900px; margin: 0 auto; padding: 8px 24px 28px; }
+.vitae-short h2, .vitae-guides h2 { margin: 0 0 14px; }
+.vitae-guides ul { margin: 0; padding-left: 1.2em; line-height: 1.7; }

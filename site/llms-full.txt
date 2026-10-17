@@ -1799,6 +1799,32 @@ Requires macOS 15 Sequoia or later · Apple-notarized · Your data stays on your
 
 Your research record on one screen: projects, papers under review, open revision tasks, your acceptance rate, funding, the next deadlines and the latest decisions. The screenshots on this page use sample data for a fictional researcher.
 
+## Vitae in short
+
+Vitae is a free Mac app for academics that keeps your submissions, grants, projects, co-authors, teaching, service and CV in one record on your own Mac, with no account. It needs macOS 15 or later. An optional subscription, Vitae Plus, costs $2.99 a month or $23.99 a year and adds reports and Word export. Vitae does not fill in your university's reporting system for you, and it has no iPhone, web or Windows version.
+
+Facts as of version 1.2.0, October 2026.
+
+QuestionAnswer
+
+PriceFree. Vitae Plus is optional: $2.99 a month or $23.99 a year, with a 7-day trial. Included for life in the Mac Suite.
+
+PlatformmacOS 15 Sequoia or later. Direct download, Apple-notarized, not on the Mac App Store.
+
+Where the data livesOn your Mac. No account. No sync between machines yet.
+
+Brings inA CV from Word, PDF, RTF, ODT or a web page; publications from DOIs, pasted BibTeX or Zotero; each is shown for review before saving.
+
+Free exportsCV and packages as PDF, rich text (.rtf), HTML and Markdown; publications as RIS and BibTeX; CSV tables.
+
+Plus exportsWord (.docx) with your own templates, short and one-page CV variants, and reports such as an NIH biosketch draft.
+
+Annual reviewFree. Pick a calendar year and Vitae limits the report to it. There is no academic-year setting yet. Papers under review are left out.
+
+Faculty180, Faculty SuccessThe RIS and BibTeX files are meant for their publication importers. I have not tested them against a live campus system. See what each system can import.
+
+Not related toThe career hub called Vitae that The Chronicle of Higher Education launched in 2014. It is a different product with the same name.
+
 What's inside
 
 ## Everything an academic needs, nothing they don't
@@ -1902,9 +1928,35 @@ How do I install it?
 
 Download the DMG, open it, drag Vitae into your Applications folder, and launch it. Because it is notarized by Apple, you will not see a Gatekeeper warning.
 
+Does Vitae import into Faculty180 or Faculty Success?
+
+Vitae exports your publications as RIS and BibTeX files, free, and its export menu says they import into Interfolio and Watermark Faculty Success. I have not tested a Vitae file against a live Faculty180 or Faculty Success account, and campuses switch imports on and off. For Faculty180 the BibTeX file is the safer choice. The guides on this site give the steps for each system.
+
+Can Vitae do my annual report?
+
+Partly. Annual Review mode in CV & Packages builds a report for one calendar year from your record and exports it, free. It lists that year's publications, grants active in the year, awards, talks, teaching and service, and leaves papers under review out. It has no academic-year setting yet, and it does not fill in your department's form or your university's reporting system, so you copy the content across.
+
+Is Vitae the same as the Chronicle's Vitae?
+
+No. This Vitae is a Mac app made by Purplelink LLC. The Chronicle of Higher Education launched a separate career hub with the same name in 2014.
+
 How does Vitae compare to Interfolio, ORCID, or a spreadsheet?
 
 Vitae keeps your own record between deadlines. If your university requires Interfolio or Watermark for tenure review, you still submit there, using what Vitae exports. See how to track your academic CV and tenure case for a comparison of sixteen options, or best software for tracking your research record for submission trackers, spreadsheets and profile systems.
+
+## Guides for annual reports and tenure
+
+- Fill in your faculty annual report faster: what Faculty180, Faculty Success, Pure and Elements can import.
+
+- Import your publications into Faculty180 from a BibTeX file.
+
+- Import your CV and publications into Faculty Success.
+
+- Build your annual report from your own record: a year-end checklist.
+
+- Track your academic CV and tenure case and best software for tracking your research record.
+
+- Academic email signature generator, a free tool with your ORCID iD and latest paper.
 
 ## Write to Ben
 
@@ -1931,6 +1983,34 @@ Vitae is free, and keeping your record in it stays free with no limits. Plus is 
 
 See the plans
 Download Vitae, free
+
+## Vitae Plus in short
+
+Vitae Plus is an optional subscription for the free Vitae Mac app: $2.99 a month or $23.99 a year, with a 7-day free trial, or included for life in the Mac Suite. You do not need it to keep your record, build a CV, run Annual Review or export publications as RIS and BibTeX. Those stay free. Plus adds Word (.docx) export with your own templates, reports, the revision workspace, Shareables, ORCID sync and batch DOI lookup, and calendar sync.
+
+Free and Plus features as of Vitae 1.2.0, October 2026.
+
+FeatureFreePlus
+
+Submissions, grants, projects, collaborators, teaching, service, mentoringYes, no limitsYes
+
+CV and packages as PDF, rich text, HTML and MarkdownYesYes
+
+Annual Review for one calendar yearYesYes
+
+Publications as RIS or BibTeXYesYes
+
+Word (.docx) export and your own Word templatesNoYes
+
+Short and one-page CV variants, several formats at onceNoYes
+
+Reports: NIH biosketch draft, Current and Pending, AACSB summary, progress reportNoYes
+
+Daily ORCID check and batch DOI lookupNoYes
+
+Revision workspace, Shareables, collaboration map, calendar sync, themesNoYes
+
+Filling in a university reporting system such as Faculty180 or Faculty Success? The free RIS and BibTeX export covers the publications. See what each system can import.
 
 Plans
 
@@ -4299,7 +4379,7 @@ ProductLatest versionReleased
 
 ModernTex1.10.2October 2026
 
-Vitae1.1.2October 2026
+Vitae1.2.0October 2026
 
 Legroom1.3.2October 2026
 
@@ -7329,6 +7409,8 @@ The venue, manuscript number, date submitted, the version sent, each decision wi
 
 ## Related guides
 
+- Fill in your faculty annual report faster: what Faculty180, Faculty Success, Pure and Elements can import.
+
 - Build your faculty annual report from your own record: a year-end checklist
 
 - How to track your academic CV and tenure case: sixteen options and how to build the case.
@@ -7346,7 +7428,7 @@ Vitae is a free Mac app for your submissions, review rounds, grants, projects an
 Get Vitae for Mac, free
 See what Plus adds
 
-Requires macOS 15 or later. Mac only, with no sync between machines. Version 1.1.2, labelled beta.
+Requires macOS 15 or later. Mac only, with no sync between machines. Version 1.2.0, labelled beta.
 
 
 ---
