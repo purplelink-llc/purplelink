@@ -58,13 +58,13 @@ class AcademicSignaturePage(unittest.TestCase):
         self.assertEqual({g["@type"] for g in graph}, {"WebApplication", "FAQPage", "BreadcrumbList"})
 
     def test_no_inline_styles_or_handlers_in_page_markup(self):
-        body = re.sub(r"<script[\s\S]*?</script>", "", self.page)
+        body = re.sub(r"<script\b[\s\S]*?</script\s*>", "", self.page, flags=re.I)
         main = body[body.index("<main"):body.index("</main>")]
         self.assertNotRegex(main, r'\sstyle\s*=')
         self.assertNotRegex(main, r'\son[a-z]+\s*=')
 
     def test_copy_is_plain(self):
-        text = html.unescape(re.sub(r"<[^>]+>", " ", re.sub(r"<script[\s\S]*?</script>", " ", self.page)))
+        text = html.unescape(re.sub(r"<[^>]+>", " ", re.sub(r"<script\b[\s\S]*?</script\s*>", " ", self.page, flags=re.I)))
         self.assertNotRegex(text, EMOJI)
         self.assertNotIn("—", text)
         self.assertNotIn("–", text)
