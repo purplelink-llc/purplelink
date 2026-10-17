@@ -3,8 +3,9 @@
 Layers handled here:
   1. Parsing (bibtexparser v1)
   2. Required-field completeness per entry type
-  3. Title normalization and similarity scoring
-  4. Annotated .bib generation
+  3. Duplicate citation keys (case-insensitive) and possible duplicate entries
+  4. Title normalization and similarity scoring
+  5. Annotated .bib generation
 
 Network checks (DOI resolution, CrossRef, Semantic Scholar) live in app.py
 because they require httpx and are IO-bound async operations.
@@ -18,6 +19,7 @@ from dataclasses import dataclass, field
 
 MAX_SYNTAX_ENTRIES = 500   # parse + completeness cap
 MAX_NETWORK_ENTRIES = 100  # DOI / CrossRef / S2 cap
+MIN_DUP_TITLE_CHARS = 15   # shorter normalized titles ("Introduction") are too generic to compare
 
 # Confidence thresholds for title-similarity matching.
 THRESHOLD_OK = 0.85    # >= this → confident match
@@ -53,6 +55,26 @@ class EntryResult:
     missing_fields: list[str] = field(default_factory=list)
     parse_error: str = ""
 
+    # Position in the file: 1-based entry number among parsed entries, and the
+    # source line of its "@type{key," header when it could be located (else None).
+    position: int = 0
+    line: int | None = None
+
+    # Duplicate citation key. Set on every entry after the first that reuses a
+    # key. BibTeX compares keys case-insensitively, so "Smith2020" and
+    # "smith2020" collide; duplicate_case_only is True when the spelling differs.
+    duplicate_of: str = ""
+    duplicate_of_position: int = 0
+    duplicate_of_line: int | None = None
+    duplicate_case_only: bool = False
+
+    # Softer note: a different key whose DOI or normalized title matches an
+    # earlier entry. Does not change overall().
+    possible_duplicate_of: str = ""
+    possible_duplicate_position: int = 0
+    possible_duplicate_line: int | None = None
+    possible_duplicate_reason: str = ""    # "doi" | "title"
+
     # Network results — None means "not checked"
     doi_ok: bool | None = None
     doi_status: int | None = None
@@ -82,6 +104,8 @@ class EntryResult:
             return "error"
         if self.missing_fields:
             return "error"
+        if self.duplicate_of:
+            return "error"
         if self.doi_ok is False:
             return "error"
         cr = self.crossref_confidence
@@ -106,6 +130,16 @@ class EntryResult:
             "year": self.year,
             "parse_error": self.parse_error,
             "missing_fields": self.missing_fields,
+            "position": self.position,
+            "line": self.line,
+            "duplicate_of": self.duplicate_of,
+            "duplicate_of_position": self.duplicate_of_position,
+            "duplicate_of_line": self.duplicate_of_line,
+            "duplicate_case_only": self.duplicate_case_only,
+            "possible_duplicate_of": self.possible_duplicate_of,
+            "possible_duplicate_position": self.possible_duplicate_position,
+            "possible_duplicate_line": self.possible_duplicate_line,
+            "possible_duplicate_reason": self.possible_duplicate_reason,
             "doi": self.doi,
             "doi_ok": self.doi_ok,
             "doi_status": self.doi_status,
@@ -155,8 +189,83 @@ def parse_bib(bib_text: str) -> list[EntryResult]:
             doi=_clean_doi(entry.get("doi", "")),
         )
         r.missing_fields = _check_completeness(r.entry_type, entry)
+        r.position = len(results) + 1
         results.append(r)
+    _assign_lines(results, bib_text)
+    _flag_duplicates(results)
     return results
+
+
+# Header of a real entry. @string, @preamble and @comment are not entries.
+_HEADER_RE = re.compile(r"^@(\w+)\s*\{\s*([^,\s{]+)", re.IGNORECASE)
+_NON_ENTRY_TYPES = {"string", "preamble", "comment"}
+
+
+def _entry_headers(bib_text: str) -> list[tuple[int, str]]:
+    """(1-based line number, key) for each entry header at the start of a line."""
+    out: list[tuple[int, str]] = []
+    for i, line in enumerate(bib_text.split("\n"), start=1):
+        m = _HEADER_RE.match(line.strip())
+        if m and m.group(1).lower() not in _NON_ENTRY_TYPES:
+            out.append((i, m.group(2)))
+    return out
+
+
+def _assign_lines(results: list[EntryResult], bib_text: str) -> None:
+    """Attach source line numbers when the header scan and the parser agree.
+
+    bibtexparser v1 gives no positions. If every parsed entry lines up with a
+    header found by a line scan (same keys, same order, ignoring case), the
+    lines are exact. Otherwise (an entry the parser skipped, or two entries on
+    one line) lines are left as None and callers fall back to the entry number.
+    """
+    headers = _entry_headers(bib_text)
+    if len(headers) < len(results):
+        return
+    headers = headers[: len(results)]
+    if all(h[1].lower() == r.key.lower() for h, r in zip(headers, results)):
+        for (line_no, _), r in zip(headers, results):
+            r.line = line_no
+
+
+def _flag_duplicates(results: list[EntryResult]) -> None:
+    """Mark duplicate citation keys and possible duplicate entries (offline).
+
+    Keys compare case-insensitively. Every entry after the first that reuses a
+    key is flagged and points at the first one. Separately, an entry with a
+    different key but the same DOI or the same normalized title as an earlier
+    entry gets a softer possible-duplicate note.
+    """
+    first_by_key: dict[str, EntryResult] = {}
+    first_by_doi: dict[str, EntryResult] = {}
+    first_by_title: dict[str, EntryResult] = {}
+    for r in results:
+        k = r.key.lower()
+        earlier = first_by_key.get(k)
+        if earlier is not None:
+            r.duplicate_of = earlier.key
+            r.duplicate_of_position = earlier.position
+            r.duplicate_of_line = earlier.line
+            r.duplicate_case_only = earlier.key != r.key
+            continue
+        first_by_key[k] = r
+
+        doi = r.doi.lower()
+        title = normalize_title(r.title)
+        match, reason = None, ""
+        if doi and doi in first_by_doi:
+            match, reason = first_by_doi[doi], "doi"
+        elif len(title) >= MIN_DUP_TITLE_CHARS and title in first_by_title:
+            match, reason = first_by_title[title], "title"
+        if match is not None:
+            r.possible_duplicate_of = match.key
+            r.possible_duplicate_position = match.position
+            r.possible_duplicate_line = match.line
+            r.possible_duplicate_reason = reason
+        if doi:
+            first_by_doi.setdefault(doi, r)
+        if len(title) >= MIN_DUP_TITLE_CHARS:
+            first_by_title.setdefault(title, r)
 
 
 def _clean_doi(doi: str) -> str:
@@ -274,18 +383,33 @@ def summarize(results: list[EntryResult]) -> dict:
     counts: dict[str, int] = {"ok": 0, "warning": 0, "error": 0, "total": len(results)}
     for r in results:
         counts[r.overall()] += 1
+    counts["duplicate_keys"] = sum(1 for r in results if r.duplicate_of)
+    counts["possible_duplicates"] = sum(1 for r in results if r.possible_duplicate_of)
     return counts
+
+
+def _results_by_key(results: list[EntryResult]) -> dict[str, list[EntryResult]]:
+    """Results grouped by exact key, in file order, so a repeated key maps each
+    header to its own result instead of the last one."""
+    by_key: dict[str, list[EntryResult]] = {}
+    for r in results:
+        by_key.setdefault(r.key, []).append(r)
+    return by_key
+
+
+def _next_result(by_key: dict[str, list[EntryResult]], key: str) -> EntryResult | None:
+    queue = by_key.get(key)
+    return queue.pop(0) if queue else None
 
 
 def annotate_bib(bib_text: str, results: list[EntryResult]) -> str:
     """Prepend a validator comment line above each @-entry in bib_text."""
-    by_key = {r.key: r for r in results}
+    by_key = _results_by_key(results)
     out_lines: list[str] = []
     for line in bib_text.split("\n"):
-        m = re.match(r"^@\w+\s*\{\s*([^,\s{]+)", line.strip(), re.IGNORECASE)
-        if m:
-            key = m.group(1)
-            r = by_key.get(key)
+        m = _HEADER_RE.match(line.strip())
+        if m and m.group(1).lower() not in _NON_ENTRY_TYPES:
+            r = _next_result(by_key, m.group(2))
             if r:
                 out_lines.append(_entry_comment(r))
         out_lines.append(line)
@@ -396,16 +520,16 @@ def correct_bib(bib_text: str, results: list[EntryResult]) -> str:
     Each replaced entry is preceded by a comment marker so users can audit
     which entries the tool rewrote.
     """
-    by_key = {r.key: r for r in results}
+    by_key = _results_by_key(results)
     lines = bib_text.split("\n")
     out: list[str] = []
     i = 0
     while i < len(lines):
         line = lines[i]
-        m = re.match(r"^@(\w+)\s*\{\s*([^,\s{]+)", line.strip(), re.IGNORECASE)
-        if m:
+        m = _HEADER_RE.match(line.strip())
+        if m and m.group(1).lower() not in _NON_ENTRY_TYPES:
             entry_type, key = m.group(1), m.group(2)
-            r = by_key.get(key)
+            r = _next_result(by_key, key)
             if (
                 r is not None
                 and r.crossref_confidence is not None
@@ -430,6 +554,11 @@ def _entry_comment(r: EntryResult) -> str:
         parts.append(f"MISSING: {', '.join(r.missing_fields)}")
     else:
         parts.append("fields OK")
+
+    if r.duplicate_of:
+        parts.append(_duplicate_key_text(r))
+    elif r.possible_duplicate_of:
+        parts.append(_possible_duplicate_text(r))
 
     if r.doi:
         if r.doi_ok is True:
@@ -466,3 +595,21 @@ def _entry_comment(r: EntryResult) -> str:
 
     status = r.overall().upper()
     return "% [bib-validator] " + status + " | " + " | ".join(parts)
+
+
+def _where(line: int | None, position: int) -> str:
+    return f"line {line}" if line else f"entry {position}"
+
+
+def _duplicate_key_text(r: EntryResult) -> str:
+    where = _where(r.duplicate_of_line, r.duplicate_of_position)
+    if r.duplicate_case_only:
+        return (f"DUPLICATE KEY: {r.key} matches {r.duplicate_of} at {where} "
+                "apart from letter case, and BibTeX ignores case in keys")
+    return f"DUPLICATE KEY: {r.key} is already used at {where}"
+
+
+def _possible_duplicate_text(r: EntryResult) -> str:
+    where = _where(r.possible_duplicate_line, r.possible_duplicate_position)
+    what = "DOI" if r.possible_duplicate_reason == "doi" else "title"
+    return f"POSSIBLE DUPLICATE: same {what} as {r.possible_duplicate_of} at {where}"

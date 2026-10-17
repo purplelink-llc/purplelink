@@ -52,11 +52,20 @@ class BibValidatorPage(unittest.TestCase):
             self.assertIn(c, sec)
         s = self.fixture["summary"]
         self.assertIn(f'{s["ok"]} OK, {s["warning"]} warnings, {s["error"]} errors, {s["total"]} entries total', sec)
-        # the two disclosed non-detections must still be true of the fixture
+        # the repeated key is flagged, and the one disclosed non-detection (the skipped entry) is still true
         keys = [e["key"] for e in self.fixture["entries"]]
         self.assertEqual(len(keys), 5)
         self.assertEqual(len(set(keys)), 4)
+        self.assertEqual([e["duplicate_of"] for e in self.fixture["entries"]], ["", "", "", "", "ampel2023trust"])
+        self.assertEqual(s["duplicate_keys"], 1)
+        self.assertIn("DUPLICATE KEY", self.fixture["annotated_bib"])
+        self.assertNotIn("does not check for duplicate keys", sec)
         self.assertEqual((FIX / "bib_validator_demo.bib").read_text().count("\n@"), 5)  # six entries in the file
+
+    def test_copy_says_five_checks_and_duplicate_keys(self):
+        self.assertIn("duplicate", meta(self.text, "description"))
+        self.assertIn("It checks five things", self.text)
+        self.assertNotIn("four things", self.text)
 
     def test_fixture_matches_live_tool_code(self):
         try:

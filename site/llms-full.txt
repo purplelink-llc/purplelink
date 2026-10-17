@@ -3727,7 +3727,7 @@ Free web tool
 
 # BibTeX Validator
 
-Upload or paste a .bib file to check syntax, missing fields, and dead DOIs. The tool also verifies that your citations exist and that the authors and years are correct. Download a corrected .bib where CrossRef returns a confident match. The checks catch AI-hallucinated references (citations a language model made up). Files are never stored.
+Upload or paste a .bib file to check syntax, missing fields, duplicate citation keys, and dead DOIs. The tool also verifies that your citations exist and that the authors and years are correct. Download a corrected .bib where CrossRef returns a confident match. The checks catch AI-hallucinated references (citations a language model made up). Files are never stored.
 
 Drag a .bib file here, or choose one. Max 2 MB.
 
@@ -3735,7 +3735,7 @@ Paste up to 2 MB of BibTeX directly. Same checks, no file needed.
 
 Checks to run
 
-Syntax & required fields (always on)
+Syntax, required fields & duplicate keys (always on)
 
 DOI resolution: verify each DOI is a live link
 
@@ -3751,7 +3751,7 @@ Files are never written to disk or logged.
 
 - Upload your .bib file (drag-and-drop or click), or switch to Paste text and drop the BibTeX directly. Up to 2 MB.
 
-- Syntax and required-field checks run automatically. Enable DOI resolution and/or CrossRef / Semantic Scholar checks to verify your citations actually exist (and that authors and years match).
+- Syntax, required-field and duplicate-key checks run automatically. Enable DOI resolution and/or CrossRef / Semantic Scholar checks to verify your citations actually exist (and that authors and years match).
 
 - Click Validate .bib. A color-coded table shows each entry. Click any row to see the original BibTeX, plus the corrected version when CrossRef returned a confident match. Use the filter chips to focus on warnings or errors.
 
@@ -3761,7 +3761,7 @@ If the table lists errors you do not recognize, read how to fix the errors the v
 
 ## See it catch real faults
 
-This is a small .bib file with common faults added on purpose. The output below is what the validator's own code returned for it, with only the always-on syntax and required-field check enabled.
+This is a small .bib file with common faults added on purpose. The output below is what the validator's own code returned for it, with only the always-on checks (syntax, required fields and duplicate keys) enabled.
 
 ### Input
 
@@ -3806,25 +3806,23 @@ year = {2019},
 
 ### Output
 
-Summary: 2 OK, 0 warnings, 3 errors, 5 entries total. The annotated .bib puts one comment line above each entry:
+Summary: 1 OK, 0 warnings, 4 errors, 5 entries total. The annotated .bib puts one comment line above each entry:
 
 % [bib-validator] OK | fields OK
 % [bib-validator] ERROR | MISSING: journal
 % [bib-validator] ERROR | MISSING: year
 % [bib-validator] ERROR | MISSING: publisher
-% [bib-validator] OK | fields OK
+% [bib-validator] ERROR | fields OK | DUPLICATE KEY: ampel2023trust is already used at line 1
+
+The last entry is the one that reuses ampel2023trust. Only the second use is flagged, and the message names the line of the first. Keys are compared without regard to letter case, so Ampel2023Trust would be flagged too. BibTeX and biber treat them as the same key.
 
 ### What it did not report
 
-- The file has six entries and the table lists five. The last entry, with the unclosed brace in its title, is skipped by the parser and gets no message.
-
-- The second ampel2023trust entry reuses the first entry's key. The validator does not check for duplicate keys, so it is marked OK.
-
-Check those two by hand, or with your LaTeX build log. The guide on how to fix common BibTeX errors covers both. If your entries are missing fields because they were typed by hand, build BibTeX from DOIs instead.
+The file has six entries and the table lists five. The last entry, with the unclosed brace in its title, is skipped by the parser and gets no message. Check that one by hand, or with your LaTeX build log. The guide on how to fix common BibTeX errors covers it. If your entries are missing fields because they were typed by hand, build BibTeX from DOIs instead.
 
 ## About this tool
 
-This tool validates BibTeX files in layers: syntax and completeness (always), DOI resolution (opt-in), and existence checks against CrossRef and Semantic Scholar (opt-in). When you enable the database checks, it also compares authors and publication years and can produce a corrected .bib for high-confidence matches. This catches AI-hallucinated citations, which have plausible-looking metadata but do not correspond to real papers.
+This tool validates BibTeX files in layers: syntax, completeness and duplicate keys (always, with no external calls), DOI resolution (opt-in), and existence checks against CrossRef and Semantic Scholar (opt-in). When you enable the database checks, it also compares authors and publication years and can produce a corrected .bib for high-confidence matches. This catches AI-hallucinated citations, which have plausible-looking metadata but do not correspond to real papers.
 
 Can it detect AI-hallucinated citations?
 
@@ -3834,9 +3832,13 @@ Are my files stored?
 
 No. Your .bib file is validated in an ephemeral container and discarded immediately. When you enable DOI or database checks, titles and authors are sent to those external services. This is disclosed before you run the check.
 
+How does the duplicate-key check work?
+
+It compares the citation keys of all entries in the file, ignoring letter case, because BibTeX does. Every entry after the first that reuses a key is marked as an error, and the message gives the line of the first use. @string, @preamble and @comment blocks are not entries and are ignored. Separately, an entry with a different key but the same DOI, or the same title, as an earlier entry gets a "possible duplicate" note. That note does not change the entry's status, because the same paper can legitimately appear twice.
+
 What does the annotated .bib contain?
 
-Your original .bib file with a comment line above each entry. The comment shows the validation status: missing required fields, DOI result, title and author confidence scores, and any year mismatch. Paste it straight back into your editor.
+Your original .bib file with a comment line above each entry. The comment shows the validation status: missing required fields, duplicate keys, DOI result, title and author confidence scores, and any year mismatch. Paste it straight back into your editor.
 
 What is the corrected .bib?
 
