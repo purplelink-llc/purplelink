@@ -30,6 +30,7 @@ code_changed() {
 }
 
 case "$msg" in
+  # The Daily Digest was retired on 2026-10-17 and no longer commits; this exception is harmless and kept.
   "chore(digest): Daily Digest"*)
     if inputs_changed; then
       echo "netlify_ignore: building now (digest)"

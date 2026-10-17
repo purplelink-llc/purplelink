@@ -226,16 +226,6 @@ const PRODUCT_CATALOG = {
     mode: "subscription",
     trialDays: 7,
   },
-  "digest-monthly": {
-    envKey: "STRIPE_PRICE_DIGEST_MONTHLY",
-    successPath: "/blog/digest/subscribed/",
-    mode: "subscription",
-  },
-  "digest-annual": {
-    envKey: "STRIPE_PRICE_DIGEST_ANNUAL",
-    successPath: "/blog/digest/subscribed/",
-    mode: "subscription",
-  },
   // Spreadsheet templates (/sheets/). These carry their price inline
   // (`amount`, `name`) instead of an env-var Price id: Checkout builds the price
   // from price_data, so a new product needs no Stripe dashboard setup and the

@@ -277,3 +277,26 @@ for (const [label, raw] of [
     }
   });
 }
+
+test("the retired digest plans return 400 and never reach Stripe", async () => {
+  for (const product of ["digest-monthly", "digest-annual"]) {
+    let stripeCalled = false;
+    const originalFetch = globalThis.fetch;
+    globalThis.fetch = async (url) => {
+      if (String(url).includes("api.stripe.com")) stripeCalled = true;
+      throw new Error(`Unexpected fetch to ${url}`);
+    };
+    try {
+      const res = await handler(new Request("https://purplelink.llc/.netlify/functions/checkout", {
+        method: "POST",
+        headers: { "content-type": "application/json", "x-nf-client-connection-ip": "203.0.113.50" },
+        body: JSON.stringify({ product }),
+      }));
+      assert.equal(res.status, 400, product);
+      assert.equal((await res.json()).error, "unknown_product");
+      assert.equal(stripeCalled, false);
+    } finally {
+      globalThis.fetch = originalFetch;
+    }
+  }
+});

@@ -300,7 +300,6 @@ def venue_page(v):
             <li><a href="/guides/why-it-matters/">Why it matters</a></li>
             <li><a href="/format/">Reference formats</a></li>
             <li><a href="/blog/">Blog</a></li>
-            <li><a href="/blog/digest/">Daily Digest</a></li>
             <li><a href="/changelog/">Changelog</a></li>
           </ul>
         </nav>
@@ -436,7 +435,6 @@ def hub_page():
             <li><a href="/guides/why-it-matters/">Why it matters</a></li>
             <li><a href="/format/">Reference formats</a></li>
             <li><a href="/blog/">Blog</a></li>
-            <li><a href="/blog/digest/">Daily Digest</a></li>
             <li><a href="/changelog/">Changelog</a></li>
           </ul>
         </nav>
