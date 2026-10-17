@@ -26,7 +26,7 @@ Manual BibTeX entry means copying author names, fixing capitalization, and track
 
 6. Move the .bib file into your LaTeX project directory. Reference it in your preamble with `\bibliography{yourfile}` if you are using BibTeX, or `\addbibresource{yourfile.bib}` if you are using biblatex. Compile as normal.
 
-7. Before submitting, run the .bib file through the BibTeX Validator (purplelink.llc/tools/bib-validator/) to catch malformed entries, duplicate citation keys, and missing required fields.
+7. Before submitting, run the .bib file through the BibTeX Validator (purplelink.llc/tools/bib-validator/) to catch malformed entries and missing required fields. It does not check for duplicate citation keys, so look for those yourself.
 
 ## What's happening under the hood
 
