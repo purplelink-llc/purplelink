@@ -4,6 +4,10 @@
     python3.12 longform_pub.py thumb    --theme campfire --hours 2 --out campfire-2h-thumb.jpg
     python3.12 longform_pub.py meta     --theme campfire --hours 2 --slug campfire-2h --out campfire-2h.json
     python3.12 longform_pub.py verify   --video campfire-2h.mp4 --frames-dir DIR      # ffprobe, loudness, silence, four frames
+    python3.12 longform_pub.py meta     --theme campfire --sound brown --hours 10 --dark 300 --slug campfire-brown-10h --out campfire-brown-10h.json
+
+`--sound` and `--dark` are the same options as in longform.py; verify takes `--sound` too, because each sound has its own loudness target.
+Titles, tags and hashtags use the ranked search phrases from keywords.py when its research file exists.
 
 Nothing here uploads anything. The metadata file is what a person (or a later script) pastes into YouTube Studio.
 """
@@ -19,9 +23,11 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw
 
+import keywords
 import longform as lf
 import pixfont
 import px
+import sounds
 import themes
 
 THUMB = (1280, 720)          # an exact 4x of the 320x180 art
@@ -37,11 +43,16 @@ THUMB_LAYOUT = {
 }
 
 
-def make_thumbnail(theme_name: str, seconds: float, seed: int, out: Path, options: dict | None = None, music: bool = True) -> Path:
+THUMB_SOUND = {"brown": "BROWN NOISE", "pink": "PINK NOISE", "white": "WHITE NOISE", "binaural-alpha": "10 HZ BINAURAL", "binaural-theta": "6 HZ BINAURAL",
+               "binaural-delta": "2 HZ BINAURAL", "synth": "AMBIENT SYNTH", "lofi": "LOFI", "rain": "RAIN SOUNDS", "thunderstorm": "THUNDERSTORM",
+               "fireplace": "FIREPLACE", "ocean": "OCEAN WAVES", "wind": "WIND SOUNDS", "fan": "FAN SOUNDS", "airplane": "AIRPLANE CABIN"}
+
+
+def make_thumbnail(theme_name: str, seconds: float, seed: int, out: Path, options: dict | None = None, music: bool = True, sound: str = "chiptune") -> Path:
     """A 1280x720 JPEG: a clean frame of the scene, enlarged exactly 4x, with a darkened band behind big pixel-font title text. The bottom-right
     corner is left empty because YouTube puts the duration stamp there."""
     cls = themes.get(theme_name)
-    tracks = lf.plan_tracks(cls, seconds, seed)
+    tracks = lf.plan_tracks(cls, seconds, seed, lf.music_cfg(cls, sound))
     theme = cls(seed, seconds, bpm_at=lf.bpm_lookup(tracks), options=options or {})
     t = theme.progress(theme.thumb_at * seconds) * seconds
     art = px.scale_up(theme.frame(t), THUMB_SCALE).convert("RGBA")
@@ -49,6 +60,8 @@ def make_thumbnail(theme_name: str, seconds: float, seed: int, out: Path, option
     lines = list(cls.thumb_lines)
     if not music:
         lines = [lines[0], lines[1]]
+    if sound != "chiptune":                                          # the searched phrase leads, the scene's own word second
+        lines = [THUMB_SOUND[sound], lines[1]]
     scale = 16
     widths = [pixfont.width(s, scale) for s in lines]
     while max(widths) > THUMB[0] - 120 and scale > 8:
@@ -155,8 +168,136 @@ DISCLOSURE = {
 }
 
 
+TITLE_THEME = {"campfire": "Crackling Campfire", "halloween": "Halloween Porch", "winter": "Winter Cabin", "study": "Study Room"}
+SCENE_SHORT = {"campfire": "a pixel-art campfire at night", "halloween": "a pixel-art Halloween porch", "winter": "a pixel-art snowed-in cabin",
+               "study": "a pixel-art study room"}
+# title lead phrases per sound; the first is the default, the others win only if the keyword research ranks them higher
+LEADS = {"brown": ["Brown Noise"], "pink": ["Pink Noise"], "white": ["White Noise"],
+         "binaural-alpha": ["Alpha Binaural Beats 10 Hz", "10 Hz Binaural Beats"], "binaural-theta": ["Theta Binaural Beats 6 Hz", "6 Hz Binaural Beats"],
+         "binaural-delta": ["Delta Binaural Beats 2 Hz", "2 Hz Binaural Beats"], "synth": ["Ambient Synth Music", "Ambient Drone"],
+         "lofi": ["Lofi Study Music", "Lofi Chiptune"], "rain": ["Rain Sounds", "Rain Sounds for Sleeping"], "thunderstorm": ["Thunderstorm Sounds"],
+         "fireplace": ["Fireplace Sounds", "Crackling Fire Sounds"], "ocean": ["Ocean Waves Sounds"], "wind": ["Wind Sounds"],
+         "fan": ["Fan Sounds", "Fan Noise"], "airplane": ["Airplane Cabin Sounds", "Airplane Noise"]}
+# the plain first sentence's description of the sound (kept short: the first 150 characters of a description are what search and answer engines show)
+WHAT_SHORT = {"brown": "Deep, smooth brown noise", "pink": "Smooth pink noise", "white": "Steady white noise",
+              "binaural-alpha": "A 10 Hz binaural beat (use headphones)", "binaural-theta": "A 6 Hz binaural beat (use headphones)",
+              "binaural-delta": "A 2 Hz binaural beat (use headphones)", "synth": "Slow ambient synth pads, no beat and no melody",
+              "lofi": "Slow, soft lofi chiptune music", "rain": "Steady rain with distant thunder", "thunderstorm": "Heavy rain with rolling thunder",
+              "fireplace": "A crackling fireplace", "ocean": "Waves rolling onto a shore", "wind": "Wind with slow gusts", "fan": "The steady whoosh of a fan",
+              "airplane": "The low roar of an airplane cabin"}
+SOUND_HASH = {"brown": "#brownnoise", "pink": "#pinknoise", "white": "#whitenoise", "binaural-alpha": "#binauralbeats", "binaural-theta": "#binauralbeats",
+              "binaural-delta": "#binauralbeats", "synth": "#ambientmusic", "lofi": "#lofi", "rain": "#rainsounds", "thunderstorm": "#thunderstorm",
+              "fireplace": "#fireplace", "ocean": "#oceanwaves", "wind": "#windsounds", "fan": "#fansounds", "airplane": "#airplanesounds"}
+THEME_HASH = {"campfire": "#campfire", "halloween": "#halloween", "winter": "#cozycabin", "study": "#studywithme"}
+LAYER_WORDS = {"fire": "fire crackle", "wind": "wind", "hollow_wind": "a low hollow wind", "muffled_wind": "a muffled wind outside", "crickets": "crickets", "rain": "rain"}
+SLEEP_SOUNDS = {"brown", "pink", "white", "rain", "thunderstorm", "ocean", "fan", "airplane", "wind", "fireplace", "binaural-delta"}
+MAX_TAGS, MAX_TAG_CHARS = 15, 470
+CHANNEL_LINE = ("Pixel Hearth makes ambient videos in which every sound and every picture is generated by code. "
+                "Nothing is recorded, sampled or taken from a sound or image library.")
+
+
+def pick_lead(sound: str, kw: dict | None) -> str:
+    """The title's lead phrase: the first candidate, unless the keyword research ranks another candidate higher."""
+    cands = LEADS[sound]
+    rows = {r["phrase"]: r["score"] for r in (kw or {}).get("kinds", {}).get(sound, [])}
+
+    def score(c: str) -> float:
+        low = c.lower()
+        return max([v for k, v in rows.items() if k == low] + [0.0])
+    return max(cands, key=lambda c: (score(c), -cands.index(c)))
+
+
+def bed_text(cls, sound: str, bed_on: bool) -> str:
+    """The theme's ambience under a sound, in words, from the layers that are actually mixed in."""
+    sp = sounds.spec(sound)
+    if not bed_on or sp.bed_level <= 0:
+        return ""
+    layers = [k for k in (cls.bed_solo or cls.bed) if k not in sp.drop and k in LAYER_WORDS]
+    words = [LAYER_WORDS[k] for k in layers]
+    return ", ".join(words[:-1]) + (" and " if len(words) > 1 else "") + words[-1] if words else ""
+
+
+def merge_tags(*groups: list, limit: int = MAX_TAGS, max_chars: int = MAX_TAG_CHARS) -> list:
+    """Tags in priority order, no duplicates (case-insensitive), at most `limit` of them and `max_chars` characters in all."""
+    out, seen, used = [], set(), 0
+    for g in groups:
+        for t in g:
+            t = t.strip()
+            if not t or t.lower() in seen or len(out) >= limit or used + len(t) > max_chars:
+                continue
+            seen.add(t.lower())
+            out.append(t)
+            used += len(t)
+    return out
+
+
+def sound_metadata(theme_name: str, seconds: float, slug: str, pomodoro: bool, seed: int, loop_min: float, sound: str, dark: float, no_bed: bool, kw: dict | None) -> dict:
+    """Title, description and tags for a video whose sound is not the default chiptune: lead with the searched phrase, say plainly what it is in the
+    first 150 characters, then a short factual block that answer engines can quote."""
+    cls = themes.get(theme_name)
+    cp = COPY[theme_name]
+    sp = sounds.spec(sound)
+    dur = hours_text(seconds)
+    lead = pick_lead(sound, kw)
+    screen = "Black Screen" if keywords.modifier_score(kw, "black screen") > keywords.modifier_score(kw, "dark screen") else "Dark Screen"
+    title = f"{lead} with {TITLE_THEME[theme_name]}, {dur}" + (f", {screen}" if dark else "")
+    if len(title) > 100:
+        title = f"{lead}, {dur}" + (f", {screen}" if dark else "")
+    bed = bed_text(cls, sound, not no_bed)
+    scene = SCENE_SHORT[theme_name]
+    first = f"{lead}, {dur}. {WHAT_SHORT[sound]}{' with quiet ' + bed if bed and not sp.musical else ''}, over {scene}."
+    if len(first) > 150:                                             # the first 150 characters are what search and answer engines show: drop the extras, not the facts
+        first = f"{lead}, {dur}. {WHAT_SHORT[sound]}, over {scene}."
+    if len(first) > 150:
+        first = f"{lead}, {dur}. {WHAT_SHORT[sound]}, over a pixel-art scene."
+    dim = f"The screen dims to near black after {dark / 60:g} minutes and the sound carries on." if dark else ""
+    lines = [first, ""]
+    if dim:
+        lines += [dim, ""]
+    lines += ["About this video", f"What it is: {sp.what[0].upper() + sp.what[1:]}.",
+              f"Length: {dur}" + (f", one {loop_min:g} minute loop joined so it repeats without a gap" if loop_min else "") + "."]
+    if bed and not sp.musical:
+        lines.append(f"Also in the mix: quiet {bed}.")
+    lines.append(f"Picture: {cp['scene']}.")
+    if sp.how:
+        lines.append(f"How it was made: {sp.how}.")
+    else:
+        lines.append("How it was made: a program composes every track from a random seed (melody, chords, bass and drums).")
+    if sp.note:
+        lines.append(sp.note)
+    if sp.lufs < -16:
+        lines.append(f"Level: mastered at about {sp.lufs:g} LUFS, quieter than most music, so it sits comfortably at a low volume. Turn it up if you need to.")
+    lines += ["", CHANNEL_LINE, ""]
+    for ln in ("A steady background sound for reading, studying, working or going to sleep." if sound in SLEEP_SOUNDS else
+               "Background sound for reading, studying, working or winding down.",):
+        lines += [ln, ""]
+    hashtags = [SOUND_HASH[sound], THEME_HASH[theme_name], "#sleepsounds" if sound in SLEEP_SOUNDS else "#ambience"]
+    lines.append(" ".join(hashtags))
+    ranked = keywords.top(kw, sound, 10) + keywords.top(kw, theme_name, 4)
+    tags = merge_tags([lead.lower()], ranked, [sp.label.lower()], [t for t in cp["tags"]], ["pixel art", "ambient sounds"])
+    chapters = []
+    if pomodoro:
+        th = cls(seed, seconds, options={"pomodoro": (25, 5)})
+        chapters = [{"time": lf_clock(t), "seconds": int(t), "title": name} for t, name in th.chapters()]
+        lines += ["", "Chapters:"] + [f"{c['time']} {c['title']}" for c in chapters]
+    return {
+        "slug": slug, "title": title, "description": "\n".join(l for i, l in enumerate(lines) if l != "" or (i and lines[i - 1] != "")).strip(),
+        "optional_footer": "More free tools and apps: https://purplelink.llc/?utm_source=youtube&utm_medium=ambient&utm_campaign=" + slug,
+        "tags": tags, "chapters": chapters, "category": "Music", "made_for_kids": False, "altered_or_synthetic_content": DISCLOSURE, "language": "en",
+        "visibility_on_upload": "private, until Ben has watched it and chosen a publish time", "video_file": slug + ".mp4", "thumbnail_file": slug + "-thumb.jpg",
+        "render": {"theme": theme_name, "seed": seed, "seconds": seconds, "sound": sound, "dark_after_seconds": dark or None, "loudness_target_lufs": sp.lufs,
+                   "loop_minutes": loop_min or None, "keywords_date": (kw or {}).get("date")},
+    }
+
+
+def lf_clock(sec: float) -> str:
+    return clock(sec)
+
+
 def build_metadata(theme_name: str, seconds: float, slug: str, music: bool, pomodoro: bool, seed: int, tracks: list | None = None,
-                   loop_min: float = 0.0) -> dict:
+                   loop_min: float = 0.0, sound: str = "chiptune", dark: float = 0.0, no_bed: bool = False, kw: dict | None = None) -> dict:
+    if sound != "chiptune":
+        return sound_metadata(theme_name, seconds, slug, pomodoro, seed, loop_min, sound, dark, no_bed, kw)
     cls = themes.get(theme_name)
     cp = COPY[theme_name]
     dur = hours_text(seconds)
@@ -183,7 +324,7 @@ def build_metadata(theme_name: str, seconds: float, slug: str, music: bool, pomo
                   "The person at the desk takes their break when the timer says so.", "", "Chapters:"]
         lines += [f"{c['time']} {c['title']}" for c in chapters] + [""]
     lines += [cp["hashtags"]]
-    tags = cp["tags"] + (cp["tags_music"] if music else ["no music ambience", "ambient sounds"])
+    tags = merge_tags(keywords.top(kw, "chiptune", 4) + keywords.top(kw, theme_name, 4), cp["tags"], cp["tags_music"] if music else ["no music ambience", "ambient sounds"])
     return {
         "slug": slug,
         "title": title,
@@ -242,7 +383,8 @@ def extract_frames(video: Path, out_dir: Path, slug: str, duration: float, fract
     return paths
 
 
-def verify(video: Path, frames_dir: Path | None, slug: str, fade_allowance: float = 12.0, quick: bool = False) -> dict:
+def verify(video: Path, frames_dir: Path | None, slug: str, fade_allowance: float = 12.0, quick: bool = False, sound: str = "chiptune") -> dict:
+    target = sounds.target_lufs(sound)
     info = probe(video)
     if quick:
         report = {"file": video.name, **info, "quick": True,
@@ -252,10 +394,10 @@ def verify(video: Path, frames_dir: Path | None, slug: str, fade_allowance: floa
         return report
     loud = loudness_and_silence(video)
     bad = [s for s in loud["silences"] if s["duration"] is None or s["start"] < info["duration"] - fade_allowance]
-    report = {"file": video.name, **info, **{k: loud[k] for k in ("integrated_lufs", "lra", "true_peak_dbtp")},
+    report = {"file": video.name, "sound": sound, "target_lufs": target, **info, **{k: loud[k] for k in ("integrated_lufs", "lra", "true_peak_dbtp")},
               "silences_over_3s_outside_the_final_fade": bad,
               "checks": {"1080p": (info["width"], info["height"]) == (1920, 1080), "h264": info["video_codec"] == "h264", "aac": info["audio_codec"] == "aac",
-                         "loudness_within_0.7_of_-14": loud["integrated_lufs"] is not None and abs(loud["integrated_lufs"] + 14.0) <= 0.7,
+                         f"loudness_within_0.7_of_{target:g}": loud["integrated_lufs"] is not None and abs(loud["integrated_lufs"] - target) <= 0.7,
                          "true_peak_at_most_-1": loud["true_peak_dbtp"] is not None and loud["true_peak_dbtp"] <= -1.0, "no_unexpected_silence": not bad}}
     if frames_dir is not None:
         report["frames"] = extract_frames(video, frames_dir, slug, info["duration"])
@@ -272,6 +414,9 @@ def _common(ap):
     ap.add_argument("--pomodoro", default="")
     ap.add_argument("--season", default="")
     ap.add_argument("--loop-min", type=float, default=0.0)
+    ap.add_argument("--sound", default="chiptune", choices=sounds.NAMES)
+    ap.add_argument("--dark", type=float, default=0.0)
+    ap.add_argument("--no-bed", action="store_true")
 
 
 def main(argv=None) -> None:
@@ -288,11 +433,12 @@ def main(argv=None) -> None:
     v.add_argument("--video", required=True)
     v.add_argument("--frames-dir")
     v.add_argument("--out")
+    v.add_argument("--sound", default="chiptune", choices=sounds.NAMES, help="the sound the video was rendered with: sets the loudness target it is checked against")
     v.add_argument("--quick", action="store_true", help="format, length and frames only; skip the loudness and silence pass (for a long file made of a verified loop)")
     a = ap.parse_args(argv)
     if a.cmd == "verify":
         video = Path(a.video)
-        rep = verify(video, Path(a.frames_dir) if a.frames_dir else None, video.stem, quick=a.quick)
+        rep = verify(video, Path(a.frames_dir) if a.frames_dir else None, video.stem, quick=a.quick, sound=a.sound)
         text = json.dumps(rep, indent=2)
         if a.out:
             Path(a.out).write_text(text)
@@ -304,13 +450,16 @@ def main(argv=None) -> None:
     if a.season:
         options["season"] = a.season
     if a.cmd == "thumb":
-        p = make_thumbnail(a.theme, seconds, seed, Path(a.out), options, music=not a.no_music)
+        p = make_thumbnail(a.theme, seconds, seed, Path(a.out), options, music=not a.no_music, sound=a.sound)
         print(p, p.stat().st_size)
     else:
         loop_min = a.loop_min if 0 < a.loop_min * 60 < seconds else 0.0
         music_s = loop_min * 60 + lf.LOOP_XF if loop_min else seconds   # a loop render composes only the loop's tracks
-        tracks = lf.plan_tracks(themes.get(a.theme), music_s, seed) if not a.no_music else []
-        meta = build_metadata(a.theme, seconds, a.slug, not a.no_music, bool(a.pomodoro), seed, tracks, loop_min)
+        cls = themes.get(a.theme)
+        musical = sounds.spec(a.sound).musical and not a.no_music
+        tracks = lf.plan_tracks(cls, music_s, seed, lf.music_cfg(cls, a.sound)) if musical else []
+        meta = build_metadata(a.theme, seconds, a.slug, musical, bool(a.pomodoro), seed, tracks, loop_min, sound=a.sound, dark=a.dark, no_bed=a.no_bed,
+                              kw=keywords.load())
         Path(a.out).write_text(json.dumps(meta, indent=2) + "\n")
         print(meta["title"])
 
