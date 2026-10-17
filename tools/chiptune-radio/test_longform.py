@@ -166,12 +166,33 @@ def test_metadata_is_plain_and_honest(name, music, pomo):
     json.dumps(m)
 
 
-def test_a_looped_picture_fills_the_full_length_with_unique_sound(tmp_path):
-    out = tmp_path / "loop.mp4"
-    lf.main(["--theme", "campfire", "--seconds", "24", "--no-music", "--video-loop", "0.1", "--out", str(out)])   # a 6 s picture, 4 times
-    rep = pub.verify(out, tmp_path / "frames", "loop")
-    assert abs(rep["duration"] - 24) < 0.3 and rep["width"] == 1920 and rep["fps"] == "30/1"
-    assert abs(rep["integrated_lufs"] + 14.0) <= 0.7, rep
-    assert not (tmp_path / "loop.mp4.work" / "loop.mp4").exists()
-    v = " ".join(lf.video_cmd(360, 10, __import__("pathlib").Path("l.mp4"), fades=False))
-    assert "fade" not in v
+def test_a_loop_render_is_seamless_and_its_picture_and_sound_have_one_length(tmp_path):
+    import json, subprocess
+    import numpy as np
+    out = tmp_path / "l.mp4"
+    lf.main(["--theme", "campfire", "--seconds", "40", "--no-music", "--loop-min", "0.2", "--keep-work", "--out", str(out)])   # a 12 s loop
+    work = tmp_path / "l.mp4.work"
+    pcm = np.fromfile(work / "audio.pcm", dtype="<i2").reshape(-1, 2).astype(np.float64)
+    assert len(pcm) == 12 * lf.SR                                   # the loop is exactly its length
+    steps = np.abs(np.diff(pcm, axis=0))
+    seam = np.abs(pcm[0] - pcm[-1])                                 # played on repeat, the last sample is followed by the first
+    assert (seam <= np.percentile(steps, 99.9, axis=0) + 1).all(), (seam, np.percentile(steps, 99.9, axis=0))
+    frames = int(subprocess.run(["ffprobe", "-v", "error", "-count_packets", "-select_streams", "v:0", "-show_entries", "stream=nb_read_packets",
+                                 "-of", "csv=p=0", str(work / "loop.mp4")], capture_output=True, text=True).stdout.strip())
+    assert frames == 12 * 30                                        # picture loop == sound loop, so repeats never drift
+    assert json.loads((work / "video.json").read_text())["loop_seconds"] == 12
+    loop_file = lf.loop_path(out, 12)
+    assert loop_file.exists() and abs(pub.verify(loop_file, None, "x")["duration"] - 12) < 0.1
+    rep = pub.verify(out, tmp_path / "frames", "l")
+    assert abs(rep["duration"] - 40) < 0.3 and rep["width"] == 1920
+    assert abs(rep["integrated_lufs"] + 14.0) <= 0.8, rep
+    assert rep["true_peak_dbtp"] <= -1.0, rep
+    assert rep["silences_over_3s_outside_the_final_fade"] == []
+
+
+def test_mux_repeats_raw_pcm_not_encoded_audio():
+    from pathlib import Path
+    meas = {"input_i": "-15.0"}
+    m = lf.mux_cmd(Path("w"), meas, 7200, Path("o.mp4"), loop=True, fades=True)
+    j = " ".join(m)
+    assert j.count("-stream_loop -1") == 2 and "s16le" in j and "-c:v copy" in j and "afade=t=out:st=7192.000" in j

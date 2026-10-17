@@ -45,6 +45,7 @@ SR = c.SR
 XFADE = 6.0                    # seconds of crossfade between tracks
 FADE_IN_AUDIO, FADE_OUT_AUDIO = 3.0, 8.0
 FADE_IN_VIDEO, FADE_OUT_VIDEO = 2.0, 5.0
+LOOP_XF = 4.0                  # seconds of equal-power crossfade that join the end of a loop to its start
 TARGET_LUFS, TARGET_TP, TARGET_LRA = -14.0, -2.0, 20.0     # a true-peak ceiling of -2 leaves room for the AAC encoder's overshoot, so the file stays under -1 dBTP
 MUSIC_RMS = 0.13               # each track is levelled to this before mixing (the same level the 24/7 stream uses)
 PRE_RMS = 0.15                 # the pre-master's RMS: about -14 LUFS for this kind of music, so the loudness pass only trims a little
@@ -126,8 +127,10 @@ def soft_clip(x: np.ndarray, knee: float = 0.7) -> np.ndarray:
     return y
 
 
-def build_audio(theme, tracks: list[dict], seconds: float, work: Path, music: bool, workers: int, pomodoro: bool) -> dict:
-    """Mixes music, ambience and (for a Pomodoro video) chimes into float32 on disk, then writes the pre-master as s16 PCM. Returns stats."""
+def build_audio(theme, tracks: list[dict], seconds: float, work: Path, music: bool, workers: int, pomodoro: bool, loop_tail: float = 0.0) -> dict:
+    """Mixes music, ambience and (for a Pomodoro video) chimes into float32 on disk, then writes the pre-master as s16 PCM. Returns stats.
+    With `loop_tail` the mix runs that many seconds past the loop, the overrun is crossfaded (equal power) into the start, and the pre-master is the
+    loop alone with no fades: played end to start it has no click or gap."""
     n = int(round(seconds * SR))
     mm_path = work / "mix.f32"
     mm = np.memmap(mm_path, dtype=np.float32, mode="w+", shape=(2, n))
@@ -177,6 +180,13 @@ def build_audio(theme, tracks: list[dict], seconds: float, work: Path, music: bo
                 i = int(tb * SR)
                 m = min(body.shape[1], n - i)
                 mm[:, i:i + m] = mm[:, i:i + m] * duck[:m] + body[:, :m]
+    if loop_tail > 0:
+        xf = int(round(loop_tail * SR))
+        n -= xf                                                     # the loop's own length; the overrun becomes the crossfade into the start
+        k = np.linspace(0.0, 1.0, xf, dtype=np.float64)
+        head = np.asarray(mm[:, :xf], dtype=np.float64)
+        tail = np.asarray(mm[:, n:n + xf], dtype=np.float64)
+        mm[:, :xf] = (head * np.sin(k * np.pi / 2) + tail * np.cos(k * np.pi / 2)).astype(np.float32)
     mm.flush()
     # loudness of the raw mix, then the pre-master with fades and a soft clip
     ss, cnt = 0.0, 0
@@ -187,7 +197,7 @@ def build_audio(theme, tracks: list[dict], seconds: float, work: Path, music: bo
     rms = math.sqrt(ss / max(1, cnt))
     gain = PRE_RMS / rms if rms > 0 else 1.0
     pcm_path = work / "audio.pcm"
-    fi, fo = int(FADE_IN_AUDIO * SR), int(FADE_OUT_AUDIO * SR)
+    fi, fo = (0, 0) if loop_tail > 0 else (int(FADE_IN_AUDIO * SR), int(FADE_OUT_AUDIO * SR))
     peak = 0.0
     with open(pcm_path, "wb") as f:
         for i in range(0, n, step):
@@ -195,9 +205,9 @@ def build_audio(theme, tracks: list[dict], seconds: float, work: Path, music: bo
             x = np.asarray(mm[:, i:j], dtype=np.float32) * np.float32(gain)
             idx = np.arange(i, j)
             env = np.ones(j - i, np.float32)
-            if i < fi:
+            if fi and i < fi:
                 env[: min(fi - i, j - i)] = (0.5 - 0.5 * np.cos(np.pi * np.arange(i, min(fi, j)) / fi)).astype(np.float32)
-            if j > n - fo:
+            if fo and j > n - fo:
                 lo = max(i, n - fo)
                 env[lo - i:] = (0.5 + 0.5 * np.cos(np.pi * (idx[lo - i:] - (n - fo)) / fo)).astype(np.float32)
             x = soft_clip(x * env)
@@ -220,8 +230,8 @@ def measure_loudness(pcm: Path) -> dict:
     return {"input_i": m[-1], "method": "ebur128"}
 
 
-def audio_stage(theme, tracks, seconds, work: Path, music: bool, workers: int, pomodoro: bool) -> None:
-    stats = build_audio(theme, tracks, seconds, work, music, workers, pomodoro)
+def audio_stage(theme, tracks, seconds, work: Path, music: bool, workers: int, pomodoro: bool, loop_tail: float = 0.0) -> None:
+    stats = build_audio(theme, tracks, seconds, work, music, workers, pomodoro, loop_tail)
     meas = measure_loudness(work / "audio.pcm")
     stats["loudnorm"] = meas
     (work / "audio.json").write_text(json.dumps(stats, indent=1))
@@ -241,7 +251,7 @@ def video_cmd(seconds: float, fps: int, out: Path, fades: bool = True) -> list[s
 _THEME_CACHE: dict = {}
 
 
-def render_chunk(theme_name: str, seed: int, seconds: float, options: dict, tracks: list, n0: int, n1: int) -> list[bytes]:
+def render_chunk(theme_name: str, seed: int, seconds: float, options: dict, tracks: list, n0: int, n1: int, loop_s: float = 0.0) -> list[bytes]:
     """Runs in a worker process: the 320x180 frames n0..n1-1 as raw RGB bytes. (The flame in the fire themes is stepped frame to frame, so each chunk
     starts it fresh with a short warm-up: once per chunk the flicker pattern changes, which looks like any other flicker.)"""
     key = (theme_name, seed, seconds)
@@ -249,19 +259,24 @@ def render_chunk(theme_name: str, seed: int, seconds: float, options: dict, trac
         _THEME_CACHE.clear()
         _THEME_CACHE[key] = themes.get(theme_name)(seed, seconds, bpm_at=bpm_lookup(tracks), options=options)
     th = _THEME_CACHE[key]
-    return [th.frame(n / th.fps).tobytes() for n in range(n0, n1)]
+    out = []
+    for n in range(n0, n1):
+        t = n / th.fps
+        im = th.frame(t)
+        if loop_s and t < LOOP_XF:                                  # the loop's first seconds fade in from the frames that follow its end
+            im = Image.blend(th.frame(t + loop_s).convert("RGB"), im.convert("RGB"), t / LOOP_XF)
+        out.append(im.tobytes())
+    return out
 
 
-def video_stage(theme, seconds: float, work: Path, spec: dict, workers: int = 2, chunk_seconds: float = 30.0, loop_s: float = 0.0) -> None:
+def video_stage(theme, seconds: float, work: Path, spec: dict, workers: int = 2, chunk_seconds: float = 30.0, loop: bool = False) -> None:
     """Draws the frames in worker processes (a chunk of `chunk_seconds` each, handed back in order), enlarges each exactly 6x here, draws any overlay,
-    and pipes it to x264. With `loop_s` only the first `loop_s` seconds are drawn (no fades) and repeated to the full length by stream copy, with no
-    re-encode: about seconds/loop_s times less drawing. The audio stays unique for the whole length and carries the fade in and out."""
+    and pipes it to x264. With `loop` the picture is a loop (loop.mp4, no fades) that the mux repeats by stream copy."""
     fps = theme.fps
     assert 30 % fps == 0, "the video rate must divide 30 so every frame is shown the same number of times"
-    looping = 0 < loop_s < seconds
-    drawn = loop_s if looping else seconds
-    out = work / ("loop.mp4" if looping else "video.mp4")
-    proc = subprocess.Popen(video_cmd(drawn, fps, out, fades=not looping), stdin=subprocess.PIPE)
+    drawn = seconds
+    out = work / ("loop.mp4" if loop else "video.mp4")
+    proc = subprocess.Popen(video_cmd(drawn, fps, out, fades=not loop), stdin=subprocess.PIPE)
     total = int(round(drawn * fps))
     per = max(1, int(chunk_seconds * fps))
     bounds = [(n, min(total, n + per)) for n in range(0, total, per)]
@@ -272,7 +287,8 @@ def video_stage(theme, seconds: float, work: Path, spec: dict, workers: int = 2,
             futs, nxt = {}, 0
             for i, (n0, n1) in enumerate(bounds):
                 while nxt < len(bounds) and nxt < i + workers + 1:
-                    futs[nxt] = pool.submit(render_chunk, spec["theme"], spec["seed"], seconds, spec["options"], spec["tracks"], *bounds[nxt])
+                    futs[nxt] = pool.submit(render_chunk, spec["theme"], spec["seed"], spec["seconds"], spec["options"], spec["tracks"], *bounds[nxt],
+                                            seconds if loop else 0.0)
                     nxt += 1
                 for k, raw in enumerate(futs.pop(i).result()):
                     ts = (n0 + k) / fps
@@ -289,20 +305,27 @@ def video_stage(theme, seconds: float, work: Path, spec: dict, workers: int = 2,
         rc = proc.wait()
     if rc != 0:
         raise RuntimeError(f"ffmpeg video encode failed with exit {rc}")
-    if looping:
-        log(f"video: {drawn / 60:.0f} min loop drawn; the mux repeats it to {seconds / 60:.0f} min")
-    (work / "video.json").write_text(json.dumps({"frames": total, "loop_seconds": drawn if looping else 0,
+    (work / "video.json").write_text(json.dumps({"frames": total, "loop_seconds": drawn if loop else 0,
                                                  "seconds_of_work": round(time.time() - t0, 1)}))
 
 
 # ------------------------------------------------------------------------------------------------------------------------ mux
-def mux_cmd(work: Path, meas: dict, seconds: float, out: Path, title: str | None = None, loop: bool = False) -> list[str]:
+def master_af(meas: dict) -> str:
+    """A fixed gain to the loudness target and a limiter under the true-peak ceiling: what loudnorm's linear mode does, without its 192 kHz resample."""
     gain = TARGET_LUFS - float(meas["input_i"])
-    limit = 10 ** (TARGET_TP / 20)
-    af = f"volume={gain:.2f}dB,alimiter=limit={limit:.4f}:attack=5:release=50:level=0,aresample=48000"
-    video = ["-stream_loop", "-1", "-i", str(work / "loop.mp4")] if loop else ["-i", str(work / "video.mp4")]
-    cmd = [FFMPEG, "-hide_banner", "-loglevel", "warning", "-y", *video,
-           "-f", "s16le", "-ar", str(SR), "-ac", "2", "-i", str(work / "audio.pcm"),
+    return f"volume={gain:.2f}dB,alimiter=limit={10 ** (TARGET_TP / 20):.4f}:attack=5:release=50:level=0,aresample=48000"
+
+
+def mux_cmd(work: Path, meas: dict, seconds: float, out: Path, title: str | None = None, loop: bool = False, fades: bool = False) -> list[str]:
+    """The finished file. `loop`: repeat loop.mp4 (stream copy) and the PCM loop (raw samples, so the repeats join with no encoder gap) to `seconds`,
+    with one AAC encode of the whole length. `fades`: an audio fade in and out at the ends of the full-length file."""
+    af = master_af(meas)
+    if fades:
+        af += f",afade=t=in:d={FADE_IN_AUDIO},afade=t=out:st={max(0.0, seconds - FADE_OUT_AUDIO):.3f}:d={FADE_OUT_AUDIO}"
+    rep = ["-stream_loop", "-1"] if loop else []
+    video = rep + ["-i", str(work / ("loop.mp4" if loop else "video.mp4"))]
+    audio = rep + ["-f", "s16le", "-ar", str(SR), "-ac", "2", "-i", str(work / "audio.pcm")]
+    cmd = [FFMPEG, "-hide_banner", "-loglevel", "warning", "-y", *video, *audio,
            "-map", "0:v:0", "-map", "1:a:0", "-c:v", "copy", "-af", af, "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-t", f"{seconds:.3f}",
            "-movflags", "+faststart"]
     if title:
@@ -310,13 +333,21 @@ def mux_cmd(work: Path, meas: dict, seconds: float, out: Path, title: str | None
     return cmd + [str(out)]
 
 
+def loop_path(out: Path, loop_s: float) -> Path:
+    return out.with_name(f"{out.stem}-loop{loop_s / 60:g}min{out.suffix}")
+
+
 def mux_stage(work: Path, seconds: float, out: Path) -> None:
+    """Writes under a temporary name and renames, so an interrupted mux leaves no finished-looking file. For a loop render it writes two files: the
+    bare loop (`<name>-loop<L>min.mp4`, which plays seamlessly on repeat) and the full length."""
     meas = json.loads((work / "audio.json").read_text())["loudnorm"]
-    part = out.with_name(out.stem + ".part" + out.suffix)          # written under a temporary name, so an interrupted mux leaves no finished-looking file
     vj = work / "video.json"                                        # the finished picture says which file it is; a stale partial file never decides
-    loop = bool(json.loads(vj.read_text()).get("loop_seconds")) if vj.exists() else (work / "loop.mp4").exists()
-    subprocess.run(mux_cmd(work, meas, seconds, part, loop=loop), check=True)
-    part.replace(out)
+    loop_s = float(json.loads(vj.read_text()).get("loop_seconds") or 0) if vj.exists() else 0.0
+    jobs = [(loop_path(out, loop_s), loop_s, False), (out, seconds, True)] if loop_s else [(out, seconds, False)]
+    for dest, length, fades in jobs:
+        part = dest.with_name(dest.stem + ".part" + dest.suffix)
+        subprocess.run(mux_cmd(work, meas, length, part, loop=bool(loop_s), fades=fades), check=True)
+        part.replace(dest)
 
 
 def clean_work(work: Path) -> None:
@@ -363,7 +394,8 @@ def main(argv=None) -> None:
     ap.add_argument("--workers", type=int, default=2, help="processes rendering music, and separately drawing frames, at once")
     ap.add_argument("--stage", choices=["all", "audio", "video", "mux"], default="all")
     ap.add_argument("--keep-work", action="store_true")
-    ap.add_argument("--video-loop", type=float, default=0.0, help="draw only this many minutes of picture and repeat it (the music stays unique)")
+    ap.add_argument("--loop-min", type=float, default=0.0,
+                    help="render a seamless loop of this many minutes (picture and music) and repeat it to --hours by stream copy; 10 to 20 is typical")
     ap.add_argument("--preview-frame", type=float, default=None, help="write one frame at this many seconds to --out as a PNG and stop")
     a = ap.parse_args(argv)
     if a.seed is None:
@@ -376,21 +408,35 @@ def main(argv=None) -> None:
         hd.save(out)
         print(out)
         return
-    theme, tracks, seconds = build_theme(a)
+    final = a.seconds if a.seconds else a.hours * 3600.0
+    loop_s = a.loop_min * 60.0 if 0 < a.loop_min * 60.0 < final else 0.0
+    if loop_s:                                                      # the scene and music are made for the loop plus the crossfade overrun only
+        b = argparse.Namespace(**vars(a)); b.seconds = loop_s + LOOP_XF
+        theme, tracks, render_s = build_theme(b)
+    else:
+        theme, tracks, render_s = build_theme(a)
+    seconds = final
     work = out.parent / (out.name + ".work")
     work.mkdir(parents=True, exist_ok=True)
     music = not a.no_music
-    log(f"{a.theme}: {seconds / 3600:.2f} h, seed {a.seed}, {'music + ambience' if music else 'ambience only'}, {len(tracks)} tracks planned")
+    log(f"{a.theme}: {seconds / 3600:.2f} h{f' from a {loop_s / 60:g} min loop' if loop_s else ''}, seed {a.seed}, "
+        f"{'music + ambience' if music else 'ambience only'}, {len(tracks)} tracks planned")
     (work / "plan.json").write_text(json.dumps({"theme": a.theme, "seed": a.seed, "seconds": seconds, "music": music, "tracks": tracks if music else [],
                                                 "events": theme.events}, indent=1))
-    spec = {"theme": a.theme, "seed": a.seed, "options": theme.options, "tracks": tracks}
+    spec = {"theme": a.theme, "seed": a.seed, "options": theme.options, "tracks": tracks, "seconds": render_s}
     t0 = time.time()
 
+    def do_audio():
+        audio_stage(theme, tracks, render_s, work, music, a.workers, bool(a.pomodoro), loop_tail=LOOP_XF if loop_s else 0.0)
+
+    def do_video():
+        video_stage(theme, loop_s or seconds, work, spec, a.workers, loop=bool(loop_s))
+
     if a.stage == "audio":
-        audio_stage(theme, tracks, seconds, work, music, a.workers, bool(a.pomodoro))
+        do_audio()
         return
     if a.stage == "video":
-        video_stage(theme, seconds, work, spec, a.workers, loop_s=a.video_loop * 60)
+        do_video()
         return
     if a.stage == "mux":
         mux_stage(work, seconds, out)
@@ -402,7 +448,7 @@ def main(argv=None) -> None:
         cmd = [sys.executable, str(Path(__file__).resolve())] + [x for x in (argv if argv is not None else sys.argv[1:])] + ["--stage", "audio"]
         child = subprocess.Popen(cmd)
     if not (work / "video.json").exists():
-        video_stage(theme, seconds, work, spec, a.workers, loop_s=a.video_loop * 60)
+        do_video()
     if child is not None and child.wait() != 0:
         sys.exit("the audio stage failed")
     mux_stage(work, seconds, out)
