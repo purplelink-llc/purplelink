@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>How to export your ORCID works to BibTeX or RIS, and what to fix before importing them elsewhere | Purplelink</title>
+    <meta name="description" content="ORCID&#x27;s export steps, why the BibTeX comes out uneven, a cleanup checklist, and where to import the file next: Faculty180, Faculty Success, Pure and Zotero.">
+    <link rel="canonical" href="https://purplelink.llc/guides/export-orcid-works-to-bibtex-or-ris/">
+    <meta property="og:title" content="How to export your ORCID works to BibTeX or RIS, and what to fix before importing them elsewhere">
+    <meta property="og:description" content="ORCID&#x27;s export steps, why the BibTeX comes out uneven, a cleanup checklist, and where to import the file next: Faculty180, Faculty Success, Pure and Zotero.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/export-orcid-works-to-bibtex-or-ris/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/guides-export-orcid-works-to-bibtex-or-ris.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="How to export your ORCID works to BibTeX or RIS, and what to fix before importing them elsewhere">
+    <meta name="twitter:description" content="ORCID&#x27;s export steps, why the BibTeX comes out uneven, a cleanup checklist, and where to import the file next: Faculty180, Faculty Success, Pure and Zotero.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/guides-export-orcid-works-to-bibtex-or-ris.jpg">
+    <meta name="twitter:image:alt" content="How to export your ORCID works to BibTeX or RIS, and what to fix before importing them elsewhere">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "How to export your ORCID works to BibTeX or RIS, and what to fix before importing them elsewhere",
+      "description": "ORCID&#x27;s export steps, why the BibTeX comes out uneven, a cleanup checklist, and where to import the file next: Faculty180, Faculty Success, Pure and Zotero.",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "datePublished": "2026-10-17",
+      "dateModified": "2026-10-17",
+      "image": "https://purplelink.llc/assets/og/purplelink-card.png",
+      "mainEntityOfPage": "https://purplelink.llc/guides/export-orcid-works-to-bibtex-or-ris/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://purplelink.llc/guides/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "How to export your ORCID works to BibTeX or RIS, and what to fix before importing them elsewhere",
+          "item": "https://purplelink.llc/guides/export-orcid-works-to-bibtex-or-ris/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Can ORCID export RIS?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "I found no RIS export on ORCID's support pages, only BibTeX. Export BibTeX and convert it, or import it into Zotero and export RIS from there."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why are some exported entries so different from others?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "ORCID uses a BibTeX citation stored with the work if there is one, then Crossref's BibTeX for the DOI, and generates one only if neither exists. Different writers, different habits."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I write my publications to ORCID from another app?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not directly unless the app's maker is an ORCID member using the Member API. Otherwise you import a BibTeX file on orcid.org yourself."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does the BibTeX export leave out?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A search summary of ORCID's article says BibTeX cannot carry everything on a record, such as the data source, multiple URLs and additional identifiers. I could not confirm that on ORCID's own page."
+      }
+    }
+  ]
+}
+    </script>
+    <script src="/theme.js?v=07d8025cab"></script>
+<link rel="stylesheet" href="/styles.css?v=6180047488">
+    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
+    <script src="/site.js?v=431fbdd51a" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+    <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">How-to</p>
+        <h1 class="post-title">How to export your ORCID works to BibTeX or RIS, and what to fix before importing them elsewhere</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-17">October 17, 2026</time> · Last checked October 17, 2026</p>
+        <p class="post-lede"><strong>Short answer:</strong> in ORCID, open your record, go to Works, tick the works you want, then use Actions and choose Export works or Export all works. ORCID gives you a BibTeX file, not RIS, and the entries are uneven because ORCID uses BibTeX stored with each work first, then Crossref's, then generates its own. Fix duplicates, missing DOIs, title case, author names and entry types before importing the file into another system.</p>
+      </div>
+
+      <article class="post-body">
+
+        <p><strong>Disclosure up front:</strong> I am an assistant professor and I make Vitae, a free Mac app for keeping an academic record. It appears in one short section near the end, and the guide works without it. The ORCID steps come from ORCID's own support pages and from a sheet ORCID supplied to the University of Glasgow, linked below. I have not signed in to ORCID to test the export screens myself, and I have not run an import on a live Faculty180, Faculty Success or Pure account.</p>
+
+        <h2>The ORCID export steps</h2>
+        <p>ORCID exports your works as a BibTeX (.bib) file. I found no RIS export in ORCID's support pages, so for RIS you convert the BibTeX afterward (step 6). ORCID's own page for this is <a href="https://support.orcid.org/hc/en-us/articles/360006971453-Exporting-works-into-a-BibTeX-file" rel="noopener">Exporting works into a BibTeX file</a>. My tools were blocked from ORCID's support site, so the screen-by-screen steps below follow the <a href="https://edshare.gla.ac.uk/1630/1/Export%20works%20into%20a%20BibTeX%20file.pdf" rel="noopener">Glasgow sheet</a>, which says its information is provided by ORCID under a CC0 license. Its screenshots date from April 2024. ORCID changes its interface now and then, so check each label against your screen.</p>
+        <ol>
+          <li>Sign in at orcid.org and open your record.</li>
+          <li>Go to the Works section.</li>
+          <li>Tick the works you want. Skip this if you want everything.</li>
+          <li>Open the Actions menu. Choose Export works to export only the ticked works, or Export all works to export everything, ticked or not.</li>
+          <li>In the Export selected works window, review the list and choose Export selected works to BibTeX. The .bib file downloads to your usual download folder. Keep the .bib extension if you rename it.</li>
+          <li>For RIS, open the .bib file in a converter such as the free <a href="/tools/reference-converter/">Reference Converter</a>, or import the BibTeX into Zotero and export RIS from there. The <a href="/guides/convert-references-bibtex-ris-endnote/">conversion guide</a> has the steps.</li>
+        </ol>
+        <p>Before you send the file anywhere, open it and read it. It contains whatever you selected, so remove anything you do not want a campus system to see.</p>
+
+        <h2>Why the file comes out messy</h2>
+        <p>ORCID does not build a clean BibTeX entry from the fields it shows on screen. According to the Glasgow sheet, the export "defaults to the existing BibTeX citation" stored with the work. If a work has no stored BibTeX but has a DOI, ORCID uses the Crossref BibTeX for that DOI. If it has neither, ORCID generates an entry from whatever metadata the work has, and warns that this can cause trouble for poorly formatted BibTeX and for mixed character encodings.</p>
+        <p>The consequence is that one file mixes three kinds of entry, written by three different parties: whatever BibTeX was pasted in by you or a source system, Crossref's, and ORCID's own. Each has its own habits for key names, title case, author name forms and entry types. A search summary of ORCID's own article adds that errors in a BibTeX citation you or a trusted party added are reproduced in the export, and that BibTeX cannot carry everything on an ORCID record, such as the data source, multiple URLs and extra identifiers.</p>
+        <p><strong>How sure I am.</strong> The three-step order (stored BibTeX, then Crossref, then generated) comes from a sheet ORCID itself supplied, so I am fairly confident in it. I could not open ORCID's support article directly, and a search tool's summary of it agrees. The claim that this is the cause of the particular mess in your file is an inference: I did not test it entry by entry, and I did not find a source for how Crossref's entries look compared with the generated ones.</p>
+
+        <h2>Cleanup checklist before you import anywhere</h2>
+        <p>Open the .bib file in a text editor or Zotero, and go through these. Do the first three before anything else, since they change how many records you end up with.</p>
+        <ol>
+          <li><strong>Duplicates.</strong> A paper can appear twice on an ORCID record if two sources added it. Combine them in ORCID with Actions, Combine works, or delete the extra entry in the .bib. Zotero's Duplicate Items view will also find them.</li>
+          <li><strong>Missing DOIs.</strong> Entries with no DOI are the ones ORCID generates itself, so they are the least reliable. Add the DOI where the paper has one. The <a href="/tools/bib-builder/">BibTeX Builder</a> turns a list of DOIs into entries, and the <a href="/guides/doi-to-bibtex/">DOI to BibTeX guide</a> explains where the data comes from.</li>
+          <li><strong>Papers that are not yours.</strong> Check that every work is yours. Other sources can add works to your record.</li>
+          <li><strong>Title case.</strong> BibTeX often carries titles in the case the publisher used. Pick one case and apply it. In a .bib file, protect proper nouns and acronyms with braces, for example {DNA}, so a later style change does not lowercase them.</li>
+          <li><strong>Author name forms.</strong> Check for "Lastname, F." in one entry and "First Lastname" in the next, missing co-authors, and an "and others" cut-off. Your own name should appear the same way in every entry, so your system can match it.</li>
+          <li><strong>Entry types.</strong> Check that each entry's type matches the work, for example article, inproceedings or misc, and that preprints are not labeled as journal articles. Faculty systems sort records by type.</li>
+          <li><strong>Characters.</strong> Look for broken accents and symbols. Glasgow's sheet warns of encoding problems, and the usual symptom is garbled names. Fix them in the file and save it as UTF-8, or use the escape form that your target accepts.</li>
+          <li><strong>Years and status.</strong> ORCID shows what the sources supplied. Make sure forthcoming and in-press papers have the status you want. My <a href="/guides/list-manuscripts-under-review-on-academic-cv/">guide to listing manuscripts under review</a> covers the wording.</li>
+          <li><strong>Validate the file.</strong> Run it through the <a href="/tools/bib-validator/">BibTeX Validator</a> for missing required fields. The validator's own page says it does not check for duplicate keys, so look for those yourself. The <a href="/guides/fix-bibtex-errors/">BibTeX errors guide</a> covers the usual failures.</li>
+        </ol>
+        <p>If an import fails and you cannot see why, ORCID's own guidance for BibTeX imports is to split the file in half and import each half, to find the entry that breaks it. That advice is about imports into ORCID, but it works on any importer.</p>
+
+        <h2>Where the cleaned file goes</h2>
+        <table class="compare-table compare-stack">
+          <caption>Based on the linked Purplelink guides, which cite vendor help pages and university guides. Your campus decides which imports are on.</caption>
+          <thead>
+            <tr><th scope="col">System</th><th scope="col">What to import</th><th scope="col">Watch for</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Faculty180 (Interfolio)</th>
+              <td data-label="What to import">The BibTeX file, through Generic (RIS/BibTeX).</td>
+              <td data-label="Watch for">Duplicate prompts, and follow-up tasks for each record. Full steps in <a href="/guides/import-publications-into-faculty180/">the Faculty180 guide</a>.</td>
+            </tr>
+            <tr>
+              <th scope="row">Faculty Success (Watermark)</th>
+              <td data-label="What to import">The BibTeX file, or a direct ORCID pull if your campus enabled it.</td>
+              <td data-label="Watch for">Watermark says some BibTeX files fail to load. One university guide says the direct ORCID pull reads only works that are public or visible to trusted parties. See <a href="/guides/import-cv-and-publications-into-faculty-success/">the Faculty Success guide</a>.</td>
+            </tr>
+            <tr>
+              <th scope="row">Pure (Elsevier)</th>
+              <td data-label="What to import">RIS is preferred and BibTeX is next, per the Edinburgh page cited in <a href="/guides/faculty-annual-report-import-faculty180-faculty-success/">the systems comparison</a>.</td>
+              <td data-label="Watch for">Only research outputs import. Convert the ORCID file to RIS first.</td>
+            </tr>
+            <tr>
+              <th scope="row">Zotero</th>
+              <td data-label="What to import">The .bib or a RIS file, through File, Import.</td>
+              <td data-label="Watch for">Zotero's documentation covers both formats. Clean up in Zotero, then export to the next system from there.</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>One workable order: import the ORCID file into Zotero, clean up and de-duplicate there, then export BibTeX or RIS to the campus system.</p>
+
+        <h2>Why tools can read ORCID but not write to it</h2>
+        <p>ORCID's Public API is read-only. Only ORCID member organizations can use the Member API to ask permission to add to or update a record, and membership has an annual fee (<a href="https://info.orcid.org/membership/" rel="noopener">ORCID membership</a>; <a href="https://info.orcid.org/documentation/integration-and-api-faq/" rel="noopener">API FAQ</a>). Individuals can add works to their own record by hand. So a small tool cannot push your works into ORCID for you. It can read your public record or produce a file you import yourself. The ORCID imports inside campus systems read your record. The Faculty Success guide cited above describes its pull as one-time.</p>
+
+        <h2>Where Vitae fits</h2>
+        <p>The ORCID features in <a href="/vitae/">Vitae, the Mac app from Purplelink</a>, follow that limit. I checked them against the app's source and help text.</p>
+        <ul>
+          <li>You add your ORCID iD in Settings, Profile. On the Impact screen, Reconcile compares your public ORCID record with your Vitae library in both directions. It can import works missing from Vitae, or export the works ORCID lacks as BibTeX for you to add at orcid.org (Works, Add, Import BibTeX in Vitae's help text; ORCID's labels may differ). That part is free.</li>
+          <li>With Vitae Plus, "Check ORCID for new works once a day" looks for new works when the app launches. It is off until you turn it on. It only suggests: nothing is added until you review and choose Import. It reads your public ORCID record and does not write to it.</li>
+          <li>Matching ORCID works to your library goes through Crossref, with your profile email if you have one, the same as adding a paper by DOI.</li>
+          <li>Vitae also exports RIS and BibTeX from its own record, so one file follows one set of conventions. Its app text says the files import into Interfolio and Watermark Faculty Success, which I have not tested against a live campus system.</li>
+        </ul>
+
+        <h2>Frequently asked</h2>
+        <h3>Can ORCID export RIS?</h3>
+        <p>I found no RIS export on ORCID's support pages, only BibTeX. Export BibTeX and convert it, or import it into Zotero and export RIS from there.</p>
+        <h3>Why are some exported entries so different from others?</h3>
+        <p>ORCID uses a BibTeX citation stored with the work if there is one, then Crossref's BibTeX for the DOI, and generates one only if neither exists. Different writers, different habits.</p>
+        <h3>Can I write my publications to ORCID from another app?</h3>
+        <p>Not directly unless the app's maker is an ORCID member using the Member API. Otherwise you import a BibTeX file on orcid.org yourself.</p>
+        <h3>What does the BibTeX export leave out?</h3>
+        <p>A search summary of ORCID's article says BibTeX cannot carry everything on a record, such as the data source, multiple URLs and additional identifiers. I could not confirm that on ORCID's own page.</p>
+
+        <h2>Related guides</h2>
+        <ul>
+          <li><a href="/guides/faculty-annual-report-import-faculty180-faculty-success/">Fill in your faculty annual report faster</a>: what Faculty180, Faculty Success, Pure and Elements can import.</li>
+          <li><a href="/guides/import-publications-into-faculty180/">Import your publications into Faculty180</a> and <a href="/guides/import-cv-and-publications-into-faculty-success/">into Faculty Success</a>.</li>
+          <li><a href="/guides/fix-bibtex-errors/">Fix common BibTeX errors</a> and <a href="/guides/convert-references-bibtex-ris-endnote/">convert references between BibTeX, RIS and EndNote</a>.</li>
+          <li><a href="/guides/">All guides</a>.</li>
+        </ul>
+
+        <h2>Sources, and what I could not check</h2>
+        <p>Last checked October 17, 2026.</p>
+        <ul>
+          <li><a href="https://edshare.gla.ac.uk/1630/1/Export%20works%20into%20a%20BibTeX%20file.pdf" rel="noopener">University of Glasgow, "Exporting works into a BibTeX file"</a>: an ORCID-supplied sheet under CC0. I read it in full. It is the source for the export steps and for the stored, Crossref, generated order.</li>
+          <li><a href="https://support.orcid.org/hc/en-us/articles/360006971453-Exporting-works-into-a-BibTeX-file" rel="noopener">ORCID support, "Exporting works into a BibTeX file"</a> and <a href="https://support.orcid.org/hc/en-us/articles/360006971433-BibTeX-issues-and-troubleshooting" rel="noopener">"BibTeX issues and troubleshooting"</a>: the sites blocked my tools, so I know them only through search-result summaries, including the advice to split a failing BibTeX file in half and import each half.</li>
+          <li><a href="https://info.orcid.org/membership/" rel="noopener">ORCID membership</a> and the <a href="https://info.orcid.org/documentation/integration-and-api-faq/" rel="noopener">Integration and API FAQ</a>: I read the parts about the Public and Member APIs and the annual fee. I read only the first half of the long FAQ.</li>
+          <li><a href="https://www.zotero.org/support/kb/importing_standardized_formats" rel="noopener">Zotero, importing standardized formats</a>: I read it for the File, Import route.</li>
+          <li>Vitae's source code and help text, read on October 17, 2026, for the ORCID and export statements.</li>
+        </ul>
+        <p>Not verified: the exact current labels on ORCID's screens, how Crossref's BibTeX compares with the generated entries, whether ORCID offers an RIS export outside the support pages I could find, and how your campus's importer handles any particular file.</p>
+
+      </article>
+
+    </main>
+
+
+        <footer class="footer">
+          <div class="footer-grid">
+            <div class="footer-about">
+              <a class="footer-brand" href="/">
+                <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+                <span>Purplelink LLC</span>
+              </a>
+              <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+              <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+            </div>
+            <nav class="footer-col" aria-label="Products">
+              <p class="footer-head">Products</p>
+              <ul>
+                <li><a href="/moderntex/">ModernTex</a></li>
+                <li><a href="/vitae/">Vitae</a></li>
+                <li><a href="/legroom/">Legroom</a></li>
+                <li><a href="/keyfeel/">Keyfeel</a></li>
+                <li><a href="/tapefolio/">Tapefolio</a></li>
+                <li><a href="/panely/">Panely</a></li>
+                <li><a href="/summonly/">Summonly</a></li>
+                <li><a href="/batterymeter/">BatteryMeter</a></li>
+                <li><a href="/tools/paper-review/">Paper Review</a></li>
+                <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+                <li><a href="/products/">All products</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Free tools">
+              <p class="footer-head">Free tools</p>
+              <ul>
+                <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+                <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+                <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+                <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+                <li><a href="/tools/word-counter/">Word Counter</a></li>
+                <li><a href="/games/">Daily games</a></li>
+                <li><a href="/games/sports/">Sports games</a></li>
+                <li><a href="/tools/">All tools</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Learn">
+              <p class="footer-head">Learn</p>
+              <ul>
+                <li><a href="/guides/">Guides</a></li>
+                <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+                <li><a href="/templates/">LaTeX templates</a></li>
+                <li><a href="/latex-errors/">LaTeX errors</a></li>
+                <li><a href="/format/">Reference formats</a></li>
+                <li><a href="/blog/">Blog</a></li>
+                <li><a href="/changelog/">Changelog</a></li>
+                <li><a href="/search/">Search</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Company">
+              <p class="footer-head">Company</p>
+              <ul>
+                <li><a href="/about/">About</a></li>
+                <li><a href="/pricing/">Pricing</a></li>
+                <li><a href="/press/">Press</a></li>
+                <li><a href="/support/">Support</a></li>
+                <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+                <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+                <li><a href="/privacy/">Privacy</a></li>
+                <li><a href="/terms/">Terms</a></li>
+                <li><a href="/recover/">Find a purchase</a></li>
+                <li><a href="/labs/">For labs</a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="footer-bottom">
+            <span>&copy; 2026 Purplelink LLC</span>
+            <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+            <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+          </div>
+        </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=3bd23e4dde" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>
