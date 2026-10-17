@@ -10,7 +10,7 @@ anywhere, so there is nothing to license.
 | `scene.py` | The pixel room at 320x180: day and night cycle, rain, cat, lamp, steam, a focus timer that follows the clock (:00 to :25 focus, :25 to :30 break), now playing, the site name. |
 | `stream.py` | The 24/7 loop: audio and video threads into ffmpeg, restart with back-off, a test mode that writes a file. |
 | `qa.py`, `test_radio.py` | Checks. `python3.12 -m pytest -q test_radio.py` takes about 8 seconds. |
-| `longform.py`, `longform_pub.py`, `themes/`, `ambience.py`, `px.py` | Finished, fixed-length ambient videos for uploading (see Long-form videos below). `python3.12 -m pytest -q test_longform.py` takes a couple of minutes. |
+| `longform.py`, `longform_pub.py`, `themes/`, `ambience.py`, `sounds.py`, `keywords.py`, `seo_review.py`, `px.py` | Finished, fixed-length ambient videos for uploading (see Long-form videos below). `python3.12 -m pytest -q test_longform.py` takes a couple of minutes. |
 | `ops/` | A run script and launchd and systemd service files. |
 
 ## Try it without going live
@@ -123,6 +123,16 @@ The same generators make finished videos of 1 to 2 hours in several themes. Noth
     python3.12 longform_pub.py thumb --theme winter --hours 2 --out winter-thumb.jpg                 # 1280x720 JPEG
     python3.12 longform_pub.py meta  --theme winter --hours 2 --slug winter-2h --out winter-2h.json  # title, description, tags, disclosure
     python3.12 longform_pub.py verify --video winter-2h.mp4 --frames-dir frames/                    # ffprobe, LUFS, true peak, silence, 4 frames
+
+    python3.12 longform.py --theme campfire --hours 10 --loop-min 20 --sound brown --dark 300 --out campfire-brown-10h.mp4   # brown noise, dims to black after 5 min
+    python3.12 keywords.py --refresh                                     # YouTube autocomplete research, cached weekly; --show brown lists the ranked phrases
+    python3.12 seo_review.py stats.csv                                   # what to retitle and which theme x sound to make next, from exported stats
+
+Sounds (`--sound`, default `chiptune`): `lofi`, `brown`, `pink`, `white`, `binaural-alpha` (10 Hz), `binaural-theta` (6 Hz), `binaural-delta` (2 Hz), `synth`, `rain`,
+`thunderstorm`, `fireplace`, `ocean`, `wind`, `fan`, `airplane`. They live in `sounds.py`, are synthesised in code, are mixed with the theme's bed unless `--no-bed`, and
+each masters to its own loudness (noise and binaural -20 LUFS, synth -18, lofi -16, chiptune -14); `verify --sound NAME` checks against it. Tones repeat exactly once per
+loop and are added after the loop crossfade, so a binaural beat is exact across the seam. `--dark SECONDS` dims the picture to near black and repeats a black clip. See
+docs/products/ambient-channel-plan.md for the keyword method, the metadata rules and the review loop.
 
 Output is 1920x1080, 30 fps H.264, AAC 192 kbps, -14 LUFS integrated, true peak under -1 dBTP, faststart. Themes: `campfire`, `halloween`, `winter`, `study`.
 Run long renders with `nice -n 10`, at most two at once; a 2 hour video takes a few hours on a busy Mac (about 40 CPU-minutes of drawing and 100 of x264, plus
