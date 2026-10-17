@@ -1023,6 +1023,10 @@ Once a day Legroom measures where your space goes. What Grew compares those meas
 
 Choose an app and the Uninstaller lists the files it keeps in your Library folder, with their sizes. You tick what goes, confirm a sheet that measures everything again, and it all moves to the Trash. A second tab lists support files left by apps that are no longer installed.
 
+### It clears temporary files
+
+A restart empties /private/tmp and your own temporary folder. Legroom does that part now, without the restart: it lists your items that no program is using and that have not changed lately, and deletes the ones you tick after you confirm. It also shows swap in use and which open apps hold the most memory, with a polite quit. In the menu it is Free what a restart frees.
+
 Watch it work
 
 ## Under a minute, from free space to what grew
@@ -1129,11 +1133,13 @@ Find FilesLarge, old and duplicate files. Trash only, and one copy of every dupl
 
 UninstallerThe files an app keeps in your Library folder, with sizes, and the support files of apps that are gone. Trash only, after you tick items and confirm.
 
+Temporary filesYour own stale items in /private/tmp and your temporary folder, the ones a restart would empty, deleted after you tick them and confirm. Also swap in use, the apps holding the most memory with a polite quit, and a note when a macOS update is waiting. A rule can run it on a schedule.
+
 ## What it does not do
 
-SpeedIt does not make your Mac faster. It frees disk space and does nothing else to performance.
+SpeedIt does not make your Mac faster. It frees disk space. The only thing it does about memory is ask the apps you tick to quit, the same as choosing Quit yourself; it never forces a quit.
 
-System filesIt does not clean inside system folders and the folders that hold your documents and settings. The one exception is the Uninstaller, which moves items an app left in your Library folder, and only the ones you tick and confirm.
+System filesIt does not clean inside system folders and the folders that hold your documents and settings. There are two exceptions, both limited to items you tick and confirm: the Uninstaller moves items an app left in your Library folder to the Trash, and Clear temporary files deletes your own items in /private/tmp and your temporary folder, which macOS would empty at the next restart anyway.
 
 CommandsIt does not run commands. Where a fix needs Terminal, such as removing local Time Machine snapshots or a leftover in the system Library, it shows the command as text and you decide whether to run it.
 

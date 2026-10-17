@@ -1441,6 +1441,8 @@ dd {
    simply blank. */
 .features-grid { background: var(--bg); }
 .features-grid > * { box-shadow: 0 0 0 1px var(--line); }
+/* A last card that would sit alone on its row spans the row instead of leaving empty cells (Legroom has five). */
+.features-grid > .feature-item--wide { grid-column: 1 / -1; }
 
 .feature-item {
   background: var(--bg);
