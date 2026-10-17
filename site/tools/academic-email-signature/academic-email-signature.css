@@ -1,0 +1,90 @@
+/* academic-email-signature: page styles. External file, no inline styles in the page markup. */
+
+.tool-app.sig-app { max-width: 1120px; padding: 24px 24px 8px; }
+.sig-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 32px; align-items: start; }
+
+.sig-form { display: flex; flex-direction: column; gap: 18px; }
+.sig-group { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px 16px; background: var(--panel); min-width: 0; }
+.sig-group legend { font-weight: 700; padding: 0 8px; font-size: 0.95rem; }
+.sig-field { margin-top: 12px; }
+.sig-field:first-of-type { margin-top: 4px; }
+.sig-field label, .sig-label { display: block; font-weight: 600; font-size: 0.92rem; margin-bottom: 4px; }
+.sig-input {
+  width: 100%; min-height: 44px; font: inherit; color: inherit; background: var(--bg);
+  border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px;
+}
+.sig-input[aria-invalid="true"] { border-color: oklch(62% 0.2 25); }
+.sig-hint { font-size: 0.82rem; color: var(--muted); margin-top: 4px; line-height: 1.45; }
+.sig-err { font-size: 0.85rem; color: oklch(48% 0.19 25); margin-top: 4px; }
+.sig-err:empty { display: none; }
+:where(:root:not([data-theme="light"])) .sig-err { color: oklch(80% 0.12 25); }
+.sig-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.sig-presets, .sig-bg { display: flex; flex-wrap: wrap; gap: 8px; }
+.sig-chip { position: relative; display: inline-flex; }
+.sig-chip input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.sig-chip span {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 999px;
+  border: 1.5px solid var(--line); font-weight: 600; font-size: 0.92rem; background: var(--bg);
+}
+.sig-chip input:checked + span { background: var(--purple-light); border-color: var(--purple); }
+.sig-chip input:focus-visible + span { outline: 2px solid var(--purple); outline-offset: 2px; }
+
+.sig-swatches { display: flex; flex-wrap: wrap; gap: 8px; }
+.sig-field label.sig-swatch { position: relative; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px 0 8px; border: 1.5px solid var(--line); border-radius: 999px; font-weight: 500; font-size: 0.88rem; margin: 0; cursor: pointer; background: var(--bg); }
+.sig-swatch input { position: absolute; opacity: 0; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.sig-swatch:has(input:checked) { border-color: var(--purple); background: var(--purple-light); }
+.sig-swatch:has(input:focus-visible) { outline: 2px solid var(--purple); outline-offset: 2px; }
+.sig-swatch-dot { width: 22px; height: 22px; border-radius: 50%; border: 1px solid oklch(80% 0.01 310); }
+.sw-purple .sig-swatch-dot { background: #5b2a86; }
+.sw-blue .sig-swatch-dot { background: #1f4e8c; }
+.sw-teal .sig-swatch-dot { background: #1b6b5a; }
+.sw-burgundy .sig-swatch-dot { background: #8a2d3b; }
+.sw-graphite .sig-swatch-dot { background: #3a3a3a; }
+.sw-custom .sig-swatch-dot { background: conic-gradient(#c0392b, #e0a800, #2e9e4f, #2a78c9, #8e44ad, #c0392b); }
+.sig-custom { margin-top: 10px; }
+.sig-custom input[type="color"] { width: 64px; height: 44px; padding: 2px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+
+.sig-check { display: flex; align-items: flex-start; gap: 10px; margin-top: 12px; }
+.sig-check input { width: 20px; height: 20px; margin-top: 3px; flex: none; }
+.sig-check label { font-weight: 500; }
+.sig-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.sig-out { position: sticky; top: 16px; }
+.sig-out-inner { border: 1px solid var(--line); border-radius: 12px; padding: 16px; background: var(--panel); }
+.sig-out-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.sig-out-head h2 { margin: 0; font-size: 1.15rem; }
+.sig-frame { display: block; width: 100%; height: 160px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+.sig-frame[hidden], .sig-empty[hidden] { display: none; }
+.sig-empty { padding: 28px 12px; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: 8px; }
+.sig-count { font-size: 0.85rem; color: var(--muted); margin: 10px 0 0; min-height: 1.3em; }
+.sig-copy { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.sig-out .tool-status { margin: 10px 0 0; min-height: 1.4em; }
+
+.sig-install, .sig-guide { max-width: 820px; }
+.sig-install details { border-bottom: 1px solid var(--line); padding: 12px 0; }
+.sig-install summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+.sig-install .faq-body ol { margin: 6px 0 0 1.2rem; color: var(--muted); }
+.sig-install .faq-body li { margin-bottom: 6px; }
+.sig-lead { color: var(--muted); }
+.sig-guide h3 { font-family: var(--font-display); margin: 20px 0 6px; font-size: 1.1rem; }
+.sig-guide ul { margin: 0 0 0 1.2rem; color: var(--muted); }
+.sig-guide li { margin-bottom: 6px; }
+.sig-guide > p { color: var(--muted); }
+.sig-examples { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 8px; }
+.sig-examples figure { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; background: var(--panel); min-width: 0; }
+.sig-examples figcaption { font-weight: 700; font-size: 0.88rem; margin-bottom: 6px; }
+.sig-examples pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.78rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--ink); }
+.sig-note { font-size: 0.85rem; margin-top: 8px; }
+
+@media (max-width: 900px) {
+  .sig-layout { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .sig-out { position: static; }
+}
+@media (max-width: 520px) {
+  .tool-app.sig-app { padding: 16px 16px 8px; }
+  .sig-row { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sig-chip span, .sig-swatch { transition: background-color 0.15s ease, border-color 0.15s ease; }
+}

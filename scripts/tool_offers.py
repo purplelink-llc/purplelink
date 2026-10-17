@@ -123,6 +123,11 @@ OFFERS = {
         "This reads a finished manuscript PDF for leaks in a blind submission.",
         "Outbound Veil is a different check. It marks names, contact details and ID numbers in the text you are typing, before you send it. It is not a manuscript leak scan, it will miss some things, and it is not a compliance product.",
     ),
+    "academic-email-signature": (
+        "vitae",
+        "This makes one signature and keeps no record of you.",
+        "Vitae keeps your submissions, grants and positions in one record on your Mac, and your CV fills itself from it.",
+    ),
     "resume-review": (
         "vitae",
         "This reviews one resume and does not keep a record of your work.",

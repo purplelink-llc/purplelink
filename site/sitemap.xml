@@ -1466,6 +1466,11 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://purplelink.llc/tools/academic-email-signature/</loc>
+    <lastmod>2026-10-17</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://purplelink.llc/tools/abstract-checker/</loc>
     <lastmod>2026-10-14</lastmod>
     <priority>0.7</priority>

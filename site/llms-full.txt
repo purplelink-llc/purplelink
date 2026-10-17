@@ -3506,6 +3506,10 @@ README sections, random seeds, absolute paths and missing data files in a replic
 
 Embedded and Type 3 fonts, page size, margins, page numbers and metadata of an accepted paper's final PDF, checked in your browser.
 
+### Academic Email Signature Generator
+
+A signature with your ORCID iD (checked for typos), Google Scholar and lab site, for Apple Mail, Gmail and Outlook. Nothing is uploaded.
+
 ### Abstract Checker
 
 Your abstract's word count against the limit of 25 journals and conferences.
