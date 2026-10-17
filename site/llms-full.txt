@@ -1005,7 +1005,7 @@ Try it free for 7 days
 
 Refunded if you email within 14 days of purchase.
 
-The trial runs for seven days from the first time you open it, with no account. After it ends, the menu-bar readout and the low-space alerts keep working, and the app asks for a license key to unlock the rest. Buying is a single $9.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.3.2 · 7.7 MB disk image · macOS 14 or later, Apple silicon and Intel · signed and notarized.
+The trial runs for seven days from the first time you open it, with no account. After it ends, the menu-bar readout and the low-space alerts keep working, and the app asks for a license key to unlock the rest. Buying is a single $9.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.4.0 · 8.1 MB disk image · macOS 14 or later, Apple silicon and Intel · signed and notarized.
 
 If you installed version 1.0.0, the app cannot update itself. Download the current version once from this page; updates work from then on.
 
@@ -1023,9 +1023,9 @@ The menu bar shows what is free on your startup disk. The window under it adds t
 
 You make a rule for a folder or a cache. The rule shows a preview of exactly what it would remove, and you approve it. A rule can then run when you ask, on a schedule, or when free space drops below your line. Each rule either moves items to the Trash or deletes them, and says which.
 
-### It shows what grew
+### It says where your space went
 
-Once a day Legroom measures where your space goes. What Grew compares those measurements over 1, 7 or 30 days. You can then see which folder filled the disk and make a rule for it.
+Where your space went lists the whole startup disk as parts that add up to its size: macOS, a waiting macOS update, swap, simulators, developer caches, iCloud Drive, Photos, your files. Each line says why the space is there and the safe next step. Legroom measures once a day and tells you when free space falls by 5 GB or more, and what grew.
 
 ### It removes an app and what it left behind
 
@@ -4393,7 +4393,7 @@ ModernTex1.11.0October 2026
 
 Vitae1.3.0October 2026
 
-Legroom1.3.2October 2026
+Legroom1.4.0October 2026
 
 Keyfeel1.5.3October 2026
 
