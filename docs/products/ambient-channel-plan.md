@@ -105,17 +105,18 @@ Cost to compare against: about 5 euro a month for the VPS if the live stream sta
 4. **Answer the Studio questionnaires**: made for kids: No; altered or synthetic content: Yes (see above); category per the JSON file.
 5. **Upload**, set the thumbnail variants, and schedule. Upload as private first.
 
-## Render status (2026-10-16, evening)
+## Render status (2026-10-17)
 
-Nothing has finished yet. The Mac rebooted mid-render, so renders now run one at a time through the shared overnight queue (`~/.purplelink/nightq`).
-Each 2 h video draws a 20 minute picture and repeats it by stream copy (`--video-loop 20`), while the music stays unique for the whole length.
+Videos are made from one seamless loop of picture and music (`--loop-min`, 10 to 20 minutes, Ben's call on 2026-10-17). The loop's end crossfades into its
+start, so it repeats with no click or jump. The full-length file repeats it by stream copy, with one audio encode. Each folder also holds the bare loop
+(`<slug>-loop<L>min.mp4`), and each description says plainly that the video is one repeating loop.
 
 | Slug | Theme | Length | Music | Status |
 |---|---|---|---|---|
-| halloween-2h | halloween | 2 h | yes | queued first (Oct 31) |
-| campfire-2h | campfire | 2 h | yes | queued |
-| campfire-ambience-1h | campfire | 1 h | none | queued (15 minute picture loop) |
-| winter-2h | winter | 2 h | yes | deferred to a later night |
-| study-pomodoro-2h | study, 25/5 timer | 2 h | yes | not queued: the Pomodoro counter cannot repeat, so it needs a full render |
+| halloween-2h | halloween | 2 h | yes | finished 2026-10-17 (rendered before loop mode: 2 h of unique music over a 20 minute picture), verified, thumbnail and metadata done |
+| campfire-2h | campfire | 2 h from a 20 min loop | yes | queued |
+| campfire-ambience-1h | campfire | 1 h from a 15 min loop | none | queued |
+| winter-2h | winter | 2 h from a 20 min loop | yes | queued |
+| study-pomodoro-2h | study, 25/5 timer | 2 h | yes | not queued: the Pomodoro counter cannot repeat |
 
-Each finished folder holds the `.mp4`, a `-thumb.jpg`, a `.json` of upload metadata, and four check frames. The videos themselves are not in git.
+The videos themselves are not in git.
