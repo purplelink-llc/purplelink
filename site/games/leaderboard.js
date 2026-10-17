@@ -14,6 +14,8 @@
   function two(n) { return (n < 10 ? "0" : "") + n; }
   function clock(sec) { return Math.floor(sec / 60) + ":" + two(sec % 60); }
   function plural(n, one, many) { return n + " " + (n === 1 ? one : many); }
+  // Keys come from the URL, so look up own entries only ("constructor" and the like are not games).
+  function own(o, k) { return typeof k === "string" && Object.prototype.hasOwnProperty.call(o, k); }
   var SCORE_TEXT = {
     crossword: function (v) { return "about " + clock(v * 20); }, sudoku: function (v) { return "about " + clock(v * 30); },
     "daily-five": function (v) { return v ? plural(v, "miss", "misses") : "perfect"; }, "daily-photo": function (v) { return v ? plural(v, "miss", "misses") : "perfect"; },
@@ -22,7 +24,7 @@
   };
   function dayScoreText(game, v) {
     if (v >= 99) return "X";
-    return SCORE_TEXT[game] ? SCORE_TEXT[game](v) : plural(v, "guess", "guesses");
+    return own(SCORE_TEXT, game) ? SCORE_TEXT[game](v) : plural(v, "guess", "guesses");
   }
   function puzzleIdx() { return G.dayIndex(new Date(), EPOCH) - (st.board === "yday" ? 1 : 0); }
   var RATED_BOARDS = [["all", "Rating"], ["week", "This week"]];
@@ -31,8 +33,8 @@
   // A game is addressed as "daily:linkle" or "rated:chess". Older links carry a bare rated game, e.g. ?g=chess.
   function parseGame(v) {
     var m = /^(daily|rated):([a-z-]+)$/.exec(v || "");
-    if (m && (m[1] === "daily" || RATED[m[2]]) && $("lb-game").querySelector('option[value="' + v + '"]')) return { kind: m[1], key: m[2] };
-    if (RATED[v]) return { kind: "rated", key: v };
+    if (m && (m[1] === "daily" || own(RATED, m[2])) && $("lb-game").querySelector('option[value="' + v + '"]')) return { kind: m[1], key: m[2] };
+    if (own(RATED, v)) return { kind: "rated", key: v };
     return { kind: "daily", key: "linkle" };
   }
   var g0 = parseGame(q.get("g"));

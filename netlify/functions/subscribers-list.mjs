@@ -47,7 +47,8 @@ export default async function handler(request) {
       headers: { "Content-Type": "application/json" },
     })
   } catch (err) {
-    return new Response(JSON.stringify({ error: err?.message ?? String(err) }), {
+    console.error("subscribers-list failed:", err?.message ?? String(err))
+    return new Response(JSON.stringify({ error: "Subscribers could not be listed. The function log has the reason." }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     })

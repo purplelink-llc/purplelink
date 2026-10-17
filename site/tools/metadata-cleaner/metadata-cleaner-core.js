@@ -1287,6 +1287,12 @@
 
   const ZIP_EXT = /\.(docx|xlsx|pptx|docm|xlsm|pptm)$/;
   const ODF_EXT = /\.(odt|ods|odp|odg|ott|ots|otp)$/;
+  // Comments are stripped first: a repeated (<!--...-->)* group in one regex can backtrack
+  // exponentially on a crafted file and freeze the tab.
+  function looksLikeSvg(head) {
+    return /^\s*(<\?xml[^>]*>\s*)?(<!DOCTYPE[^>]*>\s*)?<svg[\s>]/.test(head.replace(/<!--[\s\S]*?-->/g, ""));
+  }
+
   function kindOf(name, bytes) {
     const lower = String(name).toLowerCase();
     const img = detectImage(bytes);
@@ -1299,7 +1305,7 @@
       if (ODF_EXT.test(lower)) return "odf";
     }
     if (bytes.length > 12 && ascii(bytes, 4, 8) === "ftyp") return "mp4";
-    if (/\.svg$/.test(lower) || (bytes[0] === 0x3c && /^\s*(<\?xml[^>]*>\s*)?(<!--[\s\S]*?-->\s*)*(<!DOCTYPE[^>]*>\s*)?<svg[\s>]/.test(utf8(bytes, 0, Math.min(bytes.length, 4096))))) return "svg";
+    if (/\.svg$/.test(lower) || (bytes[0] === 0x3c && looksLikeSvg(utf8(bytes, 0, Math.min(bytes.length, 4096))))) return "svg";
     if (/\.(doc|xls|ppt)$/.test(lower)) return "legacy";
     return null;
   }

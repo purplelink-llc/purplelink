@@ -66,7 +66,8 @@ export default async function handler(request, context) {
     }
     sitemapXml = await resp.text();
   } catch (err) {
-    return jsonResponse(502, { status: 'sitemap-fetch-error', error: String(err) });
+    console.error('indexnow-ping: sitemap fetch failed:', String(err));
+    return jsonResponse(502, { status: 'sitemap-fetch-error', error: 'The sitemap could not be fetched. The function log has the reason.' });
   }
 
   // Parse out <url><loc>...</loc><lastmod>YYYY-MM-DD</lastmod></url> blocks.
@@ -108,7 +109,8 @@ export default async function handler(request, context) {
     indexNowStatus = resp.status;
     indexNowBody = await resp.text();
   } catch (err) {
-    return jsonResponse(502, { status: 'indexnow-error', error: String(err) });
+    console.error('indexnow-ping: IndexNow request failed:', String(err));
+    return jsonResponse(502, { status: 'indexnow-error', error: 'IndexNow could not be reached. The function log has the reason.' });
   }
 
   return jsonResponse(200, {
