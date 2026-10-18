@@ -81,7 +81,7 @@ def test_warnings_from_log_dedupes_and_counts_overfull_lines():
 def test_validate_rejects_empty_fragment_unknown_engine_and_oversize():
     good = "\\documentclass{article}\\begin{document}x\\end{document}"
     cj.validate(good, "pdflatex", None)
-    for args in [("", "pdflatex", None), ("just text", "pdflatex", None), (good, "context", None),
+    for args in [("", "pdflatex", None), ("just text", "pdflatex", None), (good, "context", None), (good, "lualatex", None),
                  ("\\documentclass{article}" + "x" * cj.MAX_SOURCE_CHARS, "pdflatex", None),
                  (good, "pdflatex", "x" * (cj.MAX_BIB_CHARS + 1))]:
         with pytest.raises(cj.InputError):
@@ -148,7 +148,7 @@ def test_tools_have_annotations_titles_schemas_and_no_auth_scheme(server):
         assert "ModernTex" not in t.description and "Paper Review" not in t.description
     props = tools["compile_latex"].inputSchema["properties"]
     assert props["source"]["maxLength"] == cj.MAX_SOURCE_CHARS
-    assert props["engine"]["enum"] == ["pdflatex", "xelatex", "lualatex"]
+    assert props["engine"]["enum"] == ["pdflatex", "xelatex"]
 
 
 def test_compile_success_returns_text_preview_image_and_pdf(server):

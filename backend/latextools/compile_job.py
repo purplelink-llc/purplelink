@@ -21,7 +21,7 @@ MAX_SOURCE_CHARS = 300_000
 MAX_BIB_CHARS = 300_000
 MAX_PDF_BYTES = 4_000_000          # larger PDFs are compiled but not returned
 COMPILE_TIMEOUT = 45
-ENGINES = ("pdflatex", "xelatex", "lualatex")
+ENGINES = ("pdflatex", "xelatex")   # the engines core.build_latexmk_command accepts
 
 _BIB_NAME = re.compile(r"^[A-Za-z0-9_-]{1,64}$")
 _BIBLIOGRAPHY = re.compile(r"\\bibliography\{([^}]*)\}")
@@ -87,7 +87,10 @@ def compile_document(source: str, engine: str = "pdflatex", bibliography: Option
         if bibliography:
             for name in bib_filenames(source):
                 (work / name).write_text(bibliography, encoding="utf-8")
-        res = runner.run_compile(work, source, engine, timeout=timeout)
+        try:
+            res = runner.run_compile(work, source, engine, timeout=timeout)
+        except core.ValidationError as e:
+            raise InputError(str(e))
         out: dict = {
             "ok": bool(res.ok), "timed_out": bool(res.timed_out), "engine": engine, "pages": None,
             "errors": [], "warnings": compile_explain.warnings_from_log(res.log),
