@@ -278,3 +278,132 @@ fan and airplane; 2 to 3 hours for scenes). The first batch is queued in `~/.pur
 | Dec 7 | Campfire + Ocean Waves, 3 h | Study Room + Airplane Cabin Sounds, 10 h, black screen |
 
 After week 3 the review reorders this: keep the pairs the data favours, drop the sounds with the lowest watch hours per video. The stop rule above still applies.
+
+
+## Holiday and TV plan (added 2026-10-17)
+
+Ben's read on 2026-10-17: Christmas and holiday videos can win on the YouTube TV app. This section is what the pipeline now does for that and when to publish. Everything is
+code and queued renders; nothing has been uploaded, scheduled or created on YouTube.
+
+### What the search data says (`keywords.py`, pulled 2026-10-17, 157 new queries)
+
+Autocomplete is demand, not competition, and I have no measurement of how the TV app ranks anything. What the data does show is that fireplace searches are TV searches:
+"fireplace for tv screen", "fireplace for tv" and "fireplace video for tv" are all in the top five for the fireplace seeds, ahead of "christmas fireplace 4k".
+
+| Kind | Top phrases (score) |
+|---|---|
+| christmas-fireplace | christmas fireplace no ads (9.1); fireplace for tv screen (7.3); christmas fireplace 2 hours (6.4); fireplace for tv (5.4); fireplace video for tv (5.1); fireplace 10 hours no ads (4.0); christmas fireplace 4k (3.6); christmas fireplace sleep music (3.5); christmas fireplace 10 hours (3.2); yule log fireplace (3.1) |
+| christmas-ambience | christmas cabin ambience (7.2); christmas chiptune (6.6); christmas cabin fireplace ambience (5.6); christmas music 8 bit (5.6); christmas song 8 bit (4.8); christmas lofi (3.7); cozy christmas ambience (3.4); christmas ambience no music (3.3); christmas ambience for sleep (3.3) |
+| snowy-cabin | snowy cabin ambience (8.4); cozy cabin snow storm (5.6); winter cabin ambience no music (5.5); snowy cabin ambience with music (5.3); snowy winter cabin ambience (4.8) |
+| thanksgiving | thanksgiving ambience (7.7); cozy fall ambience (7.6); cozy fall ambience music (6.4); thanksgiving ambience music (5.2); thanksgiving fireplace (3.8) |
+| newyear | new year ambience (11.0); new year's eve ambience (8.2); new year's eve ambience no music (3.4); new year's eve fireplace (3.0) |
+
+Modifier popularity from the bare seeds across all kinds: no ads (42.7, not usable), for sleep (34.0), 10 hours (12.2), no music (11.9), 4k (11.6), black screen (9.9), yule log (5.5), tv (5.5).
+Two things follow. "Yule Log" is a real search phrase but ranks below "christmas fireplace", so it is the second phrase in the title. And "for TV" is a ranked fireplace phrase, so
+the fireplace title says it when the research ranks it (the code checks).
+
+Caveat on "christmas chiptune" and "christmas music 8 bit" (ranked 2 and 4 in christmas-ambience): searchers probably want 8-bit versions of carols. Our music is original melodies
+(no carol, no existing song, by Ben's rule and for Content ID), so the cabin video will not be what some of those searchers expect. The title says "Christmas Chiptune Music" because that is
+the searched phrase and the music is chiptune in a Christmas scene; the first line of the description says plainly that it is original music, not carols. Watch the average view duration of that
+video first: if people leave in the first minutes, retitle it (original chiptune music) rather than keep the phrase.
+
+### 4K for the TV (`--uhd`)
+
+YouTube labels a file 4K when it is 2160p. The scenes are pixel art drawn at 320x180 and enlarged 6x to 1080p, so 2160p is exactly 12x per art pixel. `--uhd` enlarges the finished 1080p
+picture exactly 2x by copying pixels (`scale=3840:2160:flags=neighbor`) in the encode of the loop only; the 10 hour file repeats that loop by stream copy as before. It adds no detail,
+so the description says exactly that: "pixel art drawn at 1920x1080 and enlarged exactly 2x". The title says 4K only for a 2160p file whose picture stays on screen: the black-screen video is
+2160p but its title leaves 4K out, because the screen is black after ten minutes.
+
+Measured on 20 s samples (x264 veryfast, `-tune animation`, CRF 20, level 5.1, keyframe every 2 s, 24 Mbit/s ceiling; the machine was busy):
+
+| Scene | Video size | Per hour | 10 hours (with AAC 192 kbps, 0.09 GB/h) | 4K encode speed |
+|---|---|---|---|---|
+| Fireplace close-up (the whole frame flickers with the firelight: the worst case) | 3.26 MB per 20 s | 0.59 GB | about 6.8 GB | 2.0x real time |
+| Winter cabin, whole room | 2.54 MB per 20 s | 0.46 GB | about 5.5 GB | 1.8x |
+| Study room, Christmas decor | 1.16 MB per 20 s | 0.21 GB | about 3.0 GB | 1.8x |
+
+Other settings tried on the fireplace sample: CRF 23 is 0.40 GB per hour (kept CRF 20, which holds the gradients of the firelight without banding at the same speed class); `faster` CRF 21 is 0.69 GB
+per hour at 0.9x real time and `medium` CRF 21 is 0.64 GB per hour at 0.75x, so neither pays for itself. The encode is the slow part: drawing a 20 s sample took 1.4 to 2.5 s in one process. A 20 minute
+loop therefore takes about 11 minutes to encode, and the rest of a job (AAC for 10 hours, the loop's loudness check, frames, thumbnail) is about another 15. The upload is a 5 to 7 GB file.
+
+The verify step accepts 1920x1080 or 3840x2160 and fails on anything else.
+
+### Fireplace close-up (`--view fireplace`, winter theme)
+
+The same drawing as the cabin (so the flame, the glow on the stones, the sparks and the tree's lights behave as always), cropped to the fireplace and enlarged exactly 2x, with three logs and twinkling
+embers added at the foot of the fire. The mantel, four stockings, the stone surround, the snowy window and the mug on the sill stay in frame. It is pixel art with 12x12 blocks at 1080p, crisp at 4K.
+This is what makes a "fireplace" video look like one on a TV; the whole-room scene is for the cabin videos.
+
+### What to publish when
+
+The TV app and search both reward a video that already has watch history when the seasonal searches rise, so the seasonal videos go up before the peak, not during it.
+
+| Video | Up by | Why |
+|---|---|---|
+| Christmas fireplace, 4K, 10 h (job 25) | Nov 10 to 15 | Gathers watch history for about two weeks before December, when "christmas fireplace" searches peak |
+| Christmas cabin with chiptune music, 4K, 10 h (job 26) | Nov 13 to 17 | Same, as the music version for people who do not want a bare fire |
+| Christmas study lofi, 4K, 3 h (job 27) | Nov 17 to 20 | A shorter, workday version; "christmas lofi" is a smaller phrase |
+| Snowy cabin, brown noise, black screen, 10 h (job 28) | Nov 20 to 24 | Winter-long, not Christmas-only, so it can go slightly later and keeps working into February |
+| Thanksgiving | Nov 15 | "thanksgiving ambience" and "cozy fall ambience" rank well, but there is no Thanksgiving or autumn scene yet (the nearest is the campfire, which is not a Thanksgiving picture). Needs a new theme before it can be queued; if it cannot be made by Nov 15 it is not worth making this year. |
+| New Year's Eve | Dec 20 | `study --season newyear` exists (balloons, party hat, fireworks outside the window); "new year ambience" (11.0) beats "new year's eve ambience" (8.2), and the title builder picks the higher. Not queued yet: render it in the first week of December. |
+
+Why 8 to 10 hours for the fireplace and noise videos: "10 hours" is the second most typed modifier here, TV viewers leave a fireplace on for an evening or overnight, and one long
+video builds watch time without the viewer choosing again. The 3 hour study video is deliberately shorter: people press play on it for a work session. "christmas fireplace 2 hours" also ranks
+(6.4), so a 2 or 3 hour fireplace is a reasonable second video later if the 10 hour one does well.
+
+One honest limit on volume: all four jobs reuse the winter or study scene. They differ in picture (fireplace close-up, whole cabin, study room, dimming cabin), in sound and in music, but a
+channel that posts four Christmas videos in two weeks is near the "repetitive" line in the policy notes above. Stagger them as in the table and watch the first two before releasing the rest.
+
+### Playlists (`playlists.py`, `scripts/yt-playlists.py`; not run)
+
+`playlists.py` reads each `<slug>/<slug>.json` under `PurplelinkVideos/ambient/` and works out membership. `scripts/yt-playlists.py --plan plan.json` creates or updates them through the guarded
+path (registry, confirmed flag, kind `ambient`, token identity against the channel id, the same lock as uploads, new playlists created Private and read back before any visibility change,
+matched by exact title so a second run changes nothing, videos only added). It prints what it would do unless `--apply` is given, and it adds a video only if it is found by title among the
+channel's own uploads.
+
+| Playlist | Takes |
+|---|---|
+| Christmas Fireplace 4K | Christmas, 4K, fireplace sound or close-up |
+| Cozy Christmas Ambience | every other Christmas video |
+| New Year's Eve Ambience | `--season newyear` videos |
+| Black Screen Sleep Sounds | every video with `--dark` |
+| Campfire Ambience | the campfire theme |
+| Study Room Ambience | the study theme (not Halloween) |
+| Winter Cabin Ambience | the winter theme, not the Christmas ones |
+| Halloween Ambience | the Halloween theme and the Halloween study room |
+
+A video can be in more than one. A playlist is created only once it has a video. Order of work after the first upload: run `playlists.py --out plan.json`, then
+`yt-playlists.py --plan plan.json` (a dry run), read it, then `--apply` (private), then make a playlist public with `--privacy public --apply` once Ben has looked at it.
+
+### Titles proposed for the four jobs
+
+| Job | Title (with the 2026-10-17 research) |
+|---|---|
+| 25 christmas-fireplace-4k-10h | Christmas Fireplace 4K for TV, Crackling Yule Log, 10 Hours, No Music |
+| 26 christmas-cabin-chiptune-4k-10h | Christmas Cabin Ambience 4K with Christmas Chiptune Music, 10 Hours |
+| 27 christmas-study-lofi-4k-3h | Christmas Lofi Study Music, Cozy Study Room 4K, 3 Hours |
+| 28 snowy-cabin-brown-4k-10h-black-screen | Brown Noise with Snowy Cabin, 10 Hours, Black Screen |
+
+Rules in `longform_pub.py`: at most 100 characters; the searched phrase and 4K inside the first 50 (a TV list cuts the rest); 4K only when the file is 2160p and the picture stays on screen;
+No Music only when there is none; 10 Hours only for a 10 hour file; "Yule Log" only for the fire video; never "No Ads" (a monetised channel cannot promise it); no health claims. The first line of the
+description is a plain statement (at most 150 characters), followed by the "About this video" fact block, then three hashtags. Tags come from the ranked phrases.
+
+### Review loop for the holiday videos
+
+1. Day 3 after each upload: in Studio, Reach tab, note impressions and the traffic sources. Browse and Suggested will dominate a TV video; YouTube search should show the lead phrase.
+2. Day 7 and weekly: `python3.12 keywords.py --refresh`, then export the per-video stats and run `python3.12 seo_review.py stats.csv`. It flags click-through under 2 percent (with 300 impressions)
+   to change the thumbnail first (Test & Compare), then the title; it lists searched terms the video earns but the title and tags lack; it flags early drop-off on long videos. Once the Analytics
+   token exists (see the access steps above), the same review reads the numbers without a manual export; until then it is the Studio export.
+3. Re-title a video at most once, no sooner than 14 days after upload, and record it with `log_change.py`. If "4K" in a title does not bring impressions from TV, drop it from the title and keep it in the description.
+4. Day 14, per the stop rule above: the holiday set counts toward the day-45 total, so a Christmas video that has not passed 10 hours of watch time by Dec 1 gets one retitle and one thumbnail change, then is left alone.
+
+### Queued renders (`~/.purplelink/nightq/deferred/`, prefixes 25 to 28; nothing queued to run)
+
+| Job | What | est-min |
+|---|---|---|
+| 25-ambient-christmas-fireplace-4k-10h | winter close-up, fireplace sound alone (`--no-bed`: the fire without the wind outside), 4K, 10 h from a 20 min loop | 30 |
+| 26-ambient-christmas-cabin-chiptune-4k-10h | whole cabin, original chiptune, 4K, 10 h from a 20 min loop | 35 |
+| 27-ambient-christmas-study-lofi-4k-3h | study room with Christmas decor, lofi, 4K, 3 h from a 20 min loop | 25 |
+| 28-ambient-snowy-cabin-brown-4k-10h-black-screen | whole cabin, brown noise, dims after 10 minutes, 4K, 10 h | 22 |
+
+They are in `deferred/`, not `queue/`, so nothing runs until Ben (or the next session) moves them. The order above puts the fireplace first so it can be rendered, listened to and uploaded by Nov 10.

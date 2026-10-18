@@ -1,8 +1,9 @@
 #!/usr/bin/env python3.12
 """Keyword research for the ambient channel, from YouTube's public search autocomplete.
 
-    python3.12 keywords.py --refresh            # ask the suggest endpoint for every seed x modifier (about 400 requests, 2 a second), cache, rank
-    python3.12 keywords.py --show brown         # the ranked phrases for one sound (or theme: campfire, halloween, winter, study)
+    python3.12 keywords.py --refresh            # ask the suggest endpoint for every seed x modifier (about 520 requests, 2 a second), cache, rank
+    python3.12 keywords.py --show brown         # the ranked phrases for one sound (or theme: campfire, halloween, winter, study; or holiday: christmas-fireplace,
+                                                # christmas-ambience, snowy-cabin, thanksgiving, newyear)
     python3.12 keywords.py --show brown --theme campfire --top 10
 
 Autocomplete is what people actually type into the search box, in order of how often. It is a demand signal, not a view count. The endpoint is
@@ -65,11 +66,22 @@ THEME_SEEDS = {
     "winter": (["cozy winter cabin ambience", "winter cabin ambience", "snowy cabin sounds"], ["winter", "snow", "cabin"]),
     "study": (["study with me", "study with me pomodoro", "study ambience"], ["study"]),
 }
+# holiday and TV searches (added 2026-10-17): people put a fireplace on the living-room TV, so the phrases that matter are "christmas fireplace 4k", "yule log" and the like
+HOLIDAY_SEEDS = {
+    "christmas-fireplace": (["christmas fireplace", "yule log", "fireplace 4k", "christmas fireplace 4k", "fireplace 10 hours", "winter fireplace",
+                             "christmas music fireplace", "fireplace for tv"], ["fireplace", "yule", "fire"]),
+    "christmas-ambience": (["christmas ambience", "cozy christmas", "christmas lofi", "christmas chiptune", "christmas cabin ambience", "christmas music fireplace"],
+                           ["christmas", "xmas", "holiday"]),
+    "snowy-cabin": (["snowy cabin", "snowy cabin ambience", "winter cabin ambience", "cozy cabin snow"], ["cabin", "snow", "winter"]),
+    "thanksgiving": (["thanksgiving ambience", "thanksgiving fireplace", "cozy fall ambience"], ["thanksgiving", "fall", "autumn"]),
+    "newyear": (["new years eve ambience", "new years eve fireplace", "new year ambience"], ["new year"]),
+}
+MODIFIERS_HOLIDAY = ["", "10 hours", "4k", "no music", "for sleeping", "tv", "black screen"]
 MODIFIERS_SOUND = ["", "10 hours", "8 hours", "for sleep", "for studying", "black screen", "dark screen", "no ads", "1 hour", "3 hours"]
 MODIFIERS_THEME = ["", "10 hours", "for sleep", "for studying", "black screen"]
 # phrases whose frequency across all suggestions tells which title modifiers people use
 MODIFIER_PHRASES = ["10 hours", "8 hours", "12 hours", "3 hours", "2 hours", "1 hour", "black screen", "dark screen", "no ads", "no music", "for sleep",
-                    "for studying", "for focus", "for work", "for reading", "pomodoro", "no loop", "loop"]
+                    "for studying", "for focus", "for work", "for reading", "pomodoro", "no loop", "loop", "4k", "tv", "yule log"]
 
 
 def kw_dir() -> Path:
@@ -86,7 +98,7 @@ def _load_json(p: Path, default):
 def queries() -> list[tuple[str, str, str]]:
     """Every (kind, name, query) to ask: each seed with each modifier."""
     out, seen = [], set()
-    for kind, table, mods in (("sound", SOUND_SEEDS, MODIFIERS_SOUND), ("theme", THEME_SEEDS, MODIFIERS_THEME)):
+    for kind, table, mods in (("sound", SOUND_SEEDS, MODIFIERS_SOUND), ("theme", THEME_SEEDS, MODIFIERS_THEME), ("holiday", HOLIDAY_SEEDS, MODIFIERS_HOLIDAY)):
         for name, (seeds, _) in table.items():
             for s in seeds:
                 for m in mods:
@@ -136,7 +148,7 @@ def rank(cache: dict, today: dt.date | None = None) -> dict:
     """Ranked phrases per sound and per theme, plus how often each title modifier shows up."""
     kinds: dict = {}
     mods: dict = {}
-    for _, name_table in (("sound", SOUND_SEEDS), ("theme", THEME_SEEDS)):
+    for _, name_table in (("sound", SOUND_SEEDS), ("theme", THEME_SEEDS), ("holiday", HOLIDAY_SEEDS)):
         for name, (seeds, must) in name_table.items():
             agg: dict = {}
             for _, n, q in queries():

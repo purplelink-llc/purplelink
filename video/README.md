@@ -137,6 +137,11 @@ its own OAuth token, not through Studio (Studio needs a browser-wide channel swi
   uploaded again. One upload runs at a time (`~/.purplelink/yt-upload.lock`). Other exit codes: 1 failed, 2 bad
   arguments, 4 YouTube quota or upload cap. Every insert is Private: the requested public or unlisted visibility is set only
   after the channel check passes, so a video is never visible anywhere before its channel is verified.
+- **Playlists:** `python3 scripts/yt-playlists.py --plan plan.json [--channel pixelhearth] [--privacy private|unlisted|public] [--apply]`, with the
+  plan from `tools/chiptune-radio/playlists.py --out plan.json`. Same registry, confirmed flag, kind (`ambient`), token-identity check and upload lock as
+  the uploader. It is a dry run unless `--apply` is given. Playlists are matched by exact title (a second run changes nothing), created Private and read back
+  before any visibility change, filled only with videos found by title among the channel's own uploads (or a `video_id` that videos.list says is on the
+  channel), and videos are only added, never removed. Exit codes are the uploader's. Tests: `site-tests/test_yt_playlists.py` (fake service).
 - `scripts/yt-upload.py` (Studio) now refuses any `--channel` other than the Purplelink id (exit 3).
 
 ## YouTube thumbnails
