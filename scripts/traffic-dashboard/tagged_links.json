@@ -1,0 +1,7 @@
+{
+  "_readme": "Batches of tagged links published by hand, for the funnel's link-check allowance (traffic_dashboard.py, LINK_CHECK_*). One row per publication day and channel; urls = how many new tagged URLs went live. The daily how-to videos are read from video/howto/ledger.json and need no row here. Add a row whenever yt-utm.py or a description edit tags new links.",
+  "batches": [
+    {"date": "2026-10-14", "channel": "youtube-latex", "urls": 14, "note": "14 LaTeX series descriptions tagged by scripts/yt-utm.py; 28 views and 4 trials within minutes, no human"},
+    {"date": "2026-10-14", "channel": "youtube-promo", "urls": 13, "note": "product promo descriptions retagged utm_source=youtube-promo; count from the 2-views-per-page pattern seen 2026-10-11 to 10-17 (13 pages)"}
+  ]
+}
