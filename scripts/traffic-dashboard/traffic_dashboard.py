@@ -3624,6 +3624,60 @@ def google_ads_attributed(history: dict, days: int, product: str | None = None) 
     return {"orders": n, "net": net}
 
 
+# Link checkers. Publishing a tagged link (a YouTube description, a Short) brings an automated visitor within minutes:
+# exactly 2 page views per new URL, often with trial-download clicks, never a buy click (seen 2026-10-14 and again
+# 2026-10-15 to 10-17; ~/.purplelink/latex-funnel/latex_funnel_report.py makes the same allowance). The site's bot
+# filter matches user-agent words only and cannot see it, so the funnel subtracts an allowance per tagged URL
+# published inside its window. tagged_links.json records hand-tagged batches; the how-to ledger adds its own videos.
+LINK_CHECK_VIEWS_PER_URL = 2
+LINK_CHECK_TRIALS_PER_URL = 2
+TAGGED_LINKS_PATH = Path(__file__).resolve().parent / "tagged_links.json"
+HOWTO_LEDGER_PATH = Path(__file__).resolve().parents[2] / "video" / "howto" / "ledger.json"
+HOWTO_URLS_PER_VIDEO = 2  # the tutorial and its Short each carry one tagged link (scripts/howto-publish.py)
+
+
+def tagged_link_batches() -> list[dict]:
+    """[{date, channel, urls}] for every known publication of tagged links, newest last."""
+    out: list[dict] = []
+    try:
+        out += [b for b in json.loads(TAGGED_LINKS_PATH.read_text()).get("batches", [])
+                if b.get("date") and b.get("channel") and int(b.get("urls", 0)) > 0]
+    except (OSError, ValueError):
+        pass
+    try:
+        for v in json.loads(HOWTO_LEDGER_PATH.read_text()):
+            if v.get("date"):
+                out.append({"date": v["date"], "channel": "youtube-howto", "urls": HOWTO_URLS_PER_VIDEO,
+                            "note": v.get("slug", "")})
+    except (OSError, ValueError):
+        pass
+    return sorted(out, key=lambda b: b["date"])
+
+
+def link_check_allowance(as_of: str, days: int, batches: list[dict] | None = None) -> dict:
+    """{channel: urls published in the window ending as_of} (inclusive, `days` long)."""
+    end = dt.date.fromisoformat(as_of)
+    start = (end - dt.timedelta(days=days - 1)).isoformat()
+    per: dict[str, int] = {}
+    for b in tagged_link_batches() if batches is None else batches:
+        if start <= b["date"] <= end.isoformat():
+            per[b["channel"]] = per.get(b["channel"], 0) + int(b["urls"])
+    return per
+
+
+def human_estimate(pageviews: int, trials: int, urls: int) -> tuple[int, int]:
+    """Page views and trials left after the link-check allowance for `urls` new tagged URLs (never below 0)."""
+    return (max(0, pageviews - LINK_CHECK_VIEWS_PER_URL * urls),
+            max(0, trials - LINK_CHECK_TRIALS_PER_URL * urls))
+
+
+def looks_like_scanner(v: dict) -> bool:
+    """A campaign tag with one or two page views in all and nothing else: what a mail security scanner leaves when
+    it opens each link in an email before the reader does. Cannot be told from one real reader; marked, not removed."""
+    return (0 < v.get("pageviews", 0) <= 2 and not sum((v.get("trial") or {}).values())
+            and not sum((v.get("checkout") or {}).values()))
+
+
 def print_ad_funnel(history: dict, manual_ads: dict) -> None:
     """Paid and other channels through the funnel, from the site's own first-touch labels, next to what
     Google Ads says it spent and got clicked. Checks that tracking sees the ad clicks, then gives cost per trial
@@ -3634,16 +3688,34 @@ def print_ad_funnel(history: dict, manual_ads: dict) -> None:
         return
     days = af.get("days", GOOGLE_ADS_DAYS)
     print(f"\n  Funnel by first-touch channel, last {days} days (tracking began {AD_FUNNEL_SINCE}; each visitor counted under how they first arrived)")
-    rows = []
+    allow = link_check_allowance(af.get("asOf") or dt.date.today().isoformat(), days)
+    rows, scanners = [], []
+    raw_trials = est_trials = 0
     for name, v in ch.items():
         paths = v.get("pageviewsByPath") or {}
         prod_views = sum(c for p, c in paths.items() if p.rstrip("/") in PRODUCT_PAGE_PATHS)
         trials = sum((v.get("trial") or {}).values())
         buys = sum((v.get("checkout") or {}).values())
-        rows.append((name, v.get("pageviews", 0), prod_views, trials, buys))
-    rows.sort(key=lambda r: (-r[3], -r[4], -r[1]))
-    for name, pv, ppv, tr, bu in rows[:8]:
-        print(f"   {name:<22} {pv:>4} page views ({ppv} on product pages)  {tr:>3} trial downloads  {bu:>3} buy clicks")
+        urls = allow.get(name, 0)
+        hpv, htr = human_estimate(v.get("pageviews", 0), trials, urls)
+        raw_trials, est_trials = raw_trials + trials, est_trials + htr
+        if not urls and "." not in name and ":" not in name and name != "direct" and looks_like_scanner(v):
+            scanners.append(name)
+            continue
+        rows.append((name, v.get("pageviews", 0), prod_views, trials, buys, urls, hpv, htr))
+    rows.sort(key=lambda r: (-r[7], -r[4], -r[3], -r[1]))
+    for name, pv, ppv, tr, bu, urls, hpv, htr in rows[:8]:
+        line = f"   {name:<22} {pv:>4} page views ({ppv} on product pages)  {tr:>3} trial downloads  {bu:>3} buy clicks"
+        if urls:
+            line += f"  [est. human: {hpv} views, {htr} trials; {urls} tagged URL(s) published in the window]"
+        print(line)
+    if est_trials != raw_trials:
+        print(f"   Trials, all channels: {raw_trials} counted, about {est_trials} after the link-check allowance "
+              f"({LINK_CHECK_VIEWS_PER_URL} views and up to {LINK_CHECK_TRIALS_PER_URL} trials per new tagged URL; "
+              "an estimate, a real early visitor is subtracted too)")
+    if scanners:
+        print(f"   Tags with only 1 or 2 views and nothing else (on an email tag this is often a mail scanner opening the "
+              f"link; judge those emails by replies): {', '.join(sorted(scanners))}")
     gads = (manual_ads or {}).get("googleAdsModerntex") or {}
     paid = ch.get("paid:google") or {}
     if gads:
@@ -4288,16 +4360,25 @@ def profit_view(history: dict, manual_ads: dict, days: int = PROFIT_DAYS) -> dic
         gaps.append("AdMob earnings (no reading)")
 
     stale_before = (today - dt.timedelta(days=2)).isoformat()
+    # A reading taken before this window began describes spend outside it (Apple Search Ads stopped 2026-10-06, and
+    # its last reading kept charging GlobePin $40 a week). Such a reading is left out and named as a gap instead.
+    window_start = (today - dt.timedelta(days=days)).isoformat()
     asa = (manual_ads or {}).get("appleSearchAds") or {}
     if asa.get("campaigns"):
-        gp["ads"] += sum(c.get("spend", 0.0) for c in asa["campaigns"]) * days / 7
-        if (asa.get("asOf") or "") < stale_before:
-            gaps.append(f"Apple Search Ads reading is from {asa.get('asOf')}")
+        if (asa.get("asOf") or "") < window_start:
+            gaps.append(f"Apple Search Ads (last reading {asa.get('asOf')}, before this window; not counted)")
+        else:
+            gp["ads"] += sum(c.get("spend", 0.0) for c in asa["campaigns"]) * days / 7
+            if (asa.get("asOf") or "") < stale_before:
+                gaps.append(f"Apple Search Ads reading is from {asa.get('asOf')}")
     gads = (manual_ads or {}).get("googleAdsModerntex") or {}
     if gads:
-        lines["ModernTex"]["ads"] += gads.get("spend", 0.0) * days / 7
-        if (gads.get("asOf") or "") < stale_before:
-            gaps.append(f"Google Ads reading is from {gads.get('asOf')}")
+        if (gads.get("asOf") or "") < window_start:
+            gaps.append(f"Google Ads (last reading {gads.get('asOf')}, before this window; not counted)")
+        else:
+            lines["ModernTex"]["ads"] += gads.get("spend", 0.0) * days / 7
+            if (gads.get("asOf") or "") < stale_before:
+                gaps.append(f"Google Ads reading is from {gads.get('asOf')}")
 
     for m, ms in marketplace_summary(history).items():
         for issue in ms["issues"]:
