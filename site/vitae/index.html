@@ -50,7 +50,7 @@
             { "@type": "Offer", "name": "Vitae Plus, annual (optional)", "price": "23.99", "priceCurrency": "USD", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "23.99", "priceCurrency": "USD", "billingDuration": "P1Y", "unitCode": "ANN" }, "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/vitae/plus/", "category": "Subscription" }
           ],
           "downloadUrl": "https://purplelink.llc/vitae/download",
-          "softwareVersion": "1.3.0",
+          "softwareVersion": "1.4.0",
           "screenshot": "https://purplelink.llc/assets/vitae-screens/dashboard.webp",
           "publisher": { "@id": "https://purplelink.llc/#organization" },
           "creator":   { "@id": "https://purplelink.llc/about/#person" }
@@ -151,7 +151,7 @@
       <div class="app-hero-copy">
         <div class="app-hero-meta">
           <span class="platform-tag platform-macos">macOS</span>
-          <span class="product-status">Free app · optional Plus from $2.99 a month · v1.3.0 Beta</span>
+          <span class="product-status">Free app · optional Plus from $2.99 a month · v1.4.0 Beta</span>
         </div>
         <h1 class="app-hero-name">Vitae</h1>
         <p class="app-hero-tagline">Academic research management for macOS. Track submissions, grants, projects, collaborators, and your CV in one local-first app. The app is free, with no limits on your record. Vitae Plus is an optional subscription for reports, Word templates and more: $2.99 a month or $23.99 a year, with a 7-day trial, or included for life in the Mac Suite. Notarized, no App Store.</p>
@@ -174,7 +174,7 @@
       <h2 id="short-h">Vitae in short</h2>
       <p class="hero-lede">Vitae is a free Mac app for academics that keeps your submissions, grants, projects, co-authors, teaching, service and CV in one record on your own Mac, with no account. It needs macOS 15 or later. An optional subscription, Vitae Plus, costs $2.99 a month or $23.99 a year and adds reports and Word export. Vitae does not fill in your university's reporting system for you, and it has no iPhone, web or Windows version.</p>
       <table class="compare-table compare-stack specs-table">
-        <caption>Facts as of version 1.3.0, October 2026.</caption>
+        <caption>Facts as of version 1.4.0, October 2026.</caption>
         <thead><tr><th scope="col">Question</th><th scope="col">Answer</th></tr></thead>
         <tbody>
           <tr><th scope="row">Price</th><td data-label="Answer">Free. Vitae Plus is optional: $2.99 a month or $23.99 a year, with a 7-day trial. Included for life in the <a href="/suite/">Mac Suite</a>.</td></tr>
@@ -184,6 +184,7 @@
           <tr><th scope="row">Free exports</th><td data-label="Answer">CV and packages as PDF, rich text (.rtf), HTML and Markdown; publications as RIS and BibTeX; CSV tables.</td></tr>
           <tr><th scope="row">Plus exports</th><td data-label="Answer">Word (.docx) with your own templates, short and one-page CV variants, and reports such as an NIH biosketch draft.</td></tr>
           <tr><th scope="row">Annual review</th><td data-label="Answer">Free. Pick a calendar year, an academic year with the start month you choose, or custom dates, and Vitae limits the report to it. Papers under review are left out. Publications carry a year only, so in an academic year a paper can land in the neighbouring period.</td></tr>
+          <tr><th scope="row">For You, topics and the map</th><td data-label="Answer">For You reads your own record and lists what may need you. Three of its items are free: a decision taking long, the annual review period ending with details missing, and a paper just accepted or published. The rest, the world map of your co-authors' institutions, the research timeline and the visual share cards need Plus. Topics for each paper are free to view and edit. The topic list and institution registry are bundled in the app, so nothing is sent to a server.</td></tr>
           <tr><th scope="row">Faculty180, Faculty Success</th><td data-label="Answer">Export for Annual Report writes the period's RIS and BibTeX files, free, meant for their publication importers. Vitae Plus adds a faculty activity Word file and a README. I have not tested any of these against a live campus system. See <a href="/guides/faculty-annual-report-import-faculty180-faculty-success/">what each system can import</a>.</td></tr>
           <tr><th scope="row">Not related to</th><td data-label="Answer">The career hub called Vitae that The Chronicle of Higher Education launched in 2014. It is a different product with the same name.</td></tr>
         </tbody>
@@ -217,6 +218,10 @@
           <p>Track coauthors, collaborators, and projects. Link people to papers, grants, and roles so your network stays navigable. Capture research ideas before they are projects. Sort them on a board by stage, group them by type or author, plot them by impact against feasibility, or link them on a map. Then make one a project with its authors in order. Send any publication to Zotero in one click.</p>
         </div>
         <div class="feature-item">
+          <h3>For You, topics and the map</h3>
+          <p>Vitae builds a map of how your papers, co-authors, venues, grants and ideas connect, on your Mac, and a few plain rules point out what may need you: a decision taking longer than usual at a venue, an annual review with details missing, a grant about to end. Each item lists the records behind it. Papers also get up to three research topics from the OpenAlex list, which you can change, and co-author affiliations are matched to institutions for a collaboration map and a research timeline. Some of this needs <a href="/vitae/plus/">Vitae Plus</a>.</p>
+        </div>
+        <div class="feature-item">
           <h3>Local-first &amp; private</h3>
           <p>Everything is stored on your Mac with SwiftData. No account and no cloud sync required, and keeping your record needs no subscription. Vitae takes a daily backup and lets you undo changes, so a bad import or merge is never permanent.</p>
         </div>
@@ -231,6 +236,24 @@
         <img class="yt-poster" src="/assets/video/vitae-poster.webp" alt="" width="1440" height="810" loading="lazy" decoding="async">
         <a class="yt-play" href="https://www.youtube.com/watch?v=I2833N6GULk" rel="noopener">Play the video on YouTube</a>
       </div>
+    </section>
+
+    <section class="screenshots-section" id="share-cards" aria-labelledby="cards-h">
+      <p class="eyebrow">Shareables</p>
+      <h2 id="cards-h">Share cards drawn from your record</h2>
+      <p class="section-intro">With Vitae Plus, Shareables makes five visual cards: co-author network, citation growth, year in review, collaboration map and research timeline. You can show names, show initials only or hide them. Both pictures below use a fictional researcher.</p>
+      <figure>
+        <div class="frame-soft">
+          <img src="/assets/vitae-screens/card-map.webp" srcset="/assets/vitae-screens/card-map-800.webp 800w, /assets/vitae-screens/card-map.webp 1200w" sizes="(min-width: 900px) 60vw, 92vw" alt="A collaboration map share card for a fictional researcher: a world map with arcs from Arizona to eleven countries, labelled with institution names and sized by joint papers" width="1200" height="627" loading="lazy" decoding="async">
+        </div>
+        <figcaption>The collaboration map card. Turning institution names off leaves plain dots.</figcaption>
+      </figure>
+      <figure>
+        <div class="frame-soft">
+          <img src="/assets/vitae-screens/card-year.webp" srcset="/assets/vitae-screens/card-year-800.webp 800w, /assets/vitae-screens/card-year.webp 1200w" sizes="(min-width: 900px) 60vw, 92vw" alt="A year in review share card for a fictional researcher, 2025: five tiles for papers, grants, talks, students and citations on a soft purple and coral background" width="1200" height="627" loading="lazy" decoding="async">
+        </div>
+        <figcaption>The year in review card, on the Light version of the Nocturne background.</figcaption>
+      </figure>
     </section>
 
     <section class="flair-scene flair-scene--swap" id="closer-look" data-flair="steps" aria-labelledby="look-h">
