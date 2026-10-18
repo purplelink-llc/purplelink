@@ -9327,7 +9327,7 @@ yabaiNot statedYes (MIT)Through skhd or other softwareNot a drag toolAutomatic t
 
 AmethystFreeYes (MIT)YesNot a drag toolAutomatic layoutsNot statedNot statedAccessibility
 
-Panely (mine)$9.99 once, 7-day trialNoYes, recordable shortcutsYes, with a previewUp to twelve custom areas, plus saved layoutsNext and previous display, with a layout per set of displaysRestore, saved layouts, automatic return after a display reconnectsAccessibility, no Input Monitoring
+Panely (mine)$9.99 once, 7-day trialNoYes, recordable shortcutsYes, with a previewUp to twelve custom areas, plus saved layoutsNext and previous display, with a layout per set of displaysRestore, saved layouts, automatic return after a display reconnectsAccessibility, no Input Monitoring; Screen Recording optional
 
 ## What window managers do, and what they do not
 
@@ -9497,7 +9497,7 @@ A snapper such as Rectangle, Magnet or Panely moves a window when you ask. A til
 
 ### Do window managers need special permissions?
 
-They use the macOS Accessibility permission to move other apps' windows. yabai also lists Screen Recording for animations, and some yabai features need System Integrity Protection partly disabled. AeroSpace says it will never require that. Panely uses Accessibility and does not need Input Monitoring.
+They use the macOS Accessibility permission to move other apps' windows. yabai also lists Screen Recording for animations, and some yabai features need System Integrity Protection partly disabled. AeroSpace says it will never require that. Panely uses Accessibility and does not need Input Monitoring; Screen Recording is optional, only for pictures of windows in its fill-the-rest list.
 
 ### Will a window manager restore my layout after I reconnect a monitor?
 
