@@ -8,7 +8,7 @@ Two functions, as in citation_mcp_app.py's reasoning:
 It shares the site's rate-limit store (modal.Dict "latextools-rate") under its own bucket.
 
 Deploy (Ben only, after review):  cd backend && python3 -m modal deploy compile_mcp_app.py
-Endpoint: https://ben-ampel--purplelink-latex-mcp-web.modal.run/mcp
+Endpoint: https://ben-ampel--purplelink-latex-mcp-web.us-east.modal.run/mcp
 Never `modal serve` this for testing: that publishes a temporary public URL. Test locally with
 scripts/compile_mcp_local.py (uvicorn on 127.0.0.1, compiling with this Mac's TeX).
 """
@@ -34,7 +34,6 @@ tex_image = (
         "texlive-science",
         "texlive-bibtex-extra",
         "texlive-xetex",
-        "texlive-luatex",
         "latexmk",
         "biber",
         "poppler-utils",

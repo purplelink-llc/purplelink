@@ -157,7 +157,7 @@ def build_server(public: bool = False) -> FastMCP:
             "and return the PDF, an image of page 1, and every error or warning explained in plain language with a "
             "fix and the line number. Optionally pass the contents of a .bib file as bibliography; it is saved under "
             "the name the document uses (\\bibliography{refs} or \\addbibresource{refs.bib}). Engines: pdflatex "
-            "(default), xelatex or lualatex (use these for Unicode text or system fonts). Limits: "
+            "(default) or xelatex (use it for Unicode text or system fonts). Limits: "
             f"{compile_job.MAX_SOURCE_CHARS // 1000} KB of source, {compile_job.COMPILE_TIMEOUT} seconds. Only the one "
             "file and its bibliography are available, so \\includegraphics of image files and \\input of other "
             "files will fail; shell escape is off. Use after writing or editing LaTeX to confirm it builds before "
@@ -170,7 +170,7 @@ def build_server(public: bool = False) -> FastMCP:
         source: Annotated[str, Field(min_length=1, max_length=compile_job.MAX_SOURCE_CHARS,
                                      description="The complete .tex document.")],
         ctx: Context,
-        engine: Annotated[Literal["pdflatex", "xelatex", "lualatex"], Field(description="TeX engine.")] = "pdflatex",
+        engine: Annotated[Literal["pdflatex", "xelatex"], Field(description="TeX engine.")] = "pdflatex",
         bibliography: Annotated[Optional[str], Field(max_length=compile_job.MAX_BIB_CHARS,
                                                      description="Optional: the text of the .bib file the document cites.")] = None,
     ) -> Annotated[CallToolResult, CompileOutput]:

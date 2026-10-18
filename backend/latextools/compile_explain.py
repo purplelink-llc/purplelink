@@ -89,8 +89,7 @@ RULES: list[Rule] = [
        "Unicode character not supported",
        "The document contains a character (often a smart quote, a dash pasted from a word processor, or a "
        "non-Latin letter) that pdfLaTeX cannot typeset with the loaded fonts.",
-       "Compile with engine xelatex or lualatex, which handle Unicode, or replace the character with its LaTeX "
-       "form."),
+       "Compile with engine xelatex, which handles Unicode, or replace the character with its LaTeX form."),
     _r("option-clash", r"Option clash for package (\S+)",
        "Option clash",
        "The package @1@ is loaded twice with different options, or the document class loads it first with other "
