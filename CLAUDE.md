@@ -181,3 +181,9 @@ click, and only when every automatic check passes:
 Nothing else is covered: other kinds, edited items, manual drafts, replies, likes, follows or DMs. Any failed check
 waits for Ben. Never post as Ben personally on any channel. Reddit, HN and Product Hunt stay manual drafts. See
 `docs/social-poster.md`.
+
+**Scheduled posts (Ben, 2026-10-18):** `backend/scripts/social.py` posts approved queue items to the company accounts
+(LinkedIn page 120183926, Bluesky @purplelink.llc, Threads, Mastodon, X) through launchd `com.purplelink.social-scheduler`.
+Run `social.py approve <id>` only when Ben says so in chat for that item; never edit an item after approving it, never
+remove `~/.purplelink/social/PAUSE` unless Ben says so, never post as Ben personally, and never add the queue, config or tokens to the
+repo. Setup and rules: `docs/social-posting.md`.

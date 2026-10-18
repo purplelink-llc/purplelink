@@ -608,6 +608,14 @@
   status = 200
   force = true
 
+# Public image host for the social poster (Threads fetches images from a public URL). Read-only, served from the
+# dedicated social-media Blobs store by social-media.mjs; only <40 hex>.png|jpg|jpeg keys resolve.
+[[redirects]]
+  from = "/social-media/*"
+  to = "/.netlify/functions/social-media?file=:splat"
+  status = 200
+  force = true
+
 [[redirects]]
   from = "/*"
   to = "/404.html"
