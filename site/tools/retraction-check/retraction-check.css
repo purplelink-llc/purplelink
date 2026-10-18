@@ -1,6 +1,6 @@
 .rc-app { display: flex; flex-direction: column; gap: 8px; }
 .rc-label { font-weight: 600; font-size: 0.92rem; margin-top: 8px; }
-.rc-textarea { width: 100%; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--ink); font: inherit; line-height: 1.55; resize: vertical; min-height: 12rem; }
+.rc-textarea { width: 100%; padding: 12px 14px; border: 1.5px solid var(--field-line); border-radius: 12px; background: var(--bg); color: var(--ink); font: inherit; line-height: 1.55; resize: vertical; min-height: 12rem; }
 .rc-textarea:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-color: var(--purple); }
 .rc-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 4px; }
 .rc-status { min-height: 1.4em; margin: 6px 0 0; color: var(--muted); }

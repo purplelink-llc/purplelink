@@ -116,9 +116,13 @@
       csvBtn.hidden = true;
       var fd = new FormData();
       fd.append("file", file, file.name);
+      var reached = false;   // false means the request never got a response (offline, DNS, blocked)
       fetch(API_BASE + "/word-stats", { method: "POST", body: fd })
         .then(function (resp) {
-          if (!resp.ok) return resp.json().then(function (p) { throw p; });
+          reached = true;
+          if (!resp.ok) return resp.json().catch(function () { return {}; }).then(function (p) {
+            p = p || {}; p.status = resp.status; throw p;
+          });
           return resp.json();
         })
         .then(function (data) {
@@ -129,8 +133,11 @@
           runAnalysis();         // auto-analyse right after upload
         })
         .catch(function (err) {
-          statusEl.innerHTML = '<span class="wc-err">' +
-            escapeHtml((err && err.detail) || "Couldn't read that file.") + "</span>";
+          var msg;
+          if (!reached) msg = "Could not reach the server. Your file was not sent. Check your connection and try again.";
+          else if (err && err.status === 429) msg = "You've reached the daily limit. Please try again tomorrow.";
+          else msg = (err && err.detail) || "Couldn't read that file.";
+          statusEl.innerHTML = '<span class="wc-err">' + escapeHtml(msg) + "</span>";
         });
     });
   }
@@ -150,7 +157,7 @@
       var stats = WS.analyze(text, mode === "upload" ? uploadedSections : null);
       lastStats = stats;
       renderReport(stats);
-      statusEl.textContent = "Done.";
+      statusEl.textContent = "Done: " + fmt(WS.words(text).length) + " words analysed.";
       csvBtn.hidden = false;
     }, 10);
   }

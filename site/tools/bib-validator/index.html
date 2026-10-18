@@ -94,12 +94,12 @@
     <meta name="theme-color" content="#19141d">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <script src="/theme.js?v=07d8025cab"></script>
-    <link rel="stylesheet" href="/styles.css?v=6180047488">
-    <link rel="stylesheet" href="/motion.css?v=49cb63589a">
-    <script src="/site.js?v=431fbdd51a" defer></script>
+    <script src="/theme.js?v=4d162f3e8a"></script>
+    <link rel="stylesheet" href="/styles.css?v=4e29549ea1">
+    <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
+    <script src="/site.js?v=b02458d823" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
-    <link rel="stylesheet" href="/tools/bib-validator/bib-validator.css?v=50cbacd195">
+    <link rel="stylesheet" href="/tools/bib-validator/bib-validator.css?v=fe1fccdcb2">
 </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -175,8 +175,9 @@
           </p>
         </fieldset>
         <div class="tool-options u-mt-075">
-          <button type="button" class="btn btn-primary" id="run" disabled>Validate .bib</button>
+          <button type="button" class="btn btn-primary" id="run" disabled aria-describedby="run-hint">Validate .bib</button>
         </div>
+        <p class="tool-privacy" id="run-hint">Choose a .bib file or paste entries above to start.</p>
 
         <p class="tool-status" id="status" aria-live="polite"></p>
         <div class="tool-result" id="result"></div>
@@ -345,6 +346,7 @@
         // ---------------------- Paste-mode text input ---------------------
         pasteEl.addEventListener("input", updateRunState);
 
+        var runHint = document.getElementById("run-hint");
         function updateRunState() {
           if (mode === "upload") {
             runBtn.disabled = !chosen;
@@ -352,6 +354,8 @@
             var t = pasteEl.value || "";
             runBtn.disabled = !t.trim() || t.length > MAX_BIB_BYTES;
           }
+          // Say why the button is greyed out, and get out of the way once it is not.
+          if (runHint) runHint.hidden = !runBtn.disabled;
         }
 
         // ---------------------- Validate button ---------------------------
@@ -379,27 +383,41 @@
           fd.append("check_crossref", chkCr.checked  ? "true" : "false");
           fd.append("check_s2",       chkS2.checked  ? "true" : "false");
 
-          statusEl.innerHTML = '<span class="tool-spinner" aria-hidden="true"></span>Validating… this may take a moment.';
+          var online = chkDoi.checked || chkCr.checked || chkS2.checked;
+          statusEl.innerHTML = '<span class="tool-spinner" aria-hidden="true"></span>' +
+            (online ? "Validating. Looking each entry up online can take a minute or two." : "Validating…");
           resultEl.innerHTML = "";
           annotatedBib = null;
           correctedBib = null;
 
+          var reached = false;   // false means the request never got a response (offline, DNS, blocked)
           fetch(API_BASE + "/validate-bib", { method: "POST", body: fd })
             .then(function (resp) {
+              reached = true;
               if (!resp.ok) {
-                return resp.json().then(function (p) { throw p; });
+                return resp.json().catch(function () { return {}; }).then(function (p) {
+                  p = p || {}; p.status = resp.status; throw p;
+                });
               }
               return resp.json();
             })
             .then(function (data) {
-              statusEl.textContent = "Done.";
+              var s = data.summary || {};
+              var plural = function (n, w) { return n + " " + w + (n === 1 ? "" : "s"); };
+              var total = s.total || 0;
+              statusEl.textContent = "Checked " + total + (total === 1 ? " entry" : " entries") + ": " +
+                plural(s.error || 0, "error") + ", " + plural(s.warning || 0, "warning") + ".";
               annotatedBib = data.annotated_bib;
               correctedBib = data.corrected_bib;
               renderResults(data);
             })
             .catch(function (err) {
               statusEl.textContent = "";
-              var msg = (err && err.detail) ? escapeHtml(err.detail) : "Something went wrong. Please try again.";
+              var msg;
+              if (!reached) msg = "Could not reach the server. Your file was not sent. Check your connection and try again.";
+              else if (err && err.status === 429) msg = "You've reached the daily limit. Please try again tomorrow.";
+              else if (err && err.detail) msg = escapeHtml(err.detail);
+              else msg = "The check could not finish" + (err && err.status ? " (error " + err.status + ")" : "") + ". Your entries are unchanged; please try again.";
               resultEl.innerHTML = '<div class="tool-error" role="alert">' + msg + "</div>";
             });
         });
@@ -446,7 +464,7 @@
             var rowClass = "row-data row-" + (e.overall === "ok" ? "ok" : e.overall === "warning" ? "warn" : "err");
             var colspan = 5 + (dupCol?1:0) + (doiCol?1:0) + (crCol?1:0) + (s2Col?1:0) + (auCol?1:0) + (yrCol?1:0);
             html += '<tr class="' + rowClass + '" data-status="' + e.overall + '" data-idx="' + idx + '">';
-            html += '<td><span class="bib-row-expander" aria-hidden="true">▶</span></td>';
+            html += '<td><button type="button" class="bib-row-expander" aria-expanded="false" aria-controls="bib-detail-' + idx + '" aria-label="Show details for ' + escapeHtml(e.key) + '"><span aria-hidden="true">▶</span></button></td>';
             html += "<td><span class='bib-key'>" + escapeHtml(e.key) + "</span></td>";
             html += "<td>" + escapeHtml(e.type) + "</td>";
             html += "<td>" + fieldsCell(e) + "</td>";
@@ -459,7 +477,7 @@
             html += "<td>" + overallCell(e.overall) + "</td>";
             html += "</tr>";
             // Detail row (hidden until expansion)
-            html += '<tr class="row-detail hidden" data-detail-for="' + idx + '"><td colspan="' + colspan + '">' + detailPanel(e) + "</td></tr>";
+            html += '<tr class="row-detail hidden" id="bib-detail-' + idx + '" data-detail-for="' + idx + '"><td colspan="' + colspan + '">' + detailPanel(e) + "</td></tr>";
           });
 
           html += "</tbody></table></div>";
@@ -498,6 +516,8 @@
                 // Collapse + hide its detail row too
                 if (!keep) {
                   row.classList.remove("expanded");
+                  var ex = row.querySelector(".bib-row-expander");
+                  if (ex) ex.setAttribute("aria-expanded", "false");
                   var det = resultEl.querySelector('tr.row-detail[data-detail-for="' + row.dataset.idx + '"]');
                   if (det) { det.classList.add("hidden"); det.style.display = "none"; }
                 } else {
@@ -508,16 +528,24 @@
             });
           });
 
-          // Wire row click → expand/collapse details
+          // Expand/collapse details. The expander is a real button (keyboard and screen readers);
+          // a click anywhere else on the row does the same for mouse users.
+          function toggleRow(row) {
+            var detail = resultEl.querySelector('tr.row-detail[data-detail-for="' + row.dataset.idx + '"]');
+            if (!detail) return;
+            var open = !detail.classList.toggle("hidden");
+            row.classList.toggle("expanded", open);
+            var btn = row.querySelector(".bib-row-expander");
+            if (btn) {
+              btn.setAttribute("aria-expanded", open ? "true" : "false");
+              btn.setAttribute("aria-label", btn.getAttribute("aria-label").replace(/^(Show|Hide)/, open ? "Hide" : "Show"));
+            }
+          }
           resultEl.querySelectorAll("tr.row-data").forEach(function (row) {
             row.addEventListener("click", function (ev) {
-              // Don't toggle when clicking a button inside the row
-              if (ev.target.closest("button")) return;
-              var idx = row.dataset.idx;
-              var detail = resultEl.querySelector('tr.row-detail[data-detail-for="' + idx + '"]');
-              if (!detail) return;
-              var nowHidden = detail.classList.toggle("hidden");
-              row.classList.toggle("expanded", !nowHidden);
+              var btn = ev.target.closest("button");
+              if (btn && !btn.classList.contains("bib-row-expander")) return;
+              toggleRow(row);
             });
           });
 
@@ -691,6 +719,7 @@
           <p class="footer-head">Products</p>
           <ul>
             <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
             <li><a href="/vitae/">Vitae</a></li>
             <li><a href="/legroom/">Legroom</a></li>
             <li><a href="/keyfeel/">Keyfeel</a></li>
@@ -735,6 +764,7 @@
             <li><a href="/about/">About</a></li>
             <li><a href="/pricing/">Pricing</a></li>
             <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
             <li><a href="/support/">Support</a></li>
             <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
             <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>

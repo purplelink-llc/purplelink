@@ -22,7 +22,7 @@
 .gr-field input, .gr-field select {
   font: inherit;
   padding: 10px 12px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--field-line);
   border-radius: 10px;
   background: var(--bg);
   color: var(--ink);

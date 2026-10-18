@@ -194,17 +194,18 @@
     from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: none; }
   }
-  @keyframes dock-land {
-    from { opacity: 0; transform: translateY(20px) scale(0.94); filter: blur(6px); }
-    to   { opacity: 1; transform: none; filter: blur(0); }
+  /* Text settles into place but is readable from the first frame (motion.css: text never starts at opacity 0). */
+  @keyframes stage-settle {
+    from { transform: translateY(8px); }
+    to   { transform: none; }
   }
-  @keyframes dock-float {
-    from { transform: translateY(0); }
-    to   { transform: translateY(-5px); }
+  @keyframes dock-land {
+    from { opacity: 0; transform: translateY(14px) scale(0.96); }
+    to   { opacity: 1; transform: none; }
   }
 
   .stage-mark { animation: stage-mark-in 0.95s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) backwards; }
-  .stage-meta { animation: stage-fade 0.7s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) 0.5s backwards; }
+  .stage-meta { animation: stage-settle 0.6s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) 0.1s backwards; }
 
   .sweep > span {
     animation: stage-line-in 1.15s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) 0.2s backwards;
@@ -215,34 +216,23 @@
   .sweep:nth-child(2) > span,
   .sweep:nth-child(2) > span::after { animation-delay: 0.42s; }
 
-  .stage-lede { animation: stage-fade 0.8s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) 0.85s backwards; }
-  .stage-suite { animation: stage-fade 0.8s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) 2.0s backwards; }
+  /* Everything below the title is visible at once and settles within half a second: a visitor who knows
+     what they want should not wait for an intro. The dock stagger ends by 0.5s, and there is no idle float
+     (auto-moving content longer than 5s needs a pause control under WCAG 2.2.2). */
+  .stage-lede { animation: stage-settle 0.6s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) 0.2s backwards; }
+  .stage-suite { animation: stage-settle 0.6s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) 0.3s backwards; }
 
-  .dock > li { animation: dock-land 0.85s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) backwards; }
-  .dock > li:nth-child(1) { animation-delay: 1.0s; }
-  .dock > li:nth-child(2) { animation-delay: 1.09s; }
-  .dock > li:nth-child(3) { animation-delay: 1.18s; }
-  .dock > li:nth-child(4) { animation-delay: 1.27s; }
-  .dock > li:nth-child(5) { animation-delay: 1.36s; }
-  .dock > li:nth-child(6) { animation-delay: 1.45s; }
-  .dock > li:nth-child(7) { animation-delay: 1.54s; }
-  .dock > li:nth-child(8) { animation-delay: 1.63s; }
-  .dock > li:nth-child(9) { animation-delay: 1.72s; }
-  .dock > li:nth-child(10) { animation-delay: 1.81s; }
-
-  /* A slow drift once the icons have landed, each out of step with the next. */
-  .dock-art { animation: dock-float 6s ease-in-out infinite alternate; }
-  .dock > li:nth-child(2) .dock-art { animation-delay: -1s; }
-  .dock > li:nth-child(3) .dock-art { animation-delay: -2s; }
-  .dock > li:nth-child(4) .dock-art { animation-delay: -3s; }
-  .dock > li:nth-child(5) .dock-art { animation-delay: -4s; }
-  .dock > li:nth-child(6) .dock-art { animation-delay: -5s; }
-  .dock > li:nth-child(7) .dock-art { animation-delay: -6s; }
-  .dock > li:nth-child(8) .dock-art { animation-delay: -7s; }
-  .dock > li:nth-child(9) .dock-art { animation-delay: -4.5s; }
-  .dock > li:nth-child(10) .dock-art { animation-delay: -5.5s; }
-  .dock-app:hover .dock-art,
-  .dock-app:focus-visible .dock-art { animation-play-state: paused; }
+  .dock > li { animation: dock-land 0.6s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) backwards; }
+  .dock > li:nth-child(1) { animation-delay: 0.15s; }
+  .dock > li:nth-child(2) { animation-delay: 0.185s; }
+  .dock > li:nth-child(3) { animation-delay: 0.22s; }
+  .dock > li:nth-child(4) { animation-delay: 0.255s; }
+  .dock > li:nth-child(5) { animation-delay: 0.29s; }
+  .dock > li:nth-child(6) { animation-delay: 0.325s; }
+  .dock > li:nth-child(7) { animation-delay: 0.36s; }
+  .dock > li:nth-child(8) { animation-delay: 0.395s; }
+  .dock > li:nth-child(9) { animation-delay: 0.43s; }
+  .dock > li:nth-child(10) { animation-delay: 0.465s; }
 }
 
 @media (prefers-reduced-motion: reduce) {

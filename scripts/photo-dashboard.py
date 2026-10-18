@@ -40,7 +40,10 @@ SALES = {"sales", "sales_to_date", "downloads"}
 # alamy_qc is pipeline status (passed/failed QC), alamy_measures is engagement
 # (views/zooms/CTR), alamy_sales is money already folded into the "alamy" row
 # itself (see platform_money_asof) -- none of the three get their own row.
-SKIP_ROW = {"alamy_qc", "alamy_measures", "alamy_sales"}
+# Platforms whose balance is entered by hand once a month (scripts/record-getty-month.py), not read daily: their
+# last value is current until the next statement, so it is never shown as stale.
+MONTHLY_MANUAL = {"getty"}
+SKIP_ROW = {"alamy_qc", "alamy_measures", "alamy_sales", "getty_stats"}
 # metrics worth showing as pipeline state, in display order
 #
 # "views", "ctr", "zooms" were collected under the alamy_measures platform
@@ -186,7 +189,7 @@ def platform_money_asof(data, dates, asof):
         if p in SKIP_ROW:
             continue
         pct = (bal / thresh * 100) if (bal is not None and thresh) else (0 if thresh else None)
-        as_of = bal_as_of if (bal_as_of and bal_as_of != asof) else None
+        as_of = bal_as_of if (bal_as_of and bal_as_of != asof and p not in MONTHLY_MANUAL) else None
         money_rows.append((label, bal, sal, thresh, pct, royalty, as_of))
     return total_money, total_sales, money_rows
 

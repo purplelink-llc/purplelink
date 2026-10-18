@@ -11,7 +11,7 @@
 .sig-field label, .sig-label { display: block; font-weight: 600; font-size: 0.92rem; margin-bottom: 4px; }
 .sig-input {
   width: 100%; min-height: 44px; font: inherit; color: inherit; background: var(--bg);
-  border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px;
+  border: 1px solid var(--field-line); border-radius: 8px; padding: 8px 12px;
 }
 .sig-input[aria-invalid="true"] { border-color: oklch(62% 0.2 25); }
 .sig-hint { font-size: 0.82rem; color: var(--muted); margin-top: 4px; line-height: 1.45; }
@@ -43,7 +43,7 @@
 .sw-graphite .sig-swatch-dot { background: #3a3a3a; }
 .sw-custom .sig-swatch-dot { background: conic-gradient(#c0392b, #e0a800, #2e9e4f, #2a78c9, #8e44ad, #c0392b); }
 .sig-custom { margin-top: 10px; }
-.sig-custom input[type="color"] { width: 64px; height: 44px; padding: 2px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+.sig-custom input[type="color"] { width: 64px; height: 44px; padding: 2px; border: 1px solid var(--field-line); border-radius: 8px; background: var(--bg); }
 
 .sig-check { display: flex; align-items: flex-start; gap: 10px; margin-top: 12px; }
 .sig-check input { width: 20px; height: 20px; margin-top: 3px; flex: none; }

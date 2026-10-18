@@ -968,12 +968,14 @@ PLATFORMS = [("fineartamerica", collect_faa), ("adobe_stock", collect_adobe),
              ("alamy_measures", collect_alamy_measures),
              ("alamy_sales", collect_alamy_sales),
              ("shutterstock", collect_shutterstock),
-             ("getty", collect_getty),
-             ("getty_stats", collect_getty_stats),
              ("123rf", collect_123rf),
              ("depositphotos", collect_depositphotos),
              ("etsy", collect_etsy),
              ("vecteezy", collect_vecteezy)]
+
+# Getty (collect_getty, collect_getty_stats) dropped from the daily crawl 2026-10-18 (Ben): ESP's sign-in expired
+# every few days and Getty only pays on a monthly statement anyway. Each statement's total is now entered by hand
+# with scripts/record-getty-month.py, prompted by a monthly reminder. The collectors are kept for a one-off run.
 
 # Dreamstime dropped from the daily crawl 2026-09-03: its anti-bot "Press &
 # Hold" challenge blocks the automation profile often enough that it stopped
@@ -1244,11 +1246,6 @@ LOGIN_URLS = {
     "alamy": "https://www.alamy.com/log-in/",
     "dreamstime": "https://www.dreamstime.com/manage-account",
     "shutterstock": "https://submit.shutterstock.com/",
-    "getty": "https://esp.gettyimages.com/contribute/batches",
-    # Same ESP login as "getty"; without its own entry the stats collector was
-    # never given a sign-in page, so it stayed "not signed in" after Ben logged in
-    # (2026-10-02).
-    "getty_stats": "https://esp.gettyimages.com/contribute/stats",
     "123rf": "https://www.123rf.com/contributor/dashboard",
     "depositphotos": "https://depositphotos.com/files.html",
     "etsy": "https://www.etsy.com/signin",

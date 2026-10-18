@@ -6,6 +6,9 @@ Usage:
   python3 backend/scripts/linkedin_post.py 2026-06-23   # post a specific date
   python3 backend/scripts/linkedin_post.py --dry-run    # fill post box but don't click Post
   python3 backend/scripts/linkedin_post.py --text-file post.txt   # post arbitrary text (outreach.py uses this)
+  python3 backend/scripts/linkedin_post.py --text-file post.txt --document deck.pdf \\
+      --document-title "Title" [--headless] [--screenshot out.png] [--dry-run]
+      # document (carousel) post: the PDF is uploaded through "Add a document"
 
 One-time setup: python3 backend/scripts/linkedin_login.py
 
@@ -126,7 +129,30 @@ def _refuse(page, why: str) -> int:
     return 4
 
 
-def post_to_linkedin(post_text: str, dry_run: bool) -> int:
+def _attach_document(page, pdf: Path, title: str) -> None:
+    """Composer: More -> Add a document -> upload the PDF -> set the required title -> Done.
+
+    Waits for LinkedIn's "Your document has finished loading" before pressing Done.
+    Raises PWTimeout if any step does not show up.
+    """
+    add = page.get_by_role("button", name="Add a document")
+    if add.count() == 0:  # the document entry sits behind the composer's "More" (+) button
+        page.get_by_role("button", name="More", exact=True).first.click(timeout=15_000)
+        page.wait_for_timeout(1_000)
+    add.first.click(timeout=15_000)
+    dlg = page.locator('[role="dialog"]').last
+    dlg.locator('input[type="file"]').first.set_input_files(str(pdf), timeout=30_000)
+    title_box = dlg.get_by_placeholder(re.compile(r"title to your document", re.I)).first
+    title_box.wait_for(state="visible", timeout=60_000)
+    title_box.fill(title)
+    dlg.get_by_text("finished loading").first.wait_for(state="visible", timeout=180_000)
+    dlg.get_by_role("button", name="Done", exact=True).click(timeout=10_000)
+    page.wait_for_timeout(2_000)
+
+
+def post_to_linkedin(post_text: str, dry_run: bool, *, document: Path | None = None,
+                     document_title: str = "", headless: bool = False,
+                     screenshot: Path | None = None) -> int:
     if not PROFILE_DIR.exists():
         print("No saved session — run: python3 backend/scripts/linkedin_login.py")
         return 2
@@ -134,8 +160,8 @@ def post_to_linkedin(post_text: str, dry_run: bool) -> int:
     with sync_playwright() as pw:
         ctx = pw.chromium.launch_persistent_context(
             str(PROFILE_DIR),
-            headless=False,
-            viewport={"width": 1280, "height": 900},
+            headless=headless,
+            viewport={"width": 1280, "height": 1800 if headless else 900},  # tall when headless so the screenshot shows the whole composer
             args=["--disable-blink-features=AutomationControlled"],
         )
         page = ctx.pages[0] if ctx.pages else ctx.new_page()
@@ -172,7 +198,7 @@ def post_to_linkedin(post_text: str, dry_run: bool) -> int:
             # Click "Start a post" on the company admin page
             print("Opening post composer...")
             try:
-                page.get_by_text("Start a post", exact=False).first.click(timeout=12_000)
+                page.get_by_text("Start a post", exact=False).first.click(timeout=30_000)
             except PWTimeout:
                 # Keep fallbacks narrow: a prior `button[aria-label*="post"]` substring
                 # match grabbed an unrelated "switch identity...this post" button and
@@ -182,6 +208,7 @@ def post_to_linkedin(post_text: str, dry_run: bool) -> int:
                     '.org-share-box__trigger, [data-test-id="share-box-trigger"], '
                     'button[aria-label="Start a post"]'
                 ).first.click(timeout=10_000)
+            page.locator('[role="dialog"] [role="textbox"]').first.wait_for(state="visible", timeout=30_000)
             page.wait_for_timeout(1_500)
 
             # The composer has a "post as" switcher. Refuse unless it is the company.
@@ -190,6 +217,17 @@ def post_to_linkedin(post_text: str, dry_run: bool) -> int:
             if identity != COMPANY_NAME:
                 page.keyboard.press("Escape")
                 return _refuse(page, f"composer would post as {identity!r}, not {COMPANY_NAME}")
+
+            # Attach the document first: a URL typed before it becomes a link-preview card
+            # that takes the composer's one media slot.
+            if document is not None:
+                print(f"Attaching document {document.name} titled {document_title!r}...")
+                _attach_document(page, document, document_title)
+                # Adding a document re-renders the composer: check the identity again.
+                identity = _composer_identity(page)
+                if identity != COMPANY_NAME:
+                    page.keyboard.press("Escape")
+                    return _refuse(page, f"composer would post as {identity!r} after attaching the document")
 
             # Type post text via clipboard paste (avoids garbled characters)
             print("Entering post text...")
@@ -204,9 +242,16 @@ def post_to_linkedin(post_text: str, dry_run: bool) -> int:
             page.wait_for_timeout(500)
 
             if dry_run:
-                print("DRY RUN — post text entered, not clicking Post.")
-                print("Press Enter to close the browser: ", end="", flush=True)
-                input()
+                if screenshot is not None:
+                    screenshot.parent.mkdir(parents=True, exist_ok=True)
+                    page.screenshot(path=str(screenshot))
+                    print(f"Saved screenshot: {screenshot}")
+                print(f"Page URL: {page.url}")
+                print(f"Composer identity: {_composer_identity(page)!r}")
+                print("DRY RUN: post text entered, not clicking Post.")
+                if not headless and sys.stdin.isatty():
+                    print("Press Enter to close the browser: ", end="", flush=True)
+                    input()
                 return 0
 
             # Re-check right before posting, in case the identity changed while typing.
@@ -223,6 +268,11 @@ def post_to_linkedin(post_text: str, dry_run: bool) -> int:
                 page.locator('button.share-actions__primary-action').click(timeout=10_000)
             page.wait_for_timeout(3_000)
 
+            if screenshot is not None:
+                try:
+                    page.screenshot(path=str(screenshot))
+                except Exception:
+                    pass
             print("Posted successfully.")
             _notify("Purplelink digest posted to LinkedIn.")
             return 0
@@ -249,7 +299,20 @@ def main() -> None:
     ap.add_argument("date", nargs="?", help="Digest date (YYYY-MM-DD). Defaults to latest.")
     ap.add_argument("--dry-run", action="store_true", help="Fill post but don't click Post.")
     ap.add_argument("--text-file", help="Post this file's contents instead of a digest.")
+    ap.add_argument("--document", help="Attach this PDF as a LinkedIn document (carousel). Needs --text-file.")
+    ap.add_argument("--document-title", help="Title LinkedIn requires for the document.")
+    ap.add_argument("--headless", action="store_true", help="Run the browser without a window.")
+    ap.add_argument("--screenshot", help="Save a screenshot of the composer (dry run) or the page after Post.")
     args = ap.parse_args()
+
+    document = None
+    if args.document or args.document_title:
+        if not (args.document and args.document_title and args.text_file):
+            ap.error("--document needs --document-title and --text-file")
+        document = Path(args.document).expanduser().resolve()
+        if document.suffix.lower() != ".pdf" or not document.is_file():
+            ap.error(f"--document must be an existing .pdf file: {document}")
+    shot = Path(args.screenshot).expanduser() if args.screenshot else None
 
     if args.text_file:
         post = Path(args.text_file).read_text(encoding="utf-8").strip()
@@ -258,7 +321,9 @@ def main() -> None:
             sys.exit(1)
         print(f"Text:   {args.text_file} ({len(post)} chars)")
         print()
-        sys.exit(post_to_linkedin(post, dry_run=args.dry_run))
+        sys.exit(post_to_linkedin(post, dry_run=args.dry_run, document=document,
+                                  document_title=args.document_title or "",
+                                  headless=args.headless, screenshot=shot))
 
     try:
         digest_file = find_digest(args.date)
@@ -274,7 +339,7 @@ def main() -> None:
     print(f"Title:  {title}")
     print()
 
-    sys.exit(post_to_linkedin(post, dry_run=args.dry_run))
+    sys.exit(post_to_linkedin(post, dry_run=args.dry_run, headless=args.headless, screenshot=shot))
 
 
 if __name__ == "__main__":

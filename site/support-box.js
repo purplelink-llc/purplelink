@@ -66,6 +66,15 @@
 
     email.addEventListener("input", () => { fieldError("email", ""); });
     message.addEventListener("input", () => { fieldError("message", ""); });
+    // Say a typed address is malformed when the visitor leaves the field, not after they have written the
+    // message and pressed Send. An empty field is left alone until submit.
+    email.addEventListener("blur", () => {
+      const addr = email.value.trim();
+      if (addr && (!EMAIL.test(addr) || addr.length > 254)) fieldError("email", COPY.invalid_email);
+    });
+    message.addEventListener("blur", () => {
+      if (message.value.trim().length > MAX_MESSAGE) fieldError("message", COPY.message_long);
+    });
 
     const done = () => {
       form.hidden = true;
