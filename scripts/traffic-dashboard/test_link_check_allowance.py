@@ -41,7 +41,7 @@ def test_funnel_prints_human_estimate_and_scanner_tags(capsys, monkeypatch):
         "youtube-promo": {"pageviews": 10, "pageviewsByPath": promo_paths,
                           "trial": {"legroom": 1, "panely": 1, "summonly": 1, "tapefolio": 1, "outbound-veil": 1},
                           "checkout": {}},
-        "www.google.com": {"pageviews": 50, "pageviewsByPath": {"/moderntex/": 9}, "trial": {"moderntex": 3},
+        "macmenubar": {"pageviews": 50, "pageviewsByPath": {"/moderntex/": 9}, "trial": {"moderntex": 3},
                            "checkout": {"moderntex": 2}},
         "utk": {"pageviews": 1, "pageviewsByPath": {"/moderntex/": 1}, "trial": {}, "checkout": {}}}}}
     monkeypatch.setattr(td, "tagged_link_batches",
@@ -51,7 +51,7 @@ def test_funnel_prints_human_estimate_and_scanner_tags(capsys, monkeypatch):
     assert "est. human: 0 views, 0 trials" in out
     assert "8 counted, about 3 after the link-check allowance" in out
     assert "judge those emails by replies): utk" in out
-    assert "www.google.com" in out and "3 trial downloads" in out
+    assert "macmenubar" in out and "3 trial downloads" in out
 
 
 def _gp_ads(manual_ads):
