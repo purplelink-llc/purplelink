@@ -216,6 +216,286 @@
   to = "/tools/?utm_source=linkedin&utm_medium=social&utm_campaign=li-tools"
   status = 302
 
+# Social poster short links (scripts/social, docs/social-poster.md): one prefix per channel, /li/ LinkedIn, /bs/
+# Bluesky, /th/ Threads, /x/ X, /md/ Mastodon, /dev/ dev.to. /<p>/<app> is one exact rule per product page.
+# /<p>/g/:slug is the one placeholder form: it only maps a single segment under /<p>/g/ to /guides/<slug>/, so an
+# unknown slug lands on the 404 page; nothing else is redirected or tagged. 302, query strings pass through as above.
+# Kept in step with core.LINK_PREFIX and events.PRODUCTS by site-tests/test_social_redirects.py.
+[[redirects]]
+  from = "/li/g/:slug"
+  to = "/guides/:slug/?utm_source=linkedin&utm_medium=social&utm_campaign=li-guide"
+  status = 302
+
+[[redirects]]
+  from = "/li/keyfeel"
+  to = "/keyfeel/?utm_source=linkedin&utm_medium=social&utm_campaign=li-keyfeel"
+  status = 302
+
+[[redirects]]
+  from = "/li/panely"
+  to = "/panely/?utm_source=linkedin&utm_medium=social&utm_campaign=li-panely"
+  status = 302
+
+[[redirects]]
+  from = "/li/summonly"
+  to = "/summonly/?utm_source=linkedin&utm_medium=social&utm_campaign=li-summonly"
+  status = 302
+
+[[redirects]]
+  from = "/li/batterymeter"
+  to = "/batterymeter/?utm_source=linkedin&utm_medium=social&utm_campaign=li-batterymeter"
+  status = 302
+
+[[redirects]]
+  from = "/bs/g/:slug"
+  to = "/guides/:slug/?utm_source=bluesky&utm_medium=social&utm_campaign=bs-guide"
+  status = 302
+
+[[redirects]]
+  from = "/bs/moderntex"
+  to = "/moderntex/?utm_source=bluesky&utm_medium=social&utm_campaign=bs-moderntex"
+  status = 302
+
+[[redirects]]
+  from = "/bs/outbound-veil"
+  to = "/outbound-veil/?utm_source=bluesky&utm_medium=social&utm_campaign=bs-outbound-veil"
+  status = 302
+
+[[redirects]]
+  from = "/bs/legroom"
+  to = "/legroom/?utm_source=bluesky&utm_medium=social&utm_campaign=bs-legroom"
+  status = 302
+
+[[redirects]]
+  from = "/bs/keyfeel"
+  to = "/keyfeel/?utm_source=bluesky&utm_medium=social&utm_campaign=bs-keyfeel"
+  status = 302
+
+[[redirects]]
+  from = "/bs/tapefolio"
+  to = "/tapefolio/?utm_source=bluesky&utm_medium=social&utm_campaign=bs-tapefolio"
+  status = 302
+
+[[redirects]]
+  from = "/bs/vitae"
+  to = "/vitae/?utm_source=bluesky&utm_medium=social&utm_campaign=bs-vitae"
+  status = 302
+
+[[redirects]]
+  from = "/bs/panely"
+  to = "/panely/?utm_source=bluesky&utm_medium=social&utm_campaign=bs-panely"
+  status = 302
+
+[[redirects]]
+  from = "/bs/summonly"
+  to = "/summonly/?utm_source=bluesky&utm_medium=social&utm_campaign=bs-summonly"
+  status = 302
+
+[[redirects]]
+  from = "/bs/batterymeter"
+  to = "/batterymeter/?utm_source=bluesky&utm_medium=social&utm_campaign=bs-batterymeter"
+  status = 302
+
+[[redirects]]
+  from = "/th/g/:slug"
+  to = "/guides/:slug/?utm_source=threads&utm_medium=social&utm_campaign=th-guide"
+  status = 302
+
+[[redirects]]
+  from = "/th/moderntex"
+  to = "/moderntex/?utm_source=threads&utm_medium=social&utm_campaign=th-moderntex"
+  status = 302
+
+[[redirects]]
+  from = "/th/outbound-veil"
+  to = "/outbound-veil/?utm_source=threads&utm_medium=social&utm_campaign=th-outbound-veil"
+  status = 302
+
+[[redirects]]
+  from = "/th/legroom"
+  to = "/legroom/?utm_source=threads&utm_medium=social&utm_campaign=th-legroom"
+  status = 302
+
+[[redirects]]
+  from = "/th/keyfeel"
+  to = "/keyfeel/?utm_source=threads&utm_medium=social&utm_campaign=th-keyfeel"
+  status = 302
+
+[[redirects]]
+  from = "/th/tapefolio"
+  to = "/tapefolio/?utm_source=threads&utm_medium=social&utm_campaign=th-tapefolio"
+  status = 302
+
+[[redirects]]
+  from = "/th/vitae"
+  to = "/vitae/?utm_source=threads&utm_medium=social&utm_campaign=th-vitae"
+  status = 302
+
+[[redirects]]
+  from = "/th/panely"
+  to = "/panely/?utm_source=threads&utm_medium=social&utm_campaign=th-panely"
+  status = 302
+
+[[redirects]]
+  from = "/th/summonly"
+  to = "/summonly/?utm_source=threads&utm_medium=social&utm_campaign=th-summonly"
+  status = 302
+
+[[redirects]]
+  from = "/th/batterymeter"
+  to = "/batterymeter/?utm_source=threads&utm_medium=social&utm_campaign=th-batterymeter"
+  status = 302
+
+[[redirects]]
+  from = "/x/g/:slug"
+  to = "/guides/:slug/?utm_source=x&utm_medium=social&utm_campaign=x-guide"
+  status = 302
+
+[[redirects]]
+  from = "/x/moderntex"
+  to = "/moderntex/?utm_source=x&utm_medium=social&utm_campaign=x-moderntex"
+  status = 302
+
+[[redirects]]
+  from = "/x/outbound-veil"
+  to = "/outbound-veil/?utm_source=x&utm_medium=social&utm_campaign=x-outbound-veil"
+  status = 302
+
+[[redirects]]
+  from = "/x/legroom"
+  to = "/legroom/?utm_source=x&utm_medium=social&utm_campaign=x-legroom"
+  status = 302
+
+[[redirects]]
+  from = "/x/keyfeel"
+  to = "/keyfeel/?utm_source=x&utm_medium=social&utm_campaign=x-keyfeel"
+  status = 302
+
+[[redirects]]
+  from = "/x/tapefolio"
+  to = "/tapefolio/?utm_source=x&utm_medium=social&utm_campaign=x-tapefolio"
+  status = 302
+
+[[redirects]]
+  from = "/x/vitae"
+  to = "/vitae/?utm_source=x&utm_medium=social&utm_campaign=x-vitae"
+  status = 302
+
+[[redirects]]
+  from = "/x/panely"
+  to = "/panely/?utm_source=x&utm_medium=social&utm_campaign=x-panely"
+  status = 302
+
+[[redirects]]
+  from = "/x/summonly"
+  to = "/summonly/?utm_source=x&utm_medium=social&utm_campaign=x-summonly"
+  status = 302
+
+[[redirects]]
+  from = "/x/batterymeter"
+  to = "/batterymeter/?utm_source=x&utm_medium=social&utm_campaign=x-batterymeter"
+  status = 302
+
+[[redirects]]
+  from = "/md/g/:slug"
+  to = "/guides/:slug/?utm_source=mastodon&utm_medium=social&utm_campaign=md-guide"
+  status = 302
+
+[[redirects]]
+  from = "/md/moderntex"
+  to = "/moderntex/?utm_source=mastodon&utm_medium=social&utm_campaign=md-moderntex"
+  status = 302
+
+[[redirects]]
+  from = "/md/outbound-veil"
+  to = "/outbound-veil/?utm_source=mastodon&utm_medium=social&utm_campaign=md-outbound-veil"
+  status = 302
+
+[[redirects]]
+  from = "/md/legroom"
+  to = "/legroom/?utm_source=mastodon&utm_medium=social&utm_campaign=md-legroom"
+  status = 302
+
+[[redirects]]
+  from = "/md/keyfeel"
+  to = "/keyfeel/?utm_source=mastodon&utm_medium=social&utm_campaign=md-keyfeel"
+  status = 302
+
+[[redirects]]
+  from = "/md/tapefolio"
+  to = "/tapefolio/?utm_source=mastodon&utm_medium=social&utm_campaign=md-tapefolio"
+  status = 302
+
+[[redirects]]
+  from = "/md/vitae"
+  to = "/vitae/?utm_source=mastodon&utm_medium=social&utm_campaign=md-vitae"
+  status = 302
+
+[[redirects]]
+  from = "/md/panely"
+  to = "/panely/?utm_source=mastodon&utm_medium=social&utm_campaign=md-panely"
+  status = 302
+
+[[redirects]]
+  from = "/md/summonly"
+  to = "/summonly/?utm_source=mastodon&utm_medium=social&utm_campaign=md-summonly"
+  status = 302
+
+[[redirects]]
+  from = "/md/batterymeter"
+  to = "/batterymeter/?utm_source=mastodon&utm_medium=social&utm_campaign=md-batterymeter"
+  status = 302
+
+[[redirects]]
+  from = "/dev/g/:slug"
+  to = "/guides/:slug/?utm_source=devto&utm_medium=social&utm_campaign=dev-guide"
+  status = 302
+
+[[redirects]]
+  from = "/dev/moderntex"
+  to = "/moderntex/?utm_source=devto&utm_medium=social&utm_campaign=dev-moderntex"
+  status = 302
+
+[[redirects]]
+  from = "/dev/outbound-veil"
+  to = "/outbound-veil/?utm_source=devto&utm_medium=social&utm_campaign=dev-outbound-veil"
+  status = 302
+
+[[redirects]]
+  from = "/dev/legroom"
+  to = "/legroom/?utm_source=devto&utm_medium=social&utm_campaign=dev-legroom"
+  status = 302
+
+[[redirects]]
+  from = "/dev/keyfeel"
+  to = "/keyfeel/?utm_source=devto&utm_medium=social&utm_campaign=dev-keyfeel"
+  status = 302
+
+[[redirects]]
+  from = "/dev/tapefolio"
+  to = "/tapefolio/?utm_source=devto&utm_medium=social&utm_campaign=dev-tapefolio"
+  status = 302
+
+[[redirects]]
+  from = "/dev/vitae"
+  to = "/vitae/?utm_source=devto&utm_medium=social&utm_campaign=dev-vitae"
+  status = 302
+
+[[redirects]]
+  from = "/dev/panely"
+  to = "/panely/?utm_source=devto&utm_medium=social&utm_campaign=dev-panely"
+  status = 302
+
+[[redirects]]
+  from = "/dev/summonly"
+  to = "/summonly/?utm_source=devto&utm_medium=social&utm_campaign=dev-summonly"
+  status = 302
+
+[[redirects]]
+  from = "/dev/batterymeter"
+  to = "/batterymeter/?utm_source=devto&utm_medium=social&utm_campaign=dev-batterymeter"
+  status = 302
+
 # The OG-image generator is a build-time utility, not a public page.
 # 404 any direct hit so it doesn't get crawled or indexed.
 # `force = true` because the file still exists on disk; without it Netlify

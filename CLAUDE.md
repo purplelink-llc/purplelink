@@ -165,3 +165,19 @@ This repo is public (Netlify's free plan cannot deploy a private organization re
 ## Marketing arm
 
 The 50 skills from coreyhaines31/marketingskills are installed in `~/.claude/skills/` (clone at `/Volumes/Extreme SSD/marketingskills`, refresh with `/Volumes/Extreme SSD/marketingskills-local/update.sh`). Read `.agents/product-marketing.md` (local, shared product and voice context) before marketing work. The scheduled task `daily-gap-analysis` writes its briefs under `docs/growth-briefs/gap-analysis/` (git-ignored, see the private repo note above). Nothing outward (posts, emails, spend, sign-ups) happens without an approved queue item or Ben's explicit yes.
+
+**One exception, standing approval (Ben, 2026-10-18):** `scripts/social/poster.py` may move its own `guide_live`,
+`video_published` and `release_published` items from `pending/` to `approved/` and post them without a per-item
+click, and only when every automatic check passes:
+
+- the page answers 200 on the live site;
+- the facts match the live page;
+- the post fits each channel's limits and voice;
+- the pinned company identity is confirmed twice per channel;
+- at most 1 post per channel per day and 3 per week;
+- no duplicate within 30 days;
+- the item has not expired.
+
+Nothing else is covered: other kinds, edited items, manual drafts, replies, likes, follows or DMs. Any failed check
+waits for Ben. Never post as Ben personally on any channel. Reddit, HN and Product Hunt stay manual drafts. See
+`docs/social-poster.md`.

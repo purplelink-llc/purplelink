@@ -14,21 +14,28 @@ EXPECTED = {
     "/li/legroom": "/legroom/",
     "/li/guides": "/guides/",
     "/li/tools": "/tools/",
+    "/li/keyfeel": "/keyfeel/",
+    "/li/panely": "/panely/",
+    "/li/summonly": "/summonly/",
+    "/li/batterymeter": "/batterymeter/",
 }
+# The one placeholder rule, /li/g/:slug -> /guides/:slug/, is checked with the other channels' rules in
+# test_social_redirects.py.
+GUIDE_RULE = "/li/g/:slug"
 
 
 class LinkedinRedirects(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.rules = tomllib.loads(read("netlify.toml"))["redirects"]
-        cls.li = [r for r in cls.rules if r["from"].startswith("/li")]
+        cls.li = [r for r in cls.rules if r["from"].startswith("/li") and r["from"] != GUIDE_RULE]
 
     def test_exactly_the_expected_sources(self):
         self.assertEqual(sorted(r["from"] for r in self.li), sorted(EXPECTED))
 
     def test_no_wildcard_or_splat(self):
         for r in self.rules:
-            if r["from"].startswith("/li"):
+            if r["from"].startswith("/li") and r["from"] != GUIDE_RULE:
                 self.assertNotIn("*", r["from"])
                 self.assertNotIn(":", r["from"])
                 self.assertNotIn(":splat", r["to"])
