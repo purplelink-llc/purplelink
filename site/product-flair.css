@@ -67,8 +67,7 @@
   border-radius: 14px;
   border: 1px solid var(--line);
   box-shadow:
-    0 40px 90px oklch(20% 0.08 310 / 0.28),
-    0 6px 18px oklch(20% 0.08 310 / 0.12);
+    var(--elev-4);
 }
 .flair-shot img { display: block; width: 100%; height: auto; }
 
@@ -147,8 +146,7 @@
   border-radius: 14px;
   border: 1px solid var(--line);
   box-shadow:
-    0 40px 90px oklch(20% 0.08 310 / 0.26),
-    0 6px 18px oklch(20% 0.08 310 / 0.1);
+    var(--elev-4);
 }
 .flair-step-shot figcaption { margin-top: 10px; font-size: 0.82rem; color: var(--muted); text-align: center; }
 .flair-step-note { margin-top: 10px; font-size: 0.85rem; color: var(--muted); }
@@ -281,8 +279,7 @@
 .flair-chapters .screenshot-wide img {
   border-radius: 14px;
   box-shadow:
-    0 40px 90px oklch(20% 0.08 310 / 0.24),
-    0 6px 18px oklch(20% 0.08 310 / 0.1);
+    var(--elev-4);
 }
 
 @media (min-width: 1000px) {
