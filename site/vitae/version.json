@@ -1,5 +1,5 @@
 {
-  "version": "1.3.0",
-  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.3.0.dmg",
-  "releaseNotes": "The Annual Review now works for a calendar year, an academic year (you choose the start month) or custom dates, and your mentees appear in it as an Advising and Mentoring section. Export for Annual Report writes a folder with the period's publications as RIS and BibTeX. Vitae Plus adds a faculty activity Word file, a missing details check and a README in that folder."
+  "version": "1.4.0",
+  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.4.0.dmg",
+  "releaseNotes": "For You is a new screen that reads your own record and points out what may need you, such as a decision taking long or a grant about to end. Papers get research topics from OpenAlex, which you can edit, and co-author affiliations are matched to institutions for a collaboration map and a research timeline, all on your Mac. Shareables adds five visual cards on a new Nocturne background. A new CV setting hides journal names on manuscripts under review, and recording a rejection moves the project out of Under Review, with Undo. For You, the map, the timeline and the visual cards follow the free and Plus split described on the Vitae Plus page."
 }

@@ -1788,7 +1788,7 @@ Title: Vitae — Academic CV & Research Management for macOS | Purplelink LLC
 ← All products
 
 macOS
-Free app · optional Plus from $2.99 a month · v1.3.0 Beta
+Free app · optional Plus from $2.99 a month · v1.4.0 Beta
 
 # Vitae
 
@@ -1805,7 +1805,7 @@ Your research record on one screen: projects, papers under review, open revision
 
 Vitae is a free Mac app for academics that keeps your submissions, grants, projects, co-authors, teaching, service and CV in one record on your own Mac, with no account. It needs macOS 15 or later. An optional subscription, Vitae Plus, costs $2.99 a month or $23.99 a year and adds reports and Word export. Vitae does not fill in your university's reporting system for you, and it has no iPhone, web or Windows version.
 
-Facts as of version 1.3.0, October 2026.
+Facts as of version 1.4.0, October 2026.
 
 QuestionAnswer
 
@@ -1822,6 +1822,8 @@ Free exportsCV and packages as PDF, rich text (.rtf), HTML and Markdown; publica
 Plus exportsWord (.docx) with your own templates, short and one-page CV variants, and reports such as an NIH biosketch draft.
 
 Annual reviewFree. Pick a calendar year, an academic year with the start month you choose, or custom dates, and Vitae limits the report to it. Papers under review are left out. Publications carry a year only, so in an academic year a paper can land in the neighbouring period.
+
+For You, topics and the mapFor You reads your own record and lists what may need you. Three of its items are free: a decision taking long, the annual review period ending with details missing, and a paper just accepted or published. The rest, the world map of your co-authors' institutions, the research timeline and the visual share cards need Plus. Topics for each paper are free to view and edit. The topic list and institution registry are bundled in the app, so nothing is sent to a server.
 
 Faculty180, Faculty SuccessExport for Annual Report writes the period's RIS and BibTeX files, free, meant for their publication importers. Vitae Plus adds a faculty activity Word file and a README. I have not tested any of these against a live campus system. See what each system can import.
 
@@ -1851,6 +1853,10 @@ Connect iCloud, Gmail, Outlook, Yahoo, Fastmail, or your university mail, read-o
 
 Track coauthors, collaborators, and projects. Link people to papers, grants, and roles so your network stays navigable. Capture research ideas before they are projects. Sort them on a board by stage, group them by type or author, plot them by impact against feasibility, or link them on a map. Then make one a project with its authors in order. Send any publication to Zotero in one click.
 
+### For You, topics and the map
+
+Vitae builds a map of how your papers, co-authors, venues, grants and ideas connect, on your Mac, and a few plain rules point out what may need you: a decision taking longer than usual at a venue, an annual review with details missing, a grant about to end. Each item lists the records behind it. Papers also get up to three research topics from the OpenAlex list, which you can change, and co-author affiliations are matched to institutions for a collaboration map and a research timeline. Some of this needs Vitae Plus.
+
 ### Local-first & private
 
 Everything is stored on your Mac with SwiftData. No account and no cloud sync required, and keeping your record needs no subscription. Vitae takes a daily backup and lets you undo changes, so a bad import or merge is never permanent.
@@ -1862,6 +1868,16 @@ Watch the tour
 Submissions, grants, projects and co-authors tracked in one local record, with your CV built from it.
 
 Play the video on YouTube
+
+Shareables
+
+## Share cards drawn from your record
+
+With Vitae Plus, Shareables makes five visual cards: co-author network, citation growth, year in review, collaboration map and research timeline. You can show names, show initials only or hide them. Both pictures below use a fictional researcher.
+
+The collaboration map card. Turning institution names off leaves plain dots.
+
+The year in review card, on the Light version of the Nocturne background.
 
 ## Submissions, CV, grants and tenure
 
@@ -1992,9 +2008,9 @@ Download Vitae, free
 
 ## Vitae Plus in short
 
-Vitae Plus is an optional subscription for the free Vitae Mac app: $2.99 a month or $23.99 a year, with a 7-day free trial, or included for life in the Mac Suite. You do not need it to keep your record, build a CV, run Annual Review for any period or export publications as RIS and BibTeX. Those stay free. Plus adds Word (.docx) export with your own templates, the annual report Word file and missing details check, reports, the revision workspace, Shareables, ORCID sync and batch DOI lookup, and calendar sync.
+Vitae Plus is an optional subscription for the free Vitae Mac app: $2.99 a month or $23.99 a year, with a 7-day free trial, or included for life in the Mac Suite. You do not need it to keep your record, build a CV, run Annual Review for any period or export publications as RIS and BibTeX. Those stay free. Plus adds Word (.docx) export with your own templates, the annual report Word file and missing details check, reports, the revision workspace, Shareables, the collaboration map and research timeline, the extra For You nudges, ORCID sync and batch DOI lookup, and calendar sync.
 
-Free and Plus features as of Vitae 1.3.0, October 2026.
+Free and Plus features as of Vitae 1.4.0, October 2026.
 
 FeatureFreePlus
 
@@ -2018,7 +2034,19 @@ Reports: NIH biosketch draft, Current and Pending, AACSB summary, progress repor
 
 Daily ORCID check and batch DOI lookupNoYes
 
-Revision workspace, Shareables, collaboration map, calendar sync, themesNoYes
+For You: the research graph and three nudges (a decision taking long, annual review with details missing, good news to share)YesYes
+
+For You: deadlines for your venues and topics, co-authors you have not worked with in years, grants ending, tenure bar, your growing topics, the Monday summary and Apple Intelligence wordingNoYes
+
+Research topics for each paper, with editingYesYes
+
+Collaboration map and research timelineNoYes
+
+Shareables, including the five visual cardsNoYes
+
+Revision workspace, calendar sync, themesNoYes
+
+Option to hide journal names on manuscripts under review, and a rejection moving a project out of Under ReviewYesYes
 
 Filling in a university reporting system such as Faculty180 or Faculty Success? The free RIS and BibTeX export covers the publications, and Plus adds a Word file with one heading per activity type, which I have not tested against a live campus system. See what each system can import.
 
@@ -2062,11 +2090,15 @@ Splits a decision letter into reviewer points, tracks who answers each one, and 
 
 ### Shareables
 
-Images for social posts about an acceptance, an award or a new paper.
+Images for social posts about an acceptance, an award or a new paper, and five visual cards from your record: co-author network, citation growth, year in review, collaboration map and research timeline.
 
-### Collaboration map and research profile
+### More in For You
 
-A map of who you work with and a profile of your research, drawn from your projects and papers.
+Deadlines at venues that match your work or topics, co-authors you have not worked with in years, grants about to end, your tenure bar, a subfield of yours that grew, a Monday summary and gentler wording from Apple Intelligence. The first three nudges stay free.
+
+### Collaboration map and research timeline
+
+A world map of the institutions you work with and a timeline of your topics by year, both drawn on your Mac and saved as pictures. Choosing and editing the topics of your papers stays free.
 
 ### Batch DOI lookup and ORCID sync
 
@@ -4391,7 +4423,7 @@ ProductLatest versionReleased
 
 ModernTex1.11.0October 2026
 
-Vitae1.3.0October 2026
+Vitae1.4.0October 2026
 
 Legroom1.4.0October 2026
 
