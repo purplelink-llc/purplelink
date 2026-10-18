@@ -353,6 +353,7 @@ def test_tools_have_annotations_titles_schemas_and_no_auth_scheme(server):
         assert t.title and len(t.name) <= 64 and len(t.description) > 80
         assert t.inputSchema["type"] == "object" and t.outputSchema["type"] == "object"
         assert t.meta["securitySchemes"] == [{"type": "noauth"}]
+        assert a.title == t.title  # the directory reads annotations.title
     props = tools["check_references"].inputSchema["properties"]["references"]
     assert props["maxLength"] == cc.MAX_INPUT_BYTES and props["minLength"] == 1
     assert tools["doi_to_bibtex"].inputSchema["properties"]["dois"]["maxItems"] == cc.MAX_BIBTEX_DOIS

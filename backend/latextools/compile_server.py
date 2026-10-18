@@ -49,9 +49,9 @@ async def _local_backend(source: str, engine: str, bibliography: Optional[str]) 
 _compile_backend: Callable[[str, str, Optional[str]], Awaitable[dict]] = _local_backend
 
 NOAUTH = {"securitySchemes": [{"type": "noauth"}]}
-COMPILE_ANNOTATIONS = ToolAnnotations(readOnlyHint=True, destructiveHint=False, idempotentHint=True,
+COMPILE_ANNOTATIONS = ToolAnnotations(title="Compile LaTeX to PDF", readOnlyHint=True, destructiveHint=False, idempotentHint=True,
                                       openWorldHint=False)
-EXPLAIN_ANNOTATIONS = ToolAnnotations(readOnlyHint=True, destructiveHint=False, idempotentHint=True,
+EXPLAIN_ANNOTATIONS = ToolAnnotations(title="Explain a LaTeX error", readOnlyHint=True, destructiveHint=False, idempotentHint=True,
                                       openWorldHint=False)
 
 
