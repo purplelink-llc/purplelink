@@ -30,7 +30,8 @@ the automation Chrome (port 9340). No render waits; a few seconds per platform.
                           whose count rose since the last run, with the photo
                           and caption, as "NEW getty download" lines.
 
-Sources verified 2026-09-30. Each ledger is rewritten from the source on every
+The two Getty ledgers are no longer refreshed by main() (2026-10-18); Getty's monthly totals are entered with
+record-getty-month.py. Sources verified 2026-09-30. Each ledger is rewritten from the source on every
 run (the sources are full histories), and a platform that fails to read is
 reported and left untouched rather than blanked.
 """
@@ -251,7 +252,8 @@ def main():
     # The sweep closes its own tabs before this runs, so there may be none.
     t = Tab(pages[0]) if pages else Tab.new()
     t.front()
-    for name, fn in (("adobe", adobe), ("shutterstock", shutterstock), ("getty", getty), ("getty-downloads", getty_downloads), ("faa-sales", faa_sales)):
+    for name, fn in (("adobe", adobe), ("shutterstock", shutterstock), ("faa-sales", faa_sales)):
+        # Getty left the daily run 2026-10-18: monthly statement totals are entered with record-getty-month.py.
         # One retry: Getty's Account Management page failed with a bare "Uncaught" on 2026-10-09 and 10-10
         # but read fine when run alone, so a page that had not finished rendering is the likely cause.
         # A signed-out site is not retried, since waiting cannot fix it.
