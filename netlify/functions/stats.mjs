@@ -50,7 +50,24 @@ export function isLinkedin(v) {
   const h = String(v || "").toLowerCase().replace(/^[a-z][a-z0-9+.\-]*:\/\//, "").split(/[/?#]/)[0].replace(/:\d+$/, "");
   return h === "linkedin" || h === "lnkd.in" || /(^|\.)linkedin\.com$/.test(h) || /^com\.linkedin\.android(\.[a-z]+)?$/.test(h);
 }
-export const foldChannel = (v) => (isLinkedin(v) ? "linkedin" : v);
+// The social poster's other channels (scripts/social, docs/social-poster.md), each one label however it arrives: the
+// utm_source its short links carry (/bs/ bluesky, /th/ threads, /x/ x, /md/ mastodon, /dev/ devto) or the referring
+// host. Host match only, the same way as isLinkedin. Folded here at read time, so site/analytics.js is unchanged
+// and records stored under a host label are counted too. Mastodon servers vary: the common ones are listed and every
+// poster link carries utm_source=mastodon anyway.
+const SOCIAL = [
+  ["bluesky", /^(bluesky|bsky|bsky\.app|bsky\.social|go\.bsky\.app)$/],
+  ["threads", /^(threads|(www\.|l\.)?threads\.(net|com))$/],
+  ["x", /^(x|twitter|t\.co|(www\.|mobile\.)?(x|twitter)\.com)$/],
+  ["mastodon", /^(mastodon|mastodon\.(social|online|world)|mas\.to|mstdn\.social|fosstodon\.org|hachyderm\.io|infosec\.exchange|sigmoid\.social|scholar\.social)$/],
+  ["devto", /^(devto|(www\.)?dev\.to)$/],
+];
+export function socialChannel(v) {
+  const h = String(v || "").toLowerCase().replace(/^[a-z][a-z0-9+.\-]*:\/\//, "").split(/[/?#]/)[0].replace(/:\d+$/, "");
+  for (const [name, re] of SOCIAL) if (re.test(h)) return name;
+  return "";
+}
+export const foldChannel = (v) => (isLinkedin(v) ? "linkedin" : socialChannel(v) || v);
 
 // The free tool pages tag their offer link utm_source=tool-<slug>. That is channel "tool" with the slug as detail, written
 // "tool:<slug>". Only a campaign source or a first-touch label is folded, never a referrer host, so a referring site with

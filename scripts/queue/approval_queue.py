@@ -27,7 +27,10 @@ ROOT = Path(os.environ.get("PURPLELINK_QUEUE") or Path.home() / ".purplelink" / 
 FOLDERS = ["pending", "approved", "done", "rejected", "expired", "needs-work", "snoozed", "evidence"]
 KINDS = {"post", "email", "listing", "pr", "spend", "decision", "check", "submission"}
 OUTWARD = {"post", "email", "listing", "spend", "submission"}
-EXECUTORS = {"ben", "claude-chrome", "claude-code", "auto"}
+EXECUTORS = {"ben", "claude-chrome", "claude-code", "auto", "poster"}
+# "poster" is scripts/social/poster.py. Standing approval (Ben, 2026-10-18): its own guide_live, video_published and
+# release_published items may move to approved/ without a click, only after every automatic check passes there.
+POSTER_JOB = "social-poster"
 RISKS = {"low", "medium", "high"}
 REASONS = {"tone", "wrong-target", "wrong-fact", "not-now", "no-value", "risk"}
 REQUIRED_FIELDS = ["id", "created", "job", "model", "kind", "target", "executor", "risk", "effort_minutes", "expires", "expected_effect", "ledger", "status"]
@@ -233,6 +236,8 @@ def lint(fm: dict, body: str, offline: bool = False, others: list | None = None,
         problems.append(f"risk must be one of {sorted(RISKS)}")
     if fm.get("kind") in OUTWARD and fm.get("executor") == "auto":
         problems.append("outward kinds cannot use executor auto")
+    if fm.get("executor") == "poster" and (fm.get("job") != POSTER_JOB or fm.get("kind") != "post"):
+        problems.append("executor poster is only for social-poster post items")
     if fm.get("kind") == "post" and "reddit" in str(fm.get("target", "")).lower() and fm.get("executor") != "ben":
         problems.append("Reddit posts must use executor ben (the Chrome tool blocks reddit.com)")
     try:
@@ -246,7 +251,7 @@ def lint(fm: dict, body: str, offline: bool = False, others: list | None = None,
     for s in REQUIRED_SECTIONS:
         if not sec.get(s):
             problems.append(f"missing or empty section: {s}")
-    checks["structure"] = "fail" if any("missing" in p or "must" in p or "auto" in p or "Reddit" in p for p in problems) else "pass"
+    checks["structure"] = "fail" if any("missing" in p or "must" in p or "auto" in p or "Reddit" in p or "poster" in p for p in problems) else "pass"
 
     # verify section: unverified claims block pending
     ver = sec.get("Verify", "")
@@ -271,7 +276,8 @@ def lint(fm: dict, body: str, offline: bool = False, others: list | None = None,
     for ph in BANNED_PHRASES:
         if ph in low:
             copy_problems.append(f"phrase: {ph}")
-    cap = WORD_CAPS.get(fm.get("kind"))
+    # Poster items carry one variant per channel and are held to each channel's own limit in scripts/social.
+    cap = None if fm.get("executor") == "poster" else WORD_CAPS.get(fm.get("kind"))
     if cap:
         for blk in drafts_of(draft_text) or [draft_text]:
             if len(words(blk)) > cap:
