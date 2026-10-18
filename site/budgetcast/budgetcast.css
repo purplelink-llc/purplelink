@@ -15,7 +15,7 @@
 .bc-opt { font-weight: 400; color: var(--muted); }
 .bc-field input, .bc-field select {
   width: 100%; min-height: 44px; padding: 10px 14px;
-  border: 1.5px solid var(--line); border-radius: 12px;
+  border: 1.5px solid var(--field-line); border-radius: 12px;
   background: var(--bg); color: var(--ink);
   font-family: var(--font-body); font-size: 1rem;
 }

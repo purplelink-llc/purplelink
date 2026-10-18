@@ -6,7 +6,7 @@
 .ttg-field > label { display:block;font-weight:600;margin-bottom:.4rem }
 .ttg-input {
   width:100%;box-sizing:border-box;font:inherit;color:inherit;
-  background:var(--panel);border:1px solid var(--line);
+  background:var(--panel);border:1px solid var(--field-line);
   border-radius:8px;padding:.6rem .7rem
 }
 textarea.ttg-input { min-height:9rem;resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;line-height:1.5 }
@@ -16,7 +16,7 @@ textarea.ttg-input { min-height:9rem;resize:vertical;font-family:ui-monospace,SF
 .ttg-opt-inline { display:flex;flex-direction:column;gap:.3rem }
 .ttg-opt-inline select, .ttg-opt-inline input {
   font:inherit;color:inherit;background:var(--panel);
-  border:1px solid var(--line);border-radius:8px;padding:.4rem .55rem
+  border:1px solid var(--field-line);border-radius:8px;padding:.4rem .55rem
 }
 .ttg-result-head { display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:.5rem }
 .ttg-result-head h2 { margin:0 }

@@ -37,6 +37,12 @@
   --muted:         oklch(46%   0.04  300);
   --line:          oklch(88%   0.05  310);
   --panel:         oklch(99%   0.003 310);
+  /* Edges and status colours that must meet WCAG contrast (1.4.11 for field edges at 3:1, 1.4.3 for text).
+     --line stays for decorative dividers. Checked 2026-10-18: field edge 3.5:1, status text 5.9 to 6.6:1. */
+  --field-line:    oklch(62%   0.03  310);
+  --ok:            oklch(45%   0.13  152);
+  --warn:          oklch(50%   0.12  70);
+  --danger:        oklch(50%   0.19  25);
 
   --font-display: 'Fraunces', Georgia, serif;
   --font-body:    'Plus Jakarta Sans', system-ui, sans-serif;
@@ -1527,7 +1533,7 @@ dd {
   min-width: 220px;
   min-height: 44px;
   padding: 12px 18px;
-  border: 1.5px solid var(--line);
+  border: 1.5px solid var(--field-line);
   border-radius: 100px;
   background: var(--panel);
   font-family: var(--font-body);
@@ -2039,7 +2045,7 @@ dd {
 .subscribe-input {
   flex: 1 1 200px;
   padding: 10px 16px;
-  border: 1.5px solid var(--line);
+  border: 1.5px solid var(--field-line);
   border-radius: 100px;
   background: var(--bg);
   color: var(--ink);
@@ -2237,10 +2243,10 @@ dd {
 
 .will-reveal {
   opacity: 0;
-  transform: translateY(26px);
+  transform: translateY(12px);
   transition:
-    opacity  0.72s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.72s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity  0.65s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .will-reveal.is-visible {
@@ -2711,7 +2717,7 @@ dd {
 
 .tool-app { max-width: 820px; margin: 0 auto; padding: 24px; }
 .dropzone {
-  border: 2px dashed var(--line); border-radius: 14px; padding: 40px 24px;
+  border: 2px dashed var(--field-line); border-radius: 14px; padding: 40px 24px;
   text-align: center; background: var(--purple-xlight); cursor: pointer;
   transition: border-color .2s, background .2s;
 }
@@ -2719,7 +2725,7 @@ dd {
 .dropzone input[type=file] { display: none; }
 .tool-options { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; margin: 20px 0; }
 .tool-options label { font-size: 0.95rem; color: var(--ink); }
-.tool-options select { padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; font: inherit; min-height: 44px; }
+.tool-options select { padding: 8px 10px; border: 1px solid var(--field-line); border-radius: 8px; font: inherit; min-height: 44px; }
 .tool-options input[type=checkbox] { width: 18px; height: 18px; }
 .tool-status { margin: 16px 0; min-height: 1.5em; color: var(--muted); }
 .tool-error {
@@ -2844,6 +2850,10 @@ dd {
     --muted:         oklch(70% 0.03 300);
     --line:          oklch(34% 0.03 310);
     --panel:         oklch(24% 0.02 310);
+    --field-line:    oklch(55% 0.03 310);
+    --ok:            oklch(80% 0.18 152);
+    --warn:          oklch(84% 0.16 84);
+    --danger:        oklch(71% 0.17 25);
   }
 
   :where(:root:not([data-theme="light"])) .tool-error {
@@ -3963,7 +3973,7 @@ main input[type="email"],
 main input[type="search"],
 main input[type="url"],
 main input[type="number"] {
-  border: 1px solid var(--line);
+  border: 1px solid var(--field-line);
   border-radius: 10px;
   background-color: var(--panel);
   color: var(--ink);
@@ -4257,7 +4267,7 @@ html { scroll-padding-top: 96px; }
 .list-filter { max-width: 560px; margin: 28px auto 0; padding: 0 24px; text-align: center; }
 .list-filter input[type="search"] {
   width: 100%; min-height: 48px; padding: 0 18px;
-  border: 1.5px solid var(--line); border-radius: 100px; background: var(--panel); color: var(--ink);
+  border: 1.5px solid var(--field-line); border-radius: 100px; background: var(--panel); color: var(--ink);
   font: inherit; font-size: 1rem;
 }
 .list-filter input[type="search"]:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-color: var(--purple); }
@@ -4287,7 +4297,7 @@ html { scroll-padding-top: 96px; }
 .trial-remind[hidden] { display: none; }
 .trial-remind-head { margin: 0 0 10px; font-weight: 600; color: var(--ink); font-size: 0.95rem; }
 .trial-remind-row { display: flex; gap: 8px; flex-wrap: wrap; }
-.trial-remind-row input[type="email"] { flex: 1 1 220px; min-height: 44px; padding: 0 14px; border: 1.5px solid var(--line); border-radius: 100px; background: var(--bg); color: var(--ink); font: inherit; }
+.trial-remind-row input[type="email"] { flex: 1 1 220px; min-height: 44px; padding: 0 14px; border: 1.5px solid var(--field-line); border-radius: 100px; background: var(--bg); color: var(--ink); font: inherit; }
 .trial-remind-row input[type="email"]:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-color: var(--purple); }
 .trial-remind-note { margin: 8px 0 0; color: var(--muted); font-size: 0.85rem; }
 /* ModernTex trial-download poll (site/moderntex/poll.js): one optional question, plain radio buttons. */
@@ -4450,7 +4460,7 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 .deadline-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .deadline-field label { font-weight: 600; font-size: 0.9rem; color: var(--ink); }
 .deadline-opt { font-weight: 400; color: var(--muted); }
-.deadline-field input { min-height: 44px; padding: 0 14px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--ink); font: inherit; width: 100%; }
+.deadline-field input { min-height: 44px; padding: 0 14px; border: 1.5px solid var(--field-line); border-radius: 12px; background: var(--bg); color: var(--ink); font: inherit; width: 100%; }
 .deadline-field input:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-color: var(--purple); }
 .deadline-fields .btn { min-height: 44px; }
 .deadline-status { margin: 12px 0 0; color: var(--muted); font-size: 0.86rem; }
@@ -4475,7 +4485,7 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 .feedback-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
 .feedback-form { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
 .feedback-form > label { font-weight: 600; font-size: 0.92rem; }
-.feedback-form textarea { width: 100%; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--ink); font: inherit; resize: vertical; }
+.feedback-form textarea { width: 100%; padding: 12px 14px; border: 1.5px solid var(--field-line); border-radius: 12px; background: var(--bg); color: var(--ink); font: inherit; resize: vertical; }
 .feedback-form textarea:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-color: var(--purple); }
 .feedback-form .btn { align-self: flex-start; }
 .feedback-check { display: flex; gap: 8px; align-items: center; font-weight: 500; }
@@ -4506,7 +4516,7 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 
 .search-page { max-width: 760px; margin: 0 auto; padding: clamp(40px, 7vw, 80px) 24px; }
 .search-page h1 { font-family: var(--font-display); font-size: clamp(2rem, 5vw, 3rem); margin: 0 0 18px; }
-.search-form input[type="search"] { width: 100%; min-height: 54px; padding: 0 20px; border: 1.5px solid var(--line); border-radius: 100px; background: var(--panel); color: var(--ink); font: inherit; font-size: 1.05rem; }
+.search-form input[type="search"] { width: 100%; min-height: 54px; padding: 0 20px; border: 1.5px solid var(--field-line); border-radius: 100px; background: var(--panel); color: var(--ink); font: inherit; font-size: 1.05rem; }
 .search-form input[type="search"]:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-color: var(--purple); }
 .search-status { min-height: 1.4em; margin: 10px 4px 6px; color: var(--muted); font-size: 0.9rem; }
 .search-results { list-style: none; margin: 0; padding: 0; }
@@ -4544,7 +4554,7 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 
 .stats-wrap { max-width: 980px; margin: 0 auto; padding: 40px 24px 80px; }
 .stats-form { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; margin: 16px 0; }
-.stats-form input, .stats-form select { min-height: 42px; padding: 0 12px; border: 1.5px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); font: inherit; }
+.stats-form input, .stats-form select { min-height: 42px; padding: 0 12px; border: 1.5px solid var(--field-line); border-radius: 10px; background: var(--bg); color: var(--ink); font: inherit; }
 .stats-msg { width: 100%; margin: 4px 0 0; color: var(--muted); }
 .stats-msg .err { color: oklch(52% 0.19 25); }
 .stats-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 18px 0; }
@@ -5305,7 +5315,7 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
   min-width: 0;
   min-height: 44px;
   padding: 10px 12px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--field-line);
   border-radius: 8px;
   background: var(--bg);
   color: var(--ink);
@@ -5386,7 +5396,7 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
   width: 100%;
   min-height: 44px;
   padding: 0 14px;
-  border: 1.5px solid var(--line);
+  border: 1.5px solid var(--field-line);
   border-radius: 12px;
   background: var(--bg);
   color: var(--ink);
@@ -5601,7 +5611,7 @@ dialog, [role="dialog"], [aria-modal="true"], .sales-scroll { overscroll-behavio
   width: 100%;
   min-height: 44px;
   padding: 10px 14px;
-  border: 1.5px solid var(--line);
+  border: 1.5px solid var(--field-line);
   border-radius: 12px;
   background: var(--bg);
   color: var(--ink);
@@ -5658,3 +5668,43 @@ dialog, [role="dialog"], [aria-modal="true"], .sales-scroll { overscroll-behavio
 .vitae-short, .vitae-guides { max-width: 900px; margin: 0 auto; padding: 8px 24px 28px; }
 .vitae-short h2, .vitae-guides h2 { margin: 0 0 14px; }
 .vitae-guides ul { margin: 0; padding-left: 1.2em; line-height: 1.7; }
+
+/* ─── Apple design pass (2026-10-18) ─────────────────────────────────── */
+
+/* Theme switch: colours cross-fade over a quarter second. This is a colour change, not movement, so it also
+   runs under reduced motion (an abrupt dark-to-light flash is the thing to avoid). */
+.theme-fade,
+.theme-fade *,
+.theme-fade *::before,
+.theme-fade *::after {
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, fill 0.25s ease, stroke 0.25s ease !important;
+}
+
+/* On touch screens :hover sticks after a tap, which left cards and buttons lifted. Lifts are for pointers. */
+@media (hover: none) {
+  .btn:hover,
+  .tool-card:hover,
+  .tool-card-lg:hover,
+  .tool-card-lg:hover .tool-card-lg-cta,
+  .dock-app:hover { transform: none; }
+}
+
+/* Headings that set no leading of their own were inheriting the body's 1.6. Zero specificity, so every
+   heading rule that sets line-height or letter-spacing still wins. */
+:where(h1, h2) { line-height: 1.1; letter-spacing: -0.025em; text-wrap: balance; }
+:where(h3, h4) { line-height: 1.25; letter-spacing: -0.01em; text-wrap: balance; }
+
+/* Reduce transparency: the header becomes solid. */
+@media (prefers-reduced-transparency: reduce) {
+  .topbar { background: var(--bg); backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+
+/* Increase contrast: stronger dividers and muted text, solid header, outlined secondary buttons.
+   The dark override repeats the selector the dark tokens use so it wins on specificity. */
+@media (prefers-contrast: more) {
+  :root { --line: oklch(55% 0.04 310); --field-line: oklch(45% 0.04 310); --muted: oklch(36% 0.04 300); }
+  :root:not([data-theme="light"]) { --line: oklch(65% 0.04 310); --field-line: oklch(72% 0.04 310); --muted: oklch(84% 0.03 300); }
+  .topbar { background: var(--bg); backdrop-filter: none; -webkit-backdrop-filter: none; border-bottom-color: var(--ink); }
+  .btn-ghost, .btn-secondary { border-color: var(--ink); }
+}
+

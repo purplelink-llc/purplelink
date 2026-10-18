@@ -40,7 +40,8 @@
 })();
 
 (() => {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (reduceMotion.matches) return;
   // No IntersectionObserver means nothing would ever un-hide these elements.
   if (!('IntersectionObserver' in window)) return;
 
@@ -96,7 +97,8 @@
         : [];
       const idx = siblings.indexOf(el);
       if (idx > 0) {
-        el.style.transitionDelay = `${Math.min(idx * 0.075, 0.3)}s`;
+        // Short and capped: a fast scroll should never meet a blank block waiting its turn.
+        el.style.transitionDelay = `${Math.min(idx * 0.04, 0.12)}s`;
       }
 
       io.observe(el);
@@ -118,6 +120,8 @@
   };
   setTimeout(revealRest, 2000);
   if (document.visibilityState === 'hidden') revealRest();
+  // Reduced motion switched on mid-visit: show everything still waiting at once.
+  if (reduceMotion.addEventListener) reduceMotion.addEventListener('change', e => { if (e.matches) revealRest(); });
 })();
 
 // ModernTex: someone who pressed "Buy" inside the trial app (?from=trial), or

@@ -536,3 +536,19 @@
 
 .tour-section .section-intro { color: var(--muted); max-width: 640px; margin-bottom: 24px; }
 .tour-section.catalog-section .yt-embed { margin-top: 8px; }
+
+/* ─── Press feedback (Apple design pass, 2026-10-18) ─────────────────── */
+/* Every card-like link answers on pointer-down, not only on release. The individual scale property composes
+   with the hover translate. Under reduced motion the press is a brief dim instead of a scale. */
+@media (prefers-reduced-motion: no-preference) {
+  :is(.catalog-card, .tool-card, .tool-card-lg, .kit-card, .dock-app, .tool-chip, .submit-grid a):active {
+    scale: 0.985;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn { transition: opacity 0.1s; }
+  :is(.btn, .catalog-card, .tool-card, .tool-card-lg, .kit-card, .dock-app, .tool-chip, .submit-grid a):active {
+    opacity: 0.8;
+  }
+}
+

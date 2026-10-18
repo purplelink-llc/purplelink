@@ -369,7 +369,11 @@ test("the home page dock has a tile for Tapefolio with its icon, and the dock CS
   assert.match(css, /\.dock \{[^}]*grid-template-columns: repeat\(5, minmax\(0, 1fr\)\)/);
   assert.match(css, /@media \(max-width: 999px\) \{\s*\.dock \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
   assert.match(css, /\.dock > li:nth-child\(10\) \{ animation-delay/);
-  assert.match(css, /\.dock > li:nth-child\(8\) \.dock-art \{ animation-delay/);
+  // No endless idle float (WCAG 2.2.2), and the ten tiles finish landing within half a second.
+  assert.doesNotMatch(css, /dock-float/);
+  const delays = [...css.matchAll(/\.dock > li:nth-child\(\d+\) \{ animation-delay: ([\d.]+)s/g)].map((m) => Number(m[1]));
+  assert.equal(delays.length, 10);
+  assert.ok(Math.max(...delays) <= 0.5);
   assert.doesNotMatch(css, /repeat\(7,/);
   assert.doesNotMatch(css, /repeat\(8,/);
 });

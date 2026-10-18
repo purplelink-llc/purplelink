@@ -408,7 +408,7 @@
 /* ---------- attribute-guess games ---------- */
 .ag-form { display: flex; gap: 10px; align-items: flex-start; max-width: 560px; margin: 4px 0 6px; }
 .ag-combo { position: relative; flex: 1 1 auto; min-width: 0; }
-.ag-combo input { width: 100%; min-height: 48px; padding: 0 16px; border-radius: 14px; border: 2px solid var(--line); background: var(--panel); color: var(--ink); font: 700 1rem/1 var(--font-body); }
+.ag-combo input { width: 100%; min-height: 48px; padding: 0 16px; border-radius: 14px; border: 2px solid var(--field-line); background: var(--panel); color: var(--ink); font: 700 1rem/1 var(--font-body); }
 .ag-combo input:focus { outline: 3px solid var(--gc, var(--purple)); outline-offset: 2px; border-color: transparent; }
 .ag-combo ul { position: absolute; z-index: 20; left: 0; right: 0; top: calc(100% + 6px); list-style: none; margin: 0; padding: 6px; border-radius: 14px; background: var(--panel); border: 2px solid var(--line); box-shadow: 0 10px 28px oklch(10% 0.04 310 / 0.35); max-height: 330px; overflow-y: auto; }
 .ag-combo li { padding: 10px 12px; border-radius: 9px; cursor: pointer; font-weight: 600; }
@@ -522,7 +522,7 @@
 .stars-sw[data-c="rose"] { background: oklch(72% 0.15 5); } .stars-sw[data-c="sky"] { background: oklch(75% 0.12 230); }
 .stars-pair { margin: 8px 0 14px; display: grid; gap: 8px; justify-items: start; }
 .stars-pair label { font-weight: 800; font-size: 0.9rem; }
-.stars-pair select { min-height: 46px; padding: 0 14px; border-radius: 12px; border: 2px solid var(--line); background: var(--panel); color: var(--ink); font: 700 1rem/1 var(--font-body); }
+.stars-pair select { min-height: 46px; padding: 0 14px; border-radius: 12px; border: 2px solid var(--field-line); background: var(--panel); color: var(--ink); font: 700 1rem/1 var(--font-body); }
 .stars-pair p { margin: 0; font-weight: 700; min-height: 1.4em; }
 
 /* Chess Rush */
@@ -548,7 +548,7 @@
 .sp-practice { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin: 0 0 14px; }
 .sp-practice[hidden], .sp-form[hidden], .sp-tools[hidden], .ub-picker[hidden] { display: none; }
 .sp-field { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.92rem; }
-.sp-field select { min-height: 44px; padding: 0 12px; border-radius: 12px; border: 2px solid var(--line); background: var(--panel); color: var(--ink); font: 700 0.95rem/1 var(--font-body); }
+.sp-field select { min-height: 44px; padding: 0 12px; border-radius: 12px; border: 2px solid var(--field-line); background: var(--panel); color: var(--ink); font: 700 0.95rem/1 var(--font-body); }
 .sp-form { max-width: 620px; }
 .sp-msg { min-height: 1.5em; margin: 6px 0 4px; font-weight: 600; font-size: 0.94rem; }
 .sp-msg.sp-bad { color: var(--bad, oklch(48% 0.18 25)); }

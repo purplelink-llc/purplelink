@@ -275,8 +275,16 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .stage-slide { transition: none; }
+  /* A short cross-fade, not a hard cut: opacity is not movement. */
+  .stage-slide { transition: opacity 0.3s ease; }
   .stage-thumb-bar { display: none; }
+  .stage-thumb:hover,
+  .shop:hover img, .shop:focus-visible img,
+  .shop:hover .shop-cta span, .shop:focus-visible .shop-cta span,
+  .license-list a:hover .license-name, .license-list a:focus-visible .license-name,
+  .license-list a:hover .license-go, .license-list a:focus-visible .license-go,
+  .more-link:hover span { transform: none; }
+  .stage-btn:active { transform: none; opacity: 0.8; }
 }
 
 @media (max-width: 720px) {

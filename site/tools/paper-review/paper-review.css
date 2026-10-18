@@ -190,7 +190,7 @@
 .pr-field-error { font-size: 0.85rem; color: color-mix(in oklch, oklch(58% 0.2 25) 75%, var(--ink)); margin: 0.4rem 0 0; line-height: 1.5; }
 .pr-retry-link { background: none; border: none; padding: 0; margin-left: 0.3em; color: var(--purple); font: inherit; font-size: inherit; text-decoration: underline; cursor: pointer; }
 .pr-retry-link:hover { color: color-mix(in oklch, var(--purple) 80%, var(--ink)); }
-.pr-input { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); font: inherit; font-size: 0.95rem; box-sizing: border-box; }
+.pr-input { width: 100%; padding: 0.55rem 0.75rem; border: 1px solid var(--field-line); border-radius: 6px; background: var(--bg); color: var(--ink); font: inherit; font-size: 0.95rem; box-sizing: border-box; }
 .pr-input::placeholder { color: var(--muted); }
 .pr-input:focus { outline: 2px solid var(--purple); outline-offset: 1px; border-color: var(--purple); }
 .pr-textarea { min-height: 8rem; resize: vertical; font-family: monospace; font-size: 0.85rem; line-height: 1.5; }
