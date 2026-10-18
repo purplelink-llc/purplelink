@@ -557,10 +557,19 @@
   bar.appendChild(close);
   const onScreen = new Set();
   let pastFirst = false;
+  // The bar leaves the way it came in (motion.css .is-leaving), then is hidden; under reduced motion it just hides.
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let leaveTimer = 0;
   const update = () => {
     const show = !dismissed && pastFirst && onScreen.size === 0;
-    bar.hidden = !show;
     document.body.classList.toggle("has-sticky-cta", show);
+    clearTimeout(leaveTimer);
+    bar.classList.remove("is-leaving");
+    if (show) { bar.hidden = false; return; }
+    if (bar.hidden) return;
+    if (reduce.matches) { bar.hidden = true; return; }
+    bar.classList.add("is-leaving");
+    leaveTimer = setTimeout(() => { bar.hidden = true; bar.classList.remove("is-leaving"); }, 280);
   };
   const io = new IntersectionObserver((entries) => {
     entries.forEach((e) => {

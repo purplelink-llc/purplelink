@@ -26,7 +26,7 @@
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 12px;
-  box-shadow: 0 24px 60px oklch(20% 0.08 310 / 0.18), 0 3px 10px oklch(20% 0.08 310 / 0.08);
+  box-shadow: var(--elev-3);
 }
 .sm-transcript { max-width: 960px; margin-top: 16px; }
 .sm-transcript h3 { margin: 0 0 6px; font-size: 1rem; }

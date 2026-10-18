@@ -29,6 +29,8 @@
   inset: 0;
   z-index: 0;
   overflow: hidden;
+  /* Horizontal swipes belong to the slideshow (photography.js); vertical scrolling and pinch stay with the page. */
+  touch-action: pan-y pinch-zoom;
 }
 
 .stage-frame:focus-visible {
@@ -41,8 +43,11 @@
   inset: 0;
   margin: 0;
   opacity: 0;
-  transition: opacity 1.4s var(--ease-out);
+  transition: opacity 1.4s var(--ease-out), translate 0.35s var(--ease-out);
 }
+
+/* While a finger holds the photograph it moves 1:1 with no easing; on release it springs back over 0.35s. */
+.stage-slide.is-dragging { transition: opacity 1.4s var(--ease-out); }
 
 .stage-slide.is-active { opacity: 1; }
 
@@ -229,10 +234,6 @@
 /* Motion: drift on the active photograph, a progress line on its thumbnail,
    and a staggered rise for the headline. Nothing here gates visibility. */
 @media (prefers-reduced-motion: no-preference) {
-  @keyframes stage-drift {
-    from { transform: scale(1.09); }
-    to   { transform: scale(1); }
-  }
 
   @keyframes stage-progress {
     from { transform: scaleX(0); }
@@ -251,8 +252,16 @@
     to   { transform: none; }
   }
 
-  .stage-slide.is-active img {
-    animation: stage-drift 16s cubic-bezier(0.25, 0.6, 0.3, 1) both;
+  /* The slow drift is a transition, not an animation, so it is interruptible: an outgoing photograph eases
+     back from wherever it is instead of snapping to full size while it fades, and a returning one continues
+     from its current scale. @starting-style gives the first photograph its drift on load. */
+  .stage-slide img {
+    transform: scale(1.09);
+    transition: transform 16s cubic-bezier(0.25, 0.6, 0.3, 1);
+  }
+  .stage-slide.is-active img { transform: scale(1); }
+  @starting-style {
+    .stage-slide.is-active img { transform: scale(1.09); }
   }
 
   .stage[data-playing="true"] .stage-thumb.is-active .stage-thumb-bar {
@@ -415,15 +424,20 @@
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
+    /* The scroll parallax drives translate and the hover drives scale, as separate properties, so hovering
+       eases the zoom in from where the picture is instead of cancelling the parallax and jumping. */
     @keyframes shop-parallax {
-      from { transform: translateY(-3%) scale(1.06); }
-      to   { transform: translateY(3%) scale(1.06); }
+      from { translate: 0 -3%; }
+      to   { translate: 0 3%; }
     }
     .shop img {
       animation: shop-parallax linear both;
       animation-timeline: view();
+      scale: 1.06;
+      transition: scale 1.2s var(--ease-out);
     }
-    .shop:hover img { animation: none; transform: scale(1.09); }
+    .shop:hover img,
+    .shop:focus-visible img { transform: none; scale: 1.09; }
   }
 }
 
