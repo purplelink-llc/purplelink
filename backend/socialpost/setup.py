@@ -100,15 +100,26 @@ def setup(platform: str) -> int:
     raise SystemExit(f"unknown platform {platform}")
 
 
+def _scrub(text: str, *secrets: str) -> str:
+    """Meta's error text, with any secret removed in case it is ever echoed back."""
+    for sec in secrets:
+        if sec:
+            text = text.replace(sec, "[hidden]")
+    return text[:300]
+
+
 def _setup_threads(cfg: dict) -> int:
     tok = _ask_secret("Threads access token")
     app_secret = _ask_secret("Threads app secret, or Enter if the token is already long-lived", required=False)
     if app_secret:
-        r = Http().request("POST", "https://graph.threads.net/access_token",
-                           form={"grant_type": "th_exchange_token", "client_secret": app_secret, "access_token": tok})
+        # Meta documents this exchange as a GET with query parameters; a POST gets HTTP 400.
+        q = urlencode({"grant_type": "th_exchange_token", "client_secret": app_secret, "access_token": tok})
+        r = Http().request("GET", f"https://graph.threads.net/access_token?{q}")
         new = (r.json() or {}).get("access_token")
         if r.status != 200 or not new:
-            print(f"The exchange failed (HTTP {r.status}). Nothing stored.")
+            err = (r.json() or {}).get("error") or {}
+            msg = err.get("message", "") if isinstance(err, dict) else ""
+            print(f"The exchange failed (HTTP {r.status}). Nothing stored. {_scrub(msg, tok, app_secret)}".rstrip())
             return 1
         tok = new
     sysutil.keychain_set("threads", "access_token", tok)
