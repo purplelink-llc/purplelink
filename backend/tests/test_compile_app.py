@@ -144,6 +144,7 @@ def test_tools_have_annotations_titles_schemas_and_no_auth_scheme(server):
         assert t.title and len(t.description) > 80
         assert t.inputSchema["type"] == "object" and t.outputSchema["type"] == "object"
         assert t.meta["securitySchemes"] == [{"type": "noauth"}]
+        assert a.title == t.title  # the directory reads annotations.title
         # store rules: no product promotion in tool text
         assert "ModernTex" not in t.description and "Paper Review" not in t.description
     props = tools["compile_latex"].inputSchema["properties"]

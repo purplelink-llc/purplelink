@@ -49,7 +49,11 @@ _rate_check: Callable[[str], bool] = lambda ip: True
 _client_factory: Callable[[], httpx.AsyncClient] = lambda: httpx.AsyncClient(timeout=httpx.Timeout(8.0, connect=4.0))
 
 NOAUTH = {"securitySchemes": [{"type": "noauth"}]}
-READ_ONLY = ToolAnnotations(readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=True)
+def _read_only(title: str) -> ToolAnnotations:
+    """Read-only, open-world annotations. The title is repeated in annotations.title, which the Claude directory
+    reads for its listing (the top-level tool title alone draws a review suggestion)."""
+    return ToolAnnotations(title=title, readOnlyHint=True, destructiveHint=False, idempotentHint=True, openWorldHint=True)
+
 
 
 # ------------------------------------------------------------ output schemas
@@ -221,7 +225,7 @@ def build_server(public: bool = False) -> FastMCP:
             "to check a bibliography, or doubts that a citation (for example one a language model wrote) exists. "
             "Read-only; nothing is stored."
         ),
-        annotations=READ_ONLY,
+        annotations=_read_only("Check references exist and match"),
         meta=NOAUTH,
     )
     async def check_references(
@@ -262,7 +266,7 @@ def build_server(public: bool = False) -> FastMCP:
             "with a link to the notice. Use before citing a paper, or when a user asks whether a paper was retracted. "
             "A clear result is not a guarantee: a very recent retraction may not be in Crossref yet. Read-only; nothing is stored."
         ),
-        annotations=READ_ONLY,
+        annotations=_read_only("Check DOIs for retractions"),
         meta=NOAUTH,
     )
     async def check_retractions(
@@ -337,7 +341,7 @@ def build_server(public: bool = False) -> FastMCP:
             "Use when a user has DOIs (bare or doi.org links) and wants .bib entries to paste into a LaTeX project. "
             "Entries are Crossref's own; check capitalisation and fields before submitting. Read-only; nothing is stored."
         ),
-        annotations=READ_ONLY,
+        annotations=_read_only("Get BibTeX for DOIs"),
         meta=NOAUTH,
     )
     async def doi_to_bibtex(
