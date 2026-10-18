@@ -564,6 +564,131 @@ def merge_sparkle_updates(history: dict, by_file: dict) -> dict:
     return entry
 
 
+# --- MacUpdate -------------------------------------------------------------
+#
+# MacUpdate mirrors the DMG on its own servers, so its downloads never reach our download functions or the beacon;
+# a buyer who found us there later shows up as "direct" or "from:trial". Buyer emails (2026-10-15 to 10-17) named it
+# for 2 of 3 answers. The listing page states a running "Downloads" total in its server-rendered HTML; one reading a
+# day is archived and the daily and weekly figures are differences between readings (an odometer, like Sparkle).
+# Add an app here once its listing is live (the subdomain answers 200, not a redirect to the home page).
+MACUPDATE_LISTINGS = {"moderntex": "https://moderntex.macupdate.com/"}
+MACUPDATE_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605.1.15 (KHTML, like Gecko) Safari/605.1.15"
+
+
+def parse_macupdate_listing(page: str) -> dict | None:
+    """{downloads, version, price} from a listing page, or None when the Downloads figure is missing."""
+    def spec(title: str) -> str | None:
+        m = re.search(r'specs_list_title[^"]*">\s*' + title + r'\s*</h3>\s*<p class="specs_list_description[^"]*">(.*?)</p>',
+                      page, re.S)
+        return re.sub(r"<[^>]+>|<!--.*?-->", "", m.group(1)).strip() if m else None
+    dl = spec("Downloads")
+    if dl is None or not re.fullmatch(r"[\d,]+", dl):
+        return None
+    ver = re.search(r"Version\s*(?:<!-- -->)?\s*([0-9][0-9A-Za-z.\-]*)", page)
+    price = re.search(r'"offers":\{"@type":"Offer","price":"(\d+(?:\.\d+)?)"', page)
+    return {"downloads": int(dl.replace(",", "")), "version": ver.group(1) if ver else None,
+            "price": float(price.group(1)) if price else None}
+
+
+def fetch_macupdate(url: str) -> dict | None:
+    req = urllib.request.Request(url, headers={"User-Agent": MACUPDATE_UA})
+    try:
+        with urllib.request.urlopen(req, timeout=20) as r:
+            if r.geturl().rstrip("/") != url.rstrip("/"):
+                return None  # redirected: the listing is gone or not live
+            return parse_macupdate_listing(r.read().decode("utf-8", "replace"))
+    except (OSError, http.client.HTTPException) as exc:
+        print(f"  ! MacUpdate {url}: {str(exc)[:60]}", file=sys.stderr)
+        return None
+
+
+def merge_macupdate(history: dict, product: str, reading: dict, today: str | None = None) -> dict:
+    entry = history.setdefault("macupdate", {}).setdefault(product, {"snapshots": {}})
+    entry["snapshots"][today or _utc_today()] = reading
+    entry["url"] = MACUPDATE_LISTINGS.get(product, entry.get("url"))
+    return entry
+
+
+def macupdate_summary(entry: dict | None, today: dt.date | None = None) -> dict | None:
+    """Total, and downloads over the last 7 days from the reading 7 or more days back (None until one exists;
+    then `since` says which reading the difference starts from). A total that goes down is floored at 0."""
+    snaps = (entry or {}).get("snapshots") or {}
+    if not snaps:
+        return None
+    today = today or dt.date.today()
+    days = sorted(snaps)
+    last = snaps[days[-1]]
+    cutoff = (today - dt.timedelta(days=7)).isoformat()
+    base_day = max((d for d in days if d <= cutoff), default=None)
+    first_day = days[0]
+    out = {"total": last["downloads"], "asOf": days[-1], "version": last.get("version"), "price": last.get("price"),
+           "week": None, "sinceFirst": None, "firstDay": first_day}
+    if base_day:
+        out["week"] = max(0, last["downloads"] - snaps[base_day]["downloads"])
+    if first_day != days[-1]:
+        out["sinceFirst"] = max(0, last["downloads"] - snaps[first_day]["downloads"])
+    return out
+
+
+# Our own download counters per app (beacon trial clicks per day), for the all-sources view.
+SITE_DOWNLOAD_METRICS = {"moderntex": "trialDownloads", "outbound-veil": "ovTrialDownloads", "legroom": "lgTrialDownloads",
+                         "keyfeel": "kfTrialDownloads", "tapefolio": "tfTrialDownloads", "panely": "pnTrialDownloads",
+                         "summonly": "smTrialDownloads", "vitae": "vitaeDownloads"}
+APP_LABELS = {"moderntex": "ModernTex", "outbound-veil": "Outbound Veil", "legroom": "Legroom", "keyfeel": "Keyfeel",
+              "tapefolio": "Tapefolio", "panely": "Panely", "summonly": "Summonly", "vitae": "Vitae"}
+
+
+def downloads_all_sources(history: dict, today: dt.date | None = None) -> list[dict]:
+    """One row per app: downloads from our site in the last 7 complete days, MacUpdate's over the last 7 days
+    (when two readings that far apart exist) and MacUpdate's running total. GlobePin's App Store first-time
+    downloads are added as their own row. Sources count different things (a click on our download link, a
+    MacUpdate download, an App Store install), so they are shown side by side, never deduplicated."""
+    today = today or dt.date.today()
+    by_day = ((history.get("sites") or {}).get("purplelink") or {}).get("byDay") or {}
+    last7 = [(today - dt.timedelta(days=i)).isoformat() for i in range(1, 8)]
+    mu = history.get("macupdate") or {}
+    rows = []
+    for key, metric in SITE_DOWNLOAD_METRICS.items():
+        site7 = sum(int((by_day.get(d) or {}).get(metric, 0) or 0) for d in last7)
+        m = macupdate_summary(mu.get(key), today)
+        rows.append({"app": APP_LABELS[key], "site7": site7, "mu": m})
+    asd = (history.get("appstore") or {}).get("days") or {}
+    if asd:
+        rows.append({"app": "GlobePin (App Store)", "site7": None, "mu": None,
+                     "store7": sum(int((asd.get(d) or {}).get("downloads", 0) or 0) for d in last7)})
+    return rows
+
+
+def print_downloads_all_sources(history: dict) -> None:
+    rows = downloads_all_sources(history)
+    if not rows:
+        return
+    print("\n  Downloads, all sources, last 7 complete days (our site = clicks on our download links, raw, link-checker clicks"
+          " included; MacUpdate serves its own copy)")
+    tot_site = tot_mu = 0
+    for r in rows:
+        if "store7" in r:
+            print(f"   {r['app']:<22} App Store first-time downloads {r['store7']:>3}")
+            continue
+        m = r["mu"]
+        tot_site += r["site7"]
+        line = f"   {r['app']:<22} our site {r['site7']:>3}"
+        if m:
+            if m["week"] is not None:
+                tot_mu += m["week"]
+                line += f"   MacUpdate {m['week']:>3} ({m['total']} all time)"
+            elif m["sinceFirst"] is not None:
+                tot_mu += m["sinceFirst"]
+                line += f"   MacUpdate {m['sinceFirst']:>3} since {m['firstDay']} ({m['total']} all time)"
+            else:
+                weekly_from = (dt.date.fromisoformat(m["firstDay"]) + dt.timedelta(days=7)).isoformat()
+                line += f"   MacUpdate {m['total']} all time (first reading {m['asOf']}; weekly figure from {weekly_from})"
+            if m.get("version"):
+                line += f", listing shows {m['version']}" + (f" at ${m['price']:.2f}" if m.get("price") is not None else "")
+        print(line)
+    print(f"   Mac apps incl. Vitae: {tot_site} from our site, {tot_mu} from MacUpdate (where readings allow)")
+
+
 def sparkle_observations(hist: dict | None) -> list[str]:
     """One bullet on ModernTex's in-app update volume — kept separate from
     the trial/purchase-download observations since it measures a different
@@ -3631,8 +3756,21 @@ def google_ads_attributed(history: dict, days: int, product: str | None = None) 
 # published inside its window. tagged_links.json records hand-tagged batches; the how-to ledger adds its own videos.
 LINK_CHECK_VIEWS_PER_URL = 2
 LINK_CHECK_TRIALS_PER_URL = 2
-TAGGED_LINKS_PATH = Path(__file__).resolve().parent / "tagged_links.json"
-HOWTO_LEDGER_PATH = Path(__file__).resolve().parents[2] / "video" / "howto" / "ledger.json"
+# launchd runs a copy of this file from ~/.purplelink/traffic (see the photo-dashboard note below), so each file is
+# looked up next to the script first and then at its place in the repo.
+_REPO = Path("/Volumes/Extreme SSD/Purplelink LLC")
+
+
+def _repo_file(rel: str) -> Path:
+    here = Path(__file__).resolve()
+    for cand in (here.parents[2] / rel if len(here.parents) > 2 else None, _REPO / rel):
+        if cand is not None and cand.exists():
+            return cand
+    return _REPO / rel
+
+
+TAGGED_LINKS_PATH = _repo_file("scripts/traffic-dashboard/tagged_links.json")
+HOWTO_LEDGER_PATH = _repo_file("video/howto/ledger.json")
 HOWTO_URLS_PER_VIDEO = 2  # the tutorial and its Short each carry one tagged link (scripts/howto-publish.py)
 
 
@@ -5885,6 +6023,13 @@ def main() -> int:
             delta_note = f", {today['delta']} today" if today["delta"] is not None else " (first snapshot)"
             print(f"  ok ModernTex in-app updates: {today['total']} lifetime{delta_note}")
 
+        # MacUpdate listings: their own download counter (they serve a mirrored copy we never see).
+        for mu_key, mu_url in MACUPDATE_LISTINGS.items():
+            reading = fetch_macupdate(mu_url)
+            if reading is not None:
+                merge_macupdate(history, mu_key, reading)
+                print(f"  ok MacUpdate {mu_key}: {reading['downloads']} downloads all time, listing shows {reading['version']}")
+
         # Panely and Summonly: downloads served (public and buyer) and in-app updates by version.
         for app_key in APP_STATS_STORES:
             app_entry = fetch_app_stats_blobs(app_key)
@@ -6019,6 +6164,7 @@ def main() -> int:
     print_panely(panely_report(history))
     print_summonly(summonly_report(history))
     print_vitae(vitae_report(history))
+    print_downloads_all_sources(history)
     print_extensionpay(history)
     print_profit(profit, channels, tax)
     print_ad_funnel(history, manual_ads)
