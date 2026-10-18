@@ -2,15 +2,26 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>Label</key><string>llc.purplelink.ytabtest</string>
-  <key>ProgramArguments</key>
-  <array>
-    <string>/Users/benampel/.purplelink/run-when-online.sh</string>
-    <string>/Users/benampel/.purplelink/yt-abtest/yt-abtest-weekly.sh</string>
-  </array>
-  <key>StartCalendarInterval</key>
-  <dict><key>Weekday</key><integer>0</integer><key>Hour</key><integer>3</integer><key>Minute</key><integer>30</integer></dict>
-  <key>StandardOutPath</key><string>/tmp/llc.purplelink.ytabtest.out</string>
-  <key>StandardErrorPath</key><string>/tmp/llc.purplelink.ytabtest.err</string>
+	<key>Label</key>
+	<string>llc.purplelink.ytabtest</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/bin/bash</string>
+		<string>/Users/benampel/.purplelink/run-when-online.sh</string>
+		<string>/Users/benampel/.purplelink/yt-abtest/yt-abtest-weekly.sh</string>
+	</array>
+	<key>StandardErrorPath</key>
+	<string>/tmp/llc.purplelink.ytabtest.err</string>
+	<key>StandardOutPath</key>
+	<string>/tmp/llc.purplelink.ytabtest.out</string>
+	<key>StartCalendarInterval</key>
+	<dict>
+		<key>Hour</key>
+		<integer>3</integer>
+		<key>Minute</key>
+		<integer>30</integer>
+		<key>Weekday</key>
+		<integer>0</integer>
+	</dict>
 </dict>
 </plist>
