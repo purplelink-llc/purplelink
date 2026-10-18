@@ -46,7 +46,9 @@ LOOKUP_WAIT_SECONDS = 6
 VERIFY_RETRIES = 4
 VERIFY_WAIT_SECONDS = 5
 LOCK_TIMEOUT_SECONDS = 3 * 3600
-SYNTHETIC_KINDS = {"ambient", "photo-quiz"}
+# Kinds disclosed to YouTube as altered or synthetic content by default. Ambient videos are generated scenes; the photo
+# quiz shows Ben's real photographs, so labelling it synthetic would be wrong (2026-10-18).
+SYNTHETIC_KINDS = {"ambient"}
 PRIVACY = ("public", "unlisted", "private")
 
 

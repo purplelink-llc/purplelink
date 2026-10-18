@@ -305,8 +305,11 @@ class Uploading(GuardCase):
 
     def test_synthetic_flag_defaults_by_kind_and_can_be_turned_off(self):
         svc = FakeService()
-        self.up(svc, kind="photo-quiz")
+        self.up(svc, kind="ambient")
         self.assertIs(svc.inserts[0]["body"]["status"]["containsSyntheticMedia"], True)
+        svc_q = FakeService()
+        self.up(svc_q, kind="photo-quiz")      # real photographs: never labelled synthetic by default
+        self.assertIs(svc_q.inserts[0]["body"]["status"]["containsSyntheticMedia"], False)
         svc2 = FakeService()
         self.up(svc2, synthetic=False)
         self.assertIs(svc2.inserts[0]["body"]["status"]["containsSyntheticMedia"], False)

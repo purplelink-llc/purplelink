@@ -128,8 +128,8 @@ its own OAuth token, not through Studio (Studio needs a browser-wide channel swi
   registry id; otherwise nothing is written and the exit code is 3.
 - **Upload:** `python3 scripts/yt-api-upload.py --channel pixelhearth --kind ambient FILE --title "..." [--description-file F]
   [--tags a,b] [--category N] [--privacy public|unlisted|private] [--publish-at ISO] [--thumbnail F] [--not-synthetic]
-  [--dry-run]`. Default privacy is unlisted. Ambient and photo-quiz uploads are marked as synthetic media unless
-  `--not-synthetic`. It prints the URL and `verified channel: <id> (<title>)`.
+  [--dry-run]`. Default privacy is unlisted. Ambient uploads are marked as altered or synthetic content unless
+  `--not-synthetic`; photo-quiz uploads (real photographs) are not. It prints the URL and `verified channel: <id> (<title>)`.
 - **The checks** (`scripts/yt_guard.py`, all raise `ChannelGuardError`, exit 3): the kind must be in the channel's list
   (before any API call); the token's channel must be exactly the registry id (before any insert); after the insert,
   `videos.list` must report the registry channel, or the video is set Private at once, a macOS notification appears, and
