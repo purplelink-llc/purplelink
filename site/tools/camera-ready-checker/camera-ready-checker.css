@@ -10,7 +10,7 @@
 .cr-field label { font-size: 0.9rem; font-weight: 600; }
 .cr-opt { font-weight: 400; color: var(--muted); }
 .cr-field input, .cr-field select {
-  font: inherit; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink);
+  font: inherit; padding: 10px 12px; border: 1px solid var(--field-line); border-radius: 10px; background: var(--bg); color: var(--ink);
 }
 .cr-field input:focus-visible, .cr-field select:focus-visible, .cr-drop:focus-within { outline: 2px solid var(--purple); outline-offset: 2px; }
 .cr-drop {

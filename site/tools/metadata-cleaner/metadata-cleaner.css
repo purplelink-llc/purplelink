@@ -34,7 +34,7 @@
 .mc-options { padding: 0; }
 .mc-opts label, .mc-options label { display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; min-height: 32px; }
 .mc-opts input[type="checkbox"], .mc-options input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--purple); }
-.mc-opt-text input { font: inherit; padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); min-width: 12rem; }
+.mc-opt-text input { font: inherit; padding: 6px 10px; border: 1px solid var(--field-line); border-radius: 8px; background: var(--bg); color: var(--ink); min-width: 12rem; }
 .mc-opt-text input:focus-visible { outline: 2px solid var(--purple); outline-offset: 1px; }
 .mc-net { margin: 0; display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
 .mc-net-dot { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--purple); box-shadow: 0 0 0 0 var(--purple); }
@@ -80,7 +80,7 @@
 /* redact */
 .mc-rd-tools { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
 .mc-rd-tools label { display: inline-flex; align-items: center; gap: 8px; font-size: 0.92rem; }
-.mc-rd-tools select, .mc-field select { font: inherit; padding: 6px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); min-height: 40px; }
+.mc-rd-tools select, .mc-field select { font: inherit; padding: 6px 10px; border: 1px solid var(--field-line); border-radius: 8px; background: var(--bg); color: var(--ink); min-height: 40px; }
 .mc-rd-stage { margin: 12px 0; text-align: center; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 8px; }
 #mc-rd-canvas { max-width: 100%; max-height: 70vh; width: auto; height: auto; touch-action: none; cursor: crosshair; border-radius: 6px; }
 #mc-rd-canvas:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
@@ -89,7 +89,7 @@
 .mc-field { display: grid; gap: 6px; }
 .mc-field label { font-size: 0.9rem; font-weight: 600; }
 .mc-field textarea {
-  font: inherit; font-size: 0.95rem; line-height: 1.5; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px;
+  font: inherit; font-size: 0.95rem; line-height: 1.5; padding: 10px 12px; border: 1px solid var(--field-line); border-radius: 10px;
   background: var(--bg); color: var(--ink); resize: vertical; width: 100%; box-sizing: border-box; min-height: 8rem;
 }
 .mc-field textarea:focus-visible { outline: 2px solid var(--purple); outline-offset: 1px; }

@@ -4,7 +4,7 @@
 .rp-field label { font-size: 0.9rem; font-weight: 600; }
 .rp-opt { font-weight: 400; color: var(--muted); }
 .rp-field input, .rp-field select {
-  font: inherit; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink);
+  font: inherit; padding: 10px 12px; border: 1px solid var(--field-line); border-radius: 10px; background: var(--bg); color: var(--ink);
 }
 .rp-field input:focus-visible, .rp-field select:focus-visible, .rp-drop:focus-within { outline: 2px solid var(--purple); outline-offset: 2px; }
 .rp-drop {

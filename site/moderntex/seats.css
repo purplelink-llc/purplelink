@@ -14,7 +14,7 @@
 .seat-unit, .seat-total { color: var(--muted); font-variant-numeric: tabular-nums; }
 .seat-total { color: var(--ink); font-weight: 600; min-width: 5.5rem; text-align: right; }
 .seat-qty { grid-column: 2 / -1; display: flex; align-items: center; gap: 0.5rem; color: var(--muted); }
-.seat-qty input { width: 6rem; padding: 0.4rem 0.6rem; border: 1px solid var(--line); border-radius: 0.5rem; background: var(--bg); color: var(--ink); font: inherit; }
+.seat-qty input { width: 6rem; padding: 0.4rem 0.6rem; border: 1px solid var(--field-line); border-radius: 0.5rem; background: var(--bg); color: var(--ink); font: inherit; }
 .seat-summary { margin: 1rem 0 0.75rem; }
 .seat-error { color: var(--danger, #b42318); }
 @media (max-width: 560px) {

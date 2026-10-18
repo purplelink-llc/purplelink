@@ -11,6 +11,7 @@
   const write = (v) => { try { localStorage.setItem(KEY, v); } catch (e) { /* ignore */ } };
   // Browser chrome follows the page: the meta tag ships dark (the default) and is switched with the theme.
   const chrome = { dark: '#19141d', light: '#fbf9fe' };
+  let fadeTimer = 0;
   const apply = (t) => {
     if (t === 'light') root.setAttribute('data-theme', 'light');
     else root.removeAttribute('data-theme');
@@ -31,6 +32,11 @@
       btn.addEventListener('click', () => {
         const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
         write(next);
+        // Cross-fade colours for a moment so the page does not jump from near-black to near-white in one frame
+        // (styles.css .theme-fade). Only on a click, never on load, so a saved choice still paints first time.
+        root.classList.add('theme-fade');
+        clearTimeout(fadeTimer);
+        fadeTimer = setTimeout(() => root.classList.remove('theme-fade'), 320);
         apply(next);
         document.querySelectorAll('[data-theme-toggle]').forEach(sync);
       });

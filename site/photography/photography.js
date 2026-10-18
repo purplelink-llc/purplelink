@@ -138,7 +138,7 @@
     );
     targets.forEach((el, i) => {
       el.classList.add('will-reveal');
-      el.style.transitionDelay = `${Math.min((i % 3) * 0.08, 0.24)}s`;
+      el.style.transitionDelay = `${Math.min((i % 3) * 0.04, 0.12)}s`;
       io.observe(el);
     });
     const showRest = () => targets.forEach((el) => { el.classList.add('is-visible'); io.unobserve(el); });

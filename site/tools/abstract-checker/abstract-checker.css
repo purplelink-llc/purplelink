@@ -1,9 +1,9 @@
 .ac-app { display: flex; flex-direction: column; gap: 8px; }
 .ac-label { font-weight: 600; font-size: 0.92rem; margin-top: 8px; }
-.ac-select, .ac-custom input { min-height: 44px; padding: 0 12px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--ink); font: inherit; max-width: 100%; }
+.ac-select, .ac-custom input { min-height: 44px; padding: 0 12px; border: 1.5px solid var(--field-line); border-radius: 12px; background: var(--bg); color: var(--ink); font: inherit; max-width: 100%; }
 .ac-custom { display: flex; flex-direction: column; gap: 6px; max-width: 220px; }
 .ac-custom[hidden] { display: none; }
-.ac-textarea { width: 100%; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--ink); font: inherit; line-height: 1.55; resize: vertical; }
+.ac-textarea { width: 100%; padding: 12px 14px; border: 1.5px solid var(--field-line); border-radius: 12px; background: var(--bg); color: var(--ink); font: inherit; line-height: 1.55; resize: vertical; }
 .ac-select:focus-visible, .ac-textarea:focus-visible, .ac-custom input:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-color: var(--purple); }
 .ac-count { margin: 8px 0 6px; color: var(--muted); }
 .ac-count strong { color: var(--ink); font-size: 1.15rem; }
