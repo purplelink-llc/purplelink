@@ -18,7 +18,7 @@ WIN = (78, 22, 178, 112)                 # the window: x0, y0, x1, y1
 FP = (206, 62, 292, 146)                 # the fireplace surround
 FX, FY = 249, 143                        # the fire's base
 TREE = (28, 144)                         # the tree: middle x and the floor y
-FIRE_CROP = (160, 58)                    # --view fireplace: the top-left of the 160x90 part of the room that is enlarged 2x
+FIRE_CROP = (160, 60)                    # --view fireplace: the top-left of the 160x90 part of the room that is enlarged 2x (hearth in view)
 
 
 @register
@@ -44,7 +44,9 @@ class Winter(Theme):
             y = r.randrange(40, 138)
             half = 4 + (y - 30) * 0.2
             self.baubles.append((TREE[0] + int(r.uniform(-half, half) * 0.85), y, r.choice([(240, 70, 70), (255, 214, 100), (110, 170, 255), (255, 150, 220), (150, 255, 170)]), r.uniform(0, 6.3)))
-        self.fire = px.Fire(32, 40, seed=seed + 4, cooling=0.02)
+        close = (options or {}).get("view") == "fireplace"
+        # the close-up gets a fire that fills the opening (58x58 art pixels); the whole room keeps the small one
+        self.fire = px.Fire(52, 52, seed=seed + 4, cooling=0.016) if close else px.Fire(32, 40, seed=seed + 4, cooling=0.02)
         self.fire_glow = px.glow_map(FX, FY - 14, 150, 0.8)
         self.fire_hi = px.glow_map(FX, FY - 8, 56, 0.8)
         self.tree_glow = px.glow_map(TREE[0], 90, 54, 1.0)
@@ -206,13 +208,13 @@ class Winter(Theme):
 
     def _log_bed(self, d, t, flick):
         """Close-up only: three logs lying across the foot of the flames, their top edges lit, and embers twinkling between them."""
-        for x0, x1, y0, y1 in ((FX - 19, FX - 2, FY - 4, FY - 1), (FX - 5, FX + 17, FY - 5, FY - 2), (FX - 12, FX + 8, FY - 2, FY + 1)):
+        for x0, x1, y0, y1 in ((FX - 27, FX - 2, FY - 5, FY - 1), (FX - 4, FX + 25, FY - 6, FY - 2), (FX - 17, FX + 13, FY - 2, FY + 2)):
             d.rectangle([x0, y0, x1, y1], fill=(52, 32, 24))
             d.rectangle([x0, y0, x1, y0], fill=(150, 62, 30))
             d.rectangle([x0, y1, x1, y1], fill=(34, 22, 18))
             d.rectangle([x0, y0, x0 + 1, y1], fill=(96, 52, 34))               # the cut end
         for k in range(30):
-            ex, ey = FX - 19 + (k * 7) % 38, FY - 5 + (k * 5) % 6
+            ex, ey = FX - 27 + (k * 7) % 52, FY - 6 + (k * 5) % 8
             glow = 0.5 + 0.5 * math.sin(t * (1.1 + (k % 5) * 0.3) + k * 1.7)
             d.point((ex, ey), fill=(int(190 + 65 * glow * min(1.0, flick)), int(70 + 90 * glow), 30))
 
@@ -276,7 +278,8 @@ class Winter(Theme):
         x0, y0, x1, y1 = WIN
         arr[y0:y1, x0:x1] = arr0[y0:y1, x0:x1]                                       # the snowy night outside is not lit by the room
         im = Image.fromarray(arr, "RGB")
-        im.paste(self.fire.image(), (FX - 16, FY - 40 + 3), self.fire.image())
+        fw, fh = self.fire.image().size
+        im.paste(self.fire.image(), (FX - fw // 2, FY - fh + 3), self.fire.image())
         d = ImageDraw.Draw(im)
         if self.options.get("view") == "fireplace":
             self._log_bed(d, t, flick)
