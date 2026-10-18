@@ -45,16 +45,17 @@ SKIP_PATHS = {
 # footer ("Daily games" under Free tools, "Blog" and "Changelog" under Learn),
 # so pages in those sections simply have no highlighted header item.
 NAV = [
-    ("Products", "/products/", ("products/", "moderntex/", "legroom/", "keyfeel/", "tapefolio/", "panely/", "summonly/", "batterymeter/", "vitae/", "globepin/",
+    ("Products", "/products/", ("products/", "moderntex/", "outbound-veil/", "suite/", "pricing/", "legroom/", "keyfeel/", "tapefolio/", "panely/", "summonly/", "batterymeter/", "vitae/", "globepin/",
                                 "haea/", "binnacle/", "kits/", "sheets/", "scholar-utility-belt/", "labs/", "recover/")),
     ("Tools", "/tools/", ("tools/", "format/")),
     ("Guides", "/guides/", ("guides/", "templates/", "latex-errors/")),
-    ("About", "/about/", ("about/", "press/")),
+    ("About", "/about/", ("about/", "press/", "photography/", "support/", "security/", "privacy/", "terms/", "feedback/")),
 ]
 
 FOOTER_COLUMNS = [
     ("Products", [
         ("ModernTex", "/moderntex/"),
+        ("Outbound Veil", "/outbound-veil/"),
         ("Vitae", "/vitae/"),
         ("Legroom", "/legroom/"),
         ("Keyfeel", "/keyfeel/"),
@@ -90,6 +91,7 @@ FOOTER_COLUMNS = [
         ("About", "/about/"),
         ("Pricing", "/pricing/"),
         ("Press", "/press/"),
+        ("Photography", "/photography/"),
         ("Support", "/support/"),
         ("Contact", "mailto:ben@purplelink.llc"),
         ("LinkedIn", "https://www.linkedin.com/company/purplelink-llc/", ' rel="noopener"'),

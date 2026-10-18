@@ -175,8 +175,9 @@
           </p>
         </fieldset>
         <div class="tool-options u-mt-075">
-          <button type="button" class="btn btn-primary" id="run" disabled>Validate .bib</button>
+          <button type="button" class="btn btn-primary" id="run" disabled aria-describedby="run-hint">Validate .bib</button>
         </div>
+        <p class="tool-privacy" id="run-hint">Choose a .bib file or paste entries above to start.</p>
 
         <p class="tool-status" id="status" aria-live="polite"></p>
         <div class="tool-result" id="result"></div>
@@ -345,6 +346,7 @@
         // ---------------------- Paste-mode text input ---------------------
         pasteEl.addEventListener("input", updateRunState);
 
+        var runHint = document.getElementById("run-hint");
         function updateRunState() {
           if (mode === "upload") {
             runBtn.disabled = !chosen;
@@ -352,6 +354,8 @@
             var t = pasteEl.value || "";
             runBtn.disabled = !t.trim() || t.length > MAX_BIB_BYTES;
           }
+          // Say why the button is greyed out, and get out of the way once it is not.
+          if (runHint) runHint.hidden = !runBtn.disabled;
         }
 
         // ---------------------- Validate button ---------------------------
@@ -379,27 +383,41 @@
           fd.append("check_crossref", chkCr.checked  ? "true" : "false");
           fd.append("check_s2",       chkS2.checked  ? "true" : "false");
 
-          statusEl.innerHTML = '<span class="tool-spinner" aria-hidden="true"></span>Validating… this may take a moment.';
+          var online = chkDoi.checked || chkCr.checked || chkS2.checked;
+          statusEl.innerHTML = '<span class="tool-spinner" aria-hidden="true"></span>' +
+            (online ? "Validating. Looking each entry up online can take a minute or two." : "Validating…");
           resultEl.innerHTML = "";
           annotatedBib = null;
           correctedBib = null;
 
+          var reached = false;   // false means the request never got a response (offline, DNS, blocked)
           fetch(API_BASE + "/validate-bib", { method: "POST", body: fd })
             .then(function (resp) {
+              reached = true;
               if (!resp.ok) {
-                return resp.json().then(function (p) { throw p; });
+                return resp.json().catch(function () { return {}; }).then(function (p) {
+                  p = p || {}; p.status = resp.status; throw p;
+                });
               }
               return resp.json();
             })
             .then(function (data) {
-              statusEl.textContent = "Done.";
+              var s = data.summary || {};
+              var plural = function (n, w) { return n + " " + w + (n === 1 ? "" : "s"); };
+              var total = s.total || 0;
+              statusEl.textContent = "Checked " + total + (total === 1 ? " entry" : " entries") + ": " +
+                plural(s.error || 0, "error") + ", " + plural(s.warning || 0, "warning") + ".";
               annotatedBib = data.annotated_bib;
               correctedBib = data.corrected_bib;
               renderResults(data);
             })
             .catch(function (err) {
               statusEl.textContent = "";
-              var msg = (err && err.detail) ? escapeHtml(err.detail) : "Something went wrong. Please try again.";
+              var msg;
+              if (!reached) msg = "Could not reach the server. Your file was not sent. Check your connection and try again.";
+              else if (err && err.status === 429) msg = "You've reached the daily limit. Please try again tomorrow.";
+              else if (err && err.detail) msg = escapeHtml(err.detail);
+              else msg = "The check could not finish" + (err && err.status ? " (error " + err.status + ")" : "") + ". Your entries are unchanged; please try again.";
               resultEl.innerHTML = '<div class="tool-error" role="alert">' + msg + "</div>";
             });
         });
@@ -701,6 +719,7 @@
           <p class="footer-head">Products</p>
           <ul>
             <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
             <li><a href="/vitae/">Vitae</a></li>
             <li><a href="/legroom/">Legroom</a></li>
             <li><a href="/keyfeel/">Keyfeel</a></li>
@@ -745,6 +764,7 @@
             <li><a href="/about/">About</a></li>
             <li><a href="/pricing/">Pricing</a></li>
             <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
             <li><a href="/support/">Support</a></li>
             <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
             <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
