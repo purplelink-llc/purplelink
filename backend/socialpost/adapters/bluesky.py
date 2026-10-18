@@ -189,11 +189,15 @@ class Bluesky(Adapter):
             raise Refused(f"bluesky: DID {resolved['did']!r}, expected {want_did!r}")
 
     def _compose(self, page, text: str, item: Item, images: list[dict]) -> None:
+        # Selectors checked against the live web app on 2026-10-18: the nav button is "Compose new post", the
+        # editor is a TipTap contenteditable inside composePostView (there is no composerTextInput test id), and
+        # the page can hold more than one [role=dialog], so everything is scoped to composePostView.
         try:
-            page.get_by_role("button", name=re.compile(r"^new post$", re.I)).first.click(timeout=15_000)
+            page.get_by_role("button", name=re.compile(r"new post", re.I)).first.click(timeout=15_000)
         except Exception:
             page.get_by_test_id("composeFAB").click(timeout=15_000)
-        editor = page.get_by_test_id("composerTextInput")
+        view = page.get_by_test_id("composePostView")
+        editor = view.locator("[contenteditable=true]").first
         editor.wait_for(state="visible", timeout=20_000)
         editor.click()
         page.keyboard.insert_text(text)
@@ -202,27 +206,28 @@ class Bluesky(Adapter):
             return
         files = [str(image_path(item, im)) for im in images]
         with page.expect_file_chooser(timeout=15_000) as fc:
-            page.get_by_test_id("openMediaBtn").click()
+            view.get_by_test_id("openMediaBtn").click()
         fc.value.set_files(files)
         page.wait_for_timeout(2_500)
-        self._dedupe_thumbnails(page, len(images))
+        self._dedupe_thumbnails(view, page, len(images))
         for i, im in enumerate(images):
-            page.get_by_test_id("altTextButton").nth(i).click(timeout=10_000)
-            dlg = page.get_by_role("dialog").last
-            dlg.get_by_label(re.compile("alt text", re.I)).first.fill(str(im["alt"]))
-            dlg.get_by_role("button", name=re.compile(r"^save$", re.I)).first.click(timeout=10_000)
+            view.get_by_test_id("altTextButton").nth(i).click(timeout=10_000)
+            box = page.locator('textarea[aria-label="Alt text"]').last  # a label match also hits the "Add alt text" button
+            box.wait_for(state="visible", timeout=10_000)
+            box.fill(str(im["alt"]))
+            page.get_by_role("button", name=re.compile(r"^save$", re.I)).last.click(timeout=10_000)
             page.wait_for_timeout(400)
 
-    def _dedupe_thumbnails(self, page, want: int) -> None:
-        thumbs = page.get_by_test_id("selectedPhotoImage")
+    def _dedupe_thumbnails(self, view, page, want: int) -> None:
+        # One "Remove image" button per attached image (the old selectedPhotoImage test id is gone).
+        removes = view.get_by_test_id("removePhotoButton")
         for _ in range(want + 4):
-            n = thumbs.count()
-            if n <= want:
+            if removes.count() <= want:
                 break
-            page.get_by_test_id("removePhotoButton").last.click(timeout=10_000)  # an image was added twice
+            removes.last.click(timeout=10_000)  # an image was added twice
             page.wait_for_timeout(400)
-        if thumbs.count() != want:
-            raise SocialError(f"bluesky: {thumbs.count()} images attached, expected {want}; nothing was posted")
+        if removes.count() != want:
+            raise SocialError(f"bluesky: {removes.count()} images attached, expected {want}; nothing was posted")
 
     def verify(self, url: str) -> bool:
         m = re.match(r"^https://bsky\.app/profile/([^/]+)/post/([A-Za-z0-9]+)$", url)
