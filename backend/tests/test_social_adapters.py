@@ -300,7 +300,17 @@ class FakeLocator:
         pass
 
     def count(self):
-        return self.page.thumbs if self.tid == "selectedPhotoImage" else 1
+        return self.page.thumbs if self.tid in ("selectedPhotoImage", "removePhotoButton") else 1
+
+    def locator(self, sel):
+        return FakeLocator(self.page, "editor")
+
+    def get_by_test_id(self, tid):
+        return FakeLocator(self.page, tid)
+
+    @property
+    def first(self):
+        return self
 
     def nth(self, i):
         self.page.log.append(("nth", self.tid, i))
@@ -314,6 +324,9 @@ class FakeLocator:
 class FakeDialog:
     def __init__(self, page):
         self.page = page
+
+    def wait_for(self, **kw):
+        pass
 
     def get_by_label(self, *a, **k):
         return self
@@ -385,7 +398,15 @@ class FakePage:
         return None
 
     def get_by_role(self, role, **kw):
-        return FakeDialog(self) if role == "dialog" else FakeLocator(self, "new-post")
+        if role == "dialog":
+            return FakeDialog(self)
+        name = kw.get("name")
+        if name is not None and getattr(name, "pattern", "") == r"^save$":
+            return FakeDialog(self)
+        return FakeLocator(self, "new-post")
+
+    def locator(self, sel):
+        return FakeDialog(self) if "Alt text" in sel else FakeLocator(self, sel)
 
     def get_by_test_id(self, tid):
         return FakeLocator(self, tid)
