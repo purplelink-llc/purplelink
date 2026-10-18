@@ -137,8 +137,9 @@
 
         <div id="wc-pane-upload" role="tabpanel" aria-labelledby="wc-tab-upload" hidden>
           <div class="dropzone wc-dropzone" id="wc-dropzone" aria-label="Upload a document">
-            <input type="file" id="wc-file" accept=".pdf,.docx,.odt,.rtf,.epub,.html,.htm,.csv,.tex,.md,.markdown,.txt">
+            <input type="file" id="wc-file" accept=".pdf,.docx,.odt,.rtf,.epub,.html,.htm,.csv,.tex,.md,.markdown,.txt" aria-describedby="wc-upload-note">
             <p>Drag a document here, or choose one. PDF, Word, LaTeX, Markdown, EPUB, RTF, ODT, HTML, up to 20 MB.</p>
+            <p class="tool-privacy" id="wc-upload-note">A file is sent to our server only to pull out its text, then discarded. Pasted text never leaves your browser.</p>
             <p id="wc-filename" class="tool-privacy"></p>
           </div>
         </div>
@@ -211,7 +212,7 @@
 
       <script src="/tools/tools.js?v=4b7f656edf"></script>
       <script src="/tools/word-counter/wordstats.js?v=7ce4498267" defer></script>
-      <script src="/tools/word-counter/word-counter.js?v=177b9c2248" defer></script>
+      <script src="/tools/word-counter/word-counter.js?v=58b0404f55" defer></script>
     </main>
 
     <footer class="footer">
@@ -228,6 +229,7 @@
           <p class="footer-head">Products</p>
           <ul>
             <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
             <li><a href="/vitae/">Vitae</a></li>
             <li><a href="/legroom/">Legroom</a></li>
             <li><a href="/keyfeel/">Keyfeel</a></li>
@@ -272,6 +274,7 @@
             <li><a href="/about/">About</a></li>
             <li><a href="/pricing/">Pricing</a></li>
             <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
             <li><a href="/support/">Support</a></li>
             <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
             <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>

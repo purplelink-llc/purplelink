@@ -155,7 +155,22 @@
       <article class="post-body">
         <p><strong>Disclosure up front:</strong> I make one of the editors on this list (ModernTex). <a href="https://pages.uoregon.edu/koch/texshop/" rel="noopener">TeXShop</a> is the right call for most academics today, and <a href="https://www.texifier.com/" rel="noopener">Texifier</a> is the right call for most people who want a polished modern editor. ModernTex shipped its 1.0 in September 2026. I've kept its entry to what the app does today.</p>
 
-        <h2>The short answer</h2>
+        <nav class="page-toc" aria-labelledby="toc-heading">
+          <h2 id="toc-heading">On this page</h2>
+          <ol>
+            <li><a href="#short-answer">The short answer</a></li>
+            <li><a href="#hands-on">Tested hands-on: TeXShop, TeXstudio, VS Code</a></li>
+            <li><a href="#side-by-side">The editors side by side</a></li>
+            <li><a href="#cost-per-year">What each option costs per year</a></li>
+            <li><a href="#shortlist">The shortlist, one editor at a time</a></li>
+            <li><a href="#more-editors">Eight more editors that run on a Mac</a></li>
+            <li><a href="#decision-matrix">Decision matrix</a></li>
+            <li><a href="#mactex-vs-overleaf">MacTeX, BasicTeX or Overleaf</a></li>
+            <li><a href="#faq">Frequently asked</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="short-answer">The short answer</h2>
         <p>TeXShop (Mac only) and TeXstudio (Mac, Windows, Linux) are the free native editors. Texifier is the paid Mac-native option at $39.99. Overleaf runs in a browser and suits co-authors editing together. ModernTex, which I make, is $19.99, compiles on your Mac, and adds submission-readiness checks. Prices are as stated in this guide, last updated October 15, 2026.</p>
 
         <aside class="guide-mtx-card" aria-labelledby="mtx-card-h">
@@ -192,7 +207,7 @@
         <p>The TeXShop column is the 5.57 release tested on October 11, 2026. For reports about TeXShop on macOS 27 and the 5.58 build, see the <a href="/guides/texshop-alternative-mac/">TeXShop alternatives guide</a>.</p>
         <p>Two readings follow from this. First, TeXShop works as long as MacTeX is installed, and the extra BibTeX step is the kind of thing a new user trips on. Second, TeXstudio's compile handled the bibliography on its own. However, its Apple silicon download is unsigned, a hurdle for a first-time Mac user. I make no claim about VS Code's compile because I could not confirm one.</p>
 
-        <h2>The editors side by side</h2>
+        <h2 id="side-by-side">The editors side by side</h2>
         <p>"Not stated" means the guide, or the source page it cites, does not say. Offline means the editor compiles on your machine without a server.</p>
         <div class="u-scroll-x">
           <table class="u-table-wide">
@@ -237,7 +252,7 @@
         </div>
         <p>The totals are the vendors' listed prices multiplied out, not a quote, and they leave out taxes. Price is not the whole comparison. Overleaf's paid plans are built for co-authors editing the same document at once, which ModernTex is not. The free editors need you to install and configure a TeX distribution yourself. I make ModernTex. The comparison uses each vendor's own pricing page, read on October 12, 2026.</p>
 
-        <h2>What you actually need to run LaTeX on a Mac</h2>
+        <h2 id="what-you-need">What you actually need to run LaTeX on a Mac</h2>
         <p>A LaTeX editor is only half of the setup, and this trips up most people
         coming to LaTeX on a Mac for the first time. You need two things:</p>
         <ol>
@@ -260,7 +275,7 @@
         will compile LaTeX. There is no built-in option the way there is for Markdown
         previewing.</p>
 
-        <h2>The shortlist</h2>
+        <h2 id="shortlist">The shortlist</h2>
         <ol>
           <li><strong>TeXShop</strong>: free, ships with MacTeX, the default for most academics.</li>
           <li><strong>Texifier</strong> (formerly Texpad): paid, polished, modern Mac native.</li>
@@ -363,7 +378,7 @@
 
         <p><a href="https://www.sublimetext.com/" rel="noopener">Sublime Text</a> with the <a href="https://github.com/SublimeText/LaTeXTools" rel="noopener">LaTeXTools</a> package and <a href="https://www.barebones.com/products/bbedit/" rel="noopener">BBEdit</a> with its TeX syntax highlighting also exist. Neither adds anything the eight above do not, so they are not covered separately.</p>
 
-        <h2>Decision matrix</h2>
+        <h2 id="decision-matrix">Decision matrix</h2>
         <ul>
           <li><strong>Want the default?</strong> TeXShop.</li>
           <li><strong>Want polished and modern, willing to pay?</strong> Texifier.</li>
@@ -417,7 +432,7 @@
         packages are heading. Switch engines only when a package or a font forces
         you to, not because one is "best".</p>
 
-        <h2>Frequently asked</h2>
+        <h2 id="faq">Frequently asked</h2>
         <h3>Is there a free LaTeX editor for Mac?</h3>
         <p>Yes, several. TeXShop is free and arrives with MacTeX, so most people
         already have it. VS Code with the LaTeX Workshop extension is free. Overleaf
@@ -501,6 +516,7 @@
           <p class="footer-head">Products</p>
           <ul>
             <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
             <li><a href="/vitae/">Vitae</a></li>
             <li><a href="/legroom/">Legroom</a></li>
             <li><a href="/keyfeel/">Keyfeel</a></li>
@@ -545,6 +561,7 @@
             <li><a href="/about/">About</a></li>
             <li><a href="/pricing/">Pricing</a></li>
             <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
             <li><a href="/support/">Support</a></li>
             <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
             <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>

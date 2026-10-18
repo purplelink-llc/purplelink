@@ -126,7 +126,7 @@ macOS
 
 ## ModernTex
 
-A native LaTeX editor for Mac, built around the manuscript rather than the file. Source and PDF stay in sync, citations autocomplete from your .bib, and a submission check runs before you upload. Version 1.6.3 includes a visual table editor and a TikZ figure editor. The trial is free for seven days, then it is $19.99 once.
+A native LaTeX editor for Mac, built around the manuscript rather than the file. Source and PDF stay in sync, citations autocomplete from your .bib, and a submission check runs before you upload. It includes a visual table editor and a TikZ figure editor. The trial is free for seven days, then it is $19.99 once.
 
 See ModernTex
 Download the trial
@@ -794,7 +794,7 @@ Prefer your own mail app? Write to ben@purplelink.llc. The form delivers your me
 Seven days of the full app, no account and nothing to enter. If it earns a place in your workflow, it's $19.99 once, with all updates included, forever.
 
 Download the free trial
-Buy ModernTex — $19.99
+See how to buy, $19.99
 
 macOS 14 or later · Apple silicon and Intel · Signed and notarized
 
@@ -3744,6 +3744,8 @@ CrossRef: check titles exist in CrossRef (catches hallucinations)
 Semantic Scholar: check titles in Semantic Scholar
 
 Enabling DOI or database checks will send entry titles and authors to external services (doi.org, CrossRef, Semantic Scholar).
+
+Choose a .bib file or paste entries above to start.
 
 Files are never written to disk or logged.
 
