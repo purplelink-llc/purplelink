@@ -18,6 +18,7 @@ WIN = (78, 22, 178, 112)                 # the window: x0, y0, x1, y1
 FP = (206, 62, 292, 146)                 # the fireplace surround
 FX, FY = 249, 143                        # the fire's base
 TREE = (28, 144)                         # the tree: middle x and the floor y
+FIRE_CROP = (160, 58)                    # --view fireplace: the top-left of the 160x90 part of the room that is enlarged 2x
 
 
 @register
@@ -203,6 +204,18 @@ class Winter(Theme):
         for k in range(6):                                                         # a short glitter trail behind
             d.point((x - 12 - k * 4, y + (k % 3) - 1), fill=(200, 220, 255) if (int(age * 6) + k) % 2 else (120, 150, 210))
 
+    def _log_bed(self, d, t, flick):
+        """Close-up only: three logs lying across the foot of the flames, their top edges lit, and embers twinkling between them."""
+        for x0, x1, y0, y1 in ((FX - 19, FX - 2, FY - 4, FY - 1), (FX - 5, FX + 17, FY - 5, FY - 2), (FX - 12, FX + 8, FY - 2, FY + 1)):
+            d.rectangle([x0, y0, x1, y1], fill=(52, 32, 24))
+            d.rectangle([x0, y0, x1, y0], fill=(150, 62, 30))
+            d.rectangle([x0, y1, x1, y1], fill=(34, 22, 18))
+            d.rectangle([x0, y0, x0 + 1, y1], fill=(96, 52, 34))               # the cut end
+        for k in range(30):
+            ex, ey = FX - 19 + (k * 7) % 38, FY - 5 + (k * 5) % 6
+            glow = 0.5 + 0.5 * math.sin(t * (1.1 + (k % 5) * 0.3) + k * 1.7)
+            d.point((ex, ey), fill=(int(190 + 65 * glow * min(1.0, flick)), int(70 + 90 * glow), 30))
+
     def _cat(self, d, t):
         cx, cy = 196, 164
         breath = 1 if (t % 2.6) < 1.3 else 0
@@ -223,6 +236,15 @@ class Winter(Theme):
 
     # ---------------------------------------------------------------- the frame
     def frame(self, t: float) -> Image.Image:
+        """The whole room, or with `--view fireplace` a close-up: the same drawing (so the fire, the glow, the sparks and the tree's lights behave as
+        always) cropped to FIRE_CROP and enlarged exactly 2x, so every art pixel is 12x12 in a 1080p frame and the edges stay hard."""
+        im = self._room(t)
+        if self.options.get("view") == "fireplace":
+            x0, y0 = FIRE_CROP
+            im = im.crop((x0, y0, x0 + W // 2, y0 + H // 2)).resize((W, H), Image.NEAREST)
+        return im
+
+    def _room(self, t: float) -> Image.Image:
         t = math.floor(t * self.fps) / self.fps
         im = Image.new("RGB", (W, H), (16, 10, 14))
         im.paste(self._outside(t), WIN[:2])
@@ -256,6 +278,8 @@ class Winter(Theme):
         im = Image.fromarray(arr, "RGB")
         im.paste(self.fire.image(), (FX - 16, FY - 40 + 3), self.fire.image())
         d = ImageDraw.Draw(im)
+        if self.options.get("view") == "fireplace":
+            self._log_bed(d, t, flick)
         px.draw_sparks(d, px.sparks(self.seed, t, FX, FY - 12, spread=6, rate=1.0, life=2.0, rise=18, burst=(settle[0] + 0.2, 18) if settle else None))
         for bx, by, col, ph in self.baubles:                                          # the tree's lights twinkle
             c2 = col if math.sin(t * 1.3 + ph * 3) > -0.3 else tuple(v // 3 for v in col)

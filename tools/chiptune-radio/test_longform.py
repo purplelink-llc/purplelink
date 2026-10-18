@@ -380,7 +380,7 @@ def test_keyword_ranking_rewards_position_and_repeats_and_filters_off_topic(tmp_
         return answers.get(q, [])
     today = dt.date(2026, 10, 17)
     rep = keywords.refresh(today, fetcher=fake, sleep=naps.append, log=lambda *_: None)
-    assert len(calls) == len(keywords.queries()) and all(n == keywords.MIN_GAP for n in naps)      # polite: a pause after every request
+    assert len(calls) == len({q for _, _, q in keywords.queries()}) and all(n == keywords.MIN_GAP for n in naps)      # polite: a pause after every request
     rows = rep["kinds"]["brown"]
     assert rows[0]["phrase"] == "brown noise" and rows[0]["seeds"] == 2 and "lofi girl" not in [r["phrase"] for r in rows]
     assert rep["modifiers"]["black screen"] > 0 and rep["modifiers"]["10 hours"] > 0
@@ -389,7 +389,7 @@ def test_keyword_ranking_rewards_position_and_repeats_and_filters_off_topic(tmp_
     keywords.refresh(today + dt.timedelta(days=3), fetcher=fake, sleep=naps.append, log=lambda *_: None)
     assert calls == []                                                                  # cached for a week
     keywords.refresh(today + dt.timedelta(days=8), fetcher=fake, sleep=naps.append, log=lambda *_: None)
-    assert len(calls) == len(keywords.queries())
+    assert len(calls) == len({q for _, _, q in keywords.queries()})
     assert keywords.top(keywords.load(), "brown", 2) == ["brown noise", "brown noise 10 hours"] or keywords.top(keywords.load(), "brown", 1) == ["brown noise"]
 
 

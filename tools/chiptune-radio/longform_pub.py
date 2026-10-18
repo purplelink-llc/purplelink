@@ -48,7 +48,25 @@ THUMB_SOUND = {"brown": "BROWN NOISE", "pink": "PINK NOISE", "white": "WHITE NOI
                "fireplace": "FIREPLACE", "ocean": "OCEAN WAVES", "wind": "WIND SOUNDS", "fan": "FAN SOUNDS", "airplane": "AIRPLANE CABIN"}
 
 
-def make_thumbnail(theme_name: str, seconds: float, seed: int, out: Path, options: dict | None = None, music: bool = True, sound: str = "chiptune") -> Path:
+def thumb_text(theme_name: str, sound: str, musical: bool, season: str, uhd: bool, dark: float) -> list | None:
+    """Thumbnail text for a holiday or 4K video: the searched phrase on line one, the scene (with 4K when the picture stays on screen) on line two.
+    None for any other video, which keeps its usual text."""
+    if not (uhd or season in HOLIDAYS):
+        return None
+    four = " 4K" if uhd and not dark else ""
+    hol = {"christmas": "CHRISTMAS", "newyear": "NEW YEAR"}.get(season, "")
+    if sound == "fireplace":
+        return [hol or "FIREPLACE", ("FIREPLACE" if hol else "SOUNDS") + four]
+    if musical:
+        music = "LOFI" if sound == "lofi" else ""
+        if theme_name == "study":
+            return [" ".join(x for x in (hol, music or "STUDY") if x), ("STUDY" if music else "WITH ME") + four]
+        return [hol or "COZY", "CABIN" + four if theme_name == "winter" else themes.get(theme_name).thumb_lines[1] + four]
+    return [THUMB_SOUND[sound], SCENE_NAME.get(theme_name, "CABIN").upper() + four]
+
+
+def make_thumbnail(theme_name: str, seconds: float, seed: int, out: Path, options: dict | None = None, music: bool = True, sound: str = "chiptune",
+                   uhd: bool = False, dark: float = 0.0) -> Path:
     """A 1280x720 JPEG: a clean frame of the scene, enlarged exactly 4x, with a darkened band behind big pixel-font title text. The bottom-right
     corner is left empty because YouTube puts the duration stamp there."""
     cls = themes.get(theme_name)
@@ -62,6 +80,9 @@ def make_thumbnail(theme_name: str, seconds: float, seed: int, out: Path, option
         lines = [lines[0], lines[1]]
     if sound != "chiptune":                                          # the searched phrase leads, the scene's own word second
         lines = [THUMB_SOUND[sound], lines[1]]
+    holiday = thumb_text(theme_name, sound, sounds.spec(sound).musical and music, (options or {}).get("season", ""), uhd, dark)
+    if holiday:
+        lines = holiday
     scale = 16
     widths = [pixfont.width(s, scale) for s in lines]
     while max(widths) > THUMB[0] - 120 and scale > 8:
@@ -217,13 +238,17 @@ def bed_text(cls, sound: str, bed_on: bool) -> str:
     return ", ".join(words[:-1]) + (" and " if len(words) > 1 else "") + words[-1] if words else ""
 
 
+NEVER_IN_TAGS = re.compile(r"\b(no ads|ad[- ]free|no copyright)\b", re.I)         # a monetised channel cannot promise these, and the research ranks them first
+
+
 def merge_tags(*groups: list, limit: int = MAX_TAGS, max_chars: int = MAX_TAG_CHARS) -> list:
-    """Tags in priority order, no duplicates (case-insensitive), at most `limit` of them and `max_chars` characters in all."""
+    """Tags in priority order, no duplicates (case-insensitive), at most `limit` of them and `max_chars` characters in all. A phrase the channel cannot
+    honestly promise (no ads, no copyright) is dropped even when the research ranks it first."""
     out, seen, used = [], set(), 0
     for g in groups:
         for t in g:
             t = t.strip()
-            if not t or t.lower() in seen or len(out) >= limit or used + len(t) > max_chars:
+            if not t or t.lower() in seen or len(out) >= limit or used + len(t) > max_chars or NEVER_IN_TAGS.search(t):
                 continue
             seen.add(t.lower())
             out.append(t)
@@ -290,12 +315,197 @@ def sound_metadata(theme_name: str, seconds: float, slug: str, pomodoro: bool, s
     }
 
 
+# ------------------------------------------------------------------------------------------------------------------------ holiday and 4K (the TV app)
+HOLIDAYS = {"christmas": "Christmas", "newyear": "New Year"}
+# keyword-research kinds (keywords.HOLIDAY_SEEDS) that rank the title leads, per holiday
+HOLIDAY_KINDS = {"christmas": {"fireplace": "christmas-fireplace", "ambience": "christmas-ambience", "cabin": "snowy-cabin"},
+                 "newyear": {"fireplace": "newyear", "ambience": "newyear", "cabin": "newyear"}}
+HOLIDAY_SCENE = {
+    ("winter", "fireplace"): "a pixel-art fireplace close up: a crackling fire on logs, stockings hung from the mantel and a snowy window beside it",
+    ("winter", ""): "a pixel-art snowed-in cabin at night: snow falling past the window, a stone fireplace with stockings, a lit Christmas tree, a cat asleep on the rug and a mug steaming on the sill",
+    ("study", ""): "a pixel-art study room decorated for Christmas: a lit tree with presents, string lights, snow falling past the window and someone working at a desk",
+}
+HOLIDAY_SCENE_SHORT = {("winter", "fireplace"): "a pixel-art Christmas fireplace", ("winter", ""): "a pixel-art Christmas cabin",
+                       ("study", ""): "a pixel-art Christmas study room"}
+SCENE_NAME = {"winter": "Snowy Cabin", "study": "Study Room", "campfire": "Crackling Campfire", "halloween": "Halloween Porch"}
+
+
+def holiday_lead(cands: list, kind: str, kw: dict | None) -> str:
+    """The highest-ranked of the candidate lead phrases in a keyword kind (a candidate scores the best suggestion that is it or starts with it); the first
+    candidate if the research has not run or ranks none of them."""
+    rows = [(r["phrase"], r["score"]) for r in (kw or {}).get("kinds", {}).get(kind, [])]
+
+    def score(c: str) -> float:
+        low = c.lower()
+        return max([v for k, v in rows if k == low or k.startswith(low + " ")] + [0.0])
+    return max(cands, key=lambda c: (score(c), -cands.index(c)))
+
+
+UNTRUE_FOR_US = re.compile(r"\b(carols?|classics?|songs?|jazz|piano|live|cortisol|adhd|anxiety|healing|meditation)\b", re.I)    # searched, but not what we make or not claimable
+
+
+def honest_phrase(phrase: str, hours: float, uhd: bool, musical: bool, sound: str = "") -> bool:
+    """Can this searched phrase be used as a tag for this video? Not if it names another length (christmas fireplace 2 hours on a 10 hour video), 4K for a 1080p
+    file, music for a video with none, carols or songs (our music is original), or a health word."""
+    low = phrase.lower()
+    if UNTRUE_FOR_US.search(low) or NEVER_IN_TAGS.search(low):
+        return False
+    for n, unit in re.findall(r"\b(\d+(?:\.\d+)?)\s*(hours?|hrs?|minutes?|mins?)\b", low):
+        if abs(float(n) * (1.0 if unit.startswith("h") else 1 / 60) - hours) > 0.01:
+            return False
+    if "4k" in low and not uhd:
+        return False
+    if re.search(r"\b(rain|thunder|thunderstorm|storm)\b", low) and sound not in ("rain", "thunderstorm"):
+        return False
+    if not musical and re.search(r"music|chiptune|lofi|8 bit", low) and "no music" not in low:
+        return False
+    return not (musical and "no music" in low)
+
+
+def tv_ranked(kw: dict | None, kind: str) -> bool:
+    """True when people's searches in this kind include 'for tv' (fireplace for tv, fireplace for tv screen): then the fireplace titles say it."""
+    return any("for tv" in r["phrase"] and r["score"] >= 3 for r in (kw or {}).get("kinds", {}).get(kind, []))
+
+
+def holiday_title(theme_name: str, season: str, sound: str, musical: bool, uhd: bool, dark: float, dur: str, kw: dict | None) -> tuple:
+    """(title, lead). The searched phrase first, then the honest attributes in the order TV viewers scan them: 4K, what it is, length, no music, screen.
+    The first 50 characters carry the lead and 4K, because a TV list cuts titles short. `4K` is left out of a dark video's title: the file is 2160p, but
+    its picture is only there for the first minutes, so the title would promise more than the screen shows."""
+    hol = HOLIDAYS.get(season, "")
+    kinds = HOLIDAY_KINDS.get(season, {})
+    four = " 4K" if uhd and not dark else ""
+    screen = ""
+    if dark:
+        screen = ", " + ("Black Screen" if keywords.modifier_score(kw, "black screen") > keywords.modifier_score(kw, "dark screen") else "Dark Screen")
+    no_music = "" if musical else ", No Music"
+    scene_name = SCENE_NAME.get(theme_name, TITLE_THEME.get(theme_name, "Cabin"))
+    if sound == "fireplace":
+        if season == "christmas":
+            lead = holiday_lead(["Christmas Fireplace", "Yule Log"], kinds["fireplace"], kw)
+            flavor = "Crackling Fireplace" if lead == "Yule Log" else "Crackling Yule Log"
+        else:
+            lead, flavor = (f"{hol} Fireplace" if hol else "Fireplace Sounds"), "Crackling Fire"
+        tv = " for TV" if tv_ranked(kw, kinds.get("fireplace", "")) else ""
+        title = f"{lead}{four}{tv}, {flavor}, {dur}{no_music}{screen}"
+    elif musical:
+        music_name = "Lofi" if sound == "lofi" else "Chiptune"
+        if theme_name == "study" and hol:
+            lead = f"{hol} {music_name} Study Music"
+            title = f"{lead}, Cozy Study Room{four}, {dur}"
+        elif hol:
+            lead = holiday_lead([f"{hol} Cabin Ambience", f"Cozy {hol} Cabin"], kinds.get("ambience", ""), kw)
+            title = f"{lead}{four} with {hol} {music_name} Music, {dur}"
+        else:
+            lead = f"Cozy {scene_name}"
+            title = f"{lead}{four} with {music_name} Music, {dur}"
+    else:
+        lead = pick_lead(sound, kw)
+        title = f"{lead} with {scene_name}{four}, {dur}{screen}"
+    if len(title) > 100:
+        title = f"{lead}{four}, {dur}{no_music}{screen}"
+    return title, lead
+
+
+def holiday_metadata(theme_name: str, seconds: float, slug: str, music: bool, pomodoro: bool, seed: int, loop_min: float, sound: str, dark: float,
+                     no_bed: bool, kw: dict | None, uhd: bool, season: str, view: str) -> dict:
+    """Title, description and tags for a 4K and/or holiday video, written for the YouTube TV app: the ranked holiday phrase leads the title, the first
+    sentence says plainly what the video is (what search and answer engines quote), then a block of short true facts. Only what is in the file is claimed:
+    4K only for a 2160p file, No Music only when there is none, the length only for the real length. Any music is original: no carol or existing tune."""
+    cls = themes.get(theme_name)
+    cp = COPY[theme_name]
+    sp = sounds.spec(sound)
+    musical = bool(sp.musical and music)
+    dur = hours_text(seconds)
+    title, lead = holiday_title(theme_name, season, sound, musical, uhd, dark, dur, kw)
+    hol = HOLIDAYS.get(season, "")
+    key = (theme_name, view if (theme_name, view) in HOLIDAY_SCENE else "")
+    scene = (HOLIDAY_SCENE.get(key) if season == "christmas" else None) or cp["scene"]
+    scene_short = (HOLIDAY_SCENE_SHORT.get(key) if season == "christmas" else None) or SCENE_SHORT[theme_name]
+    scene_cap = scene_short[0].upper() + scene_short[1:]
+    music_name = "lofi" if sound == "lofi" else "chiptune"
+    bed = "" if musical else bed_text(cls, sound, not no_bed)
+    four_in_title = uhd and not dark
+    lead_name = lead + (" 4K" if four_in_title and "4k" not in lead.lower() else "")
+    if musical:
+        says = f"original {music_name} music, not carols or existing songs" if hol else f"original {music_name} music"
+    elif sound == "fireplace":
+        says = "a crackling fire and no music"
+    else:
+        says = WHAT_SHORT[sound][0].lower() + WHAT_SHORT[sound][1:] + " and no music"
+    first = f"{lead_name}, {dur}. {scene_cap} with {says}."
+    if len(first) > 150:
+        first = f"{lead_name}, {dur}. {scene_cap}."
+    what = f"original {music_name} music" if musical else sp.what
+    if sound == "fireplace" and no_bed:
+        what = "a crackling fire on its own, with no wind or room sound under it"
+    lines = [first, ""]
+    if dark:
+        lines += [f"The screen dims to near black after {dark / 60:g} minutes and the sound carries on.", ""]
+    lines += ["About this video", f"What it is: {what[0].upper() + what[1:]}.",
+              f"Length: {dur}" + (f", one {loop_min:g} minute loop joined so it repeats without a gap" if loop_min else "") + ".",
+              ("Resolution: 3840x2160 (4K). The picture is pixel art drawn at 1920x1080 and enlarged exactly 2x, so every pixel keeps a hard edge."
+               if uhd else "Resolution: 1920x1080."),
+              f"Picture: {scene}."]
+    if bed:
+        lines.append(f"Also in the mix, quietly: {bed}.")
+    if musical:
+        lines.append("Music: composed by a program from a random seed (melody, chords, bass and drums). No carol, existing song or recording is used.")
+        lines.append(f"Sound: {sp.what if sound == 'lofi' else cp['sound_music']}" + (", with the room's own ambience quietly under it." if sound == "lofi" and not no_bed else "."))
+    elif sp.how:
+        lines.append(f"How it was made: {sp.how}.")
+    if not musical:
+        lines.append("There is no music in this video.")
+    if sp.lufs < -16:
+        lines.append(f"Level: mastered at about {sp.lufs:g} LUFS, quieter than most music, so it sits comfortably at a low volume. Turn it up if you need to.")
+    lines += ["", CHANNEL_LINE, ""]
+    third = "#4k" if four_in_title else ("#sleepsounds" if sound in SLEEP_SOUNDS else "#ambience")
+    scene_tag = "#yulelog" if "yule" in title.lower() else THEME_HASH[theme_name]
+    first_tag = f"#{season}" if season else SOUND_HASH.get(sound, "#ambience")
+    tags3 = list(dict.fromkeys([first_tag, scene_tag, third, "#ambience"]))[:3]
+    lines.append(" ".join(tags3))
+    kinds = HOLIDAY_KINDS.get(season, {})
+    ok = lambda ph: honest_phrase(ph, seconds / 3600, uhd, musical, sound) and (theme_name == "winter" or not re.search(r"cabin|snow", ph.lower()))
+    ranked = []
+    if sound == "fireplace":
+        ranked += [x for x in keywords.top(kw, kinds.get("fireplace", ""), 30) if ok(x)][:6]
+    elif season:
+        ranked += [x for x in keywords.top(kw, kinds.get("ambience", ""), 20) if ok(x)][:4] + [x for x in keywords.top(kw, kinds.get("cabin", ""), 20) if ok(x)][:3]
+    if sound not in ("chiptune", "lofi"):
+        ranked += [x for x in keywords.top(kw, sound, 20) if ok(x)][:4]
+    base = [lead.lower()] + ([f"{lead.lower()} 4k"] if four_in_title and "4k" not in lead.lower() else [])
+    fixed = []
+    if sound == "fireplace":
+        fixed += ["christmas fireplace", "yule log", "fireplace for tv", "fireplace sounds", "crackling fire"] if season == "christmas" else ["fireplace for tv", "fireplace sounds"]
+    if season == "christmas":
+        fixed += ["christmas ambience", "cozy christmas"] + (["christmas study music", "study with me"] if theme_name == "study" else [])
+    if theme_name == "winter":
+        fixed += ["snowy cabin", "snowy cabin ambience"]
+    if dark:
+        fixed.append(f"{lead.lower()} black screen")
+    if uhd:
+        fixed += ["4k", "4k ambience"]
+    if not musical:
+        fixed.append("no music")
+    tags = merge_tags(base, ranked, fixed, [t for t in cp["tags"] if "pomodoro" not in t], ["pixel art", "ambient sounds"])
+    return {
+        "slug": slug, "title": title, "description": "\n".join(l for i, l in enumerate(lines) if l != "" or (i and lines[i - 1] != "")).strip(),
+        "optional_footer": "More free tools and apps: https://purplelink.llc/?utm_source=youtube&utm_medium=ambient&utm_campaign=" + slug,
+        "tags": tags, "chapters": [], "category": "Music", "made_for_kids": False, "altered_or_synthetic_content": DISCLOSURE, "language": "en",
+        "visibility_on_upload": "private, until Ben has watched it and chosen a publish time", "video_file": slug + ".mp4", "thumbnail_file": slug + "-thumb.jpg",
+        "render": {"theme": theme_name, "seed": seed, "seconds": seconds, "sound": sound, "season": season or None, "view": view or None, "uhd": uhd,
+                   "dark_after_seconds": dark or None, "loudness_target_lufs": sp.lufs, "loop_minutes": loop_min or None, "keywords_date": (kw or {}).get("date")},
+    }
+
+
 def lf_clock(sec: float) -> str:
     return clock(sec)
 
 
 def build_metadata(theme_name: str, seconds: float, slug: str, music: bool, pomodoro: bool, seed: int, tracks: list | None = None,
-                   loop_min: float = 0.0, sound: str = "chiptune", dark: float = 0.0, no_bed: bool = False, kw: dict | None = None) -> dict:
+                   loop_min: float = 0.0, sound: str = "chiptune", dark: float = 0.0, no_bed: bool = False, kw: dict | None = None,
+                   uhd: bool = False, season: str = "", view: str = "") -> dict:
+    if uhd or season in HOLIDAYS:                                    # 4K and holiday videos are titled for the TV app (see holiday_metadata)
+        return holiday_metadata(theme_name, seconds, slug, music, pomodoro, seed, loop_min, sound, dark, no_bed, kw, uhd, season, view)
     if sound != "chiptune":
         return sound_metadata(theme_name, seconds, slug, pomodoro, seed, loop_min, sound, dark, no_bed, kw)
     cls = themes.get(theme_name)
@@ -383,12 +593,20 @@ def extract_frames(video: Path, out_dir: Path, slug: str, duration: float, fract
     return paths
 
 
+SIZES_OK = ((1920, 1080), (3840, 2160))          # 1080p, or 2160p (--uhd): YouTube labels a file 4K from its height
+
+
+def size_checks(info: dict) -> dict:
+    wh = (info["width"], info["height"])
+    return {"1080p_or_2160p": wh in SIZES_OK, **({"2160p": True} if wh == (3840, 2160) else {"1080p": wh == (1920, 1080)})}
+
+
 def verify(video: Path, frames_dir: Path | None, slug: str, fade_allowance: float = 12.0, quick: bool = False, sound: str = "chiptune") -> dict:
     target = sounds.target_lufs(sound)
     info = probe(video)
     if quick:
         report = {"file": video.name, **info, "quick": True,
-                  "checks": {"1080p": (info["width"], info["height"]) == (1920, 1080), "h264": info["video_codec"] == "h264", "aac": info["audio_codec"] == "aac"}}
+                  "checks": {**size_checks(info), "h264": info["video_codec"] == "h264", "aac": info["audio_codec"] == "aac"}}
         if frames_dir is not None:
             report["frames"] = extract_frames(video, frames_dir, slug, info["duration"])
         return report
@@ -396,7 +614,7 @@ def verify(video: Path, frames_dir: Path | None, slug: str, fade_allowance: floa
     bad = [s for s in loud["silences"] if s["duration"] is None or s["start"] < info["duration"] - fade_allowance]
     report = {"file": video.name, "sound": sound, "target_lufs": target, **info, **{k: loud[k] for k in ("integrated_lufs", "lra", "true_peak_dbtp")},
               "silences_over_3s_outside_the_final_fade": bad,
-              "checks": {"1080p": (info["width"], info["height"]) == (1920, 1080), "h264": info["video_codec"] == "h264", "aac": info["audio_codec"] == "aac",
+              "checks": {**size_checks(info), "h264": info["video_codec"] == "h264", "aac": info["audio_codec"] == "aac",
                          f"loudness_within_0.7_of_{target:g}": loud["integrated_lufs"] is not None and abs(loud["integrated_lufs"] - target) <= 0.7,
                          "true_peak_at_most_-1": loud["true_peak_dbtp"] is not None and loud["true_peak_dbtp"] <= -1.0, "no_unexpected_silence": not bad}}
     if frames_dir is not None:
@@ -417,6 +635,8 @@ def _common(ap):
     ap.add_argument("--sound", default="chiptune", choices=sounds.NAMES)
     ap.add_argument("--dark", type=float, default=0.0)
     ap.add_argument("--no-bed", action="store_true")
+    ap.add_argument("--uhd", action="store_true", help="the video is 3840x2160 (the title then says 4K)")
+    ap.add_argument("--view", default="", choices=["", "fireplace"])
 
 
 def main(argv=None) -> None:
@@ -449,8 +669,10 @@ def main(argv=None) -> None:
     options = {"pomodoro": (25, 5)} if a.pomodoro else {}
     if a.season:
         options["season"] = a.season
+    if a.view:
+        options["view"] = a.view
     if a.cmd == "thumb":
-        p = make_thumbnail(a.theme, seconds, seed, Path(a.out), options, music=not a.no_music, sound=a.sound)
+        p = make_thumbnail(a.theme, seconds, seed, Path(a.out), options, music=not a.no_music, sound=a.sound, uhd=a.uhd, dark=a.dark)
         print(p, p.stat().st_size)
     else:
         loop_min = a.loop_min if 0 < a.loop_min * 60 < seconds else 0.0
@@ -459,7 +681,7 @@ def main(argv=None) -> None:
         musical = sounds.spec(a.sound).musical and not a.no_music
         tracks = lf.plan_tracks(cls, music_s, seed, lf.music_cfg(cls, a.sound)) if musical else []
         meta = build_metadata(a.theme, seconds, a.slug, musical, bool(a.pomodoro), seed, tracks, loop_min, sound=a.sound, dark=a.dark, no_bed=a.no_bed,
-                              kw=keywords.load())
+                              kw=keywords.load(), uhd=a.uhd, season=a.season, view=a.view)
         Path(a.out).write_text(json.dumps(meta, indent=2) + "\n")
         print(meta["title"])
 

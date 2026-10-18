@@ -125,6 +125,8 @@ The same generators make finished videos of 1 to 2 hours in several themes. Noth
     python3.12 longform_pub.py verify --video winter-2h.mp4 --frames-dir frames/                    # ffprobe, LUFS, true peak, silence, 4 frames
 
     python3.12 longform.py --theme campfire --hours 10 --loop-min 20 --sound brown --dark 300 --out campfire-brown-10h.mp4   # brown noise, dims to black after 5 min
+    python3.12 longform.py --theme winter --season christmas --view fireplace --sound fireplace --uhd --hours 10 --loop-min 20 --out yule-log-4k.mp4   # a fireplace close-up in 4K
+    python3.12 playlists.py --out plan.json                              # which video belongs in which playlist (plan only; scripts/yt-playlists.py applies it, dry run by default)
     python3.12 keywords.py --refresh                                     # YouTube autocomplete research, cached weekly; --show brown lists the ranked phrases
     python3.12 seo_review.py stats.csv                                   # what to retitle and which theme x sound to make next, from exported stats
 
@@ -134,7 +136,12 @@ each masters to its own loudness (noise and binaural -20 LUFS, synth -18, lofi -
 loop and are added after the loop crossfade, so a binaural beat is exact across the seam. `--dark SECONDS` dims the picture to near black and repeats a black clip. See
 docs/products/ambient-channel-plan.md for the keyword method, the metadata rules and the review loop.
 
-Output is 1920x1080, 30 fps H.264, AAC 192 kbps, -14 LUFS integrated, true peak under -1 dBTP, faststart. Themes: `campfire`, `halloween`, `winter`, `study`.
+`--uhd` writes 3840x2160 (YouTube calls a 2160p file 4K): the final 1080p picture, which is pixel art at exactly 6x, is enlarged exactly 2x by copying pixels (`scale=3840:2160:flags=neighbor`)
+inside the loop's encode (level 5.1, CRF 20, `-tune animation`, keyframe every 2 s), and the long file repeats that loop by stream copy as before; the verify step accepts 1920x1080 or 3840x2160.
+`--view fireplace` (winter theme) frames the fireplace large. `--season christmas` (or `--uhd`) switches `longform_pub.py` to the holiday and TV titles: the ranked holiday phrase first,
+then 4K (only when the file is 2160p and the picture stays on screen), what it is, the length and No Music (only when there is none).
+
+Output is 1920x1080 (3840x2160 with `--uhd`), 30 fps H.264, AAC 192 kbps, -14 LUFS integrated, true peak under -1 dBTP, faststart. Themes: `campfire`, `halloween`, `winter`, `study`.
 Run long renders with `nice -n 10`, at most two at once; a 2 hour video takes a few hours on a busy Mac (about 40 CPU-minutes of drawing and 100 of x264, plus
 about 12 CPU-minutes of music). Work files go in `<out>.work/` and are removed at the end; put the output outside the repo (the videos are gigabytes).
 

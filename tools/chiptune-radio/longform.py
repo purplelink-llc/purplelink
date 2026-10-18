@@ -8,7 +8,7 @@
     python3.12 longform.py --theme winter --preview-frame 1800 --out frame.png    # one 1920x1080 frame, no video
     python3.12 longform.py --theme campfire --hours 10 --loop-min 20 --sound brown --dark 300 --out b.mp4   # another sound (sounds.py), screen dims after 300 s
 
-The file is 1920x1080, 30 fps H.264, AAC 192 kbps at 48 kHz, -14 LUFS integrated, true peak under -1 dBTP, faststart. Nothing is loaded from
+The file is 1920x1080 (3840x2160 with --uhd), 30 fps H.264, AAC 192 kbps at 48 kHz, -14 LUFS integrated, true peak under -1 dBTP, faststart. Nothing is loaded from
 disk or the network: the music is composed and the sounds and pictures are drawn by code, so there is nothing to license.
 
 How it goes together (see README.md, "Long-form videos"):
@@ -61,6 +61,7 @@ LOFI_CFG = {"modes": {"major": 3, "dorian": 3, "lydian": 1, "mixolydian": 2}, "e
             "sound": {"lead": ["fm_ep", "flute"], "arp": ["fm_ep", "pluck"], "pad": "warm_pad", "bass": "sub_sine", "kit": "lofi", "wet": 0.3, "cut": 5200,
                       "crackle": True, "duck": False, "risers": False, "spark": False, "chorus": True}}
 VIDEO_SIZE = (1920, 1080)
+UHD_SIZE = (3840, 2160)        # --uhd: the 1080p picture (pixel art at exactly 6x) enlarged exactly 2x, so every art pixel is a 12x12 block
 HD = VIDEO_SIZE[0] // px.W      # 6
 FFMPEG = os.environ.get("FFMPEG", "ffmpeg")
 
@@ -279,25 +280,38 @@ def audio_stage(theme, tracks, seconds, work: Path, music: bool, workers: int, p
 # ------------------------------------------------------------------------------------------------------------------------ video
 X264 = ["-c:v", "libx264", "-preset", "veryfast", "-tune", "animation", "-crf", "19", "-profile:v", "high", "-level", "4.1",
         "-maxrate", "9M", "-bufsize", "18M", "-g", "60", "-keyint_min", "60", "-sc_threshold", "0", "-r", "30", "-an"]
+# 4K: level 5.1 (3840x2160 at 30 fps is within it), a higher rate ceiling for the 12x12 blocks' edges, the same keyframe spacing and the same tune
+X264_UHD = ["-c:v", "libx264", "-preset", "veryfast", "-tune", "animation", "-crf", "20", "-profile:v", "high", "-level", "5.1",
+            "-maxrate", "24M", "-bufsize", "48M", "-g", "60", "-keyint_min", "60", "-sc_threshold", "0", "-r", "30", "-an"]
+# the exact enlargement: after the fades and the colour conversion (so the work is done at 1080p), by copying each pixel into a 2x2 block
+UHD_SCALE = f"scale={UHD_SIZE[0]}:{UHD_SIZE[1]}:flags=neighbor"
 
 
-def video_cmd(seconds: float, fps: int, out: Path, fades: bool = True, dark: float = 0.0) -> list[str]:
-    """`dark` (seconds, with `seconds` = dark + DARK_FADE): the picture fades in, then dims to near black from `dark` to the end of the clip."""
+def out_size(uhd: bool) -> tuple:
+    return UHD_SIZE if uhd else VIDEO_SIZE
+
+
+def video_cmd(seconds: float, fps: int, out: Path, fades: bool = True, dark: float = 0.0, uhd: bool = False) -> list[str]:
+    """`dark` (seconds, with `seconds` = dark + DARK_FADE): the picture fades in, then dims to near black from `dark` to the end of the clip.
+    `uhd`: the piped 1920x1080 frames leave as 3840x2160, each pixel copied into a 2x2 block (nearest neighbour, no smoothing)."""
     if dark:
         fade = (f"fps=30,fade=t=in:st=0:d={FADE_IN_VIDEO},fade=t=out:st={dark:.3f}:d={DARK_FADE}:color={DARK_COLOR},format=yuv420p")
     elif fades:
         fade = f"fps=30,fade=t=in:st=0:d={FADE_IN_VIDEO},fade=t=out:st={max(0.0, seconds - FADE_OUT_VIDEO):.3f}:d={FADE_OUT_VIDEO},format=yuv420p"
     else:
         fade = "fps=30,format=yuv420p"
+    if uhd:
+        fade += "," + UHD_SCALE
     return [FFMPEG, "-hide_banner", "-loglevel", "warning", "-y",
             "-f", "rawvideo", "-pix_fmt", "rgb24", "-video_size", f"{VIDEO_SIZE[0]}x{VIDEO_SIZE[1]}", "-framerate", str(fps), "-i", "pipe:0",
-            "-vf", fade, *X264, str(out)]
+            "-vf", fade, *(X264_UHD if uhd else X264), str(out)]
 
 
-def black_cmd(seconds: float, fps: int, out: Path) -> list[str]:
+def black_cmd(seconds: float, fps: int, out: Path, uhd: bool = False) -> list[str]:
     """A near-black clip encoded exactly like the picture (same size, rate and x264 settings), so the two can be joined by stream copy."""
-    return [FFMPEG, "-hide_banner", "-loglevel", "warning", "-y", "-f", "lavfi", "-i", f"color=c={DARK_COLOR}:s={VIDEO_SIZE[0]}x{VIDEO_SIZE[1]}:r={fps}",
-            "-t", f"{seconds:.3f}", "-vf", "fps=30,format=yuv420p", *X264, str(out)]
+    w, h = out_size(uhd)
+    return [FFMPEG, "-hide_banner", "-loglevel", "warning", "-y", "-f", "lavfi", "-i", f"color=c={DARK_COLOR}:s={w}x{h}:r={fps}",
+            "-t", f"{seconds:.3f}", "-vf", "fps=30,format=yuv420p", *(X264_UHD if uhd else X264), str(out)]
 
 
 def write_dark_list(work: Path, intro_s: float, final_s: float, black_s: float) -> Path:
@@ -331,14 +345,14 @@ def render_chunk(theme_name: str, seed: int, seconds: float, options: dict, trac
 
 
 def video_stage(theme, seconds: float, work: Path, spec: dict, workers: int = 2, chunk_seconds: float = 30.0, loop: bool = False, dark: float = 0.0,
-                final_s: float = 0.0) -> None:
+                final_s: float = 0.0, uhd: bool = False) -> None:
     """Draws the frames in worker processes (a chunk of `chunk_seconds` each, handed back in order), enlarges each exactly 6x here, draws any overlay,
     and pipes it to x264. With `loop` the picture is a loop (loop.mp4, no fades) that the mux repeats by stream copy."""
     fps = theme.fps
     assert 30 % fps == 0, "the video rate must divide 30 so every frame is shown the same number of times"
     drawn = dark + DARK_FADE if dark else seconds                  # a dark video only draws the part that is seen, then the black clip takes over
     out = work / ("intro.mp4" if dark else "loop.mp4" if loop else "video.mp4")
-    proc = subprocess.Popen(video_cmd(drawn, fps, out, fades=not loop, dark=dark), stdin=subprocess.PIPE)
+    proc = subprocess.Popen(video_cmd(drawn, fps, out, fades=not loop, dark=dark, uhd=uhd), stdin=subprocess.PIPE)
     total = int(round(drawn * fps))
     per = max(1, int(chunk_seconds * fps))
     bounds = [(n, min(total, n + per)) for n in range(0, total, per)]
@@ -369,9 +383,9 @@ def video_stage(theme, seconds: float, work: Path, spec: dict, workers: int = 2,
         raise RuntimeError(f"ffmpeg video encode failed with exit {rc}")
     if dark:
         black_s = min(DARK_SEGMENT, max(10.0, (final_s or seconds) - drawn + 5.0))
-        subprocess.run(black_cmd(black_s, fps, work / "black.mp4"), check=True)
+        subprocess.run(black_cmd(black_s, fps, work / "black.mp4", uhd), check=True)
         write_dark_list(work, drawn, final_s or seconds, black_s)
-    (work / "video.json").write_text(json.dumps({"frames": total, "loop_seconds": seconds if loop else 0, "dark_seconds": dark,
+    (work / "video.json").write_text(json.dumps({"frames": total, "loop_seconds": seconds if loop else 0, "dark_seconds": dark, "uhd": uhd,
                                                  "seconds_of_work": round(time.time() - t0, 1)}))
 
 
@@ -468,6 +482,8 @@ def build_theme(args, tracks=None):
         options["pomodoro"] = (f, b)
     if args.season:
         options["season"] = args.season
+    if getattr(args, "view", ""):
+        options["view"] = args.view
     tracks = tracks if tracks is not None else plan_tracks(cls, seconds, args.seed, music_cfg(cls, args.sound))
     return cls(args.seed, seconds, bpm_at=bpm_lookup(tracks), options=options), tracks, seconds
 
@@ -487,6 +503,10 @@ def main(argv=None) -> None:
                     help="dim the picture to near black after this many seconds (the sound goes on); for sleep videos")
     ap.add_argument("--pomodoro", default="", help="study themes only: draw a Pomodoro timer, FOCUS/BREAK minutes, for example 25/5")
     ap.add_argument("--season", default="", help="study theme: halloween, christmas or newyear decor")
+    ap.add_argument("--view", default="", choices=["", "fireplace"],
+                    help="winter theme: frame the fireplace large (the fire, the mantel and the stockings) instead of the whole room")
+    ap.add_argument("--uhd", action="store_true",
+                    help="3840x2160 output: the 1080p picture enlarged exactly 2x (nearest neighbour) in the loop's encode; YouTube labels a 2160p file 4K")
     ap.add_argument("--workers", type=int, default=2, help="processes rendering music, and separately drawing frames, at once")
     ap.add_argument("--stage", choices=["all", "audio", "video", "mux"], default="all")
     ap.add_argument("--keep-work", action="store_true")
@@ -530,7 +550,7 @@ def main(argv=None) -> None:
                     sound=a.sound, bed_on=not a.no_bed, seed=a.seed)
 
     def do_video():
-        video_stage(theme, loop_s or seconds, work, spec, a.workers, loop=bool(loop_s), dark=a.dark, final_s=seconds)
+        video_stage(theme, loop_s or seconds, work, spec, a.workers, loop=bool(loop_s), dark=a.dark, final_s=seconds, uhd=a.uhd)
 
     if a.stage == "audio":
         do_audio()
