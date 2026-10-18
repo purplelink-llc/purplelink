@@ -341,7 +341,7 @@ def test_sound_metadata_is_plain_short_where_it_counts_and_makes_no_health_claim
     assert len(m["tags"]) <= 15 and sum(len(t) for t in m["tags"]) < 480 and len(set(t.lower() for t in m["tags"])) == len(m["tags"])
     tags_line = m["description"].strip().split("\n")[-1]
     assert len(tags_line.split()) == 3 and all(w.startswith("#") for w in tags_line.split())
-    assert "About this video" in m["description"] and "Pixel Hearth" in m["description"] and "near black" in m["description"]
+    assert "About this video" in m["description"] and "This channel makes" in m["description"] and "Pixel Hearth" not in m["description"] and "near black" in m["description"]
     assert ("headphones" in m["description"].lower()) == sound.startswith("binaural")
     assert "loop" in m["description"].lower()
     json.dumps(m)
