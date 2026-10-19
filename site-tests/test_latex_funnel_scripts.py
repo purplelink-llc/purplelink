@@ -159,6 +159,34 @@ class StopRule(unittest.TestCase):
         self.assertEqual((n["site_views_28d"], n["moderntex_views_28d"], n["trials_28d"], n["checkouts_28d"]), (6, 4, 2, 0))
         self.assertEqual(R.site_numbers({})["site_views_28d"], 0)
 
+    def test_band_numbers_count_error_pages_and_tagged_trials(self):
+        stats = {"topPaths": [{"key": "/latex-errors/", "count": 3}, {"key": "/latex-errors/overfull-hbox/", "count": 4},
+                              {"key": "/moderntex/", "count": 50}],
+                 "funnelByChannel": {"from:latex-errors": {"trial": {"moderntex": 2}, "checkout": {"moderntex": 1}},
+                                     "google": {"trial": {"moderntex": 9}}}}
+        self.assertEqual(R.band_numbers(stats), {"views": 7, "trials": 2, "buys": 1})
+        self.assertEqual(R.band_numbers({}), {"views": 0, "trials": 0, "buys": 0})
+        self.assertIsNone(R.band_numbers(None))
+
+    def test_band_verdict_threshold(self):
+        self.assertEqual(R.band_verdict(5), "band test: readable")
+        self.assertEqual(R.band_verdict(4), "band test: not readable yet (4 tagged trials in 14 days, need 5)")
+        self.assertIn("not measured", R.band_verdict(None))
+
+    def test_unavailable_window_prints_not_measured_and_is_recorded_blank(self):
+        f = R.band_fields({"views": 1, "trials": 0, "buys": 0}, None, None)
+        self.assertEqual(f["band_trials_14d"], "")
+        self.assertIn("14d not measured", R.band_line(f))
+
+    def test_old_history_rows_without_band_fields_still_read_and_rewrite(self):
+        with tempfile.TemporaryDirectory() as d:
+            p = Path(d) / "h.csv"
+            p.write_text("date,videos,tagged_urls\n2026-10-14,12,14\n")
+            R.append_history({"date": "2026-10-21", "videos": 13, "band_trials_14d": 2}, p)
+            rows = R.read_history(p)
+            self.assertEqual([r["date"] for r in rows], ["2026-10-14", "2026-10-21"])
+            self.assertEqual(rows[1]["band_trials_14d"], "2")
+
 
 if __name__ == "__main__":
     unittest.main()
