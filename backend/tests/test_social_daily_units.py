@@ -303,7 +303,7 @@ def test_release_uses_the_changelog_entry_and_skips_boilerplate(denv):
     assert "For You, a screen that reads your own record" in t["bluesky"]
     assert "Check for Updates" not in t["bluesky"] and "Check for Updates" not in t["mastodon"]
     assert "A graph of how your papers connect" not in t["mastodon"] or len(t["mastodon"]) <= 500
-    assert t["mastodon"].startswith("Vitae 1.4.0\n\nI shipped this release this week")
+    assert t["mastodon"].startswith("Vitae 1.4.0 is out.\n\nNew: For You, a screen")
 
 
 def test_mastodon_voice_failure_fails_the_gate(denv):
@@ -313,12 +313,75 @@ def test_mastodon_voice_failure_fails_the_gate(denv):
     assert "mastodon: Ben's voice: 'moreover'" in reasons(v)
 
 
-def test_mastodon_templates_are_plain_first_person_sentences_of_15_to_19_words():
-    for name, sentence in comp.MASTODON.items():
-        assert 15 <= len(sentence.split()) <= 19, (name, len(sentence.split()))
-        assert sentence.startswith("I ")
-        assert vet.ben_voice_problems(sentence) == [], name
-        assert vet.voice_problems(sentence) == [], name
+REL = {"title": "Vitae 1.4.0", "name": "Vitae", "version": "1.4.0", "price": "", "description": "",
+       "notes": "New: For You, a screen that reads your own record and lists what may need you.",
+       "requirement": "macOS 15 or later"}
+REL_C = cand.Candidate(id="release:vitae:1.4.0", kind="release", url="https://purplelink.llc/vitae/")
+
+
+def test_mastodon_release_is_title_line_then_changes_then_a_real_requirement_line():
+    body = comp.compose(REL_C, REL, "card", ["mastodon"], "daily-release")["mastodon"]
+    assert body == ("Vitae 1.4.0 is out.\n\nNew: For You, a screen that reads your own record and lists what may need you."
+                    "\n\nIt needs macOS 15 or later.\n\n{link}")
+    assert vet.filler_problems(comp.render_preview(body, "mastodon", REL_C.url, "daily-release"), cand.source_text(REL)) == []
+    assert vet.facts_problems(body, cand.source_text(REL)) == []
+    no_req = comp.compose(REL_C, dict(REL, requirement=""), "card", ["mastodon"], "daily-release")["mastodon"]
+    assert "It needs" not in no_req                                # no fact on the page, no closing line
+    other = cand.Candidate(id="guide:new-guide", kind="guide", url="https://purplelink.llc/guides/new-guide/")
+    g = comp.compose(other, dict(FACTS, requirement="macOS 15 or later"), "statement", ["mastodon"], "daily-guide")["mastodon"]
+    assert "It needs" not in g                                      # closing line is for releases only
+    assert g.startswith("New guide: Check a manuscript before you submit it\n\nA step by step walkthrough")
+
+
+def test_no_template_carries_a_fixed_sentence_without_information():
+    assert not hasattr(comp, "MASTODON")
+    assert comp.MASTODON_CLOSING == "It needs {requirement}."
+
+
+@pytest.mark.parametrize("filler", [
+    "I shipped this release this week, and the first changes from the changelog are listed here.",
+    "I published this guide this week, and the page opens with this short summary of what it covers.",
+    "I uploaded this video this week, and its description says what it covers in these words.",
+])
+def test_gate_rejects_the_old_mastodon_filler(filler):
+    out = vet.filler_problems(f"Vitae 1.4.0 is out.\n\n{filler}\n\nNew: For You, a screen.", cand.source_text(REL))
+    assert any("filler phrase" in o for o in out), out
+
+
+def test_gate_rejects_a_sentence_with_no_noun_from_the_source_facts():
+    src = cand.source_text(REL)
+    assert any("no noun" in o for o in vet.filler_problems("Vitae 1.4.0 is out.\n\nHere is more for you today.", src))
+    assert vet.filler_problems("Vitae 1.4.0 is out.\n\nIt needs macOS 15 or later.", src) == []
+    assert any("no noun" in o for o in vet.filler_problems("It needs macOS 99 or later.", "Something else entirely"))
+
+
+def test_filler_fails_the_whole_gate_for_mastodon(denv):
+    t = dict(GOOD, mastodon="New guide: Check a manuscript before you submit it\n\nI published this guide this week, and "
+                            "the link below goes to the full page.\n\n{link}")
+    assert "filler" in reasons(gate(t, platforms=("linkedin", "bluesky", "threads", "mastodon")))
+
+
+def test_requirement_line_comes_from_the_product_page():
+    assert cand.requirement_line("<p>Requires macOS 15 Sequoia or later &middot; Apple silicon</p>") == "macOS 15 or later"
+    assert cand.requirement_line("<p>macOS 14 (Sonoma) or later, on Apple silicon</p>") == "macOS 14 or later"
+    assert cand.requirement_line("<p>Works on your Mac.</p>") == ""
+
+
+def test_an_approved_unposted_queue_item_and_history_extra_keep_vitae_off_mastodon(denv):
+    denv.outreach.write_text("# empty\n")
+    it = items.create("vitae-140-mastodon", ["mastodon"], "https://purplelink.llc/vitae/", "vitae-140")
+    it.sections["default"] = "Vitae 1.4.0 {link}"
+    it.meta.update(status="approved", scheduled_at="2026-10-28T09:00:00-04:00")
+    it.save()
+    vit = release("vitae", "1.4.0")
+    assert sc.blocked_platforms(vit, external.load(TODAY, 21), TODAY, 21, ALL4) == {"mastodon"}
+    it.meta["status"] = "draft"
+    it.save()
+    assert sc.blocked_platforms(vit, external.load(TODAY, 21), TODAY, 21, ALL4) == set()
+    external.extra_file().parent.mkdir(parents=True, exist_ok=True)
+    external.extra_file().write_text(json.dumps([{"date": "2026-10-18", "platforms": ["mastodon"],
+                                                   "text": "vitae 1.4.0 launch (goes out 2026-10-28)"}]))
+    assert sc.blocked_platforms(vit, external.load(TODAY, 21), TODAY, 21, ALL4) == {"mastodon"}
 
 
 # ------------------------------------------------------------------ metrics parsing

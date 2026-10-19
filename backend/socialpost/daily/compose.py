@@ -39,26 +39,24 @@ QUESTION = {
     "evergreen:tool": "Still looking for this? {title}",
     "evergreen:blog": "Still looking for this? {title}",
 }
-# Mastodon is written as Ben (first person, his `benampel` skill, tutorial register): the page title on its own line,
-# one plain declarative of about 15 to 19 words that says what follows, then the page's own verified facts (sentences
-# copied from the page, each under 31 words). Contrast would use a sentence-initial "However"; none is needed here.
-# The profile bio discloses AI help.
-MASTODON = {
-    "release": "I shipped this release this week, and the first changes from the changelog are listed here.",
-    "guide": "I published this guide this week, and the page opens with this short summary of what it covers.",
-    "blog": "I posted this write-up this week, and the page opens with this short summary of what it covers.",
-    "tool": "I added this tool to the site this week, and the page describes what it does in these words.",
-    "video": "I uploaded this video this week, and its description says what it covers in these words.",
-    "evergreen:guide": "I wrote this guide earlier, and it is still one of the most read pages on the site.",
-    "evergreen:tool": "I built this tool earlier, and it is still one of the most used pages on the site.",
-    "evergreen:blog": "I wrote this post earlier, and it is still one of the most read pages on the site.",
-}
+# Mastodon is written as Ben (his `benampel` skill, tutorial register) with no filler: the same first line as the other
+# platforms ("<App> <version> is out." or "New guide: <title>"), then the page's own verified sentences (each under 31
+# words), then for a release one closing line in plain first-person-neutral voice that states a real fact from the
+# product page (the macOS requirement), only when the page says it. No fixed sentence that carries no information.
+MASTODON_CLOSING = "It needs {requirement}."
+# Fixed phrases the first Mastodon templates used. They carried nothing, so the gate rejects them for good.
+FILLER_PHRASES = (
+    "i shipped this release this week", "the first changes from the changelog", "are listed here",
+    "the page opens with this short summary", "what it covers in these words", "the page describes what it does",
+    "this week, and the link below", "still one of the most read pages", "still one of the most used pages",
+)
+
 # Wording the fact lines add (sentences built from the page's own headings and step count).
 FACT_TEMPLATES = ["It covers {a} and {b}.", "The page lays it out in {steps}."]
 
 # Every word the templates themselves introduce. The vetting gate lets these through and requires everything else
 # that looks like a name or a number to appear in the page's own facts.
-TEMPLATE_TEXT = " ".join(list(HEADLINE.values()) + list(QUESTION.values()) + list(MASTODON.values()) + FACT_TEMPLATES + ["Link:"])
+TEMPLATE_TEXT = " ".join(list(HEADLINE.values()) + list(QUESTION.values()) + [MASTODON_CLOSING] + FACT_TEMPLATES + ["Link:"])
 TEMPLATE_VOCAB = {w.lower() for w in re.findall(r"[A-Za-z]+", TEMPLATE_TEXT)}
 
 
@@ -71,10 +69,7 @@ def _key(c) -> str:
 
 
 def headline(c, facts: dict, fmt: str, platform: str = "") -> str:
-    if platform == "mastodon":
-        return MASTODON[_key(c)].format(title=facts["title"]) if "{title}" in MASTODON[_key(c)] else \
-            f"{facts['title']}\n\n{MASTODON[_key(c)]}"
-    table = QUESTION if fmt == "question" else HEADLINE
+    table = QUESTION if fmt == "question" and platform != "mastodon" else HEADLINE
     return table[_key(c)].format(title=facts["title"])
 
 
@@ -145,14 +140,15 @@ def _options(units: list[str], fmt: str, platform: str = "") -> list[list[str]]:
     return out
 
 
-def _body(c, facts: dict, fmt: str, platform: str, facts_used: list[str]) -> str:
+def _body(c, facts: dict, fmt: str, platform: str, facts_used: list[str], with_closing: bool = True) -> str:
     head = headline(c, facts, fmt, platform)
     text = " ".join(facts_used)
     if platform == "linkedin":
         return f"{head}\n\n{text}\n\n{{link}}"
     if platform == "mastodon":
-        title, intro = head.split("\n\n", 1)
-        return f"{title}\n\n{intro}\n\n{text}\n\n{{link}}"
+        closing = MASTODON_CLOSING.format(requirement=facts["requirement"]) \
+            if c.kind == "release" and facts.get("requirement") and with_closing else ""
+        return "\n\n".join(x for x in (head, text, closing, "{link}") if x)
     if head[-1] not in ".?!:":
         head += "."
     return f"{head} {text}\n\n{{link}}"
@@ -186,8 +182,10 @@ def compose_best(c, facts: dict, fmt: str, platforms: list[str], campaign: str):
         limit = min(spec["text"], SOFT_LIMIT.get(p, spec["text"]))
         units = fact_units(facts, p)
         for opt in _options(units, fmt, p):
-            body = _body(c, facts, fmt, p, opt)
-            if measure(render_preview(body, p, c.url, campaign), spec["count"]) <= limit:
+            tries = [_body(c, facts, fmt, p, opt, True), _body(c, facts, fmt, p, opt, False)]
+            body = next((b for b in dict.fromkeys(tries)
+                         if measure(render_preview(b, p, c.url, campaign), spec["count"]) <= limit), None)
+            if body:
                 out[p] = body
                 break
         else:

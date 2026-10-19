@@ -135,7 +135,7 @@ def test_one_post_per_platform_per_day(denv):
 def test_mastodon_is_in_the_daily_run_in_ben_voice(denv):
     res, _ = go(denv)
     t = res["texts"]["mastodon"]
-    assert t.startswith("Panely 1.1.0\n\nI shipped this release this week")
+    assert t.startswith("Panely 1.1.0 is out.\n\nThe list of open windows can show a picture of each one")
     assert "utm_source=mastodon" in t and len(t) <= 500
     assert "—" not in t and "Moreover" not in t
 
