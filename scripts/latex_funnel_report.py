@@ -49,7 +49,12 @@ CHECKPOINT_VIDEOS = 45
 MIN_VISITS_PER_WEEK = 10
 BOT_VIEWS_PER_URL = 2
 FIELDS = ["date", "videos", "tagged_urls", "views_7d", "views_28d", "search_share_28d", "ext_clicks_28d",
-          "site_views_28d", "human_views_est_28d", "moderntex_views_28d", "trials_28d", "checkouts_28d"]
+          "site_views_28d", "human_views_est_28d", "moderntex_views_28d", "trials_28d", "checkouts_28d",
+          "errpage_views_7d", "errpage_views_28d", "band_trials_7d", "band_trials_14d", "band_trials_28d",
+          "band_buys_7d", "band_buys_28d"]
+BAND_CHANNEL = "from:latex-errors"   # first-touch label analytics.js gives a visit whose URL has ?from=latex-errors
+ERRPAGE_PREFIX = "/latex-errors"     # the hub and the 12 error pages
+BAND_MIN_TRIALS_14D = 5
 
 
 # ---------------------------------------------------------------- pure logic
@@ -130,6 +135,62 @@ def site_numbers(stats: dict) -> dict:
             "checkouts_28d": sum(int(v) for v in (ch.get("checkout") or {}).values() if str(v).isdigit() or isinstance(v, int))}
 
 
+def band_numbers(stats: dict | None) -> dict | None:
+    """From one stats response (any window): page views on /latex-errors/* and the ModernTex band's tagged trials and
+    buy clicks. None when the response is missing (not measured).
+
+    Tagged = the site's first-touch channel is "from:latex-errors" (analytics.js labels a visit by utm_source, else
+    ?from=). The stats function records the first-touch label on trial downloads and buy clicks, not the landing
+    URL, so a visitor who first arrived some other way (search, a YouTube tag) and later clicked the band is not
+    counted: the tagged figure is a floor."""
+    if stats is None:
+        return None
+    views = sum(int(x.get("count", 0)) for x in (stats.get("topPaths") or [])
+                if str(x.get("key", "")).startswith(ERRPAGE_PREFIX))
+    ch = (stats.get("funnelByChannel") or {}).get(BAND_CHANNEL) or {}
+    num = lambda d: sum(int(v) for v in (d or {}).values() if isinstance(v, (int, float)) or str(v).isdigit())
+    return {"views": views, "trials": num(ch.get("trial")), "buys": num(ch.get("checkout"))}
+
+
+def band_verdict(trials_14d: int | None) -> str:
+    if trials_14d is None:
+        return "band test: not measured (tagged trials in 14 days unavailable)"
+    if trials_14d >= BAND_MIN_TRIALS_14D:
+        return "band test: readable"
+    return f"band test: not readable yet ({trials_14d} tagged trials in 14 days, need {BAND_MIN_TRIALS_14D})"
+
+
+def band_fields(w7: dict | None, w14: dict | None, w28: dict | None) -> dict:
+    g = lambda w, k: "" if w is None else w[k]
+    return {"errpage_views_7d": g(w7, "views"), "errpage_views_28d": g(w28, "views"),
+            "band_trials_7d": g(w7, "trials"), "band_trials_14d": g(w14, "trials"), "band_trials_28d": g(w28, "trials"),
+            "band_buys_7d": g(w7, "buys"), "band_buys_28d": g(w28, "buys")}
+
+
+def band_line(f: dict) -> str:
+    m = lambda k: "not measured" if f.get(k, "") == "" else str(f[k])
+    return (f"  ModernTex band on /latex-errors/*: page views 7d {m('errpage_views_7d')}, 28d {m('errpage_views_28d')}; "
+            f"tagged trials (from=latex-errors) 7d {m('band_trials_7d')}, 14d {m('band_trials_14d')}, 28d {m('band_trials_28d')}; "
+            f"tagged buy clicks 7d {m('band_buys_7d')}, 28d {m('band_buys_28d')}")
+
+
+def fetch_band_stats() -> tuple[dict | None, dict | None, dict | None]:
+    """Stats windows of 7, 14 and 28 days; a window that cannot be read is None, never zero."""
+    spec = importlib.util.spec_from_file_location("td", _dashboard_path())
+    td = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(td)
+    site = next(s for s in td.SITES if s["key"] == "purplelink")
+    token = td.load_config()["PURPLELINK_STATS_TOKEN"]
+    out = []
+    for d in (7, 14, 28):
+        try:
+            out.append(band_numbers(td.fetch_site(site, token, d)))
+        except Exception as e:  # noqa: BLE001 - report as not measured
+            print(f"  (band stats {d}d unavailable: {e})", file=sys.stderr)
+            out.append(None)
+    return tuple(out)  # type: ignore[return-value]
+
+
 # ---------------------------------------------------------------- data sources
 def _dashboard_path() -> Path:
     """The traffic dashboard module: the local copy the daily job keeps in ~/.purplelink/traffic (it exists when the
@@ -188,7 +249,7 @@ def fetch_youtube() -> dict:
     return out
 
 
-def report(today: dt.date, yt: dict, site: dict, history: list[dict]) -> str:
+def report(today: dt.date, yt: dict, site: dict, history: list[dict], band: dict | None = None) -> str:
     allowance = bot_allowance(history, today, yt["tagged_urls"])
     human = human_estimate(site["site_views_28d"], allowance)
     rows = [r for r in history if r["date"] != today.isoformat()] + [{**site, "date": today.isoformat(), "human_views_est_28d": human}]
@@ -202,7 +263,9 @@ def report(today: dt.date, yt: dict, site: dict, history: list[dict]) -> str:
         f"{yt['tagged_urls']} tagged URLs, so {human} estimated human; {site['moderntex_views_28d']} on ModernTex pages, "
         f"{site['trials_28d']} trial(s), {site['checkouts_28d']} checkout click(s)",
         f"  views to estimated human site visits: {human / yt['views_28d']:.1%}" if yt["views_28d"] else "  views to site visits: n/a",
-        f"  stop rule: {status} - {why}"])
+        f"  stop rule: {status} - {why}",
+        band_line(band or band_fields(None, None, None)),
+        "  " + band_verdict(None if not band or band.get("band_trials_14d", "") == "" else int(band["band_trials_14d"]))])
 
 
 def main() -> int:
@@ -212,11 +275,12 @@ def main() -> int:
     today = dt.date.today()
     yt, site = fetch_youtube(), site_numbers(fetch_site_stats())
     hist = read_history()
-    print(report(today, yt, site, hist))
+    band = band_fields(*fetch_band_stats())
+    print(report(today, yt, site, hist, band))
     if a.record:
         human = human_estimate(site["site_views_28d"], bot_allowance(hist, today, yt["tagged_urls"]))
         append_history({"date": today.isoformat(), **{k: yt[k] for k in ("videos", "tagged_urls", "views_7d", "views_28d",
-                         "search_share_28d", "ext_clicks_28d")}, **site, "human_views_est_28d": human})
+                         "search_share_28d", "ext_clicks_28d")}, **site, **band, "human_views_est_28d": human})
     return 0
 
 
