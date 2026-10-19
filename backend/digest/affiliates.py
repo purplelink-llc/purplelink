@@ -346,7 +346,7 @@ def _uses(url: str, registry=None) -> Optional[Program]:
 def rewrite_html(page: str, registry=None) -> tuple:
     """Rewrite links to live programs in one page. Returns (new_page, number_changed).
 
-    Idempotent. Every link to a live program gets rel="sponsored noopener". When any non-Amazon program is used,
+    Idempotent. Every link to a live program gets rel="sponsored noopener" and data-aff="<program id>". When any non-Amazon program is used,
     the generic disclosure is inserted once, right after the page's </h1>, and every such link is followed by a
     small "(paid link)" label, because a notice at the top alone is not close enough to the link. Amazon links keep
     their existing markup and sentence, which scripts/check_content.py already enforces.
@@ -372,6 +372,10 @@ def rewrite_html(page: str, registry=None) -> tuple:
             tag = tag[:rel.start()] + 'rel="' + " ".join(vals) + '"' + tag[rel.end():]
         else:
             tag = tag[:-1] + f' rel="{REL}">'
+        # Which program the link belongs to, for the affiliate_click beacon in site/analytics.js. A tracked CJ
+        # link's host (kqzyfj.com, tkqlhce.com) does not say which brand it is, so the page has to.
+        if "data-aff=" not in tag:
+            tag = tag[:-1] + f' data-aff="{p.id}">'
         if tag != m.group(0):
             changed += 1
         if p.id != "amazon":

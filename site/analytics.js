@@ -2,7 +2,7 @@
 // Sends a pageview on load, exposes window.plTrack(type, meta), and wraps fetch
 // so every call to the LaTeX-tools Modal backend is recorded as a "tool_use"
 // event (tagged by the tool page). This is what Cloudflare Web Analytics can't
-// tell you: which tools are actually run (tool_use, plus tool_outcome and offer_view/offer_click for the per-tool counts in track.mjs). No cookies, no fingerprinting. Honors
+// tell you: which tools are actually run (tool_use, plus tool_outcome and offer_view/offer_click for the per-tool counts in track.mjs), and which affiliate links are clicked (affiliate_click: program and page, never the destination). No cookies, no fingerprinting. Honors
 // Do Not Track. Same-origin only (no CSP change, no third-party load).
 (function () {
   var dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -248,6 +248,16 @@
       }
       if (a && /summonly-download\?(download|trial)=1/.test(a.getAttribute("href"))) {
         window.plTrack("sm_trial_download", "summonly");
+      }
+      // Affiliate links (rel="sponsored", stamped data-aff="<program>" by scripts/affiliates.py): which program, from
+      // which page. Counted like any other event; the destination URL is never sent.
+      // Links that already carry data-track (the /desk/ book cards send affiliate_click with an ISBN) are counted below.
+      var s = ev.target && ev.target.closest && ev.target.closest('a[rel~="sponsored"]');
+      if (s && !s.hasAttribute("data-track")) {
+        var prog = s.getAttribute("data-aff") || "";
+        if (!prog) { try { prog = new URL(s.href).hostname.replace(/^www\./, ""); } catch (e) { prog = "unknown"; } }
+        var slug = location.pathname.replace(/\/+$/, "").split("/").pop() || "home";
+        window.plTrack("affiliate_click", (prog + " " + slug).slice(0, 110));
       }
       // Anything else marked data-track="<event>" (optional data-track-meta):
       // template downloads, the phone sticky bar.
