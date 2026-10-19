@@ -38,7 +38,7 @@
           "name": "Buddy",
           "applicationCategory": "DeveloperApplication",
           "operatingSystem": "macOS 14.0 or later",
-          "softwareVersion": "0.2.1",
+          "softwareVersion": "0.3.0",
           "url": "https://purplelink.llc/buddy/",
           "image": "https://purplelink.llc/assets/og/buddy.png",
           "downloadUrl": "https://github.com/purplelink-llc/buddy/releases/latest/download/Buddy.zip",
@@ -51,7 +51,8 @@
             "Opens for 20 seconds with a sound when a session asks for permission, asks a question or has a plan to review, then keeps an orange badge until you answer",
             "A chime, a smile and the turn's length when a session finishes",
             "Click a session to open that chat in the Claude app, that Terminal or iTerm2 tab, or that project's VS Code or Cursor window",
-            "A countdown to a usage-limit reset with a list of paused chats, plus Continue now and Auto"
+            "A countdown to a usage-limit reset with a list of paused chats, plus Continue now and Auto",
+            "Retries a chat stopped by a dropped connection once you are back online, at most three times"
           ],
           "offers": {
             "@type": "Offer",
@@ -108,7 +109,7 @@
           <a class="btn btn-primary" href="https://github.com/purplelink-llc/buddy/releases/latest/download/Buddy.zip" rel="noopener" data-track="download" data-track-meta="buddy">Download for Mac</a>
           <a class="btn btn-ghost" href="https://github.com/purplelink-llc/buddy" rel="noopener">Source on GitHub</a>
         </div>
-        <p class="waitlist-fine-print">Version 0.2.1. A ZIP file from the <a href="https://github.com/purplelink-llc/buddy/releases/latest" rel="noopener">latest GitHub release</a>. Open it and move Buddy to Applications. The app is notarized (checked by Apple).</p>
+        <p class="waitlist-fine-print">Version 0.3.0. A ZIP file from the <a href="https://github.com/purplelink-llc/buddy/releases/latest" rel="noopener">latest GitHub release</a>. Open it and move Buddy to Applications. The app is notarized (checked by Apple).</p>
         <p class="waitlist-fine-print">Needs a Mac with Apple silicon, macOS 14 or later, and Claude Code. MIT license. Made by Purplelink LLC.</p>
       </div>
       <figure class="app-hero-window buddy-hero-window">
@@ -127,6 +128,7 @@
         <li><strong>Finished.</strong> Buddy smiles, plays a chime, and says how long the turn took, such as "Finished in 3m 12s". A green check stays until you hover over the notch.</li>
         <li><strong>Jump to it.</strong> Click a session to open that exact chat in the Claude app, that exact Terminal or iTerm2 tab, or that project's VS Code or Cursor window. Click or swipe a row to clear it.</li>
         <li><strong>Usage limits.</strong> When a limit pauses your chats, Buddy counts down to the reset and lists the paused chats, including ones paused before Buddy was running. Continue now types "continue" into each of them, and Auto does it for you a few minutes after the reset.</li>
+        <li><strong>Dropped connections.</strong> When a chat stops because the network dropped or the Mac went to sleep, Buddy retries it on its own once you are back online. It presses the chat's Try again button, or types "continue", at most three times.</li>
       </ul>
       <figure class="buddy-shot">
         <div class="frame-soft">
@@ -144,7 +146,7 @@
         <li><strong>Your Claude Code events.</strong> Claude Code runs <code>buddy-hook</code> at each step of a session: a prompt, a tool call, a question, a finish. The hook writes the event to a folder that exists only while Buddy is running. It adds about 4 to 5 ms per event on an M-series Mac. When Buddy is closed, the hook does nothing.</li>
         <li><strong>The ends of your session transcripts.</strong> Buddy reads the last 64 KB of a transcript in two cases: to notice that you pressed Esc, since Claude Code sends no event for that, and to find chats a usage limit paused. Buddy never sends them anywhere.</li>
         <li><strong>The Claude app's chat list.</strong> Buddy reads the first 16 KB of each chat file in <code>~/Library/Application Support/Claude</code>. It uses them to show chat titles instead of folder names and to find paused chats.</li>
-        <li><strong>Accessibility, if you allow it.</strong> Buddy uses it only to type "continue" into paused Claude app chats. It waits until the screen is unlocked, and for Auto until you stop typing, then puts you back in the app you were using.</li>
+        <li><strong>Accessibility, if you allow it.</strong> Buddy uses it only to type "continue" into paused Claude app chats, or to press Try again in a chat a dropped connection stopped. It waits until the screen is unlocked, and for Auto until you stop typing, then puts you back in the app you were using.</li>
         <li><strong>Automation, if you allow it.</strong> macOS asks once before Buddy brings a Terminal or iTerm2 tab forward or sends "continue" to it.</li>
       </ul>
       <p class="specs-more">Buddy makes no network connections. Everything stays on your Mac.</p>
