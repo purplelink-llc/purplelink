@@ -76,6 +76,15 @@ class BibValidatorPage(unittest.TestCase):
                              capture_output=True, text=True, check=True).stdout
         self.assertEqual(json.loads(out), self.fixture)
 
+    def test_error_text_never_reaches_innerhtml(self):
+        # Code-scanning alert 94: server and exception text must be set with textContent.
+        catch = self.text.split(".catch(function (err)", 1)[1].split("// ---------------------- Results rendering", 1)[0]
+        self.assertNotIn("innerHTML", catch)
+        self.assertIn("textContent = msg", catch)
+        self.assertNotIn("innerHTML = '<span class=\"bib-err\">Pasted", self.text)
+        # The local escape helper must cover quotes (values land in title= and data-doi=).
+        self.assertIn('.replace(/"/g, "&quot;")', self.text)
+
     def test_links(self):
         for href in ("/guides/fix-bibtex-errors/", "/guides/build-bibtex-from-dois/"):
             self.assertIn(f'href="{href}"', demo_section(self.text))
