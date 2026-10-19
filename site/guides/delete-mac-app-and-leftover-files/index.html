@@ -30,7 +30,7 @@
           "author": { "@id": "https://purplelink.llc/about/#person" },
           "publisher": { "@id": "https://purplelink.llc/#organization" },
           "datePublished": "2026-10-13",
-          "dateModified": "2026-10-13",
+          "dateModified": "2026-10-19",
           "image": "https://purplelink.llc/assets/og/products.png",
           "mainEntityOfPage": "https://purplelink.llc/guides/delete-mac-app-and-leftover-files/"
         },
@@ -88,6 +88,22 @@
     },
     {
       "@type": "Question",
+      "name": "Why does a deleted app still show in Login Items?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "macOS keeps its own record of background items, and many apps register their helper from inside the app, so the record can outlive the app. It takes almost no space. Run sfltool dumpbtm in Terminal to see what each entry belongs to; sfltool resetbtm and a restart clear stale entries but also reset every item you approved."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why can't I delete a OneDrive or Google Drive folder after removing the app?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Cloud drive folders in Library/CloudStorage belong to the app's File Provider, which macOS manages. Check the files are online first, then reinstall the app, unlink this Mac and quit it, or restart and try again."
+      }
+    },
+    {
+      "@type": "Question",
       "name": "Why not just use a cleaner app?",
       "acceptedAnswer": {
         "@type": "Answer",
@@ -124,12 +140,12 @@
       <div class="post-hero">
         <p class="post-date">Guide</p>
         <h1 class="post-title">How to delete a Mac app and the files it leaves behind</h1>
-        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-13">October 13, 2026</time></p>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-13">October 13, 2026</time>, updated <time datetime="2026-10-19">October 19, 2026</time></p>
         <p class="post-lede">Moving an app to the Trash removes the app, not what it saved to your Library. Most of what stays is a few megabytes of preferences and caches, but a support folder can hold real data, so look before you delete.</p>
       </div>
 
       <article class="post-body">
-        <p><strong>Disclosure:</strong> Purplelink, which publishes this site, makes one app mentioned here, <a href="/legroom/">Legroom</a>, a menu-bar app sold as a 7-day trial and a $9.99 one-time purchase. It is young, and I say where free tools do the same job. On October 13, 2026 I ran the Terminal command in step 1 and looked at the Library folders named here on my own Mac (macOS 27.2). Everything else comes from Apple's page and each tool's own description. Where I could not confirm something, I say so.</p>
+        <p><strong>Disclosure:</strong> Purplelink, which publishes this site, makes one app mentioned here, <a href="/legroom/">Legroom</a>, a menu-bar app sold as a 7-day trial and a $9.99 one-time purchase. It is young, and I say where free tools do the same job. On October 13, 2026 I ran the Terminal command in step 1 and looked at the Library folders named here on my own Mac (macOS 27.2). On October 19, 2026 I ran <code>sfltool dumpbtm</code> on the same Mac to check the background items section below. Everything else comes from Apple's pages and each tool's own description. Where I could not confirm something, I say so.</p>
 
         <h2>The short answer</h2>
         <p>Apple's page on deleting apps says to run an app's own uninstaller if it has one, because that is the best way to remove login items, extensions and other data the app stored elsewhere (<a href="https://support.apple.com/en-us/ht202235" rel="noopener">Apple: Delete or uninstall apps on Mac</a>). When an app has no uninstaller, what usually stays is small: preferences, caches, saved state and a support folder. A few apps keep gigabytes. You can find and remove it by hand in about five minutes.</p>
@@ -164,6 +180,26 @@
         <h2>What to leave alone</h2>
         <p>Leave Apple apps and anything in system folders. Leave anything inside Group Containers whose name you do not recognise. Leave folders that hold a photo, music or video library, a backup, or an item that exists only in iCloud. Leave anything that changed in the last few minutes, because the app may still be running.</p>
 
+        <h2 id="background-items">A deleted app still shows in Login Items</h2>
+        <p>System Settings, General, Login Items &amp; Extensions keeps its own list of apps allowed to run in the background. On macOS 27 the section is called Background App Activity; earlier versions call it Allow in the Background. Since macOS 13, many apps register their helper from inside the app itself, so there is often no file in a LaunchAgents folder to remove, and the entry can stay after the app is gone. It takes almost no space, so this is about an accurate list, not about disk space.</p>
+        <ol>
+          <li><strong>Quit and reopen System Settings.</strong> Entries for removed apps are sometimes cleared then.</li>
+          <li><strong>See what each entry belongs to.</strong> In Terminal, <code>sfltool dumpbtm</code> prints every login and background item with its developer, identifier and the path behind it. It only reads.</li>
+          <li><strong>If an entry points to a file</strong> in a LaunchAgents or LaunchDaemons folder, move that file to the Trash and restart. The ones outside your home folder need an administrator password.</li>
+          <li><strong>If it is only a stale record,</strong> <code>sfltool resetbtm</code> followed by a restart clears it. It also resets every background item you have approved, so apps you still use will ask again. Use it last.</li>
+        </ol>
+        <p>Apple documents both commands in <a href="https://support.apple.com/guide/deployment/depdca572563/web" rel="noopener">Manage login items and background tasks on Mac</a>. Legroom's Uninstaller looks in the LaunchAgents and LaunchDaemons folders for the removed app's files; it does not run <code>sfltool</code> or change this list.</p>
+
+        <h2 id="cloud-folders">A cloud drive folder stays after you delete the app</h2>
+        <p>OneDrive, Google Drive, Dropbox and other cloud drives keep their files in <code>~/Library/CloudStorage</code>. macOS manages each folder there through the app's File Provider, so after the app is deleted the folder can stay, keep its downloaded files, and refuse to go to the Trash. One person <a href="https://www.reddit.com/r/MacOS/comments/1x98una/" rel="noopener">on r/MacOS</a> found 100 GB left by OneDrive this way in October 2026.</p>
+        <ol>
+          <li><strong>Check the files are online first.</strong> Sign in to the service on the web. Files that were downloaded to the Mac are real local copies, and may be the only copy of recent edits.</li>
+          <li><strong>Use the app to let go.</strong> Reinstall it, sign in, choose its option to unlink or disconnect this Mac, quit it, then delete the app again.</li>
+          <li><strong>Restart</strong> and try moving the folder to the Trash again. A restart lets macOS release it.</li>
+          <li><strong>As a last step</strong> the folder can be removed in Terminal, which skips the Trash. Microsoft and Apple's developer forums describe the steps (<a href="https://learn.microsoft.com/en-us/answers/a/11108802" rel="noopener">Microsoft Q&amp;A</a>, <a href="https://developer.apple.com/forums/thread/703071" rel="noopener">Apple Developer Forums</a>). Check the path twice before you press Return.</li>
+        </ol>
+        <p>Legroom's Where your space went shows these folders as one line, Other cloud drives on this Mac, with a button to show them in Finder. It never deletes anything inside <code>CloudStorage</code>.</p>
+
         <h2>Why this happens</h2>
         <p>A Mac app is a folder you can drag anywhere. macOS does not keep a list of what an app wrote to your Library while it ran. Dragging the app to the Trash therefore loses nothing and cleans up nothing.</p>
 
@@ -190,6 +226,10 @@
         <p>No, it only takes space. Most apps leave a few megabytes. A few leave far more, which is why some people find tens of gigabytes after years of trying apps.</p>
         <h3>Will removing leftovers fix System Data?</h3>
         <p>It can shrink it by the orphaned app data it holds. However, System Data also holds Time Machine snapshots, device backups and system files. The guide on why System Data is so big on a Mac lists each cause. See <a href="/guides/mac-system-data-huge/">Why is System Data so big on my Mac?</a></p>
+        <h3>Why does a deleted app still show in Login Items?</h3>
+        <p>macOS keeps its own record of background items, and many apps register their helper from inside the app, so the record can outlive the app. It takes almost no space. Run <code>sfltool dumpbtm</code> in Terminal to see what each entry belongs to; <code>sfltool resetbtm</code> and a restart clear stale entries but also reset every item you approved.</p>
+        <h3>Why can't I delete a OneDrive or Google Drive folder after removing the app?</h3>
+        <p>Cloud drive folders in Library/CloudStorage belong to the app's File Provider, which macOS manages. Check the files are online first, then reinstall the app, unlink this Mac and quit it, or restart and try again.</p>
         <h3>Why not just use a cleaner app?</h3>
         <p>You can. Whichever you choose, look at what it plans to remove before it removes it, and prefer one that moves things to the Trash instead of deleting them outright.</p>
 

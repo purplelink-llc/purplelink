@@ -30,7 +30,7 @@
           "author": { "@id": "https://purplelink.llc/about/#person" },
           "publisher": { "@id": "https://purplelink.llc/#organization" },
           "datePublished": "2026-10-12",
-          "dateModified": "2026-10-12",
+          "dateModified": "2026-10-19",
           "image": "https://purplelink.llc/assets/og/products.png",
           "mainEntityOfPage": "https://purplelink.llc/guides/mac-system-data-huge/"
         },
@@ -93,6 +93,14 @@
         "@type": "Answer",
         "text": "Partly, and not the biggest suspects. Legroom shows which folders grew over the last 1, 7 or 30 days and previews each cleaning rule before anything is removed. It does not offer Apple's media analysis cache for cleaning, it does not remove Apple Intelligence models, and it reports Time Machine snapshot space as not measured."
       }
+    },
+    {
+      "@type": "Question",
+      "name": "What is Syndication.photoslibrary, and can I delete it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It is a hidden Photos library in your Library folder that holds photos and videos people sent you in Messages, for Shared with You. Do not delete it by hand: macOS rebuilds it, and Messages media can go with it. Shrink it by deleting large attachments in Messages, or by setting Keep messages to 1 year. Turning off Shared with You only stops new items being added."
+      }
     }
   ]
 }
@@ -124,7 +132,7 @@
       <div class="post-hero">
         <p class="post-date">Guide</p>
         <h1 class="post-title">Why is System Data so big on my Mac? What fills it and what is safe to remove</h1>
-        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-12">October 12, 2026</time></p>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-12">October 12, 2026</time>, updated <time datetime="2026-10-19">October 19, 2026</time></p>
         <p class="post-lede">System Data is a leftover category, not a folder, so there is nothing to delete as a whole. Most of the space comes from a short list of causes. Some are safe to clear, and others belong to macOS. This guide shows how to see which one is yours and what to do about it.</p>
       </div>
 
@@ -155,6 +163,7 @@
               <tr><td class="u-cell">iPhone and iPad backups</td><td class="u-cell"><code>~/Library/Application Support/MobileSync/Backup</code></td><td class="u-cell">Yes, if you no longer need the backup, and delete through Finder, not by hand. See below.</td></tr>
               <tr><td class="u-cell">Apple Intelligence models</td><td class="u-cell">Managed by macOS</td><td class="u-cell">Not by hand. Apple's page does not describe removing them. See below.</td></tr>
               <tr><td class="u-cell">Media analysis cache</td><td class="u-cell"><code>~/Library/Containers/com.apple.mediaanalysisd/Data/Library/Caches</code></td><td class="u-cell">Apple does not say. Reports exist of people clearing it. See below.</td></tr>
+              <tr><td class="u-cell">Photos sent to you in Messages</td><td class="u-cell"><code>~/Library/Photos/Libraries/Syndication.photoslibrary</code></td><td class="u-cell">Not by hand. Shrink it from Messages. See below.</td></tr>
               <tr><td class="u-cell">Swap and the sleep image</td><td class="u-cell"><code>/private/var/vm</code></td><td class="u-cell">No. macOS manages these. Leave them alone.</td></tr>
             </tbody>
           </table>
@@ -173,11 +182,15 @@
         <p>Photos and related features use a background process called <code>mediaanalysisd</code>, which keeps a cache in a container folder. <a href="https://mjtsai.com/blog/?p=48375" rel="noopener">Michael Tsai's blog collects reports</a> of it at 15 GB or more, with some people reporting 50, 80 or 140 GB, and says the cause is unknown. In an <a href="https://discussions.apple.com/thread/256058302" rel="noopener">Apple Community thread</a> from May 2025, one person deleted a 21 GB subfolder and reported freeing about 30 GB. Other replies advised deleting it, and nobody there reported a problem. A popular r/MacOS thread this week reported 137 GB in the same place (<a href="https://www.reddit.com/r/MacOS/comments/1x3hej6/" rel="noopener">thread</a>, read October 12, 2026).</p>
         <p>Apple has published nothing about this folder, and I could not confirm from those pages whether macOS rebuilds what you delete. So this is a report, not advice. If you try it, quit the apps that use Photos, remove only what is inside the cache folder, and leave the container folder in place. On my Mac the folder is 491 MB and holds different files from the ones those reports describe. A big number is not universal.</p>
 
+        <h3>Photos sent to you in Messages</h3>
+        <p>Messages keeps the photos and videos people send you in a separate, hidden Photos library, <code>Syndication.photoslibrary</code>, which feeds Shared with You. <a href="https://eclecticlight.co/2025/12/12/did-you-know-your-photos-are-being-syndicated/" rel="noopener">Howard Oakley at Eclectic Light</a> (December 12, 2025) found it can keep items Messages no longer shows, and advises against deleting it. An <a href="https://www.reddit.com/r/MacOS/comments/1x9t7h6/" rel="noopener">r/MacOS post</a> in October 2026 reported 8 GB, and turning off Shared with You did not shrink it, because that only stops new items. On my Mac it is 3.2 GB.</p>
+        <p>To shrink it, remove the attachments in Messages itself. Apple's page on <a href="https://support.apple.com/guide/messages/icht1035/mac" rel="noopener">deleting messages on Mac</a> describes both ways: delete items from a conversation's Photos list, or choose Messages, Settings, General and set Keep messages to something other than Forever, which removes older conversations and their attachments. If Messages in iCloud is on, deletions reach your other devices too, so save anything you want into Photos first.</p>
+
         <h3>What to leave alone</h3>
         <p>Do not touch <code>/System</code>, and do not delete swap or the sleep image in <code>/private/var/vm</code>. The sleep image on my Mac is 2 GB. macOS manages it. If you cannot name what a folder is, find out before you remove it.</p>
 
         <h2 id="scale">What I measured on my own Mac</h2>
-        <p>For scale, this is a Mac running macOS 27.2 with a 228 GB startup disk and 52 GB free. Under my Library: Application Support 11 GB, Group Containers 7.4 GB, Containers 4.8 GB, Caches 3.5 GB, the media analysis cache 491 MB, and device backups none. It is an ordinary working Mac, and none of its folders is anywhere near the 100 GB reports. System Data is large on some Macs because of one specific thing. The folders above are how you find out which.</p>
+        <p>For scale, this is a Mac running macOS 27.2 with a 228 GB startup disk and 52 GB free. Under my Library: Application Support 11 GB, Group Containers 7.4 GB, Containers 4.8 GB, Caches 3.5 GB, the media analysis cache 491 MB, the Messages photo library 3.2 GB (measured October 19, 2026), and device backups none. It is an ordinary working Mac, and none of its folders is anywhere near the 100 GB reports. System Data is large on some Macs because of one specific thing. The folders above are how you find out which.</p>
 
         <h2 id="tools">Tools that show or clear it</h2>
         <p>A folder map is the fastest way to find the big folder. The guide on <a href="/guides/best-disk-space-analyzer-for-mac/">disk space analyzers and cleaners for Mac</a> compares them in detail. In short, here is what each vendor's own page said on October 12, 2026:</p>
@@ -212,6 +225,8 @@
         <p>Apple does not document it, so I cannot say it is safe. People in an Apple Community thread report deleting it and freeing tens of gigabytes, and nobody there reported a problem. However, that is not Apple's guidance. If you try it, quit the apps that use Photos first and remove only the contents of the cache folder, not the container itself.</p>
         <h3>Does Legroom clear System Data?</h3>
         <p>Partly, and not the biggest suspects. Legroom shows which folders grew over the last 1, 7 or 30 days and previews each cleaning rule before anything is removed. It does not offer Apple's media analysis cache for cleaning, it does not remove Apple Intelligence models, and it reports Time Machine snapshot space as not measured.</p>
+        <h3>What is Syndication.photoslibrary, and can I delete it?</h3>
+        <p>It is a hidden Photos library in your Library folder that holds photos and videos people sent you in Messages, for Shared with You. Do not delete it by hand: macOS rebuilds it, and Messages media can go with it. Shrink it by deleting large attachments in Messages, or by setting Keep messages to 1 year. Turning off Shared with You only stops new items being added.</p>
 
         <h2>Related guides</h2>
         <ul>

@@ -8141,7 +8141,7 @@ Comparison
 
 # Best disk space analyzer and cleaner for Mac (2026): DaisyDisk alternatives compared
 
-By Benjamin Ampel · October 4, 2026
+By Benjamin Ampel · October 4, 2026, updated October 19, 2026
 
 This guide covers what is using your Mac's disk, what is safe to remove, and which tool to trust with the deleting. Short version: Apple's own settings plus a free or $10 disk map cover most full disks. The tools differ most in whether a delete goes to the Trash or is final.
 
@@ -8157,7 +8157,7 @@ Tools differ most in how they delete. DaisyDisk deletes permanently after a 5-se
 
 ## The tools side by side
 
-"Cleans or removes files" says how each tool removes things, as stated on the pages I read. "Not stated" means they did not say. US prices, October 4, 2026, except the last two rows, which I read on October 9, 2026 and did not test.
+"Cleans or removes files" says how each tool removes things, as stated on the pages I read. "Not stated" means they did not say. US prices, October 4, 2026, except the last two rows, which I read on October 9, 2026, and Burrow, which I read on October 19, 2026. I did not test those.
 
 ToolPriceWhat it doesShows a map of spaceCleans or removes filesNotable limit
 
@@ -8180,6 +8180,8 @@ CleanMyMac7-day trial. App Store Basic $39.99 a year, Plus $65.99 a year. Source
 Hazel$42 once, free trialRules on folders you name, such as deleting old DownloadsNoPer rule actionNo free-space trigger without a script, no analyzer, no dry-run list
 
 MoleCLI free, app $19 once for 2 MacsCleans caches, logs and leftovers. Uninstalls apps. Disk explorer (mo analyze)Disk explorer in Terminal. Map not statedAnalyze moves items to the Trash after confirmation. Clean commands can delete, and --dry-run previewsClean commands can delete, so the dry run is the safeguard
+
+BurrowFree. App code MIT, bundled engine FSL-1.1Mac app with a window: cleanup, uninstaller, duplicates, disk maps and system status, on an engine whose commands mirror Mole'sYes, per its READMETrash by default. Permanent deletion asks separatelyA young project, not affiliated with mole.fit. macOS 14 or later
 
 AppCleanerFreeFinds an app's related files when you drop the app on itNoRemoves the files you select. Trash or permanent not statedOne job only
 
@@ -8344,6 +8346,8 @@ Cost: The command-line tool is free, GPL-3.0, and installs with brew install mol
 The README describes cleaning caches, logs and leftovers, uninstalling apps, cleaning project build artifacts (mo purge), and a disk explorer (mo analyze). Its safety section is specific. --dry-run previews clean, uninstall, optimize, purge and installer runs. mo analyze "moves selected items to Trash after confirmation". Clean commands can delete, so preview first. Activity is logged to ~/Library/Logs/mole/operations.log, and protected caches can be whitelisted. The app page says scans and cleanup stay on your Mac and that moving anything to Trash asks for confirmation.
 
 What it lacks: a Trash step in its clean commands, which can delete. The dry run is the safeguard. Pick it if you are comfortable in Terminal and want a cleaner that tells you what it will do before it does it.
+
+If you want Mole's approach in a window without paying, people in an October 2026 r/MacOS thread on CleanMyMac alternatives point to Burrow. Its README, read October 19, 2026, describes a free Mac app (code under MIT, its bundled engine under FSL-1.1) whose commands mirror Mole's, that moves removals to the Trash unless you separately agree to permanent deletion, and that needs macOS 14 or later. It states it is not affiliated with mole.fit. Version 0.14.0 came out in August 2026, so it is young. I have not run it.
 
 ## AppCleaner and Pearcleaner
 
