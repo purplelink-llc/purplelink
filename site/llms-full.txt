@@ -107,6 +107,10 @@ A battery percent that tells you too little
 
 BatteryMeter, a free app, shows charge, battery power in watts and cycle count in the menu bar.
 
+Several Claude Code sessions running at once
+
+Buddy, a free open-source app, shows what each session is doing in the MacBook notch and opens when one needs you.
+
 Keeping track of where everything is
 
 Vitae, a free app. Vitae Plus is an optional subscription from $2.99 a month.
@@ -214,6 +218,14 @@ Free
 A menu-bar app that shows battery percent, an arrow for the direction of charge and battery power in watts, with a menu of charge, adapter, capacity and cycle count details and a list of the apps using the most power. It checks for updates once a day and installs only with your approval; a menu item turns the check off. macOS 13 or later, Apple silicon.
 
 Download BatteryMeter →
+
+Free, open source
+
+### Buddy
+
+A small companion for Claude Code that lives in your MacBook notch. It shows what each session is doing, opens when one needs you, and counts down to a usage-limit reset. It makes no network connections. Not affiliated with Anthropic. macOS 14 or later, Apple silicon.
+
+See Buddy →
 
 Before you submit
 
@@ -4440,6 +4452,8 @@ Summonly1.0October 2026
 Outbound Veil1.2.0October 2026
 
 BatteryMeter1.4.0October 2026
+
+Buddy0.2.0October 2026
 
 GlobePin (iOS)1.21.0 in September 2026
 

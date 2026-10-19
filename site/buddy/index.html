@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Buddy: Claude Code Status in Your MacBook Notch</title>
+    <meta name="description" content="A free, open-source Mac app that shows what each Claude Code session is doing in the MacBook notch. macOS 14 or later, Apple silicon.">
+    <link rel="canonical" href="https://purplelink.llc/buddy/">
+    <meta property="og:title" content="Buddy: Claude Code Status in Your MacBook Notch">
+    <meta property="og:description" content="A free, open-source Mac app that shows what each Claude Code session is doing in the MacBook notch. macOS 14 or later, Apple silicon.">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/buddy.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/buddy/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Buddy: Claude Code Status in Your MacBook Notch">
+    <meta name="twitter:description" content="A free, open-source Mac app that shows what each Claude Code session is doing in the MacBook notch. macOS 14 or later, Apple silicon.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/buddy.png">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=4d162f3e8a"></script>
+    <link rel="stylesheet" href="/styles.css?v=4e29549ea1">
+    <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
+    <link rel="stylesheet" href="/buddy/buddy.css?v=672e8c243e">
+    <script src="/site.js?v=b02458d823" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "name": "Buddy",
+          "applicationCategory": "DeveloperApplication",
+          "operatingSystem": "macOS 14.0 or later",
+          "softwareVersion": "0.2.0",
+          "url": "https://purplelink.llc/buddy/",
+          "image": "https://purplelink.llc/assets/og/buddy.png",
+          "downloadUrl": "https://github.com/purplelink-llc/buddy/releases/latest/download/Buddy.zip",
+          "isAccessibleForFree": true,
+          "license": "https://opensource.org/licenses/MIT",
+          "description": "Buddy is a free, open-source Mac app that lives in the MacBook notch. It shows what each Claude Code session is doing, and it opens when a session needs you. It makes no network connections. Buddy is an independent project by Purplelink LLC and is not made by, affiliated with, or endorsed by Anthropic.",
+          "softwareRequirements": "A Mac with Apple silicon, macOS 14 or later, and Claude Code (the claude command or the Code tab of the Claude app).",
+          "featureList": [
+            "A character beside the notch and a blue dot with a count while sessions are working",
+            "Opens for 20 seconds with a sound when a session asks for permission, asks a question or has a plan to review, then keeps an orange badge until you answer",
+            "A chime, a smile and the turn's length when a session finishes",
+            "Click a session to open that chat in the Claude app, that Terminal or iTerm2 tab, or that project's VS Code or Cursor window",
+            "A countdown to a usage-limit reset with a list of paused chats, plus Continue now and Auto"
+          ],
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock",
+            "url": "https://purplelink.llc/buddy/"
+          },
+          "publisher": { "@id": "https://purplelink.llc/#organization" },
+          "creator":   { "@id": "https://purplelink.llc/about/#person" }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Products", "item": "https://purplelink.llc/products/" },
+            { "@type": "ListItem", "position": 3, "name": "Buddy", "item": "https://purplelink.llc/buddy/" }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+  <body>
+
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/" aria-current="page">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+    <main id="main-content" data-progress>
+
+    <a class="back-link" href="/products/">&larr; All products</a>
+
+    <div class="app-hero">
+      <img class="app-hero-icon" src="/assets/buddy-icon.webp" width="120" height="120" fetchpriority="high" alt="Buddy app icon">
+      <div class="app-hero-copy">
+        <div class="app-hero-meta">
+          <span class="platform-tag platform-macos">macOS</span>
+          <span class="product-status product-status-live">Free and open source</span>
+        </div>
+        <h1 class="app-hero-name">Buddy</h1>
+        <p class="app-hero-tagline">A small companion for Claude Code that lives in your MacBook notch. It shows what each Claude Code session is doing, and it opens when a session needs you.</p>
+        <div class="app-hero-actions" id="download">
+          <a class="btn btn-primary" href="https://github.com/purplelink-llc/buddy/releases/latest/download/Buddy.zip" rel="noopener" data-track="download" data-track-meta="buddy">Download for Mac</a>
+          <a class="btn btn-ghost" href="https://github.com/purplelink-llc/buddy" rel="noopener">Source on GitHub</a>
+        </div>
+        <p class="waitlist-fine-print">Version 0.2.0. A ZIP file from the <a href="https://github.com/purplelink-llc/buddy/releases/latest" rel="noopener">latest GitHub release</a>. Open it and move Buddy to Applications. The app is notarized (checked by Apple).</p>
+        <p class="waitlist-fine-print">Needs a Mac with Apple silicon, macOS 14 or later, and Claude Code. MIT license. Made by Purplelink LLC.</p>
+      </div>
+      <figure class="app-hero-window buddy-hero-window">
+        <div class="frame-soft">
+          <img src="/buddy/img/list-1520.webp" srcset="/buddy/img/list-760.webp 760w, /buddy/img/list-1520.webp 1520w" sizes="(max-width: 900px) 92vw, 46vw" alt="Buddy open below the MacBook notch with three made-up sessions. acme needs your OK to push a fix to GitHub, notes finished in 3m 11s, and widgets is editing SettingsView.swift." width="1520" height="520" fetchpriority="high" decoding="async">
+        </div>
+        <figcaption>Buddy's list, drawn from made-up sessions: one needs your OK, one finished, one is editing a file.</figcaption>
+      </figure>
+    </div>
+
+    <section class="specs-section buddy-section" aria-labelledby="does-h">
+      <h2 id="does-h">What it does</h2>
+      <ul class="buddy-list">
+        <li><strong>Working.</strong> A little character sits beside the notch and glances around while Claude works. A blue dot, with a count, shows how many sessions are busy.</li>
+        <li><strong>Needs you.</strong> When a session asks for permission, asks a question, or has a plan for you to review, Buddy hops, plays a sound, and opens for 20 seconds. After that an orange badge stays until you answer.</li>
+        <li><strong>Finished.</strong> Buddy smiles, plays a chime, and says how long the turn took, such as "Finished in 3m 12s". A green check stays until you hover over the notch.</li>
+        <li><strong>Jump to it.</strong> Click a session to open that exact chat in the Claude app, that exact Terminal or iTerm2 tab, or that project's VS Code or Cursor window. Click or swipe a row to clear it.</li>
+        <li><strong>Usage limits.</strong> When a limit pauses your chats, Buddy counts down to the reset and lists the paused chats, including ones paused before Buddy was running. Continue now types "continue" into each of them, and Auto does it for you a few minutes after the reset.</li>
+      </ul>
+      <figure class="buddy-shot">
+        <div class="frame-soft">
+          <img src="/buddy/img/limit-1520.webp" srcset="/buddy/img/limit-760.webp 760w, /buddy/img/limit-1520.webp 1520w" sizes="(max-width: 900px) 92vw, 760px" alt="The usage-limit banner, drawn from made-up sessions. It reads Usage limit resets in 1:22:27, 2 chats paused, with Auto turned on, and lists the two paused chats, acme and widgets." width="1520" height="460" loading="lazy" decoding="async">
+        </div>
+        <figcaption>The usage-limit banner: a countdown, two paused chats, and Auto turned on. Made-up sessions.</figcaption>
+      </figure>
+      <p class="specs-more">Buddy hides completely when nothing is happening. It has no Dock icon, no account, and no network access.</p>
+    </section>
+
+    <section class="specs-section buddy-section" aria-labelledby="access-h">
+      <h2 id="access-h">What Buddy can access</h2>
+      <p class="specs-more">Buddy asks for more than most small apps, so here is all of it.</p>
+      <ul class="buddy-list">
+        <li><strong>Your Claude Code events.</strong> Claude Code runs <code>buddy-hook</code> at each step of a session: a prompt, a tool call, a question, a finish. The hook writes the event to a folder that exists only while Buddy is running. It adds about 4 to 5 ms per event on an M-series Mac. When Buddy is closed, the hook does nothing.</li>
+        <li><strong>The ends of your session transcripts.</strong> Buddy reads the last 64 KB of a transcript in two cases: to notice that you pressed Esc, since Claude Code sends no event for that, and to find chats a usage limit paused. Buddy never sends them anywhere.</li>
+        <li><strong>The Claude app's chat list.</strong> Buddy reads the first 16 KB of each chat file in <code>~/Library/Application Support/Claude</code>. It uses them to show chat titles instead of folder names and to find paused chats.</li>
+        <li><strong>Accessibility, if you allow it.</strong> Buddy uses it only to type "continue" into paused Claude app chats. It waits until the screen is unlocked, and for Auto until you stop typing, then puts you back in the app you were using.</li>
+        <li><strong>Automation, if you allow it.</strong> macOS asks once before Buddy brings a Terminal or iTerm2 tab forward or sends "continue" to it.</li>
+      </ul>
+      <p class="specs-more">Buddy makes no network connections. Everything stays on your Mac.</p>
+    </section>
+
+    <section class="specs-section buddy-section" aria-labelledby="req-h">
+      <h2 id="req-h">Requirements and setup</h2>
+      <ul class="buddy-list">
+        <li>A Mac with Apple silicon.</li>
+        <li>macOS 14 or later.</li>
+        <li>Claude Code, either the <code>claude</code> command or the Code tab of the Claude app.</li>
+      </ul>
+      <p class="specs-more">Open Buddy and click Connect in the banner it shows in the notch. Buddy adds its hook to <code>~/.claude/settings.json</code>, keeps a backup next to it, and copies a small program to <code>~/.claude/hooks/buddy-hook</code>. Sessions that start after you connect appear in Buddy. To remove it, right-click Buddy and choose Disconnect from Claude Code, which removes its hook entries and leaves your other hooks alone. Then quit Buddy and delete it from Applications.</p>
+      <div class="app-hero-actions buddy-actions">
+        <a class="btn btn-primary" href="https://github.com/purplelink-llc/buddy/releases/latest/download/Buddy.zip" rel="noopener" data-track="download" data-track-meta="buddy">Download for Mac</a>
+        <a class="btn btn-ghost" href="https://github.com/purplelink-llc/buddy" rel="noopener">Source on GitHub</a>
+      </div>
+    </section>
+
+    <section class="specs-section buddy-section" aria-labelledby="limits-h">
+      <h2 id="limits-h">Known limits</h2>
+      <p class="specs-more">Claude Code's hook events are documented. Three Buddy features depend on parts of the Claude app that Anthropic does not document, so an app update can break them without notice:</p>
+      <ul class="buddy-list">
+        <li>Chat titles and paused-chat detection, which read the Claude app's chat files.</li>
+        <li>Jumping to a chat in the Claude app, which uses the app's <code>claude://code/continue</code> link.</li>
+        <li>Continue now and Auto, which type into the app's message box.</li>
+      </ul>
+      <p class="specs-more">When one of these breaks, Buddy falls back to the folder name, to bringing the app forward, or to doing nothing. If that happens, please <a href="https://github.com/purplelink-llc/buddy/issues" rel="noopener">open an issue on GitHub</a>.</p>
+    </section>
+
+    <section class="specs-section buddy-section" aria-labelledby="about-h">
+      <h2 id="about-h">Not affiliated with Anthropic</h2>
+      <p class="buddy-notice">Buddy is an independent open-source project by Purplelink LLC. It is not made by, affiliated with, or endorsed by Anthropic. Claude and Claude Code are trademarks of Anthropic.</p>
+    </section>
+
+    </main>
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=3bd23e4dde" defer></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+/* /buddy/ page. External file so the strict CSP permits it. */
+
+.buddy-hero-window .frame-soft { max-width: 640px; margin-inline: auto; }
+.buddy-hero-window img { display: block; width: 100%; height: auto; }
+
+.buddy-list { max-width: 64ch; padding-left: 1.4em; margin-top: 14px; list-style: disc; }
+.buddy-list li { margin-top: 10px; line-height: 1.65; }
+.buddy-list code { overflow-wrap: anywhere; }
+
+.buddy-shot { margin: 28px 0 0; max-width: 760px; }
+.buddy-shot .frame-soft { max-width: 100%; }
+.buddy-shot img { display: block; width: 100%; height: auto; }
+.buddy-shot figcaption { margin-top: 10px; font-size: 0.85rem; color: var(--muted); }
+
+.buddy-section .specs-more { max-width: 64ch; }
+
+.buddy-notice {
+  max-width: 64ch;
+  margin-top: 18px;
+  padding: 16px 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: color-mix(in oklch, var(--purple) 6%, var(--bg));
+  line-height: 1.6;
+}
+
+.buddy-actions { margin-top: 20px; }
