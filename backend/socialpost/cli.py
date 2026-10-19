@@ -178,6 +178,11 @@ def cmd_resume(a, cfg) -> int:
     return EXIT_OK
 
 
+def cmd_daily(a, cfg) -> int:
+    from .daily.cmd import cmd_daily as run
+    return run(a, cfg)
+
+
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(prog="social.py", description="Purplelink company-account social posting")
     sp = ap.add_subparsers(dest="cmd", required=True)
@@ -215,6 +220,10 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("platform", choices=("threads", "mastodon", "x", "bluesky"))
     p = add("refresh", cmd_refresh, "renew a token (threads, x)")
     p.add_argument("platform", choices=("threads", "x"))
+    p = add("daily", cmd_daily, "daily ranked pipeline: run (pick, vet, queue), metrics, weekly")
+    p.add_argument("what", choices=("run", "metrics", "weekly"))
+    p.add_argument("--dry-run", action="store_true", help="run: show today's pick, write nothing")
+    p.add_argument("--force", action="store_true", help="run: ignore the time of day and done-today; metrics: redo the weekly report")
     add("pause", cmd_pause, "create the PAUSE file: the scheduler posts nothing")
     add("resume", cmd_resume, "remove the PAUSE file")
     return ap

@@ -14,6 +14,15 @@ from . import fmt, paths
 from .spec import IMAGE_EXT, PLATFORMS, SPEC
 from .text import link_errors, text_limit_errors, utm_link
 
+# Ben's standing approval (2026-10-18) for the daily ranked pipeline: guides, videos, releases and other company news
+# on these company accounts. Mastodon was added the same day ("Mastodon, written as me ... can have pre approval every
+# time you post"): its text is written in Ben's voice by its own templates and held to the voice rules in
+# daily/vet.py. X is not covered. Only socialpost.daily writes the approval, and only for an item it built with
+# `source: social-daily`.
+STANDING_BY = "ben (standing, 2026-10-18)"
+STANDING_PLATFORMS = ("linkedin", "bluesky", "threads", "mastodon")
+STANDING_SOURCE = "social-daily"
+
 STATUSES = ("draft", "approved", "posted", "failed", "cancelled", "stale")
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]{2,80}$")
 MAGIC = {".png": (b"\x89PNG\r\n\x1a\n",), ".jpg": (b"\xff\xd8\xff",), ".jpeg": (b"\xff\xd8\xff",),
@@ -110,8 +119,14 @@ class Item:
         m = self.meta
         if m.get("status") != "approved":
             return False, "status is not approved"
-        if m.get("approved_by") != "ben" or not m.get("approved_at"):
+        if m.get("approved_by") not in ("ben", STANDING_BY) or not m.get("approved_at"):
             return False, "approved_by is not 'ben' or approved_at is missing"
+        if m.get("approved_by") == STANDING_BY:
+            bad = [p for p in self.platforms if p not in STANDING_PLATFORMS]
+            if bad:
+                return False, f"standing approval does not cover {', '.join(bad)}; Ben approves those by hand"
+            if m.get("source") != STANDING_SOURCE:
+                return False, "standing approval only covers items the daily pipeline built"
         if m.get("approved_hash") != self.content_hash():
             return False, "content changed after approval; approve it again"
         return True, ""
@@ -290,6 +305,17 @@ def approve(item: Item, cfg: dict, who: str = "ben") -> None:
         if r.get("status") == "failed":
             item.results[p] = {"status": "pending", "attempts": 0}
     item.save()
+
+
+def approve_standing(item: Item, cfg: dict) -> None:
+    """Approve a daily-pipeline item under Ben's standing approval. Same checks and hash as approve(); refuses any
+    platform outside STANDING_PLATFORMS (X) and any item the daily pipeline did not build."""
+    bad = [p for p in item.platforms if p not in STANDING_PLATFORMS]
+    if bad:
+        raise ValueError(f"standing approval does not cover {', '.join(bad)}")
+    if item.meta.get("source") != STANDING_SOURCE:
+        raise ValueError("standing approval only covers items built by the daily pipeline")
+    approve(item, cfg, STANDING_BY)
 
 
 def cancel(item: Item) -> None:

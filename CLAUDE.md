@@ -166,21 +166,14 @@ This repo is public (Netlify's free plan cannot deploy a private organization re
 
 The 50 skills from coreyhaines31/marketingskills are installed in `~/.claude/skills/` (clone at `/Volumes/Extreme SSD/marketingskills`, refresh with `/Volumes/Extreme SSD/marketingskills-local/update.sh`). Read `.agents/product-marketing.md` (local, shared product and voice context) before marketing work. The scheduled task `daily-gap-analysis` writes its briefs under `docs/growth-briefs/gap-analysis/` (git-ignored, see the private repo note above). Nothing outward (posts, emails, spend, sign-ups) happens without an approved queue item or Ben's explicit yes.
 
-**One exception, standing approval (Ben, 2026-10-18):** `scripts/social/poster.py` may move its own `guide_live`,
-`video_published` and `release_published` items from `pending/` to `approved/` and post them without a per-item
-click, and only when every automatic check passes:
-
-- the page answers 200 on the live site;
-- the facts match the live page;
-- the post fits each channel's limits and voice;
-- the pinned company identity is confirmed twice per channel;
-- at most 1 post per channel per day and 3 per week;
-- no duplicate within 30 days;
-- the item has not expired.
-
-Nothing else is covered: other kinds, edited items, manual drafts, replies, likes, follows or DMs. Any failed check
-waits for Ben. Never post as Ben personally on any channel. Reddit, HN and Product Hunt stay manual drafts. See
-`docs/social-poster.md`.
+**One exception, standing approval (Ben, 2026-10-18):** the daily ranked pipeline (`backend/socialpost/daily`, run by
+launchd `com.purplelink.social-daily`) picks one company item a day (a release, guide, video, blog post, tool or an
+evergreen page), vets it and queues it as `approved_by: "ben (standing, 2026-10-18)"`; `social.py run-due` posts it to
+the LinkedIn company page, Bluesky, Threads and Mastodon (Mastodon text is written in Ben's voice from his `benampel`
+skill; he pre-approved it the same day). The vetting gate (voice, facts, live 200 link, UTM, alt text, limits, no
+duplicate in 21 days) must pass. Nothing else is covered: X, Reddit, replies, likes, follows, DMs, Ben's own LinkedIn
+profile, other kinds of post. Never post as Ben personally except Mastodon as above. `scripts/social/poster.py` no
+longer posts (detection library only). See `docs/social-posting.md`.
 
 **Scheduled posts (Ben, 2026-10-18):** `backend/scripts/social.py` posts approved queue items to the company accounts
 (LinkedIn page 120183926, Bluesky @purplelink.llc, Threads, Mastodon, X) through launchd `com.purplelink.social-scheduler`.
