@@ -5182,6 +5182,12 @@ The free-plan compile limit. Overleaf's plan limits page lists 10 seconds per co
 
 If you mostly co-author and are always online, you may not need an alternative. The rest of this page is for everyone else.
 
+One local option, from me
+
+I make ModernTex, a native Mac editor for LaTeX papers. It compiles on your Mac, so there is no compile timeout, and your project stays a folder of ordinary .tex and .bib files with no account and no subscription. You can bring an Overleaf project over as a zip or a Git clone. The trial is the full app for 7 days. After that it is $19.99, once.
+
+About ModernTex
+
 ## What you gain and give up by going local
 
 Writing LaTeX on your own Mac changes four concrete things.
@@ -5625,6 +5631,12 @@ TUG recommends the full MacTeX for most people, beginners included. Its reason i
 Apple silicon and Intel need no separate choice. TUG says MacTeX-2026 and BasicTeX-2026 need macOS 11 (Big Sur) or later and run natively on both Intel and Arm processors. TUG adds that the MacTeX package contains native code for both. TinyTeX's installer script has a single macOS build and does not ask which chip you have.
 
 Check free space before you start, because the installer file and the installed copy sit on the disk together. How to see free disk space on a Mac covers Finder, Storage settings, Disk Utility and df.
+
+If you want an editor that sets this up
+
+I make ModernTex, a native Mac editor for LaTeX papers. It uses MacTeX or TinyTeX, and if neither is installed it offers a one-click TinyTeX install. The trial is the full app for 7 days, with no account. After that it is $19.99, once.
+
+About ModernTex
 
 ## Option A: install MacTeX
 
@@ -8566,6 +8578,12 @@ Free open source apps such as Mechvibes or Thock suit anyone who wants no cost. 
 
 The table below compares every app in this guide by price, macOS version, permission, sounds and main limit.
 
+Keyfeel, the app I make
+
+Keyfeel plays recorded keyboard-switch sounds (Tactile, Cherry MX Brown and Dome among them) and adds mouse-click sounds, scroll ticks and optional trackpad haptics. It stays silent in the apps you choose and while the microphone is in use. It needs macOS 13 or later and the Input Monitoring permission. The trial is the full app for 7 days. After that it is $9.99, once.
+
+About Keyfeel
+
 ## The apps side by side
 
 US prices, October 7, 2026, as listed. Tacque and Typemac were read on October 9, 2026 and not tested. "Not stated" means the pages I read did not say.
@@ -9786,6 +9804,12 @@ Prices checked on October 9, 2026, on each vendor's own page. I did not test the
 ## Start with where the file must stay
 
 Ask one question before you compare prices: must the file stay on your Mac? Ethics boards (IRBs, institutional review boards), client contracts and confidentiality agreements can bar cloud tools for a given file, whatever they cost. In the tables, "cloud" means the file is sent to the vendor's servers. "On device" is the vendor's own statement. I have not audited any of them.
+
+Tapefolio, the transcription app I make
+
+Tapefolio transcribes interview and meeting recordings on your Mac with word timing, labels the speakers, and reads scans and PDFs into searchable text. Your files are not uploaded. Its identifier removal replaces names and other details with codes, and it misses some, so you read the result. It needs macOS 26 on Apple silicon. The trial is the full app for 7 days. After that it is $29.99, once.
+
+About Tapefolio
 
 ## Speech to text and transcripts
 
