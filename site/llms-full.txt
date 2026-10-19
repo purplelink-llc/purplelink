@@ -493,6 +493,11 @@ Leszek
 Independent LaTeX enthusiast working on his first technical book
 On the opt-in project .latexmkrc support added in ModernTex 1.10, for a book built with LuaLaTeX, PythonTeX, Biber and texindy.
 
+The overall experience is now just as smooth as my previous setup on Windows.
+
+Walter
+Wireless communications researcher
+
 Plain-language errors
 
 ## From a cryptic error to a fix
