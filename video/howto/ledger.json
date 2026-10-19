@@ -21,5 +21,17 @@
    "https://garrit.xyz/posts/2024-06-03-i-just-cleaned-up-40-gb-of-brew-caches",
    "https://davidwalsh.name/brew-cleanup"
   ]
+ },
+ {
+  "slug": "howto-find-ssn-in-text-before-sending",
+  "app": "outbound-veil",
+  "date": "2026-10-18",
+  "title": "Find Social Security numbers in text on Mac before you send it (grep fix)",
+  "long_id": "y3Oo095G57U",
+  "short_id": "-PGuqKNZJcs",
+  "sources": [
+   "https://www.macscripter.net/t/searching-for-social-security-numbers-in-email-entourage/46035",
+   "https://forum.bigfix.com/t/regex-to-find-files-with-social-security-numbers/3108"
+  ]
  }
 ]

@@ -68,13 +68,23 @@ def trend_tags(sb: dict, short: bool) -> str:
     return " ".join(f"#{t}" for t in tags)
 
 
+def yt_safe(cmd: str) -> str:
+    """Studio refuses a description with < or > ("Angled brackets aren't allowed"), which left the 2026-10-18 upload
+    a draft. A trailing "> file" redirect becomes a note in words; any other bracket is dropped."""
+    m = re.match(r"^(.*?)\s*>\s*(\S+)$", cmd)
+    if m:
+        cmd = f"{m.group(1)}   (save the output as {m.group(2)}, as in the video)"
+    return cmd.replace("<", "").replace(">", "")
+
+
 def descriptions(sb: dict, long_url: str | None) -> tuple[str, str]:
     scenes = sb["scenes"]
     hook = next(s for s in scenes if s["type"] == "hook")
     cause = next((s for s in scenes if s["type"] == "cause"), None)
-    cmds = [l[2:] for s in scenes if s["type"] == "steps" for l in s.get("lines", []) if l.startswith("$ ")]
+    cmds = [yt_safe(l[2:]) for s in scenes if s["type"] == "steps" for l in s.get("lines", []) if l.startswith("$ ")]
     app = next(s for s in scenes if s["type"] == "app")
-    parts = [f"{hook['title']}. {hook.get('sub', '')}".strip()]
+    lead = hook["title"] if hook["title"].rstrip()[-1:] in ".?!" else hook["title"] + "."  # no "?." after a question
+    parts = [f"{lead} {hook.get('sub', '')}".strip()]
     if cause:
         parts.append(cause["text"])
     if cmds:
@@ -84,7 +94,7 @@ def descriptions(sb: dict, long_url: str | None) -> tuple[str, str]:
         parts.append("Where this comes up:\n" + "\n".join(sb["sources"]))
     parts.append(trend_tags(sb, short=False))
     long_d = "\n\n".join(parts)
-    short_parts = [f"{hook['title']}. {hook.get('sub', '')}".strip()]
+    short_parts = [parts[0]]
     if cmds:
         short_parts.append("\n".join(cmds))
     if long_url:
