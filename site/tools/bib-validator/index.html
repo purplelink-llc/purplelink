@@ -343,6 +343,14 @@
           updateRunState();
         });
 
+        // Escapes quotes as well as angle brackets, because some values below go into
+        // attributes. Shadows the shared helper in tools.js, which leaves quotes alone.
+        function escapeHtml(v) {
+          return String(v === null || v === undefined ? "" : v)
+            .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+        }
+
         // ---------------------- Paste-mode text input ---------------------
         pasteEl.addEventListener("input", updateRunState);
 
@@ -371,7 +379,11 @@
             var text = pasteEl.value.trim();
             if (!text) return;
             if (text.length > MAX_BIB_BYTES) {
-              statusEl.innerHTML = '<span class="bib-err">Pasted text is over the 2 MB limit.</span>';
+              statusEl.textContent = "";
+              var over = document.createElement("span");
+              over.className = "bib-err";
+              over.textContent = "Pasted text is over the 2 MB limit.";
+              statusEl.appendChild(over);
               return;
             }
             fileBlob = new Blob([text], { type: "text/x-bibtex" });
@@ -416,15 +428,22 @@
               var msg;
               if (!reached) msg = "Could not reach the server. Your file was not sent. Check your connection and try again.";
               else if (err && err.status === 429) msg = "You've reached the daily limit. Please try again tomorrow.";
-              else if (err && err.detail) msg = escapeHtml(err.detail);
+              else if (err && typeof err.detail === "string" && err.detail) msg = err.detail;
               else msg = "The check could not finish" + (err && err.status ? " (error " + err.status + ")" : "") + ". Your entries are unchanged; please try again.";
-              resultEl.innerHTML = '<div class="tool-error" role="alert">' + msg + "</div>";
+              // Server and exception text goes in as text, never as markup.
+              var box = document.createElement("div");
+              box.className = "tool-error";
+              box.setAttribute("role", "alert");
+              box.textContent = msg;
+              resultEl.textContent = "";
+              resultEl.appendChild(box);
             });
         });
 
         // ---------------------- Results rendering -------------------------
         function renderResults(data) {
           var s = data.summary;
+          ["ok", "warning", "error", "total", "duplicate_keys"].forEach(function (k) { s[k] = Number(s[k]) || 0; });
           lastEntries = data.entries;
           var html = '<div class="bib-summary">';
           html += badge("ok",   s.ok      + " OK");
@@ -463,7 +482,7 @@
           data.entries.forEach(function (e, idx) {
             var rowClass = "row-data row-" + (e.overall === "ok" ? "ok" : e.overall === "warning" ? "warn" : "err");
             var colspan = 5 + (dupCol?1:0) + (doiCol?1:0) + (crCol?1:0) + (s2Col?1:0) + (auCol?1:0) + (yrCol?1:0);
-            html += '<tr class="' + rowClass + '" data-status="' + e.overall + '" data-idx="' + idx + '">';
+            html += '<tr class="' + rowClass + '" data-status="' + escapeHtml(e.overall) + '" data-idx="' + idx + '">';
             html += '<td><button type="button" class="bib-row-expander" aria-expanded="false" aria-controls="bib-detail-' + idx + '" aria-label="Show details for ' + escapeHtml(e.key) + '"><span aria-hidden="true">▶</span></button></td>';
             html += "<td><span class='bib-key'>" + escapeHtml(e.key) + "</span></td>";
             html += "<td>" + escapeHtml(e.type) + "</td>";
@@ -664,7 +683,7 @@
           if (!e.doi)            return '<span class="bib-na">-</span>';
           if (e.doi_ok === null) return '<span class="bib-na">?</span>';
           if (e.doi_ok)          return '<span class="bib-ok">✓</span>';
-          return '<span class="bib-err">✗ ' + (e.doi_status || "dead") + "</span>";
+          return '<span class="bib-err">✗ ' + escapeHtml(e.doi_status || "dead") + "</span>";
         }
 
         function confCell(conf, foundTitle, doi) {
