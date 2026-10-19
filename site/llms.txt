@@ -128,7 +128,7 @@
 - **Privacy:** Makes no network connections. A hook that Claude Code runs writes each event to a folder that exists only while Buddy is running. Buddy reads the last 64 KB of session transcripts and the first 16 KB of the Claude app's chat files on the Mac. Accessibility (to type "continue") and Automation (Terminal and iTerm2) are optional.
 - **Limits:** Chat titles and paused-chat detection, jumping to a Claude app chat, and Continue now and Auto depend on undocumented parts of the Claude app and can break with an app update.
 - **Affiliation:** An independent open-source project by Purplelink LLC. Not made by, affiliated with, or endorsed by Anthropic. Claude and Claude Code are trademarks of Anthropic.
-- **Status:** Version 0.2.0 (2026-10-18). Notarized download from GitHub.
+- **Status:** Version 0.2.1 (2026-10-19), a visual update with a new app icon and notch character. 0.2.0 was released 2026-10-18. Notarized download from GitHub.
 - **Download:** https://purplelink.llc/buddy/ (source: https://github.com/purplelink-llc/buddy)
 
 ### Mac Suite (macOS bundle)

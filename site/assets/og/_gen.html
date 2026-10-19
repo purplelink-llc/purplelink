@@ -40,6 +40,9 @@
   .bottom { display: flex; align-items: center; justify-content: space-between; }
   .url { font-size: 28px; font-weight: 600; color: oklch(80% 0.12 310); }
   .free { font-size: 24px; font-weight: 500; color: oklch(72% 0.03 300); }
+  /* Optional product art (an entry's icon field), drawn on the right. */
+  .art { position: absolute; right: 70px; top: 50%; width: 360px; height: 360px; transform: translateY(-56%); filter: drop-shadow(0 24px 48px oklch(8% 0.05 310 / 0.7)); }
+  .art[hidden] { display: none; }
 </style>
 </head>
 <body>
@@ -53,6 +56,7 @@
       <h1 id="title">Tool</h1>
       <p class="tagline" id="tagline">Tagline</p>
     </div>
+    <img class="art" id="art" alt="" hidden>
     <div class="bottom">
       <span class="url">purplelink.llc</span>
       <span class="free">No sign-up · Files never stored</span>
@@ -81,7 +85,7 @@
       "transcript-cleaner": { emoji: "", title: "Transcript Cleaner", tagline: "Turn a Zoom or Teams transcript into readable text.", kicker: "Free tool", foot: "No account · Files never leave your browser" },
       "outbound-veil":    { emoji: "", title: "Outbound Veil", tagline: "Checks what you type for personal information before you send it.", kicker: "Mac menu-bar app", foot: "7-day free trial · $29.99 once · Checked on your Mac" },
       "legroom":          { emoji: "", title: "Legroom", tagline: "Shows your free disk space and cleans the folders you choose, after you approve a preview.", kicker: "Mac menu-bar app", foot: "7-day free trial · $9.99 once · No account, no analytics" },
-      "buddy":            { emoji: "", title: "Buddy", tagline: "Shows what each Claude Code session is doing, in your MacBook notch.", kicker: "Free Mac app · Open source", foot: "MIT license · No network · Not affiliated with Anthropic" },
+      "buddy":            { emoji: "", title: "Buddy", tagline: "Shows what each Claude Code session is doing, in your MacBook notch.", kicker: "Free Mac app · Open source", foot: "MIT license · No network · Not affiliated with Anthropic", icon: "/assets/buddy-icon.webp" },
       "tapefolio":        { emoji: "", title: "Tapefolio", tagline: "Transcribes interviews and reads scans on your Mac. Nothing is uploaded.", kicker: "Mac app for researchers", foot: "7-day free trial · $29.99 once · Files stay on your Mac" },
       "mac-suite":        { emoji: "", title: "The Mac Suite", tagline: "ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life.", kicker: "Eight Mac apps · $59.99 once", foot: "One payment · 14-day refund" },
       "anonymity-check":   { emoji: "", title: "Anonymity Check", tagline: "Find what gives authors away before double-blind review.", kicker: "Before you submit · $2", foot: "No account · Deleted within a day" },
@@ -122,6 +126,7 @@
       document.getElementById("title").textContent = t.title;
       document.getElementById("tagline").textContent = t.tagline;
       if (t.foot) document.querySelector(".free").textContent = t.foot;
+      if (t.icon) { var art = document.getElementById("art"); art.src = t.icon; art.hidden = false; }
       document.title = key;
       return t.title;
     };
