@@ -31,6 +31,7 @@ class Rewrite(unittest.TestCase):
         self.assertIn('class="x"', new)
         self.assertIn('target="_blank"', new)
         self.assertIn('rel="sponsored noopener"', new)
+        self.assertIn('data-aff="setapp"', new)
 
     def test_every_rewritten_link_gets_one_label_after_the_anchor(self):
         reg = (live_setapp(),)
