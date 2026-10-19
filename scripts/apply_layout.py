@@ -45,7 +45,7 @@ SKIP_PATHS = {
 # footer ("Daily games" under Free tools, "Blog" and "Changelog" under Learn),
 # so pages in those sections simply have no highlighted header item.
 NAV = [
-    ("Products", "/products/", ("products/", "moderntex/", "outbound-veil/", "suite/", "pricing/", "legroom/", "keyfeel/", "tapefolio/", "panely/", "summonly/", "batterymeter/", "vitae/", "globepin/",
+    ("Products", "/products/", ("products/", "moderntex/", "outbound-veil/", "suite/", "pricing/", "legroom/", "keyfeel/", "tapefolio/", "panely/", "summonly/", "batterymeter/", "buddy/", "vitae/", "globepin/",
                                 "haea/", "binnacle/", "kits/", "sheets/", "scholar-utility-belt/", "labs/", "recover/")),
     ("Tools", "/tools/", ("tools/", "format/")),
     ("Guides", "/guides/", ("guides/", "templates/", "latex-errors/")),

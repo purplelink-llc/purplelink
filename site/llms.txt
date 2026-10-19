@@ -120,6 +120,17 @@
 - **Status:** Shipping since 2026-10-13. Notarized download. Version 1.2.0 added signed updates that ask before installing; 1.2.1 is lighter on battery and CPU, smaller, and adds a menu item to turn off the daily update check. 1.4.0 (2026-10-16) reports whether Quit worked, quits several apps at once, adds a Low Power Mode menu, a Max Battery mode and an optional background watch on battery. 1.1.0 and earlier must be replaced once by hand.
 - **Download:** https://purplelink.llc/batterymeter/
 
+### Buddy (macOS)
+- **Platform:** macOS 14 or later, Apple silicon only. Needs Claude Code (the claude command or the Code tab of the Claude app).
+- **Category:** Developer tool
+- **Description:** A small companion for Claude Code that lives in the MacBook notch. It shows what each Claude Code session is doing and opens when a session needs you: a blue dot and count while sessions work; a sound, a 20-second open and an orange badge when a session asks for permission, asks a question or has a plan to review; a chime and the turn's length when one finishes. Clicking a session opens that chat in the Claude app, that Terminal or iTerm2 tab, or that project's VS Code or Cursor window. When a usage limit pauses chats it counts down to the reset and lists them; Continue now and Auto type "continue" into them.
+- **Pricing:** Free and open source (MIT). No account.
+- **Privacy:** Makes no network connections. A hook that Claude Code runs writes each event to a folder that exists only while Buddy is running. Buddy reads the last 64 KB of session transcripts and the first 16 KB of the Claude app's chat files on the Mac. Accessibility (to type "continue") and Automation (Terminal and iTerm2) are optional.
+- **Limits:** Chat titles and paused-chat detection, jumping to a Claude app chat, and Continue now and Auto depend on undocumented parts of the Claude app and can break with an app update.
+- **Affiliation:** An independent open-source project by Purplelink LLC. Not made by, affiliated with, or endorsed by Anthropic. Claude and Claude Code are trademarks of Anthropic.
+- **Status:** Version 0.2.0 (2026-10-18). Notarized download from GitHub.
+- **Download:** https://purplelink.llc/buddy/ (source: https://github.com/purplelink-llc/buddy)
+
 ### Mac Suite (macOS bundle)
 - **Contents:** ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and a lifetime Vitae Plus key.
 - **Pricing:** $59.99 once. 14-day refund. Each app is the same single download with a 7-day trial; the license keys arrive in the receipt email.
