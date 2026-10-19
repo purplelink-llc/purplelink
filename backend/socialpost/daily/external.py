@@ -61,6 +61,11 @@ def queue_rows(today: dt.date, days: int) -> list[dict]:
     out = []
     for it in itemsmod.list_items():
         body = " ".join(it.sections.values())
+        if it.status == "approved":   # an approved post that has not gone out yet already covers its item
+            for plat in it.platforms:
+                if it.results.get(plat, {}).get("status") != "posted":
+                    out.append({"date": today.isoformat(), "platforms": [plat], "external": True, "src": "queue-approved",
+                                "text": f"{it.id} {it.campaign} {it.link} {body}".lower()})
         for plat, r in it.results.items():
             if r.get("status") != "posted":
                 continue

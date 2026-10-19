@@ -20,6 +20,7 @@ from urllib.parse import parse_qs, urlsplit
 from .. import items as itemsmod
 from ..text import URL_RE
 from . import lib219 as L
+from .compose import FILLER_PHRASES
 from .compose import MAX_SENTENCE_WORDS as _MAX
 from .compose import TEMPLATE_VOCAB
 from .candidates import source_text
@@ -94,6 +95,29 @@ def ben_voice_problems(text: str) -> list[str]:
     for sent in re.split(r"(?<=[.!?])\s+|\n+", body):
         if len(sent.split()) > MAX_SENTENCE_WORDS:
             out.append(f"Ben's voice: a sentence of {len(sent.split())} words (limit {MAX_SENTENCE_WORDS})")
+    return out
+
+
+STOP = set("""that this with from have will your they them then than were what when where which there their about into
+    also been being does done each even ever just like made make many more most much must only other over same
+    some such take than very well week release changelog page link words word guide tool video post site new""".split())
+
+
+def filler_problems(text: str, source: str) -> list[str]:
+    """No sentence that says nothing: the old fixed phrases are rejected outright, and every sentence must contain at
+    least one content word (a noun, a name or a number) that is in the page's own facts."""
+    body = strip_urls(text)
+    low = body.lower()
+    out = [f"filler phrase {p!r}" for p in FILLER_PHRASES if p in low]
+    src = _words(source)
+    for sent in re.split(r"(?<=[.!?])\s+|\n+", body):
+        sent = sent.strip()
+        if not sent:
+            continue
+        toks = [w.lower() for w in re.findall(r"[A-Za-z][A-Za-z0-9'\-]+|\d[\d.,]*\d", sent)]
+        content = [w for w in toks if (len(w) >= 4 or w[0].isdigit()) and w not in STOP]
+        if not any(w in src for w in content):
+            out.append(f"filler sentence with no noun from the source facts: {sent[:60]!r}")
     return out
 
 
@@ -190,7 +214,7 @@ def vet(item, c, facts: dict, texts: dict[str, str], http, history: list[dict], 
         for why in voice_problems(rendered):
             v.fail("voice", f"{p}: {why}")
         if p == "mastodon":
-            for why in ben_voice_problems(rendered):
+            for why in ben_voice_problems(rendered) + filler_problems(rendered, source):
                 v.fail("voice", f"{p}: {why}")
         for why in facts_problems(item.raw_text(p), source):
             v.fail("facts", f"{p}: {why}")

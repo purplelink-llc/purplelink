@@ -129,8 +129,13 @@ def gather(http, today: dt.date, cfg: dict, stats: dict | None = None, added: di
         ent = next((e for e in entries if e["title"] == want), None)
         if not ent or not 0 <= (today - ent["date"]).days <= days:
             continue
+        rel = _release(facts)
+        try:
+            rel["requirement"] = requirement_line(L.events.get_live(http, facts["url"]))
+        except L.Skip:
+            pass
         cands.append(Candidate(id=f"release:{app}:{facts['version']}", kind="release", url=facts["url"],
-                               published=ent["date"], title_hint=want, facts=_release(facts)))
+                               published=ent["date"], title_hint=want, facts=rel))
 
     # guides, blog posts, tools: first added within the window (publish date), checked against the live sitemap
     try:
@@ -205,10 +210,19 @@ def fetch_stats(http, days: int = 90) -> dict | None:
 
 
 # ---------------------------------------------------------------- facts
+REQ_RE = re.compile(r"\bmacOS (\d{1,2})(?:\.\d+)?(?:\s+[A-Z][a-z]+|\s+\([A-Za-z]+\))?\s+or later")
+
+
+def requirement_line(page: str) -> str:
+    """'macOS 14 or later', from the product page's own text (empty when the page does not say)."""
+    m = REQ_RE.search(L.events.strip_tags(page))
+    return f"macOS {m.group(1)} or later" if m else ""
+
+
 def _release(f: dict) -> dict:
     return {"title": f["title"], "description": "", "notes": f["notes"], "name": f["name"], "version": f["version"],
             "price": f.get("price", ""), "url": f["url"], "og_image": f.get("og_image", ""), "image_alt": "",
-            "headings": [], "steps": ""}
+            "headings": [], "steps": "", "requirement": ""}
 
 
 def page_facts(http, url: str) -> dict:
@@ -279,5 +293,6 @@ def load_facts(http, c: Candidate) -> dict:
 
 def source_text(facts: dict) -> str:
     """Everything the post may draw on. The vetting gate compares the post against this."""
-    extra = " ".join(facts.get("headings") or []) + " " + str(facts.get("steps") or "")
+    extra = " ".join(facts.get("headings") or []) + " " + str(facts.get("steps") or "") + " " + \
+        str(facts.get("requirement") or "")
     return " ".join(str(facts.get(k) or "") for k in ("title", "description", "notes", "name", "version", "price")) + " " + extra
