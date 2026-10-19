@@ -134,7 +134,7 @@ def test_dropped_format_leaves_the_rotation():
 # ------------------------------------------------------------------ compose and vet
 FACTS = {"title": "Check a manuscript before you submit it", "notes": "", "name": "", "version": "", "price": "",
          "description": "A step by step walkthrough of checking a manuscript for leaks before submission. "
-                        "It takes about ten minutes.", "url": "https://purplelink.llc/guides/new-guide/",
+                        "A full pass takes about ten minutes.", "url": "https://purplelink.llc/guides/new-guide/",
          "og_image": "", "image_alt": ""}
 GUIDE = cand.Candidate(id="guide:new-guide", kind="guide", url="https://purplelink.llc/guides/new-guide/",
                        published=TODAY)
@@ -231,8 +231,9 @@ def test_rejects_text_over_a_platform_limit(denv):
 
 
 def test_rejects_a_duplicate_item_or_text_within_21_days(denv):
-    h = [{"date": "2026-10-10", "candidate": "guide:new-guide", "kind": "guide", "hashes": []}]
-    assert "was posted 10 days ago" in reasons(gate(GOOD, history=h))
+    h = [{"date": "2026-10-10", "candidate": "guide:new-guide", "kind": "guide", "hashes": [],
+          "platforms": ["linkedin", "bluesky", "threads"]}]
+    assert "already posted on linkedin within 21 days" in reasons(gate(GOOD, history=h))
     h = [{"date": "2026-10-10", "candidate": "guide:other", "kind": "guide",
           "hashes": [vet.text_hash(GOOD["bluesky"])]}]
     assert "same text" in reasons(gate(GOOD, history=h))
@@ -241,7 +242,7 @@ def test_rejects_a_duplicate_item_or_text_within_21_days(denv):
 
 
 def test_compose_fits_each_limit_and_keeps_formats_distinct(denv):
-    long_desc = dict(FACTS, description=" ".join(["This sentence describes the guide in plain words."] * 20))
+    long_desc = dict(FACTS, description=" ".join(["The guide describes one step in plain words."] * 20))
     for fmt in comp.FORMATS:
         t = comp.compose(GUIDE, long_desc, fmt, ["linkedin", "bluesky", "threads", "mastodon"], "daily-guide")
         for p, body in t.items():
@@ -249,7 +250,9 @@ def test_compose_fits_each_limit_and_keeps_formats_distinct(denv):
     q = comp.compose(GUIDE, FACTS, "question", ["bluesky"], "daily-guide")["bluesky"]
     assert q.startswith("Looking for a plain answer?")
     link = comp.compose(GUIDE, FACTS, "link", ["bluesky"], "daily-guide")["bluesky"]
-    assert "walkthrough" not in link
+    assert "walkthrough" in link and "ten minutes" not in link      # one verified fact, not the whole description
+    full = comp.compose(GUIDE, FACTS, "statement", ["linkedin"], "daily-guide")["linkedin"]
+    assert "ten minutes" in full
 
 
 # ------------------------------------------------------------------ Mastodon: in the run, in Ben's voice
@@ -267,6 +270,42 @@ def test_mastodon_text_must_be_in_bens_voice(bad, why):
         assert any(why in o for o in out), out
 
 
+def test_every_template_carries_a_verified_fact_and_stays_in_the_limits(denv):
+    for fmt in comp.FORMATS:
+        t = comp.compose(GUIDE, FACTS, fmt, ["linkedin", "bluesky", "threads", "mastodon"], "daily-guide")
+        for p, body in t.items():
+            assert "walkthrough" in body or "ten minutes" in body, (fmt, p)
+            r = comp.render_preview(body, p, GUIDE.url, "daily-guide")
+            assert len(r) <= {"linkedin": 600, "bluesky": 300, "threads": 500, "mastodon": 500}[p]
+    facts = dict(FACTS, description="", headings=["The export steps", "Cleanup checklist"], steps="five steps")
+    body = comp.compose(GUIDE, facts, "statement", ["bluesky"], "daily-guide")["bluesky"]
+    assert "It covers the export steps and cleanup checklist." in body and "five steps" in body
+    assert vet.facts_problems(body, cand.source_text(facts)) == []
+    # a guide whose title is descriptive may go out as its title plus the link when no fact fits ...
+    nofact = dict(FACTS, description="")
+    assert "{link}" in comp.compose(GUIDE, nofact, "statement", ["bluesky"], "daily-guide")["bluesky"]
+    # ... but Mastodon needs a fact to introduce, and a release title ("Name 1.2.3") is not a fact
+    with pytest.raises(comp.ComposeError):
+        comp.compose(GUIDE, nofact, "statement", ["mastodon"], "daily-guide")
+    rel = cand.Candidate(id="release:vitae:1.4.0", kind="release", url="https://purplelink.llc/vitae/")
+    with pytest.raises(comp.ComposeError):
+        comp.compose(rel, {"title": "Vitae 1.4.0", "name": "Vitae", "version": "1.4.0", "description": "", "notes": ""},
+                     "statement", ["bluesky"], "daily-release")
+
+
+def test_release_uses_the_changelog_entry_and_skips_boilerplate(denv):
+    notes = ("New: For You, a screen that reads your own record and lists what may need you. A graph of how your papers "
+             "connect is built on your Mac, and plain rules decide what to show, each with the records behind it. "
+             "Earlier versions install 1.4.0 through Check for Updates.")
+    f = {"title": "Vitae 1.4.0", "name": "Vitae", "version": "1.4.0", "price": "", "description": "", "notes": notes}
+    rel = cand.Candidate(id="release:vitae:1.4.0", kind="release", url="https://purplelink.llc/vitae/")
+    t = comp.compose(rel, f, "statement", ["bluesky", "mastodon"], "daily-release")
+    assert "For You, a screen that reads your own record" in t["bluesky"]
+    assert "Check for Updates" not in t["bluesky"] and "Check for Updates" not in t["mastodon"]
+    assert "A graph of how your papers connect" not in t["mastodon"] or len(t["mastodon"]) <= 500
+    assert t["mastodon"].startswith("Vitae 1.4.0\n\nI shipped this release this week")
+
+
 def test_mastodon_voice_failure_fails_the_gate(denv):
     t = dict(GOOD, mastodon="Check a manuscript before you submit it\n\nI published this guide this week. "
                             "Moreover, it is short.\n\n{link}")
@@ -275,14 +314,11 @@ def test_mastodon_voice_failure_fails_the_gate(denv):
 
 
 def test_mastodon_templates_are_plain_first_person_sentences_of_15_to_19_words():
-    for name, tpl in comp.MASTODON.items():
-        s = tpl.format(title="Alpha beta")
-        title, sentence = s.split("\n\n")
-        assert title == "Alpha beta"
+    for name, sentence in comp.MASTODON.items():
         assert 15 <= len(sentence.split()) <= 19, (name, len(sentence.split()))
         assert sentence.startswith("I ")
-        assert vet.ben_voice_problems(s) == [], name
-        assert vet.voice_problems(s) == [], name
+        assert vet.ben_voice_problems(sentence) == [], name
+        assert vet.voice_problems(sentence) == [], name
 
 
 # ------------------------------------------------------------------ metrics parsing
@@ -435,3 +471,85 @@ def test_weekly_report_is_written_and_notified_once(denv, tmp_path):
     out = denv.briefs / "social-weekly-2026-10-26.md"
     assert out.exists() and "By kind" in out.read_text()
     assert len(sent) == 1                                          # once a week, not twice
+
+
+# ------------------------------------------------------------------ outside posts count for the repeat rule
+from socialpost.daily import external  # noqa: E402
+
+OUTREACH = """# Outreach Log
+
+| Date | Target | Contact | Status | Note |
+|---|---|---|---|---|
+| 2026-10-18 | LinkedIn, Purplelink LLC company page: Vitae 1.4.0 launch | company page 120183926 | posted | 7-page carousel, utm_campaign=vitae-140 |
+| 2026-10-18 | Bluesky @purplelink.llc: Vitae 1.4.0 launch | https://bsky.app/profile/purplelink.llc/post/3my64 | posted | 4 cards |
+| 2026-10-18 | threads: 20261018-buddy-account-test | https://www.threads.com/@purplelink.llc/post/Deq | posted | queue item 20261018-buddy-account-test, utm_campaign=buddy-launch-test |
+| 2026-10-18 | linkedin: 20261018-buddy-account-test | https://www.linkedin.com/company/120183926/ | posted | queue item 20261018-buddy-account-test |
+| 2026-10-18 | bluesky: 20261018-buddy-account-test | https://bsky.app/profile/purplelink.llc/post/3my6x | posted | queue item 20261018-buddy-account-test |
+| 2026-10-18 | mastodon: 20261018-buddy-account-test | https://mastodon.social/@purplelink_llc/1174 | posted | queue item 20261018-buddy-account-test |
+| 2026-10-16 | r/LaTeX reply | https://www.reddit.com/r/LaTeX/comments/1/ | posted by Ben | ModernTex 1.11.0 mention |
+| 2026-10-18 | LinkedIn: something not sent | company page | draft | Vitae 1.4.0 |
+"""
+ALL4 = ["linkedin", "bluesky", "threads", "mastodon"]
+
+
+def release(app, version):
+    return cand.Candidate(id=f"release:{app}:{version}", kind="release", url=f"https://purplelink.llc/{app}/")
+
+
+def test_outreach_log_posts_block_vitae_on_linkedin_and_bluesky_only(denv):
+    denv.outreach.write_text(OUTREACH)
+    rows = external.load(TODAY, 21)
+    assert {tuple(r["platforms"]) for r in rows if "vitae" in r["text"]} == {("linkedin",), ("bluesky",)}
+    blocked = sc.blocked_platforms(release("vitae", "1.4.0"), rows, TODAY, 21, ALL4)
+    assert blocked == {"linkedin", "bluesky"}                      # threads and mastodon never got the launch
+    assert sc.blocked_platforms(release("vitae", "1.5.0"), rows, TODAY, 21, ALL4) == set()   # a later version is new
+    assert sc.blocked_platforms(release("moderntex", "1.11.0"), rows, TODAY, 21, ALL4) == set()  # Reddit row ignored
+    assert sc.blocked_platforms(release("vitae", "1.4.0"), rows, D(2026, 11, 10), 21, ALL4) == set()  # out of window
+
+
+def test_buddy_is_blocked_on_all_four_from_the_log_and_the_queue(denv):
+    denv.outreach.write_text(OUTREACH)
+    buddy = release("buddy", "1.0.0")
+    assert sc.blocked_platforms(buddy, external.load(TODAY, 21), TODAY, 21, ALL4) == set(ALL4)
+    denv.outreach.write_text("# empty\n")                          # the log is unavailable: the queue still knows
+    it = items.create("buddy-account-test", ALL4, "https://github.com/purplelink-llc/buddy", "buddy-launch-test")
+    it.sections["default"] = "Buddy is live. {link}"
+    it.meta["results"] = {p: {"status": "posted", "posted_at": "2026-10-18T21:17:18-04:00"} for p in ALL4}
+    it.save()
+    assert sc.blocked_platforms(buddy, external.load(TODAY, 21), TODAY, 21, ALL4) == set(ALL4)
+
+
+def test_history_extra_file_covers_a_post_nobody_logged(denv):
+    denv.outreach.write_text("# empty\n")
+    external.extra_file().parent.mkdir(parents=True, exist_ok=True)
+    external.extra_file().write_text(json.dumps([{"date": "2026-10-18", "platforms": ["linkedin", "bluesky"],
+                                                   "text": "vitae 1.4.0 launch"}]))
+    assert sc.blocked_platforms(release("vitae", "1.4.0"), external.load(TODAY, 21), TODAY, 21, ALL4) == {"linkedin", "bluesky"}
+
+
+def test_page_candidates_match_by_slug_and_url(denv):
+    g = cand.Candidate(id="guide:new-guide", kind="guide", url="https://purplelink.llc/guides/new-guide/")
+    assert external.names_candidate(g, "linkedin: see https://purplelink.llc/guides/new-guide/?utm_source=x")
+    assert not external.names_candidate(g, "guides/new-guide-2 is another page")
+    v = cand.Candidate(id="video:AbC12345678", kind="video", url="https://www.youtube.com/watch?v=AbC12345678")
+    assert external.names_candidate(v, "youtube.com/watch?v=abc12345678")
+
+
+def test_a_short_common_slug_does_not_match_unrelated_text():
+    g = cand.Candidate(id="guide:mac", kind="guide", url="https://purplelink.llc/guides/mac/")
+    assert not external.names_candidate(g, "bluesky: new mac app for latex")
+    assert external.names_candidate(g, "see https://purplelink.llc/guides/mac/?utm_source=x")
+
+
+def test_context_dependent_sentences_are_not_used_alone_and_colon_clauses_fit_short_limits():
+    notes = ("New: Where your space went. Choose it in the menu bar dropdown and Legroom lists the whole startup disk "
+             "as parts that add up to its size: macOS, swap, simulators, caches, Mail, Photos and the Trash. "
+             "Until then the list shows icons.")
+    f = {"title": "Legroom 1.4.0", "name": "Legroom", "version": "1.4.0", "price": "", "description": "", "notes": notes}
+    assert comp.fact_units(f, "bluesky") == [
+        "New: Where your space went.",
+        "Choose it in the menu bar dropdown and Legroom lists the whole startup disk as parts that add up to its size: "
+        "macOS, swap, simulators, caches, Mail, Photos and the Trash."]
+    rel = cand.Candidate(id="release:legroom:1.4.0", kind="release", url="https://purplelink.llc/legroom/")
+    t = comp.compose(rel, f, "statement", ["bluesky"], "daily-release")["bluesky"]
+    assert "as parts that add up to its size." in t and "Until then" not in t and "swap" not in t

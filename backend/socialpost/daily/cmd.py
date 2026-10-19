@@ -12,14 +12,15 @@ from . import settings as st
 
 def show(res: dict, say=print) -> None:
     say(f"status: {res['status']}")
-    if "candidate" in res:
-        say(f"pick: {res['candidate']}  kind {res['kind']}  format {res['format']}  score {res['score']}")
-        say(f"item: {res['item']}  scheduled {res['scheduled_at']}  platforms {', '.join(res['platforms'])}")
-        for p, t in res["texts"].items():
+    for n, pk in enumerate(res.get("picks", []), 1):
+        say(f"\npick {n}: {pk['candidate']}  kind {pk['kind']}  format {pk['format']}  score {pk['score']}")
+        say(f"item: {pk['item']}  scheduled {pk['scheduled_at']}  platforms {', '.join(pk['platforms'])}")
+        for p, t in pk["texts"].items():
             say(f"\n--- {p} ({len(t)} chars)\n{t}")
-        for im in res["images"]:
+        for im in pk["images"]:
             say(f"  [image] {im['path']}\n          alt: {im['alt']}  ({', '.join(im['platforms'])})")
-        say("\nnext best: " + ", ".join(f"{i} {s}" for s, i in res["top"][1:5]))
+    if res.get("unserved_platforms"):
+        say(f"\nno post today on: {', '.join(res['unserved_platforms'])}")
     for k in ("notes", "excluded"):
         for n in res.get(k, []):
             say(f"  {k}: {n}")

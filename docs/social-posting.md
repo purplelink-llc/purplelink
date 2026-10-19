@@ -42,9 +42,9 @@ pre-approval. Code: `backend/socialpost/daily/`. Run by hand with `social.py dai
    header `x-stats-token`, never in a URL), or the sitemap when the stats are down.
 2. **Score** = importance by kind (release 1.0, guide 0.8, video 0.65, blog 0.6, tool 0.5, evergreen 0.3) x freshness
    (halves every 3 days) x learned kind and format multipliers (start at 1.0) minus 0.15 per same-kind post in the last
-   7 days. The same item is not posted again within 21 days; the same kind is not picked more than 3 days in a row.
+   7 days. The same item is not posted again on a platform within 21 days; the same kind is not picked more than 3 days in a row. The repeat rule sees every post the accounts made, not only the pipeline's: rows of `Outreach/OUTREACH-LOG.md` with status "posted", every posted queue result, and a small private `~/.purplelink/social/history-extra.json` for a post nobody logged (`[{"date": "2026-10-18", "platforms": ["linkedin"], "text": "vitae 1.4.0 launch"}]`). A release matches by product and version, a page by its URL path, a video by its id. A platform an item is blocked on is served by the next-best candidate, so each network still gets one post a day (at most 2 items a day).
    Weights are in `~/.config/purplelink/social-daily.json` (written with defaults on the first live run).
-3. **Text** from fixed templates plus the page's own title, description and changelog entry (no model, no paid API).
+3. **Text** from fixed templates plus verified facts from the page itself (no model, no paid API): its description or, for a release, the newest changelog entry (first sentences, dropping lines like "Earlier versions install ..."), plus a line from its section headings and a step count only if the page states one. Every post carries at least one such fact; LinkedIn stays under about 600 characters, Bluesky under 300, Threads and Mastodon under 500.
    A format rotates by day so formats can be compared: `card` (image plus headline), `link` (headline and link),
    `question` (a question hook), `statement` (headline plus the page's own sentences). The format is recorded on the
    item (`daily.format`) and in `~/.purplelink/social/daily/history.json`. Mastodon has its own first-person

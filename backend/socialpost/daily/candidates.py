@@ -207,7 +207,8 @@ def fetch_stats(http, days: int = 90) -> dict | None:
 # ---------------------------------------------------------------- facts
 def _release(f: dict) -> dict:
     return {"title": f["title"], "description": "", "notes": f["notes"], "name": f["name"], "version": f["version"],
-            "price": f.get("price", ""), "url": f["url"], "og_image": f.get("og_image", ""), "image_alt": ""}
+            "price": f.get("price", ""), "url": f["url"], "og_image": f.get("og_image", ""), "image_alt": "",
+            "headings": [], "steps": ""}
 
 
 def page_facts(http, url: str) -> dict:
@@ -219,14 +220,54 @@ def page_facts(http, url: str) -> dict:
         raise L.Skip(f"{url} has no title")
     return {"title": title, "description": L.plain(L.events.meta(page, "description") or L.events.meta(page, "og:description")),
             "notes": "", "url": url, "og_image": L.events.meta(page, "og:image"),
-            "image_alt": L.plain(L.events.meta(page, "og:image:alt") or L.events.meta(page, "twitter:image:alt"))}
+            "image_alt": L.plain(L.events.meta(page, "og:image:alt") or L.events.meta(page, "twitter:image:alt")),
+            "headings": h2_headings(page), "steps": steps_stated(page)}
+
+
+SKIP_HEADINGS = {"the short answer", "short answer", "summary", "contents", "table of contents", "overview",
+                 "introduction", "faq", "frequently asked questions", "related", "related guides", "conclusion"}
+NUMBER_WORDS = "one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve"
+
+
+def h2_headings(page: str, limit: int = 4) -> list[str]:
+    """The page's own section headings (h2), minus generic ones like 'The short answer'."""
+    out = []
+    for h in re.findall(r"<h2[^>]*>(.*?)</h2>", page, re.S | re.I):
+        t = L.plain(L.events.strip_tags(h))
+        if t and t.lower() not in SKIP_HEADINGS and len(t.split()) <= 12 and "?" not in t:
+            out.append(t)
+        if len(out) >= limit:
+            break
+    return out
+
+
+def steps_stated(page: str) -> str:
+    """'five steps' when the article's own text says so (a count the page states, never one we infer)."""
+    body = L.events.strip_tags(L.events.article_html(page) or page)
+    m = re.search(rf"\b(\d+|{NUMBER_WORDS})[ -](?:simple |short |quick |easy )?steps?\b", body, re.I)
+    return f"{m.group(1)} steps" if m else ""
 
 
 def video_page_facts(http, video_id: str) -> dict:
     """Title from YouTube's public oEmbed (it answers only for a public video)."""
     url = f"https://www.youtube.com/watch?v={video_id}"
     f = L.events.video_facts(http, video_id, entry={})
-    return {"title": f["title"], "description": "", "notes": "", "url": url, "og_image": "", "image_alt": ""}
+    desc = ""
+    try:  # the watch page's own meta description (the video description, cut off by YouTube)
+        r = http.request("GET", url)
+        if r.status == 200:
+            desc = video_description(L.events.meta(r.text, "og:description") or L.events.meta(r.text, "description"))
+    except Exception:
+        desc = ""
+    return {"title": f["title"], "description": desc, "notes": "", "url": url, "og_image": "", "image_alt": "",
+            "headings": [], "steps": ""}
+
+
+def video_description(meta: str) -> str:
+    """YouTube joins lines without a space ('send it.Find searches'); restore it and drop the cut-off tail."""
+    t = re.sub(r"([.!?])(?=[A-Z])", r"\1 ", L.plain(meta or ""))
+    parts = re.split(r"(?<=[.!?])\s+", t)
+    return " ".join(p for p in parts if "..." not in p and "\u2026" not in p).strip()
 
 
 def load_facts(http, c: Candidate) -> dict:
@@ -238,4 +279,5 @@ def load_facts(http, c: Candidate) -> dict:
 
 def source_text(facts: dict) -> str:
     """Everything the post may draw on. The vetting gate compares the post against this."""
-    return " ".join(str(facts.get(k) or "") for k in ("title", "description", "notes", "name", "version", "price"))
+    extra = " ".join(facts.get("headings") or []) + " " + str(facts.get("steps") or "")
+    return " ".join(str(facts.get(k) or "") for k in ("title", "description", "notes", "name", "version", "price")) + " " + extra

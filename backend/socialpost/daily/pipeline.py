@@ -17,6 +17,7 @@ from .. import items as itemsmod
 from .. import paths, sysutil
 from ..items import Item, iso
 from . import candidates as cand
+from . import external
 from . import compose as comp
 from . import score as sc
 from . import settings as st
@@ -160,7 +161,10 @@ def run_daily(http, dcfg: dict | None = None, main_cfg: dict | None = None, when
             say(f"{today}: past {dcfg['last_pick']}, no pick today")
             return {"status": "missed"}
 
-    history = reconcile_history(st.load_history())
+    own_history = reconcile_history(st.load_history())
+    # everything the company accounts posted counts for the repeat rule: outside posts (OUTREACH-LOG, the queue,
+    # history-extra.json) as well as the pipeline's own picks
+    history = own_history + external.load(today, dcfg["dup_days"])
     learned = st.load_learned()
 
     allowed = [p for p in dcfg["platforms"] if p in itemsmod.STANDING_PLATFORMS
@@ -180,7 +184,6 @@ def run_daily(http, dcfg: dict | None = None, main_cfg: dict | None = None, when
     cands = cand.gather(http, today, dcfg, stats=stats, added=added, ledger=ledger, notes=notes)
     fmt0 = sc.pick_format(history, dcfg, learned, has_image=True)
     log_lines: list[str] = []
-    ranked = sc.rank(cands, fmt0, today, dcfg, learned, history, log=log_lines.append)
     threads_img = "threads" in platforms and threads_images_ready(http, main_cfg)
 
     link_cfg = dict(main_cfg)
@@ -189,12 +192,80 @@ def run_daily(http, dcfg: dict | None = None, main_cfg: dict | None = None, when
     slot = dt.datetime.combine(today, dt.time.fromisoformat(dcfg["slot"]), tzinfo=ZoneInfo(dcfg["timezone"]))
     when_at = slot if local < slot else local + dt.timedelta(minutes=2)
 
-    chosen = None
+    # One item per round. The best candidate takes every platform it has not already been posted on (a post made
+    # outside the queue counts); a platform it is blocked on is picked up by the next-best candidate, so each network
+    # still gets one post a day and nothing repeats within the window. At most `max_items_per_day` items.
+    picks: list[tuple] = []
+    remaining = list(platforms)
+    taken: set[str] = set()
+    for _ in range(int(dcfg.get("max_items_per_day", 2))):
+        if not remaining:
+            break
+        chosen = _choose(http, cands, remaining, taken, fmt0, today, dcfg, learned, history, main_cfg, link_cfg,
+                         threads_img, when_at, log_lines)
+        if not chosen:
+            break
+        picks.append(chosen)
+        taken.add(chosen[1].id)
+        remaining = [p for p in remaining if p not in chosen[3].platforms]
+
+    result = {"notes": notes, "excluded": log_lines, "platforms": platforms, "skipped_platforms": skipped_platforms,
+              "unserved_platforms": remaining}
+    if not picks:
+        say(f"{today}: no candidate passed vetting")
+        for ln in log_lines:
+            say("  " + ln)
+        if not dry_run:
+            state.update(last_done=today.isoformat(), detail="no candidate passed vetting")
+            st.write_json(state_file(), state)
+            notify("Daily social: no candidate passed vetting today, nothing posted. See purplelink-social.log")
+        return {**result, "status": "nothing-passed" if not dry_run else "dry-run-nothing"}
+
+    result["picks"] = [{"candidate": c.id, "kind": c.kind, "format": fmt, "score": round(v, 3), "item": item.id,
+                        "platforms": list(item.platforms), "scheduled_at": item.meta["scheduled_at"],
+                        "texts": {p: item.render(p) for p in item.platforms}, "images": item.meta["images"]}
+                       for v, c, fmt, item, texts in picks]
+    first = result["picks"][0]
+    result.update({k: first[k] for k in ("candidate", "kind", "format", "score", "item", "scheduled_at", "texts", "images")})
+    result["top"] = [(first["score"], first["candidate"])]
+    if dry_run:
+        result["status"] = "dry-run"
+        return result
+
+    paths.queue_dir().mkdir(parents=True, exist_ok=True)
+    for n, (sc_value, c, fmt, item, texts) in enumerate(picks):
+        if item.path.exists():
+            say(f"{item.id} already exists in the queue; not writing it twice")
+            continue
+        item.save()
+        itemsmod.approve_standing(item, link_cfg)
+        own_history.append({"date": today.isoformat(), "candidate": c.id, "kind": c.kind, "format": fmt,
+                            "item": item.id, "platforms": list(item.platforms),
+                            "hashes": [vetmod.text_hash(t) for t in texts.values()], "score": round(sc_value, 3),
+                            "counts": True, "primary": n == 0})
+        sysutil.log(f"daily: queued {item.id} ({c.kind}, format {fmt}) for {item.meta['scheduled_at']} on "
+                    f"{', '.join(item.platforms)}; approved by standing approval")
+    st.save_history(own_history)
+    state.update(last_done=today.isoformat(), detail="queued " + ", ".join(p[3].id for p in picks))
+    st.write_json(state_file(), state)
+    result["status"] = "queued"
+    return result
+
+
+def _choose(http, cands, remaining, taken, fmt0, today, dcfg, learned, history, main_cfg, link_cfg, threads_img,
+            when_at, log_lines):
+    """The best candidate that passes the gate for at least one of `remaining` platforms, or None."""
+    ranked = sc.rank([c for c in cands if c.id not in taken], fmt0, today, dcfg, learned, history,
+                     log=log_lines.append, platforms=remaining)
     tried = 0
     for sc_value, c in ranked:
         if tried >= MAX_TRIES:
             break
         tried += 1
+        blocked = sc.blocked_platforms(c, history, today, dcfg["dup_days"], remaining)
+        plats = [p for p in remaining if p not in blocked]
+        if blocked:
+            log_lines.append(f"{c.id}: not posted again on {', '.join(sorted(blocked))} (posted within {dcfg['dup_days']} days)")
         try:
             facts = cand.load_facts(http, c)
         except Exception as e:  # not live, no title, network
@@ -207,55 +278,20 @@ def run_daily(http, dcfg: dict | None = None, main_cfg: dict | None = None, when
             if image is None:
                 fmt = sc.pick_format(history, dcfg, learned, has_image=False)
                 log_lines.append(f"{c.id}: no usable card image; format {fmt} instead")
-        try:
-            texts = comp.compose(c, facts, fmt, platforms, f"daily-{c.kind}")
-        except comp.ComposeError as e:
-            log_lines.append(f"{c.id}: skipped, {e}")
+        texts, why = comp.compose_best(c, facts, fmt, plats, f"daily-{c.kind}")
+        for msg in why.values():
+            log_lines.append(f"{c.id}: {msg}")
+        if not texts:
+            log_lines.append(f"{c.id}: skipped, no platform could be written")
             continue
-        image_platforms = [p for p in platforms if p in ("bluesky", "mastodon") or (p == "threads" and threads_img)] if image else []
-        item = build_item(c, facts, fmt, texts, platforms, iso(when_at), today, image if image_platforms else None,
-                          image_platforms, f"Built by the daily pipeline from {c.id}; format {fmt}.")
+        plats = list(texts)
+        image_platforms = [p for p in plats if p in ("bluesky", "mastodon") or (p == "threads" and threads_img)] if image else []
+        item = build_item(c, facts, fmt, texts, plats, iso(when_at), today.__class__.fromordinal(today.toordinal()),
+                          image if image_platforms else None, image_platforms,
+                          f"Built by the daily pipeline from {c.id}; format {fmt}.")
         v = vetmod.vet(item, c, facts, texts, http, history, today, dcfg, link_cfg)
         if not v.ok:
             log_lines.append(f"{c.id}: failed vetting: " + " | ".join(v.reasons))
             continue
-        chosen = (sc_value, c, fmt, item, texts)
-        break
-
-    result = {"notes": notes, "excluded": log_lines, "platforms": platforms, "skipped_platforms": skipped_platforms}
-    if not chosen:
-        say(f"{today}: no candidate passed vetting")
-        for ln in log_lines:
-            say("  " + ln)
-        if not dry_run:
-            state.update(last_done=today.isoformat(), detail="no candidate passed vetting")
-            st.write_json(state_file(), state)
-            notify("Daily social: no candidate passed vetting today, nothing posted. See purplelink-social.log")
-        return {**result, "status": "nothing-passed" if not dry_run else "dry-run-nothing"}
-
-    sc_value, c, fmt, item, texts = chosen
-    result.update(candidate=c.id, kind=c.kind, format=fmt, score=round(sc_value, 3), item=item.id,
-                  scheduled_at=item.meta["scheduled_at"], texts={p: item.render(p) for p in item.platforms},
-                  images=item.meta["images"], top=[(round(s, 3), x.id) for s, x in ranked[:6]])
-    if dry_run:
-        result["status"] = "dry-run"
-        return result
-
-    paths.queue_dir().mkdir(parents=True, exist_ok=True)
-    if item.path.exists():
-        say(f"{item.id} already exists in the queue; not writing it twice")
-        state.update(last_done=today.isoformat(), detail=f"{item.id} already queued")
-        st.write_json(state_file(), state)
-        return {**result, "status": "done-already"}
-    item.save()
-    itemsmod.approve_standing(item, link_cfg)
-    history.append({"date": today.isoformat(), "candidate": c.id, "kind": c.kind, "format": fmt, "item": item.id,
-                    "platforms": list(item.platforms), "hashes": [vetmod.text_hash(t) for t in texts.values()],
-                    "score": round(sc_value, 3), "counts": True})
-    st.save_history(history)
-    state.update(last_done=today.isoformat(), detail=f"queued {item.id}")
-    st.write_json(state_file(), state)
-    sysutil.log(f"daily: queued {item.id} ({c.kind}, format {fmt}) for {item.meta['scheduled_at']} on "
-                f"{', '.join(item.platforms)}; approved by standing approval")
-    result["status"] = "queued"
-    return result
+        return (sc_value, c, fmt, item, texts)
+    return None
