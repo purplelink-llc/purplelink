@@ -28,8 +28,8 @@ FOLDERS = ["pending", "approved", "done", "rejected", "expired", "needs-work", "
 KINDS = {"post", "email", "listing", "pr", "spend", "decision", "check", "submission"}
 OUTWARD = {"post", "email", "listing", "spend", "submission"}
 EXECUTORS = {"ben", "claude-chrome", "claude-code", "auto", "poster"}
-# "poster" is scripts/social/poster.py. Standing approval (Ben, 2026-10-18): its own guide_live, video_published and
-# release_published items may move to approved/ without a click, only after every automatic check passes there.
+# "poster" was scripts/social/poster.py, which no longer posts (2026-10-18: one posting path, backend/scripts/social.py).
+# The executor name stays valid for old queue items.
 POSTER_JOB = "social-poster"
 RISKS = {"low", "medium", "high"}
 REASONS = {"tone", "wrong-target", "wrong-fact", "not-now", "no-value", "risk"}

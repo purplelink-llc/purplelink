@@ -275,7 +275,7 @@ def _log_outreach(item: Item, posted: dict, say) -> None:
             if not text.endswith("\n"):
                 fh.write("\n")
             for plat, r in posted.items():
-                note = f"queue item {item.id}, utm_campaign={item.campaign}, scheduled post, approved by ben"
+                note = f"queue item {item.id}, utm_campaign={item.campaign}, scheduled post, approved by {item.meta.get('approved_by') or 'ben'}"
                 fh.write(f"| {day} | {plat}: {item.id} | {r.get('url')} | posted | {note} |\n")
     except OSError as e:
         say(f"{item.id}: could not write the outreach log: {e}")

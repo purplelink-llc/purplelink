@@ -9,7 +9,7 @@ from .spec import PLATFORMS
 DEFAULT = {
     "timezone": "America/New_York",
     "windows": {"days": [0, 1, 2, 3, 4, 5, 6], "start": "07:00", "end": "21:00"},
-    "link_hosts": ["purplelink.llc", "www.purplelink.llc"],
+    "link_hosts": ["purplelink.llc", "www.purplelink.llc", "www.youtube.com", "youtu.be"],  # YouTube: video picks
     "media": {"base_url": "https://purplelink.llc/social-media/", "store": "social-media",
               "netlify_cwd": "/Volumes/Extreme SSD/Purplelink LLC"},
     "retry": {"max_attempts": 3, "backoff_minutes": [10, 40, 120]},
