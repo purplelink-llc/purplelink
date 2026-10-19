@@ -8,26 +8,6 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/styles.css?v=4e29549ea1">
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18464618488"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'AW-18464618488');
-      // Purchase conversion for the ModernTex Google Ads campaign. Fires only on
-      // the Stripe redirect (live session id), once per order: the session id is
-      // the transaction id, so reloads and re-opened receipt links do not recount.
-      (function () {
-        var id = new URLSearchParams(location.search).get('session_id') || '';
-        if (!/^cs_live_[A-Za-z0-9]+$/.test(id)) return;
-        gtag('event', 'conversion', {
-          send_to: 'AW-18464618488/A2fECNzcq_8cEPjvzuRE',
-          value: 10.0,
-          currency: 'USD',
-          transaction_id: id
-        });
-      })();
-    </script>
     <link rel="stylesheet" href="/buy.css?v=589347358c">
     <script src="/license-keys.js?v=687db9312d" defer></script>
   </head>
@@ -120,7 +100,7 @@
         <a href="/terms/">Terms</a>
       </nav>
     </footer>
-    <script src="/moderntex/success.js?v=07dd72e2b4" defer></script>
+    <script src="/moderntex/success.js?v=14eac857fd" defer></script>
     <script src="/analytics.js?v=38a584a70d" defer></script>
   </body>
 </html>
