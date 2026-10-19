@@ -5,8 +5,8 @@
     python3 scripts/howto-publish.py <slug> [--dry-run]
 
 Refuses unless scripts/howto_gate.py passes and video/out/howto/<slug>/ holds both cuts and all three thumbnails.
-A kill switch file at ~/.purplelink/howto/PAUSE stops every publish. Links are tagged utm_source=youtube-howto,
-utm_medium=video|short, utm_campaign=<slug> so the series is measured on its own.
+A kill switch file at ~/.purplelink/howto/PAUSE stops every publish. Links are tagged utm_source=youtube, utm_medium=video|short,
+utm_campaign=howto-link-test, utm_content=<slug> (the Short adds -short) for the link placement test.
 """
 from __future__ import annotations
 import datetime as dt, json, os, re, subprocess, sys
@@ -21,8 +21,30 @@ ROTATION = VIDEO / "howto" / "rotation.json"
 CHANGELOG = Path.home() / ".purplelink" / "insights" / "changelog" / "log_change.py"
 
 
+LINK_TEST_START = dt.date(2026, 10, 20)  # switchback test howto-link-placement, 28 days, review 2026-11-17
+
+
+def eastern_today() -> dt.date:
+    """The test's day boundary is US Eastern, whatever timezone this Mac is in."""
+    from zoneinfo import ZoneInfo
+    return dt.datetime.now(ZoneInfo("America/New_York")).date()
+
+
+def link_arm(day: dt.date) -> str:
+    """Switchback by day-of-month: odd days are arm B (tracked link as the description's first line),
+    even days are arm A (link stays after the app paragraph). Pinned comments are not possible: uploads go
+    through the Studio browser (yt-upload.py) and there is no Purplelink API token, so arm B means
+    "first line only"."""
+    if day < LINK_TEST_START:
+        return "A"
+    return "B" if day.day % 2 == 1 else "A"
+
+
 def tagged(page: str, medium: str, slug: str) -> str:
-    return f"{page}?utm_source=youtube-howto&utm_medium={medium}&utm_campaign={slug.removeprefix('howto-')}"
+    """Tracked link. utm_content is the video's slug (the video id is not known before upload); the ledger maps
+    slug to long_id and short_id. The Short's slug carries a -short suffix."""
+    return (f"{page}?utm_source=youtube&utm_medium={medium}&utm_campaign=howto-link-test"
+            f"&utm_content={slug}")
 
 
 TRENDS_ROOT = Path(os.environ.get("TRENDS_ROOT", "/Volumes/Extreme SSD/TikTokPipeline"))
@@ -77,29 +99,36 @@ def yt_safe(cmd: str) -> str:
     return cmd.replace("<", "").replace(">", "")
 
 
-def descriptions(sb: dict, long_url: str | None) -> tuple[str, str]:
+def descriptions(sb: dict, long_url: str | None, arm: str = "A") -> tuple[str, str]:
     scenes = sb["scenes"]
     hook = next(s for s in scenes if s["type"] == "hook")
     cause = next((s for s in scenes if s["type"] == "cause"), None)
     cmds = [yt_safe(l[2:]) for s in scenes if s["type"] == "steps" for l in s.get("lines", []) if l.startswith("$ ")]
     app = next(s for s in scenes if s["type"] == "app")
     lead = hook["title"] if hook["title"].rstrip()[-1:] in ".?!" else hook["title"] + "."  # no "?." after a question
-    parts = [f"{lead} {hook.get('sub', '')}".strip()]
+    opener = f"{lead} {hook.get('sub', '')}".strip()
+    parts = [opener]
     if cause:
         parts.append(cause["text"])
     if cmds:
         parts.append("The fix, in Terminal:\n" + "\n".join(cmds))
-    parts.append(f"{app['name']}: {app['line']}\n{tagged(sb['page'], 'video', sb['id'])}")
+    link = tagged(sb["page"], "video", sb["id"])
+    if arm == "B":
+        parts.append(f"{app['name']}: {app['line']}")
+    else:
+        parts.append(f"{app['name']}: {app['line']}\n{link}")
     if sb.get("sources"):
         parts.append("Where this comes up:\n" + "\n".join(sb["sources"]))
     parts.append(trend_tags(sb, short=False))
+    if arm == "B":
+        parts.insert(0, f"{app['name']}: {link}")
     long_d = "\n\n".join(parts)
-    short_parts = [parts[0]]
+    short_parts = [opener]
     if cmds:
         short_parts.append("\n".join(cmds))
     if long_url:
         short_parts.append(f"Full walkthrough: {long_url}")
-    short_parts.append(f"{app['name']}: {tagged(sb['page'], 'short', sb['id'])}")
+    short_parts.append(f"{app['name']}: {tagged(sb['page'], 'short', sb['id'] + '-short')}")
     short_parts.append(trend_tags(sb, short=True))
     return long_d, "\n\n".join(short_parts)
 
@@ -133,19 +162,22 @@ def main() -> int:
     missing = [str(p) for p in files.values() if not p.exists()]
     if missing:
         raise SystemExit(f"missing build output: {missing}")
-    long_d, _ = descriptions(sb, None)
+    arm = link_arm(eastern_today())
+    long_d, _ = descriptions(sb, None, arm)
     if dry:
+        print(f"--- link placement arm {arm} (Eastern date {eastern_today()})")
         print("--- long title\n" + sb["title"] + "\n--- long description\n" + long_d)
         print("--- short title\n" + sb["short_title"] + "\n--- short description\n" + descriptions(sb, "https://youtu.be/XXXXXXXXXXX")[1])
         return 0
     long_id = upload(files["16x9.mp4"], sb["title"], long_d,
                      ["--ab-thumbnails", str(files["thumb-A.jpg"]), str(files["thumb-B.jpg"]), str(files["thumb-C.jpg"])])
-    _, short_d = descriptions(sb, f"https://youtu.be/{long_id}")
+    _, short_d = descriptions(sb, f"https://youtu.be/{long_id}", arm)
     short_id = upload(files["9x16.mp4"], sb["short_title"], short_d, ["--thumbnail", str(files["thumb-A.jpg"])])
-    today = dt.date.today().isoformat()
+    today = eastern_today().isoformat()
     ledger = json.loads(LEDGER.read_text()) if LEDGER.exists() else []
     ledger.append({"slug": sb["id"], "app": sb["app"], "date": today, "title": sb["title"],
-                   "long_id": long_id, "short_id": short_id, "sources": sb.get("sources", [])})
+                   "long_id": long_id, "short_id": short_id, "link_arm": arm,
+                   "link_utm_content": sb["id"], "sources": sb.get("sources", [])})
     LEDGER.write_text(json.dumps(ledger, indent=1) + "\n")
     rot = json.loads(ROTATION.read_text())
     if rot["cycle"][rot["next"] % len(rot["cycle"])] == sb["app"]:
@@ -154,9 +186,9 @@ def main() -> int:
     if CHANGELOG.exists():
         subprocess.run([PY, str(CHANGELOG), "add", "--date", today, "--area", "content",
                         "--what", f"Daily how-to video published: {sb['title']} (long {long_id}, Short {short_id})",
-                        "--affected", f"youtube-howto visits to {sb['page']}; views of {long_id} and {short_id}",
+                        "--affected", f"youtube visits (utm_campaign=howto-link-test) to {sb['page']}; views of {long_id} and {short_id}",
                         "--comparison", "other apps' pages and earlier how-to videos",
-                        "--metric", "views, utm_source=youtube-howto sessions and trials"], check=False)
+                        "--metric", "views, utm_campaign=howto-link-test sessions and trials"], check=False)
     print(f"published: https://youtu.be/{long_id} (A/B/C test) and https://youtube.com/shorts/{short_id}")
     return 0
 
