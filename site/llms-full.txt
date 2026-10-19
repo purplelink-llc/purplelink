@@ -5632,12 +5632,6 @@ Apple silicon and Intel need no separate choice. TUG says MacTeX-2026 and BasicT
 
 Check free space before you start, because the installer file and the installed copy sit on the disk together. How to see free disk space on a Mac covers Finder, Storage settings, Disk Utility and df.
 
-If you want an editor that sets this up
-
-I make ModernTex, a native Mac editor for LaTeX papers. It uses MacTeX or TinyTeX, and if neither is installed it offers a one-click TinyTeX install. The trial is the full app for 7 days, with no account. After that it is $19.99, once.
-
-About ModernTex
-
 ## Option A: install MacTeX
 
 There are two routes, and both give the same distribution. Homebrew (the Mac package manager at brew.sh) is quicker to repeat on a second Mac. The installer package from TUG needs no other software.
@@ -7242,6 +7236,12 @@ A research record has four layers. Tools differ mostly in how many they cover.
 - Documents made from the above. The annual report, the CV, the NIH biosketch, the promotion dossier. Each cuts the same facts a different way for a different period.
 
 There are also two kinds of record. An institutional faculty-activity or dossier system (Interfolio, Watermark Faculty Success, Elsevier Pure, Symplectic Elements) is bought by the university, built for reporting and review, and usually mandatory. You do not choose it. A personal record is one you choose, hold in a form you control and take with you when you change employers. It can also hold what no one asks to see: the rejections, the timing, the grant you dropped. The sensible arrangement is both: keep your own record, and copy from it into the institutional system at each deadline. This page compares software for the personal record. For how to assemble a tenure case itself, see how to track your academic CV and tenure case.
+
+Keeping the record on your Mac
+
+I make Vitae, a free Mac app that keeps your submissions, grants, projects, co-authors, teaching, service and CV in one record on your own Mac, with no account. It runs on a Mac only, and the record does not sync between machines yet. Vitae Plus is optional: $2.99 a month or $23.99 a year, with a 7-day trial.
+
+About Vitae
 
 ## The shortlist
 
