@@ -32,7 +32,8 @@ import { issueKeyfeelLicense } from "../lib/keyfeel-license.mjs";
 import { issueTapefolioLicense } from "../lib/tapefolio-license.mjs";
 import { issuePanelyLicense } from "../lib/panely-license.mjs";
 import { issueSummonlyLicense } from "../lib/summonly-license.mjs";
-import { createHmac, timingSafeEqual, randomBytes, sign as edSign, createPrivateKey } from "node:crypto";
+import { createHmac, timingSafeEqual, randomBytes, sign as edSign } from "node:crypto";
+import { ed25519PrivateKeyFromSeed } from "../lib/ed25519-seed.mjs";
 import { getStore } from "@netlify/blobs";
 import { issueLicense, licensedSlugsFor, LICENSED_PRODUCTS } from "../lib/license.mjs";
 import { bundlePartsOf, entitledParts, isBundleProduct, partsSentence } from "../lib/bundles.mjs";
@@ -244,11 +245,7 @@ export function issueModernTexLicense(sessionId, index) {
   const privB64 = Netlify.env.get("MODERNTEX_LICENSE_PRIVATE_KEY");
   if (!privB64) return null;
   try {
-    const privateKey = createPrivateKey({
-      key: { kty: "OKP", crv: "Ed25519", d: privB64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""),
-             x: MTX_LICENSE_PUBLIC_KEY_B64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "") },
-      format: "jwk",
-    });
+    const privateKey = ed25519PrivateKeyFromSeed(privB64);
     // With a session id the nonce is derived from it, so the same purchase always yields the same key
     // (the success page, the email and recovery then all agree). Any nonce verifies in the app.
     const nonce = sessionId

@@ -199,7 +199,9 @@ research and writing; everything else is scripted. Ben chose fully automatic pub
    tutorial, the 9:16 Short (scenes marked `short`), thumbnails. Review the frames.
 5. `python3 ../scripts/howto-publish.py <slug>`: gate again, the tutorial public with a Test & Compare A/B/C test,
    the Short public linking to it, ledger and rotation updated, change logged. Links use
-   `utm_source=youtube-howto`. `--dry-run` prints the titles and descriptions.
+   `utm_source=youtube&utm_medium=video|short&utm_campaign=howto-link-test&utm_content=<slug>`; from 2026-10-20 odd
+   US Eastern days put the tracked link on the description's first line (arm B), even days keep it after the app
+   paragraph (arm A); the arm is recorded in the ledger (`link_arm`). See the `howto-link-placement` experiment. `--dry-run` prints the titles and descriptions.
 
 Kill switch: create `~/.purplelink/howto/PAUSE` and nothing publishes. Gate rules: no prices, emoji, em dashes or
 hype words; no destructive commands; `sudo` only for `tlmgr` with tug.org/ctan.org docs. Tests:

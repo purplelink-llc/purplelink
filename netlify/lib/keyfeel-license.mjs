@@ -7,7 +7,8 @@
 // The nonce comes from the buyer's email address, so one buyer gets the same key from the
 // receipt email, the success page and "Find a purchase". Like ModernTex, a key is not tied to a
 // machine and cannot be revoked remotely; a refund is handled by asking the buyer to stop using it.
-import { createHash, createPrivateKey, sign as edSign } from "node:crypto";
+import { createHash, sign as edSign } from "node:crypto";
+import { ed25519PrivateKeyFromSeed } from "./ed25519-seed.mjs";
 
 export const KEYFEEL_LICENSE_PUBLIC_KEY_B64 = "YX6tWGJbj3EL9u3BBIRWrWBlRV0ppO149FkUZbPK/XY=";
 const DOMAIN = Buffer.from("KeyfeelLicenseV1", "utf8");
@@ -35,10 +36,7 @@ export function issueKeyfeelLicense(email, env = (name) => globalThis.Netlify?.e
   const who = String(email || "").trim().toLowerCase();
   if (!priv || !who) return null;
   try {
-    const privateKey = createPrivateKey({
-      key: { kty: "OKP", crv: "Ed25519", d: b64url(priv.trim()), x: b64url(KEYFEEL_LICENSE_PUBLIC_KEY_B64) },
-      format: "jwk",
-    });
+    const privateKey = ed25519PrivateKeyFromSeed(priv);
     const nonce = createHash("sha256").update("keyfeel-license:" + who).digest().subarray(0, 4);
     const signature = edSign(null, Buffer.concat([DOMAIN, nonce]), privateKey);
     const groups = crockfordBase32Encode(Buffer.concat([nonce, signature])).match(/.{1,5}/g) ?? [];
