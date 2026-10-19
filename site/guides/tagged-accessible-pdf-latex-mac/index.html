@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Make a tagged, accessible PDF from LaTeX on a Mac | Purplelink</title>
+    <meta name="description" content="How to turn on LaTeX's built-in PDF tagging, which engine to use, how to check the result, and what still needs a manual fix.">
+    <link rel="canonical" href="https://purplelink.llc/guides/tagged-accessible-pdf-latex-mac/">
+    <meta property="og:title" content="Make a tagged, accessible PDF from LaTeX on a Mac">
+    <meta property="og:description" content="Turn on LaTeX's built-in PDF tagging, pick the engine, check the result, and fix what is left by hand.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/tagged-accessible-pdf-latex-mac/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/guides-tagged-accessible-pdf-latex-mac.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Make a tagged, accessible PDF from LaTeX on a Mac">
+    <meta name="twitter:description" content="Turn on LaTeX's built-in PDF tagging, pick the engine, check the result, and fix what is left by hand.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/guides-tagged-accessible-pdf-latex-mac.jpg">
+    <meta name="twitter:image:alt" content="Make a tagged, accessible PDF from LaTeX on a Mac">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "Make a tagged, accessible PDF from LaTeX on a Mac",
+      "description": "How to turn on LaTeX's built-in PDF tagging, which engine to use, how to check the result, and what still needs a manual fix.",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "datePublished": "2026-10-19",
+      "dateModified": "2026-10-19",
+      "image": "https://purplelink.llc/assets/og/purplelink-card.png",
+      "mainEntityOfPage": "https://purplelink.llc/guides/tagged-accessible-pdf-latex-mac/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/"},
+        {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://purplelink.llc/guides/"},
+        {"@type": "ListItem", "position": 3, "name": "Tagged accessible PDF from LaTeX", "item": "https://purplelink.llc/guides/tagged-accessible-pdf-latex-mac/"}
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is a tagged PDF?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A PDF that carries a structure tree: headings, paragraphs, lists, tables and figures are labelled, in reading order, so a screen reader can follow it. A PDF without tags is read as a stream of text, or not at all."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which LaTeX engine should I use for a tagged PDF?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The LaTeX Project's usage instructions say the tagging code works with pdfLaTeX or LuaLaTeX, and that LuaLaTeX is the preferred engine for new documents. MathML structure tagging for equations needs LuaLaTeX."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does turning on tagging make my PDF accessible?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. It adds the structure. You still supply alt text for figures, mark table header rows, set the document language, and check that every package you load is tag-aware."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does ModernTex build tagged PDFs?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "ModernTex 1.10.1 picks LuaLaTeX when the preamble has \\DocumentMetadata and nothing else sets the engine. The tagging itself comes from LaTeX, not from ModernTex."
+      }
+    }
+  ]
+}
+</script>
+    <script src="/theme.js?v=4d162f3e8a"></script>
+<link rel="stylesheet" href="/styles.css?v=99bdcc3053">
+    <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
+    <script src="/site.js?v=b02458d823" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">How-to</p>
+        <h1 class="post-title">Make a tagged, accessible PDF from LaTeX on a Mac</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-19">October 19, 2026</time></p>
+        <p class="post-lede">Some accessibility offices and publishers ask for a tagged PDF. LaTeX can now produce one from the source. This guide gives the preamble lines, the engine to use, how to build it on a Mac and what to check afterwards.</p>
+      </div>
+
+      <article class="post-body">
+        <p><strong>Disclosure up front:</strong> I make ModernTex, a Mac LaTeX editor, and it comes up in one section below. The commands come from the LaTeX Project's own documentation, and I built one test document on a Mac to confirm them. Last checked October 19, 2026.</p>
+
+        <h2>What a tagged PDF is, and who asks for one</h2>
+        <p>A tagged PDF carries a structure tree next to the page content. Headings, paragraphs, lists, tables and figures are labelled and put in reading order, so a screen reader can move through the document instead of reading a flat stream of text. Without tags, assistive software has to guess.</p>
+        <p>You are most likely to meet the request from a university accessibility office, a funder or a publisher that asks for an accessible PDF. LaTeX did not produce tags on its own for years. The LaTeX Project now ships the code in the format itself, so for a current TeX distribution you turn it on with one declaration. The requirement is on the document, not on you: a tagged PDF still needs the human steps in the last section.</p>
+
+        <h2>The preamble lines</h2>
+        <p>The declaration goes before <code>\documentclass</code>, on the very first lines of the file. This is the example from the Project's <a href="https://latex3.github.io/tagging-project/documentation/usage-instructions" rel="noopener">usage instructions</a>, trimmed to the keys that matter here:</p>
+<pre><code>\DocumentMetadata{
+  lang          = en-US,
+  pdfstandard   = ua-2,
+  pdfstandard   = a-4f,
+  tagging       = on,
+  tagging-setup = {math/setup=mathml-SE}
+}
+\documentclass{article}
+\usepackage{unicode-math}</code></pre>
+        <ul>
+          <li><code>lang</code> sets the document language, which screen readers use to pick a voice. Change <code>en-US</code> to yours.</li>
+          <li><code>tagging=on</code> turns tagging on. The conformance keys do not do this for you.</li>
+          <li><code>pdfstandard</code> names the target standard. The page shows <code>ua-2</code> together with <code>a-4f</code> (or <code>a-4</code>). PDF/UA-2 goes with PDF 2.0, which is the default version.</li>
+          <li><code>tagging-setup</code> accepts the same keys as <code>\tagpdfsetup</code>. <code>math/setup=mathml-SE</code> writes equations as MathML structure elements.</li>
+        </ul>
+        <p>Overleaf's own page for this feature shows a shorter form with the same four ideas, <code>tagging=on</code>, <code>tagging-setup</code>, <code>pdfstandard=ua-2</code> and <code>lang</code>. It also describes <code>tagging=draft</code>, which runs the tagging code without writing tags and can speed up compiles on a large project. Use <code>on</code> for the file you send.</p>
+        <p><strong>Which release.</strong> The usage instructions say they apply to LaTeX 2026-06-01 and 2025-11-01, recommend a current release, and say <code>tagging=on</code> was not available in older ones. In practice that means TeX Live 2025 or later. Older guides online show a <code>testphase</code> key; that belongs to the prototype and is out of date.</p>
+
+        <h2>Which engine</h2>
+        <p>The usage instructions say the code works with pdfLaTeX or LuaLaTeX, and that LuaLaTeX is the preferred engine for new documents. They do not mention XeLaTeX. For equations the difference is real: with LuaLaTeX and <code>unicode-math</code> the math is tagged with MathML, and Overleaf's page says MathML structure tagging requires LuaLaTeX. With pdfLaTeX you only get the associated-file method, where you supply the MathML yourself in a separate file. Start new documents on LuaLaTeX.</p>
+
+        <h2>Build it on a Mac</h2>
+
+        <h3>In Terminal with latexmk</h3>
+        <p>Save the document with the declaration first, then build with LuaLaTeX:</p>
+<pre><code>latexmk -lualatex paper.tex</code></pre>
+        <p>I ran this on October 19, 2026 with TinyTeX (TeX Live 2026, LuaHBTeX 1.24.0) on a one-page test file with a title, a section, an inline equation, a numbered list, one image with alt text and a small table. It built with no errors and wrote <code>paper.pdf</code> as PDF 2.0, plus a MathML file next to it. PDF dictionaries are normally packed where a text search cannot see them, so I built a second copy with the <code>uncompress</code> key added to <code>\DocumentMetadata</code>, only to look inside. It held a structure tree, the marked-content flag, the language <code>en-US</code>, the alt text on the figure, a table element, and the PDF/UA part 2 and PDF/A-4f identification. I did not run a conformance validator, so this shows that tagging is switched on and populated, not that the file passes a standard.</p>
+
+        <h3>In ModernTex</h3>
+        <p>With no engine saved for the project, no <code>% !TEX program</code> line and no <code>latexmkrc</code> that sets one, ModernTex 1.10.1 and later picks LuaLaTeX when the preamble has <code>\DocumentMetadata</code>. That is all the app does here (<a href="/changelog/">changelog</a>, October 16, 2026). The tags come from LaTeX, and your TeX installation has to be recent enough to know the <code>tagging</code> key. If you have not set one up, <a href="/guides/install-latex-on-mac/">how to install LaTeX on a Mac</a> covers the options.</p>
+
+        <h3>In Overleaf</h3>
+        <p>Per <a href="https://docs.overleaf.com/writing-and-editing/creating-accessible-pdfs" rel="noopener">Overleaf's guide</a>, set the project's TeX Live version to 2025 or later so the compiler knows the <code>tagging</code> and <code>tagging-setup</code> keys, and switch the compiler from the default pdfLaTeX to LuaLaTeX. The usage instructions add that, at the time of writing, only the 2025-11-01 release was available there, under the Rolling TeX Live option.</p>
+
+        <h2>Check the result</h2>
+        <p>Do three things, in this order.</p>
+        <ol>
+          <li><strong>Resolve every error.</strong> Overleaf's page warns that non-stop mode can still write a PDF after errors, and that such a PDF does not have an intact tag structure. A PDF that appears is not proof that the build was clean. Read the log.</li>
+          <li><strong>Look at the structure.</strong> The Project's usage page points to <a href="https://ngpdf.com" rel="noopener">ngPDF</a> for browsing the tag tree and the HTML derived from it. Check that headings are headings, the reading order matches the page, and the table has header cells.</li>
+          <li><strong>Run a checker for the standard you were asked for.</strong> I have not tested a validator for PDF/UA-2 on this Mac, so I am not naming one. Use whichever checker your accessibility office or publisher names. Overleaf's page notes that checkers differ and that a tool can flag an accessible LaTeX file, so read the report instead of trusting a single pass or fail.</li>
+        </ol>
+
+        <h2>What still needs a manual fix</h2>
+        <ul>
+          <li><strong>Alt text on every figure.</strong> Each graphic needs <code>alt</code>, <code>actualtext</code> or <code>artifact</code>: <code>\includegraphics[width=6cm,alt={A line chart of monthly downloads}]{chart.pdf}</code>. The same keys work with <code>tikzpicture</code> and <code>picture</code>. No tool can judge whether the text you wrote is enough.</li>
+          <li><strong>Table header rows.</strong> Mark them before the table with <code>\tagpdfsetup{table/header-rows={1}}</code>. Other cells are data cells by default. For a table used only for layout, the usage page lists <code>table/tagging=presentation</code>.</li>
+          <li><strong>Packages that are not tag-aware.</strong> Packages that change document structure, build complex layouts or draw text are the likeliest to cause trouble. The Project keeps a <a href="https://latex3.github.io/tagging-project/tagging-status/" rel="noopener">tagging status list</a> that marks each package as compatible, partially compatible, currently incompatible, unsupported or unchecked. Check your preamble against it. Overleaf's page adds that the <code>beamer</code> class is not compatible and points to the experimental <code>ltx-talk</code> class instead.</li>
+          <li><strong>Equations.</strong> Blank lines and forced line breaks inside equations can cause errors that break the tag structure, per Overleaf's page.</li>
+          <li><strong>Older readers.</strong> Overleaf notes that <code>pdfstandard=ua-2</code> may not work in older PDF readers and that PDF/UA-1 may be needed. If a reader or a checker asks for it, ask which standard they require before you choose.</li>
+        </ul>
+
+        <h2>Sources</h2>
+        <ul>
+          <li><a href="https://latex3.github.io/tagging-project/documentation/usage-instructions" rel="noopener">Guidelines for generating accessible PDF with LaTeX</a>, LaTeX Tagging Project, read October 19, 2026.</li>
+          <li><a href="https://latex3.github.io/tagging-project/tagging-status/" rel="noopener">Tagging status of packages and classes</a>, LaTeX Tagging Project, read October 19, 2026.</li>
+          <li><a href="https://docs.overleaf.com/writing-and-editing/creating-accessible-pdfs" rel="noopener">Creating accessible PDFs</a>, Overleaf documentation, read October 19, 2026.</li>
+          <li><a href="/changelog/">ModernTex changelog</a>, version 1.10.1, October 16, 2026.</li>
+        </ul>
+      </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>What is a tagged PDF?</summary><div class="faq-body">A PDF that carries a structure tree: headings, paragraphs, lists, tables and figures are labelled, in reading order, so a screen reader can follow it. A PDF without tags is read as a stream of text, or not at all.</div></details>
+        <details><summary>Which LaTeX engine should I use for a tagged PDF?</summary><div class="faq-body">The LaTeX Project's usage instructions say the tagging code works with pdfLaTeX or LuaLaTeX, and that LuaLaTeX is the preferred engine for new documents. MathML structure tagging for equations needs LuaLaTeX.</div></details>
+        <details><summary>Does turning on tagging make my PDF accessible?</summary><div class="faq-body">No. It adds the structure. You still supply alt text for figures, mark table header rows, set the document language, and check that every package you load is tag-aware.</div></details>
+        <details><summary>Does ModernTex build tagged PDFs?</summary><div class="faq-body">ModernTex 1.10.1 picks LuaLaTeX when the preamble has <code>\DocumentMetadata</code> and nothing else sets the engine. The tagging itself comes from LaTeX, not from ModernTex.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools and guides">
+        <h2>Related tools and guides</h2>
+        <ul>
+          <li><a href="/guides/install-latex-on-mac/">How to install LaTeX on a Mac</a></li>
+          <li><a href="/moderntex/">ModernTex, the native Mac LaTeX editor</a></li>
+          <li><a href="/guides/submit-latex-source-to-journal-zip/">How to submit LaTeX source files to a journal as a ZIP</a></li>
+          <li><a href="/guides/synctex-on-mac/">SyncTeX on Mac: jump between LaTeX source and PDF</a></li>
+          <li><a href="/guides/latex/">LaTeX guides hub</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=38a584a70d" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>
