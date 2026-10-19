@@ -46,7 +46,7 @@ def test_funnel_prints_human_estimate_and_scanner_tags(capsys, monkeypatch):
         "utk": {"pageviews": 1, "pageviewsByPath": {"/moderntex/": 1}, "trial": {}, "checkout": {}}}}}
     monkeypatch.setattr(td, "tagged_link_batches",
                         lambda: [{"date": "2026-10-14", "channel": "youtube-promo", "urls": 5}])
-    td.print_ad_funnel(h, {})
+    td.print_ad_funnel(h)
     out = capsys.readouterr().out
     assert "est. human: 0 views, 0 trials" in out
     assert "8 counted, about 3 after the link-check allowance" in out
@@ -69,4 +69,5 @@ def test_ad_reading_from_before_the_window_is_not_charged(monkeypatch):
            "googleAdsModerntex": {"asOf": fresh, "spend": 12.24}}
     p = _gp_ads(ads)
     assert any("before this window; not counted" in g for g in p["gaps"])
-    assert abs(p["total"]["ads"] - 12.24) < 0.01  # Google Ads counted, the old Apple reading not
+    assert abs(p["total"]["ads"]) < 0.01  # the old Apple reading is not charged, and Google Ads is no longer read
+    assert not any("Google Ads" in g for g in p["gaps"])

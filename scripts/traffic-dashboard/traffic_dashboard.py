@@ -263,7 +263,7 @@ ADMOB_APPS = {
 }
 ADMOB_DAYS = 7  # matches the Apple Search Ads manual reading, for a fair spend-vs-earnings comparison
 PRODUCT_PAGE_PATHS = {"/moderntex", "/outbound-veil", "/legroom", "/keyfeel", "/tapefolio", "/panely", "/summonly", "/vitae", "/suite"}
-GOOGLE_ADS_DAYS = 7  # matches the ModernTex Google Ads manual reading, for a fair spend-vs-revenue comparison
+AD_FUNNEL_DAYS = 7  # window for the first-touch channel funnel (adFunnel in history.json)
 
 
 # ---------------------------------------------------------------- config/io
@@ -3074,93 +3074,6 @@ def manual_ads_block(data: dict, admob: dict | None = None) -> str:
 </section>"""
 
 
-def moderntex_revenue_window(sales: dict | None, days: int) -> dict:
-    """Gross and order count for ModernTex only, over the trailing `days`,
-    read straight off Stripe's recent-order list rather than byProduct
-    (which is all-time) -- the same technique the trial-funnel note uses to
-    scope orders to a specific window."""
-    cutoff = dt.datetime.now() - dt.timedelta(days=days)
-    ledger = (sales or {}).get("ledger")
-    if ledger is not None:  # full ledger: no 12-row cap
-        matched = [r for r in ledger if r.get("product") == "moderntex" and r["ts"] >= cutoff.timestamp()]
-        return {"orders": len(matched), "gross": sum(r.get("gross", 0) for r in matched)}
-    recent = (sales or {}).get("recent", [])
-    matched = [r for r in recent if r.get("product") == "moderntex"
-               and (_parse_sale_dt(r.get("date", "")) or dt.datetime.min) >= cutoff]
-    return {"orders": len(matched), "gross": sum(r.get("amount", 0) for r in matched)}
-
-
-def moderntex_ads_block(data: dict, sales: dict | None = None) -> str:
-    """Google Ads spend vs. ModernTex purchase revenue, same shape as the
-    GlobePin ads/AdMob comparison above -- manual reading (Google Ads has an
-    API, but it needs a developer-token application; a Chrome read matches
-    what's already working for Apple Search Ads) against Stripe, which is
-    already automated."""
-    gads = data.get("googleAdsModerntex")
-    if not gads:
-        return ""
-
-    spend = gads.get("spend", 0.0)
-    gads_html = f"""
-  <h3>Google Ads · spend</h3>
-  <p class="sales-foot">{html.escape(gads.get('campaign', 'ModernTex'))} — read by hand from
-    ads.google.com ({html.escape(gads.get('window', ''))}, as of {html.escape(gads.get('asOf', '?'))}).
-    Google Ads does have an API, but it needs a developer-token application; this reads the
-    UI by hand for now, the same way Apple Search Ads does above.</p>
-  <div class="sales-split">
-    <span class='sales-chip'><b>${spend:,.2f}</b> <span>spend</span></span>
-    <span class='sales-chip'><b>{gads.get('impressions', 0):,}</b> <span>impressions</span></span>
-    <span class='sales-chip'><b>{gads.get('clicks', 0):,}</b> <span>clicks</span></span>
-    <span class='sales-chip'><b>${gads.get('avgCPC', 0):,.2f}</b> <span>avg. CPC</span></span>
-  </div>
-  {"<p class='sales-foot'>" + html.escape(gads['note']) + "</p>" if gads.get('note') else ""}"""
-
-    rev = moderntex_revenue_window(sales, GOOGLE_ADS_DAYS)
-    rev_html = f"""
-  <h3>ModernTex · purchases, same window</h3>
-  <div class="sales-split">
-    <span class='sales-chip'><b>{money(rev['gross'])}</b> <span>gross</span></span>
-    <span class='sales-chip'><b>{orders(rev['orders'])}</b></span>
-  </div>"""
-
-    gross_dollars = rev["gross"] / 100
-    net = gross_dollars - spend
-    verdict = ("still well behind" if net < -spend * 0.5 else
-               "behind" if net < 0 else "ahead")
-    compare_html = (f"<p class='sales-foot'><b>ModernTex ads, same window:</b> "
-                     f"${spend:,.2f} spent on Google Ads vs {money(rev['gross'])} in ModernTex "
-                     f"purchases — {verdict} (net {'-' if net < 0 else '+'}${abs(net):,.2f}). "
-                     f"This compares total ad spend against all ModernTex purchases in the window, "
-                     f"not just ones traced to an ad click, so it is not a strict ROAS; the click-attributed count is in the terminal summary.</p>")
-
-    life = gads.get("allTime")
-    life_html = ""
-    if life:
-        lrev = moderntex_revenue_window(sales, 3650)
-        lnet = lrev["gross"] / 100 - life.get("spend", 0.0)
-        life_html = f"""
-  <h3>Lifetime (all time, as of {html.escape(life.get('asOf', '?'))})</h3>
-  <div class="sales-split">
-    <span class='sales-chip'><b>${life.get('spend', 0):,.2f}</b> <span>Google Ads spend</span></span>
-    <span class='sales-chip'><b>{life.get('clicks', 0):,}</b> <span>clicks</span></span>
-    <span class='sales-chip'><b>{life.get('impressions', 0):,}</b> <span>impressions</span></span>
-    <span class='sales-chip'><b>{money(lrev['gross'])}</b> <span>ModernTex purchases, all sources</span></span>
-    <span class='sales-chip'><b>{orders(lrev['orders'])}</b></span>
-  </div>
-  <p class='sales-foot'><b>Lifetime:</b> ${life.get('spend', 0):,.2f} on Google Ads against {money(lrev['gross'])} in
-    ModernTex purchases from every source (net {'-' if lnet < 0 else '+'}${abs(lnet):,.2f}). Purchases are not
-    click-attributed to Google Ads, so this is an upper bound on what the ads earned, not a strict ROAS.</p>"""
-
-    return f"""
-<section class="sales appstore">
-  <h2>Ads · ModernTex</h2>
-  {gads_html}
-  {rev_html}
-  {compare_html}
-  {life_html}
-</section>"""
-
-
 # ---------------------------------------------------------------- revenue metrics
 #
 # The in-house version of what an app-revenue service (RevenueCat and the like)
@@ -3734,21 +3647,6 @@ def queue_block() -> str:
 AD_FUNNEL_SINCE = "2026-10-07"  # first day analytics.js sends the first-touch channel (ft) on funnel events
 
 
-def google_ads_attributed(history: dict, days: int, product: str | None = None) -> dict:
-    """Orders whose first or last touch (analytics.js, via Stripe metadata) was a Google ad click, over the
-    trailing `days`. This is the number to divide Google Ads spend by; total ModernTex sales are not it."""
-    cutoff = dt.datetime.now().timestamp() - days * 86400
-    n, net = 0, 0.0
-    for r in (history.get("ledger") or {}).values():
-        if r.get("market") or r["ts"] < cutoff or (product and r.get("product") != product):
-            continue
-        a = r.get("attr") or {}
-        if "Google Ads" in (classify_touch(a.get("first")), classify_touch(a.get("last") or a.get("first"))):
-            n += 1
-            net += _row_net(r) / 100
-    return {"orders": n, "net": net}
-
-
 # Link checkers. Publishing a tagged link (a YouTube description, a Short) brings an automated visitor within minutes:
 # exactly 2 page views per new URL, often with trial-download clicks, never a buy click (seen 2026-10-14 and again
 # 2026-10-15 to 10-17; ~/.purplelink/latex-funnel/latex_funnel_report.py makes the same allowance). The site's bot
@@ -3816,15 +3714,15 @@ def looks_like_scanner(v: dict) -> bool:
             and not sum((v.get("checkout") or {}).values()))
 
 
-def print_ad_funnel(history: dict, manual_ads: dict) -> None:
-    """Paid and other channels through the funnel, from the site's own first-touch labels, next to what
-    Google Ads says it spent and got clicked. Checks that tracking sees the ad clicks, then gives cost per trial
-    and per attributed sale. Nothing is printed until the site has recorded any channel labels."""
+def print_ad_funnel(history: dict) -> None:
+    """Channels through the funnel, from the site's own first-touch labels. Google Ads for ModernTex was turned
+    off on 2026-10-19 and is no longer read or compared here. Nothing is printed until the site has recorded
+    any channel labels."""
     af = history.get("adFunnel") or {}
     ch = af.get("channels") or {}
     if not ch:
         return
-    days = af.get("days", GOOGLE_ADS_DAYS)
+    days = af.get("days", AD_FUNNEL_DAYS)
     print(f"\n  Funnel by first-touch channel, last {days} days (tracking began {AD_FUNNEL_SINCE}; each visitor counted under how they first arrived)")
     allow = link_check_allowance(af.get("asOf") or dt.date.today().isoformat(), days)
     rows, scanners = [], []
@@ -3854,23 +3752,6 @@ def print_ad_funnel(history: dict, manual_ads: dict) -> None:
     if scanners:
         print(f"   Tags with only 1 or 2 views and nothing else (on an email tag this is often a mail scanner opening the "
               f"link; judge those emails by replies): {', '.join(sorted(scanners))}")
-    gads = (manual_ads or {}).get("googleAdsModerntex") or {}
-    paid = ch.get("paid:google") or {}
-    if gads:
-        clicks, spend = gads.get("clicks", 0), gads.get("spend", 0.0)
-        seen = paid.get("pageviews", 0)
-        trials = sum((paid.get("trial") or {}).values())
-        att = google_ads_attributed(history, GOOGLE_ADS_DAYS)
-        line = f"   Google Ads reports {clicks} clicks and ${spend:,.2f} ({gads.get('window', '?')}); our own tracking saw {seen} paid:google page views"
-        print(line)
-        if trials:
-            print(f"   -> ${spend / trials:,.2f} per trial download")
-        if att["orders"]:
-            print(f"   -> {att['orders']} attributed order(s), ${spend / att['orders']:,.2f} per attributed sale, ${att['net']:,.2f} net")
-        else:
-            print("   -> 0 orders attributed to a Google ad click so far (Stripe metadata g=1 or utm medium cpc)")
-        if clicks >= 10 and seen == 0:
-            print("   ! Google reports clicks but we saw none: check auto-tagging and that the ad URL lands on purplelink.llc")
     heard = {}
     for r in (history.get("ledger") or {}).values():
         if r.get("heard"):
@@ -4076,19 +3957,6 @@ def revenue_metrics(history: dict, summaries: list[dict], manual_ads: dict) -> d
                     "spend": spend, "unit": "install", "units": inst,
                     "cost": (spend / inst) if inst else None,
                     "worth": globepin["revenuePerInstall"]})
-    gads = (manual_ads or {}).get("googleAdsModerntex") or {}
-    if gads:
-        spend = gads.get("spend", 0.0)
-        # Only orders whose first or last touch was a Google ad click: the old version divided by every
-        # ModernTex sale in the week, which made the ads look 9x better than anything shows.
-        wk_rows = [r for r in ledger if r["product"] == "moderntex" and r["ts"] >= now - 7 * 86400
-                   and "Google Ads" in (classify_touch((r.get("attr") or {}).get("first")),
-                                        classify_touch((r.get("attr") or {}).get("last") or (r.get("attr") or {}).get("first")))]
-        per_sale = [(_row_net(r) / 100) for r in mt_all]
-        acq.append({"channel": "Google Ads → ModernTex (click-attributed sales)", "asOf": gads.get("asOf"),
-                    "spend": spend, "unit": "sale", "units": len(wk_rows),
-                    "cost": (spend / len(wk_rows)) if wk_rows else None,
-                    "worth": (sum(per_sale) / len(per_sale)) if per_sale else None})
 
     # Event feed: everything detected in the last 24 hours. A rolling window, not
     # "since the previous run", because the 7am launchd run would otherwise use
@@ -4509,15 +4377,6 @@ def profit_view(history: dict, manual_ads: dict, days: int = PROFIT_DAYS) -> dic
             gp["ads"] += sum(c.get("spend", 0.0) for c in asa["campaigns"]) * days / 7
             if (asa.get("asOf") or "") < stale_before:
                 gaps.append(f"Apple Search Ads reading is from {asa.get('asOf')}")
-    gads = (manual_ads or {}).get("googleAdsModerntex") or {}
-    if gads:
-        if (gads.get("asOf") or "") < window_start:
-            gaps.append(f"Google Ads (last reading {gads.get('asOf')}, before this window; not counted)")
-        else:
-            lines["ModernTex"]["ads"] += gads.get("spend", 0.0) * days / 7
-            if (gads.get("asOf") or "") < stale_before:
-                gaps.append(f"Google Ads reading is from {gads.get('asOf')}")
-
     for m, ms in marketplace_summary(history).items():
         for issue in ms["issues"]:
             gaps.append(f"{ms['label']} sales ({issue})")
@@ -5834,7 +5693,7 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
                 f"{profit_block(profit, channels, tax)}\n{glance_table(summaries)}\n"
                 f"{queue_block()}\n{general_html}")
     money = f"{all_sales_block(ledger_rows or [], appstore)}\n{sales_block(sales)}\n{marketplaces_block(marketplaces)}"
-    ads = f"{manual_ads_block(manual_ads or {}, admob)}\n{moderntex_ads_block(manual_ads or {}, sales)}"
+    ads = manual_ads_block(manual_ads or {}, admob)
     apps = f"{appstore_block(appstore)}\n{chrome_web_store_block(chrome_web_store)}"
     panels = [("overview", "Overview", overview), ("money", "Money", money), ("ads", "Ads", ads), ("apps", "Apps", apps)]
     for s_ in summaries:
@@ -5947,9 +5806,9 @@ def main() -> int:
 
                 if site["key"] == "purplelink":
                     try:
-                        week = fetch_site(site, token, GOOGLE_ADS_DAYS)
+                        week = fetch_site(site, token, AD_FUNNEL_DAYS)
                         if week.get("funnelByChannel") is not None:
-                            history["adFunnel"] = {"asOf": dt.date.today().isoformat(), "days": GOOGLE_ADS_DAYS,
+                            history["adFunnel"] = {"asOf": dt.date.today().isoformat(), "days": AD_FUNNEL_DAYS,
                                                    "channels": week["funnelByChannel"]}
                     except Exception as exc:
                         print(f"  ! {site['label']}: channel funnel fetch failed ({str(exc)[:60]})", file=sys.stderr)
@@ -6167,7 +6026,7 @@ def main() -> int:
     print_downloads_all_sources(history)
     print_extensionpay(history)
     print_profit(profit, channels, tax)
-    print_ad_funnel(history, manual_ads)
+    print_ad_funnel(history)
     print_marketplaces(marketplaces)
     print_queue(queue_summary())
     if sales:
