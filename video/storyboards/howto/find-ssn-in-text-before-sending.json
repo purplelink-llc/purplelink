@@ -1,0 +1,123 @@
+{
+ "id": "howto-find-ssn-in-text-before-sending",
+ "app": "outbound-veil",
+ "title": "Find Social Security numbers in text on Mac before you send it (grep fix)",
+ "short_title": "Check a note for Social Security numbers before you paste it",
+ "url": "purplelink.llc/outbound-veil",
+ "page": "https://purplelink.llc/outbound-veil/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://www.macscripter.net/t/searching-for-social-security-numbers-in-email-entourage/46035",
+  "https://forum.bigfix.com/t/regex-to-find-files-with-social-security-numbers/3108"
+ ],
+ "verify": {
+  "runs": [
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf 'Client: Jane Roe\\nSSN: 123-45-6789\\nPlan renews in May\\n' > note.txt && cat note.txt",
+    "output": "Client: Jane Roe\nSSN: 123-45-6789\nPlan renews in May"
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf 'Client: Jane Roe\\nSSN: 123-45-6789\\nPlan renews in May\\n' > note.txt && grep -nE '[0-9]{3}-[0-9]{2}-[0-9]{4}' note.txt",
+    "output": "2:SSN: 123-45-6789"
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf 'Client: Jane Roe\\nSSN: 123-45-6789\\nPlan renews in May\\n' > note.txt && sed -E 's/[0-9]{3}-[0-9]{2}-[0-9]{4}/[SSN]/g' note.txt > clean.txt && cat clean.txt && grep -cE '[0-9]{3}-[0-9]{2}-[0-9]{4}' clean.txt",
+    "output": "Client: Jane Roe\nSSN: [SSN]\nPlan renews in May\n0"
+   }
+  ],
+  "docs": [
+   "https://man.freebsd.org/cgi/man.cgi?query=grep",
+   "https://man.freebsd.org/cgi/man.cgi?query=sed",
+   "https://support.apple.com/guide/terminal/welcome/mac"
+  ],
+  "notes": "macOS grep and sed (BSD), run 2026-10-18 in a fresh mktemp folder with an invented note; nothing outside that folder was touched. 123-45-6789 is an invented number. The pattern finds only numbers written with hyphens, and grep cannot find names; the video says both."
+ },
+ "scenes": [
+  {
+   "type": "hook",
+   "short": true,
+   "kicker": "Personal information",
+   "title": "Is there an SSN in that note?",
+   "sub": "Check before you paste or send it.",
+   "narration": "Before you paste a client note into an AI chat or an email, check it for Social Security numbers. On a Mac, Terminal can do that in one line."
+  },
+  {
+   "type": "symptom",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ cat note.txt",
+    "Client: Jane Roe",
+    "SSN: 123-45-6789",
+    "Plan renews in May"
+   ],
+   "narration": "Here is a short note with an invented client. In a long note, a number like this is easy to miss when you skim."
+  },
+  {
+   "type": "cause",
+   "text": "Find searches for words. A Social Security number is a pattern: 3 digits, 2, then 4.",
+   "narration": "The usual Find box searches for the words you type. A Social Security number is a pattern, three digits, two digits, then four, so you need a search that understands patterns."
+  },
+  {
+   "type": "steps",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ grep -nE '[0-9]{3}-[0-9]{2}-[0-9]{4}' note.txt",
+    "2:SSN: 123-45-6789",
+    "$ sed -E 's/[0-9]{3}-[0-9]{2}-[0-9]{4}/[SSN]/g' note.txt > clean.txt"
+   ],
+   "ui": "Finds numbers written with hyphens. It cannot find names.",
+   "narration": "Run grep with this pattern. It prints each matching line and its number. Then sed writes a copy, clean dot text, with each match replaced by a placeholder. It only finds numbers written with hyphens, and it cannot find names."
+  },
+  {
+   "type": "check",
+   "short": true,
+   "label": "Terminal",
+   "ok": "No numbers left",
+   "lines": [
+    "$ cat clean.txt",
+    "Client: Jane Roe",
+    "SSN: [SSN]",
+    "Plan renews in May",
+    "$ grep -cE '[0-9]{3}-[0-9]{2}-[0-9]{4}' clean.txt",
+    "0"
+   ],
+   "narration": "The clean copy reads the same, with the number replaced. Counting matches in it gives zero. The client's name is still there, so read the copy before you send it."
+  },
+  {
+   "type": "app",
+   "name": "Outbound Veil",
+   "line": "Checks the text field you are typing in, on your Mac, and redacts each finding to a placeholder.",
+   "url": "purplelink.llc/outbound-veil",
+   "img": "site/assets/outbound-veil-screens/redacted.webp",
+   "icon": "site/assets/outbound-veil-icon.webp",
+   "narration": "Outbound Veil is a menu bar app that checks the text field you are typing in for personal information, including names, phone numbers and Social Security numbers, on your Mac. It works in Notes, Messages, and the ChatGPT prompt box in Chrome. Redact all turns each finding into a labelled placeholder. It will miss some things, so read before you send. There is a free seven day trial."
+  }
+ ],
+ "thumbs": {
+  "A": {
+   "kind": "error",
+   "pill": "Before you send",
+   "msg": "SSN: 123-45-6789"
+  },
+  "B": {
+   "kind": "long",
+   "pill": "grep on Mac",
+   "msg": "Find SSNs in a note",
+   "n": 1,
+   "unit": "line",
+   "sub": "one Terminal command"
+  },
+  "C": {
+   "kind": "product",
+   "name": "Outbound Veil",
+   "line": "Redact before you send",
+   "img": "site/assets/outbound-veil-screens/redacted.webp",
+   "icon": "site/assets/outbound-veil-icon.webp",
+   "zoom": 1.2,
+   "pos": "0% 40%"
+  }
+ }
+}
