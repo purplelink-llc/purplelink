@@ -172,7 +172,7 @@ def link_problems(http, url: str) -> list[str]:
         return [f"link could not be read: {type(e).__name__}"]
     if r.status != 200:
         return [f"link answered {r.status}, not 200 (not live yet?)"]
-    if "youtube.com" in url:
+    if urlsplit(url).hostname in ("www.youtube.com", "youtube.com", "youtu.be"):
         return []
     final = getattr(r, "url", "") or url
     a, b = urlsplit(url), urlsplit(final)
