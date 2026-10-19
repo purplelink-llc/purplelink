@@ -147,19 +147,18 @@ def text_hash(text: str) -> str:
     return hashlib.sha256(norm.encode()).hexdigest()[:16]
 
 
-def duplicate_problems(candidate_id: str, texts: dict[str, str], history: list[dict], today: dt.date,
-                       dup_days: int) -> list[str]:
-    out = []
+def duplicate_problems(c, texts: dict[str, str], history: list[dict], today: dt.date, dup_days: int,
+                       platforms: list[str]) -> list[str]:
+    """No repeat of this item on a platform within `dup_days` (outside posts count), and no identical text."""
+    from .score import blocked_platforms
+    out = [f"{c.id} was already posted on {p} within {dup_days} days"
+           for p in sorted(blocked_platforms(c, history, today, dup_days, platforms) & set(platforms))]
     hashes = {text_hash(t) for t in texts.values()}
     for h in history:
-        if not h.get("counts", True):
+        if h.get("external") or not h.get("counts", True):
             continue
         age = (today - dt.date.fromisoformat(str(h["date"])[:10])).days
-        if age >= dup_days:
-            continue
-        if h.get("candidate") == candidate_id:
-            out.append(f"{candidate_id} was posted {age} days ago")
-        elif hashes & set(h.get("hashes", [])):
+        if age < dup_days and h.get("candidate") != c.id and hashes & set(h.get("hashes", [])):
             out.append(f"the same text was posted {age} days ago ({h.get('candidate')})")
     return out
 
@@ -202,7 +201,7 @@ def vet(item, c, facts: dict, texts: dict[str, str], http, history: list[dict], 
     errors, _ = itemsmod.validate(item, main_cfg)
     for why in errors:
         v.fail("limits", why)
-    for why in duplicate_problems(c.id, texts, history, today, cfg["dup_days"]):
+    for why in duplicate_problems(c, texts, history, today, cfg["dup_days"], list(item.platforms)):
         v.fail("duplicate", why)
     if link_check:
         for why in link_problems(http, c.url):

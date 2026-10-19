@@ -39,23 +39,26 @@ QUESTION = {
     "evergreen:tool": "Still looking for this? {title}",
     "evergreen:blog": "Still looking for this? {title}",
 }
-# Mastodon is written as Ben (first person, his `benampel` skill, tutorial register): one template per kind: the page
-# title on its own line, then one plain declarative of about 15 to 19 words, no questions, no em dashes, contrast only with a sentence-initial "However"
-# (none is needed here). The page's own description sentences follow, copied verbatim. The profile bio discloses AI help.
+# Mastodon is written as Ben (first person, his `benampel` skill, tutorial register): the page title on its own line,
+# one plain declarative of about 15 to 19 words that says what follows, then the page's own verified facts (sentences
+# copied from the page, each under 31 words). Contrast would use a sentence-initial "However"; none is needed here.
+# The profile bio discloses AI help.
 MASTODON = {
-    "release": "{title}\n\nI shipped this release this week, and the changelog on the site lists every change in it.",
-    "guide": "{title}\n\nI published this guide this week, and the link below goes to the full page.",
-    "blog": "{title}\n\nI posted this write-up this week, and the full text is on the Purplelink blog.",
-    "tool": "{title}\n\nI added this tool to the site this week, and you can open it from the link below.",
-    "video": "{title}\n\nI uploaded this video this week, and the link below goes to it on YouTube.",
-    "evergreen:guide": "{title}\n\nI wrote this guide earlier, and it is still one of the most read pages on the site.",
-    "evergreen:tool": "{title}\n\nI built this tool earlier, and it is still one of the most used pages on the site.",
-    "evergreen:blog": "{title}\n\nI wrote this post earlier, and it is still one of the most read pages on the site.",
+    "release": "I shipped this release this week, and the first changes from the changelog are listed here.",
+    "guide": "I published this guide this week, and the page opens with this short summary of what it covers.",
+    "blog": "I posted this write-up this week, and the page opens with this short summary of what it covers.",
+    "tool": "I added this tool to the site this week, and the page describes what it does in these words.",
+    "video": "I uploaded this video this week, and its description says what it covers in these words.",
+    "evergreen:guide": "I wrote this guide earlier, and it is still one of the most read pages on the site.",
+    "evergreen:tool": "I built this tool earlier, and it is still one of the most used pages on the site.",
+    "evergreen:blog": "I wrote this post earlier, and it is still one of the most read pages on the site.",
 }
+# Wording the fact lines add (sentences built from the page's own headings and step count).
+FACT_TEMPLATES = ["It covers {a} and {b}.", "The page lays it out in {steps}."]
 
 # Every word the templates themselves introduce. The vetting gate lets these through and requires everything else
 # that looks like a name or a number to appear in the page's own facts.
-TEMPLATE_TEXT = " ".join(list(HEADLINE.values()) + list(QUESTION.values()) + list(MASTODON.values()) + ["Link:"])
+TEMPLATE_TEXT = " ".join(list(HEADLINE.values()) + list(QUESTION.values()) + list(MASTODON.values()) + FACT_TEMPLATES + ["Link:"])
 TEMPLATE_VOCAB = {w.lower() for w in re.findall(r"[A-Za-z]+", TEMPLATE_TEXT)}
 
 
@@ -68,43 +71,91 @@ def _key(c) -> str:
 
 
 def headline(c, facts: dict, fmt: str, platform: str = "") -> str:
-    table = MASTODON if platform == "mastodon" else QUESTION if fmt == "question" else HEADLINE
+    if platform == "mastodon":
+        return MASTODON[_key(c)].format(title=facts["title"]) if "{title}" in MASTODON[_key(c)] else \
+            f"{facts['title']}\n\n{MASTODON[_key(c)]}"
+    table = QUESTION if fmt == "question" else HEADLINE
     return table[_key(c)].format(title=facts["title"])
+
+
+# Longest a post may be, a little under each platform's limit (LinkedIn is read as a short note).
+SOFT_LIMIT = {"linkedin": 600, "bluesky": 300, "threads": 500, "mastodon": 500}
+# A sentence that leans on the one before it ("Until then ...", "This also ...") is useless on its own.
+DEPENDENT = re.compile(r"^(until|then|this|that|these|those|it|they|its|their|each|also|both|however|but|and|so|"
+                       r"which|there|here|such|the same|in that|for that|after that)\b", re.I)
+BOILERPLATE = ("earlier versions", "download it", "you can download", "check for updates", "install it through")
 
 
 def sentences(text: str) -> list[str]:
     parts = re.split(r"(?<=[.!?])\s+(?=[A-Z0-9])", (text or "").strip())
-    return [p.strip() for p in parts if len(p.split()) >= 6]
+    return [p.strip() for p in parts if len(p.split()) >= 5]
+
+
+def lower_first(h: str) -> str:
+    """'The ORCID export steps' -> 'the ORCID export steps' (a word with another capital, such as ORCID, stays)."""
+    first = h.split(" ", 1)[0]
+    return h if len(first) > 1 and any(ch.isupper() for ch in first[1:]) else h[:1].lower() + h[1:]
+
+
+def fact_units(facts: dict, platform: str) -> list[str]:
+    """Verified fact sentences for a post, best first: the page's own description (or, for a release, its changelog
+    entry), then a line built from its section headings and one from a step count it states. Boilerplate such as
+    'Earlier versions install ... through Check for Updates' is dropped."""
+    base = sentences(facts.get("description") or "") or sentences(facts.get("notes") or "")
+    base = [s for s in base if not any(b in s.lower() for b in BOILERPLATE) and not DEPENDENT.match(s)][:6]
+    units = base[:3]
+    heads = facts.get("headings") or []
+    if len(heads) >= 2:
+        units.append(FACT_TEMPLATES[0].format(a=lower_first(heads[0]), b=lower_first(heads[1])))
+    if facts.get("steps"):
+        units.append(FACT_TEMPLATES[1].format(steps=facts["steps"]))
+    if platform == "mastodon":
+        units = [u for u in units if len(u.split()) <= MAX_SENTENCE_WORDS and "?" not in u]
+    return units
 
 
 def description_for(facts: dict) -> list[str]:
-    """The page's own sentences, best source first: the meta description, else the changelog entry."""
-    return sentences(facts.get("description") or "") or sentences(facts.get("notes") or "")
+    return fact_units(facts, "")
 
 
-def _bodies(c, facts: dict, fmt: str, platform: str) -> list[str]:
-    """Candidate texts for a platform, richest first. `{link}` marks where the tagged link goes."""
-    head = headline(c, facts, fmt, platform)
-    if fmt in ("card", "link"):
-        return [f"{head}\n\n{{link}}"]
-    desc = description_for(facts)
-    if platform == "mastodon":
-        desc = [s for s in desc if len(s.split()) <= MAX_SENTENCE_WORDS and "?" not in s]
-    out = []
-    if platform == "linkedin":
-        for n in (2, 1):
-            if len(desc) >= n:
-                out.append(f"{head}\n\n{' '.join(desc[:n])}\n\n{{link}}")
-    elif platform == "mastodon":
-        for n in (2, 1):
-            if len(desc) >= n:
-                out.append(f"{head}\n\n{' '.join(desc[:n])}\n\n{{link}}")
-    else:
-        for n in (2, 1):
-            if len(desc) >= n:
-                out.append(f"{head} {' '.join(desc[:n])}\n\n{{link}}")
-    out.append(f"{head}\n\n{{link}}")
+def clause(sentence: str) -> str | None:
+    """The part of a long sentence before its first colon, as its own sentence (a verbatim prefix), if it is whole."""
+    head, sep, _ = sentence.partition(": ")
+    return head.rstrip(",;") + "." if sep and len(head.split()) >= 6 else None
+
+
+def _options(units: list[str], fmt: str, platform: str = "") -> list[list[str]]:
+    """Fact lists to try, richest first. card and link carry one fact (two on LinkedIn, which has no image);
+    question and statement carry up to two. When the last sentence is too long, its clause before a colon is tried."""
+    most = 2 if platform == "linkedin" or fmt not in ("card", "link") or \
+        (units and len(units[0].split()) < 8) else 1       # a very short first fact ("New: Where your space went.") needs a second
+    opts = []
+    for k in range(min(most, len(units)), 0, -1):
+        cut = clause(units[k - 1])
+        if cut and len(units[k - 1]) > 220:                   # a long list sentence reads better as its lead clause
+            opts.append(units[:k - 1] + [cut])
+        opts.append(units[:k])
+        if cut and len(units[k - 1]) <= 220:
+            opts.append(units[:k - 1] + [cut])
+    seen, out = set(), []
+    for o in opts:
+        if o and tuple(o) not in seen:
+            seen.add(tuple(o))
+            out.append(o)
     return out
+
+
+def _body(c, facts: dict, fmt: str, platform: str, facts_used: list[str]) -> str:
+    head = headline(c, facts, fmt, platform)
+    text = " ".join(facts_used)
+    if platform == "linkedin":
+        return f"{head}\n\n{text}\n\n{{link}}"
+    if platform == "mastodon":
+        title, intro = head.split("\n\n", 1)
+        return f"{title}\n\n{intro}\n\n{text}\n\n{{link}}"
+    if head[-1] not in ".?!:":
+        head += "."
+    return f"{head} {text}\n\n{{link}}"
 
 
 def render_preview(text: str, platform: str, link: str, campaign: str) -> str:
@@ -112,15 +163,40 @@ def render_preview(text: str, platform: str, link: str, campaign: str) -> str:
 
 
 def compose(c, facts: dict, fmt: str, platforms: list[str], campaign: str) -> dict[str, str]:
-    """{platform: text with {link}}. Takes the richest wording that fits each platform's limit."""
-    out = {}
+    """{platform: text with {link}}; raises ComposeError if any platform cannot be served (see compose_best)."""
+    out, bad = compose_best(c, facts, fmt, platforms, campaign)
+    if bad:
+        raise ComposeError("; ".join(bad.values()))
+    return out
+
+
+def title_is_a_fact(c, facts: dict) -> bool:
+    """A guide, post, tool or video title says what the page is about; a release title is only 'Name 1.2.3'."""
+    return c.kind != "release" and len(facts["title"].split()) >= 5
+
+
+def compose_best(c, facts: dict, fmt: str, platforms: list[str], campaign: str):
+    """({platform: text with {link}}, {platform: why not}). Every post carries at least one verified fact: sentences
+    from the page's own description or changelog entry, its headings or a step count it states. When the room is
+    too small for any sentence, a guide, post, tool or video may go out as its descriptive title plus the link
+    (Mastodon never: its template needs a fact to introduce). The richest wording that fits wins."""
+    out, bad = {}, {}
     for p in platforms:
         spec = SPEC[p]
-        for body in _bodies(c, facts, fmt, p):
-            rendered = render_preview(body, p, c.url, campaign)
-            if measure(rendered, spec["count"]) <= spec["text"]:
+        limit = min(spec["text"], SOFT_LIMIT.get(p, spec["text"]))
+        units = fact_units(facts, p)
+        for opt in _options(units, fmt, p):
+            body = _body(c, facts, fmt, p, opt)
+            if measure(render_preview(body, p, c.url, campaign), spec["count"]) <= limit:
                 out[p] = body
                 break
         else:
-            raise ComposeError(f"{p}: even the shortest wording is over {spec['text']} {spec['count']}")
-    return out
+            if p != "mastodon" and title_is_a_fact(c, facts):
+                body = _body(c, facts, fmt, p, [])
+                body = body.replace("  ", " ").replace(" \n\n", "\n\n")
+                if measure(render_preview(body, p, c.url, campaign), spec["count"]) <= limit:
+                    out[p] = body
+                    continue
+            bad[p] = f"{p}: no verified fact fits within {limit} {spec['count']}" if units else \
+                f"{p}: the page gives no verified fact sentence to use"
+    return out, bad

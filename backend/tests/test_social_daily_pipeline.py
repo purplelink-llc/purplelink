@@ -217,3 +217,29 @@ def test_engine_posts_the_daily_item_and_nothing_else_does(denv):
     assert "approved by ben (standing, 2026-10-18)" in open(denv.outreach).read()
     engine.run_due(cfg, factory=fakes, when=when)
     assert len(Fake.posted) == 4  # nothing twice
+
+
+def test_a_launch_posted_outside_the_queue_is_not_repeated_but_other_platforms_still_get_it(denv):
+    denv.outreach.write_text(
+        "| Date | Target | Contact | Status | Note |\n|---|---|---|---|---|\n"
+        "| 2026-10-19 | LinkedIn company page: Panely 1.1.0 launch | company page 1 | posted | utm_campaign=panely-110 |\n"
+        "| 2026-10-19 | Bluesky @purplelink.llc: Panely 1.1.0 launch | https://bsky.app/profile/x/post/1 | posted | cards |\n")
+    res, _ = go(denv)
+    first, second = res["picks"]
+    assert first["candidate"] == "release:panely:1.1.0" and first["platforms"] == ["threads", "mastodon"]
+    assert second["candidate"] != "release:panely:1.1.0" and second["platforms"] == ["linkedin", "bluesky"]
+    assert res["unserved_platforms"] == []
+    assert any("not posted again on bluesky, linkedin" in e for e in res["excluded"])
+    # each platform has exactly one item today
+    seen = [p for it in items.list_items() for p in it.platforms]
+    assert sorted(seen) == sorted(["linkedin", "bluesky", "threads", "mastodon"])
+    assert st.load_history()[0]["primary"] is True and st.load_history()[1]["primary"] is False
+
+
+def test_an_item_blocked_everywhere_is_skipped(denv):
+    denv.outreach.write_text(
+        "| Date | Target | Contact | Status | Note |\n|---|---|---|---|---|\n"
+        + "".join(f"| 2026-10-19 | {p}: Panely 1.1.0 | x | posted | Panely 1.1.0 |\n" for p in ("linkedin", "bluesky", "threads", "mastodon")))
+    res, _ = go(denv)
+    assert res["candidate"] != "release:panely:1.1.0"
+    assert any("already posted on every platform" in e for e in res["excluded"])

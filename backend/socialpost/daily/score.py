@@ -20,14 +20,37 @@ def posted_history(history: list[dict]) -> list[dict]:
     return [h for h in history if h.get("counts", True)]
 
 
-def recent_dup(c: Candidate, history: list[dict], today: dt.date, dup_days: int) -> bool:
-    return any(h.get("candidate") == c.id and (today - _date(h["date"])).days < dup_days
-               for h in posted_history(history))
+def blocked_platforms(c: Candidate, history: list[dict], today: dt.date, dup_days: int,
+                      all_platforms: list[str]) -> set[str]:
+    """Platforms where this item (or, for outside posts, anything that names it) went out within `dup_days`."""
+    from .external import names_candidate
+    out: set[str] = set()
+    for h in posted_history(history):
+        if not 0 <= (today - _date(h["date"])).days < dup_days:
+            continue
+        if h.get("external"):
+            hit = names_candidate(c, h.get("text", ""))
+        else:
+            hit = h.get("candidate") == c.id
+        if hit:
+            out |= set(h.get("platforms") or all_platforms)
+    return out
+
+
+def recent_dup(c: Candidate, history: list[dict], today: dt.date, dup_days: int, platforms=None) -> bool:
+    """True when the item is blocked on every one of `platforms` (all four by default)."""
+    plats = list(platforms or ["linkedin", "bluesky", "threads", "mastodon"])
+    return set(plats) <= blocked_platforms(c, history, today, dup_days, plats)
+
+
+def pipeline_rows(history: list[dict]) -> list[dict]:
+    """The daily pipeline's own picks (not outside posts), one per day: the day's main pick."""
+    return [h for h in posted_history(history) if not h.get("external") and h.get("primary", True)]
 
 
 def kind_streak_blocked(kind: str, history: list[dict], today: dt.date, limit: int) -> bool:
     """True when the last `limit` picks (one per day, most recent first) were all this kind."""
-    rows = sorted(posted_history(history), key=lambda h: h["date"], reverse=True)
+    rows = sorted(pipeline_rows(history), key=lambda h: h["date"], reverse=True)
     rows = [h for h in rows if _date(h["date"]) < today]
     last = rows[:limit]
     return len(last) >= limit and all(h.get("kind") == kind for h in last)
@@ -48,7 +71,7 @@ def evergreen_weight(c: Candidate, max_traffic: int) -> float:
 
 
 def fatigue(kind: str, history: list[dict], today: dt.date, cfg: dict) -> float:
-    n = sum(1 for h in posted_history(history)
+    n = sum(1 for h in pipeline_rows(history)
             if h.get("kind") == kind and 0 < (today - _date(h["date"])).days <= cfg["recent_days"])
     return n * cfg["fatigue_penalty"]
 
@@ -71,7 +94,7 @@ def score(c: Candidate, fmt: str, today: dt.date, cfg: dict, learned: dict, hist
 
 
 def rank(cands: list[Candidate], fmt: str, today: dt.date, cfg: dict, learned: dict, history: list[dict],
-         log=None) -> list[tuple[float, Candidate]]:
+         log=None, platforms=None) -> list[tuple[float, Candidate]]:
     """Eligible candidates, best first. `log(msg)` receives the reason each excluded candidate was left out."""
     log = log or (lambda m: None)
     mx = max((c.traffic for c in cands if c.kind == "evergreen"), default=0)
@@ -80,8 +103,8 @@ def rank(cands: list[Candidate], fmt: str, today: dt.date, cfg: dict, learned: d
         if is_dropped(learned, "kind", c.kind):
             log(f"{c.id}: kind {c.kind} is dropped until it re-enters")
             continue
-        if recent_dup(c, history, today, cfg["dup_days"]):
-            log(f"{c.id}: posted within the last {cfg['dup_days']} days")
+        if recent_dup(c, history, today, cfg["dup_days"], platforms):
+            log(f"{c.id}: already posted on every platform within the last {cfg['dup_days']} days")
             continue
         if kind_streak_blocked(c.kind, history, today, cfg["max_same_kind_streak"]):
             log(f"{c.id}: {cfg['max_same_kind_streak']} {c.kind} picks in a row already")
@@ -99,9 +122,9 @@ def pick_format(history: list[dict], cfg: dict, learned: dict, has_image: bool =
     if not has_image:
         formats = [f for f in formats if f != "card"] or list(cfg["formats"])
     formats = [f for f in formats if f not in (skip or set())] or [f for f in cfg["formats"] if f != "card"]
-    counts = {f: sum(1 for h in posted_history(history) if h.get("format") == f) for f in formats}
+    counts = {f: sum(1 for h in pipeline_rows(history) if h.get("format") == f) for f in formats}
     order = {f: i for i, f in enumerate(cfg["formats"])}
-    last = max(posted_history(history), key=lambda h: h["date"], default=None)
+    last = max(pipeline_rows(history), key=lambda h: h["date"], default=None)
     last_idx = order.get(last.get("format"), -1) if last else -1
     n = len(cfg["formats"])
     return sorted(formats, key=lambda f: (counts[f], (order[f] - last_idx - 1) % n))[0]
