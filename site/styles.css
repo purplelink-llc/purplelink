@@ -5548,6 +5548,32 @@ dialog, [role="dialog"], [aria-modal="true"], .sales-scroll { overscroll-behavio
   .guide-mtx-card { grid-template-columns: 1fr; }
 }
 
+/* Quiet app card inside a guide, after the first section (guide-trial-card test, 2026-10-19).
+   Tokens only, so both themes are covered. */
+.guide-app-card {
+  margin: 24px 0;
+  padding: 16px 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: color-mix(in oklch, var(--purple) 4%, var(--bg));
+}
+.guide-app-card p { margin: 0 0 8px; color: var(--muted); font-size: 0.95rem; line-height: 1.6; }
+.guide-app-card .guide-app-card-title { margin: 0 0 6px; color: var(--ink); font-weight: 600; }
+.guide-app-card .guide-app-card-link { margin: 0; }
+
+/* Quiet app card inside a guide, after the first section (guide-trial-card test, 2026-10-19).
+   Tokens only, so both themes are covered. */
+.guide-app-card {
+  margin: 24px 0;
+  padding: 16px 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: color-mix(in oklch, var(--purple) 4%, var(--bg));
+}
+.guide-app-card p { margin: 0 0 8px; color: var(--muted); font-size: 0.95rem; line-height: 1.6; }
+.guide-app-card .guide-app-card-title { margin: 0 0 6px; color: var(--ink); font-weight: 600; }
+.guide-app-card .guide-app-card-link { margin: 0; }
+
 /* Write to Ben: the support box on /support/ and the app pages (support-box.js,
    markup stamped by scripts/apply_support_box.py). Tokens only, so both themes
    are covered. Without JavaScript the form stays hidden and the mailto link shows. */
