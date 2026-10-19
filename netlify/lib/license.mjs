@@ -14,7 +14,8 @@
  *
  * This file is pure (no Netlify globals) so tests and the Swift side can pin it byte for byte.
  */
-import { createHmac, createPrivateKey, createPublicKey, sign as edSign, verify as edVerify, randomBytes } from "node:crypto";
+import { createHmac, createPublicKey, sign as edSign, verify as edVerify, randomBytes } from "node:crypto";
+import { ed25519PrivateKeyFromSeed } from "./ed25519-seed.mjs";
 
 export const LICENSE_SCHEME = "PurplelinkLicenseV1";
 /** Raw 32-byte Ed25519 public key, base64. Baked into the apps. */
@@ -64,19 +65,19 @@ function domainFor(slug) {
   return Buffer.from(`${LICENSE_SCHEME}|${slug}|`, "utf8");
 }
 
-function privateKeyFromSeed(seedB64, publicB64 = PURPLELINK_LICENSE_PUBLIC_KEY_B64) {
-  return createPrivateKey({ key: { kty: "OKP", crv: "Ed25519", d: b64url(seedB64), x: b64url(publicB64) }, format: "jwk" });
+function privateKeyFromSeed(seedB64) {
+  return ed25519PrivateKeyFromSeed(seedB64);
 }
 
 /**
  * One license key for `slug`, or null if the seed is missing or anything fails (never throws: a signing
  * problem must not break delivery of the download itself). With a sessionId the key is deterministic.
  */
-export function issueLicense(slug, { sessionId, seedB64, publicB64 } = {}) {
+export function issueLicense(slug, { sessionId, seedB64 } = {}) {
   const product = LICENSED_PRODUCTS[slug];
   if (!product || !seedB64) return null;
   try {
-    const privateKey = privateKeyFromSeed(seedB64, publicB64);
+    const privateKey = privateKeyFromSeed(seedB64);
     const nonce = sessionId
       ? createHmac("sha256", Buffer.from(seedB64, "base64")).update(`nonce|${slug}|${sessionId}`).digest().subarray(0, 4)
       : randomBytes(4);
