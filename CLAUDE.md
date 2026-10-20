@@ -93,8 +93,9 @@ Not covered: the Modal digest cron (`backend/digest`), which commits digest file
   server code (`netlify/`, `netlify.toml`, `package*.json`); the digest builds only when a build input changed. A marker
   on a page-text-only change (app version strings, copy, changelog) is ignored and waits for the slot (2026-10-17: 10 of
   12 marked builds in two days were version text). Everything else is published by the "scheduled" build hook, which the launchd job
-  `com.purplelink.netlify-batch` calls at 06:00 and 17:00 US Eastern (it fires at 03:00, 04:00, 14:00 and 15:00 Phoenix and
-  runs each Eastern slot once, or late after a wake) when `main` has
+  `com.purplelink.netlify-batch` calls at 06:00 and 17:00 US Eastern (it fires every hour at :05 with
+  `TZ=America/New_York` and runs each Eastern slot once, or late after a wake; the slots are always US Eastern, whatever
+  time zone the Mac is in, per Ben 2026-10-20) when `main` has
   unpublished site changes (`~/.purplelink/bin/netlify-batch-build.sh`; hook URLs in
   `~/.config/purplelink/netlify-build-hooks.json`, never print them; log `~/Library/Logs/purplelink-netlify-batch.log`).
   To ship a server fix now (checkout, delivery, security): put `[deploy now]` in the PR title or squash message. For
