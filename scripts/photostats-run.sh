@@ -26,6 +26,16 @@ STATE="$HOME/.purplelink/photostats"
 LOG="$HOME/.purplelink-logs/photostats.log"
 mkdir -p "$STATE" "$HOME/.purplelink-logs"
 
+# One sweep at a time: the sweep now waits in the heavy queue, possibly for an hour or more, and a manual
+# --force run must not start a second one beside the hourly launchd run. lockf -t 0 gives up at once if held.
+if [ "${PHOTOSTATS_HELD:-}" != "1" ]; then
+  /usr/bin/lockf -t 0 "$STATE/run.lock" /usr/bin/env PHOTOSTATS_HELD=1 /bin/bash "$0" "$@"
+  rc=$?
+  # lockf exits 75 (EX_TEMPFAIL) when another instance holds the lock
+  [ "$rc" -eq 75 ] && { echo "--- $(date '+%F %T') another sweep is already running or waiting; not starting a second" >> "$LOG"; exit 0; }
+  exit "$rc"
+fi
+
 TODAY="$(date +%Y-%m-%d)"
 MARKER="$STATE/last-success-date"
 ATTEMPTS_FILE="$STATE/attempts-$TODAY"
@@ -49,6 +59,14 @@ if [ ! -f "$VOL/scripts/stats-collect.py" ]; then
   exit 0
 fi
 
+# Interpreter preflight (2026-10-19): an SSD stall left the run on a Python without websocket and all 11
+# platforms failed on an import. If the interpreter cannot import what the collector needs, leave quietly
+# and keep today's attempt for the next hour.
+if ! "$PY" -c 'import websocket' >/dev/null 2>&1; then
+  echo "--- $(date '+%F %T') python preflight failed ($PY); will try again next hour" >> "$LOG"
+  exit 0
+fi
+
 echo $((n + 1)) > "$ATTEMPTS_FILE"
 echo "--- $(date '+%F %T') attempt $((n + 1)) of 3 ---" >> "$LOG"
 cd "$VOL" || exit 1
@@ -59,8 +77,18 @@ cd "$VOL" || exit 1
 if [ "$n" -eq 0 ]; then LOGIN_FLAG=""; else LOGIN_FLAG="--no-auto-login"; fi
 # With a Keychain entry (scripts/faa-autologin.py), sign in to Fine Art America first. A no-op when already
 # signed in or when there is no entry, and it never blocks the sweep.
-"$PY" -u "$VOL/scripts/faa-autologin.py" --if-needed >> "$LOG" 2>&1 || true
-"$PY" -u "$VOL/scripts/stats-collect.py" --headed $LOGIN_FLAG >> "$LOG" 2>&1
+#
+# The sweep drives a Chrome with 11 sites in parallel. Run beside a video render or a model run (load ~280 on
+# 2026-10-20), every page timed out and 10 of 11 platforms were not read, so the FAA sale of 10-19 was missed.
+# Like every other heavy job it goes through the shared queue (render lane): it waits for the lock and the memory
+# gate, runs at reduced priority, and pauses while a daily pipeline is busy.
+HEAVY="$HOME/.purplelink/nightq/heavy"
+SWEEP='"$1" -u "$2/scripts/faa-autologin.py" --if-needed || true; exec "$1" -u "$2/scripts/stats-collect.py" --headed $3'
+if [ -x "$HEAVY" ]; then
+  NIGHTQ_LANE=render "$HEAVY" photostats -- /bin/bash -c "$SWEEP" sweep "$PY" "$VOL" "$LOGIN_FLAG" >> "$LOG" 2>&1
+else
+  /bin/bash -c "$SWEEP" sweep "$PY" "$VOL" "$LOGIN_FLAG" >> "$LOG" 2>&1
+fi
 rc=$?
 echo "--- $(date '+%F %T') finished, exit $rc ---" >> "$LOG"
 
