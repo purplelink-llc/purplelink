@@ -11,6 +11,8 @@ import * as summonly from "./summonly.js";
 import * as panely from "./panely.js";
 import * as panely15 from "./panely15.js";
 import * as batterymeter from "./batterymeter.js";
+import * as watchlight from "./watchlight.js";
+import * as watchlightshort from "./watchlightshort.js";
 
 export const PRODUCTS = {
   "vitae-promo": vitae,
@@ -27,4 +29,6 @@ export const PRODUCTS = {
   "panely-promo": panely,
   "panely-promo-15": panely15,
   "batterymeter-promo": batterymeter,
+  "watchlight-howto": watchlight,
+  "watchlight-short": watchlightshort,
 };

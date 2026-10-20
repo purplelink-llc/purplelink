@@ -970,12 +970,15 @@ PLATFORMS = [("fineartamerica", collect_faa), ("adobe_stock", collect_adobe),
              ("shutterstock", collect_shutterstock),
              ("123rf", collect_123rf),
              ("depositphotos", collect_depositphotos),
-             ("etsy", collect_etsy),
-             ("vecteezy", collect_vecteezy)]
+             ("etsy", collect_etsy)]
 
 # Getty (collect_getty, collect_getty_stats) dropped from the daily crawl 2026-10-18 (Ben): ESP's sign-in expired
 # every few days and Getty only pays on a monthly statement anyway. Each statement's total is now entered by hand
 # with scripts/record-getty-month.py, prompted by a monthly reminder. The collectors are kept for a one-off run.
+
+# Vecteezy (collect_vecteezy) dropped from the daily crawl 2026-10-20 (Ben): its sign-in expired within a week of every
+# login and it pays once a month (about the 15th, for the month before). Each month's confirmed earnings are entered
+# by hand with scripts/record-photo-month.py vecteezy, on the same monthly reminder as Getty.
 
 # Dreamstime dropped from the daily crawl 2026-09-03: its anti-bot "Press &
 # Hold" challenge blocks the automation profile often enough that it stopped
@@ -1249,8 +1252,6 @@ LOGIN_URLS = {
     "123rf": "https://www.123rf.com/contributor/dashboard",
     "depositphotos": "https://depositphotos.com/files.html",
     "etsy": "https://www.etsy.com/signin",
-    # Added 2026-10-05; collector still to be written once the dashboard layout is known.
-    "vecteezy": "https://contributors.vecteezy.com/",
 }
 
 # Only these failure shapes get the interactive fallback. A dead session

@@ -1,0 +1,33 @@
+[
+ {
+  "id": "watchlight-howto-thumb-A",
+  "kind": "product",
+  "name": "Watchlight",
+  "line": "Is this text a scam?",
+  "img": "video/thumbs/assets/wl-result-crop.jpg",
+  "icon": "video/assets/watchlight/icon-1024.png",
+  "pos": "top",
+  "portrait": true,
+  "variant": "A"
+ },
+ {
+  "id": "watchlight-howto-thumb-B",
+  "kind": "long",
+  "pill": "Scam texts",
+  "msg": "Is this text a scam?",
+  "n": 5,
+  "unit": "steps",
+  "sub": "a second opinion, with reasons",
+  "variant": "B"
+ },
+ {
+  "id": "watchlight-howto-thumb-C",
+  "kind": "product",
+  "name": "Watchlight",
+  "line": "Set it up for a parent",
+  "img": "video/thumbs/assets/wl-setup-crop.jpg",
+  "icon": "video/assets/watchlight/icon-1024.png",
+  "pos": "top",
+  "variant": "C"
+ }
+]

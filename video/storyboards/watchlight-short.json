@@ -1,0 +1,38 @@
+{
+  "id": "watchlight-short",
+  "title": "Watchlight Short",
+  "note": "Script: SmishFilter docs/video/watchlight-howto-script.md. Footage: build 1.0 (14) in the simulator, made-up texts only.",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "+4%",
+  "scenes": [
+    {
+      "narration": "Worried about scam texts on a parent's iPhone? Here's a second opinion that runs on the phone itself."
+    },
+    {
+      "narration": "Copy the text, open Watchlight, and tap Paste."
+    },
+    {
+      "narration": "It shows each warning sign, how much it counts, and what to do."
+    },
+    {
+      "narration": "No warning signs found isn't a guarantee, and it says so."
+    },
+    {
+      "narration": "Ask someone I trust sends it to a person they choose, like you. Or report it to seven seven two six."
+    },
+    {
+      "narration": "Turn on the text filter, and texts from unknown numbers are checked as they arrive."
+    },
+    {
+      "narration": "Every warning is free. The full how-to is on our channel."
+    }
+  ],
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}

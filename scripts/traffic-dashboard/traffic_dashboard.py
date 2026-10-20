@@ -4835,19 +4835,23 @@ def photo_revenue_by_month(months: list[str]) -> dict[str, float]:
     look identical to "all time". Each platform's diff is floored at 0
     before summing: a platform whose balance drops mid-period because a
     payout cleared it is 0 new revenue that period, not negative revenue.
+    A platform with a per-sale ledger (photo_ledger_by_month) counts the
+    larger of its balance diff and its ledger total for the month.
     """
+    ledgers = photo_ledger_by_month(months)
+    ledger_only = {m: round(sum(v.get(m, 0.0) for v in ledgers.values()), 2) for m in months}
     try:
         pd = _load_photo_dashboard_module()
     except Exception as exc:
         print(f"  ! photo revenue unavailable: {str(exc)[:100]}", file=sys.stderr)
-        return {m: 0.0 for m in months}
+        return ledger_only
     try:
         data = pd.load()
     except SystemExit:
         # pd.load() itself sys.exit()s if snapshots.csv doesn't exist yet --
         # a real, expected state (photo tracking not set up at all), not an
         # error worth a stack trace.
-        return {m: 0.0 for m in months}
+        return ledger_only
     dates = sorted(data)
 
     def balances_asof(asof: str) -> dict[str, float]:
@@ -4860,20 +4864,35 @@ def photo_revenue_by_month(months: list[str]) -> dict[str, float]:
         day_before = (dt.date.fromisoformat(lo) - dt.timedelta(days=1)).isoformat()
         start = balances_asof(day_before)
         end = balances_asof(hi if hi <= dates[-1] else dates[-1])
-        platforms = set(start) | set(end)
-        out[month] = sum(max(0.0, end.get(p, 0.0) - start.get(p, 0.0)) for p in platforms)
+        platforms = set(start) | set(end) | set(ledgers)
+        out[month] = round(sum(max(max(0.0, end.get(p, 0.0) - start.get(p, 0.0)), ledgers.get(p, {}).get(month, 0.0))
+                               for p in platforms), 2)
     return out
 
 
+def photo_ledger_by_month(months: list[str]) -> dict[str, dict[str, float]]:
+    """Per-sale photo ledgers summed by month, keyed by the balance label they belong to: {label: {month: dollars}}.
+    Only Fine Art America so far. Its balance is read once a day by a sweep that sometimes fails, and a payout resets
+    it, so the balance diff can miss a sale that the order list has. The two readings are of the same money, so
+    photo_revenue_by_month takes the larger one per platform per month and never adds them (as with TikTok's two)."""
+    faa = {m: 0.0 for m in months}
+    for r in faa_sale_rows(_read_photo_csv("faa-sales.csv")):
+        if r["date"][:7] in faa:
+            faa[r["date"][:7]] += r["net"] / 100.0
+    return {FAA_LABEL: faa}
+
+
 SRC_EXTENSION = "Chrome extension (ExtensionPay)"
+SRC_ADS = "Ad revenue (est.)"
+SRC_TIKTOK = "TikTok Creator Rewards (est.)"
 REVENUE_SOURCES = [
     ("sales", "Sales", "var(--purple)"),
     ("appstore", "App Store", "var(--good)"),
     ("photo", "Photo licensing", "oklch(75% 0.14 230)"),
     ("marketplaces", "Etsy, Gumroad, Payhip", "oklch(70% 0.12 280)"),
     ("extpay", SRC_EXTENSION, "oklch(72% 0.13 150)"),
-    ("ads", "Ad revenue (est.)", "oklch(80% 0.12 110)"),
-    ("tiktok", "TikTok Creator Rewards (est.)", "oklch(70% 0.16 10)"),
+    ("ads", SRC_ADS, "oklch(80% 0.12 110)"),
+    ("tiktok", SRC_TIKTOK, "oklch(70% 0.16 10)"),
 ]
 # Money that is TikTok's or AdMob's own estimate and has not been paid out. Our estimate of Getty downloads not yet on a
 # royalty statement is folded into "photo" and reported separately as series["getty_est"], which is not a source of its own. Shown in the totals, never hidden inside them.
@@ -4881,95 +4900,93 @@ ESTIMATED_SOURCES = ("ads", "tiktok")
 TIKTOK_REWARDS_CSV = Path("/Volumes/Extreme SSD/TikTokPipeline/analytics/tiktok_rewards.csv")
 
 
-def tiktok_daily_from_account_totals(rows: list[dict]) -> dict[str, float]:
-    """Daily Creator Rewards estimates rebuilt from TikTok's rolling 7-day account totals.
-
-    Studio's Monetization page gives one number for the account: the estimate for the last 7 days. Per-post rows are
-    not enough, because that page only lists the newest few posts, so a post's figure freezes once it scrolls off while
-    TikTok keeps adding to it. The account total has no such hole. A rolling window satisfies
-    T(d) = E(d-6) + ... + E(d), so E(d) = T(d) - T(d-1) + E(d-7), and with the program starting from zero every earlier
-    day is known. A missing snapshot day is handled by splitting the gap's total evenly across the missing days; a gap
-    longer than 7 days only recovers the last 7. Several snapshots on one day: the latest one counts. Returns
-    {ISO date: estimated rewards that day}, summed over pipelines. Dates are the snapshot dates, which can sit a day
-    after TikTok's own data day; that shifts a day across a month boundary at most."""
+def _tiktok_posted(value: str):
+    """posted_at as a naive datetime. The collector wrote some posts in local time and later snapshots of the same post
+    in UTC with a trailing Z, so the two spellings of one post can sit hours apart; callers match within a window."""
     import datetime as _dt
-    last: dict[tuple, tuple] = {}
-    for r in rows:
-        if r.get("level") != "account" or r.get("program") != "Total":
-            continue
-        if not str(r.get("window") or "").strip().lower().startswith("last 7"):
-            continue
-        day = (r.get("snapshot_date") or "")[:10]
+    try:
+        return _dt.datetime.fromisoformat((value or "").strip().rstrip("Z")[:19])
+    except ValueError:
+        return None
+
+
+def tiktok_posts(rows: list[dict]) -> list[dict]:
+    """The per-post rows grouped into one record per real post: {pipeline, caption, video_id, snaps: [(snapshot_at,
+    snapshot_date, est)]}.
+
+    Rows are the same post when the pipeline and caption match, the posted_at times are within 12 hours of each other
+    (local versus UTC spelling of one time), and their video ids do not disagree. Keying on the raw posted_at string, as
+    this code did until 2026-10-20, counted 27 October posts twice and put October at $48.85 against $41.73."""
+    import datetime as _dt
+    posts: list[dict] = []
+    for r in sorted((r for r in rows if r.get("level") == "post"), key=lambda r: r.get("snapshot_at") or ""):
+        posted = _tiktok_posted(r.get("posted_at") or "")
         try:
-            _dt.date.fromisoformat(day)
-            total = float(r.get("est_rewards") or 0)
+            est = float(r.get("est_rewards") or 0)
         except ValueError:
             continue
-        key = (r.get("pipeline") or "", day)
-        at = r.get("snapshot_at") or ""
-        if key not in last or at >= last[key][0]:
-            last[key] = (at, total)
-    out: dict[str, float] = {}
-    for pipe in sorted({p for p, _ in last}):
-        totals = {_dt.date.fromisoformat(d): v[1] for (p, d), v in last.items() if p == pipe}
-        daily: dict[_dt.date, float] = {}
-        prev_day = prev_total = None
-        for day in sorted(totals):
-            total = totals[day]
-            if prev_day is None:
-                daily[day] = total
-            else:
-                gap = (day - prev_day).days
-                if gap > 7:
-                    span = [day - _dt.timedelta(days=k) for k in range(6, -1, -1)]
-                    earned = total
-                else:
-                    span = [prev_day + _dt.timedelta(days=k) for k in range(1, gap + 1)]
-                    leaving = sum(daily.get(x - _dt.timedelta(days=7), 0.0) for x in span)
-                    earned = total - prev_total + leaving
-                for x in span:
-                    daily[x] = earned / len(span)
-            prev_day, prev_total = day, total
-        for day, v in daily.items():
-            out[day.isoformat()] = out.get(day.isoformat(), 0.0) + v
+        if posted is None:
+            continue
+        vid = (r.get("video_id") or "").strip()
+        for p in posts:
+            if (p["pipeline"] == (r.get("pipeline") or "") and p["caption"] == (r.get("caption") or "")
+                    and abs(p["posted"] - posted) <= _dt.timedelta(hours=12)
+                    and not (vid and p["video_id"] and vid != p["video_id"])):
+                break
+        else:
+            p = {"pipeline": r.get("pipeline") or "", "caption": r.get("caption") or "", "posted": posted,
+                 "video_id": vid, "snaps": []}
+            posts.append(p)
+        p["video_id"] = p["video_id"] or vid
+        p["snaps"].append((r.get("snapshot_at") or "", (r.get("snapshot_date") or "")[:10], est))
+    return posts
+
+
+def tiktok_daily_from_posts(rows: list[dict]) -> dict[str, dict[str, float]]:
+    """{pipeline: {ISO date: rewards}}: what each post's estimate rose by, counted on the day of the snapshot that saw
+    the rise. A post's first snapshot counts in full on its day. A post's estimate only accrues, so a lower later
+    figure is ignored rather than counted as a loss (the running high stands). Summed over a month this is every
+    post's latest figure, so the days add up to the month exactly."""
+    out: dict[str, dict[str, float]] = {}
+    for p in tiktok_posts(rows):
+        high = 0.0
+        for _at, day, est in sorted(p["snaps"]):
+            if est > high and day:
+                days = out.setdefault(p["pipeline"], {})
+                days[day] = days.get(day, 0.0) + est - high
+                high = est
     return out
 
 
-def tiktok_rewards_by_month(months: list[str], path: Path | None = None) -> dict[str, float]:
-    """TikTok Creator Rewards estimates by month.
-
-    Two readings of the same CSV, and the larger one wins for each month. (1) The per-post rows: a post's estimate only
-    accrues, so the largest figure ever recorded for it is the truthful one, summed by the month the post went up. This
-    misses posts that scrolled off the Monetization page's short list. (2) The account's rolling 7-day totals rebuilt into
-    daily earnings (tiktok_daily_from_account_totals), which count every post. The overlapping windows themselves are
-    never summed. These are TikTok's estimates from Studio, not payouts. A missing file reads as zero, quietly."""
+def tiktok_readings(months: list[str], path: Path | None = None) -> tuple[dict[str, float], list[dict]]:
+    """TikTok Creator Rewards by month from the per-post rows (tiktok_daily_from_posts), plus the raw rows.
+    A missing file reads as zeros."""
     import csv
-    out = {m: 0.0 for m in months}
-    best: dict[tuple, float] = {}
-    rows: list[dict] = []
     try:
         with open(path or TIKTOK_REWARDS_CSV, newline="", encoding="utf-8") as f:
-            for r in csv.DictReader(f):
-                rows.append(r)
-                if r.get("level") != "post" or not (r.get("posted_at") or "")[:7]:
-                    continue
-                try:
-                    est = float(r.get("est_rewards") or 0)
-                except ValueError:
-                    continue
-                key = (r.get("pipeline"), r.get("caption"), r.get("posted_at"))
-                best[key] = max(best.get(key, 0.0), est)
+            rows = list(csv.DictReader(f))
     except OSError:
-        return out
-    per_post = {m: 0.0 for m in months}
-    for (_pipe, _cap, posted), est in best.items():
-        if posted[:7] in per_post:
-            per_post[posted[:7]] += est
-    rebuilt = {m: 0.0 for m in months}
-    for day, est in tiktok_daily_from_account_totals(rows).items():
-        if day[:7] in rebuilt:
-            rebuilt[day[:7]] += est
-    return {m: round(max(per_post[m], rebuilt[m]), 2) for m in months}
+        return {m: 0.0 for m in months}, []
+    by_month = {m: 0.0 for m in months}
+    for days in tiktok_daily_from_posts(rows).values():
+        for day, est in days.items():
+            if day[:7] in by_month:
+                by_month[day[:7]] += est
+    return by_month, rows
+
+
+def tiktok_rewards_by_month(months: list[str], path: Path | None = None) -> dict[str, float]:
+    """TikTok Creator Rewards estimates by month: the rise in each post's estimate, counted on the day it was seen.
+
+    Until 2026-10-20 this took the larger of that and the account's rolling 7-day totals rebuilt into days
+    (tiktok_daily_by_pipeline). The rebuild assumes each window is a plain sum of fixed days, but Studio revises earlier
+    days down, so it came out with negative days and overcounted: $51.08 for October 1-19 against $42.38 in TikTok's
+    own app. The per-post reading gave $41.73. It can run a little low, because Studio lists only the newest posts and a
+    post that scrolls off stops being updated here. These are TikTok's estimates from Studio, not payouts. A missing
+    file reads as zero, quietly."""
+    by_month, _rows = tiktok_readings(months, path)
+    return {m: round(v, 2) for m, v in by_month.items()}
+
 
 
 def admob_revenue_by_month(admob: dict | None, months: list[str]) -> dict[str, float]:
@@ -5197,7 +5214,7 @@ def revenue_block(sales: dict | None, appstore: dict | None, n_months: int = 6,
 #
 # One list for the Money tab: card sales (Stripe, both sites), Etsy/Gumroad/Payhip, App Store
 # proceeds and photo-licensing sales, newest first. The photo platforms that publish a
-# per-sale report (Getty, Adobe Stock, Dreamstime, Shutterstock's daily totals) are read from the
+# per-sale report (Getty, Adobe Stock, Dreamstime, Fine Art America, Shutterstock's daily totals) are read from the
 # photo arm's CSVs; the rest report totals only, and a line under the table says so.
 
 REFUNDED_TAG = ' <span class="who">(refunded)</span>'
@@ -5209,6 +5226,21 @@ def _cents(v) -> int:
         return int(round(float(v) * 100))
     except (TypeError, ValueError):
         return 0
+
+
+FAA_LABEL = "Fine Art America"   # photo-dashboard.py's label for the fineartamerica balance
+
+
+def faa_sale_rows(ledger: list[dict]) -> list[dict]:
+    """Fine Art America orders from faa-sales.csv (scripts/sales-ledgers.py). `total` is our profit on the order (FAA
+    pays the markup, not the retail price). Owner purchases have no total and earn nothing, so they are left out."""
+    out = []
+    for r in ledger:
+        if not (r.get("total") or "").strip():
+            continue
+        out.append({"date": r.get("sale_date", ""), "source": "Photo licensing", "detail": FAA_LABEL,
+                    "item": r.get("product", ""), "gross": None, "net": _cents(r.get("total"))})
+    return out
 
 
 def photo_sale_rows() -> list[dict]:
@@ -5236,6 +5268,8 @@ def photo_sale_rows() -> list[dict]:
     for r in read("dreamstime-sales.csv"):
         rows.append({"date": r.get("sale_date", ""), "source": "Photo licensing", "detail": "Dreamstime",
                      "item": r.get("title") or r.get("filename", ""), "gross": None, "net": _cents(r.get("amount"))})
+    for r in faa_sale_rows(read("faa-sales.csv")):
+        rows.append(r)
     for r in read("shutterstock-days.csv"):
         n = int(float(r.get("downloads") or 0))
         rows.append({"date": r.get("date", ""), "source": "Photo licensing", "detail": "Shutterstock",
@@ -5312,7 +5346,92 @@ def getty_estimate_by_month(months: list[str]) -> dict[str, float]:
     return {m: round(v, 2) for m, v in out.items()}
 
 
-def all_sales_rows(ledger_rows: list[dict], appstore: dict | None) -> list[dict]:
+def tiktok_sale_rows(path: Path | None = None) -> list[dict]:
+    """One estimate row per day per pipeline: what that day's snapshot added to the posts' estimates
+    (tiktok_daily_from_posts). These rows are what tiktok_rewards_by_month sums, so a month's rows equal its figure in
+    Revenue, all sources. TikTok's own Studio estimates, not payouts: every row is marked estimate and kept out of the
+    received total."""
+    _by_month, rows = tiktok_readings([], path)
+    out = []
+    for pipe, days in sorted(tiktok_daily_from_posts(rows).items()):
+        for day, est in sorted(days.items()):
+            if _cents(est) == 0:
+                continue
+            out.append({"date": day, "source": SRC_TIKTOK, "detail": pipe or "tiktok",
+                        "item": "Creator Rewards estimate added that day", "gross": None, "net": _cents(est),
+                        "estimate": True})
+    return out
+
+
+def tiktok_month_note(rows: list[dict], path: Path | None = None) -> str:
+    """Says how the TikTok rows are counted and where they can run low."""
+    if not any(r["source"] == SRC_TIKTOK for r in rows):
+        return ""
+    return ("TikTok rows are the rise in each post's Creator Rewards estimate, counted on the day a snapshot saw it. "
+            "Studio lists only the newest posts, so money a post earns after it scrolls off that list is missed, and "
+            "the figures can run slightly below TikTok's own month total.")
+
+
+def admob_month_rows(admob: dict | None, today: dt.date | None = None) -> list[dict]:
+    """AdMob only gives us monthly earnings (fetch_admob stores {YYYY-MM: dollars} next to the 7-day report, whose own
+    days are not kept), so each month with earnings is one estimate row, dated its last day with data: the month's
+    end, or today for the month still running."""
+    today = today or dt.datetime.now(dt.timezone.utc).date()
+    out = []
+    monthly = (((admob or {}).get("globepin") or {}).get("monthly")) or {}
+    for ym, usd in sorted(monthly.items()):
+        try:
+            first = dt.date.fromisoformat(ym + "-01")
+            cents = _cents(usd)
+        except ValueError:
+            continue
+        if cents <= 0 or first > today:
+            continue
+        end = (first.replace(day=28) + dt.timedelta(days=4)).replace(day=1) - dt.timedelta(days=1)
+        out.append({"date": min(end, today).isoformat(), "source": SRC_ADS, "detail": "GlobePin (AdMob)",
+                    "item": f"AdMob estimate, month total for {first.strftime('%B %Y')}", "gross": None,
+                    "net": cents, "estimate": True})
+    return out
+
+
+def _photo_platform_has_ledger(label: str, listed: list[dict]) -> bool:
+    """Same label match photo_totals_only_note has always used: a balance row belongs to a platform that already lists
+    per-sale rows when the first word of one of those rows' detail starts its label."""
+    details = {r["detail"] for r in listed if r["source"] == "Photo licensing"}
+    return any(label.lower().startswith(d.lower().split(" ")[0]) for d in details)
+
+
+def photo_balance_rows(listed: list[dict]) -> list[dict]:
+    """Sales of photo platforms that only report a balance, as the day-to-day rises of that balance.
+
+    Walks every snapshot day with photo-dashboard's platform_money_asof (the carry-forward helper, so a failed
+    collector run never reads as a payout). A rise is revenue, dated the day it showed up. A drop is a payout clearing
+    the balance, not negative revenue: the next rise is measured from the new, lower level. Platforms that already have
+    a per-sale ledger in `listed` are skipped. The monthly photo figure instead takes the net balance change over the
+    month, so across a month with a payout these rows can add up to more than it; they never add up to less."""
+    try:
+        pd = _load_photo_dashboard_module()
+        data = pd.load()
+        dates = sorted(data)
+        out: list[dict] = []
+        prev: dict[str, float] = {}
+        for day in dates:
+            _t, _s, money_rows = pd.platform_money_asof(data, dates, day)
+            for label, bal, *_rest in money_rows:
+                bal = bal or 0.0
+                rise = _cents(bal - prev.get(label, 0.0))
+                prev[label] = bal
+                if rise > 0 and not _photo_platform_has_ledger(label, listed):
+                    out.append({"date": day, "source": "Photo licensing", "detail": label,
+                                "item": "balance rose (sale not itemised by the platform)", "gross": None,
+                                "net": rise})
+        return out
+    except (Exception, SystemExit):  # noqa: BLE001 - photo tracking may be absent; the rest of the list must still render
+        return []
+
+
+def all_sales_rows(ledger_rows: list[dict], appstore: dict | None, admob: dict | None = None,
+                   today: dt.date | None = None) -> list[dict]:
     rows: list[dict] = []
     for r in ledger_rows:
         # Marketplace and ExtensionPay rows are kind "order"; leaving that out hid every one of them from this list.
@@ -5335,13 +5454,31 @@ def all_sales_rows(ledger_rows: list[dict], appstore: dict | None) -> list[dict]
         if usd:
             rows.append({"date": d, "source": "App Store", "detail": "GlobePin",
                          "item": f"Pro ({v.get('proUnits', 0)} unit(s))", "gross": None, "net": _cents(usd)})
-    rows += photo_sale_rows()
+    photo = photo_sale_rows()
+    rows += photo
+    rows += photo_balance_rows(photo)
+    rows += tiktok_sale_rows()
+    rows += admob_month_rows(admob, today)
     rows.sort(key=lambda r: (r["date"], r["source"]), reverse=True)
     return rows
 
 
+def all_sales_by_day(rows: list[dict], today: dt.date | None = None, days: int = 60) -> list[dict]:
+    """The same rows as the big table, added up per calendar day for the last `days` days, newest first. Every day is
+    listed, empty ones too, so a quiet day reads as quiet. `received` is the non-estimate rows (what was sold or paid),
+    `estimated` the rows marked estimate, `total` both, all in cents. Rows dated after today are not shown."""
+    today = today or dt.date.today()
+    window = [(today - dt.timedelta(days=k)).isoformat() for k in range(days)]
+    got = {d: [0, 0] for d in window}
+    for r in rows:
+        if r["date"] in got:
+            got[r["date"]][1 if r.get("estimate") else 0] += r["net"]
+    return [{"date": d, "received": got[d][0], "estimated": got[d][1], "total": got[d][0] + got[d][1]} for d in window]
+
+
 def photo_totals_only_note(listed: list[dict]) -> str:
-    """Platforms that report a sales count and balance but no per-sale rows."""
+    """Platforms that report a sales count and balance but no per-sale rows. Their balance rises are listed
+    as photo rows (photo_balance_rows), so this names them and says how many sales the platform counts."""
     try:
         pd = _load_photo_dashboard_module()
         data = pd.load()
@@ -5349,18 +5486,25 @@ def photo_totals_only_note(listed: list[dict]) -> str:
         _t, _s, money_rows = pd.platform_money_asof(data, dates, dates[-1])
     except (Exception, SystemExit):  # noqa: BLE001 - this note is a convenience; pd.load() exits when photo tracking has no snapshots yet
         return ""
-    detail_labels = {r["detail"] for r in listed if r["source"] == "Photo licensing"}
+    ledger_labels = [r for r in listed if r["source"] == "Photo licensing" and not r["item"].startswith("balance rose")]
     bits = []
     for label, bal, sales_n, *_rest in money_rows:
-        if (sales_n or 0) > 0 and not any(label.lower().startswith(d.lower().split(" ")[0]) for d in detail_labels):
+        if (sales_n or 0) > 0 and not _photo_platform_has_ledger(label, ledger_labels):
             bits.append(f"{label} ({int(sales_n)} sale{'s' if int(sales_n) != 1 else ''}, ${bal or 0:,.2f})")
-    return ("Photo platforms that report totals only, so their sales are not itemised above: " + "; ".join(bits) + "."
+    return ("Photo platforms that report totals only, so their sales are shown as balance rises, not itemised: "
+            + "; ".join(bits) + ". A payout lowers the balance and counts as nothing; the next rise starts from the new level. "
+            "Monthly photo revenue uses each month's net balance change, so across a payout these rows can add up to more."
             if bits else "")
 
 
-def all_sales_block(ledger_rows: list[dict], appstore: dict | None) -> str:
-    rows = all_sales_rows(ledger_rows, appstore)
-    sources = ["Card sales (Stripe)", "Etsy, Gumroad, Payhip", SRC_EXTENSION, "App Store", "Photo licensing"]
+# Chip order for the all-sales list: sold or received sources first, estimates last.
+ALL_SALES_SOURCES = ["Card sales (Stripe)", "Etsy, Gumroad, Payhip", SRC_EXTENSION, "App Store", "Photo licensing", SRC_TIKTOK, SRC_ADS]
+
+
+def all_sales_block(ledger_rows: list[dict], appstore: dict | None, admob: dict | None = None,
+                    today: dt.date | None = None) -> str:
+    rows = all_sales_rows(ledger_rows, appstore, admob, today)
+    sources = ALL_SALES_SOURCES
     chips = "".join(
         f"<button type='button' class='src-chip' data-src=\"{html.escape(src)}\">{html.escape(src)} "
         f"<b>{sum(1 for r in rows if r['source'] == src)}</b></button>" for src in sources)
@@ -5371,25 +5515,55 @@ def all_sales_block(ledger_rows: list[dict], appstore: dict | None) -> str:
         f"<td class='num'>{'' if r['gross'] is None else money(r['gross'])}</td>"
         f"<td class='num'>{'~' if r.get('estimate') else ''}{money(r['net'])}</td></tr>"
         for r in rows) or "<tr><td colspan='5' class='who'>No sales on record yet.</td></tr>"
-    total_net = sum(r["net"] for r in rows if not r.get("estimate"))
+    real_rows = [r for r in rows if not r.get("estimate")]
+    total_net = sum(r["net"] for r in real_rows)
     est_rows = [r for r in rows if r.get("estimate")]
-    est_n = sum(int(re.match(r"\d+", r["item"]).group()) for r in est_rows)
-    est_sentence = (f" Rows marked ~ are estimates: {est_n} Getty download(s) not on a royalty statement yet, about "
-                    f"{money(sum(r['net'] for r in est_rows))} at the average royalty Getty has paid per download. "
-                    f"They are not in the total." if est_rows else "")
-    note = photo_totals_only_note(rows)
+    est_net = sum(r["net"] for r in est_rows)
+    getty_rows = [r for r in est_rows if r["detail"].startswith("Getty")]
+    tiktok_rows = [r for r in est_rows if r["source"] == SRC_TIKTOK]
+    ad_rows = [r for r in est_rows if r["source"] == SRC_ADS]
+    est_bits = []
+    if getty_rows:
+        n = sum(int(re.match(r"\d+", r["item"]).group()) for r in getty_rows)
+        est_bits.append(f"{n} Getty download(s) not on a royalty statement yet, about {money(sum(r['net'] for r in getty_rows))} "
+                        f"at the average royalty Getty has paid per download")
+    if tiktok_rows:
+        est_bits.append(f"{money(sum(r['net'] for r in tiktok_rows))} of TikTok Creator Rewards estimated by TikTok Studio, not yet paid")
+    if ad_rows:
+        est_bits.append(f"{money(sum(r['net'] for r in ad_rows))} of AdMob earnings estimated by AdMob, as one row per month")
+    est_sentence = (" Rows marked ~ are estimates: " + "; ".join(est_bits) + ". They are shown separately and are not in the "
+                    "received or sold total." if est_rows else "")
+    notes = [n for n in (photo_totals_only_note(rows), tiktok_month_note(rows)) if n]
+    day_rows = all_sales_by_day(rows, today)
+
+    def cell(v, tilde=False):
+        return "<td class='num who'>&ndash;</td>" if not v else f"<td class='num'>{'~' if tilde else ''}{money(v)}</td>"
+    day_body = "".join(
+        f"<tr><td class='who'>{d['date']}</td>{cell(d['received'])}{cell(d['estimated'], True)}{cell(d['total'])}</tr>"
+        for d in day_rows)
+    day_received = sum(d["received"] for d in day_rows)
+    day_est = sum(d["estimated"] for d in day_rows)
     return f"""
 <section class="sales all-sales">
   <h2>All sales &middot; every source</h2>
-  <p class="sales-sub">{len(rows) - len(est_rows)} sale(s) on record, {money(total_net)} kept after fees or royalty split. Newest first. "Kept" is what reaches you:
+  <p class="sales-sub">{len(real_rows)} sale(s) on record, {money(total_net)} received or sold after fees or royalty split, plus
+  {money(est_net)} estimated, {money(total_net + est_net)} combined. Newest first. "Received or sold" is what reaches you:
   Stripe and marketplace net of fees, photo royalties as the platform reports them.{est_sentence}</p>
+  <h3 class="by-day-title">By day &middot; last {len(day_rows)} days</h3>
+  <div class="sales-scroll"><table class="sales-list by-day">
+    <thead><tr><th>Date</th><th class="num">Received or sold</th><th class="num">Estimated (~)</th><th class="num">Day total</th></tr></thead>
+    <tbody>{day_body}</tbody>
+    <tfoot><tr><td>Last {len(day_rows)} days</td><td class="num">{money(day_received)}</td><td class="num">~{money(day_est)}</td><td class="num">{money(day_received + day_est)}</td></tr></tfoot>
+  </table></div>
   <div class="src-chips"><button type="button" class="src-chip on" data-src="">All <b>{len(rows)}</b></button>{chips}</div>
   <div class="sales-scroll"><table class="sales-list">
     <thead><tr><th>Date</th><th>Source</th><th>Item</th><th class="num">Gross</th><th class="num">Kept</th></tr></thead>
     <tbody>{body}</tbody>
-    <tfoot><tr><td colspan="4">Total</td><td class="num">{money(total_net)}</td></tr></tfoot>
+    <tfoot><tr><td colspan="4">Received or sold</td><td class="num">{money(total_net)}</td></tr>
+    <tr><td colspan="4">Estimated (~, not received)</td><td class="num">~{money(est_net)}</td></tr>
+    <tr><td colspan="4">Combined</td><td class="num">{money(total_net + est_net)}</td></tr></tfoot>
   </table></div>
-  {f'<p class="sales-foot">{html.escape(note)}</p>' if note else ''}
+  {''.join(f'<p class="sales-foot">{html.escape(n)}</p>' for n in notes)}
 </section>"""
 
 
@@ -5444,7 +5618,8 @@ NAV_CSS = """
 .sales-list .who{color:var(--muted)}
 .sales-list td,.sales-list th{white-space:nowrap}
 .sales-list td:first-child,.sales-list th:first-child{min-width:7.5em}
-.all-sales .sales-list td:nth-child(3){max-width:26em;overflow:hidden;text-overflow:ellipsis}
+.all-sales .sales-list:not(.by-day) td:nth-child(3){max-width:26em;overflow:hidden;text-overflow:ellipsis}
+.by-day-title{margin:14px 0 6px;font-size:.95rem;color:var(--muted);font-weight:600}
 .embed{width:100%;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);min-height:480px;display:block}
 .embed-meta{color:var(--muted);font-size:.85rem;margin:0 0 12px}
 .embed-meta code{font-size:.8rem}
@@ -5483,7 +5658,7 @@ NAV_JS = """
   if(!tabs.some(function(t){return t.dataset.tab===start}))start='overview';
   // Source chips on the all-sales list: show one source's rows, or all.
   [].slice.call(document.querySelectorAll('.src-chips')).forEach(function(bar){
-    var table=bar.parentElement.querySelector('table.sales-list');
+    var table=bar.parentElement.querySelector('table.sales-list:not(.by-day)');
     bar.addEventListener('click',function(e){
       var b=e.target.closest('.src-chip'); if(!b)return;
       [].slice.call(bar.children).forEach(function(c){c.classList.toggle('on',c===b)});
@@ -5692,7 +5867,7 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
     overview = (f"{revenue_block(sales, appstore, market_rows=market_rows, admob=admob)}\n{metrics_block(metrics)}\n"
                 f"{profit_block(profit, channels, tax)}\n{glance_table(summaries)}\n"
                 f"{queue_block()}\n{general_html}")
-    money = f"{all_sales_block(ledger_rows or [], appstore)}\n{sales_block(sales)}\n{marketplaces_block(marketplaces)}"
+    money = f"{all_sales_block(ledger_rows or [], appstore, admob)}\n{sales_block(sales)}\n{marketplaces_block(marketplaces)}"
     ads = manual_ads_block(manual_ads or {}, admob)
     apps = f"{appstore_block(appstore)}\n{chrome_web_store_block(chrome_web_store)}"
     panels = [("overview", "Overview", overview), ("money", "Money", money), ("ads", "Ads", ads), ("apps", "Apps", apps)]

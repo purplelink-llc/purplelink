@@ -3,7 +3,7 @@ import unittest
 import xml.etree.ElementTree as ET
 from common import SITE, ORIGIN, read_site, has_noindex, sitemap_locs, sitemap_paths
 
-HIDDEN = ["/binnacle/", "/binnacle/terms/", "/budgetcast/", "/budgetcast/privacy/"]
+HIDDEN = ["/binnacle/", "/binnacle/terms/", "/budgetcast/", "/budgetcast/privacy/", "/watchlight/privacy/", "/watchlight/terms/"]
 
 
 class HiddenPages(unittest.TestCase):

@@ -1344,11 +1344,11 @@ Keyfeel lives in the menu bar. You can silence it in the apps you choose, and it
 
 ## What it does
 
-Sound profilesRecorded Tactile, Cherry MX Brown and Dome profiles, a Fun set (cat, dog, duck, boing, bubble pop, water drops), a Calm set of soft sounds for all-day use (soft wood, glass and ceramic, marble, kalimba, chimes, clickers, bubble wrap), IBM Model M recordings (key presses only), and synthesized extras. Every sound in the menu has a play button that plays a few keys in it without switching to it, so you can hear it first. Every recording is licensed for use (CC0), with credits listed in the app and on the sound credits page.
+Sound profilesRecorded Tactile, Cherry MX Brown and Dome profiles, a Fun set (cat, dog, duck, boing, bubble pop, water drops), a Calm set of soft sounds for all-day use (soft wood, glass and ceramic, marble, kalimba, chimes, clickers, bubble wrap), IBM Model M recordings (key presses only), and synthesized extras, among them a Typewriter sound with a bell on Return (made by the app, not a recording of a real typewriter). Every sound in the menu has a play button that plays a few keys in it without switching to it, so you can hear it first. Every recording is licensed for use (CC0), with credits listed in the app and on the sound credits page.
 
 Your own soundsImport a Mechvibes sound pack in the original format (its folder, its zip or its config.json), including packs in .ogg. Each key keeps the sound the pack gave it. Packs in the newer MechvibesDX format are not read. Or choose one short sound file of your own.
 
-KeysPress and release sounds, with a different recording on each press. Each key has its own pitch, and the sound moves from left to right in stereo across the keyboard. The space bar and Return have sounds of their own, and you can set the level of the space bar and modifier keys separately. Key positions are right on ANSI, ISO and JIS keyboards. Fast typing gets gently quieter so it does not wear on you. The menu bar icon can look pressed for an instant on each key, without showing which key.
+KeysPress and release sounds, with a different recording on each press. Each key has its own pitch, and the sound moves from left to right in stereo across the keyboard. On headphones you can turn on 3D sound (since 1.6.0): keys then sound as if they come from a keyboard in front of and below you, and clicks and scrolling follow the pointer. It uses Apple's spatial audio rendering, is off unless you turn it on, and speakers keep plain stereo. The space bar and Return have sounds of their own, and you can set the level of the space bar and modifier keys separately. Key positions are right on ANSI, ISO and JIS keyboards. Fast typing gets gently quieter so it does not wear on you. The menu bar icon can look pressed for an instant on each key, without showing which key.
 
 MousePress and release sounds for mouse clicks, and a ripple on screen where you click.
 
@@ -4453,7 +4453,7 @@ Vitae1.4.1October 2026
 
 Legroom1.4.0October 2026
 
-Keyfeel1.5.3October 2026
+Keyfeel1.6.0October 2026
 
 Tapefolio1.0.1October 2026
 
@@ -5631,12 +5631,6 @@ TUG recommends the full MacTeX for most people, beginners included. Its reason i
 Apple silicon and Intel need no separate choice. TUG says MacTeX-2026 and BasicTeX-2026 need macOS 11 (Big Sur) or later and run natively on both Intel and Arm processors. TUG adds that the MacTeX package contains native code for both. TinyTeX's installer script has a single macOS build and does not ask which chip you have.
 
 Check free space before you start, because the installer file and the installed copy sit on the disk together. How to see free disk space on a Mac covers Finder, Storage settings, Disk Utility and df.
-
-If you want an editor that sets this up
-
-I make ModernTex, a native Mac editor for LaTeX papers. It uses MacTeX or TinyTeX, and if neither is installed it offers a one-click TinyTeX install. The trial is the full app for 7 days, with no account. After that it is $19.99, once.
-
-About ModernTex
 
 ## Option A: install MacTeX
 
@@ -7243,6 +7237,12 @@ A research record has four layers. Tools differ mostly in how many they cover.
 
 There are also two kinds of record. An institutional faculty-activity or dossier system (Interfolio, Watermark Faculty Success, Elsevier Pure, Symplectic Elements) is bought by the university, built for reporting and review, and usually mandatory. You do not choose it. A personal record is one you choose, hold in a form you control and take with you when you change employers. It can also hold what no one asks to see: the rejections, the timing, the grant you dropped. The sensible arrangement is both: keep your own record, and copy from it into the institutional system at each deadline. This page compares software for the personal record. For how to assemble a tenure case itself, see how to track your academic CV and tenure case.
 
+Keeping the record on your Mac
+
+I make Vitae, a free Mac app that keeps your submissions, grants, projects, co-authors, teaching, service and CV in one record on your own Mac, with no account. It runs on a Mac only, and the record does not sync between machines yet. Vitae Plus is optional: $2.99 a month or $23.99 a year, with a 7-day trial.
+
+About Vitae
+
 ## The shortlist
 
 - Vitae: free Mac app that keeps submissions, grants, projects and teaching in one local record and builds the CV from it.
@@ -8570,7 +8570,7 @@ These apps make your Mac's keyboard, mouse and trackpad sound or feel like somet
 
 Disclosure up front: Purplelink, which publishes this site, makes one app on this list, Keyfeel, sold as a free 7-day trial and then $9.99 once. It is new, and where another app is the better choice I say so.
 
-I did not install or test any of the other apps. I read everything below on October 7, 2026, from vendor pages, Mac App Store listings, project repositories and launch pages. The exception is Tacque and Typemac, which I read on October 9, 2026. I read TapWriter Pro, KeyBell, FunKey, Click, Tikey, Sound Typing and ClyKey on October 13, 2026. Prices and versions change, and where two sources disagreed I say so instead of choosing one.
+I did not install or test any of the other apps. I read everything below on October 7, 2026, from vendor pages, Mac App Store listings, project repositories and launch pages. The exception is Tacque and Typemac, which I read on October 9, 2026. I read TapWriter Pro, KeyBell, FunKey, Click, Tikey, Sound Typing and ClyKey on October 13, 2026, and Thock's releases and code again on October 20, 2026. Prices and versions change, and where two sources disagreed I say so instead of choosing one.
 
 ## The short answer
 
@@ -8598,7 +8598,7 @@ Klack$4.99 on the Mac App Store15.0 or laterNot statedKeys, mouse clicks since 1
 
 KeyOpera$313 or laterNot statedKeys, .keypak packs and spoken key names. Mouse per launch postNo free trial that I could see
 
-ThockFree, MIT license13.5 or laterNot statedKeysNo mouse or scroll sounds or haptics on the page I read
+ThockFree, MIT license13.5 or laterNot statedKeysNo scroll sounds or haptics. Mouse sounds are in its code since October 2026 but not yet in a release, as of October 20
 
 MechvibesFree, MIT licenseNot stated. Also Windows and LinuxNot statedKeys, from community packs. Mouse in the MechvibesDX rewriteOriginal repository is moving to legacy status
 
@@ -8648,7 +8648,7 @@ Their own sounds for the space bar and ReturnYes–Not statedReturn onlyYes–No
 
 Pitch changes from press to pressYesYesVolume onlyYes–Not statedReported–Not stated–Not stated–Not stated–Not stated
 
-Stereo position follows the keyYesSpatial audioYesYes–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated
+Stereo position follows the keyYes, and 3D on headphones since 1.6.0Spatial audioYesYes–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated
 
 Rules for each appYes–Not statedYes–Not statedYes–Not stated–Not statedAllow and block lists–Not stated–Not stated
 
@@ -8744,9 +8744,11 @@ What it lacks: a free trial, as far as I could see. Pick it if you want the lowe
 
 Cost: Free, MIT-licensed, from its GitHub repository, also installable with brew install --cask kamillobinski/thock/thock. Platform: macOS 13.5 or later.
 
-A native menu-bar app with its own audio engine. The README lists switch profiles you can extend with JSON files, automatic muting while Spotify, Apple Music or VLC is playing, a command-line tool and a Raycast extension. It also lists interface text in nine languages. It had about 955 stars when I read it. The README did not give a profile count or spell out the permission it needs. Like the others, it has to be told when a key is pressed.
+A native menu-bar app with its own audio engine. The README lists switch profiles you can extend with JSON files, automatic muting while Spotify, Apple Music or VLC is playing, a command-line tool and a Raycast extension. It also lists interface text in nine languages. It had about 980 stars on October 20, 2026. The README did not give a profile count or spell out the permission it needs. Like the others, it has to be told when a key is pressed.
 
-What it lacks: mouse and scroll sounds and haptics, on the page I read. Pick it if you want free, open source and scriptable.
+Releases since February 2026 added turning on when headphones connect (1.20.0), a keyboard cleaning mode (1.22.0) and a sound-pack registry (1.23.0). In October 2026 the code on GitHub gained mouse sounds with their own volume and optional spatial audio, not yet in a release when I checked on October 20.
+
+What it lacks: scroll sounds and haptics, and mouse sounds until the next release, on the pages I read. Pick it if you want free, open source and scriptable.
 
 ## Mechvibes
 
@@ -8784,9 +8786,9 @@ Pick it if you want something you can feel on web pages. It is a companion to th
 
 ## Keyfeel (Purplelink's)
 
-Cost: Free for 7 days, then $9.99 once with a license key and no subscription. It is also part of the $59.99 Mac Suite. Platform: macOS 13 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.5.3, signed and notarized, released October 13, 2026. It is the newest and least proven app in this guide. I make it. I tested version 1.5.2 on macOS 27.2 on October 13, 2026, but I have not compared it with the others on a test Mac.
+Cost: Free for 7 days, then $9.99 once with a license key and no subscription. It is also part of the $59.99 Mac Suite. Platform: macOS 13 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.6.0, signed and notarized, released October 20, 2026. It is the newest and least proven app in this guide. I make it. I tested version 1.5.2 on macOS 27.2 on October 13, 2026, but I have not compared it with the others on a test Mac.
 
-I built it because I wanted the keyboard sounds, the click sounds and the scroll feel from one place. It plays recorded switch sounds with a different recording on each press, per-key pitch and left-to-right stereo, separate press and release sounds, and sounds for the space bar and Return.
+I built it because I wanted the keyboard sounds, the click sounds and the scroll feel from one place. It plays recorded switch sounds with a different recording on each press, per-key pitch and left-to-right stereo, separate press and release sounds, and sounds for the space bar and Return. It also has a synthesized typewriter sound with a bell on Return. Since 1.6.0 it can place sounds in 3D on headphones, with keys in front of and below you and clicks following the pointer; it is off unless you turn it on.
 
 It adds mouse click sounds, and scroll ticks that follow how fast you scroll and keep going while a hard flick glides. It also has optional trackpad haptics on scroll and click and an optional ripple on screen where you click. Beyond keyboards it has a Fun set (cat, dog, duck and others) and a Calm set of soft sounds for all-day use. All recordings are licensed for use and credited in the app.
 
