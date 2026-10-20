@@ -19,6 +19,12 @@ log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] daily-wrapper: $*" >> "$LOG"; }
 [ -x "$PYTHON" ] || { log "python not found at $PYTHON"; exit 1; }
 [ -f "$REPO/backend/socialpost/daily/pipeline.py" ] || { log "daily pipeline not in the checkout yet (main not synced); will retry"; exit 0; }
 
+# `timeout` is GNU coreutils, absent on the Mac mini (2026-10-20): without this the fetch below failed silently.
+if ! command -v timeout >/dev/null 2>&1; then
+  if command -v gtimeout >/dev/null 2>&1; then timeout() { gtimeout "$@"; }
+  else timeout() { local s="$1"; shift; perl -e 'alarm shift; exec @ARGV or exit 127' "$s" "$@"; }; fi
+fi
+
 # origin/main gives each page's publish date; a failed fetch is fine (the last fetch is used)
 timeout 60 git -C "$REPO" fetch -q origin main 2>/dev/null || true
 
