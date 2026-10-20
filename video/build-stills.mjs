@@ -1,4 +1,6 @@
-// node build-stills.mjs <id> [--format 16x9|9x16|both] [--no-hero] [--stills t1,t2,...] [--skip-narrate]
+// node build-stills.mjs <id> [--format 16x9|9x16|both] [--no-hero] [--stills t1,t2,...] [--skip-narrate] [--trend-bed]
+// --concurrency N (default 6) and --timeout MS (per frame, default 30000) for a busy machine.
+// --trend-bed mixes the shared trend-style synth bed (audio.mjs addTrendBed, never a recording) under each cut.
 // Still-driven promos (Vitae, GlobePin, Haea, Scholar Utility Belt, Paper Review, brand sizzle).
 // Prereqs: python3 capture.py (browser captures) for the browser-framed products.
 // Outputs video/out/<id>/: <id>-16x9.mp4, <id>-9x16.mp4, <id>-poster.jpg, <id>-hero.mp4/.webm (1280x720, silent,
@@ -10,7 +12,7 @@ import { fileURLToPath } from "node:url";
 import { bundle } from "@remotion/bundler";
 import { renderMedia, renderStill, selectComposition } from "@remotion/renderer";
 import { PRODUCTS } from "./src/products/index.js";
-import { stageNarration, stageBrandAudio } from "./audio.mjs";
+import { stageNarration, stageBrandAudio, addTrendBed } from "./audio.mjs";
 import { bumperTotal, BUMPER } from "./src/bumper.js";
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
@@ -83,9 +85,10 @@ for (const format of fmts) {
     continue;
   }
   const raw = path.join(ROOT, ".cache", `${ID}-${format}-raw.mp4`);
-  await renderMedia({ composition: comp, serveUrl, codec: "h264", crf: 18, outputLocation: raw, inputProps, audioCodec: "aac", concurrency: 6 });
+  await renderMedia({ composition: comp, serveUrl, codec: "h264", crf: 18, outputLocation: raw, inputProps, audioCodec: "aac", concurrency: Number(opt("concurrency", 6)), timeoutInMilliseconds: Number(opt("timeout", 30000)) });
   const file = path.join(OUT, `${ID}-${format}.mp4`);
   ff(["-i", raw, "-c:v", "copy", "-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart", file]);
+  if (flag("trend-bed")) say(addTrendBed(file, ID));
   say(`render ${format} (${comp.width}x${comp.height}, ${(comp.durationInFrames / brand.fps).toFixed(1)}s): ${secs(t)}s, ${mb(file)} MB -> ${path.relative(ROOT, file)}`);
   // review frames: title, each beat mid, end card, plus evenly spaced
   const fdir = path.join(OUT, "frames");

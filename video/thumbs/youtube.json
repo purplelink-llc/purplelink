@@ -247,5 +247,15 @@
   "icon": "site/assets/batterymeter-icon.webp",
   "zoom": 1.7,
   "pos": "40% 25%"
+ },
+ {
+  "id": "k_hT8fB5ykM",
+  "kind": "product",
+  "name": "Watchlight",
+  "line": "Is this text a scam?",
+  "img": "video/thumbs/assets/wl-result-crop.jpg",
+  "icon": "video/assets/watchlight/icon-1024.png",
+  "pos": "top",
+  "portrait": true
  }
 ]

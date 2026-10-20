@@ -1,0 +1,68 @@
+{
+  "id": "watchlight-howto",
+  "title": "Watchlight how-to (long)",
+  "note": "Script: SmishFilter docs/video/watchlight-howto-script.md. Footage: build 1.0 (14) in the simulator, made-up texts only.",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "+4%",
+  "scenes": [
+    {
+      "narration": "This is Watchlight, an iPhone app that gives you a second opinion on a text, with its reasons. The check runs on the iPhone, and nothing is sent anywhere unless you share it. Here's how to use it, for yourself or for a parent."
+    },
+    {
+      "narration": "To check a message, press and hold it in Messages and tap Copy. Then open Watchlight and tap Paste."
+    },
+    {
+      "narration": "To see how it works first, tap one of the Try one buttons. Each one checks a made-up example."
+    },
+    {
+      "narration": "From Messages or a mail app, you can also press and hold a link, tap Share, then Watchlight check. Scan a QR code checks a code's link before it opens, and Check a screenshot reads a picture of a message."
+    },
+    {
+      "narration": "Here's a made-up package text. The answer comes first: likely a scam, and what not to do."
+    },
+    {
+      "narration": "Below it, each warning sign has a number. That's how much it counts. The signs add up, and the bar shows the total against the scam line."
+    },
+    {
+      "narration": "Further down, it checks the link and lists what to do, step by step."
+    },
+    {
+      "narration": "When nothing stands out, it says No warning signs found. That isn't a guarantee. If a text asks for money, a code or a quick decision, check with the sender another way."
+    },
+    {
+      "narration": "Ask someone I trust lets you send the text to a person you choose. Report it to seven seven two six starts a text to seven seven two six, which spells SPAM. It's free, and you tap Send yourself."
+    },
+    {
+      "narration": "Already tapped, replied or paid? Tap that button and pick what happened. Do the first step now. Scammers fool careful people every day."
+    },
+    {
+      "narration": "Next, tap the dark card at the top to turn on protection. There are four parts, each under a minute."
+    },
+    {
+      "narration": "The text filter: in Messages, tap the filter button at the top left, then Manage Filtering, and choose Watchlight. Texts from numbers that aren't in your contacts are checked as they arrive."
+    },
+    {
+      "narration": "Caller labels show what a number is known for, from FTC reports. A label isn't proof. The Safari warning speaks up before you type a password into a page pretending to be a company. And with Report on, you can swipe left on a text and tap Report."
+    },
+    {
+      "narration": "Missing a text? Watchlight never deletes texts, and never sorts texts from your contacts. In Messages, look in Junk, and mark the text Not Junk."
+    },
+    {
+      "narration": "Every warning is free. The optional Unlock is a one-time nine ninety-nine. It adds Lock Screen and Siri shortcuts, a saved trusted person and a printable family card. Family Sharing covers the household."
+    },
+    {
+      "narration": "Setting it up for a parent? Do the four steps together, try one example, and tell them they can always send you a text that worries them."
+    },
+    {
+      "narration": "Watchlight. A second opinion on a text, with reasons."
+    }
+  ],
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}
