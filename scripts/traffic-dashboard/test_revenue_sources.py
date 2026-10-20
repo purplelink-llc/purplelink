@@ -162,3 +162,45 @@ class GettyEstimate(unittest.TestCase):
             s = td.revenue_series(None, None, [], None, [THIS])
         self.assertAlmostEqual(s["photo"][THIS], 6.6)
         self.assertAlmostEqual(s["getty_est"][THIS], 1.6)
+
+
+class FaaLedgerTest(unittest.TestCase):
+    LEDGER = [
+        {"sale_date": "2026-10-19", "order_id": "7180079", "product": "Topiary T-Shirt", "buyer": "", "price": "2.0",
+         "qty": "1", "total": "2.0"},
+        {"sale_date": "2026-10-03", "order_id": "1-2", "product": "Flyover Print", "buyer": "Marietta, GA",
+         "price": "44.0", "qty": "1", "total": "44.0"},
+        {"sale_date": "2026-09-25", "order_id": "3-4", "product": "Card", "buyer": "Owner Purchase", "price": "",
+         "qty": "1", "total": ""},
+    ]
+
+    def test_rows_skip_owner_purchases(self):
+        rows = td.faa_sale_rows(self.LEDGER)
+        self.assertEqual([(r["date"], r["detail"], r["net"]) for r in rows],
+                         [("2026-10-19", "Fine Art America", 200), ("2026-10-03", "Fine Art America", 4400)])
+
+    def test_monthly_total_takes_the_larger_reading_per_platform(self):
+        class FakePD:
+            # FAA balance rose only $1.60 in October (the sweep missed the $44 sale); Adobe rose $3.
+            SNAP = {"2026-09-30": {"Fine Art America": 10.0, "Adobe Stock": 1.0},
+                    "2026-10-20": {"Fine Art America": 11.6, "Adobe Stock": 4.0}}
+
+            def load(self):
+                return {d: {} for d in self.SNAP}
+
+            def platform_money_asof(self, data, dates, asof):
+                day = max(d for d in self.SNAP if d <= asof)
+                return 0, 0, [(k, v) for k, v in self.SNAP[day].items()]
+
+        with mock.patch.object(td, "_read_photo_csv", lambda name: self.LEDGER if name == "faa-sales.csv" else []), \
+             mock.patch.object(td, "_load_photo_dashboard_module", lambda: FakePD()):
+            got = td.photo_revenue_by_month(["2026-10"])
+        # FAA: max(1.60 balance, 46.00 ledger) = 46.00, plus Adobe's 3.00; never 1.60 + 46.00
+        self.assertAlmostEqual(got["2026-10"], 49.0)
+
+    def test_ledger_alone_when_photo_tracking_is_unavailable(self):
+        def boom():
+            raise FileNotFoundError("no photo-dashboard.py")
+        with mock.patch.object(td, "_read_photo_csv", lambda name: self.LEDGER if name == "faa-sales.csv" else []), \
+             mock.patch.object(td, "_load_photo_dashboard_module", boom):
+            self.assertEqual(td.photo_revenue_by_month(["2026-09", "2026-10"]), {"2026-09": 0.0, "2026-10": 46.0})
