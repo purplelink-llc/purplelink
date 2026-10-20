@@ -37,7 +37,7 @@ beforeEach(() => {
   stripeReply = () => new Response(JSON.stringify({ id: "cs_test_1", url: "https://checkout.stripe.com/c/pay/cs_test_1" }), { status: 200 });
   globalThis.fetch = async (url, opts = {}) => {
     calls.push({ url: String(url), opts });
-    if (String(url).includes("api.stripe.com")) return stripeReply(opts);
+    if (String(url).startsWith("https://api.stripe.com/")) return stripeReply(opts);
     return new Response("{}", { status: 200 });
   };
 });
@@ -48,7 +48,7 @@ const buy = (product) => checkout(new Request("https://purplelink.llc/.netlify/f
   headers: { "content-type": "application/json", "x-nf-client-connection-ip": `203.0.113.${ipN++}` },
   body: JSON.stringify({ product }),
 }));
-const stripeBodies = () => calls.filter((c) => c.url.includes("api.stripe.com")).map((c) => new URLSearchParams(c.opts.body));
+const stripeBodies = () => calls.filter((c) => c.url.startsWith("https://api.stripe.com/")).map((c) => new URLSearchParams(c.opts.body));
 
 test("a ModernTex checkout asks for consent and enables recovery without promotion codes", async () => {
   const res = await buy("moderntex");
@@ -85,7 +85,7 @@ test("if Stripe rejects the recovery parameters, checkout retries once without t
   const bodies = stripeBodies();
   assert.equal(bodies.length, 2);
   assert.equal(bodies[1].get("consent_collection[promotions]"), null);
-  const keys = calls.filter((c) => c.url.includes("api.stripe.com")).map((c) => c.opts.headers["Idempotency-Key"]);
+  const keys = calls.filter((c) => c.url.startsWith("https://api.stripe.com/")).map((c) => c.opts.headers["Idempotency-Key"]);
   assert.notEqual(keys[0], keys[1], "the retry needs its own idempotency key");
 });
 
