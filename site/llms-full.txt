@@ -1348,7 +1348,7 @@ Sound profilesRecorded Tactile, Cherry MX Brown and Dome profiles, a Fun set (ca
 
 Your own soundsImport a Mechvibes sound pack in the original format (its folder, its zip or its config.json), including packs in .ogg. Each key keeps the sound the pack gave it. Packs in the newer MechvibesDX format are not read. Or choose one short sound file of your own.
 
-KeysPress and release sounds, with a different recording on each press. Each key has its own pitch, and the sound moves from left to right in stereo across the keyboard. The space bar and Return have sounds of their own, and you can set the level of the space bar and modifier keys separately. Key positions are right on ANSI, ISO and JIS keyboards. Fast typing gets gently quieter so it does not wear on you. The menu bar icon can look pressed for an instant on each key, without showing which key.
+KeysPress and release sounds, with a different recording on each press. Each key has its own pitch, and the sound moves from left to right in stereo across the keyboard. On headphones you can turn on 3D sound (since 1.6.0): keys then sound as if they come from a keyboard in front of and below you, and clicks and scrolling follow the pointer. It uses Apple's spatial audio rendering, is off unless you turn it on, and speakers keep plain stereo. The space bar and Return have sounds of their own, and you can set the level of the space bar and modifier keys separately. Key positions are right on ANSI, ISO and JIS keyboards. Fast typing gets gently quieter so it does not wear on you. The menu bar icon can look pressed for an instant on each key, without showing which key.
 
 MousePress and release sounds for mouse clicks, and a ripple on screen where you click.
 
@@ -4453,7 +4453,7 @@ Vitae1.4.0October 2026
 
 Legroom1.4.0October 2026
 
-Keyfeel1.5.3October 2026
+Keyfeel1.6.0October 2026
 
 Tapefolio1.0.1October 2026
 
@@ -8648,7 +8648,7 @@ Their own sounds for the space bar and ReturnYes–Not statedReturn onlyYes–No
 
 Pitch changes from press to pressYesYesVolume onlyYes–Not statedReported–Not stated–Not stated–Not stated–Not stated
 
-Stereo position follows the keyYesSpatial audioYesYes–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated
+Stereo position follows the keyYes, and 3D on headphones since 1.6.0Spatial audioYesYes–Not stated–Not stated–Not stated–Not stated–Not stated–Not stated
 
 Rules for each appYes–Not statedYes–Not statedYes–Not stated–Not statedAllow and block lists–Not stated–Not stated
 
@@ -8786,9 +8786,9 @@ Pick it if you want something you can feel on web pages. It is a companion to th
 
 ## Keyfeel (Purplelink's)
 
-Cost: Free for 7 days, then $9.99 once with a license key and no subscription. It is also part of the $59.99 Mac Suite. Platform: macOS 13 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.5.3, signed and notarized, released October 13, 2026. It is the newest and least proven app in this guide. I make it. I tested version 1.5.2 on macOS 27.2 on October 13, 2026, but I have not compared it with the others on a test Mac.
+Cost: Free for 7 days, then $9.99 once with a license key and no subscription. It is also part of the $59.99 Mac Suite. Platform: macOS 13 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.6.0, signed and notarized, released October 20, 2026. It is the newest and least proven app in this guide. I make it. I tested version 1.5.2 on macOS 27.2 on October 13, 2026, but I have not compared it with the others on a test Mac.
 
-I built it because I wanted the keyboard sounds, the click sounds and the scroll feel from one place. It plays recorded switch sounds with a different recording on each press, per-key pitch and left-to-right stereo, separate press and release sounds, and sounds for the space bar and Return. It also has a synthesized typewriter sound with a bell on Return.
+I built it because I wanted the keyboard sounds, the click sounds and the scroll feel from one place. It plays recorded switch sounds with a different recording on each press, per-key pitch and left-to-right stereo, separate press and release sounds, and sounds for the space bar and Return. It also has a synthesized typewriter sound with a bell on Return. Since 1.6.0 it can place sounds in 3D on headphones, with keys in front of and below you and clicks following the pointer; it is off unless you turn it on.
 
 It adds mouse click sounds, and scroll ticks that follow how fast you scroll and keep going while a hard flick glides. It also has optional trackpad haptics on scroll and click and an optional ripple on screen where you click. Beyond keyboards it has a Fun set (cat, dog, duck and others) and a Calm set of soft sounds for all-day use. All recordings are licensed for use and credited in the app.
 
