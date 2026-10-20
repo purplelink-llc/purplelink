@@ -221,9 +221,9 @@ class Block(unittest.TestCase):
         rows = td.all_sales_rows(self.ledger(), None, admob, today)
         days = td.all_sales_by_day(rows, today)
         self.assertEqual(sum(d["total"] for d in days), sum(r["net"] for r in rows))
+        # The by-day table is gone from the Money tab: the Overview chart draws the same days from revenueDaily.
         out = td.all_sales_block(self.ledger(), None, admob, today)
-        self.assertIn("By day", out)
-        self.assertIn("<td class='who'>2026-10-20</td>", out)
+        self.assertNotIn("By day", out)
 
     def test_old_call_shape_still_works(self):
         self.assertIn("All sales", td.all_sales_block(self.ledger(), None))

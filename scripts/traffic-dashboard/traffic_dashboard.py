@@ -2094,11 +2094,8 @@ def appstore_observations(appstore: dict | None) -> list[str]:
 # ---------------------------------------------------------------- rendering
 
 CSS = """
-/* Dark only, by request. The palette below is what used to sit inside a
-   prefers-color-scheme: dark block; it is now unconditional, so the dashboard
-   looks the same on a machine set to light. color-scheme tells the browser to
-   render scrollbars and any form controls dark to match, rather than leaving a
-   bright scrollbar down the side of a dark page. */
+/* Dark by default, whatever the machine is set to (no prefers-color-scheme rules). Light is an opt-in from the
+   Theme button, remembered in localStorage ("dash-theme"). color-scheme makes scrollbars and form controls match. */
 :root{
   color-scheme:dark;
   --bg:oklch(16% 0.03 310); --panel:oklch(21% 0.035 310);
@@ -2106,7 +2103,20 @@ CSS = """
   --line:oklch(32% 0.05 310); --purple:oklch(78% 0.16 310);
   --purple-soft:oklch(28% 0.06 310); --good:oklch(78% 0.16 150);
   --bad:oklch(72% 0.16 25); --radius:14px;
+  --on-purple:oklch(18% 0.06 310); --est:oklch(52% 0.11 310); --trend:oklch(80% 0.14 70);
+  --chip:oklch(26% 0.04 310);
 }
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:oklch(96.5% 0.008 310); --panel:oklch(99.5% 0.003 310);
+  --ink:oklch(24% 0.03 310); --muted:oklch(45% 0.03 300);
+  --line:oklch(88% 0.02 310); --purple:oklch(50% 0.19 310);
+  --purple-soft:oklch(92% 0.035 310); --good:oklch(44% 0.13 150);
+  --bad:oklch(50% 0.18 25);
+  --on-purple:oklch(99% 0.01 310); --est:oklch(80% 0.09 310); --trend:oklch(52% 0.15 55);
+  --chip:oklch(94% 0.02 310);
+}
+:root[data-theme="light"] .weekly-chart,:root[data-theme="light"] .rev-legend-item i{filter:brightness(.74) saturate(1.2)}
 *{box-sizing:border-box}
 body{
   margin:0; padding:clamp(20px,4vw,48px); background:var(--bg); color:var(--ink);
@@ -2114,40 +2124,44 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 .wrap{max-width:1080px;margin:0 auto}
-header{margin-bottom:28px}
-h1{font-size:clamp(26px,3.6vw,38px);letter-spacing:-.02em;margin:0 0 6px;font-weight:640}
-.stamp{color:var(--muted);font-size:14px}
-h2{font-size:15px;letter-spacing:.02em;margin:34px 0 12px;font-weight:640;color:var(--muted)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 24px;margin-bottom:14px}
+header .head-title{min-width:0}
+h1{font-size:clamp(24px,3vw,30px);letter-spacing:-.02em;margin:0;font-weight:640}
+.stamp{color:var(--muted);font-size:13px;margin:4px 0 0}
+h2{font-size:16px;margin:30px 0 12px;font-weight:650;color:var(--ink)}
+:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
+body{font-variant-numeric:lining-nums}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px;align-items:start;margin-bottom:18px}
 /* Sales sits above the traffic cards: it is the number the rest of the page
    exists to move, so it gets the top of the screen and the largest type. */
-.sales{background:var(--panel);border:1px solid var(--purple-soft);border-radius:var(--radius);
+.sales{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
   padding:22px 24px;margin:0 0 22px}
-.sales h2{margin:0 0 4px;font-size:1rem;letter-spacing:.02em;color:var(--muted);font-weight:600}
-.sales-figures{display:flex;flex-wrap:wrap;gap:32px;align-items:baseline;margin:10px 0 4px}
-.sales-big{font-size:clamp(2rem,5vw,3rem);font-weight:700;line-height:1;color:var(--purple)}
+.sales h2{margin:0 0 6px;font-size:1rem;color:var(--ink);font-weight:650}
+.sales-figures{display:flex;flex-wrap:wrap;gap:12px 32px;align-items:baseline;margin:10px 0 4px}
+.sales-big{font-size:1.6rem;font-weight:700;line-height:1.1;color:var(--ink);font-variant-numeric:tabular-nums}
 .sales-sub{font-size:.9rem;color:var(--muted)}
 .sales-figure-label{display:block;font-size:.78rem;color:var(--muted);margin-bottom:6px;
   text-transform:none;letter-spacing:.01em}
-.sales-secondary{font-size:1.35rem;font-weight:650;line-height:1}
+.sales-secondary{font-size:1.35rem;font-weight:650;line-height:1.1;font-variant-numeric:tabular-nums}
 .sales-split{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 0}
-.sales-chip{border:1px solid var(--line);border-radius:999px;padding:5px 13px;font-size:.85rem}
+.sales-chip{background:var(--chip);border-radius:8px;padding:4px 10px;font-size:.85rem;font-variant-numeric:tabular-nums}
 .sales-chip b{color:var(--ink);font-weight:650}
 .sales-chip span{color:var(--muted)}
 .sales-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;margin-top:18px}
 .sales table{width:100%;border-collapse:collapse;font-size:.87rem}
+.sales th.num,.sales-list th.num{text-align:right}
 .sales th{text-align:left;font-weight:600;color:var(--muted);padding:4px 8px 6px 0;
   border-bottom:1px solid var(--line);font-size:.78rem}
 .sales td{padding:5px 8px 5px 0;border-bottom:1px solid var(--line);color:var(--ink)}
-.sales td.num{text-align:right;font-variant-numeric:tabular-nums}
+.sales td.num{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap}
 .sales .who{color:var(--muted);font-size:.82rem}
 .sales-none{color:var(--muted);margin:8px 0 0}
 .rev-chart{width:100%;height:auto;margin-top:10px}
-.metrics h3{font-size:.8rem;font-weight:600;color:var(--muted);letter-spacing:.02em;margin:22px 0 8px}
-.metric-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0 4px}
-.tile{border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.sales h3{font-size:.9rem;font-weight:650;color:var(--ink);margin:24px 0 8px}
+.metric-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px 24px;margin:12px 0 4px}
+.tile{padding:2px 0 0}
 .sales tr.total td{font-weight:600;border-top:2px solid var(--line)}
-.tile b{display:block;font-size:1.35rem;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.tile b{display:block;font-size:1.3rem;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
 .tile span{display:block;color:var(--muted);font-size:.78rem;margin-top:3px}
 .tile em{display:block;font-style:normal;font-size:.78rem;margin-top:3px}
 .weekly-chart{width:100%;height:auto;display:block}
@@ -2158,18 +2172,21 @@ h2{font-size:15px;letter-spacing:.02em;margin:34px 0 12px;font-weight:640;color:
 .rev-legend-item{display:flex;align-items:center;gap:6px;font-size:.82rem;color:var(--muted)}
 .rev-legend-item i{display:inline-block;width:10px;height:10px;border-radius:3px}
 .rev-legend-proj{background:none!important;border:1.5px dashed var(--muted)}
-.sales-foot{color:var(--muted);font-size:.78rem;margin:14px 0 0}
+.sales-foot{color:var(--muted);font-size:.8rem;margin:14px 0 0;max-width:80ch}
+.sales-foot a{color:var(--purple)}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px}
 .site-name{font-size:15px;font-weight:640;margin:0}
 .site-dom{color:var(--muted);font-size:13px;margin:2px 0 16px}
-.big{font-size:44px;font-weight:660;letter-spacing:-.03em;line-height:1}
+.big{font-size:32px;font-weight:650;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums}
 .big-label{color:var(--muted);font-size:13px;margin-top:4px}
-.delta{display:inline-block;margin-left:10px;font-size:14px;font-weight:600;vertical-align:super}
+.delta{display:inline-block;margin-left:8px;font-size:14px;font-weight:600}
 .up{color:var(--good)} .down{color:var(--bad)} .flat{color:var(--muted)}
 .row{display:flex;gap:26px;margin-top:16px;flex-wrap:wrap}
 .row div span{display:block}
-.row .n{font-size:20px;font-weight:640}
+.row .n{font-size:18px;font-weight:640;font-variant-numeric:tabular-nums}
 .row .l{color:var(--muted);font-size:12px}
+.dev-row{gap:10px 22px;margin-top:12px}
+.dev-row .l{max-width:11em}
 .spark{margin-top:18px}
 .spark svg{width:100%;height:52px;display:block;overflow:visible}
 .spark rect{fill:var(--purple)}
@@ -2188,14 +2205,17 @@ table{width:100%;border-collapse:collapse;font-size:14px}
 th{text-align:left;color:var(--muted);font-weight:600;font-size:12px;
   padding:0 0 8px;border-bottom:1px solid var(--line)}
 td{padding:8px 0;border-bottom:1px solid var(--line);vertical-align:top}
-td.num{text-align:right;font-variant-numeric:tabular-nums;width:64px;color:var(--muted)}
+th.num{text-align:right;white-space:nowrap;padding-left:12px}
+td.num{text-align:right;font-variant-numeric:tabular-nums;width:64px;color:var(--muted);white-space:nowrap;padding-left:12px}
+td.num.who{color:var(--muted)}
 td.k{word-break:break-word}
-.tables{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.tables{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;align-items:start}
 .funnel{display:flex;flex-direction:column;gap:10px}
-.fstep{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;
+.fstep{display:grid;grid-template-columns:5.2em minmax(0,1fr) auto;align-items:baseline;gap:8px;
   padding:9px 0;border-bottom:1px solid var(--line)}
 .fstep:last-child{border-bottom:0}
-.fstep .fn{font-size:20px;font-weight:640;font-variant-numeric:tabular-nums;min-width:56px}
+.fstep .fn{font-size:18px;font-weight:640;font-variant-numeric:tabular-nums;white-space:nowrap}
+.fstep .fn .delta{font-size:12px;margin-left:5px}
 .fstep .fl{color:var(--ink);font-size:14px;flex:1;min-width:0}
 .fstep .fr{color:var(--muted);font-size:12px;white-space:nowrap}
 .fnote{color:var(--muted);font-size:12px;margin:12px 0 0}
@@ -2211,6 +2231,8 @@ td.k{word-break:break-word}
 .fan-note{color:var(--muted);font-size:12px;margin:10px 0 0;line-height:1.5}
 .bound{color:var(--muted);font-size:12px;margin:8px 0 0;line-height:1.5}
 .err{border-color:var(--bad);color:var(--bad)}
+.cust-line b{font-variant-numeric:tabular-nums}
+code{overflow-wrap:anywhere}
 footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);
   color:var(--muted);font-size:13px}
 code{background:var(--purple-soft);padding:1px 5px;border-radius:5px;font-size:12px}
@@ -2300,15 +2322,8 @@ def bounds_note(bounds: list[dict]) -> str:
     parts = []
     for b in bounds:
         if b["events"] == 0:
-            parts.append(
-                f"No {html.escape(b['label'])} yet in {b['views']} pageviews, so there is no rate to "
-                f"project. That sample does put the true rate below "
-                f"<strong>{b['upper95']}%</strong> (95% confidence); it cannot narrow it further "
-                f"until one happens.")
-        else:
-            parts.append(
-                f"{b['events']} {html.escape(b['label'])} in {b['views']} pageviews "
-                f"({b['rate']}%).")
+            parts.append(f"No {html.escape(b['label'])} yet in {b['views']} pageviews: the true rate is "
+                         f"below <strong>{b['upper95']}%</strong> (95% confidence).")
     return f"<p class='bound'>{' '.join(parts)}</p>" if parts else ""
 
 
@@ -2351,18 +2366,10 @@ def fan_chart(spark: list[dict], proj: dict | None) -> str:
         <line class="now" x1="{X(n_h - 1):.2f}" y1="0" x2="{X(n_h - 1):.2f}" y2="100"/>
       </svg>
       <div class="fan-x"><span>observed</span><span>projected &rarr; {last['day'][5:]}</span></div>
-      <p class="fan-note">In {n_p} days, 7-day pageviews land between
-        <strong>{last['p10']} and {last['p90']}</strong> in 8 runs out of 10,
-        centred on {last['p50']}. Drawn by resampling the last
-        {proj['window_days']} complete days ({proj['daily_mean']}/day average).
-        <strong>No trend is assumed</strong>, because none is statistically
-        detectable here. So the centre line drifts toward that average rather
-        than continuing the current week: it reads
-        {"down" if last['p50'] < proj['last7'] else "up"} from {proj['last7']}
-        only because this week sits
-        {"above" if last['p50'] < proj['last7'] else "below"} the 21-day
-        average, not because a {"decline" if last['p50'] < proj['last7'] else "rise"}
-        has been measured. Treat the band, not the line, as the finding.</p>
+      <p class="fan-note">In {n_p} days, 7-day pageviews should land between
+        <strong>{last['p10']} and {last['p90']}</strong> (8 runs in 10), centred on {last['p50']}.
+        No trend is assumed because none is detectable, so the centre drifts toward the
+        {proj['window_days']}-day average of {proj['daily_mean']} a day. Read the band, not the line.</p>
     </div>"""
 
 
@@ -2507,7 +2514,7 @@ def gsc_card(g: dict) -> str:
 
     dev_row = ""
     if dev:
-        dev_row = (f"<div class='row' style='margin-top:10px'>"
+        dev_row = (f"<div class='row dev-row'>"
                    f"{dcell('mobile')}{dcell('desktop')}{dcell('tablet')}</div>")
 
     note = ""
@@ -2524,11 +2531,8 @@ def gsc_card(g: dict) -> str:
         # can see; a couple of stray ones are not worth a caveat.
         if op["impressions"] * 10 >= max(1, split["visible_impressions"]):
             note += (
-                f" {op['impressions']} impressions come from {op['queries']} operator-style "
-                f"{'search' if op['queries'] == 1 else 'searches'} (quoted phrases, site: filters, "
-                f"paper ids), which look like citation checkers rather than readers. Read the "
-                f"device row and the natural-language figures as the human signal; the headline "
-                f"position above is skewed by them.")
+                f" {op['impressions']} impressions are operator-style searches (quoted phrases, site:, paper ids), "
+                f"probably citation checkers, which skew the headline position.")
         note += "</p>"
 
     return (
@@ -2539,9 +2543,7 @@ def gsc_card(g: dict) -> str:
         f"<div><span class='n'>{g['ctr']:.1f}%</span><span class='l'>CTR</span></div>"
         f"<div><span class='n'>{g['position']:.1f}</span><span class='l'>avg position</span></div>"
         f"</div>{dev_row}{note}"
-        f"<p class='fnote'>{html.escape(g['start'])} to {html.escape(g['end'])}. "
-        f"Search Console lags about two days, so this window ends before the "
-        f"beacon figures above.</p></div>")
+        f"<p class='fnote'>{html.escape(g['start'])} to {html.escape(g['end'])} (Search Console lags two days).</p></div>")
 
 
 def gsc_table(title: str, rows: list[dict], empty: str) -> str:
@@ -2621,9 +2623,6 @@ def site_card(s: dict) -> str:
       <div class="row">
         <div><span class="n">{s['today']}</span><span class="l">today so far</span></div>
         <div><span class="n">{s['uniques7']}</span><span class="l">visitors (7d)</span></div>
-        {"".join(f'<div><span class="n">{sec["value"]}</span>'
-                 f'<span class="l">{html.escape(sec["label"])} (7d)</span></div>'
-                 for sec in s['secondaries'])}
         <div><span class="n">{s['last30']}</span><span class="l">last 30 days</span></div>
         <div><span class="n">{s['all_time']}</span><span class="l">tracked total</span></div>
       </div>
@@ -2779,13 +2778,6 @@ def sales_block(sales: dict | None) -> str:
 
     recent = sales.get("recent", [])
     last_order = days_since_last_order(recent, sales.get("generatedAt"))
-    recency_html = (
-        f"""<div>
-      <span class="sales-figure-label">Last order</span>
-      <span class="sales-secondary">{html.escape(last_order)}</span>
-    </div>""" if last_order else ""
-    )
-
     notes = []
     pattern = sales_pattern_note(recent)
     if pattern:
@@ -2803,29 +2795,16 @@ def sales_block(sales: dict | None) -> str:
         tr = lc.get("moderntex_trial") or {}
         notes.append(
             f"Follow-up emails: {tr.get('signups', 0)} ModernTex trial sign-up"
-            f"{'' if tr.get('signups', 0) == 1 else 's'}, {tr.get('bought', 0)} later bought; "
-            f"{lc.get('decision_reminders_waiting', 0)} decision reminder"
-            f"{'' if lc.get('decision_reminders_waiting', 0) == 1 else 's'} waiting; "
-            f"{lc.get('unsubscribed', 0)} unsubscribed.")
-    notes.append("Paid Checkout Sessions, gross. Refunds and Stripe fees are not deducted.")
+            f"{'' if tr.get('signups', 0) == 1 else 's'}, {tr.get('bought', 0)} later bought.")
+    notes.append("Gross: refunds and Stripe fees are not deducted. The all-sales list above is net.")
     if sales.get("truncated"):
         notes.append("Older orders beyond the pagination cap are not counted.")
 
     return f"""<section class="sales">
-  <h2>Sales · both sites</h2>
-  <div class="sales-figures">
-    <div>
-      <span class="sales-figure-label">Last {days} days</span>
-      <span class="sales-big">{money(win.get('gross', 0))}</span>
-      <span class="sales-sub"> · {orders(win.get('orders', 0))}</span>
-    </div>
-    <div>
-      <span class="sales-figure-label">All time</span>
-      <span class="sales-secondary">{money(all_time.get('gross', 0))}</span>
-      <span class="sales-sub"> · {orders(all_time.get('orders', 0))}</span>
-    </div>
-    {recency_html}
-  </div>
+  <h2>Card orders &middot; Stripe, gross</h2>
+  <p class="cust-line">Last {days} days: <b>{money(win.get('gross', 0))}</b>, {orders(win.get('orders', 0))}.
+    All time: <b>{money(all_time.get('gross', 0))}</b>, {orders(all_time.get('orders', 0))}.{
+    f" Last order {html.escape(last_order)}." if last_order else ""}</p>
   <div class="sales-split">{chips}</div>
   <div class="sales-cols">
     <div>
@@ -2916,7 +2895,6 @@ def appstore_block(app: dict | None) -> str:
         funnel_html = (f"<div class='sales-split'>"
                        f"<span class='sales-chip'><b>{f['impressions']:,}</b> <span>impressions</span></span>"
                        f"<span class='sales-chip'><b>{f['pageViews']:,}</b> <span>product page views</span></span>"
-                       f"<span class='sales-chip'><b>{f['downloads']:,}</b> <span>downloads</span></span>"
                        f"<span class='sales-chip'><b>{conv}</b> <span>page view → download, last {f['days']}d</span></span>"
                        f"</div>")
     else:
@@ -2938,14 +2916,14 @@ def appstore_block(app: dict | None) -> str:
       <span class="sales-sub"> · {at['proUnits']} paid Pro purchase{'' if at['proUnits'] == 1 else 's'}{f" · {at['proPromo']} promo-code redemption{'' if at['proPromo'] == 1 else 's'}" if at['proPromo'] else ''}</span>
     </div>
     <div>
-      <span class="sales-figure-label">Updates · redownloads (30d)</span>
-      <span class="sales-secondary">{w30['updates']:,} · {w30['redownloads']:,}</span>
+      <span class="sales-figure-label">Last 30 days</span>
+      <span class="sales-secondary">{w30['updates']:,} <span class="sales-sub">updates</span> &nbsp;{w30['redownloads']:,} <span class="sales-sub">redownloads</span></span>
     </div>
   </div>
   {sparkline(sm['spark'], 'downloads')}
   {("<div class='sales-split'>" + "".join(f"<span class='sales-chip'><b>{html.escape(c)}</b> <span>{n} download{'' if n == 1 else 's'}</span></span>" for c, n in sm['countries'].items()) + "</div>") if sm['countries'] else ''}
   {funnel_html}
-  <p class="sales-foot">Sales &amp; Trends figures lag one day (latest: {html.escape(sm['latestDay'] or '—')}); a day Apple reports nothing for is a quiet day, shown as 0. Proceeds are Apple's developer proceeds after its commission.</p>
+  <p class="sales-foot">Sales &amp; Trends lag one day (latest: {html.escape(sm['latestDay'] or '—')}); a day with no report is shown as 0. Proceeds are after Apple's commission.</p>
 </section>"""
 
 
@@ -2962,10 +2940,8 @@ def chrome_web_store_block(cws: dict | None) -> str:
       <span class="sales-big">{html.escape(cws['users'])}</span>
     </div>
   </div>
-  <p class="sales-foot">Rounded by Google to the nearest bucket, read from the public
-    <a href="{html.escape(cws['url'])}">store listing</a> (as of {html.escape(cws['asOf'])});
-    not an exact daily count. Chrome Web Store has no install-stats API and the
-    Developer Dashboard cannot be automated.</p>
+  <p class="sales-foot">Rounded by Google to the nearest bucket, from the public
+    <a href="{html.escape(cws['url'])}">store listing</a> (as of {html.escape(cws['asOf'])}).</p>
 </section>"""
 
 
@@ -2999,6 +2975,18 @@ def manual_ads_block(data: dict, admob: dict | None = None) -> str:
 
     asa_html = ""
     spend_total = 0.0
+    asa_stale = False
+    if asa:
+        try:
+            asa_stale = (dt.date.today() - dt.date.fromisoformat(str(asa.get("asOf"))[:10])).days > 14
+        except ValueError:
+            asa_stale = False
+    if asa and asa_stale:
+        cs = asa.get("campaigns", [])
+        asa_html = (f"<p class='cust-line'>Apple Search Ads: no reading since {html.escape(str(asa.get('asOf')))}. "
+                    f"That reading ({html.escape(asa.get('window', '').lower())}) was ${sum(c.get('spend', 0) for c in cs):,.2f} spent, "
+                    f"{sum(c.get('installs', 0) for c in cs):,} installs.</p>")
+        asa = None
     if asa:
         chips = "".join(
             f"<span class='sales-chip'><b>${c.get('spend', 0):,.2f}</b> <span>spend</span></span>"
@@ -3054,7 +3042,7 @@ def manual_ads_block(data: dict, admob: dict | None = None) -> str:
                        f"({html.escape(globepin_admob['error'][:120])}).</p>")
 
     compare_html = ""
-    if asa and earnings_total is not None:
+    if asa and earnings_total is not None and not asa_stale:
         net = earnings_total - spend_total
         verdict = ("still well behind" if net < -spend_total * 0.5 else
                    "behind" if net < 0 else "ahead")
@@ -3581,8 +3569,11 @@ def marketplace_summary(history: dict, days: int = 30) -> dict:
 def marketplaces_block(summary: dict | None) -> str:
     if not summary:
         return ""
-    body = ""
+    body, quiet = "", []
     for s in summary.values():
+        if not s["orders"] and not s["windowOrders"]:
+            quiet.append(s["label"])
+            continue
         last = (dt.datetime.fromtimestamp(s["last"]).strftime("%Y-%m-%d") if s["last"] else "none yet")
         reading = html.escape(s["asOf"] or "never") + (
             f" <span class='who'>({html.escape('; '.join(s['issues']))})</span>" if s["issues"] else "")
@@ -3591,15 +3582,15 @@ def marketplaces_block(summary: dict | None) -> str:
                  f"<td class='num'>{s['orders']} / {money(s['gross'])}</td><td class='who'>{last}</td>"
                  f"<td class='who'>{reading}</td></tr>")
     est = sum(s["estimated"] for s in summary.values())
-    notes = [f"Net is after the marketplace's fees. {est} order(s) in the window use the published fee "
-             "schedule because the page did not show the fee; the rest use the reported fee.",
-             f"Shop-level Etsy costs are not tied to orders and are not in these figures: listing fees for the "
-             f"7 spreadsheet listings, ${ETSY_SHEET_LISTING_FEES:.2f} one time ($0.20 each)."]
+    notes = [f"Net is after the marketplace's fees ({est} order(s) in the window use the published fee schedule). "
+             f"Etsy listing fees for the 7 spreadsheet listings (${ETSY_SHEET_LISTING_FEES:.2f}, one time) are not in these figures."]
+    quiet_html = (f"<p class='cust-line'>{html.escape(', '.join(quiet))}: no orders yet.</p>" if quiet else "")
+    table_html = (f"""<table><thead><tr><th>Marketplace</th><th class="num">Orders, {summary['etsy']['days']}d</th>
+    <th class="num">Gross</th><th class="num">Net</th><th class="num">All time</th><th>Last order</th>
+    <th>Last read</th></tr></thead><tbody>{body}</tbody></table>""" if body else "")
     return f"""<section class="sales">
   <h2>Sales · marketplaces</h2>
-  <table><thead><tr><th>Marketplace</th><th class="num">Orders, {summary['etsy']['days']}d</th>
-    <th class="num">Gross</th><th class="num">Net</th><th class="num">All time</th><th>Last order</th>
-    <th>Last read</th></tr></thead><tbody>{body}</tbody></table>
+  {table_html}{quiet_html}
   <p class="sales-foot">{html.escape(' '.join(notes))}</p>
 </section>"""
 
@@ -3638,10 +3629,14 @@ def queue_block() -> str:
     q = queue_summary()
     if not q:
         return ""
-    return (f"<section class=\"sales\"><h2>Approval queue</h2><p class=\"sales-foot\">"
-            f"{q['pending']} pending ({q['soon']} expiring within 2 days), {q['needsWork']} in needs-work, "
-            f"{q['approved']} approved awaiting action. 30-day acceptance {q['acceptance']}% over {q['decided']} decisions; "
-            f"expired unread {q['expiredPct']}%. Index updated {html.escape(q['updated'][:16].replace('T', ' '))}.</p></section>")
+    watch = []
+    if q["soon"]:
+        watch.append(f"{q['soon']} expiring within 2 days")
+    if q["needsWork"]:
+        watch.append(f"{q['needsWork']} in needs-work")
+    extra = f" ({', '.join(watch)})" if watch else ""
+    return (f"<section class=\"sales\"><h2>Approval queue</h2><p class=\"cust-line\">"
+            f"<b>{q['pending']}</b> pending{extra}, <b>{q['approved']}</b> approved and awaiting action.</p></section>")
 
 
 AD_FUNNEL_SINCE = "2026-10-07"  # first day analytics.js sends the first-touch channel (ft) on funnel events
@@ -3991,10 +3986,12 @@ def _pct(n: float | None, d: float | None) -> str:
 
 
 def weekly_chart(weeks: list[str], weekly: dict[str, dict[str, float]]) -> str:
+    first = next((i for i, w in enumerate(weeks) if sum(weekly[w].values()) > 0), 0)
+    weeks = weeks[first:]
     totals = [sum(weekly[w].values()) for w in weeks]
     peak = max(totals + [1.0])
-    w_, h, pad_top, pad_bottom = 640, 170, 22, 22
     n = len(weeks)
+    w_, h, pad_top, pad_bottom = max(n, 4) * 64, 170, 22, 22
     bar_w, gap = (w_ / n) * 0.62, (w_ / n) * 0.38
     parts = []
     for i, wk in enumerate(weeks):
@@ -4009,17 +4006,17 @@ def weekly_chart(weeks: list[str], weekly: dict[str, dict[str, float]]) -> str:
             parts.append(f"<rect x='{x:.1f}' y='{y:.1f}' width='{bar_w:.1f}' height='{seg:.1f}' "
                          f"fill='{color}' rx='2'><title>{html.escape(group)}: ${v:,.2f}</title></rect>")
         if totals[i] > 0:
-            parts.append(f"<text x='{x + bar_w / 2:.1f}' y='{y - 5:.1f}' font-size='10.5' "
+            parts.append(f"<text x='{x + bar_w / 2:.1f}' y='{y - 5:.1f}' font-size='12' "
                          f"fill='var(--ink)' text-anchor='middle'>${totals[i]:,.0f}</text>")
-        if i % 2 == 1 or i == n - 1:
+        if i % 2 == 0 or i == n - 1:
             label = dt.date.fromisoformat(wk).strftime("%b %-d")
-            parts.append(f"<text x='{x + bar_w / 2:.1f}' y='{h - 5}' font-size='10.5' "
+            parts.append(f"<text x='{x + bar_w / 2:.1f}' y='{h - 5}' font-size='12' "
                          f"fill='var(--muted)' text-anchor='middle'>{label}</text>")
     legend = "".join(
         f"<span class='rev-legend-item'><i style='background:{c}'></i>{html.escape(g)}</span>"
         for g, c in PRODUCT_GROUPS if any(weekly[w].get(g, 0) > 0 for w in weeks))
-    return (f"<svg viewBox='0 0 {w_} {h}' class='weekly-chart' role='img' "
-            f"aria-label='Revenue per week, last 12 weeks'>{''.join(parts)}</svg>"
+    return (f"<svg viewBox='0 0 {w_} {h}' class='weekly-chart' role='img' style='max-width:{int(w_ * 1.4)}px' "
+            f"aria-label='Revenue per week, stacked by product'>{''.join(parts)}</svg>"
             f"<div class='rev-legend'>{legend}</div>")
 
 
@@ -4032,12 +4029,14 @@ def metrics_block(m: dict | None) -> str:
                 if m["unknownFees"] else "")
     sw = m["subsWindow"]
     tiles = [
-        (f"${m['grossCur']:,.2f}", f"revenue, last {m['days']}d", ch),
-        (f"${m['netCur']:,.2f}", "net after Stripe fees & refunds", ""),
+        (f"${m['netCur']:,.2f}", f"net, last {m['days']}d (gross ${m['grossCur']:,.2f})", ch),
         (str(m["newCur"]), f"new customers ({m['returningCur']} returning)", ""),
-        (money(m["mrr"]), f"MRR · {m['subsActive']} active, {m['subsTrialing']} trialing", ""),
+    ]
+    if m["mrr"] or m["subsActive"]:
+        tiles.append((money(m["mrr"]), f"MRR, {m['subsActive']} active, {m['subsTrialing']} trialing", ""))
+    tiles += [
         (str(m["moderntex"]["trialsInProgress"] + m["subsTrialing"]),
-         "trials running (ModernTex downloads, last 7d)", ""),
+         "ModernTex trials, last 7d", ""),
         (str(m["refundOrders"]), f"refunds, {money(m['refundAmount'])} all time", ""),
     ]
     tiles_html = "".join(f"<div class='tile'><b>{v}</b><span>{html.escape(lbl)}</span>{extra}</div>"
@@ -4091,7 +4090,7 @@ def metrics_block(m: dict | None) -> str:
     ltv = f"${m['ltv']:,.2f}" if m["ltv"] is not None else "—"
     return f"""
 <section class="sales metrics">
-  <h2>Revenue metrics &middot; card sales (Stripe) and GlobePin Pro</h2>
+  <h2>Card sales and GlobePin Pro &middot; last {m['days']} days</h2>
   <div class="metric-tiles">{tiles_html}</div>
   <h3>Revenue per week</h3>
   {weekly_chart(m['weeks'], m['weekly'])}
@@ -4104,12 +4103,9 @@ def metrics_block(m: dict | None) -> str:
     ({_pct(m['repeat'], m['customers'])}) · average {ltv} net each · refund rate
     {'—' if m['refundRate'] is None else format(m['refundRate'], '.1f') + '%'}</p>
   {ev_html}
-  <p class="sales-foot">Revenue is Stripe gross plus GlobePin Pro proceeds (already net of
-    Apple's cut). Net subtracts Stripe's fee and any refund per order{fee_note}. ModernTex
-    trial→paid is downloads against orders over the same days; downloads and orders are not
-    linked to each other, so a buyer who never took the trial still counts. The email-linked
-    line is the exact rate for trial users who gave an email. "Worth each" is net revenue per
-    install or sale so far; "Payback" is worth ÷ cost, and 1.00× is break-even.</p>
+  <p class="sales-foot">Stripe sales plus GlobePin Pro proceeds (already net of Apple's cut); net is after
+    Stripe's fee and refunds{fee_note}. Trial→paid compares downloads with orders over the same days, not
+    the same people. "Payback" is worth ÷ cost; 1.00× is break-even.</p>
 </section>"""
 
 
@@ -4637,9 +4633,7 @@ def tax_block(t: dict | None) -> str:
     return f"""
   <h3>Taxes · estimate for {pr['taxYear']}</h3>
   <table><tbody>{rows}</tbody></table>
-  <p class="sales-foot">{est} Schedule C, {html.escape(pr['filingStatus'])} filer, {basis}.{assumed} Apple collects and remits sales tax
-    on App Store sales. A business that loses money in most years can have its losses questioned under the
-    hobby-loss rule (profit in 3 of 5 years is the safe presumption). An estimate for planning, not a return.</p>"""
+  <p class="sales-foot">{est} Schedule C, {html.escape(pr['filingStatus'])} filer, {basis}.{assumed} An estimate for planning, not a return.</p>"""
 
 
 def print_tax(t: dict | None) -> None:
@@ -4670,7 +4664,7 @@ def profit_block(p: dict | None, ch: dict | None, tax: dict | None = None) -> st
              f"{cell(t['ads'])}{cell(t['api'])}{cell(t['hosting'])}{cell(t['fixed'])}"
              f"<td class='num {'down' if t['profit'] < 0 else 'up'}'>{_usd(t['profit'])}</td><td></td></tr>")
     gaps = "; ".join(html.escape(g) for g in p["gaps"])
-    fixed = (f" Fixed costs entered: {html.escape(', '.join(p['fixedItems']))}." if p["fixedItems"] else "")
+    fixed = (f" Fixed costs: {len(p['fixedItems'])} entered items." if p["fixedItems"] else "")
 
     ch_html = ""
     if ch:
@@ -5078,126 +5072,6 @@ def print_revenue_sources(sales, appstore, market_rows, admob) -> None:
     print("   " + ("; ".join(bits) if bits else "nothing yet"))
 
 
-REVENUE_PROJ_HORIZON = 3     # months projected forward
-REVENUE_PROJ_PATHS = 4000    # bootstrap resamples
-MIN_REVENUE_MONTHS = 6       # real (non-empty) months required before projecting at all
-
-
-def project_revenue(monthly_totals: dict[str, float], months: list[str]) -> dict | None:
-    """Bootstrap a range for the next REVENUE_PROJ_HORIZON months of combined
-    revenue, in the same spirit as project() above for pageviews: resample
-    observed monthly totals rather than fit a trend, because a trend is a
-    claim the data has to earn, not a default.
-
-    Gated at MIN_REVENUE_MONTHS real (nonzero) months rather than the daily
-    project()'s MIN_DAYS-style threshold, because monthly totals are noisier
-    per-observation than daily pageviews (a single sales burst, a payout
-    clearing, or a platform outage can dominate an entire month) and there
-    are structurally far fewer of them to resample from. As of 2026-09,
-    real revenue exists for exactly 2 months (Aug, Sep) -- nowhere near
-    enough to resample a defensible range from, so this returns None and
-    the caller renders that honestly instead of drawing a line through two
-    points and calling it a forecast.
-    """
-    observed = [monthly_totals[m] for m in months if monthly_totals.get(m, 0.0) > 0]
-    if len(observed) < MIN_REVENUE_MONTHS:
-        return {"insufficient": True, "have": len(observed), "need": MIN_REVENUE_MONTHS}
-
-    rnd = random.Random(20260919)  # fixed seed: same data -> same picture
-    pct = (10, 50, 90)
-    bands = []
-    last_month = months[-1]
-    y, m = (int(x) for x in last_month.split("-"))
-    for h in range(1, REVENUE_PROJ_HORIZON + 1):
-        m += 1
-        if m == 13:
-            m, y = 1, y + 1
-        draws = sorted(rnd.choice(observed) for _ in range(REVENUE_PROJ_PATHS))
-        q = {p: draws[int(p / 100 * (len(draws) - 1))] for p in pct}
-        bands.append({"month": f"{y:04d}-{m:02d}", **{f"p{p}": q[p] for p in pct}})
-    return {"insufficient": False, "bands": bands, "have": len(observed)}
-
-
-def revenue_chart(months: list[str], series: dict[str, dict[str, float]],
-                   proj: dict | None = None) -> str:
-    """Stacked monthly bars, one per revenue source, hand-rolled SVG in the
-    same style as fan_chart/sparkline elsewhere in this file -- no charting
-    library, consistent with everything else this script renders.
-
-    When proj carries real bands (see project_revenue), projected months are
-    appended as a lighter, dashed-outline bar at the p50 estimate with a
-    thin p10-p90 range line through it -- visually distinct from the solid,
-    known-value bars so a reader can't mistake a projection for an actual
-    figure at a glance. When proj is absent or insufficient, only the real
-    months are drawn; project_revenue's own "insufficient" note (rendered by
-    the caller) explains why there is no projection yet rather than the
-    chart silently having fewer bars than expected.
-    """
-    proj_bands = proj["bands"] if (proj and not proj.get("insufficient")) else []
-    proj_months = [b["month"] for b in proj_bands]
-    all_months = months + proj_months
-    totals = [sum(series[k].get(m, 0.0) for k, _l, _c in REVENUE_SOURCES) for m in months]
-    proj_peaks = [b["p90"] for b in proj_bands]
-    peak = max(totals + proj_peaks + [1.0])
-    n = len(all_months)
-    # pad_top reserves room for the tallest bar's total-amount label so it
-    # doesn't clip against the SVG's own top edge.
-    w, h, pad_top, pad_bottom = 640, 180, 24, 22
-    bar_area = h - pad_top - pad_bottom
-    bar_w = (w / n) * 0.6
-    gap = (w / n) * 0.4
-
-    def month_label(m: str) -> str:
-        return dt.datetime.strptime(m, "%Y-%m").strftime("%b")
-
-    bars = []
-    for i, month in enumerate(months):
-        x = i * (bar_w + gap) + gap / 2
-        y_cursor = h - pad_bottom
-        for key, _label, color in REVENUE_SOURCES:
-            v = series[key].get(month, 0.0)
-            if v <= 0:
-                continue
-            seg_h = (v / peak) * bar_area
-            y_cursor -= seg_h
-            bars.append(f"<rect x='{x:.1f}' y='{y_cursor:.1f}' width='{bar_w:.1f}' "
-                        f"height='{seg_h:.1f}' fill='{color}' rx='2'/>")
-        bars.append(f"<text x='{x + bar_w / 2:.1f}' y='{h - 4}' font-size='11' "
-                    f"fill='var(--muted)' text-anchor='middle'>{month_label(month)}</text>")
-        if totals[i] > 0:
-            top_y = h - pad_bottom - (totals[i] / peak) * bar_area - 6
-            bars.append(f"<text x='{x + bar_w / 2:.1f}' y='{top_y:.1f}' "
-                        f"font-size='11' fill='var(--ink)' text-anchor='middle'>${totals[i]:,.0f}</text>")
-
-    for j, b in enumerate(proj_bands):
-        i = len(months) + j
-        x = i * (bar_w + gap) + gap / 2
-        cx = x + bar_w / 2
-        p50_h = (b["p50"] / peak) * bar_area
-        p10_y = h - pad_bottom - (b["p10"] / peak) * bar_area
-        p90_y = h - pad_bottom - (b["p90"] / peak) * bar_area
-        bars.append(f"<rect x='{x:.1f}' y='{h - pad_bottom - p50_h:.1f}' width='{bar_w:.1f}' "
-                    f"height='{p50_h:.1f}' fill='none' stroke='var(--muted)' "
-                    f"stroke-dasharray='3 3' rx='2'/>")
-        bars.append(f"<line x1='{cx:.1f}' y1='{p10_y:.1f}' x2='{cx:.1f}' y2='{p90_y:.1f}' "
-                    f"stroke='var(--muted)' stroke-width='1.5'/>")
-        bars.append(f"<text x='{cx:.1f}' y='{h - 4}' font-size='11' fill='var(--muted)' "
-                    f"text-anchor='middle'>{month_label(b['month'])}?</text>")
-        bars.append(f"<text x='{cx:.1f}' y='{p90_y - 6:.1f}' font-size='11' fill='var(--muted)' "
-                    f"text-anchor='middle'>${b['p50']:,.0f}?</text>")
-
-    legend = "".join(
-        f"<span class='rev-legend-item'><i style='background:{color}'></i>{html.escape(label)}</span>"
-        for _k, label, color in REVENUE_SOURCES
-    )
-    if proj_bands:
-        legend += ("<span class='rev-legend-item'><i class='rev-legend-proj'></i>"
-                   "Projected (p10–p90 range)</span>")
-    return (f"<svg viewBox='0 0 {w} {h}' class='rev-chart' role='img' "
-            f"aria-label='Monthly revenue by source, with projection'>{''.join(bars)}</svg>"
-            f"<div class='rev-legend'>{legend}</div>")
-
-
 def revenue_block(sales: dict | None, appstore: dict | None, n_months: int = 6,
                   market_rows: list[dict] | None = None, admob: dict | None = None) -> str:
     months = recent_months(n_months)
@@ -5215,44 +5089,20 @@ def revenue_block(sales: dict | None, appstore: dict | None, n_months: int = 6,
         last_month_fig = (f"<div><span class=\"sales-figure-label\">Last month ({dt.datetime.strptime(prev, '%Y-%m').strftime('%B')})</span>"
                           f"<span class=\"sales-secondary\">${monthly_totals[prev]:,.2f}</span></div>")
     est_now = sum(series[k].get(this_month, 0.0) for k in ESTIMATED_SOURCES) + series["getty_est"].get(this_month, 0.0)
-    est_note = (f"This month includes ${est_now:,.2f} of estimates that have not been paid out: TikTok's own Creator "
-                f"Rewards estimate, AdMob's estimated earnings, and our estimate of Getty downloads that are not on a royalty "
-                f"statement yet (counted under Photo licensing). The rest is money received or sold.")
-    proj = project_revenue(monthly_totals, months)
-    if proj.get("insufficient"):
-        proj_note = (f"Not projecting future months yet: {proj['have']} real month(s) of revenue "
-                     f"on record, need at least {proj['need']}. A forecast off fewer points than "
-                     f"that would be a line drawn through noise, not a trend -- same reasoning as "
-                     f"the pageview projection above, just at monthly instead of daily granularity.")
-    else:
-        b0 = proj["bands"][0]
-        proj_note = (f"Projected next month ({dt.datetime.strptime(b0['month'], '%Y-%m').strftime('%B')}): "
-                     f"${b0['p10']:,.0f}–${b0['p90']:,.0f} (median ${b0['p50']:,.0f}), resampled from "
-                     f"{proj['have']} real months -- not a trend line, a range of what recent months "
-                     f"actually looked like.")
+    est_note = (f"This month includes ${est_now:,.2f} of estimates that have not been paid out (TikTok Creator Rewards, "
+                f"AdMob, Getty downloads not yet on a royalty statement). The rest is money received or sold.")
     return f"""
 <section class="sales revenue">
-  <h2>Revenue &middot; all sources</h2>
+  <h2>Revenue by month &middot; all sources</h2>
   <div class="sales-figures">
     <div>
       <span class="sales-figure-label">This month so far</span>
-      <span class="sales-big">${this_month_total:,.2f}</span>
+      <span class="sales-secondary">${this_month_total:,.2f}</span>
     </div>
     {last_month_fig}
   </div>
   <div class="sales-split">{chips}</div>
   <p class="sales-foot">{html.escape(est_note)}</p>
-  {revenue_chart(months, series, proj)}
-  <p class="bound">{html.escape(proj_note)}</p>
-  <p class="sales-foot">"Revenue," not "MRR": almost none of this is recurring
-  subscription income (ModernTex and the guides are one-time purchases, photo
-  licensing is per-download) -- MRR would be the wrong word for what this
-  measures. Sales and App Store figures are real, automated pulls. Photo
-  licensing is scraped/parsed from each platform's own dashboard (see
-  scripts/photo-dashboard.py) and is fragile by nature -- a platform layout
-  change or anti-bot block shows as a flat month, not necessarily zero real
-  activity. Ads is not yet automated and both sites are currently unapproved
-  by AdSense ("Low value content"), so it reads $0 until that changes.</p>
 </section>"""
 
 
@@ -5566,45 +5416,235 @@ def write_revenue_daily_csv(archive: dict, path: Path | None = None) -> None:
     tmp.replace(path)
 
 
-def daily_revenue_block(archive: dict | None, today: dt.date | None = None, days: int = 30) -> str:
-    """Overview: money per day for the last `days` days from the revenueDaily archive. Bars stack what was sold or
-    received (solid) under estimates (TikTok, AdMob, Getty downloads not on a statement; lighter), so an estimate is
-    never read as cash. Figures above the chart: today, last 7 days, last 30 days, and the 30-day daily average."""
-    archive = archive or {}
+# ---- revenue forecast. Plain Python so it runs wherever the dashboard does; ARIMA candidates join only when
+# statsmodels imports. Mirrors ~/.purplelink/insights/revenue_forecast/forecast.py: candidates are scored by a
+# rolling-origin backtest (last 28 days, refit at each origin, score the 7-day total), the winner is refit on all days.
+FC_HORIZON = 60          # days forecast (the page slices 14 / 30 / 60)
+FC_WINDOW = 90           # most recent complete days the models see
+FC_BACKTEST, FC_STEP = 28, 7
+FC_PATHS = 2000          # bootstrap paths for the 80% range
+FC_ARIMA = True          # tests switch this off; the real run still needs statsmodels to import
+FC_ARIMA_BUDGET = 25.0   # seconds of ARIMA fitting allowed before the candidate is dropped
+
+
+def _fc_mean_all(y: list[float], h: int):
+    m = sum(y) / len(y)
+    return [m] * h, [v - m for v in y]
+
+
+def _fc_mean_28(y: list[float], h: int):
+    w = y[-28:]
+    m = sum(w) / len(w)
+    return [m] * h, [v - m for v in w]
+
+
+def _fc_ses(y: list[float], h: int):
+    """Simple exponential smoothing; alpha by least squares on a grid."""
+    best = None
+    for alpha in (0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.7, 0.9):
+        level, errs = y[0], []
+        for v in y[1:]:
+            e = v - level
+            errs.append(e)
+            level += alpha * e
+        sse = sum(e * e for e in errs)
+        if best is None or sse < best[0]:
+            best = (sse, level, errs)
+    return [best[1]] * h, best[2]
+
+
+def _fc_damped(y: list[float], h: int):
+    """Holt's linear trend with damping; alpha, beta, phi by least squares on a coarse grid."""
+    best = None
+    for alpha in (0.05, 0.1, 0.2, 0.35, 0.5, 0.7):
+        for beta in (0.05, 0.15, 0.3):
+            for phi in (0.8, 0.9, 0.95, 0.98):
+                level, trend, errs = y[0], 0.0, []
+                for v in y[1:]:
+                    pred = level + phi * trend
+                    e = v - pred
+                    errs.append(e)
+                    level = pred + alpha * e
+                    trend = phi * trend + alpha * beta * e
+                sse = sum(e * e for e in errs)
+                if best is None or sse < best[0]:
+                    best = (sse, level, trend, phi, errs)
+    _, level, trend, phi, errs = best
+    out, damp = [], 0.0
+    for i in range(1, h + 1):
+        damp += phi ** i
+        out.append(level + damp * trend)
+    return out, errs
+
+
+def _fc_arima_candidates(deadline: float) -> dict:
+    """ARIMA by AIC and ARIMA with weekly seasonality, only when statsmodels is importable. {} otherwise."""
+    if not FC_ARIMA:
+        return {}
+    try:
+        import warnings
+        from statsmodels.tsa.arima.model import ARIMA
+    except Exception:
+        return {}
+
+    def check():
+        if time.monotonic() > deadline:
+            raise TimeoutError("arima budget")
+
+    def fit(*a, **k):
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            return ARIMA(*a, **k).fit()
+
+    def arima_best(y, h):
+        best = None
+        for order in ((0, 0, 0), (1, 0, 0), (0, 0, 1), (1, 0, 1), (0, 1, 1)):
+            check()
+            try:
+                f = fit(y, order=order, trend="c" if order[1] == 0 else "n")
+            except Exception:
+                continue
+            if best is None or f.aic < best.aic:
+                best = f
+        if best is None:
+            raise ValueError("no ARIMA order fit")
+        return [float(v) for v in best.forecast(h)], [float(v) for v in best.resid]
+
+    def arima_weekly(y, h):
+        check()
+        f = fit(y, order=(1, 0, 0), seasonal_order=(1, 0, 0, 7), trend="c")
+        return [float(v) for v in f.forecast(h)], [float(v) for v in f.resid]
+
+    return {"ARIMA (order by AIC)": arima_best, "ARIMA with weekly seasonality": arima_weekly}
+
+
+def fc_candidates(deadline: float | None = None) -> dict:
+    c = {"Mean of all days": _fc_mean_all, "Mean of last 28 days": _fc_mean_28,
+         "Simple exponential smoothing": _fc_ses, "Damped-trend smoothing": _fc_damped}
+    c.update(_fc_arima_candidates(deadline if deadline is not None else time.monotonic() + FC_ARIMA_BUDGET))
+    return c
+
+
+def fc_backtest(y: list[float], candidates: dict | None = None) -> dict[str, float]:
+    """Mean absolute error of the 7-day total, rolling origin over the last 28 days. A candidate that raises is dropped."""
+    candidates = candidates if candidates is not None else fc_candidates()
+    n = len(y)
+    origins = range(max(14, n - FC_BACKTEST), n - FC_STEP + 1)
+    scores: dict[str, float] = {}
+    for name, fn in candidates.items():
+        errs = []
+        try:
+            for o in origins:
+                fc, _ = fn(y[:o], FC_STEP)
+                errs.append(abs(sum(max(0.0, v) for v in fc) - sum(y[o:o + FC_STEP])))
+        except Exception:
+            continue
+        if errs:
+            scores[name] = sum(errs) / len(errs)
+    return scores
+
+
+def forecast_series(y: list[float], horizon: int = FC_HORIZON, candidates: dict | None = None) -> dict | None:
+    """Forecast the next `horizon` days of a daily series (cents, complete days only). None when under 21 days.
+
+    Returns {model, mae, scores, fc, lo, hi, total30, total30_lo, total30_hi} with fc/lo/hi per day, never below 0.
+    The band is the 80% range of the 7-day average, from bootstrapped centred residuals of the chosen model clipped
+    at 0 (six lead-in days drawn from the same process give the first forecast days a full week); it is widened to
+    hold the point forecast, which is the planning figure."""
+    if len(y) < 21:
+        return None
+    candidates = candidates if candidates is not None else fc_candidates()
+    scores = fc_backtest(y, candidates)
+    if not scores:
+        return None
+    best = min(scores, key=lambda k: (scores[k], k))
+    fc_raw, resid = candidates[best](y, horizon)
+    fc = [max(0.0, float(v)) for v in fc_raw]
+    resid = [r for r in resid if r == r]
+    mu = sum(resid) / len(resid) if resid else 0.0
+    resid = [r - mu for r in resid]
+    rng = random.Random(7)
+    cols: list[list[float]] = [[] for _ in range(horizon)]
+    month: list[float] = []
+    for _ in range(FC_PATHS):
+        # Six lead-in days drawn from the same process, so the 7-day average has a full week from the first
+        # forecast day on (a band that starts as a single day's spread would flare open at "today").
+        lead = [max(0.0, fc[0] + (rng.choice(resid) if resid else 0.0)) for _ in range(6)]
+        path = [max(0.0, f + (rng.choice(resid) if resid else 0.0)) for f in fc]
+        full = lead + path
+        for j in range(horizon):
+            cols[j].append(sum(full[j:j + 7]) / 7)
+        month.append(sum(path[:30]))
+
+    def pct(vals: list[float], q: float) -> float:
+        s = sorted(vals)
+        return s[min(len(s) - 1, max(0, int(round(q * (len(s) - 1)))))]
+
+    lo = [min(pct(c, 0.10), f) for c, f in zip(cols, fc)]
+    hi = [max(pct(c, 0.90), f) for c, f in zip(cols, fc)]
+    return {"model": best, "mae": round(scores[best]), "scores": {k: round(v) for k, v in sorted(scores.items(), key=lambda kv: kv[1])},
+            "fc": [round(v) for v in fc], "lo": [round(v) for v in lo], "hi": [round(v) for v in hi],
+            "total30": round(sum(fc[:30])), "total30_lo": round(pct(month, 0.10)), "total30_hi": round(pct(month, 0.90))}
+
+
+def revenue_chart_data(archive: dict | None, today: dt.date | None = None) -> dict | None:
+    """What the Overview chart draws: every day from the archive's first day through today, per source in cents
+    ({source: {"r": [received...], "e": [estimated...]}}), plus the forecast for all sources with estimates and for
+    received money alone. None when the archive holds no money. The forecast never breaks the page: a failure leaves
+    "forecast" empty and prints one line."""
     today = today or dt.date.today()
-    window = [(today - dt.timedelta(days=k)).isoformat() for k in range(days - 1, -1, -1)]
-    rec = [sum(int(c.get("received", 0)) for c in archive.get(d, {}).values()) for d in window]
-    est = [sum(int(c.get("estimated", 0)) for c in archive.get(d, {}).values()) for d in window]
-    tot = [a + b for a, b in zip(rec, est)]
-    if not any(tot):
+    days_with = sorted(d for d in (archive or {}) if re.match(r"^\d{4}-\d\d-\d\d$", d) and d <= today.isoformat())
+    if not days_with:
+        return None
+    start = dt.date.fromisoformat(days_with[0])
+    n = (today - start).days + 1
+    days = [(start + dt.timedelta(days=i)).isoformat() for i in range(n)]
+    srcs: dict[str, dict[str, list[int]]] = {}
+    for i, d in enumerate(days):
+        for src, c in (archive.get(d) or {}).items():
+            s = srcs.setdefault(src, {"r": [0] * n, "e": [0] * n})
+            s["r"][i] += int(c.get("received", 0) or 0)
+            s["e"][i] += int(c.get("estimated", 0) or 0)
+    if not any(sum(s["r"]) + sum(s["e"]) for s in srcs.values()):
+        return None
+    order = sorted(srcs, key=lambda k: -(sum(srcs[k]["r"]) + sum(srcs[k]["e"])))
+    forecast: dict = {}
+    try:
+        complete = slice(max(0, n - 1 - FC_WINDOW), n - 1)       # today is still running: leave it out of the fit
+        allv = [float(sum(srcs[k]["r"][i] + srcs[k]["e"][i] for k in srcs)) for i in range(n)][complete]
+        recv = [float(sum(srcs[k]["r"][i] for k in srcs)) for i in range(n)][complete]
+        for key, series in (("all", allv), ("received", recv)):
+            f = forecast_series(series)
+            if f:
+                forecast[key] = f
+    except Exception as e:  # noqa: BLE001 - a forecast failure must not take the dashboard down
+        print(f"  (revenue forecast skipped: {type(e).__name__}: {e})")
+        forecast = {}
+    return {"today": today.isoformat(), "start": days[0], "n": n, "order": order,
+            "sources": {k: srcs[k] for k in order}, "forecast": forecast, "horizon": FC_HORIZON}
+
+
+def _json_for_script(obj) -> str:
+    return json.dumps(obj, separators=(",", ":")).replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
+
+
+def daily_revenue_block(archive: dict | None, today: dt.date | None = None) -> str:
+    """Overview: money per day as an interactive chart (REV_JS draws it from the embedded JSON). Bars stack what was
+    sold or received (solid) under estimates (TikTok, AdMob, Getty downloads not on a statement; lighter), so an
+    estimate is never read as cash. Controls: range, weekly and 30-day lines, estimates, sources, forecast."""
+    data = revenue_chart_data(archive, today)
+    if not data:
         return ""
-    top = max(tot) or 1
-    w, h, gap = 640, 140, 2
-    bw = (w - gap * (days - 1)) / days
-    bars = []
-    for i, d in enumerate(window):
-        x = i * (bw + gap)
-        hr, he = h * rec[i] / top, h * est[i] / top
-        tip = f"{d}: {money(rec[i])} sold or received, {money(est[i])} estimated"
-        bars.append(f"<g><title>{html.escape(tip)}</title>"
-                    f"<rect x='{x:.1f}' y='{h - hr:.1f}' width='{bw:.1f}' height='{hr:.1f}' fill='var(--purple)'/>"
-                    f"<rect x='{x:.1f}' y='{h - hr - he:.1f}' width='{bw:.1f}' height='{he:.1f}' fill='var(--purple)' "
-                    f"fill-opacity='0.35'/></g>")
-    week = sum(tot[-7:])
-    chips = (f"<span class='sales-chip'><b>{money(tot[-1])}</b> <span>today</span></span>"
-             f"<span class='sales-chip'><b>{money(week)}</b> <span>last 7 days</span></span>"
-             f"<span class='sales-chip'><b>{money(sum(tot))}</b> <span>last {days} days "
-             f"({money(sum(est))} estimated)</span></span>"
-             f"<span class='sales-chip'><b>{money(round(sum(tot) / days))}</b> <span>a day on average</span></span>")
     return f"""
-<section class="sales daily-revenue">
-  <h2>Revenue by day &middot; last {days} days</h2>
-  <div class="sales-chips">{chips}</div>
-  <svg viewBox="0 0 {w} {h}" width="100%" height="{h}" preserveAspectRatio="none" role="img"
-       aria-label="Revenue per day, last {days} days">{''.join(bars)}</svg>
-  <p class="sales-foot">{window[0]} to {window[-1]}. Solid: sold or received. Light: estimates (TikTok, AdMob, Getty
-  downloads not on a statement yet). Every source in the Money tab's list counts. Kept day by day in history.json
-  ("revenueDaily") and {html.escape(REVENUE_DAILY_CSV.name)} for analysis.</p>
+<section class="sales daily-revenue" id="rev">
+  <h2>Revenue by day</h2>
+  <div class="rev-fig" id="rev-fig" role="group" aria-label="Totals for the selection"></div>
+  <div class="rev-controls" id="rev-controls" role="group" aria-label="Chart controls"></div>
+  <div class="rev-plot" id="rev-plot"><div class="rev-tip" id="rev-tip" hidden></div></div>
+  <p class="rev-caption" id="rev-caption"></p>
+  <div class="sr-only" id="rev-live" aria-live="polite"></div>
+  <noscript><p class="sales-foot">The chart needs JavaScript. The same figures are in the Money tab.</p></noscript>
+  <script type="application/json" id="rev-data">{_json_for_script(data)}</script>
 </section>"""
 
 
@@ -5663,30 +5703,14 @@ def all_sales_block(ledger_rows: list[dict], appstore: dict | None, admob: dict 
         est_bits.append(f"{money(sum(r['net'] for r in tiktok_rows))} of TikTok Creator Rewards estimated by TikTok Studio, not yet paid")
     if ad_rows:
         est_bits.append(f"{money(sum(r['net'] for r in ad_rows))} of AdMob earnings estimated by AdMob, as one row per month")
-    est_sentence = (" Rows marked ~ are estimates: " + "; ".join(est_bits) + ". They are shown separately and are not in the "
-                    "received or sold total." if est_rows else "")
+    est_sentence = (" Rows marked ~ are estimates, not in the received or sold total: " + "; ".join(est_bits) + "."
+                    if est_rows else "")
     notes = [n for n in (photo_totals_only_note(rows), tiktok_month_note(rows)) if n]
-    day_rows = all_sales_by_day(rows, today)
-
-    def cell(v, tilde=False):
-        return "<td class='num who'>&ndash;</td>" if not v else f"<td class='num'>{'~' if tilde else ''}{money(v)}</td>"
-    day_body = "".join(
-        f"<tr><td class='who'>{d['date']}</td>{cell(d['received'])}{cell(d['estimated'], True)}{cell(d['total'])}</tr>"
-        for d in day_rows)
-    day_received = sum(d["received"] for d in day_rows)
-    day_est = sum(d["estimated"] for d in day_rows)
     return f"""
 <section class="sales all-sales">
   <h2>All sales &middot; every source</h2>
-  <p class="sales-sub">{len(real_rows)} sale(s) on record, {money(total_net)} received or sold after fees or royalty split, plus
-  {money(est_net)} estimated, {money(total_net + est_net)} combined. Newest first. "Received or sold" is what reaches you:
-  Stripe and marketplace net of fees, photo royalties as the platform reports them.{est_sentence}</p>
-  <h3 class="by-day-title">By day &middot; last {len(day_rows)} days</h3>
-  <div class="sales-scroll"><table class="sales-list by-day">
-    <thead><tr><th>Date</th><th class="num">Received or sold</th><th class="num">Estimated (~)</th><th class="num">Day total</th></tr></thead>
-    <tbody>{day_body}</tbody>
-    <tfoot><tr><td>Last {len(day_rows)} days</td><td class="num">{money(day_received)}</td><td class="num">~{money(day_est)}</td><td class="num">{money(day_received + day_est)}</td></tr></tfoot>
-  </table></div>
+  <p class="sales-sub">{len(real_rows)} sale(s) on record: {money(total_net)} received or sold after fees or royalty split,
+  plus {money(est_net)} estimated, {money(total_net + est_net)} combined. Newest first.{est_sentence}</p>
   <div class="src-chips"><button type="button" class="src-chip on" data-src="">All <b>{len(rows)}</b></button>{chips}</div>
   <div class="sales-scroll"><table class="sales-list">
     <thead><tr><th>Date</th><th>Source</th><th>Item</th><th class="num">Gross</th><th class="num">Kept</th></tr></thead>
@@ -5708,21 +5732,36 @@ def all_sales_block(ledger_rows: list[dict], appstore: dict | None, admob: dict 
 # blocks all show, in the old order, so nothing is hidden by the script's absence.
 
 NAV_CSS = """
-.topnav{position:sticky;top:0;z-index:5;margin:0 -4px 22px;padding:10px 4px;background:var(--bg);
-  border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.topnav .tabs{display:flex;flex-wrap:wrap;gap:6px;flex:1 1 auto}
+.topnav{position:sticky;top:0;z-index:5;margin:0 -4px 20px;padding:8px 4px;background:var(--bg);border-bottom:1px solid var(--line)}
+.topnav .tabs{display:flex;flex-wrap:wrap;gap:6px}
 .topnav a.tab{padding:6px 14px;border-radius:999px;border:1px solid var(--line);color:var(--muted);
-  text-decoration:none;font-size:14px;white-space:nowrap}
+  text-decoration:none;font-size:14px;white-space:nowrap;min-height:34px;display:inline-flex;align-items:center}
 .topnav a.tab:hover{border-color:var(--purple);color:var(--ink)}
-.topnav a.tab.on{background:var(--purple);border-color:var(--purple);color:oklch(18% 0.06 310);font-weight:640}
-.topnav .tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;flex:0 1 auto;max-width:100%}
-.topnav input[type=search]{font:inherit;font-size:14px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);
-  background:var(--panel);color:var(--ink);width:min(240px,46vw)}
-.topnav input[type=search]:focus{outline:2px solid var(--purple);outline-offset:1px}
-.topnav button{font:inherit;font-size:13px;padding:6px 12px;white-space:nowrap;border-radius:999px;border:1px solid var(--line);
-  background:transparent;color:var(--muted);cursor:pointer}
-.topnav button:hover{border-color:var(--purple);color:var(--ink)}
-.topnav .count{font-size:13px;color:var(--muted);min-width:5.5em}
+.topnav a.tab.on{background:var(--purple);border-color:var(--purple);color:var(--on-purple);font-weight:640}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;max-width:100%}
+.tools input[type=search]{font:inherit;font-size:14px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);
+  background:var(--panel);color:var(--ink);width:min(220px,46vw);min-height:34px}
+.tools input[type=search]::placeholder{color:var(--muted);opacity:1}
+.tools button{font:inherit;font-size:13px;padding:6px 12px;white-space:nowrap;border-radius:999px;border:1px solid var(--line);
+  background:transparent;color:var(--muted);cursor:pointer;min-height:34px}
+.tools button:hover{border-color:var(--purple);color:var(--ink)}
+.tools .count{font-size:13px;color:var(--muted)}
+.tools .count:empty{display:none}
+@media (max-width:640px){
+  .sales table,.tables table,table.glance{display:block;max-width:100%;overflow-x:auto}
+  .sales-list{display:table}
+  .sales{padding:18px 16px}
+  .card{padding:18px 16px}
+  body{padding:16px}
+}
+@media (max-width:640px){
+  .topnav .tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+  .topnav .tabs::-webkit-scrollbar{display:none}
+  .topnav a.tab{min-height:40px;flex:none}
+  .tools{width:100%}
+  .tools input[type=search]{flex:1 1 100%;width:auto}
+  .tools button{flex:1 1 auto;min-height:40px}
+}
 .js [data-panel]:not(.active){display:none}
 [data-panel] > h2.panel-title{display:none}
 .js.all [data-panel]{display:block}
@@ -5731,21 +5770,23 @@ NAV_CSS = """
 .js h2.fold,.js .sales > h2{cursor:pointer;display:flex;align-items:center;gap:8px;user-select:none}
 .js h2.fold::before,.js .sales > h2::before{content:"";width:0;height:0;flex:none;border-left:6px solid var(--muted);
   border-top:4px solid transparent;border-bottom:4px solid transparent;transition:transform .15s}
-.js .fold-block:not(.collapsed) > h2.fold::before,.js .sales:not(.collapsed) > h2::before{transform:rotate(90deg)}
+.js .fold-block:not(.collapsed) > h2.fold::before,.js .sales:not(.collapsed) > h2::before,.js .tables > .card:not(.collapsed) > h2.fold::before{transform:rotate(90deg)}
 .js .collapsed > :not(h2){display:none}
 .js .collapsed > h2{margin-bottom:0}
 .hidden-by-filter{display:none!important}
 .src-chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
-.src-chip{font:inherit;font-size:13px;padding:5px 12px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.src-chip{font:inherit;font-size:13px;padding:5px 12px;min-height:32px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.src-chip[disabled]{opacity:.5;cursor:default}
 .src-chip b{color:var(--ink);font-weight:640;margin-left:4px}
 .src-chip:hover{border-color:var(--purple)}
-.src-chip.on{background:var(--purple);border-color:var(--purple);color:oklch(18% 0.06 310)}
+.src-chip.on{background:var(--purple);border-color:var(--purple);color:var(--on-purple)}
 .src-chip.on b{color:inherit}
-.sales-scroll{max-height:560px;overflow:auto;border:1px solid var(--line);border-radius:10px}
+.sales-scroll{max-height:560px;overflow:auto;border-top:1px solid var(--line)}
 .sales-list{width:100%;border-collapse:collapse;font-size:.88rem}
 .sales-list th{position:sticky;top:0;background:var(--panel);text-align:left;font-size:.75rem;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--line)}
 .sales-list td{padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
 .sales-list tfoot td{font-weight:640;border-bottom:0;position:sticky;bottom:0;background:var(--panel)}
+.sales-list td.num.who,.sales-list td.who.num{color:var(--muted)}
 .sales-list .num,.sales-list th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .sales-list .who{color:var(--muted)}
 .sales-list td,.sales-list th{white-space:nowrap}
@@ -5761,7 +5802,7 @@ NAV_CSS = """
   border-bottom:1px solid var(--line)}
 .glance td{padding:8px 10px 8px 0;border-bottom:1px solid var(--line)}
 .glance td.num,.glance th.num{text-align:right;font-variant-numeric:tabular-nums}
-.site-notes{background:var(--panel);border:1px solid var(--purple-soft);border-radius:var(--radius);padding:16px 22px;margin:0 0 22px}
+.site-notes{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 22px;margin:0 0 22px}
 .site-notes h2{margin:0 0 6px}
 .site-notes ul{margin:6px 0 0;padding-left:1.1em}
 .site-notes li{margin:4px 0}
@@ -5865,7 +5906,350 @@ NAV_JS = """
 })();
 """
 
+THEME_JS = """
+(function(){
+  var b=document.getElementById('dash-theme'), root=document.documentElement; if(!b)return;
+  function sync(){var light=root.getAttribute('data-theme')==='light';b.textContent=light?'Dark theme':'Light theme';b.setAttribute('aria-pressed',String(light))}
+  b.addEventListener('click',function(){
+    var light=root.getAttribute('data-theme')!=='light';
+    if(light)root.setAttribute('data-theme','light');else root.removeAttribute('data-theme');
+    try{localStorage.setItem('dash-theme',light?'light':'dark')}catch(e){}
+    sync();
+  });
+  sync();
+})();
+"""
+
+REV_CSS = """
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.rev-fig{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px 24px;margin:12px 0 4px}
+.rev-stat b{display:block;font-size:1.3rem;font-weight:650;line-height:1.15;font-variant-numeric:tabular-nums}
+.rev-stat span{display:block;font-size:.82rem;color:var(--muted);margin-top:2px}
+.rev-stat em{display:block;font-style:normal;font-size:.78rem;color:var(--muted);margin-top:1px;font-variant-numeric:tabular-nums}
+.rev-controls{display:flex;flex-direction:column;gap:8px;margin:14px 0 6px}
+.rev-row{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center}
+.rev-group{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.rev-lab{font-size:.78rem;color:var(--muted);margin-right:2px}
+.rev-slider{display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--muted)}
+.rev-slider input{width:96px;accent-color:var(--purple);margin:0;height:24px}
+.rev-slider output{min-width:2.2em;color:var(--ink);font-variant-numeric:tabular-nums}
+.rev-slider.off{opacity:.5}
+.rev-plot{position:relative;margin-top:8px}
+.rev-svg{display:block;width:100%;height:auto;overflow:visible;touch-action:pan-y}
+.rev-svg:focus-visible{outline:2px solid var(--purple);outline-offset:4px;border-radius:6px}
+.rv-grid{stroke:var(--line);stroke-width:1;opacity:.7}
+.rv-axis{stroke:var(--muted);stroke-width:1;opacity:.6}
+.rv-tick{fill:var(--muted);font-size:11px;font-variant-numeric:tabular-nums}
+.rv-bar{fill:var(--purple)}
+.rv-hatch-bg{fill:var(--est)}
+.rv-hatch-ln{stroke:var(--purple);stroke-width:2.2}
+.rv-today{stroke:var(--muted);stroke-width:1;stroke-dasharray:2 3}
+.rv-guide{stroke:var(--ink);stroke-width:1;opacity:.35}
+.rv-wk,.rv-mo,.rv-fc{fill:none;stroke-linejoin:round;stroke-linecap:round}
+.rv-wk{stroke:var(--trend);stroke-width:2.25}
+.rv-mo{stroke:var(--good);stroke-width:2}
+.rv-fc{stroke:var(--ink);stroke-width:2;stroke-dasharray:6 4}
+.rv-band{fill:var(--ink);opacity:.13}
+.rev-legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin:8px 0 0}
+.rev-legend-item i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.rev-legend-item i.rv-sw-bar{background:var(--purple)}
+.rev-legend-item i.rv-sw-est{background:repeating-linear-gradient(45deg,var(--purple) 0 2px,var(--est) 2px 4px)}
+.rev-legend-item i.rv-sw-wk{background:var(--trend);height:3px;border-radius:2px}
+.rev-legend-item i.rv-sw-mo{background:var(--good);height:3px;border-radius:2px}
+.rev-legend-item i.rv-sw-fc{background:none;border-top:2px dashed var(--ink);height:0;border-radius:0}
+.rev-legend-item i.rv-sw-band{background:color-mix(in oklab,var(--ink) 18%,transparent)}
+.rev-caption{margin:10px 0 0;font-size:.84rem;color:var(--muted);max-width:75ch}
+.rev-tip{position:absolute;z-index:3;pointer-events:none;min-width:190px;max-width:260px;padding:10px 12px;
+  background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:10px;font-size:.8rem;
+  box-shadow:0 6px 24px oklch(0% 0 0 / .28)}
+.rev-tip[hidden]{display:none}
+.rev-tip strong{display:block;margin-bottom:4px;font-weight:650}
+.rt-row{display:flex;justify-content:space-between;gap:14px;font-variant-numeric:tabular-nums}
+.rt-row span{color:var(--muted)}
+.rt-row b{font-weight:600;text-align:right}
+.rt-total{border-top:1px solid var(--line);margin-top:3px;padding-top:3px}
+.rt-total span{color:var(--ink)}
+.rt-src{font-size:.76rem}
+.rt-fc{border-top:1px solid var(--line);margin-top:6px;padding-top:6px}
+.rt-note{color:var(--muted);font-size:.76rem;margin-top:2px}
+@media (max-width:640px){
+  .daily-revenue{display:flex;flex-direction:column}
+  .daily-revenue > h2{order:0} .rev-fig{order:1} .rev-plot{order:2} .rev-legend{order:3} .rev-caption{order:4} .rev-controls{order:5;margin-top:16px}
+  .rev-fig{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rev-slider input{width:80px}
+  .rev-sources .rev-group{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;max-width:100%;padding-bottom:2px}
+  .rev-sources .src-chip{flex:none}
+}
+"""
+
+REV_JS = r"""
+(function(){
+  var dataEl=document.getElementById('rev-data'); if(!dataEl)return;
+  var D=JSON.parse(dataEl.textContent), N=D.n, KEY='dash-rev', NS='http://www.w3.org/2000/svg';
+  var plot=document.getElementById('rev-plot'), figEl=document.getElementById('rev-fig'),
+      ctlEl=document.getElementById('rev-controls'), capEl=document.getElementById('rev-caption'),
+      tip=document.getElementById('rev-tip'), live=document.getElementById('rev-live');
+  var S={range:60,weekly:true,monthly:true,sigma:3,est:true,fc:true,hz:30,src:[]};
+  try{var o=JSON.parse(localStorage.getItem(KEY)||'null'); if(o)for(var k in S)if(k in o)S[k]=o[k]}catch(e){}
+  if([0,30,60,90].indexOf(S.range)<0)S.range=60;
+  S.sigma=Math.min(7,Math.max(1,Math.round(+S.sigma)||3));
+  if([14,30,60].indexOf(S.hz)<0)S.hz=30;
+  S.src=(Array.isArray(S.src)?S.src:[]).filter(function(s){return D.sources[s]});
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+  var active=-1, geo=null, cache=null;
+  function money(c,whole){var v=c/100,s=(whole?Math.round(v):v).toFixed(whole?0:2).replace(/\B(?=(\d{3})+(?!\d))/g,',');return '$'+s}
+  function dayDate(i){var p=D.start.split('-');return new Date(+p[0],+p[1]-1,+p[2]+i)}
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  function lab(i){var d=dayDate(i);return MON[d.getMonth()]+' '+d.getDate()}
+  function longLab(i){var d=dayDate(i);return DOW[d.getDay()]+' '+MON[d.getMonth()]+' '+d.getDate()}
+
+  // ---- series for the current selection (all in cents)
+  function series(){
+    var names=S.src.length?S.src:D.order, r=new Array(N).fill(0), e=new Array(N).fill(0), i;
+    names.forEach(function(k){var s=D.sources[k];for(i=0;i<N;i++){r[i]+=s.r[i];e[i]+=s.e[i]}});
+    var t=r.map(function(v,j){return v+(S.est?e[j]:0)});
+    return {r:r,e:S.est?e:new Array(N).fill(0),t:t};
+  }
+  // Gaussian-weighted centred mean over complete days (today is still running). Edges average what exists, 4 days minimum.
+  function gauss(t,sigma){
+    var half=Math.max(2,Math.round(7/3*sigma)), w=[], k, i, M=N-1, out=new Array(N).fill(null);
+    for(k=-half;k<=half;k++)w.push(Math.exp(-0.5*k*k/(sigma*sigma)));
+    for(i=0;i<M;i++){
+      var sw=0,sv=0,c=0;
+      for(k=-half;k<=half;k++){var j=i+k;if(j<0||j>=M)continue;sw+=w[k+half];sv+=w[k+half]*t[j];c++}
+      if(c>=4)out[i]=sv/sw;
+    }
+    return out;
+  }
+  function trailing(t,n){
+    var out=new Array(N).fill(null),M=N-1,i,s=0;
+    for(i=0;i<M;i++){s+=t[i];if(i>=n)s-=t[i-n];if(i>=n-1)out[i]=s/n}
+    return out;
+  }
+  function fcActive(){return S.fc&&!S.src.length&&D.forecast&&D.forecast[S.est?'all':'received']}
+
+  // ---- controls
+  function btn(text,pressed,fn,extra){
+    var b=document.createElement('button');b.type='button';b.className='src-chip'+(extra?' '+extra:'');
+    b.textContent=text;b.setAttribute('aria-pressed',String(!!pressed));if(pressed)b.classList.add('on');
+    b.addEventListener('click',fn);return b;
+  }
+  function group(label,nodes){
+    var g=document.createElement('div');g.className='rev-group';g.setAttribute('role','group');g.setAttribute('aria-label',label);
+    var l=document.createElement('span');l.className='rev-lab';l.textContent=label;g.appendChild(l);
+    nodes.forEach(function(n){g.appendChild(n)});return g;
+  }
+  var sigmaOut=null,sigmaIn=null;
+  function buildControls(){
+    ctlEl.textContent='';
+    var row=document.createElement('div');row.className='rev-row';
+    var maxDays=N;
+    row.appendChild(group('Range',[[30,'30 days'],[60,'60 days'],[90,'90 days'],[0,'All ('+maxDays+')']].map(function(p){
+      return btn(p[1],S.range===p[0],function(){S.range=p[0];refresh()});})));
+    row.appendChild(group('Include',[btn('Estimates',S.est,function(){S.est=!S.est;refresh()})]));
+    var lines=[btn('Weekly trend',S.weekly,function(){S.weekly=!S.weekly;refresh()}),
+               btn('30-day average',S.monthly,function(){S.monthly=!S.monthly;refresh()})];
+    row.appendChild(group('Lines',lines));
+    var sg=document.createElement('label');sg.className='rev-slider';
+    var st=document.createElement('span');st.textContent='Smoothing';sg.appendChild(st);
+    sigmaIn=document.createElement('input');sigmaIn.type='range';sigmaIn.min='1';sigmaIn.max='7';sigmaIn.step='1';sigmaIn.value=S.sigma;
+    sigmaIn.setAttribute('aria-label','Weekly trend smoothing, standard deviation in days');
+    sigmaOut=document.createElement('output');sigmaOut.textContent=S.sigma+' d';
+    sigmaIn.addEventListener('input',function(){S.sigma=+sigmaIn.value;refresh()});
+    sg.appendChild(sigmaIn);sg.appendChild(sigmaOut);row.appendChild(sg);
+    var fcs=[btn('Forecast',S.fc,function(){S.fc=!S.fc;refresh()})];
+    [14,30,60].forEach(function(h){fcs.push(btn(h+' d',S.hz===h,function(){S.hz=h;S.fc=true;refresh()},'hz'))});
+    row.appendChild(group('Forecast',fcs));
+    ctlEl.appendChild(row);
+    var chips=document.createElement('div');chips.className='rev-row rev-sources';
+    var sgp=document.createElement('div');sgp.className='rev-group';sgp.setAttribute('role','group');sgp.setAttribute('aria-label','Sources');
+    var sl=document.createElement('span');sl.className='rev-lab';sl.textContent='Sources';sgp.appendChild(sl);
+    sgp.appendChild(btn('All',!S.src.length,function(){S.src=[];refresh()},'src-all'));
+    D.order.forEach(function(name){
+      sgp.appendChild(btn(name,S.src.indexOf(name)>=0,function(){
+        var i=S.src.indexOf(name);if(i>=0)S.src.splice(i,1);else S.src.push(name);
+        if(S.src.length===D.order.length)S.src=[];refresh()},'src'));
+    });
+    chips.appendChild(sgp);ctlEl.appendChild(chips);
+  }
+  function syncControls(){
+    var bs=ctlEl.querySelectorAll('button'),idx=0;
+    // order: 4 range, estimates, 2 lines, forecast, 3 horizons, then All + sources
+    var ranges=[30,60,90,0],on=[];
+    ranges.forEach(function(r){on.push(S.range===r)});
+    on.push(S.est,S.weekly,S.monthly,S.fc,S.hz===14,S.hz===30,S.hz===60,!S.src.length);
+    D.order.forEach(function(n){on.push(S.src.indexOf(n)>=0)});
+    for(idx=0;idx<bs.length;idx++){bs[idx].classList.toggle('on',!!on[idx]);bs[idx].setAttribute('aria-pressed',String(!!on[idx]))}
+    sigmaIn.value=S.sigma;sigmaOut.textContent=S.sigma+' d';sigmaIn.disabled=!S.weekly;
+    sigmaIn.parentNode.classList.toggle('off',!S.weekly);
+    [].forEach.call(ctlEl.querySelectorAll('.hz'),function(b){b.disabled=false});
+  }
+
+  // ---- figures
+  function figures(se){
+    var i0=S.range?Math.max(0,N-S.range):0, n=N-i0, tot=0,est=0,i;
+    for(i=i0;i<N;i++){tot+=se.t[i];est+=se.e[i]}
+    var wk=0;for(i=Math.max(0,N-7);i<N;i++)wk+=se.t[i];
+    var share=tot>0&&est>0?' &middot; '+money(est)+' estimated ('+Math.round(100*est/tot)+'%)':'';
+    var label=S.range?'Last '+n+' days':'All '+n+' days';
+    var items=[[money(se.t[N-1]),'Today so far',''],[money(wk),'Last 7 days',''],[money(tot),label,share],[money(Math.round(tot/n)),'Per day, '+(S.range?'last '+n:'all')+' days','']];
+    figEl.innerHTML=items.map(function(x){return '<div class="rev-stat"><b>'+x[0]+'</b><span>'+x[1]+'</span>'+(x[2]?'<em>'+x[2].replace(/^ &middot; /,'')+'</em>':'')+'</div>'}).join('');
+  }
+
+  // ---- chart
+  function nice(max){
+    if(max<=0)return {top:100,step:25};
+    var raw=max/4,mag=Math.pow(10,Math.floor(Math.log10(raw))),f=raw/mag,s=f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10;
+    var step=s*mag;return {top:Math.ceil(max/step)*step,step:step};
+  }
+  function el(tag,attrs,parent){
+    var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;
+  }
+  function draw(){
+    var W=plot.clientWidth; if(W<40)return;
+    var se=series(), F=fcActive(), hz=F?S.hz:0, i0=S.range?Math.max(0,N-S.range):0;
+    var cols=N-i0+(hz?hz-1:0), H=W<520?230:290, ml=W<520?38:46, mr=8, mt=18, mb=24;
+    var pw=W-ml-mr, ph=H-mt-mb, cw=pw/cols, i, j;
+    var wk=S.weekly?gauss(se.t,S.sigma):null, mo=S.monthly?trailing(se.t,30):null;
+    var max=0;
+    for(i=i0;i<N;i++){max=Math.max(max,se.t[i]);if(wk&&wk[i]!=null)max=Math.max(max,wk[i]);if(mo&&mo[i]!=null)max=Math.max(max,mo[i])}
+    if(hz)for(j=0;j<hz;j++)max=Math.max(max,F.hi[j]);
+    var ax=nice(max*1.04);
+    function X(idx){return ml+(idx-i0+0.5)*cw}
+    function Y(v){return mt+ph*(1-v/ax.top)}
+    plot.querySelectorAll('svg').forEach(function(s){s.remove()});
+    var svg=el('svg',{viewBox:'0 0 '+W+' '+H,width:W,height:H,class:'rev-svg',tabindex:'0',role:'img',
+      'aria-label':'Revenue per day chart. Use the left and right arrow keys to read each day.'},null);
+    // grid + y labels
+    for(var v=0;v<=ax.top+1e-6;v+=ax.step){
+      var y=Y(v);el('line',{x1:ml,x2:W-mr,y1:y,y2:y,class:v===0?'rv-axis':'rv-grid'},svg);
+      var t=el('text',{x:ml-6,y:y+4,class:'rv-tick','text-anchor':'end'},svg);t.textContent=money(v,ax.step%100===0);
+    }
+    // x labels on Mondays, spaced at least ~64px
+    var step=Math.max(1,Math.ceil(64/(7*cw))),mcount=0;
+    for(i=i0;i<i0+cols;i++){
+      if(dayDate(i).getDay()!==1)continue;
+      if((mcount++)%step)continue;
+      var tx=el('text',{x:X(i),y:H-7,class:'rv-tick','text-anchor':'middle'},svg);tx.textContent=lab(i);
+    }
+    // bars; estimates are hatched so they never read as cash
+    var defs=el('defs',{},svg),pt=el('pattern',{id:'rv-hatch',width:4,height:4,patternUnits:'userSpaceOnUse',patternTransform:'rotate(45)'},defs);
+    el('rect',{width:4,height:4,class:'rv-hatch-bg'},pt);el('line',{x1:0,y1:0,x2:0,y2:4,class:'rv-hatch-ln'},pt);
+    var bw=Math.max(1,cw-(cw>5?1.5:0.5)), bg=el('g',{},svg);
+    for(i=i0;i<N;i++){
+      var r=se.r[i],e=se.e[i];if(!r&&!e)continue;
+      var yr=Y(r),ye=Y(r+e);
+      if(r)el('rect',{x:X(i)-bw/2,y:yr,width:bw,height:Math.max(0.5,Y(0)-yr),class:'rv-bar'},bg);
+      if(e)el('rect',{x:X(i)-bw/2,y:ye,width:bw,height:Math.max(0.5,yr-ye),class:'rv-est',fill:'url(#rv-hatch)'},bg);
+    }
+    // today divider
+    var tdx=ml+(N-1-i0)*cw;
+    el('line',{x1:tdx,x2:tdx,y1:mt-4,y2:mt+ph,class:'rv-today'},svg);
+    var tt=el('text',{x:tdx+(hz?4:-4),y:mt-6,class:'rv-tick','text-anchor':hz?'start':'end'},svg);tt.textContent='today';
+    // forecast band + line
+    if(hz){
+      var up=[],dn=[];
+      for(j=0;j<hz;j++){var xx=X(N-1+j);up.push(xx.toFixed(1)+','+Y(F.hi[j]).toFixed(1));dn.unshift(xx.toFixed(1)+','+Y(F.lo[j]).toFixed(1))}
+      el('polygon',{points:up.concat(dn).join(' '),class:'rv-band'},svg);
+      var pts=[];for(j=0;j<hz;j++)pts.push(X(N-1+j).toFixed(1)+','+Y(F.fc[j]).toFixed(1));
+      el('polyline',{points:pts.join(' '),class:'rv-fc'},svg);
+    }
+    function line(arr,cls){
+      var seg=[],all=[];
+      for(i=i0;i<N;i++){if(arr[i]==null){if(seg.length)all.push(seg);seg=[];continue}seg.push(X(i).toFixed(1)+','+Y(arr[i]).toFixed(1))}
+      if(seg.length)all.push(seg);
+      all.forEach(function(s){if(s.length>1)el('polyline',{points:s.join(' '),class:cls},svg)});
+    }
+    if(mo)line(mo,'rv-mo');
+    if(wk)line(wk,'rv-wk');
+    var guide=el('line',{x1:0,x2:0,y1:mt,y2:mt+ph,class:'rv-guide',visibility:'hidden'},svg);
+    plot.insertBefore(svg,tip);
+    geo={W:W,H:H,ml:ml,cw:cw,mt:mt,ph:ph,i0:i0,cols:cols,hz:hz,F:F,se:se,guide:guide,svg:svg,X:X,wk:wk,mo:mo};
+    bindSvg(svg);
+    if(active>=i0&&active<i0+cols)showDay(active,false);else hideTip();
+    legend(F);
+  }
+  function legend(F){
+    var items=[['rv-sw-bar','Sold or received']];
+    if(S.est)items.push(['rv-sw-est','Estimated']);
+    if(S.weekly)items.push(['rv-sw-wk','Weekly trend']);
+    if(S.monthly)items.push(['rv-sw-mo','30-day average']);
+    if(F)items.push(['rv-sw-fc','Forecast'],['rv-sw-band','80% range of the 7-day average']);
+    var lg=document.getElementById('rev-legend');
+    if(!lg){lg=document.createElement('div');lg.id='rev-legend';lg.className='rev-legend';capEl.parentNode.insertBefore(lg,capEl)}
+    lg.innerHTML=items.map(function(x){return '<span class="rev-legend-item"><i class="'+x[0]+'"></i>'+x[1]+'</span>'}).join('');
+  }
+  function caption(){
+    var F=D.forecast&&D.forecast[S.est?'all':'received'], msg='';
+    if(!S.fc)msg='';
+    else if(S.src.length)msg='The forecast covers all sources. Select All sources to see it.';
+    else if(!F)msg='The forecast needs at least 21 days of history.';
+    else msg='Forecast: '+F.model+', the best of the backtest (its 7-day total was off by '+money(F.mae,true)+' on average over the last 28 days). '+
+      'Next 30 days: '+money(F.total30,true)+', 80% range '+money(F.total30_lo,true)+' to '+money(F.total30_hi,true)+'.';
+    capEl.textContent=msg;capEl.hidden=!msg;
+  }
+
+  // ---- tooltip / keyboard
+  function dayText(i){
+    var names=S.src.length?S.src:D.order,parts=[],se=geo.se,lines=[];
+    names.forEach(function(k){var s=D.sources[k],r=s.r[i],e=S.est?s.e[i]:0;if(r||e)parts.push([k,r,e])});
+    parts.sort(function(a,b){return (b[1]+b[2])-(a[1]+a[2])});
+    return {title:longLab(i),r:se.r[i],e:se.e[i],t:se.t[i],parts:parts};
+  }
+  function showDay(i,fromKey){
+    if(!geo)return; active=i;
+    var x=geo.X(i),h='',txt;
+    if(i<N){
+      var d=dayText(i);
+      h='<strong>'+d.title+(i===N-1?' (today so far)':'')+'</strong><div class="rt-row"><span>Sold or received</span><b>'+money(d.r)+'</b></div>'+
+        (S.est?'<div class="rt-row"><span>Estimated</span><b>'+money(d.e)+'</b></div>':'')+
+        '<div class="rt-row rt-total"><span>Day total</span><b>'+money(d.t)+'</b></div>'+
+        d.parts.map(function(p){return '<div class="rt-row rt-src"><span>'+esc(p[0])+'</span><b>'+(p[2]&&!p[1]?'~':'')+money(p[1]+p[2])+'</b></div>'}).join('');
+      txt=d.title+': '+money(d.t)+' total, '+money(d.r)+' sold or received'+(S.est?', '+money(d.e)+' estimated':'')+'.';
+    }
+    if(geo.hz&&i>=N-1){
+      var j=i-(N-1),F=geo.F;
+      h+=(i<N?'<div class="rt-fc">':'<strong>'+longLab(i)+'</strong><div class="rt-fc">')+'<div class="rt-row"><span>Forecast</span><b>'+money(F.fc[j])+'</b></div>'+
+         '<div class="rt-note">7-day average, 80% range: '+money(F.lo[j])+' to '+money(F.hi[j])+'</div></div>';
+      txt=(txt?txt+' ':longLab(i)+': ')+'Forecast '+money(F.fc[j])+' a day, range '+money(F.lo[j])+' to '+money(F.hi[j])+'.';
+    }
+    tip.innerHTML=h;tip.hidden=false;
+    geo.guide.setAttribute('x1',x);geo.guide.setAttribute('x2',x);geo.guide.setAttribute('visibility','visible');
+    var tw=tip.offsetWidth,th=tip.offsetHeight,left=x+12;
+    if(left+tw>geo.W)left=x-tw-12; if(left<0)left=0;
+    tip.style.left=left+'px'; tip.style.top=Math.max(0,Math.min(geo.mt+4,geo.H-th))+'px';
+    if(fromKey)live.textContent=txt;
+  }
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function hideTip(){active=-1;tip.hidden=true;if(geo)geo.guide.setAttribute('visibility','hidden')}
+  function bindSvg(svg){
+    function idxAt(ev){
+      var r=svg.getBoundingClientRect(),x=ev.clientX-r.left-geo.ml,i=geo.i0+Math.floor(x/geo.cw);
+      return (x<0||i>=geo.i0+geo.cols)?-1:i;
+    }
+    svg.addEventListener('pointermove',function(ev){var i=idxAt(ev);if(i<0)hideTip();else showDay(i,false)});
+    svg.addEventListener('pointerdown',function(ev){var i=idxAt(ev);if(i>=0)showDay(i,false)});
+    svg.addEventListener('pointerleave',function(ev){if(ev.pointerType!=='touch'&&document.activeElement!==svg)hideTip()});
+    svg.addEventListener('blur',hideTip);
+    svg.addEventListener('keydown',function(ev){
+      var last=geo.i0+geo.cols-1,cur=active<0?N-1:active,n=cur;
+      if(ev.key==='ArrowLeft')n=cur-1;else if(ev.key==='ArrowRight')n=cur+1;
+      else if(ev.key==='Home')n=geo.i0;else if(ev.key==='End')n=last;
+      else if(ev.key==='Escape'){hideTip();return}else return;
+      ev.preventDefault();n=Math.max(geo.i0,Math.min(last,n));showDay(n,true);
+    });
+    svg.addEventListener('focus',function(){if(active<0)showDay(N-1,true)});
+  }
+
+  function refresh(){save();syncControls();var se=series();figures(se);caption();draw()}
+  buildControls();refresh();
+  if(window.ResizeObserver){var ro=new ResizeObserver(function(){draw()});ro.observe(plot)}else window.addEventListener('resize',draw);
+})();
+"""
+
 _RESTATES_CARD = re.compile(
+    r"^(?:[\d,]+|zero) [^.]*? in the last 7 days\.$|^[\d,]+ checkout click\(s\) from |^ModernTex trial funnel \(last |"
     r"^[\d,]+ (?:pageviews in the last 7 days|tool runs in the last 7 days|calculator runs in the last 7 days|"
     r"Vitae downloads in the last 7 days|checkout clicks in the last 7 days|trial downloads in the last 7 days|"
     r"ModernTex release-notes signups in the last 7 days|subscribes in the last 7 days|"
@@ -5994,6 +6378,7 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
 
     since = f" Tracking since {first_day}." if first_day else ""
     per_site, general = split_notes(summaries, obs)
+    general = [g for g in general if "Too new for a rate yet" not in g]
     general_html = ("<section class='site-notes'><h2>Other notes</h2><ul>"
                     + "".join(f"<li>{html.escape(g)}</li>" for g in general) + "</ul></section>") if general else ""
     overview = (f"{daily_revenue_block(revenue_daily)}\n"
@@ -6022,21 +6407,25 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Traffic — Purplelink &amp; MuscleOnGLP</title>
-<style>{CSS}{NAV_CSS}</style></head>
+<title>Purplelink dashboard</title>
+<script>try{{if(localStorage.getItem('dash-theme')==='light')document.documentElement.setAttribute('data-theme','light')}}catch(e){{}}</script>
+<style>{CSS}{NAV_CSS}{REV_CSS}</style></head>
 <body><div class="wrap">
 <header>
-  <h1>Traffic</h1>
-  <p class="stamp">Updated {html.escape(generated)} · refreshes daily from 7:00am</p>
-</header>
-<nav class="topnav" aria-label="Dashboard sections">
-  <div class="tabs">{tabs_html}</div>
+  <div class="head-title">
+    <h1>Dashboard</h1>
+    <p class="stamp">Updated {html.escape(generated)} · refreshes daily from 7:00am</p>
+  </div>
   <div class="tools">
     <input id="dash-filter" type="search" placeholder="Filter (press /)" aria-label="Filter the dashboard" autocomplete="off">
     <span id="dash-count" class="count" role="status" aria-live="polite"></span>
     <button type="button" id="dash-expand">Expand all</button>
     <button type="button" id="dash-collapse">Collapse all</button>
+    <button type="button" id="dash-theme" aria-pressed="false">Light theme</button>
   </div>
+</header>
+<nav class="topnav" aria-label="Dashboard sections">
+  <div class="tabs">{tabs_html}</div>
 </nav>
 {panels_html}
 <footer>
@@ -6046,7 +6435,7 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
   Daily figures are archived to <code>~/.purplelink/traffic/history.json</code>,
   which keeps growing even if the source window rolls off.
 </footer>
-</div><script>{NAV_JS}</script></body></html>"""
+</div><script>{NAV_JS}{THEME_JS}{REV_JS}</script></body></html>"""
 
 
 # ---------------------------------------------------------------- main
