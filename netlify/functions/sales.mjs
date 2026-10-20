@@ -199,6 +199,10 @@ export default async function handler(request) {
       email: (s.customer_details && s.customer_details.email) || "",
       attr: attrOf(s.metadata),
       heard: heardOf(s),
+      // ModernTex in-app Buy links (checkout.mjs metadata) and checkout recovery (Stripe's recovered_from).
+      app: (s.metadata && s.metadata.app_source) || null,
+      td: (s.metadata && s.metadata.trial_day) || null,
+      recovered: !!s.recovered_from,
       ...chargeFacts(pi && pi.latest_charge),
     });
   }
@@ -230,6 +234,18 @@ export default async function handler(request) {
   const allTime = { orders: customer.length, gross: customer.reduce((n, p) => n + p.amount, 0) };
   const inWindow = customer.filter((p) => p.created >= cutoff);
   const windowTotals = { days, orders: inWindow.length, gross: inWindow.reduce((n, p) => n + p.amount, 0) };
+
+  // Checkouts that expired unpaid in the window, per product, and how many of those buyers ticked the
+  // promotional-consent box (only those get a recovery email; netlify/lib/checkout-recovery.mjs).
+  const abandoned = {};
+  for (const s of sessions.rows) {
+    if (s.status !== "expired" || !(s.created >= cutoff)) continue;
+    const product = (s.metadata && s.metadata.product) || "unknown";
+    const a = abandoned[product] || (abandoned[product] = { expired: 0, consented: 0, recoverable: 0 });
+    a.expired++;
+    if (s.consent && s.consent.promotions === "opt_in") a.consented++;
+    if (s.after_expiration && s.after_expiration.recovery && s.after_expiration.recovery.enabled) a.recoverable++;
+  }
 
   const siteOrders = {}, siteGross = {}, winOrders = {}, winGross = {};
   const prodOrders = {}, prodGross = {}, prodLast = {}, byDay = {};
@@ -332,6 +348,7 @@ export default async function handler(request) {
     currency: "usd",
     allTime,
     window: windowTotals,
+    abandoned,
     bySite,
     byProduct,
     byDay,
@@ -344,6 +361,7 @@ export default async function handler(request) {
       id: p.id, kind: p.kind, ts: p.created, product: p.product, site: p.site,
       gross: p.amount, fee: p.fee, net: p.net, refunded: p.refunded, disputed: p.disputed,
       cust: custKey(p.email), attr: p.attr, heard: p.heard,
+      app: p.app || null, td: p.td || null, recovered: !!p.recovered,
     })),
     comps: { orders: comps.length, note: "Free copies given with a 100%-off code, excluded from every figure above." },
     refunds,

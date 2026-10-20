@@ -38,6 +38,7 @@ import { BUNDLES, parseBundleParts, partsSentence } from "../lib/bundles.mjs";
 import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import { managedPaymentsOn, applyManagedPayments } from "../lib/managed-payments.mjs";
+import { recoveryParams, isRecoveryParamError } from "../lib/checkout-recovery.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 
@@ -399,7 +400,7 @@ export default async function handler(request) {
   const managed = managedPaymentsOn(product, Netlify.env.get("STRIPE_MANAGED_PAYMENTS"));
   const timeBucket = Math.floor(Date.now() / IDEMPOTENCY_WINDOW_MS);
   const idempotencyKey = createHash("sha256")
-    .update(`v5:${managed ? "mp:" : ""}${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${trialDay}:${appSource}:${photo}:${seats}:${bundleParts.join("+")}`)
+    .update(`v6:${managed ? "mp:" : ""}${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${trialDay}:${appSource}:${photo}:${seats}:${bundleParts.join("+")}`)
     .digest("hex");
 
   // Attach the product key as Stripe metadata so the webhook can route
@@ -496,26 +497,38 @@ export default async function handler(request) {
 
   if (managed) applyManagedPayments(params, product);
 
-  let resp;
-  try {
-    resp = await fetch(`${STRIPE_API}/checkout/sessions`, {
+  // Checkout recovery (netlify/lib/checkout-recovery.mjs): consent box plus a recovery link when the session
+  // expires unpaid. If Stripe ever rejects those parameters, the session is created again without them, so the
+  // experiment can never block a sale.
+  const recovery = mode === "payment" ? recoveryParams(product) : {};
+  const post = async (p, key) => {
+    const r = await fetch(`${STRIPE_API}/checkout/sessions`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${secretKey}`,
         "Content-Type": "application/x-www-form-urlencoded",
-        "Idempotency-Key": idempotencyKey,
+        "Idempotency-Key": key,
       },
-      body: formEncode(params),
+      body: formEncode(p),
     });
+    let d = null;
+    try { d = await r.json(); } catch (_) { d = null; }
+    return { resp: r, data: d };
+  };
+
+  let resp, data;
+  try {
+    ({ resp, data } = await post({ ...params, ...recovery }, idempotencyKey));
+    if (!resp.ok && Object.keys(recovery).length && isRecoveryParamError(data)) {
+      console.error("checkout: recovery parameters rejected, retrying without them:", data?.error?.param || data?.error?.code);
+      ({ resp, data } = await post(params, `${idempotencyKey}:norecovery`));
+    }
   } catch (err) {
     console.error("checkout: stripe request failed:", err?.name, err?.message);
     return jsonResponse(502, { error: "stripe_unreachable", detail: "Could not reach the payment processor. Try again in a minute." });
   }
 
-  let data;
-  try {
-    data = await resp.json();
-  } catch (_) {
+  if (data === null) {
     return jsonResponse(502, { error: "stripe_bad_response" });
   }
 
