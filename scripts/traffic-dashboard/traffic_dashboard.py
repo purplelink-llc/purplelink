@@ -4835,19 +4835,23 @@ def photo_revenue_by_month(months: list[str]) -> dict[str, float]:
     look identical to "all time". Each platform's diff is floored at 0
     before summing: a platform whose balance drops mid-period because a
     payout cleared it is 0 new revenue that period, not negative revenue.
+    A platform with a per-sale ledger (photo_ledger_by_month) counts the
+    larger of its balance diff and its ledger total for the month.
     """
+    ledgers = photo_ledger_by_month(months)
+    ledger_only = {m: round(sum(v.get(m, 0.0) for v in ledgers.values()), 2) for m in months}
     try:
         pd = _load_photo_dashboard_module()
     except Exception as exc:
         print(f"  ! photo revenue unavailable: {str(exc)[:100]}", file=sys.stderr)
-        return {m: 0.0 for m in months}
+        return ledger_only
     try:
         data = pd.load()
     except SystemExit:
         # pd.load() itself sys.exit()s if snapshots.csv doesn't exist yet --
         # a real, expected state (photo tracking not set up at all), not an
         # error worth a stack trace.
-        return {m: 0.0 for m in months}
+        return ledger_only
     dates = sorted(data)
 
     def balances_asof(asof: str) -> dict[str, float]:
@@ -4860,9 +4864,22 @@ def photo_revenue_by_month(months: list[str]) -> dict[str, float]:
         day_before = (dt.date.fromisoformat(lo) - dt.timedelta(days=1)).isoformat()
         start = balances_asof(day_before)
         end = balances_asof(hi if hi <= dates[-1] else dates[-1])
-        platforms = set(start) | set(end)
-        out[month] = sum(max(0.0, end.get(p, 0.0) - start.get(p, 0.0)) for p in platforms)
+        platforms = set(start) | set(end) | set(ledgers)
+        out[month] = round(sum(max(max(0.0, end.get(p, 0.0) - start.get(p, 0.0)), ledgers.get(p, {}).get(month, 0.0))
+                               for p in platforms), 2)
     return out
+
+
+def photo_ledger_by_month(months: list[str]) -> dict[str, dict[str, float]]:
+    """Per-sale photo ledgers summed by month, keyed by the balance label they belong to: {label: {month: dollars}}.
+    Only Fine Art America so far. Its balance is read once a day by a sweep that sometimes fails, and a payout resets
+    it, so the balance diff can miss a sale that the order list has. The two readings are of the same money, so
+    photo_revenue_by_month takes the larger one per platform per month and never adds them (as with TikTok's two)."""
+    faa = {m: 0.0 for m in months}
+    for r in faa_sale_rows(_read_photo_csv("faa-sales.csv")):
+        if r["date"][:7] in faa:
+            faa[r["date"][:7]] += r["net"] / 100.0
+    return {FAA_LABEL: faa}
 
 
 SRC_EXTENSION = "Chrome extension (ExtensionPay)"
@@ -5197,7 +5214,7 @@ def revenue_block(sales: dict | None, appstore: dict | None, n_months: int = 6,
 #
 # One list for the Money tab: card sales (Stripe, both sites), Etsy/Gumroad/Payhip, App Store
 # proceeds and photo-licensing sales, newest first. The photo platforms that publish a
-# per-sale report (Getty, Adobe Stock, Dreamstime, Shutterstock's daily totals) are read from the
+# per-sale report (Getty, Adobe Stock, Dreamstime, Fine Art America, Shutterstock's daily totals) are read from the
 # photo arm's CSVs; the rest report totals only, and a line under the table says so.
 
 REFUNDED_TAG = ' <span class="who">(refunded)</span>'
@@ -5209,6 +5226,21 @@ def _cents(v) -> int:
         return int(round(float(v) * 100))
     except (TypeError, ValueError):
         return 0
+
+
+FAA_LABEL = "Fine Art America"   # photo-dashboard.py's label for the fineartamerica balance
+
+
+def faa_sale_rows(ledger: list[dict]) -> list[dict]:
+    """Fine Art America orders from faa-sales.csv (scripts/sales-ledgers.py). `total` is our profit on the order (FAA
+    pays the markup, not the retail price). Owner purchases have no total and earn nothing, so they are left out."""
+    out = []
+    for r in ledger:
+        if not (r.get("total") or "").strip():
+            continue
+        out.append({"date": r.get("sale_date", ""), "source": "Photo licensing", "detail": FAA_LABEL,
+                    "item": r.get("product", ""), "gross": None, "net": _cents(r.get("total"))})
+    return out
 
 
 def photo_sale_rows() -> list[dict]:
@@ -5236,6 +5268,8 @@ def photo_sale_rows() -> list[dict]:
     for r in read("dreamstime-sales.csv"):
         rows.append({"date": r.get("sale_date", ""), "source": "Photo licensing", "detail": "Dreamstime",
                      "item": r.get("title") or r.get("filename", ""), "gross": None, "net": _cents(r.get("amount"))})
+    for r in faa_sale_rows(read("faa-sales.csv")):
+        rows.append(r)
     for r in read("shutterstock-days.csv"):
         n = int(float(r.get("downloads") or 0))
         rows.append({"date": r.get("date", ""), "source": "Photo licensing", "detail": "Shutterstock",
