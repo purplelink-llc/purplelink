@@ -46,43 +46,23 @@ class TikTokRows(unittest.TestCase):
         return f
 
     def test_one_estimate_row_per_day_per_pipeline_and_zero_days_skipped(self):
-        # nl: 7-day totals 7, 7, 7 -> day 1 gets 7, then each new day replaces the day leaving the window (none yet), so
-        # 0 and 0. A second pipeline has its own rows.
-        f = self.csv(acct("2026-10-01", 7.0) + acct("2026-10-02", 7.0) + acct("2026-10-03", 9.0)
-                     + acct("2026-10-02", 3.0, pipe="aita"))
+        f = self.csv(post("2026-10-01", "a", "2026-10-01T10:00", 7.0) + post("2026-10-02", "a", "2026-10-01T10:00", 7.0)
+                     + post("2026-10-03", "a", "2026-10-01T14:00Z", 9.0)
+                     + post("2026-10-02", "b", "2026-10-02T10:00", 3.0, pipe="aita") + acct("2026-10-03", 99))
         rows = td.tiktok_sale_rows(f)
         self.assertTrue(all(r["estimate"] and r["source"] == td.SRC_TIKTOK for r in rows))
         self.assertEqual({(r["date"], r["detail"]): r["net"] for r in rows},
                          {("2026-10-01", "nl"): 700, ("2026-10-03", "nl"): 200, ("2026-10-02", "aita"): 300})
-        self.assertEqual(rows[0]["item"], "Creator Rewards estimate for the day")
-        self.assertFalse(any(r["date"] < "2026-10-01" for r in rows))
+        self.assertEqual(rows[0]["item"], "Creator Rewards estimate added that day")
 
-    def test_a_negative_day_is_kept_so_rows_add_up_to_the_month(self):
-        # Studio lowered the second total: that day comes out negative. Dropping it would make the rows exceed
-        # tiktok_rewards_by_month, so it stays, labelled.
-        f = self.csv(acct("2026-10-01", 5.0) + acct("2026-10-02", 3.0))
+    def test_rows_equal_the_monthly_figure(self):
+        f = self.csv(post("2026-09-30", "a", "2026-09-30T10:00", 1.0) + post("2026-10-02", "a", "2026-09-30T10:00", 4.0)
+                     + post("2026-10-03", "b", "2026-10-03T10:00", 2.5))
         rows = td.tiktok_sale_rows(f)
-        self.assertEqual(sorted(r["net"] for r in rows), [-200, 500])
-        self.assertIn("negative", [r for r in rows if r["net"] < 0][0]["item"])
-        self.assertAlmostEqual(sum(r["net"] for r in rows) / 100, td.tiktok_rewards_by_month(["2026-10"], f)["2026-10"], places=2)
-
-    def test_rows_match_the_monthly_figure_when_the_account_reading_wins(self):
-        f = self.csv(acct("2026-10-01", 4.0) + acct("2026-10-02", 6.5) + acct("2026-10-03", 6.5)
-                     + post("2026-10-03", "a", "2026-10-01T10:00", 1.0))
-        rows = td.tiktok_sale_rows(f)
-        self.assertEqual(sum(r["net"] for r in rows), 650)
-        self.assertEqual(td.tiktok_rewards_by_month(["2026-10"], f), {"2026-10": 6.5})
-        self.assertIn("the two agree", td.tiktok_month_note(rows, f))
-
-    def test_note_names_a_month_where_the_per_post_reading_is_higher(self):
-        f = self.csv(acct("2026-10-01", 2.0) + post("2026-10-03", "a", "2026-10-01T10:00", 5.0))
-        rows = td.tiktok_sale_rows(f)
-        self.assertEqual(sum(r["net"] for r in rows), 200)
-        self.assertEqual(td.tiktok_rewards_by_month(["2026-10"], f), {"2026-10": 5.0})
-        note = td.tiktok_month_note(rows, f)
-        self.assertIn("higher than the rows for October 2026", note)
-        self.assertIn("$5 counted", note)
-        self.assertIn("$2 in the rows", note)
+        by_month = td.tiktok_rewards_by_month(["2026-09", "2026-10"], f)
+        for m in by_month:
+            self.assertAlmostEqual(sum(r["net"] for r in rows if r["date"][:7] == m) / 100, by_month[m], places=2)
+        self.assertIn("scrolls off", td.tiktok_month_note(rows, f))
 
     def test_missing_file_gives_no_rows(self):
         self.assertEqual(td.tiktok_sale_rows(Path(TMP) / "nope.csv"), [])
@@ -195,7 +175,7 @@ class Block(unittest.TestCase):
             p.start()
             self.addCleanup(p.stop)
         self.csv = Path(TMP) / "block-rewards.csv"
-        self.csv.write_text(HEADER + acct("2026-10-19", 4.0) + acct("2026-10-20", 6.0))
+        self.csv.write_text(HEADER + post("2026-10-19", "a", "2026-10-19T09:00", 4.0) + post("2026-10-20", "a", "2026-10-19T09:00", 6.0))
         p = mock.patch.object(td, "TIKTOK_REWARDS_CSV", self.csv)
         p.start()
         self.addCleanup(p.stop)
@@ -237,7 +217,8 @@ class Reconciliation(unittest.TestCase):
 
     def test_rows_add_up_to_the_series_per_source(self):
         csv_path = Path(TMP) / "recon-rewards.csv"
-        csv_path.write_text(HEADER + acct("2026-10-01", 4.0) + acct("2026-10-02", 6.5) + acct("2026-10-03", 6.5, pipe="aita"))
+        csv_path.write_text(HEADER + post("2026-10-01", "a", "2026-10-01T09:00", 4.0) + post("2026-10-02", "a", "2026-10-01T09:00", 6.5)
+                            + post("2026-10-03", "b", "2026-10-03T09:00", 6.5, pipe="aita"))
         ts = dt.datetime(2026, 10, 5, 12).timestamp()
         ledger = [
             {"id": "s1", "kind": "purchase", "product": "x", "site": "purplelink", "gross": 2000, "fee": 100, "net": 1900, "refunded": 0, "ts": ts},
@@ -268,7 +249,7 @@ class Reconciliation(unittest.TestCase):
         self.assertAlmostEqual(by[td.SRC_ADS], series["ads"][self.M], places=2)
         # Photo: a single rise with no payout, so the rows equal the month's balance change (3.0 - 1.0).
         self.assertAlmostEqual(by["Photo licensing"], series["photo"][self.M], places=2)
-        # TikTok: the rebuilt daily rows are what the series counts here (the account reading is the larger).
+        # TikTok: the daily rows are exactly what the series counts.
         self.assertAlmostEqual(by[td.SRC_TIKTOK], series["tiktok"][self.M], delta=0.02)
         self.assertGreater(by[td.SRC_TIKTOK], 0)
 
