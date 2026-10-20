@@ -1344,7 +1344,7 @@ Keyfeel lives in the menu bar. You can silence it in the apps you choose, and it
 
 ## What it does
 
-Sound profilesRecorded Tactile, Cherry MX Brown and Dome profiles, a Fun set (cat, dog, duck, boing, bubble pop, water drops), a Calm set of soft sounds for all-day use (soft wood, glass and ceramic, marble, kalimba, chimes, clickers, bubble wrap), IBM Model M recordings (key presses only), and synthesized extras. Every sound in the menu has a play button that plays a few keys in it without switching to it, so you can hear it first. Every recording is licensed for use (CC0), with credits listed in the app and on the sound credits page.
+Sound profilesRecorded Tactile, Cherry MX Brown and Dome profiles, a Fun set (cat, dog, duck, boing, bubble pop, water drops), a Calm set of soft sounds for all-day use (soft wood, glass and ceramic, marble, kalimba, chimes, clickers, bubble wrap), IBM Model M recordings (key presses only), and synthesized extras, among them a Typewriter sound with a bell on Return (made by the app, not a recording of a real typewriter). Every sound in the menu has a play button that plays a few keys in it without switching to it, so you can hear it first. Every recording is licensed for use (CC0), with credits listed in the app and on the sound credits page.
 
 Your own soundsImport a Mechvibes sound pack in the original format (its folder, its zip or its config.json), including packs in .ogg. Each key keeps the sound the pack gave it. Packs in the newer MechvibesDX format are not read. Or choose one short sound file of your own.
 
@@ -8570,7 +8570,7 @@ These apps make your Mac's keyboard, mouse and trackpad sound or feel like somet
 
 Disclosure up front: Purplelink, which publishes this site, makes one app on this list, Keyfeel, sold as a free 7-day trial and then $9.99 once. It is new, and where another app is the better choice I say so.
 
-I did not install or test any of the other apps. I read everything below on October 7, 2026, from vendor pages, Mac App Store listings, project repositories and launch pages. The exception is Tacque and Typemac, which I read on October 9, 2026. I read TapWriter Pro, KeyBell, FunKey, Click, Tikey, Sound Typing and ClyKey on October 13, 2026. Prices and versions change, and where two sources disagreed I say so instead of choosing one.
+I did not install or test any of the other apps. I read everything below on October 7, 2026, from vendor pages, Mac App Store listings, project repositories and launch pages. The exception is Tacque and Typemac, which I read on October 9, 2026. I read TapWriter Pro, KeyBell, FunKey, Click, Tikey, Sound Typing and ClyKey on October 13, 2026, and Thock's releases and code again on October 20, 2026. Prices and versions change, and where two sources disagreed I say so instead of choosing one.
 
 ## The short answer
 
@@ -8598,7 +8598,7 @@ Klack$4.99 on the Mac App Store15.0 or laterNot statedKeys, mouse clicks since 1
 
 KeyOpera$313 or laterNot statedKeys, .keypak packs and spoken key names. Mouse per launch postNo free trial that I could see
 
-ThockFree, MIT license13.5 or laterNot statedKeysNo mouse or scroll sounds or haptics on the page I read
+ThockFree, MIT license13.5 or laterNot statedKeysNo scroll sounds or haptics. Mouse sounds are in its code since October 2026 but not yet in a release, as of October 20
 
 MechvibesFree, MIT licenseNot stated. Also Windows and LinuxNot statedKeys, from community packs. Mouse in the MechvibesDX rewriteOriginal repository is moving to legacy status
 
@@ -8744,9 +8744,11 @@ What it lacks: a free trial, as far as I could see. Pick it if you want the lowe
 
 Cost: Free, MIT-licensed, from its GitHub repository, also installable with brew install --cask kamillobinski/thock/thock. Platform: macOS 13.5 or later.
 
-A native menu-bar app with its own audio engine. The README lists switch profiles you can extend with JSON files, automatic muting while Spotify, Apple Music or VLC is playing, a command-line tool and a Raycast extension. It also lists interface text in nine languages. It had about 955 stars when I read it. The README did not give a profile count or spell out the permission it needs. Like the others, it has to be told when a key is pressed.
+A native menu-bar app with its own audio engine. The README lists switch profiles you can extend with JSON files, automatic muting while Spotify, Apple Music or VLC is playing, a command-line tool and a Raycast extension. It also lists interface text in nine languages. It had about 980 stars on October 20, 2026. The README did not give a profile count or spell out the permission it needs. Like the others, it has to be told when a key is pressed.
 
-What it lacks: mouse and scroll sounds and haptics, on the page I read. Pick it if you want free, open source and scriptable.
+Releases since February 2026 added turning on when headphones connect (1.20.0), a keyboard cleaning mode (1.22.0) and a sound-pack registry (1.23.0). In October 2026 the code on GitHub gained mouse sounds with their own volume and optional spatial audio, not yet in a release when I checked on October 20.
+
+What it lacks: scroll sounds and haptics, and mouse sounds until the next release, on the pages I read. Pick it if you want free, open source and scriptable.
 
 ## Mechvibes
 
@@ -8786,7 +8788,7 @@ Pick it if you want something you can feel on web pages. It is a companion to th
 
 Cost: Free for 7 days, then $9.99 once with a license key and no subscription. It is also part of the $59.99 Mac Suite. Platform: macOS 13 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.5.3, signed and notarized, released October 13, 2026. It is the newest and least proven app in this guide. I make it. I tested version 1.5.2 on macOS 27.2 on October 13, 2026, but I have not compared it with the others on a test Mac.
 
-I built it because I wanted the keyboard sounds, the click sounds and the scroll feel from one place. It plays recorded switch sounds with a different recording on each press, per-key pitch and left-to-right stereo, separate press and release sounds, and sounds for the space bar and Return.
+I built it because I wanted the keyboard sounds, the click sounds and the scroll feel from one place. It plays recorded switch sounds with a different recording on each press, per-key pitch and left-to-right stereo, separate press and release sounds, and sounds for the space bar and Return. It also has a synthesized typewriter sound with a bell on Return.
 
 It adds mouse click sounds, and scroll ticks that follow how fast you scroll and keep going while a hard flick glides. It also has optional trackpad haptics on scroll and click and an optional ripple on screen where you click. Beyond keyboards it has a Fun set (cat, dog, duck and others) and a Calm set of soft sounds for all-day use. All recordings are licensed for use and credited in the app.
 
