@@ -40,9 +40,9 @@ SALES = {"sales", "sales_to_date", "downloads"}
 # alamy_qc is pipeline status (passed/failed QC), alamy_measures is engagement
 # (views/zooms/CTR), alamy_sales is money already folded into the "alamy" row
 # itself (see platform_money_asof) -- none of the three get their own row.
-# Platforms whose balance is entered by hand once a month (scripts/record-getty-month.py), not read daily: their
+# Platforms whose balance is entered by hand once a month (scripts/record-photo-month.py), not read daily: their
 # last value is current until the next statement, so it is never shown as stale.
-MONTHLY_MANUAL = {"getty"}
+MONTHLY_MANUAL = {"getty", "vecteezy"}
 SKIP_ROW = {"alamy_qc", "alamy_measures", "alamy_sales", "getty_stats"}
 # metrics worth showing as pipeline state, in display order
 #
