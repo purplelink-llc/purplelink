@@ -18,6 +18,10 @@ os.environ["PURPLELINK_TRAFFIC_DIR"] = TMP
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import traffic_dashboard as td  # noqa: E402
+# TikTok's own daily figures (TikTokPipeline/analytics/tiktok_daily_income.csv) take precedence over the file a test
+# passes. conftest.py hides the real one under pytest; run directly (as the docstring says), these tests read the live
+# file and failed with the real month's $42.38 (2026-10-20). Point it at a file that does not exist here too.
+td.TIKTOK_DAILY_INCOME_CSV = Path(TMP) / "no-daily-income.csv"
 
 THIS = dt.date.today().strftime("%Y-%m")
 NOW = dt.datetime.now().timestamp()
