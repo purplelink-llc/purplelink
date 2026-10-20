@@ -93,6 +93,29 @@ export const DEVICE_CLASSES = ["mobile", "tablet", "desktop"];
 export const SCROLL_BUCKETS = ["0", "25", "50", "75", "100"];
 export const ENGAGED_BUCKETS = ["0-10s", "10-30s", "30-60s", "1-3m", "3m-plus"];
 const zeroed = (keys) => Object.fromEntries(keys.map((k) => [k, 0]));
+
+// Journeys (analytics backlog AB-20261020-3): of the visitors whose first page of the day was a guide, a tool or
+// anything else, how many viewed a product page later that day, and which one. Built from the daily-salted visitor
+// hash already on every record, so a journey never spans two days and nothing new is stored.
+export const PRODUCT_PAGES = ["moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "panely", "summonly", "suite", "vitae", "batterymeter"];
+const PRODUCT_RE = new RegExp(`^/(${PRODUCT_PAGES.join("|")})/`);
+export const entryKind = (path) => (/^\/guides\//.test(path) ? "guide" : /^\/tools\//.test(path) ? "tool" : PRODUCT_RE.test(path) ? "product" : "other");
+export const productOf = (path) => { const m = PRODUCT_RE.exec(path || ""); return m ? m[1] : ""; };
+/** visits: Map of vid -> [{ ts, path }] for one day. Returns { guide|tool|product|other: { visitors, reachedProduct, byProduct } }. */
+export function journeysOf(visits) {
+  const out = {};
+  for (const views of visits.values()) {
+    views.sort((a, b) => a.ts - b.ts);
+    const kind = entryKind(views[0].path);
+    const o = out[kind] || (out[kind] = { visitors: 0, reachedProduct: 0, byProduct: {} });
+    o.visitors++;
+    if (kind === "product") continue;
+    const reached = new Set(views.slice(1).map((v) => productOf(v.path)).filter(Boolean));
+    if (reached.size) o.reachedProduct++;
+    for (const pr of reached) o.byProduct[pr] = (o.byProduct[pr] || 0) + 1;
+  }
+  return out;
+}
 /** A record's host, lower-cased without a leading "www.", so "RubbleFront.com" and "www.rubblefront.com" match. */
 export function normalizeHost(h) {
   return String(h || "").trim().toLowerCase().replace(/^www\./, "");
@@ -240,6 +263,7 @@ export default async function handler(request) {
     byDay: {},
     funnelByChannel: {},
     excludedHosts: {},
+    journeysByDay: {},
   };
   if (hostFilter) for (const f of Object.values(HOST_EVENT_FIELDS)) s.totals[f] = 0;
   const uniquesPerDay = {};
@@ -275,6 +299,7 @@ export default async function handler(request) {
       if (hostFilter) for (const f of Object.values(HOST_EVENT_FIELDS)) s.byDay[day][f] = 0;
     }
     if (!uniquesPerDay[day]) uniquesPerDay[day] = new Set();
+    const visits = new Map();
 
     const records = await mapLimit(blobs, 64, async (b) => {
       try { return await store.get(b.key, { type: "json" }); } catch (_) { return null; }
@@ -314,6 +339,10 @@ export default async function handler(request) {
       }
 
       if (rec.type === "pageview") {
+        if (rec.vid && !hostFilter && typeof rec.path === "string") {
+          const v = visits.get(rec.vid) || visits.set(rec.vid, []).get(rec.vid);
+          v.push({ ts: Number(rec.ts) || 0, path: rec.path });
+        }
         s.totals.pageviews++; s.byDay[day].pageviews++;
         bump(s.byPath, rec.path);
         if (rec.refHost) bump(s.byReferrer, foldChannel(rec.refHost));
@@ -383,6 +412,7 @@ export default async function handler(request) {
       }
     }
     s.byDay[day].uniques = uniquesPerDay[day].size;
+    if (!hostFilter) s.journeysByDay[day] = journeysOf(visits);
   }
 
   return json(200, {
@@ -415,6 +445,7 @@ export default async function handler(request) {
     otherEvents: topN(s.otherEvents, 50),
     otherEventDetail: topN(s.otherEventDetail, 60),
     byDay: Object.fromEntries(Object.entries(s.byDay).sort()),
+    ...(hostFilter ? {} : { journeysByDay: Object.fromEntries(Object.entries(s.journeysByDay).sort()) }),
     funnelByChannel: Object.fromEntries(Object.entries(s.funnelByChannel).map(([ch, v]) => [ch, {
       pageviews: v.pageviews, pageviewsByPath: Object.fromEntries(topN(v.pageviewsByPath, 40).map((x) => [x.key, x.count])),
       trial: v.trial, checkout: v.checkout,
