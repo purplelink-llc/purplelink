@@ -197,6 +197,24 @@ class FaaLedgerTest(unittest.TestCase):
         # FAA: max(1.60 balance, 46.00 ledger) = 46.00, plus Adobe's 3.00; never 1.60 + 46.00
         self.assertAlmostEqual(got["2026-10"], 49.0)
 
+    def test_faa_row_counts_paid_orders_and_takes_the_larger_total(self):
+        # The control panel gives FAA a balance but no order count, so its row said 0 sales (2026-10-20).
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("photo_dashboard_t", Path(__file__).resolve().parents[1] / "photo-dashboard.py")
+        pd = importlib.util.module_from_spec(spec)
+        with mock.patch.object(sys, "argv", ["photo-dashboard.py"]):
+            spec.loader.exec_module(pd)
+        data = {"2026-09-30": {("fineartamerica", "balance"): 1.6}, "2026-10-19": {("fineartamerica", "balance"): 45.6}}
+        dates = sorted(data)
+        orders = [("2026-09-29", 1.6), ("2026-10-03", 44.0), ("2026-10-19", 2.0)]   # owner purchases are already left out
+        with mock.patch.object(pd, "faa_orders", lambda: orders):
+            faa = lambda asof: [r[:3] for r in pd.platform_money_asof(data, dates, asof)[2] if r[0] == "Fine Art America"][0]
+            self.assertEqual(faa("2026-09-30"), ("Fine Art America", 1.6, 1))
+            # balance $45.60 was read before the $2.00 order: the order list's $47.60 wins, and the count is 3
+            self.assertEqual(faa("2026-10-19"), ("Fine Art America", 47.6, 3))
+        with mock.patch.object(pd, "faa_orders", lambda: []):
+            self.assertEqual(faa("2026-10-19"), ("Fine Art America", 45.6, None))   # no ledger: balance alone, as before
+
     def test_ledger_alone_when_photo_tracking_is_unavailable(self):
         def boom():
             raise FileNotFoundError("no photo-dashboard.py")

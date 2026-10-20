@@ -43,6 +43,31 @@ SALES = {"sales", "sales_to_date", "downloads"}
 # Platforms whose balance is entered by hand once a month (scripts/record-photo-month.py), not read daily: their
 # last value is current until the next statement, so it is never shown as stale.
 MONTHLY_MANUAL = {"getty", "vecteezy"}
+# Fine Art America's control panel shows a running balance but no order count, so its "sales" read 0 while it had
+# earned $45.60 (2026-10-20). scripts/sales-ledgers.py writes one row per order from FAA's Sales page; the FAA row
+# takes its count from there, and its earnings are the larger of the balance and the orders' total (the balance goes
+# stale when a sweep fails and drops after a payout; the order list does neither).
+FAA_LEDGER = AN / "faa-sales.csv"
+
+
+def faa_orders():
+    """(sale_date, profit) for each paid FAA order. Owner purchases have no total and earn nothing, so they are left
+    out; an unreadable or missing ledger gives no rows (the balance alone is used then)."""
+    try:
+        with open(FAA_LEDGER, newline="", encoding="utf-8") as f:
+            rows = list(csv.DictReader(f))
+    except OSError:
+        return []
+    out = []
+    for r in rows:
+        total = (r.get("total") or "").strip()
+        if not total:
+            continue
+        try:
+            out.append((r.get("sale_date", ""), float(total)))
+        except ValueError:
+            continue
+    return out
 SKIP_ROW = {"alamy_qc", "alamy_measures", "alamy_sales", "getty_stats"}
 # metrics worth showing as pipeline state, in display order
 #
@@ -172,6 +197,7 @@ def platform_money_asof(data, dates, asof):
     # not a special case).
     alamy_sales_amount, _ = last.get(("alamy_sales", "lifetime_sales_amount"), (None, None))
     alamy_sales_count, _ = last.get(("alamy_sales", "sales_count"), (None, None))
+    faa_paid = [(d, t) for d, t in faa_orders() if d <= asof]
     for p in platforms:
         label, thresh, royalty = ECONOMICS.get(p, (p.replace("_", " ").title(), None, "—"))
         bal_e = next((last[(p, k)] for k in MONEY if (p, k) in last), None)
@@ -182,6 +208,11 @@ def platform_money_asof(data, dates, asof):
             bal = alamy_sales_amount
             if alamy_sales_count is not None:
                 sal = alamy_sales_count
+        if p == "fineartamerica" and faa_paid:
+            sal = len(faa_paid)
+            ledger_total = round(sum(t for _d, t in faa_paid), 2)
+            if bal is None or ledger_total > bal:
+                bal = ledger_total
         if bal:
             total_money += bal
         if sal:
