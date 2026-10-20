@@ -142,7 +142,7 @@
 - **Category:** Academic research management
 - **Description:** A local-first Mac app for academics: track journal and conference submissions, grants, projects and collaborators, and generate your CV from that record.
 - **Pricing:** Free. Optional Vitae Plus subscription, $2.99/month or $23.99/year with a 7-day free trial, adds reports, Word templates, a revision workspace, Shareables with visual cards, the collaboration map and research timeline, and the extra For You nudges. Core record-keeping, For You's first three nudges and topic assignment stay free.
-- **Status:** Shipping, version 1.4.2 (October 2026). Apple-notarized download, no App Store required. 1.4.2 fixes a crash at launch on macOS 15 and 26 caused by half-filled records and links to deleted records.
+- **Status:** Shipping, version 1.4.3 (October 2026). Apple-notarized download, no App Store required. 1.4.3 fixes crashes while working after a record is deleted (in Insights, Spotlight, Inbox Undo and detail panes, or on another Mac with iCloud sync).
 - **New in 1.4.0:** a For You screen with rule-based nudges built from the local record; research topics from OpenAlex (editable, free); institutions and a collaboration map and research timeline (Plus); five visual share cards on a Nocturne background (Plus); a CV setting to hide journal names on manuscripts under review; a recorded rejection moves the project out of Under Review, with Undo. Topic list, institution registry and map outline are bundled, so nothing is sent to a server.
 - **Product page:** https://purplelink.llc/vitae/
 - **Vitae Plus:** https://purplelink.llc/vitae/plus/
