@@ -5527,6 +5527,87 @@ def all_sales_by_day(rows: list[dict], today: dt.date | None = None, days: int =
     return [{"date": d, "received": got[d][0], "estimated": got[d][1], "total": got[d][0] + got[d][1]} for d in window]
 
 
+REVENUE_DAILY_CSV = OUT_DIR / "revenue_daily.csv"
+
+
+def archive_revenue_daily(history: dict, rows: list[dict]) -> dict:
+    """Keep every day's revenue, per source, in history["revenueDaily"]: {date: {source: {"received": cents,
+    "estimated": cents}}}, built from the all-sales rows (all_sales_rows) so it is the same money as the table.
+
+    Each run replaces the (date, source) pairs it has rows for and keeps the rest. A source whose own file goes
+    missing (TikTok's daily figures, a photo CSV) therefore keeps its past days here, so the series behind the
+    Overview chart and the causal tests (insights/experiments) does not lose history. Returns the archive."""
+    fresh: dict[str, dict[str, dict[str, int]]] = {}
+    for r in rows:
+        if not re.match(r"^\d{4}-\d\d-\d\d$", r.get("date") or ""):
+            continue
+        cell = fresh.setdefault(r["date"], {}).setdefault(r["source"], {"received": 0, "estimated": 0})
+        cell["estimated" if r.get("estimate") else "received"] += int(r.get("net") or 0)
+    archive = history.setdefault("revenueDaily", {})
+    for day, by_src in fresh.items():
+        archive.setdefault(day, {}).update(by_src)
+    return archive
+
+
+def write_revenue_daily_csv(archive: dict, path: Path | None = None) -> None:
+    """The archive as a long CSV (date, source, received, estimated, total; dollars) for pandas and the insights
+    scripts. Rewritten whole each run; the archive in history.json is the record."""
+    import csv
+    path = path or REVENUE_DAILY_CSV
+    tmp = path.with_suffix(".tmp")
+    with open(tmp, "w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["date", "source", "received", "estimated", "total"])
+        for day in sorted(archive):
+            for src in sorted(archive[day]):
+                c = archive[day][src]
+                rec, est = int(c.get("received", 0)), int(c.get("estimated", 0))
+                w.writerow([day, src, f"{rec / 100:.2f}", f"{est / 100:.2f}", f"{(rec + est) / 100:.2f}"])
+    tmp.replace(path)
+
+
+def daily_revenue_block(archive: dict | None, today: dt.date | None = None, days: int = 30) -> str:
+    """Overview: money per day for the last `days` days from the revenueDaily archive. Bars stack what was sold or
+    received (solid) under estimates (TikTok, AdMob, Getty downloads not on a statement; lighter), so an estimate is
+    never read as cash. Figures above the chart: today, last 7 days, last 30 days, and the 30-day daily average."""
+    archive = archive or {}
+    today = today or dt.date.today()
+    window = [(today - dt.timedelta(days=k)).isoformat() for k in range(days - 1, -1, -1)]
+    rec = [sum(int(c.get("received", 0)) for c in archive.get(d, {}).values()) for d in window]
+    est = [sum(int(c.get("estimated", 0)) for c in archive.get(d, {}).values()) for d in window]
+    tot = [a + b for a, b in zip(rec, est)]
+    if not any(tot):
+        return ""
+    top = max(tot) or 1
+    w, h, gap = 640, 140, 2
+    bw = (w - gap * (days - 1)) / days
+    bars = []
+    for i, d in enumerate(window):
+        x = i * (bw + gap)
+        hr, he = h * rec[i] / top, h * est[i] / top
+        tip = f"{d}: {money(rec[i])} sold or received, {money(est[i])} estimated"
+        bars.append(f"<g><title>{html.escape(tip)}</title>"
+                    f"<rect x='{x:.1f}' y='{h - hr:.1f}' width='{bw:.1f}' height='{hr:.1f}' fill='var(--purple)'/>"
+                    f"<rect x='{x:.1f}' y='{h - hr - he:.1f}' width='{bw:.1f}' height='{he:.1f}' fill='var(--purple)' "
+                    f"fill-opacity='0.35'/></g>")
+    week = sum(tot[-7:])
+    chips = (f"<span class='sales-chip'><b>{money(tot[-1])}</b> <span>today</span></span>"
+             f"<span class='sales-chip'><b>{money(week)}</b> <span>last 7 days</span></span>"
+             f"<span class='sales-chip'><b>{money(sum(tot))}</b> <span>last {days} days "
+             f"({money(sum(est))} estimated)</span></span>"
+             f"<span class='sales-chip'><b>{money(round(sum(tot) / days))}</b> <span>a day on average</span></span>")
+    return f"""
+<section class="sales daily-revenue">
+  <h2>Revenue by day &middot; last {days} days</h2>
+  <div class="sales-chips">{chips}</div>
+  <svg viewBox="0 0 {w} {h}" width="100%" height="{h}" preserveAspectRatio="none" role="img"
+       aria-label="Revenue per day, last {days} days">{''.join(bars)}</svg>
+  <p class="sales-foot">{window[0]} to {window[-1]}. Solid: sold or received. Light: estimates (TikTok, AdMob, Getty
+  downloads not on a statement yet). Every source in the Money tab's list counts. Kept day by day in history.json
+  ("revenueDaily") and {html.escape(REVENUE_DAILY_CSV.name)} for analysis.</p>
+</section>"""
+
+
 def photo_totals_only_note(listed: list[dict]) -> str:
     """Platforms that report a sales count and balance but no per-sale rows. Their balance rises are listed
     as photo rows (photo_balance_rows), so this names them and says how many sales the platform counts."""
@@ -5870,7 +5951,7 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
            admob: dict | None = None, metrics: dict | None = None,
            profit: dict | None = None, channels: dict | None = None, tax: dict | None = None,
            marketplaces: dict | None = None, market_rows: list[dict] | None = None,
-           ledger_rows: list[dict] | None = None) -> str:
+           ledger_rows: list[dict] | None = None, revenue_daily: dict | None = None) -> str:
     cards = "".join(site_card(s) for s in summaries)
     obs_html = "".join(f"<li>{html.escape(o)}</li>" for o in obs) or "<li>No data yet.</li>"
 
@@ -5915,7 +5996,8 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
     per_site, general = split_notes(summaries, obs)
     general_html = ("<section class='site-notes'><h2>Other notes</h2><ul>"
                     + "".join(f"<li>{html.escape(g)}</li>" for g in general) + "</ul></section>") if general else ""
-    overview = (f"{revenue_block(sales, appstore, market_rows=market_rows, admob=admob)}\n{metrics_block(metrics)}\n"
+    overview = (f"{daily_revenue_block(revenue_daily)}\n"
+                f"{revenue_block(sales, appstore, market_rows=market_rows, admob=admob)}\n{metrics_block(metrics)}\n"
                 f"{profit_block(profit, channels, tax)}\n{glance_table(summaries)}\n"
                 f"{queue_block()}\n{general_html}")
     money = f"{all_sales_block(ledger_rows or [], appstore, admob)}\n{sales_block(sales)}\n{marketplaces_block(marketplaces)}"
@@ -6235,11 +6317,21 @@ def main() -> int:
     tax = tax_view(profit, history)
     marketplaces = marketplace_summary(history)
     market_rows = [r for r in (history.get("ledger") or {}).values() if r.get("market")]
+    # Every source's money per day, kept in the archive so the series outlives any one source file.
+    try:
+        revenue_daily = archive_revenue_daily(
+            history, all_sales_rows(list((history.get("ledger") or {}).values()), appstore, history.get("admob")))
+        if HISTORY_PATH.exists():
+            HISTORY_PATH.write_text(json.dumps(history, indent=1, sort_keys=True))
+        write_revenue_daily_csv(revenue_daily)
+    except Exception as exc:  # noqa: BLE001 -- never let this sink the run
+        revenue_daily = history.get("revenueDaily")
+        print(f"  ! daily revenue not archived: {str(exc)[:100]}", file=sys.stderr)
     DASHBOARD_PATH.write_text(
         render(summaries, obs, generated, min(firsts) if firsts else None,
                sales, appstore, manual_ads, chrome_web_store, history.get("admob"), metrics,
                profit, channels, tax, marketplaces, market_rows,
-               list((history.get("ledger") or {}).values())))
+               list((history.get("ledger") or {}).values()), revenue_daily))
 
     # Terminal summary, so a manual run is useful without opening a browser.
     print_metrics(metrics)
