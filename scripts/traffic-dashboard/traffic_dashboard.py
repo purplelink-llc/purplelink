@@ -5977,7 +5977,8 @@ REV_CSS = """
   .daily-revenue > h2{order:0} .rev-fig{order:1} .rev-plot{order:2} .rev-legend{order:3} .rev-caption{order:4} .rev-controls{order:5;margin-top:16px}
   .rev-fig{grid-template-columns:repeat(2,minmax(0,1fr))}
   .rev-slider input{width:80px}
-  .rev-sources .rev-group{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;max-width:100%;padding-bottom:2px}
+  .rev-sources .rev-group{flex-wrap:wrap;row-gap:8px;max-width:100%}
+  .rev-sources .rev-lab{flex-basis:100%}
   .rev-sources .src-chip{flex:none}
 }
 """
