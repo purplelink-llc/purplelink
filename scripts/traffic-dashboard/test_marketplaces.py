@@ -218,7 +218,7 @@ class Dashboard(unittest.TestCase):
         td.marketplace_step(hist, {}, fetch=False)
         s = td.marketplace_summary(hist)
         out = td.render([], [], "now", None, None, None, {}, None, None, None, None, None, None, s, [])
-        self.assertIn("none yet", out)
+        self.assertIn("no orders yet", out)
         td.print_marketplaces(s)
 
     def test_rerender_keeps_newer_api_reading(self):
