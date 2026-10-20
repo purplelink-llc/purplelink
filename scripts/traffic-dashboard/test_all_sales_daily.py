@@ -18,6 +18,9 @@ os.environ["PURPLELINK_TRAFFIC_DIR"] = TMP
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import traffic_dashboard as td  # noqa: E402
+# Hide TikTok's real daily figures (TikTokPipeline/analytics/tiktok_daily_income.csv) when run directly, as conftest.py
+# does under pytest; otherwise the live file overrides each test's own data (2026-10-20).
+td.TIKTOK_DAILY_INCOME_CSV = Path(TMP) / "no-daily-income.csv"
 
 HEADER = "snapshot_date,snapshot_at,pipeline,platform,level,program,window,currency,caption,posted_at,est_rewards,qualified_views\n"
 
