@@ -1,5 +1,5 @@
 {
-  "version": "1.4.2",
-  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.4.2.dmg",
-  "releaseNotes": "Fixes a crash at launch on macOS 15 and macOS 26 when a project, idea, submission, grant or deadline had been left half filled in, or still linked to a deleted publication. When it opens your library, Vitae now fills any missing required field with its usual starting value and clears links to deleted records. A status or type from a newer version of Vitae shows as the first option instead of stopping the app. No record is removed."
+  "version": "1.4.3",
+  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.4.3.dmg",
+  "releaseNotes": "Fixes crashes after deleting records. Vitae could quit while you worked if a record was deleted and something still read it: Insights and Spotlight updating in the background, Undo in the Inbox after the matched submission was deleted, or a detail pane still showing what you had just deleted. With iCloud sync on, opening a record deleted on another Mac now shows nothing selected instead of stopping the app."
 }
