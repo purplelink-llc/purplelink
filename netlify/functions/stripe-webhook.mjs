@@ -25,7 +25,8 @@
  * Webhook endpoint to register in the Stripe dashboard:
  *   https://purplelink.llc/.netlify/functions/stripe-webhook
  *   subscribed to events: checkout.session.completed, customer.subscription.deleted,
- *   charge.refunded, charge.dispute.created, charge.dispute.closed
+ *   charge.refunded, charge.dispute.created, charge.dispute.closed, checkout.session.expired
+ *   (the last one for ModernTex checkout recovery, netlify/lib/checkout-recovery.mjs)
  */
 
 import { issueKeyfeelLicense } from "../lib/keyfeel-license.mjs";
@@ -38,6 +39,7 @@ import { getStore } from "@netlify/blobs";
 import { issueLicense, licensedSlugsFor, LICENSED_PRODUCTS } from "../lib/license.mjs";
 import { bundlePartsOf, entitledParts, isBundleProduct, partsSentence } from "../lib/bundles.mjs";
 import { recordRevocation, clearDispute, paymentIntentOf } from "../lib/refunds.mjs";
+import { handleExpired, markBought, STORE as RECOVERY_STORE } from "../lib/checkout-recovery.mjs";
 
 const MODAL_REGISTER_URL =
   "https://ben-ampel--purplelink-latextools-web.modal.run/paper-review/register-token";
@@ -681,6 +683,31 @@ export default async function handler(request) {
     return jsonResponse(200, { status: cleared ? "dispute_cleared" : "dispute_closed", payment_intent: pi });
   }
 
+  // An unpaid checkout expired: one recovery email when the buyer consented (netlify/lib/checkout-recovery.mjs).
+  // A failed send returns 502 so Stripe retries; the session key makes the retry safe.
+  if (event.type === "checkout.session.expired") {
+    const secret = Netlify.env.get("FOLLOWUP_UNSUBSCRIBE_SECRET") || stripeSecret;
+    const apiKey = Netlify.env.get("RESEND_API_KEY");
+    const status = await handleExpired(event.data?.object, {
+      store: getStore(RECOVERY_STORE),
+      suppressed: getStore("followup-suppressed"),
+      secret,
+      enabled: Netlify.env.get("CHECKOUT_RECOVERY") !== "off" && !!apiKey,
+      send: async (mail) => {
+        try {
+          const r = await fetch(RESEND_API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+            body: JSON.stringify(mail),
+          });
+          return r.ok;
+        } catch (_) { return false; }
+      },
+    });
+    if (status === "sent") console.log("stripe-webhook: checkout recovery email sent");
+    return jsonResponse(status === "send_failed" ? 502 : 200, { status: `recovery_${status}`, type: event.type });
+  }
+
   // We only care about a completed Checkout session beyond this point.
   if (event.type !== "checkout.session.completed") {
     // 200-OK every other event type so Stripe doesn't retry indefinitely.
@@ -746,6 +773,8 @@ export default async function handler(request) {
       return jsonResponse(200, { status: "duplicate_event_ignored", product: rawProduct, event_id: event.id || null });
     }
     await dedupeStore.set(dedupeKey, new Date().toISOString());
+    // A buyer who later lets another checkout expire must not get a "you did not finish" email.
+    try { await markBought(getStore(RECOVERY_STORE), rawProduct, email); } catch (_) { /* best effort */ }
     const emailed = await emailDownloadLink(email, sessionId, rawProduct, { seats: parseInt(session.metadata?.seats || "0", 10) || 0, apps: session.metadata?.apps || "" });
     if (LIFECYCLE_PRODUCTS.has(rawProduct) && email) {
       // Day-3 tips and a day-21 note, sent by the backend's daily sweep with
