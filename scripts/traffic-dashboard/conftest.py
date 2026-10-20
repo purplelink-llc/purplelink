@@ -8,3 +8,13 @@ import os
 import tempfile
 
 os.environ.setdefault("PURPLELINK_TRAFFIC_DIR", tempfile.mkdtemp(prefix="traffic-test-"))
+
+
+import pytest  # noqa: E402
+
+
+@pytest.fixture(autouse=True)
+def _no_real_tiktok_daily_income(monkeypatch, tmp_path):
+    """TikTok's own daily figures live in TikTokPipeline/analytics; a test that does not pass its own file must see none."""
+    import traffic_dashboard as td
+    monkeypatch.setattr(td, "TIKTOK_DAILY_INCOME_CSV", tmp_path / "no-daily-income.csv")

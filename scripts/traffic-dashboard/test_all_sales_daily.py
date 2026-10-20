@@ -53,7 +53,7 @@ class TikTokRows(unittest.TestCase):
         self.assertTrue(all(r["estimate"] and r["source"] == td.SRC_TIKTOK for r in rows))
         self.assertEqual({(r["date"], r["detail"]): r["net"] for r in rows},
                          {("2026-10-01", "nl"): 700, ("2026-10-03", "nl"): 200, ("2026-10-02", "aita"): 300})
-        self.assertEqual(rows[0]["item"], "Creator Rewards estimate added that day")
+        self.assertEqual(rows[0]["item"], "Creator Rewards estimate added that day (per-post)")
 
     def test_rows_equal_the_monthly_figure(self):
         f = self.csv(post("2026-09-30", "a", "2026-09-30T10:00", 1.0) + post("2026-10-02", "a", "2026-09-30T10:00", 4.0)
@@ -62,7 +62,25 @@ class TikTokRows(unittest.TestCase):
         by_month = td.tiktok_rewards_by_month(["2026-09", "2026-10"], f)
         for m in by_month:
             self.assertAlmostEqual(sum(r["net"] for r in rows if r["date"][:7] == m) / 100, by_month[m], places=2)
-        self.assertIn("scrolls off", td.tiktok_month_note(rows, f))
+        self.assertIn("per-post", td.tiktok_month_note(rows, f))
+
+    def test_tiktoks_own_daily_figures_win_from_their_first_day(self):
+        # Per-post rises on Oct 1-3; TikTok's own figures start Oct 2, revised by a later snapshot on Oct 3.
+        f = self.csv(post("2026-10-01", "a", "2026-10-01T10:00", 1.0) + post("2026-10-02", "a", "2026-10-01T10:00", 3.0)
+                     + post("2026-10-03", "a", "2026-10-01T10:00", 9.0))
+        api = Path(TMP) / "daily.csv"
+        api.write_text("snapshot_date,snapshot_at,pipeline,program,day,est_income,currency\n"
+                       "2026-10-03,2026-10-03T21:00:00,nl,Total,2026-10-02,2.5,USD\n"
+                       "2026-10-03,2026-10-03T21:00:00,nl,Total,2026-10-03,1.0,USD\n"
+                       "2026-10-03,2026-10-03T21:00:00,nl,Creator Rewards Program,2026-10-03,1.0,USD\n"
+                       "2026-10-04,2026-10-04T21:00:00,nl,Total,2026-10-03,4.25,USD\n")
+        rows = td.tiktok_sale_rows(f, api)
+        self.assertEqual([(r["date"], r["net"], r["from_tiktok"]) for r in rows],
+                         [("2026-10-01", 100, False), ("2026-10-02", 250, True), ("2026-10-03", 425, True)])
+        self.assertEqual(td.tiktok_rewards_by_month(["2026-10"], f, api), {"2026-10": 7.75})
+        self.assertIn("per-post", td.tiktok_month_note(rows))
+        only_api = [r for r in rows if r["from_tiktok"]]
+        self.assertIn("TikTok's own daily estimates", td.tiktok_month_note(only_api))
 
     def test_missing_file_gives_no_rows(self):
         self.assertEqual(td.tiktok_sale_rows(Path(TMP) / "nope.csv"), [])
