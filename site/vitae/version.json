@@ -1,5 +1,5 @@
 {
-  "version": "1.4.1",
-  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.4.1.dmg",
-  "releaseNotes": "Fixes a crash at launch when a grant, paper or project still pointed at a record that had been deleted. Vitae now removes those leftover links when it opens your library, and a grant's supported-work lists skip records that no longer exist. Nothing else in your library changes."
+  "version": "1.4.2",
+  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.4.2.dmg",
+  "releaseNotes": "Fixes a crash at launch on macOS 15 and macOS 26 when a project, idea, submission, grant or deadline had been left half filled in, or still linked to a deleted publication. When it opens your library, Vitae now fills any missing required field with its usual starting value and clears links to deleted records. A status or type from a newer version of Vitae shows as the first option instead of stopping the app. No record is removed."
 }
