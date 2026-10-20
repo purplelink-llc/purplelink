@@ -4900,112 +4900,93 @@ ESTIMATED_SOURCES = ("ads", "tiktok")
 TIKTOK_REWARDS_CSV = Path("/Volumes/Extreme SSD/TikTokPipeline/analytics/tiktok_rewards.csv")
 
 
-def tiktok_daily_by_pipeline(rows: list[dict]) -> dict[str, dict[str, float]]:
-    """Daily Creator Rewards estimates rebuilt from TikTok's rolling 7-day account totals.
-
-    Studio's Monetization page gives one number for the account: the estimate for the last 7 days. Per-post rows are
-    not enough, because that page only lists the newest few posts, so a post's figure freezes once it scrolls off while
-    TikTok keeps adding to it. The account total has no such hole. A rolling window satisfies
-    T(d) = E(d-6) + ... + E(d), so E(d) = T(d) - T(d-1) + E(d-7), and with the program starting from zero every earlier
-    day is known. A missing snapshot day is handled by splitting the gap's total evenly across the missing days; a gap
-    longer than 7 days only recovers the last 7. Several snapshots on one day: the latest one counts. Returns
-    {pipeline: {ISO date: estimated rewards that day}}, so the all-sales list can name the pipeline on each row;
-    tiktok_daily_from_account_totals sums them. Dates are the snapshot dates, which can sit a day after TikTok's own
-    data day; that shifts a day across a month boundary at most."""
+def _tiktok_posted(value: str):
+    """posted_at as a naive datetime. The collector wrote some posts in local time and later snapshots of the same post
+    in UTC with a trailing Z, so the two spellings of one post can sit hours apart; callers match within a window."""
     import datetime as _dt
-    last: dict[tuple, tuple] = {}
-    for r in rows:
-        if r.get("level") != "account" or r.get("program") != "Total":
-            continue
-        if not str(r.get("window") or "").strip().lower().startswith("last 7"):
-            continue
-        day = (r.get("snapshot_date") or "")[:10]
+    try:
+        return _dt.datetime.fromisoformat((value or "").strip().rstrip("Z")[:19])
+    except ValueError:
+        return None
+
+
+def tiktok_posts(rows: list[dict]) -> list[dict]:
+    """The per-post rows grouped into one record per real post: {pipeline, caption, video_id, snaps: [(snapshot_at,
+    snapshot_date, est)]}.
+
+    Rows are the same post when the pipeline and caption match, the posted_at times are within 12 hours of each other
+    (local versus UTC spelling of one time), and their video ids do not disagree. Keying on the raw posted_at string, as
+    this code did until 2026-10-20, counted 27 October posts twice and put October at $48.85 against $41.73."""
+    import datetime as _dt
+    posts: list[dict] = []
+    for r in sorted((r for r in rows if r.get("level") == "post"), key=lambda r: r.get("snapshot_at") or ""):
+        posted = _tiktok_posted(r.get("posted_at") or "")
         try:
-            _dt.date.fromisoformat(day)
-            total = float(r.get("est_rewards") or 0)
+            est = float(r.get("est_rewards") or 0)
         except ValueError:
             continue
-        key = (r.get("pipeline") or "", day)
-        at = r.get("snapshot_at") or ""
-        if key not in last or at >= last[key][0]:
-            last[key] = (at, total)
+        if posted is None:
+            continue
+        vid = (r.get("video_id") or "").strip()
+        for p in posts:
+            if (p["pipeline"] == (r.get("pipeline") or "") and p["caption"] == (r.get("caption") or "")
+                    and abs(p["posted"] - posted) <= _dt.timedelta(hours=12)
+                    and not (vid and p["video_id"] and vid != p["video_id"])):
+                break
+        else:
+            p = {"pipeline": r.get("pipeline") or "", "caption": r.get("caption") or "", "posted": posted,
+                 "video_id": vid, "snaps": []}
+            posts.append(p)
+        p["video_id"] = p["video_id"] or vid
+        p["snaps"].append((r.get("snapshot_at") or "", (r.get("snapshot_date") or "")[:10], est))
+    return posts
+
+
+def tiktok_daily_from_posts(rows: list[dict]) -> dict[str, dict[str, float]]:
+    """{pipeline: {ISO date: rewards}}: what each post's estimate rose by, counted on the day of the snapshot that saw
+    the rise. A post's first snapshot counts in full on its day. A post's estimate only accrues, so a lower later
+    figure is ignored rather than counted as a loss (the running high stands). Summed over a month this is every
+    post's latest figure, so the days add up to the month exactly."""
     out: dict[str, dict[str, float]] = {}
-    for pipe in sorted({p for p, _ in last}):
-        totals = {_dt.date.fromisoformat(d): v[1] for (p, d), v in last.items() if p == pipe}
-        daily: dict[_dt.date, float] = {}
-        prev_day = prev_total = None
-        for day in sorted(totals):
-            total = totals[day]
-            if prev_day is None:
-                daily[day] = total
-            else:
-                gap = (day - prev_day).days
-                if gap > 7:
-                    span = [day - _dt.timedelta(days=k) for k in range(6, -1, -1)]
-                    earned = total
-                else:
-                    span = [prev_day + _dt.timedelta(days=k) for k in range(1, gap + 1)]
-                    leaving = sum(daily.get(x - _dt.timedelta(days=7), 0.0) for x in span)
-                    earned = total - prev_total + leaving
-                for x in span:
-                    daily[x] = earned / len(span)
-            prev_day, prev_total = day, total
-        out[pipe] = {day.isoformat(): v for day, v in daily.items()}
+    for p in tiktok_posts(rows):
+        high = 0.0
+        for _at, day, est in sorted(p["snaps"]):
+            if est > high and day:
+                days = out.setdefault(p["pipeline"], {})
+                days[day] = days.get(day, 0.0) + est - high
+                high = est
     return out
 
 
-def tiktok_daily_from_account_totals(rows: list[dict]) -> dict[str, float]:
-    """tiktok_daily_by_pipeline summed over pipelines: {ISO date: estimated rewards that day}."""
-    out: dict[str, float] = {}
-    for days in tiktok_daily_by_pipeline(rows).values():
-        for day, v in days.items():
-            out[day] = out.get(day, 0.0) + v
-    return out
-
-
-def tiktok_readings(months: list[str], path: Path | None = None) -> tuple[dict[str, float], dict[str, float], list[dict]]:
-    """The two readings of the TikTok rewards CSV for each month, plus the raw rows: (per_post, rebuilt, rows).
-    per_post is the best figure ever recorded for each post, summed by the month the post went up; rebuilt is the
-    account's rolling 7-day totals turned into daily earnings. tiktok_rewards_by_month counts the larger of the two per
-    month; the all-sales list itemises only `rebuilt`, the one that exists per day. A missing file reads as zeros."""
+def tiktok_readings(months: list[str], path: Path | None = None) -> tuple[dict[str, float], list[dict]]:
+    """TikTok Creator Rewards by month from the per-post rows (tiktok_daily_from_posts), plus the raw rows.
+    A missing file reads as zeros."""
     import csv
-    best: dict[tuple, float] = {}
-    rows: list[dict] = []
     try:
         with open(path or TIKTOK_REWARDS_CSV, newline="", encoding="utf-8") as f:
-            for r in csv.DictReader(f):
-                rows.append(r)
-                if r.get("level") != "post" or not (r.get("posted_at") or "")[:7]:
-                    continue
-                try:
-                    est = float(r.get("est_rewards") or 0)
-                except ValueError:
-                    continue
-                key = (r.get("pipeline"), r.get("caption"), r.get("posted_at"))
-                best[key] = max(best.get(key, 0.0), est)
+            rows = list(csv.DictReader(f))
     except OSError:
-        return {m: 0.0 for m in months}, {m: 0.0 for m in months}, []
-    per_post = {m: 0.0 for m in months}
-    for (_pipe, _cap, posted), est in best.items():
-        if posted[:7] in per_post:
-            per_post[posted[:7]] += est
-    rebuilt = {m: 0.0 for m in months}
-    for day, est in tiktok_daily_from_account_totals(rows).items():
-        if day[:7] in rebuilt:
-            rebuilt[day[:7]] += est
-    return per_post, rebuilt, rows
+        return {m: 0.0 for m in months}, []
+    by_month = {m: 0.0 for m in months}
+    for days in tiktok_daily_from_posts(rows).values():
+        for day, est in days.items():
+            if day[:7] in by_month:
+                by_month[day[:7]] += est
+    return by_month, rows
 
 
 def tiktok_rewards_by_month(months: list[str], path: Path | None = None) -> dict[str, float]:
-    """TikTok Creator Rewards estimates by month.
+    """TikTok Creator Rewards estimates by month: the rise in each post's estimate, counted on the day it was seen.
 
-    Two readings of the same CSV, and the larger one wins for each month. (1) The per-post rows: a post's estimate only
-    accrues, so the largest figure ever recorded for it is the truthful one, summed by the month the post went up. This
-    misses posts that scrolled off the Monetization page's short list. (2) The account's rolling 7-day totals rebuilt into
-    daily earnings (tiktok_daily_from_account_totals), which count every post. The overlapping windows themselves are
-    never summed. These are TikTok's estimates from Studio, not payouts. A missing file reads as zero, quietly."""
-    per_post, rebuilt, _rows = tiktok_readings(months, path)
-    return {m: round(max(per_post[m], rebuilt[m]), 2) for m in months}
+    Until 2026-10-20 this took the larger of that and the account's rolling 7-day totals rebuilt into days
+    (tiktok_daily_by_pipeline). The rebuild assumes each window is a plain sum of fixed days, but Studio revises earlier
+    days down, so it came out with negative days and overcounted: $51.08 for October 1-19 against $42.38 in TikTok's
+    own app. The per-post reading gave $41.73. It can run a little low, because Studio lists only the newest posts and a
+    post that scrolls off stops being updated here. These are TikTok's estimates from Studio, not payouts. A missing
+    file reads as zero, quietly."""
+    by_month, _rows = tiktok_readings(months, path)
+    return {m: round(v, 2) for m, v in by_month.items()}
+
 
 
 def admob_revenue_by_month(admob: dict | None, months: list[str]) -> dict[str, float]:
@@ -5366,37 +5347,29 @@ def getty_estimate_by_month(months: list[str]) -> dict[str, float]:
 
 
 def tiktok_sale_rows(path: Path | None = None) -> list[dict]:
-    """One estimate row per day per pipeline, from the account's rolling 7-day totals rebuilt into daily earnings
-    (tiktok_daily_by_pipeline). Zero days are left out, and nothing exists before a pipeline's first snapshot. A day can
-    come out negative when Studio lowers a window's total; it is kept so a month's rows add up to the monthly figure. These
-    are TikTok's own Studio estimates, not payouts, so every row is marked estimate and kept out of the received total.
-    The month totals in "Revenue, all sources" take the larger of this reading and the per-post one
-    (tiktok_rewards_by_month); tiktok_month_note says when that makes the two differ."""
-    _per_post, _rebuilt, rows = tiktok_readings([], path)
+    """One estimate row per day per pipeline: what that day's snapshot added to the posts' estimates
+    (tiktok_daily_from_posts). These rows are what tiktok_rewards_by_month sums, so a month's rows equal its figure in
+    Revenue, all sources. TikTok's own Studio estimates, not payouts: every row is marked estimate and kept out of the
+    received total."""
+    _by_month, rows = tiktok_readings([], path)
     out = []
-    for pipe, days in sorted(tiktok_daily_by_pipeline(rows).items()):
+    for pipe, days in sorted(tiktok_daily_from_posts(rows).items()):
         for day, est in sorted(days.items()):
             if _cents(est) == 0:
                 continue
             out.append({"date": day, "source": SRC_TIKTOK, "detail": pipe or "tiktok",
-                        "item": "Creator Rewards estimate for the day" if est > 0
-                        else "Creator Rewards estimate for the day (negative: Studio revised earlier days down)",
-                        "gross": None, "net": _cents(est),
+                        "item": "Creator Rewards estimate added that day", "gross": None, "net": _cents(est),
                         "estimate": True})
     return out
 
 
 def tiktok_month_note(rows: list[dict], path: Path | None = None) -> str:
-    """Names the months where the monthly revenue figure counts more TikTok money than the daily rows list."""
-    months = sorted({r["date"][:7] for r in rows if r["source"] == SRC_TIKTOK})
-    if not months:
+    """Says how the TikTok rows are counted and where they can run low."""
+    if not any(r["source"] == SRC_TIKTOK for r in rows):
         return ""
-    per_post, rebuilt, _rows = tiktok_readings(months, path)
-    higher = [f"{dt.datetime.strptime(m, '%Y-%m').strftime('%B %Y')} ({money(_cents(per_post[m]))} counted, "
-              f"{money(_cents(rebuilt[m]))} in the rows)" for m in months if per_post[m] - rebuilt[m] >= 0.005]
-    note = ("TikTok rows are rebuilt from the account's rolling 7-day totals. The monthly figure in Revenue, all sources "
-            "counts the larger of that and the per-post reading")
-    return note + ((", so it is higher than the rows for " + "; ".join(higher)) if higher else "; the two agree for every month listed") + "."
+    return ("TikTok rows are the rise in each post's Creator Rewards estimate, counted on the day a snapshot saw it. "
+            "Studio lists only the newest posts, so money a post earns after it scrolls off that list is missed, and "
+            "the figures can run slightly below TikTok's own month total.")
 
 
 def admob_month_rows(admob: dict | None, today: dt.date | None = None) -> list[dict]:
