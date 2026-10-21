@@ -118,6 +118,11 @@ OFFERS = {
         "This cleans files and pasted text that you hand to it. It does not watch what you type.",
         "Outbound Veil checks what you type for personal information, such as names, phone numbers and card numbers, before you send it or paste it into ChatGPT or claude.ai in Chrome. The check runs on your Mac. It will miss some things, and it is not a compliance product.",
     ),
+    "pii-checker": (
+        "outbound-veil",
+        "This checks text you paste in, and it does not find names.",
+        "Outbound Veil checks what you type for personal information, including names, before you send it. It runs in the Mac menu bar and checks on your Mac, in places such as the ChatGPT and claude.ai prompt boxes in Chrome. It will miss some things, and it is not a compliance product.",
+    ),
     "anonymity-check": (
         "outbound-veil",
         "This reads a finished manuscript PDF for leaks in a blind submission.",

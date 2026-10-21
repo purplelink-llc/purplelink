@@ -105,6 +105,7 @@ class ToolOffers(unittest.TestCase):
             "transcript-cleaner": ("tapefolio", ["transcribes interview and meeting recordings on your Mac", "labels the speakers", "replace names and other identifiers", "Your files are not uploaded", "It will mishear words"]),
             "metadata-cleaner": ("outbound-veil", ["checks what you type for personal information", "Names, street addresses, phone numbers", "Card numbers", "ChatGPT and claude.ai prompt boxes in Chrome", "the text never leaves it"]),
             "anonymity-check": ("outbound-veil", ["checks what you type for personal information", "Names, street addresses, phone numbers", "Government and tax"]),
+            "pii-checker": ("outbound-veil", ["checks what you type for personal information", "It runs in the Mac menu bar", "Names, street addresses", "ChatGPT and claude.ai prompt boxes in Chrome", "It will miss some things"]),
             "academic-email-signature": ("vitae", ["your CV fills itself from your records"]),
             "resume-review": ("vitae", ["imports it from Word, PDF, RTF, ODT, or a web page", "your CV fills itself from your records", "Export to PDF, Word, rich text, HTML or Markdown"]),
         }
