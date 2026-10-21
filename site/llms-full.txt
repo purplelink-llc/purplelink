@@ -6858,7 +6858,7 @@ Comparison
 
 # Best tools to redact personal information before you use ChatGPT and other AI chats (2026)
 
-By Benjamin Ampel · October 4, 2026, updated October 14, 2026
+By Benjamin Ampel · October 4, 2026, updated October 21, 2026
 
 This guide is for anyone who keeps pasting client, patient, student or personal details into an AI chat. Each option gets what it does, what it costs, where the checking happens and what it misses. Three of the options are not software you install: provider settings, a local model and find-and-replace.
 
@@ -7138,7 +7138,7 @@ A detector that catches names and numbers is neither route, so text it has clean
 
 FERPA (the Family Educational Rights and Privacy Act). The law gives parents, and students once they are 18 or in postsecondary school, rights over personally identifiable information in education records. If you grade, advise or write recommendations, check your institution's AI policy before pasting anything that names a student. Removing the name is a habit, not a rule.
 
-Client and participant confidentiality. Lawyers, therapists, consultants and researchers have duties in codes of conduct and contracts. The American Bar Association's Formal Opinion 512 (July 2024) is reported to say that a lawyer's confidentiality duty applies to generative AI tools. It is also reported to say that tools which train on inputs call for the client's informed consent.
+Client and participant confidentiality. Lawyers, therapists, consultants and researchers have duties in codes of conduct and contracts. The American Bar Association's Formal Opinion 512 (July 2024) is reported to say that a lawyer's confidentiality duty applies to generative AI tools. It is also reported to say that tools which train on inputs call for the client's informed consent. In California, SB 574 (signed September 30, 2026, in force January 1, 2027) is reported to bar lawyers from entering confidential or personally identifying client information into a generative AI system unless access is limited to people bound by confidentiality (Holland & Knight, October 1, 2026). This is not legal advice.
 
 For research, your IRB (institutional review board) protocol and data management plan probably already say who may see participant data, and an AI service is a new recipient. For manuscripts, see what publishers allow when you run your own manuscript through AI.
 
