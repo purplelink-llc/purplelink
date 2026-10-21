@@ -32,7 +32,7 @@ const removeAll = (s, re) => {
   return s;
 };
 const stripTags = (s) => decode(removeAll(s, /<[^>]*>/g));
-const body = removeAll(removeAll(html, /<script\b[\s\S]*?<\/script\s*>/gi), /<style\b[\s\S]*?<\/style\s*>/gi);
+const body = removeAll(removeAll(html, /<script\b[\s\S]*?<\/script[^>]*>/gi), /<style\b[\s\S]*?<\/style[^>]*>/gi);
 const visibleText = stripTags(body).replace(/\s+/g, " ");
 const FILES = [PAGE, "tools/pii-checker/pii-checker.js", "tools/pii-checker/pii-checker.css", "tools/pii-checker/pii-checker-core.js", "tools/pii-checker/pii-checker-worker.js"];
 
