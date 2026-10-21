@@ -22,8 +22,17 @@ const jsonLd = () =>
   });
 const decode = (s) =>
   s.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#x27;|&#39;/g, "'").replace(/&amp;/g, "&");
-const stripTags = (s) => decode(s.replace(/<[^>]+>/g, ""));
-const body = html.replace(/<script\b[\s\S]*?<\/script>/g, "").replace(/<style\b[\s\S]*?<\/style>/g, "");
+// Repeat each removal until nothing changes, so a nested or split tag cannot survive one pass.
+const removeAll = (s, re) => {
+  let prev;
+  do {
+    prev = s;
+    s = s.replace(re, "");
+  } while (s !== prev);
+  return s;
+};
+const stripTags = (s) => decode(removeAll(s, /<[^>]*>/g));
+const body = removeAll(removeAll(html, /<script\b[\s\S]*?<\/script\s*>/gi), /<style\b[\s\S]*?<\/style\s*>/gi);
 const visibleText = stripTags(body).replace(/\s+/g, " ");
 const FILES = [PAGE, "tools/pii-checker/pii-checker.js", "tools/pii-checker/pii-checker.css", "tools/pii-checker/pii-checker-core.js", "tools/pii-checker/pii-checker-worker.js"];
 
@@ -125,7 +134,7 @@ test("CSP: no inline styles, no inline scripts or handlers, and every asset is t
   assert.doesNotMatch(body, /<[a-zA-Z][^>]*\sstyle\s*=/);
   assert.doesNotMatch(html, /<style\b/);
   assert.doesNotMatch(html, /\son[a-z]+\s*=\s*"/);
-  const scripts = [...html.matchAll(/<script\b([^>]*)>/g)].map((m) => m[1]);
+  const scripts = [...html.matchAll(/<script\b([^>]*)>/gi)].map((m) => m[1]);
   for (const a of scripts) assert.ok(/src="\//.test(a) || /type="application\/ld\+json"/.test(a), "inline script: " + a);
   for (const m of html.matchAll(/(?:src|href)="(https?:\/\/[^"]+)"/g)) {
     assert.match(m[1], /^https:\/\/(purplelink\.llc\/|buymeacoffee\.com\/bampel|www\.linkedin\.com\/company\/purplelink-llc\/$)/, "external reference " + m[1]);
