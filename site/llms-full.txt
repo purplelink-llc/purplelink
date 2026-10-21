@@ -223,7 +223,7 @@ Free, open source
 
 ### Buddy
 
-A small companion for Claude Code that lives in your MacBook notch. It shows what each session is doing, opens when one needs you, and counts down to a usage-limit reset. It makes no network connections. Not affiliated with Anthropic. macOS 14 or later, Apple silicon.
+A small companion for Claude Code that lives in your MacBook notch. It shows what each session is doing, opens when one needs you, shows your session usage, and counts down to a usage-limit reset. It uses the network only for a daily update check and optional exact usage. Not affiliated with Anthropic. macOS 14 or later, Apple silicon.
 
 See Buddy →
 
@@ -4507,7 +4507,7 @@ Outbound Veil1.2.0October 2026
 
 BatteryMeter1.4.0October 2026
 
-Buddy0.4.0October 2026
+Buddy0.5.0October 2026
 
 GlobePin (iOS)1.21.0 in September 2026
 

@@ -41,7 +41,7 @@ class BuddyPage(unittest.TestCase):
     def test_json_ld(self):
         app = [d for d in self.nodes if d.get("@type") == "SoftwareApplication"][0]
         self.assertEqual(float(app["offers"]["price"]), 0)
-        self.assertEqual(app["softwareVersion"], "0.4.0")
+        self.assertEqual(app["softwareVersion"], "0.5.0")
         self.assertEqual(app["operatingSystem"], "macOS 14.0 or later")
         self.assertEqual(app["downloadUrl"], ZIP)
         self.assertIn("BreadcrumbList", {d.get("@type") for d in self.nodes})
@@ -61,7 +61,7 @@ class BuddyPage(unittest.TestCase):
         m = re.search(r'<section [^>]*aria-labelledby="access-h">(.*?)</section>', self.text, re.S)
         body = text_of(m.group(1))
         for s in ("Claude Code events", "buddy-hook", "last 64 KB", "first 16 KB",
-                  "Accessibility", "Automation", "Buddy makes no network connections."):
+                  "Accessibility", "Automation", "Buddy uses the network for two things only", "Both can be turned off in Settings."):
             self.assertIn(s, body)
 
     def test_images_exist(self):

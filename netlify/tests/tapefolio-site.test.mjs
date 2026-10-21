@@ -12,6 +12,10 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import vm from "node:vm";
 
+// The Tapefolio section of llms.txt: from its heading to the next "### " heading. (It used to run to
+// "### Mac Suite", which swept in the Panely, Summonly, BatteryMeter and Buddy sections that follow it.)
+const tapefolioLlms = (llms) => { const s = llms.indexOf("### Tapefolio"); return llms.slice(s, llms.indexOf("\n### ", s + 1)); };
+
 const SITE = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "site");
 const read = (p) => readFileSync(join(SITE, p), "utf8");
 const jsonLd = (html) =>
@@ -639,7 +643,7 @@ test("the Suite pages do not say a model is built in, and describe the network u
 
 test("llms.txt does not say a model is built in, and states the measured error rates and the network use", () => {
   const llms = read("llms.txt");
-  const block = llms.slice(llms.indexOf("### Tapefolio"), llms.indexOf("### Mac Suite"));
+  const block = tapefolioLlms(llms);
   assert.doesNotMatch(block, /built in\b(?! to)|built-in|no download\b(?! from)|small speech model|One small/i);
   assert.match(block, /No speech model is bundled \(the app is about 40 MB\)/);
   assert.match(block, /Apple's on-device speech recognition, and macOS may download Apple's own model once/);
@@ -754,7 +758,7 @@ test("the speaker-label claims are the corrected ones: every word counted, the t
   const html = read("tapefolio/index.html");
   const page = visibleText(html);
   const llms = read("llms.txt");
-  const block = llms.slice(llms.indexOf("### Tapefolio"), llms.indexOf("### Mac Suite"));
+  const block = tapefolioLlms(llms);
   // The old claim, which counted only the words that had a label, is gone everywhere that is public.
   for (const [name, text] of [["page", page + html], ["llms", block], ["suite", read("suite/index.html")]]) {
     assert.doesNotMatch(text, /87%|94%|87 to 94|between 87/i, `${name} still has the old figure`);
@@ -797,7 +801,7 @@ test("Nemotron 3 is recommended and used automatically once installed; the stand
   assert.match(read("tapefolio/success/index.html"), /Nemotron 3 is the one we recommend for speaker labels, and Tapefolio uses it automatically once it is installed/);
   const llms = read("llms.txt");
   assert.match(llms.slice(llms.indexOf("### Tapefolio")), /recommended for speaker labels and used automatically once installed; standard speaker separation comes with the app/);
-  for (const [name, text] of [["page", page], ["success", read("tapefolio/success/index.html")], ["llms", llms.slice(llms.indexOf("### Tapefolio"), llms.indexOf("### Mac Suite"))]]) {
+  for (const [name, text] of [["page", page], ["success", read("tapefolio/success/index.html")], ["llms", tapefolioLlms(llms)]]) {
     assert.doesNotMatch(text, /second way|separates speakers a second|matches the standard|as good as the standard|same as the standard/i, name);
   }
 });
