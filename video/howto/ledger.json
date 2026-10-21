@@ -33,5 +33,20 @@
    "https://www.macscripter.net/t/searching-for-social-security-numbers-in-email-entourage/46035",
    "https://forum.bigfix.com/t/regex-to-find-files-with-social-security-numbers/3108"
   ]
+ },
+ {
+  "slug": "howto-fontspec-requires-xetex-or-luatex",
+  "app": "moderntex",
+  "date": "2026-10-21",
+  "title": "fontspec requires either XeTeX or LuaTeX on Mac (switch the LaTeX engine)",
+  "long_id": "hWAiJ4CeDZI",
+  "short_id": "Af_fbHxPpc0",
+  "link_arm": "B",
+  "link_utm_content": "howto-fontspec-requires-xetex-or-luatex",
+  "sources": [
+   "https://email.esm.psu.edu/pipermail/macosx-tex/2025-December/059165.html",
+   "https://email.esm.psu.edu/pipermail/macosx-tex/2019-December/056853.html",
+   "https://snorriheim.atlassian.net/wiki/spaces/TechnicalNotes/pages/528121857/Xelatex"
+  ]
  }
 ]
