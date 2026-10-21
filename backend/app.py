@@ -2489,7 +2489,6 @@ def web():
           <p class="footer-head">Learn</p>
           <ul>
             <li><a href="/guides/">Guides</a></li>
-            <li><a href="/guides/why-it-matters/">Why it matters</a></li>
             <li><a href="/format/">Reference formats</a></li>
             <li><a href="/blog/">Blog</a></li>
             <li><a href="/blog/digest/">Daily Digest</a></li>
