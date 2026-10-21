@@ -1,0 +1,124 @@
+{
+ "id": "howto-fontspec-requires-xetex-or-luatex",
+ "app": "moderntex",
+ "title": "fontspec requires either XeTeX or LuaTeX on Mac (switch the LaTeX engine)",
+ "short_title": "fontspec requires XeTeX or LuaTeX? Change one setting",
+ "url": "purplelink.llc/moderntex",
+ "page": "https://purplelink.llc/moderntex/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://email.esm.psu.edu/pipermail/macosx-tex/2025-December/059165.html",
+  "https://email.esm.psu.edu/pipermail/macosx-tex/2019-December/056853.html",
+  "https://snorriheim.atlassian.net/wiki/spaces/TechnicalNotes/pages/528121857/Xelatex"
+ ],
+ "verify": {
+  "runs": [
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf '\\\\documentclass{article}\\n\\\\usepackage{fontspec}\\n\\\\begin{document}\\nHello\\n\\\\end{document}\\n' > main.tex && pdflatex -interaction=nonstopmode -halt-on-error main.tex | grep -A5 '^! Fatal'",
+    "output": "! Fatal Package fontspec Error: The fontspec package requires either XeTeX or\n(fontspec)                      LuaTeX.\n(fontspec)                      \n(fontspec)                      You must change your typesetting engine to,\n(fontspec)                      e.g., \"xelatex\" or \"lualatex\" instead of\n(fontspec)                      \"latex\" or \"pdflatex\"."
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf '\\\\documentclass{article}\\n\\\\usepackage{fontspec}\\n\\\\begin{document}\\nHello\\n\\\\end{document}\\n' > main.tex && xelatex -interaction=nonstopmode -halt-on-error main.tex | grep 'Output written'",
+    "output": "Output written on main.pdf (1 page)."
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf '\\\\documentclass{article}\\n\\\\usepackage{fontspec}\\n\\\\begin{document}\\nHello\\n\\\\end{document}\\n' > main.tex && lualatex -interaction=nonstopmode -halt-on-error main.tex | grep 'Output written'",
+    "output": "Output written on main.pdf (1 page, 2854 bytes)."
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf '\\\\documentclass{article}\\n\\\\usepackage{fontspec}\\n\\\\begin{document}\\nHello\\n\\\\end{document}\\n' > main.tex && latexmk -xelatex -interaction=nonstopmode main.tex 2>&1 | grep 'All targets'",
+    "output": "Latexmk: All targets (main.xdv main.pdf) are up-to-date"
+   }
+  ],
+  "docs": [
+   "https://ctan.org/pkg/fontspec",
+   "https://ctan.org/pkg/latexmk"
+  ],
+  "notes": "TeX Live 2026 (TinyTeX) on Ben's Mac, 2026-10-21. A five-line document that loads fontspec, built in a fresh mktemp folder: pdflatex stops with the fatal error, xelatex, lualatex and latexmk -xelatex all produce a one-page PDF. The % !TEX program directive is an editor convention: TeXShop documents it (MacOSX-TeX list, 2019-12) and ModernTex's start page (purplelink.llc/moderntex/start/) says it selects that engine when the project is first opened, or by hand under Compile > Compile Engine & Profile."
+ },
+ "scenes": [
+  {
+   "type": "hook",
+   "short": true,
+   "kicker": "LaTeX on a Mac",
+   "title": "fontspec requires either XeTeX or LuaTeX",
+   "sub": "The build stops on the second line.",
+   "narration": "If your LaTeX document stops with fontspec requires either XeTeX or LuaTeX, nothing is broken. It is being built with the wrong engine. Here is the fix."
+  },
+  {
+   "type": "symptom",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ pdflatex main.tex",
+    "! Fatal Package fontspec Error:",
+    "The fontspec package requires either XeTeX or",
+    "LuaTeX.",
+    "You must change your typesetting engine to,"
+   ],
+   "narration": "This is a five line document that loads fontspec. Built with pdflatex, it stops at once with a fatal error, and no PDF."
+  },
+  {
+   "type": "cause",
+   "text": "fontspec loads system and OpenType fonts. pdfLaTeX cannot do that, and most editors use pdfLaTeX by default.",
+   "narration": "fontspec lets a document use the fonts installed on your Mac. Only XeLaTeX and LuaLaTeX can load them, and most editors build with pdfLaTeX unless you tell them otherwise."
+  },
+  {
+   "type": "steps",
+   "short": true,
+   "label": "First line of main.tex",
+   "lines": [
+    "% !TEX program = xelatex",
+    "or, in Terminal:",
+    "$ latexmk -xelatex main.tex"
+   ],
+   "ui": "Or pick XeLaTeX or LuaLaTeX in your editor's engine menu, next to the Typeset button.",
+   "narration": "Add this comment as the first line of the file. TeXShop and many other Mac editors read it and switch to XeLaTeX. In Terminal, use latexmk with the dash xelatex option. LuaLaTeX works too: write lualatex instead."
+  },
+  {
+   "type": "check",
+   "short": true,
+   "label": "Terminal",
+   "ok": "PDF written",
+   "lines": [
+    "$ xelatex main.tex",
+    "Output written on main.pdf (1 page).",
+    "$ lualatex main.tex",
+    "Output written on main.pdf (1 page, 2854 bytes)."
+   ],
+   "narration": "Build again. The same file now writes a PDF with XeLaTeX, and with LuaLaTeX."
+  },
+  {
+   "type": "app",
+   "name": "ModernTex",
+   "line": "Reads % !TEX program on the first line and selects that engine. Or set it under Compile Engine and Profile.",
+   "url": "purplelink.llc/moderntex",
+   "img": "site/assets/moderntex-screens/01-editor-clean-1440.webp",
+   "icon": "site/assets/moderntex-icon.png",
+   "narration": "If you write LaTeX on a Mac, ModernTex reads that same first line when a project opens and selects the engine it names. You can also set XeLaTeX or LuaLaTeX by hand under Compile Engine and Profile. There is a free seven day trial."
+  }
+ ],
+ "thumbs": {
+  "A": {
+   "kind": "error",
+   "msg": "fontspec requires either XeTeX or LuaTeX"
+  },
+  "B": {
+   "kind": "long",
+   "msg": "fontspec requires XeTeX or LuaTeX",
+   "n": 1,
+   "unit": "line",
+   "sub": "and it builds again"
+  },
+  "C": {
+   "kind": "product",
+   "name": "ModernTex",
+   "line": "fontspec error? Switch to XeLaTeX",
+   "img": "site/assets/moderntex-screens/01-editor-clean-1440.webp",
+   "icon": "site/assets/moderntex-icon.png",
+   "zoom": 1.7,
+   "pos": "28% 22%"
+  }
+ }
+}
