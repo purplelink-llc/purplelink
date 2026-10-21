@@ -53,6 +53,30 @@
               "@type": "Question",
               "name": "Is my content stored?",
               "acceptedAnswer": { "@type": "Answer", "text": "No. Your Markdown is converted in an ephemeral container and discarded immediately. Nothing is written to durable storage or logs." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I include pictures?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Not through this tool. Images are replaced by their alt text, so the output has no pictures. If you need figures, convert the text here and add the images in Word, or build the document in LaTeX."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is there a limit on how many files I can convert?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. Each tool allows a limited number of conversions per network address per day, currently 25. When you reach it the page says so and asks you to try again the next day."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I write raw LaTeX inside the Markdown?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Math between dollar signs works in PDF output. Raw LaTeX goes straight to pdfLaTeX, which runs without shell access, so commands that run programs or read files outside the document do not work."
+              }
             }
           ]
         },
@@ -133,6 +157,28 @@
         </ol>
       </section>
 
+      <section class="tool-howto">
+        <h2>What happens to your text</h2>
+        <p>Unlike some tools on this site, this one does not run in your browser. Pressing Convert sends your Markdown to our conversion server, which writes it to a temporary folder, runs Pandoc on it and returns the finished file to your browser. The folder is deleted when the request ends. A Word file is built directly by Pandoc. A PDF is built by Pandoc handing the document to pdfLaTeX, which is why PDF takes longer. The server gives up after 90 seconds, and the page tells you that the conversion timed out.</p>
+        <p>You can paste text or upload a file. Uploads must end in <code>.md</code>, <code>.markdown</code> or <code>.txt</code> and are limited to 2 MB, and pasted text has the same 2 MB limit. If you have both a file chosen and text in the box, the file is used until you type in the box again. The page shows a preview of the PDF and a download link named <code>converted.pdf</code>, or a download link named <code>converted.docx</code> for Word.</p>
+      </section>
+
+      <section class="tool-howto">
+        <h2>What is not carried over</h2>
+        <ul>
+          <li><strong>Images.</strong> The converter replaces every image with its alt text before it builds the file, so a picture such as <code>![a chart](chart.png)</code> appears as the words &ldquo;a chart&rdquo;. The server cannot read files from your computer and does not fetch image addresses.</li>
+          <li><strong>Page layout.</strong> You get Pandoc&rsquo;s standard document styling. There are no options for fonts, margins or a custom template.</li>
+          <li><strong>Errors.</strong> If Pandoc rejects the input, for example because of a LaTeX error in a math expression, the page shows the start of Pandoc&rsquo;s own error message so you can find the line.</li>
+        </ul>
+      </section>
+
+      <section class="tool-howto">
+        <h2>A worked example</h2>
+        <p>This short document uses a heading, a sentence with inline math, an image and a table:</p>
+        <p><code># Title</code> then <code>Text with $x^2$ and ![a chart](chart.png).</code> then a table with the columns a and b and one row holding 1 and 2.</p>
+        <p>Converted to Word or PDF, the heading stays a heading, the math is set as x with a superscript 2, the image becomes the words &ldquo;a chart&rdquo;, and the table keeps its two columns and its row.</p>
+      </section>
+
       <section class="tool-faq">
         <h2>About this tool</h2>
         <p>Going the other way, you can <a href="/guides/research-paper-pdf-to-markdown/">convert a research paper PDF to Markdown</a> for an AI assistant.</p>
@@ -140,6 +186,9 @@
         <details><summary>What Markdown features are supported?</summary><div class="faq-body">Headings, bold, italic, ordered and unordered lists, links, images, fenced code blocks, blockquotes, tables, and footnotes. LaTeX math between <code>$…$</code> renders in PDF output.</div></details>
         <details><summary>Why does PDF take a few seconds?</summary><div class="faq-body">PDF output compiles your document through a LaTeX engine, which gives typeset-quality results. Word output is usually faster.</div></details>
         <details><summary>Is my content stored?</summary><div class="faq-body">No. Your Markdown is converted in an ephemeral container and discarded immediately.</div></details>
+        <details><summary>Can I include pictures?</summary><div class="faq-body">Not through this tool. Images are replaced by their alt text, so the output has no pictures. If you need figures, convert the text here and add the images in Word, or build the document in LaTeX.</div></details>
+        <details><summary>Is there a limit on how many files I can convert?</summary><div class="faq-body">Yes. Each tool allows a limited number of conversions per network address per day, currently 25. When you reach it the page says so and asks you to try again the next day.</div></details>
+        <details><summary>Can I write raw LaTeX inside the Markdown?</summary><div class="faq-body">Math between dollar signs works in PDF output. Raw LaTeX goes straight to pdfLaTeX, which runs without shell access, so commands that run programs or read files outside the document do not work.</div></details>
       </section>
 
       <nav class="tool-related" aria-label="Related tools">

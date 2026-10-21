@@ -4555,8 +4555,6 @@ How it shows up. A results paragraph such as: Participants in the treatment cond
 
 How to fix it. Decide the primary outcome and analysis before looking at the data, and write the decision down somewhere with a timestamp, such as a preregistration (Nosek et al., 2018). Report every measure, every condition and every exclusion, and if you excluded observations or added a covariate, also report the result without that choice, as Simmons and colleagues recommend. State how the sample size was decided, and label any unplanned analysis as exploratory.
 
-Short explainer: p-hacking
-
 ### The garden of forking paths
 
 The garden of forking paths is the set of reasonable, data-dependent analysis choices a researcher could have made, which inflates false positives even when only one analysis was actually run.
@@ -4566,8 +4564,6 @@ Why reviewers care. Gelman and Loken (2013) introduced the term to describe a pr
 How it shows up. A methods sentence such as: Because reaction times were positively skewed, we log-transformed them and excluded trials more than 2.5 standard deviations from each participant's mean. Every clause is standard practice, but "because" signals that the choices followed the data.
 
 How to fix it. Preregister the exclusion rules, transformations and covariates, or state that they follow an established lab or field convention and cite it. Where choices were made after seeing the data, show that they do not drive the result. A multiverse analysis reports the estimate under every reasonable combination of choices (Steegen et al., 2016). A specification curve plots those estimates in order so the reader can see how many support the claim (Simonsohn, Simmons & Nelson, 2020).
-
-Short explainer: garden of forking paths
 
 ### HARKing
 
@@ -4579,8 +4575,6 @@ How it shows up. A results sentence such as: As predicted, the effect emerged on
 
 How to fix it. Keep a dated record of your hypotheses before analysis. A preregistration is the most credible version. In the paper, separate confirmatory from exploratory results under their own headings. An unexpected finding is worth reporting, as long as it is reported as unexpected and framed as a hypothesis for future work. Some journals accept Registered Reports, in which the introduction and methods are reviewed and accepted in principle before data collection (Chambers, 2013).
 
-Short explainer: HARKing
-
 ### Multiple comparisons
 
 The multiple comparisons problem is that the chance of at least one false positive rises with every additional test run at the same significance threshold.
@@ -4590,8 +4584,6 @@ Why reviewers care. At α = .05, each test of a true null hypothesis has a 5% ch
 How it shows up. A sentence such as: We correlated each of the 12 personality facets with each of the 8 outcome measures. Significant correlations are marked with an asterisk in Table 3. That is 96 tests, and about five would reach p < .05 by chance.
 
 How to fix it. Say how many tests you ran and apply a correction that fits your goal. To control the chance of any false positive (the familywise error rate), use Bonferroni or Holm's step-down procedure, which never rejects fewer hypotheses than Bonferroni (Holm, 1979). When you are screening many hypotheses and can tolerate a known proportion of false discoveries, control the false discovery rate with the Benjamini-Hochberg procedure (Benjamini & Hochberg, 1995). Better still, designate a few primary comparisons in advance, so the correction applies to a short list.
-
-Short explainer: multiple comparisons
 
 ## Samples and generalization
 
@@ -4607,8 +4599,6 @@ How it shows up. A pairing such as: The sample size was based on previous studie
 
 How to fix it. Justify the sample size before collecting data. A power analysis should state the smallest effect size you care about, where that number comes from, the planned test, alpha and target power, and the resulting N. Lakens (2022) covers this and other defensible justifications. If the data are already collected, report a sensitivity analysis: the smallest effect your design could detect with 80% power. Avoid "observed power" computed from your own effect estimate. It is a transformation of the p-value and adds no information (Hoenig & Heisey, 2001).
 
-Short explainer: underpowered sample
-
 ### WEIRD samples
 
 A WEIRD sample is drawn from Western, Educated, Industrialized, Rich and Democratic societies. The problem arises when findings from such a sample are presented as true of people in general.
@@ -4618,8 +4608,6 @@ Why reviewers care. Henrich, Heine and Norenzayan (2010) reviewed comparative ev
 How it shows up. An abstract sentence such as: These results show that people rely on intuition rather than deliberation when making moral judgments. where the methods describe 240 undergraduates at one US university.
 
 How to fix it. Report the sample's demographics in enough detail to judge its range. Match the wording of the conclusion to the population studied. Add a short statement of the constraints on generality, naming the populations, settings and materials to which you expect the result to extend. Name those to which you do not expect it to extend as well (Simons, Shoda & Lindsay, 2017). Where the claim needs to be universal, it needs data from more than one kind of society.
-
-Short explainer: WEIRD samples
 
 ## Machine learning evaluation
 
@@ -4635,8 +4623,6 @@ How it shows up. A methods sentence such as: We randomly split the 12,000 images
 
 How to fix it. Split by the unit you want to generalize to (patient, user, document, site or time period), not by row. Fit normalization, feature selection and any other preprocessing inside the training split only. Deduplicate across splits with a near-duplicate check, not just exact matching. For pretrained models, prefer benchmarks released after the training data cutoff. Report an overlap check against whatever training data you can inspect. Then compare scores on items flagged as possibly contaminated with scores on the rest.
 
-Short explainer: test-train contamination
-
 ### Cherry-picked seeds
 
 Cherry-picked seeds describes reporting a single training run, or the best of several, so that random run-to-run variation is presented as a difference between methods.
@@ -4646,8 +4632,6 @@ Why reviewers care. Random initialization, data order, data splits and nondeterm
 How it shows up. A results sentence such as: Our method achieves 84.7% accuracy, a 0.6-point improvement over the strongest baseline (84.1%). with no mention of how many runs, no error bars, and the best number in each column in bold.
 
 How to fix it. Run several seeds for every method, including baselines, and say how many. Report the mean with a standard deviation or confidence interval, and report all runs rather than the best. For comparisons across many tasks or with few runs, Agarwal et al. (2021) recommend interval estimates such as stratified bootstrap confidence intervals and outlier-resistant aggregates such as the interquartile mean. If a single run is all you can afford, say so plainly and soften the claim.
-
-Short explainer: cherry-picked seeds
 
 ### Hyperparameter asymmetry
 
@@ -4659,8 +4643,6 @@ How it shows up. A methods sentence such as: Baselines were trained with the hyp
 
 How to fix it. Give every method the same search procedure and the same number of trials, over ranges that are reasonable for each. Use the same preprocessing, augmentation, training length and early-stopping rule. Report the search space, the budget and the selected values for every method in an appendix. If you copy baseline numbers from earlier papers, say so and explain why the setups are comparable.
 
-Short explainer: hyperparameter asymmetry
-
 ### Missing ablations
 
 A missing ablation is a proposed component whose individual contribution to the result was never tested by removing it and measuring the change.
@@ -4671,8 +4653,6 @@ How it shows up. A sentence such as: Combining the gated attention module, the c
 
 How to fix it. Add an ablation table. Each row removes one component, or adds one to the baseline, with everything else held fixed, including the tuning budget. Run ablation rows with the same number of seeds as the main results. Otherwise, small differences between rows are noise. Include the row a skeptic would ask for, usually the baseline plus only the simplest change. If a component does not help, drop it or say so.
 
-Short explainer: missing ablations
-
 ### LLM self-judge bias
 
 LLM self-judge bias is the tendency of a language model used as an evaluator to favor outputs from itself or its own model family. This inflates scores when the judge and the system under test are related.
@@ -4682,8 +4662,6 @@ Why reviewers care. Zheng et al. (2023) found that GPT-4's judgments agreed with
 How it shows up. A methods sentence such as: Responses from our system and three baselines were rated for helpfulness on a 1 to 10 scale by the same model our system was fine-tuned from.
 
 How to fix it. Use a judge from a different model family than any system under test, or several judges. Collect human ratings on a random subset and report how well the judge agrees with them. In pairwise comparisons, present each pair in both orders. Report response length. Publish the judge prompt and the exact model version so the evaluation can be rerun.
-
-Short explainer: LLM self-judge bias
 
 ## Reporting, citations and figures
 
@@ -4699,8 +4677,6 @@ How it shows up. A sentence such as: Prior work has established that trust calib
 
 How to fix it. Check every reference against a bibliographic database before submission. Resolve each DOI and confirm that it lands on the paper you meant. Then search each title in Crossref or Google Scholar. For the references that carry your main claims, open the source and confirm that it supports the sentence you attached it to. Remove anything you cannot find.
 
-Short explainer: hallucinated citation
-
 ### Figure presentation
 
 A figure presentation problem is a design choice in a chart, such as a truncated axis, missing or unlabeled error bars, or color-only encoding. It changes what a reader concludes from the data.
@@ -4710,8 +4686,6 @@ Why reviewers care. Weissgerber et al. (2015) showed that bar graphs of continuo
 How it shows up. A text sentence such as: As Figure 3 shows, accuracy improved substantially in the treatment group. where Figure 3 is a bar chart with a y-axis running from 71% to 74%, six observations per group, and a caption reading only "Error bars show SE."
 
 How to fix it. For small samples, plot individual observations, alone or over a box or violin plot. Start bar charts at zero. For small differences, use a dot plot instead of cropped bars. In every caption, state what the error bars represent (standard deviation, standard error or a confidence interval) and the n behind them. Use perceptually uniform color maps, and pair color with shape, line style or direct labels. Check that text is readable at the journal's column width.
-
-Short explainer: figure presentation
 
 ## Study design and registration
 
@@ -4727,8 +4701,6 @@ How it shows up. A single methods sentence such as: All behavioral scoring was p
 
 How to fix it. Name each group that was blinded: participants, experimenters, outcome assessors, data analysts. Say how allocation was concealed (who generated the codes, who held them, how samples or cages were labeled) and when the blind was broken relative to the analysis. If you tested whether blinding held, report the result. If blinding was not possible, say so, explain why, and describe what you did instead, such as using an objective outcome or an independent assessor.
 
-Short explainer: blinding not evidenced
-
 ### Trial not registered
 
 Trial not registered describes a clinical trial reported without a public registry entry made before the first participant enrolled. Readers cannot then check whether the reported outcomes were the planned ones.
@@ -4738,8 +4710,6 @@ Why reviewers care. In 2004 the International Committee of Medical Journal Edito
 How it shows up. A methods section that begins: Participants were randomly assigned to the intervention or to usual care, and the primary outcome was change in HbA1c at 12 weeks. with no registration number in the paper, or a registry entry that names 24 weeks, or one dated after enrollment began.
 
 How to fix it. Register before the first participant enrolls and name the primary outcome and its time point precisely. Put the registry name and number in the abstract and methods. Make the reported primary outcome match the registered one. If it changed, report the change, when it was made and why. If a trial was registered late, say so rather than leaving the reviewer to find the date.
-
-Short explainer: trial not registered
 
 ## Checking your own manuscript
 
@@ -4857,7 +4827,7 @@ Reviewers and editors most often raise the items below, whoever reads your draft
 
 - Methods. Is the design able to answer the question you pose? Are baselines, controls and comparison conditions fair? Could someone replicate the procedure from what is written?
 
-- Statistics. Is the sample size justified? Are multiple comparisons handled? Are effect sizes and uncertainty reported, not only p-values? The Why it matters series covers the common failures one at a time.
+- Statistics. Is the sample size justified? Are multiple comparisons handled? Are effect sizes and uncertainty reported, not only p-values? The guide to methodology problems peer reviewers flag covers the common failures one at a time.
 
 - Claim-evidence alignment. Does the abstract say what the results tables show? "Outperforms" and "significantly" are the words that most often outrun the data.
 
@@ -5000,7 +4970,7 @@ Sometimes. A preprint on arXiv, SSRN or OSF can attract comments, but many prepr
 
 - How to respond to Reviewer 2
 
-- Why it matters: the methodology problems reviewers flag
+- The methodology problems peer reviewers flag
 
 
 ---

@@ -64,11 +64,16 @@ def measure(metric: dict, history: dict, started: dt.date) -> dict:
 
 def evaluate(ex: dict, history: dict, today: dt.date) -> dict:
     out = {"id": ex["id"], "name": ex.get("name", ex["id"]), "status": ex.get("status", "running")}
+    m = ex.get("metric") or {}
+    st = ex.get("status", "running")
+    # A proposed row may have no start date yet (started: null); one such row must not stop every other alert.
+    if not isinstance(ex.get("started"), str) or not ex["started"]:
+        out.update(age_days=None, verdict="PROPOSED" if st == "proposed" else "NOSTART",
+                   detail="not started; " + (m.get("how") or ex.get("hypothesis", "")))
+        return out
     started = dt.date.fromisoformat(ex["started"])
     age = (today - started).days
     out["age_days"] = age
-    m = ex.get("metric") or {}
-    st = ex.get("status", "running")
     if st in ("killed", "scaled"):
         out.update(verdict="DONE", detail=st)
         return out
@@ -121,7 +126,8 @@ def main() -> int:
         print(f"Experiments: {len(res)} tracked, nothing at a threshold.")
         return 0
     for r in rows:
-        print(f"{r['verdict']:<8} {r['id']:<22} day {r['age_days']:>3}  {r['detail']}")
+        age = "-" if r["age_days"] is None else r["age_days"]
+        print(f"{r['verdict']:<8} {r['id']:<22} day {age:>3}  {r['detail']}")
     return 0
 
 
