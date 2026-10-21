@@ -23,6 +23,11 @@
   color: var(--muted);
 }
 
+/* A customer's own words beside the buy buttons: the quote in body ink, the attribution stays muted. */
+.buy-proof .buy-proof-quote {
+  color: var(--ink);
+}
+
 /* License keys on the success pages (site/license-keys.js). */
 
 .key-row {
