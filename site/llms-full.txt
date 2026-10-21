@@ -3662,6 +3662,10 @@ Remove author names, GPS and edit history from photos, PDFs, Office files and vi
 
 Turn a Zoom or Teams .vtt, an .srt or a labelled .txt into readable text, with speaker names kept if you want them, or keep the timestamps for NVivo or MAXQDA. Nothing is uploaded.
 
+### PII Checker
+
+Paste text and see the email addresses, phone numbers, ID and card numbers it contains, marked in the text. It does not find names. Nothing is uploaded.
+
 ### Word Counter
 
 Live word, character, sentence, and reading-time stats in your browser.
@@ -7114,7 +7118,7 @@ A detector that catches names and numbers is neither route, so text it has clean
 
 FERPA (the Family Educational Rights and Privacy Act). The law gives parents, and students once they are 18 or in postsecondary school, rights over personally identifiable information in education records. If you grade, advise or write recommendations, check your institution's AI policy before pasting anything that names a student. Removing the name is a habit, not a rule.
 
-Client and participant confidentiality. Lawyers, therapists, consultants and researchers have duties in codes of conduct and contracts. The American Bar Association's Formal Opinion 512 (July 2024) is reported to say that a lawyer's confidentiality duty applies to generative AI tools. It is also reported to say that tools which train on inputs call for the client's informed consent. In California, SB 574 (signed September 30, 2026, in force January 1, 2027) is reported to bar lawyers from entering confidential or personally identifying client information into a generative AI system unless access is limited to people bound by confidentiality (Holland & Knight, October 1, 2026). This is not legal advice.
+Client and participant confidentiality. Lawyers, therapists, consultants and researchers have duties in codes of conduct and contracts. The American Bar Association's Formal Opinion 512 (July 2024) is reported to say that a lawyer's confidentiality duty applies to generative AI tools. It is also reported to say that tools which train on inputs call for the client's informed consent. In California, SB 574 adds section 6068.1 to the Business and Professions Code from January 1, 2027: a lawyer must not enter confidential, personal identifying or other nonpublic information into a generative AI system unless access to it is restricted to the lawyer and people bound to keep it confidential (the chaptered text, read October 21, 2026; what it lists as personal identifying information). This is not legal advice.
 
 For research, your IRB (institutional review board) protocol and data management plan probably already say who may see participant data, and an AI service is a new recipient. For manuscripts, see what publishers allow when you run your own manuscript through AI.
 

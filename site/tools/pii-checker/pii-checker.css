@@ -1,0 +1,62 @@
+/* PII Checker. External file so the strict CSP permits it. Colors come from the shared tokens. */
+.pc-app { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
+.pc-app .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+.btn.pc-small { padding: 8px 16px; font-size: 0.9rem; min-height: 40px; }
+.pc-app [hidden] { display: none; }
+
+/* input box: the textarea is also the drop target for a .txt file */
+.pc-box { border: 2px dashed var(--line); border-radius: 14px; padding: 14px; background: var(--panel); display: grid; gap: 10px; }
+.pc-box.is-over { border-color: var(--purple); background: var(--purple-xlight); }
+.pc-box label { font-weight: 600; font-size: 0.95rem; }
+.pc-input {
+  width: 100%; box-sizing: border-box; min-height: 12rem; resize: vertical; font: inherit; font-size: 0.95rem; line-height: 1.55;
+  padding: 10px 12px; border: 1px solid var(--field-line); border-radius: 10px; background: var(--bg); color: var(--ink);
+}
+.pc-input:focus-visible, .pc-preview:focus-visible { outline: 2px solid var(--purple); outline-offset: 1px; }
+.pc-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.pc-file-name { color: var(--muted); font-size: 0.9rem; overflow-wrap: anywhere; }
+.pc-hint { margin: 0; color: var(--muted); font-size: 0.9rem; }
+
+/* network meter and status */
+.pc-net { margin: 0; display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+.pc-net-dot { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--purple); }
+.pc-net.is-live .pc-net-dot { background: oklch(75% 0.16 150); }
+.pc-status { margin: 0; min-height: 1.4em; color: var(--muted); }
+.pc-status.is-busy::after { content: ""; display: inline-block; width: 0.9em; height: 0.9em; margin-left: 8px; border: 2px solid var(--purple); border-right-color: transparent; border-radius: 50%; vertical-align: -2px; }
+
+/* results */
+.pc-results { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; background: var(--panel); display: grid; gap: 12px; min-width: 0; }
+.pc-results h2 { margin: 0; font-family: var(--font-display); font-size: 1.25rem; }
+.pc-results p { margin: 0; }
+.pc-summary { font-weight: 600; }
+.pc-results[data-state="found"] .pc-summary { color: var(--ink); }
+.pc-groups { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 8px; }
+.pc-group { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 14px; align-items: baseline; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); }
+.pc-group-name { font-weight: 600; }
+.pc-group-count { font-variant-numeric: tabular-nums; font-weight: 600; text-align: right; }
+.pc-group-ph { grid-column: 1 / -1; color: var(--muted); font-size: 0.86rem; overflow-wrap: anywhere; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.pc-limits { color: var(--muted); font-size: 0.92rem; padding-left: 12px; border-left: 3px solid var(--purple); }
+.pc-preview-wrap { display: grid; gap: 6px; }
+.pc-preview-label { font-weight: 600; font-size: 0.92rem; }
+.pc-preview {
+  box-sizing: border-box; max-height: 24rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 0.95rem; line-height: 1.7;
+  padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink);
+}
+.pc-mark { background: color-mix(in oklch, var(--purple) 24%, var(--bg)); color: var(--ink); border-bottom: 2px solid var(--purple); border-radius: 3px; padding: 0 2px; }
+.pc-mark::after { content: attr(data-label); margin-left: 5px; padding: 0 4px; font-size: 0.68rem; font-weight: 700; line-height: 1; color: var(--ink); border: 1px solid var(--purple); border-radius: 3px; white-space: nowrap; vertical-align: 0.1em; }
+.pc-note { color: var(--muted); font-size: 0.9rem; }
+.pc-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+/* page sections */
+.pc-sections { max-width: 820px; margin: 32px auto; padding: 0 24px; }
+.pc-sections h2 { font-family: var(--font-display); margin-bottom: 8px; }
+.pc-list-plain { padding-left: 1.2em; display: grid; gap: 10px; margin: 0; }
+.pc-list-plain li { overflow-wrap: anywhere; }
+.tool-howto a, .tool-faq a, .pc-sections a { color: var(--purple); }
+.pc-sections code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.88em; overflow-wrap: anywhere; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .pc-box { transition: border-color 0.2s, background-color 0.2s; }
+  .pc-status.is-busy::after { animation: pc-spin 0.8s linear infinite; }
+}
+@keyframes pc-spin { to { transform: rotate(360deg); } }
