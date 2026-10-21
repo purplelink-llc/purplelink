@@ -12,6 +12,16 @@ upload. Checks:
   honesty     every output line on screen appears in a recorded verification run, and the gate re-runs those
               commands itself (with TeX Live on PATH) to confirm the recorded output is real
   sources     at least one https demand source; every documentation link answers 200; images exist
+
+Rendered-video step (run after the full build, before publishing; build-howto.mjs leaves <slug>-<format>.qa.json
+next to each mp4 with the measured text boxes):
+
+    python3 scripts/howto_gate.py video/storyboards/howto/<slug>.json --video video/out/howto/<slug>/<slug>-16x9.mp4 \
+        [--video .../<slug>-9x16.mp4]
+
+For each mp4 it uses TikTokPipeline/shared_media/video_qa.py (HOWTO_VIDEO_QA overrides the path) and fails on any
+one-frame pop, any frozen stretch over 6 s outside the closing bumper, and any text under 4.5:1 contrast. It writes a
+contact sheet next to the render (<name>-contact-sheet.jpg) and prints its path; the daily task Reads it.
 """
 from __future__ import annotations
 import json, os, re, subprocess, sys, urllib.request, ssl
@@ -181,8 +191,75 @@ def check(sb_path: Path, offline: bool, rebuild: bool) -> list[str]:
     return errs
 
 
+VIDEO_QA = Path(os.environ.get("HOWTO_VIDEO_QA", "/Volumes/Extreme SSD/TikTokPipeline/shared_media/video_qa.py"))
+MAX_STILL = 6.0
+MIN_CONTRAST = 4.5
+
+
+def load_video_qa():
+    """video_qa by path from the TikTokPipeline checkout; a clear error when it is missing."""
+    import importlib.util
+    if not VIDEO_QA.is_file():
+        raise RuntimeError(f"video_qa not found at {VIDEO_QA} (pull /Volumes/Extreme SSD/TikTokPipeline, or set HOWTO_VIDEO_QA)")
+    spec = importlib.util.spec_from_file_location("video_qa", VIDEO_QA)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def check_video(video: Path, sheet: Path | None = None) -> list[str]:
+    """Problems in one rendered how-to video. Needs <video stem>.qa.json beside it (written by build-howto.mjs)."""
+    errs: list[str] = []
+    video = Path(video)
+    if not video.is_file():
+        return [f"{video}: rendered video not found"]
+    try:
+        qa = load_video_qa()
+    except Exception as e:  # noqa: BLE001
+        return [f"{video.name}: cannot run the visual check: {e}"]
+    meta_path = video.with_suffix(".qa.json")
+    if not meta_path.is_file():
+        return [f"{video.name}: {meta_path.name} is missing (rebuild with build-howto.mjs so text boxes are measured)"]
+    meta = json.loads(meta_path.read_text())
+    regions = [{"name": r["name"], "rect": r["rect"], "t": r["t"]} for r in meta.get("regions", [])]
+    if not regions:
+        errs.append(f"{video.name}: no measured text boxes in {meta_path.name}")
+    try:
+        pops = qa.pop_scan(video)
+        freezes = qa.frozen_scan(video, max_still=MAX_STILL, final_hold=float(meta.get("final_hold", 0)))
+        contrast = qa.contrast_check(video, regions, minimum=MIN_CONTRAST) if regions else []
+        sheet = sheet or video.with_name(video.stem + "-contact-sheet.jpg")
+        res = qa.contact_sheet(video, sheet, n=30, cols=6)
+    except Exception as e:  # noqa: BLE001
+        return errs + [f"{video.name}: visual check crashed: {e}"]
+    print(f"contact sheet: {res['path']}")
+    for p in pops:
+        errs.append(f"{video.name}: one-frame pop at {p['time']}s (frame {p['frame']})")
+    for f in freezes:
+        errs.append(f"{video.name}: nothing changes for {f['duration']}s ({f['start']}s to {f['end']}s)")
+    for c in contrast:
+        if c["status"] == "low":
+            errs.append(f"{video.name}: {c['name']} at {c['time']}s has contrast {c['ratio']}:1, under {MIN_CONTRAST}:1")
+        else:
+            print(f"warning: {video.name}: no text found in {c['name']} at {c['time']}s (box {c['rect']})")
+    return errs
+
+
 def main() -> int:
-    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    argv = sys.argv[1:]
+    videos = [argv[i + 1] for i, a in enumerate(argv) if a == "--video" and i + 1 < len(argv)]
+    if videos:
+        errs = []
+        for v in videos:
+            errs += check_video(Path(v))
+        if errs:
+            print(f"VIDEO CHECK FAILED ({len(errs)}):")
+            for e in errs:
+                print(f"  - {e}")
+            return 1
+        print("video check passed")
+        return 0
+    args = [a for i, a in enumerate(argv) if not a.startswith("--") and not (i and argv[i - 1] == "--video")]
     if not args:
         sys.exit(__doc__)
     errs = check(Path(args[0]).resolve(), "--offline" in sys.argv, "--rebuild" in sys.argv)

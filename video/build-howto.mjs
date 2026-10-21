@@ -75,11 +75,17 @@ for (const format of ["16x9", "9x16"]) {
   }
   const t = Date.now();
   const raw = path.join(ROOT, ".cache", `howto-${SLUG}-${format}-raw.mp4`);
-  await renderMedia({ composition: comp, serveUrl, codec: "h264", crf: 18, outputLocation: raw, inputProps, audioCodec: "aac", concurrency: Number(opt("concurrency", "3")) });
+  const qa = [];
+  const onBrowserLog = (l) => { const m = /^QA_RECT (.*)$/.exec(l.text || ""); if (m) { try { const r = JSON.parse(m[1]); qa.push({ name: `scene ${r.scene} ${r.name}`, t: Math.round(r.t * 1000) / 1000, rect: r.rect }); } catch {} } };
+  await renderMedia({ composition: comp, serveUrl, codec: "h264", crf: 18, outputLocation: raw, inputProps, audioCodec: "aac", concurrency: Number(opt("concurrency", "3")), onBrowserLog });
   const file = path.join(OUT, `${SLUG}-${format}.mp4`);
   ff(["-i", raw, "-c:v", "copy", "-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart", file]);
   fs.rmSync(raw, { force: true });
   say(addTrendBed(file, SLUG));
+  // text boxes measured by HowTo.jsx, for the rendered-video check (scripts/howto_gate.py --video)
+  qa.sort((x, y) => x.t - y.t || x.name.localeCompare(y.name));
+  fs.writeFileSync(path.join(OUT, `${SLUG}-${format}.qa.json`), JSON.stringify({ format, fps: brand.fps, final_hold: BUMPER.close, regions: qa }, null, 1));
+  say(`qa regions ${format}: ${qa.length}`);
   say(`render ${format} (${comp.width}x${comp.height}, ${(comp.durationInFrames / brand.fps).toFixed(2)}s): ${((Date.now() - t) / 1000).toFixed(1)}s, ${mb(file)} MB`);
 }
 if (!stills) {

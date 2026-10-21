@@ -183,6 +183,12 @@ def main() -> int:
         raise SystemExit(f"missing build output: {missing}")
     arm = link_arm(eastern_today())
     long_d, _ = descriptions(sb, None, arm)
+    if not dry:   # the rendered-video check (pops, freezes, contrast) must pass for both cuts before anything uploads
+        vq = [PY, str(REPO / "scripts" / "howto_gate.py"), str(sbp)]
+        for k in ("16x9.mp4", "9x16.mp4"):
+            vq += ["--video", str(files[k])]
+        if subprocess.run(vq).returncode != 0:
+            raise SystemExit("video check failed: not publishing")
     if dry:
         print(f"--- link placement arm {arm} (Eastern date {eastern_today()})")
         print("--- long title\n" + sb["title"] + "\n--- long description\n" + long_d)
