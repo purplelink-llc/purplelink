@@ -91,6 +91,30 @@
         "@type": "Answer",
         "text": "Image-only (scanned) PDFs contain no extractable text, so the output is minimal. PDFs with embedded text convert better."
       }
+    },
+    {
+      "@type": "Question",
+      "name": "Is there a size limit?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, 20 MB per file. The page checks the size before it uploads and the server checks it again."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can it convert an older .doc or a PDF I have scanned?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Older .doc files are not accepted, so save them as .docx first. A scanned PDF has no text to extract, so the output is minimal unless the scan already carries a text layer."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I convert a web page by its address?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. The tool only reads files you upload. It does not fetch addresses, so save the page as an HTML file first."
+      }
     }
   ]
 }
@@ -150,12 +174,36 @@
         </ol>
       </section>
 
+      <section class="tool-howto">
+        <h2>What it accepts and how it checks a file</h2>
+        <p>The converter takes PDF, Word (<code>.docx</code>), PowerPoint (<code>.pptx</code>), Excel (<code>.xlsx</code>), HTML (<code>.html</code> and <code>.htm</code>), CSV and EPUB files up to 20 MB. Other types, including older <code>.doc</code> files, are refused with a message listing what is allowed. An empty file is refused. The server also checks that the file really is what its name says: a PDF must start with the PDF signature, and the Office and EPUB formats must be zip-based files. A renamed file of the wrong kind is rejected.</p>
+        <p>Unlike some tools on this site, this one is not processed in your browser. The file is sent to our server, written to a temporary folder, converted there and deleted when the request ends. The conversion runs offline on a local copy, with no plugins and no outside services, so the file is not passed to any other service.</p>
+      </section>
+
+      <section class="tool-howto">
+        <h2>What the output looks like</h2>
+        <p>The Markdown appears in a read-only box under the button. Use <strong>Copy Markdown</strong> to put it on your clipboard or <strong>Download .md</strong> to save it with the same name as your file and a <code>.md</code> ending. How much structure survives depends on the format. HTML and Word files keep headings, bold text, lists and tables, while a PDF mostly comes back as plain text. Page layout, fonts and colors are never kept, because Markdown has no place for them.</p>
+        <p>Two examples. A CSV that starts with the columns name and score becomes a Markdown table with a header row, one row per line of the file. An HTML page with a heading, a bold word, a bulleted list and a small table comes back as a heading, <code>**bold**</code>, a list and a Markdown table.</p>
+      </section>
+
+      <section class="tool-howto">
+        <h2>When it does not work well</h2>
+        <ul>
+          <li>Scanned PDFs hold pictures of pages, not text, so the result is empty or very short. If nothing can be extracted, the page says so instead of returning a blank file.</li>
+          <li>A file the parser cannot read gives the message &ldquo;Couldn&rsquo;t convert this file.&rdquo;</li>
+          <li>Each network address has a daily conversion limit, currently 25. After that the page asks you to wait.</li>
+        </ul>
+      </section>
+
       <section class="tool-faq">
         <h2>About this tool</h2>
         <p>This uses <a href="https://github.com/microsoft/markitdown" target="_blank" rel="noopener">Microsoft markitdown</a> to extract text and structure from your file and render it as clean Markdown. Use it to feed documents into LLM (large language model) pipelines, static sites, or plain-text workflows.</p>
         <details><summary>Which file types are supported?</summary><div class="faq-body">PDF, Word (.docx), PowerPoint (.pptx), Excel (.xlsx), HTML, CSV, and EPUB. Plain text and image-only PDFs may produce limited output.</div></details>
         <details><summary>Is my file stored anywhere?</summary><div class="faq-body">No. Your file is uploaded over an encrypted connection, converted in an ephemeral container, and discarded immediately. Nothing is written to durable storage.</div></details>
         <details><summary>Why does the output look incomplete for some PDFs?</summary><div class="faq-body">Image-only (scanned) PDFs contain no extractable text, so the output is minimal. PDFs with embedded text convert better.</div></details>
+        <details><summary>Is there a size limit?</summary><div class="faq-body">Yes, 20 MB per file. The page checks the size before it uploads and the server checks it again.</div></details>
+        <details><summary>Can it convert an older .doc or a PDF I have scanned?</summary><div class="faq-body">Older .doc files are not accepted, so save them as .docx first. A scanned PDF has no text to extract, so the output is minimal unless the scan already carries a text layer.</div></details>
+        <details><summary>Can I convert a web page by its address?</summary><div class="faq-body">No. The tool only reads files you upload. It does not fetch addresses, so save the page as an HTML file first.</div></details>
       </section>
 
       <nav class="tool-related" aria-label="Related tools">

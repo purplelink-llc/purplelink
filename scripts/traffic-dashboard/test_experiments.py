@@ -47,4 +47,8 @@ r = run({"metric": {"kind": "forms", "form": "waitlist-x"}, "scale_if": {"gte": 
 check(r["verdict"] == "SCALE" and r["measured"] == 5, "forms metric")
 r = run({"status": "proposed", "metric": {"kind": "manual", "how": "later"}}, 3)
 check(r["verdict"] == "PROPOSED", "proposed rows are not evaluated")
+r = run({"status": "proposed", "started": None, "metric": {"kind": "manual", "how": "later"}}, 3)
+check(r["verdict"] == "PROPOSED" and r["age_days"] is None, "proposed row without a start date does not raise")
+r = run({"started": None, "metric": {"kind": "manual"}}, 3)
+check(r["verdict"] == "NOSTART", "running row without a start date is reported, not raised")
 print("experiments tests ok")

@@ -181,8 +181,9 @@ def main():
         if add_tool_faq(path):
             changed += 1
 
+    # The why-it-matters pages were removed on 2026-10-21; skip the step when the folder is gone.
     wim_dir = os.path.join(SITE, "guides", "why-it-matters")
-    for name in sorted(os.listdir(wim_dir)):
+    for name in sorted(os.listdir(wim_dir)) if os.path.isdir(wim_dir) else []:
         page = os.path.join(wim_dir, name, "index.html")
         if not os.path.isfile(page):
             continue
