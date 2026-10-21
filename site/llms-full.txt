@@ -1545,7 +1545,7 @@ Tapefolio transcribes interview and meeting recordings on your Mac, labels the s
 
 Try it free for 7 days
 
-The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $29.99 payment, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays valid, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.0.1, released October 9, 2026. 43 MB disk image. Needs macOS 26 or later on a Mac with Apple silicon.
+The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $29.99 payment, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays valid, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.1.0, released October 20, 2026. 44 MB disk image. Needs macOS 26 or later on a Mac with Apple silicon.
 
 Comparing options? See Mac apps for transcription, text to speech and OCR compared.
 
@@ -1605,7 +1605,7 @@ ExportWord, HTML, Markdown, plain text, SRT, VTT and JSON, and a timestamped Wor
 
 RecordingRecord from the microphone in the app, then transcribe straight into the review screen.
 
-Call recordingRecords a Zoom, Teams, Meet or FaceTime call with the call's sound on its own track beside your microphone, and no bot joins the call. Your words are labelled You from the microphone track, and the people on the call are told apart on the call track. You start and stop it yourself, and before each call Tapefolio asks you to confirm that everyone has agreed to be recorded. Recording laws differ, and in some places everyone on the call must agree.
+Call recordingRecords a Zoom, Microsoft Teams, Google Meet or FaceTime call with the call's sound on its own track beside your microphone, and no bot joins the call. Your words are labelled You from the microphone track, and the people on the call are told apart on the call track. You start and stop it yourself, and before each call Tapefolio asks you to confirm that everyone has agreed to be recorded. Recording laws differ, and in some places everyone on the call must agree.
 
 Find and word listFind any word or phrase in the open transcript and jump the audio to it. A word list of names, places and jargon helps Whisper and Apple's recognition spell them, and fixes words it hears wrong, such as a participant's pseudonym.
 
@@ -1789,7 +1789,7 @@ Why not use a free app like MacWhisper or Buzz?
 
 You can, and for a plain transcript a free app may be the better value. MacWhisper has a free tier and Buzz is free and open source, and both transcribe on your Mac. Tapefolio costs $29.99 once. What that pays for is the work around the transcript: speaker labels, a review step for names and other identifiers, and OCR, all on your Mac. Try the 7-day trial on one recording before you decide.
 
-Can it record a Zoom or Teams call?
+Can it record a Zoom or Microsoft Teams call?
 
 Yes. Record a call puts the call's sound on its own track beside your microphone, and no bot joins the call. Your words are labelled You, and the people on the call are told apart on the call track. You start and stop it yourself. Before each call Tapefolio asks you to confirm that everyone has agreed to be recorded, because recording laws differ and some places require everyone's consent. macOS asks once for permission to record system audio.
 

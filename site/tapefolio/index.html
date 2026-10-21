@@ -33,7 +33,7 @@
     <script src="/trial-reminder.js?v=d43def6c9f" defer></script>
     <script src="/motion.js?v=0c540c5924" defer></script>
     <script src="/product-flair.js?v=7ecbf83f91" defer></script>
-    <script src="/tapefolio/launch.js?v=0aabeef1b3" defer></script>
+    <script src="/tapefolio/launch.js?v=3833cd5059" defer></script>
     <script src="/tools/paper-review/paid-tool-landing.js?v=41be4deb54" defer></script>
     <script type="application/ld+json">
     {
@@ -44,7 +44,7 @@
           "name": "Tapefolio",
           "applicationCategory": "UtilitiesApplication",
           "applicationSubCategory": "Transcription and OCR for researchers",
-          "softwareVersion": "1.0.1",
+          "softwareVersion": "1.1.0",
           "operatingSystem": "macOS 26+",
           "url": "https://purplelink.llc/tapefolio/",
           "image": "https://purplelink.llc/assets/og/tapefolio.png",
@@ -154,7 +154,7 @@
             },
             {
               "@type": "Question",
-              "name": "Can it record a Zoom or Teams call?",
+              "name": "Can it record a Zoom or Microsoft Teams call?",
               "acceptedAnswer": { "@type": "Answer", "text": "Yes. Record a call puts the call's sound on its own track beside your microphone, and no bot joins the call. Your words are labelled You, and the people on the call are told apart on the call track. You start and stop it yourself. Before each call Tapefolio asks you to confirm that everyone has agreed to be recorded, because recording laws differ and some places require everyone's consent. macOS asks once for permission to record system audio." }
             },
             {
@@ -229,7 +229,7 @@
           </div>
           <p class="trial-remind-note" data-reminder-status aria-live="polite">Optional. Two emails, then nothing, each with an unsubscribe link. Your address is deleted once the second is sent.</p>
         </form>
-        <p class="waitlist-fine-print">The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $29.99 payment, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays valid, with no second download. One key works on two of your Macs. Not useful? Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase (<a href="/terms/">terms</a>). <span data-tf-facts>Version 1.0.1, released October 9, 2026. 43 MB disk image.</span> Needs macOS 26 or later on a Mac with Apple silicon.</p>
+        <p class="waitlist-fine-print">The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $29.99 payment, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays valid, with no second download. One key works on two of your Macs. Not useful? Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase (<a href="/terms/">terms</a>). <span data-tf-facts>Version 1.1.0, released October 20, 2026. 44 MB disk image.</span> Needs macOS 26 or later on a Mac with Apple silicon.</p>
         <p class="waitlist-fine-print">Comparing options? See <a href="/guides/best-mac-apps-transcription-text-to-speech-ocr/">Mac apps for transcription, text to speech and OCR compared</a>.</p>
         <p class="waitlist-fine-print">Also in the <a href="/suite/">Mac Suite</a>: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life, $59.99 once.</p>
       </div>
@@ -312,7 +312,7 @@
           <tr><th scope="row">Review screen</th><td>An audio player next to the transcript, with the current word highlighted. Turns are editable, and you can rename or merge speakers and go through the identifier review without leaving the screen.</td></tr>
           <tr><th scope="row">Export</th><td>Word, HTML, Markdown, plain text, SRT, VTT and JSON, and a timestamped Word file made to import into MAXQDA.</td></tr>
           <tr><th scope="row">Recording</th><td>Record from the microphone in the app, then transcribe straight into the review screen.</td></tr>
-          <tr><th scope="row">Call recording</th><td>Records a Zoom, Teams, Meet or FaceTime call with the call's sound on its own track beside your microphone, and no bot joins the call. Your words are labelled You from the microphone track, and the people on the call are told apart on the call track. You start and stop it yourself, and before each call Tapefolio asks you to confirm that everyone has agreed to be recorded. Recording laws differ, and in some places everyone on the call must agree.</td></tr>
+          <tr><th scope="row">Call recording</th><td>Records a Zoom, Microsoft Teams, Google Meet or FaceTime call with the call's sound on its own track beside your microphone, and no bot joins the call. Your words are labelled You from the microphone track, and the people on the call are told apart on the call track. You start and stop it yourself, and before each call Tapefolio asks you to confirm that everyone has agreed to be recorded. Recording laws differ, and in some places everyone on the call must agree.</td></tr>
           <tr><th scope="row">Find and word list</th><td>Find any word or phrase in the open transcript and jump the audio to it. A word list of names, places and jargon helps Whisper and Apple's recognition spell them, and fixes words it hears wrong, such as a participant's pseudonym.</td></tr>
           <tr><th scope="row">Dictation</th><td>Press Control-Option-Space in any app, speak, and press it again. The text is transcribed on your Mac and typed where the cursor is, with your dictionary, snippets and a choice of styles. The audio is deleted once it is transcribed. Typing for you needs Accessibility permission; without it the text goes to the clipboard.</td></tr>
           <tr><th scope="row">Draft summary</th><td>Optional. Apple's on-device model writes a short overview and a list of topics with times. A quote is shown only when it matches the transcript word for word. It is a draft that can be wrong or leave things out. It needs a Mac with Apple Intelligence turned on, and nothing is downloaded or sent anywhere.</td></tr>
@@ -505,7 +505,7 @@
           <div class="faq-body">You can, and for a plain transcript a free app may be the better value. MacWhisper has a free tier and Buzz is free and open source, and both transcribe on your Mac. Tapefolio costs $29.99 once. What that pays for is the work around the transcript: speaker labels, a review step for names and other identifiers, and OCR, all on your Mac. Try the 7-day trial on one recording before you decide.</div>
         </details>
         <details class="faq-item">
-          <summary>Can it record a Zoom or Teams call?</summary>
+          <summary>Can it record a Zoom or Microsoft Teams call?</summary>
           <div class="faq-body">Yes. Record a call puts the call's sound on its own track beside your microphone, and no bot joins the call. Your words are labelled You, and the people on the call are told apart on the call track. You start and stop it yourself. Before each call Tapefolio asks you to confirm that everyone has agreed to be recorded, because recording laws differ and some places require everyone's consent. macOS asks once for permission to record system audio.</div>
         </details>
         <details class="faq-item">
