@@ -403,21 +403,35 @@ A mistyped command caught as you type, TikZ and tables built visually, a searcha
 
 Play the tour on YouTube
 
-This is exactly the integration I was hoping for.
+## What customers say
 
-Leszek
-Independent LaTeX enthusiast working on his first technical book
-On the opt-in project .latexmkrc support added in ModernTex 1.10, for a book built with LuaLaTeX, PythonTeX, Biber and texindy.
+1 of 5
+
+Because you're an academic you know the game and it shows in your products.
+
+Michael
+Biologist at Wake Forest University
+
+It makes organizing and managing my writing projects easy, from first draft through to final copy.
+
+Mark
+Retired, writes personal projects in ModernTex
+
+Amazing, it's fixed now! It's a very nice app!
+
+Uziel
+Researcher at the School of Advanced Study, London
 
 The overall experience is now just as smooth as my previous setup on Windows.
 
 Walter
 Wireless communications researcher
 
-Because you're an academic you know the game and it shows in your products.
+This is exactly the integration I was hoping for.
 
-Michael
-Biologist at Wake Forest University
+Leszek
+Independent LaTeX enthusiast working on his first technical book
+On the opt-in project .latexmkrc support added in ModernTex 1.10, for a book built with LuaLaTeX, PythonTeX, Biber and texindy.
 
 ## Source and PDF, always in sync
 

@@ -66,3 +66,42 @@
 .press-quote-role { font-size: 0.95rem; line-height: 1.45; color: var(--muted); max-width: 32rem; }
 .press-quote-context { font-size: 0.85rem; line-height: 1.5; color: var(--muted); max-width: 32rem; margin-top: 0.4rem; }
 .press-quote-context code { font-size: 0.95em; }
+
+/* Customer quotes as a sideways scroller (.press-quotes--scroll): one row of quote panels that snap into place,
+   scrolled by the reader (trackpad, swipe, arrow keys on the focused row, or the previous/next buttons that
+   quotes.js reveals). Nothing moves on its own. Without scripting it is still a scrollable, snapping row. */
+.press-quotes--scroll { display: block; max-width: 1180px; padding: 4.5rem 24px 4rem; }
+.press-quotes-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1.75rem; }
+.press-quotes-head h2 { margin: 0; text-wrap: balance; }
+.press-quotes-nav { display: flex; align-items: center; gap: 0.75rem; }
+.press-quotes-nav[hidden] { display: none; }
+.press-quotes-count { min-width: 6em; text-align: center; font-size: 0.9rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.press-quotes-btn {
+  width: 44px; height: 44px; border-radius: 999px; border: 1.5px solid var(--line); background: transparent;
+  color: var(--ink); font-size: 1.1rem; line-height: 1; cursor: pointer;
+  transition: border-color 160ms cubic-bezier(0.22, 1, 0.36, 1), background-color 160ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.press-quotes-btn:hover:not(:disabled) { border-color: var(--purple); }
+.press-quotes-btn:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
+.press-quotes-btn:disabled { opacity: 0.4; cursor: default; }
+.press-quotes-track {
+  display: grid; grid-auto-flow: column; grid-auto-columns: 86%; gap: 1.25rem;
+  overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: 2px;
+  padding: 2px 2px 1rem; scrollbar-width: thin; scrollbar-color: color-mix(in oklch, var(--purple) 45%, transparent) transparent;
+}
+.press-quotes-track:focus-visible { outline: 2px solid var(--purple); outline-offset: 4px; border-radius: 18px; }
+@media (min-width: 760px) { .press-quotes-track { grid-auto-columns: calc((100% - 1.25rem) / 2); } }
+/* Wide screens show three panels and a sliver of the fourth, so the row reads as one that continues. */
+@media (min-width: 1100px) { .press-quotes-track { grid-auto-columns: calc((100% - 3.75rem) / 3.15); } }
+/* Narrow screens: each panel keeps its own height instead of matching the longest quote. */
+@media (max-width: 759px) { .press-quotes-track { align-items: start; } }
+.press-quotes--scroll .press-quote {
+  max-width: none; scroll-snap-align: start; display: flex; flex-direction: column; justify-content: space-between;
+  padding: 1.75rem 1.5rem 1.5rem; border: 1px solid var(--line); border-radius: 18px;
+  background: color-mix(in oklch, var(--purple) 4%, transparent);
+}
+.press-quotes--scroll .press-quote-text::before { font-size: 4rem; }
+.press-quotes--scroll .press-quote-text::after { content: none; }
+.press-quotes--scroll .press-quote-text p { font-size: clamp(1.35rem, 2.4vw, 1.75rem); line-height: 1.28; }
+.press-quotes--scroll .press-quote-by { margin-top: 1.5rem; }
+@media (prefers-reduced-motion: reduce) { .press-quotes-track { scroll-behavior: auto; } .press-quotes-btn { transition: none; } }
