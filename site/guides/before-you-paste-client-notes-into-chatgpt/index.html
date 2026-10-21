@@ -75,14 +75,6 @@
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "Does California's SB 574 apply to me?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "From January 1, 2027 its section 6068.1 applies to attorneys in California who use generative AI; other parts of the law cover arbitrators and courts. If you are not one of them, your own professional rules and your employer's policy decide what you may paste. This is not legal advice."
-      }
-    },
-    {
-      "@type": "Question",
       "name": "If I turn off training, does ChatGPT stop keeping my chat?",
       "acceptedAnswer": {
         "@type": "Answer",
@@ -103,6 +95,14 @@
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "No. A checker lowers the chance of a mistake. It does not make a workflow compliant with HIPAA, FERPA (Family Educational Rights and Privacy Act), your IRB (institutional review board) protocol or your employer's policy. Every tool misses some things. Ask whoever sets the rules where you work. If you work for a HIPAA covered entity, HHS says a vendor that handles protected health information for you needs a business associate agreement (BAA) first. OpenAI says it offers one for its API, for sales-managed ChatGPT Enterprise and Edu, and for ChatGPT for Clinicians, and not for ChatGPT Business. Anthropic says it offers one for its API and for HIPAA-ready Claude Enterprise plans once the organization's owner turns it on. Whether you need one is a question for your compliance officer, not for me."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does California's SB 574 apply to me?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "From January 1, 2027 its section 6068.1 applies to attorneys in California who use generative AI; other sections of the same law cover arbitrators and the courts. If you are not one of them, your own professional rules and your employer's policy decide what you may paste. Read the enacted text or ask your bar. This is not legal advice."
       }
     },
     {
@@ -168,16 +168,17 @@
         <p>Check the text for the obvious ones: names, street addresses, phone numbers, email addresses, government, tax, bank and card numbers, dates of birth and record numbers. The de-identification rule of HIPAA (Health Insurance Portability and Accountability Act) lists 18 kinds of identifiers in <a href="https://www.ecfr.gov/current/title-45/subtitle-A/subchapter-C/part-164/subpart-E/section-164.514" rel="noopener">45 CFR 164.514(b)</a>. The list is a good prompt even if you are not covered by HIPAA. Then look for the quiet ones: a rare job in a small town, a named employer, a third party mentioned in passing.</p>
         <p>Replace each identifier with a consistent placeholder (Client A, Client B, early March) so the note still reads sensibly. Keep the list of what each placeholder stands for in a file that never goes near the chatbot. Do this before you paste. Editing a chat afterwards does not take the original back.</p>
 
+        <h2 id="california-sb-574">California lawyers: SB 574 from January 1, 2027</h2>
+        <p>California&#x27;s SB 574 (Chapter 858 of 2026) was signed on September 30, 2026 and takes effect on January 1, 2027, as <a href="https://www.hklaw.com/en/insights/publications/2026/10/california-enacts-rules-governing-lawyers-use-of-generative-ai" rel="noopener">Holland &amp; Knight</a> notes. It adds section 6068.1 to the Business and Professions Code. A lawyer who uses generative AI must not enter confidential, personal identifying or other nonpublic information into a system unless access to what the lawyer enters is restricted to the lawyer and people the lawyer has authorized who are bound to keep it confidential. The same section requires reasonable steps to check AI output, including every case and statute citation, and disclosure to the court when AI was used on a document filed there. Source: <a href="https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=202520260SB574" rel="noopener">the chaptered text</a>, read October 21, 2026.</p>
+        <p>The section lists what counts as personal identifying information: driver&#x27;s license numbers, dates of birth, Social Security numbers, criminal identification numbers, the addresses and phone numbers of parties, victims, witnesses and court personnel, medical or psychiatric information, financial information, account numbers, and anything sealed by court order or made confidential by court rule or statute. Some of these follow a pattern a checker can spot, such as a Social Security number or a date of birth. Others, such as a psychiatric history told in plain words or a sealed fact, are recognizable only in context. Whether a particular AI service meets the access test depends on its terms and your account, which no redaction tool can tell you. This is not legal advice: read the section and your bar&#x27;s guidance.</p>
+        <p>For the daily habit the checks above still apply. Removing a client&#x27;s name is not enough on its own, because facts, dates and places can identify someone. A tool can help you notice identifiers before you paste; it cannot decide what counts as confidential under the law.</p>
+
         <h2>4: a check as you type</h2>
         <p>A tired person misses things in their own notes. A checker that runs where you type catches some of them before you press send. Outbound Veil runs on your Mac, with the checking done locally and nothing you type stored or sent. It marks names, addresses, phone numbers, email addresses, Social Security, card, passport, driver's license, tax and bank numbers, dates of birth, medical record numbers and IBANs (International Bank Account Numbers). A Redact all command replaces them with placeholders.</p>
         <p>What I have tested is narrow. On October 3, 2026, I ran it on one Mac running macOS 26 with builds made before release 1.0.0. It found and redacted a made-up note in the ChatGPT prompt box and in the claude.ai prompt box in Chrome. I have not tested Safari or other browsers, and I have not run those tests again on later releases. The <a href="/outbound-veil/works-in/">compatibility page</a> records every app and field, including the ones that do not work. It does not read the body of a new message in Apple Mail. It handles Latin-script names only. It also flags public figures' names, and it will miss some things. It is $29.99 once after a 7-day trial. The free options are in the comparison guide.</p>
 
         <h2>5: when the data must not leave your machine</h2>
         <p>If a policy, a consent form or common sense says the text cannot go to a third party, no setting fixes that. A model that runs on your own Mac keeps the text there, and so does doing the task by hand. The <a href="/guides/best-pii-redaction-tools-for-chatgpt/">comparison guide</a> covers that option next to the redaction tools.</p>
-
-        <h2 id="california-sb-574">California lawyers: SB 574 from January 1, 2027</h2>
-        <p>California's SB 574 (Chapter 858 of 2026) was signed on September 30, 2026 and takes effect on January 1, 2027, as <a href="https://www.hklaw.com/en/insights/publications/2026/10/california-enacts-rules-governing-lawyers-use-of-generative-ai" rel="noopener">Holland &amp; Knight</a> notes. It adds section 6068.1 to the Business and Professions Code. A lawyer who uses generative AI must not enter confidential, personal identifying or other nonpublic information into a system unless access to what the lawyer enters is restricted to the lawyer and people the lawyer has authorized who are bound to keep it confidential. The same section requires reasonable steps to check AI output, including every case and statute citation, and disclosure to the court when AI was used on a document filed there. Source: <a href="https://leginfo.legislature.ca.gov/faces/billTextClient.xhtml?bill_id=202520260SB574" rel="noopener">the chaptered text</a>, read October 21, 2026.</p>
-        <p>The section lists what counts as personal identifying information: driver's license numbers, dates of birth, Social Security numbers, criminal identification numbers, the addresses and phone numbers of parties, victims, witnesses and court personnel, medical or psychiatric information, financial information, account numbers, and anything sealed by court order or made confidential by court rule or statute. Some of these follow a pattern a checker can spot, such as a Social Security number or a date of birth. Others, such as a psychiatric history told in plain words or a sealed fact, are recognizable only in context, and no pattern finds them. Whether a particular AI service meets the access test depends on its terms and your account, which no redaction tool can tell you. This is not legal advice: read the section and your bar's guidance.</p>
 
         <h2>If you already pasted something you should not have</h2>
         <p>Delete the chat. OpenAI says it is removed from your view at once and scheduled for permanent deletion within 30 days. The exceptions are data already de-identified or held for security or legal reasons (<a href="https://help.openai.com/en/articles/8809935-deleting-and-archiving-chats-in-chatgpt" rel="noopener">Deleting and archiving chats</a>). Anthropic says deleted conversations leave your history immediately and its back-end storage within 30 days. Neither undoes training that has already happened. Then tell whoever sets the rules for that data, such as your privacy officer, your IRB or your employer, and follow their process. The deadline for that conversation is theirs, not the provider's.</p>
@@ -189,8 +190,9 @@
         <p>It removes it from your view at once. OpenAI says it then schedules the chat for permanent deletion within 30 days, with exceptions for data already de-identified or kept for security or legal reasons. Anthropic says deleted chats are removed from your history immediately and from its back-end storage within 30 days. Deleting does not undo training that has already happened.</p>
         <h3>Does a redaction tool make this compliant?</h3>
         <p>No. A checker lowers the chance of a mistake. It does not make a workflow compliant with HIPAA, FERPA (Family Educational Rights and Privacy Act), your IRB (institutional review board) protocol or your employer&#x27;s policy. Every tool misses some things. Ask whoever sets the rules where you work. If you work for a HIPAA covered entity, <a href="https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/business-associates/index.html" rel="noopener">HHS says</a> a vendor that handles protected health information for you needs a business associate agreement (BAA) first. <a href="https://help.openai.com/en/articles/8660679-getting-a-business-associate-agreement-for-the-openai-api" rel="noopener">OpenAI says</a> it offers one for its API, for sales-managed ChatGPT Enterprise and Edu, and for ChatGPT for Clinicians, and not for ChatGPT Business. <a href="https://support.claude.com/en/articles/8114513-business-associate-agreements-baa-for-commercial-customers" rel="noopener">Anthropic says</a> it offers one for its API and for HIPAA-ready Claude Enterprise plans once the organization&#x27;s owner turns it on. Whether you need one is a question for your compliance officer, not for me. (Pages read October 14, 2026.)</p>
-        <h3>Does California's SB 574 apply to me?</h3>
-        <p>From January 1, 2027 its section 6068.1 applies to attorneys in California who use generative AI; other parts of the law cover arbitrators and courts. If you are not one of them, your own professional rules and your employer's policy decide what you may paste. This is not legal advice. The <a href="#california-sb-574">section above</a> summarizes what it says.</p>
+        <h3>Does California&#x27;s SB 574 apply to me?</h3>
+        <p>From January 1, 2027 its section 6068.1 applies to attorneys in California who use generative AI; other sections of the same law cover arbitrators and the courts. If you are not one of them, your own professional rules and your employer&#x27;s policy decide what you may paste. Read the enacted text or ask your bar. This is not legal advice. The <a href="#california-sb-574">section above</a> summarizes it.</p>
+
         <h3>Which is safer, ChatGPT or Claude?</h3>
         <p>I did not compare them on safety, and I cannot tell you. Both describe a training control and a 30-day deletion window for personal accounts, and OpenAI says it treats business workspaces differently. I did not verify how Anthropic treats its business plans. Read the pages linked above for the plan you actually use.</p>
 
