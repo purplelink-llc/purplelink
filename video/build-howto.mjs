@@ -12,6 +12,7 @@ import { bundle } from "@remotion/bundler";
 import { renderMedia, renderStill, selectComposition } from "@remotion/renderer";
 import { buildHowTo } from "./src/howto/plan.js";
 import { stageNarration, stageBrandAudio, addTrendBed } from "./audio.mjs";
+import { buildSrt } from "./src/howto/srt.js";
 import { BUMPER, bumperTotal } from "./src/bumper.js";
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
@@ -64,6 +65,10 @@ for (const format of ["16x9", "9x16"]) {
   const comp = await selectComposition({ serveUrl, id: "HowTo", inputProps });
   const { segs, total } = buildHowTo(storyboard, timing, format);
   say(`${format}: ${segs.length} scenes, content ${total.toFixed(2)}s, with bumpers ${bumperTotal(total, BUMPER).toFixed(2)}s`);
+  // caption track for YouTube, on the same timeline as this cut (scripts/howto-publish.py uploads it)
+  const srt = buildSrt(storyboard, timing, format, BUMPER);
+  fs.writeFileSync(path.join(OUT, `${SLUG}-${format}.srt`), srt);
+  say(`captions ${format}: ${srt ? srt.trim().split(/\n\n/).length : 0} cues`);
   if (stills) {
     for (const s of stills.split(",")) await renderStill({ composition: comp, serveUrl, output: path.join(OUT, `still-${format}-${s}.jpg`), imageFormat: "jpeg", jpegQuality: 88, inputProps, frame: Math.min(comp.durationInFrames - 1, Math.round(Number(s) * brand.fps)) });
     continue;

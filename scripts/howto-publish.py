@@ -144,6 +144,25 @@ def upload(file: Path, title: str, desc: str, extra: list[str]) -> str:
     return m.group(1)
 
 
+def add_captions(video_id: str, srt: Path) -> dict:
+    """Caption track from the build's .srt (video/src/howto/srt.js) via scripts/yt-captions.py (channel-guarded).
+    Never fails the publish: a missing file, refusal or API error is reported and recorded, the video stays up."""
+    if not srt.exists():
+        print(f"captions: {srt.name} missing (built before captions existed?); skipped")
+        return {"skipped": "no srt"}
+    r = subprocess.run([PY, str(REPO / "scripts" / "yt-captions.py"), video_id, str(srt), "--channel", "purplelink"],
+                       capture_output=True, text=True, timeout=300)
+    if r.returncode != 0:
+        print(f"captions: not added to {video_id} (exit {r.returncode}): {(r.stderr or r.stdout).strip()[-300:]}")
+        return {"error": f"exit {r.returncode}"}
+    try:
+        res = json.loads(r.stdout.strip().splitlines()[-1])
+    except (ValueError, IndexError):
+        res = {"raw": r.stdout.strip()[-200:]}
+    print(f"captions: {video_id}: {res}")
+    return res
+
+
 def main() -> int:
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     if not args:
@@ -173,11 +192,13 @@ def main() -> int:
                      ["--ab-thumbnails", str(files["thumb-A.jpg"]), str(files["thumb-B.jpg"]), str(files["thumb-C.jpg"])])
     _, short_d = descriptions(sb, f"https://youtu.be/{long_id}", arm)
     short_id = upload(files["9x16.mp4"], sb["short_title"], short_d, ["--thumbnail", str(files["thumb-A.jpg"])])
+    captions = {"long": add_captions(long_id, out / f"{slug}-16x9.srt"),
+                "short": add_captions(short_id, out / f"{slug}-9x16.srt")}
     today = eastern_today().isoformat()
     ledger = json.loads(LEDGER.read_text()) if LEDGER.exists() else []
     ledger.append({"slug": sb["id"], "app": sb["app"], "date": today, "title": sb["title"],
                    "long_id": long_id, "short_id": short_id, "link_arm": arm,
-                   "link_utm_content": sb["id"], "sources": sb.get("sources", [])})
+                   "link_utm_content": sb["id"], "sources": sb.get("sources", []), "captions": captions})
     LEDGER.write_text(json.dumps(ledger, indent=1) + "\n")
     rot = json.loads(ROTATION.read_text())
     if rot["cycle"][rot["next"] % len(rot["cycle"])] == sb["app"]:
