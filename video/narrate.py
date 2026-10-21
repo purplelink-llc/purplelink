@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Per-scene narration with ElevenLabs (primary) or edge-tts (free Microsoft voices, the fallback), plus word timings.
+"""Per-scene narration with ElevenLabs (when a key exists), local Kokoro, or edge-tts (the last fallback), plus word timings.
+
+Kokoro (2026-10-21, Ben's blind tests: Kokoro bf_emma over edge Sonia for the how-tos, am_michael / af_heart over the
+US edge voices) runs on the Mac mini in its own venv through TikTokPipeline's shared_media/kokoro_local.py, once per
+storyboard for all its scenes. Storyboards keep naming edge voices; KOKORO_VOICES maps them by accent and gender, and the
+storyboard rate becomes Kokoro's speed ("-4%" -> 0.96). TTS_ENGINE=edge turns Kokoro off.
 
 ElevenLabs is used when a key is in ~/.config/purplelink/elevenlabs-api-key (or ELEVENLABS_API_KEY) and
 ELEVENLABS_DISABLE is not set. Any ElevenLabs failure (no key, quota, network) falls back to edge-tts for that
@@ -153,6 +158,61 @@ def probe_duration(mp3: Path) -> float:
     return round(float(out.strip()), 3)
 
 
+KOKORO_PY = Path(os.environ.get("KOKORO_PY", "/Volumes/Extreme SSD/_tools/kokoro/venv/bin/python"))
+KOKORO_RUNNER = Path(os.environ.get("KOKORO_RUNNER", "/Volumes/Extreme SSD/TikTokPipeline/shared_media/kokoro_local.py"))
+KOKORO_VOICES = {"GB_F": "bf_emma", "GB_M": "bm_george", "US_F": "af_heart", "US_M": "am_michael"}
+KOKORO_MALE = ("andrew", "guy", "christopher", "eric", "brian", "davis", "jason", "tony", "roger", "steffan",
+               "ryan", "thomas", "alfie", "oliver", "elliot", "ethan", "noah")
+
+
+def kokoro_on() -> bool:
+    return (os.environ.get("TTS_ENGINE") or "kokoro").strip().lower() != "edge" and KOKORO_PY.exists() and KOKORO_RUNNER.exists()
+
+
+def kokoro_voice(edge_voice: str) -> str:
+    v = (edge_voice or "").lower()
+    accent = "GB" if v.startswith("en-gb") else "US"
+    return KOKORO_VOICES[f"{accent}_{'M' if any(n in v for n in KOKORO_MALE) else 'F'}"]
+
+
+def kokoro_speed(rate: str) -> float:
+    try:
+        return round(min(1.5, max(0.7, 1.0 + float(str(rate).strip().rstrip("%")) / 100.0)), 3)
+    except ValueError:
+        return 1.0
+
+
+def synth_kokoro_batch(items: list[tuple[str, Path]], voice: str, rate: str) -> dict[Path, list[dict]]:
+    """[(text, mp3)] -> {mp3: words} for the scenes Kokoro rendered; a missing entry means fall back for that scene.
+    One model load for the whole storyboard."""
+    import tempfile
+    out: dict[Path, list[dict]] = {}
+    if not items:
+        return out
+    with tempfile.TemporaryDirectory(prefix="video-kokoro-") as d:
+        jobs = [{"text": t, "voice": kokoro_voice(voice), "speed": kokoro_speed(rate), "mp3": str(mp3),
+                 "words": str(Path(d) / f"w{i}.json")} for i, (t, mp3) in enumerate(items)]
+        (Path(d) / "jobs.json").write_text(json.dumps(jobs))
+        env = dict(os.environ, PATH="/opt/homebrew/bin:" + os.environ.get("PATH", "/usr/bin:/bin"),
+                   ESPEAK_DATA_PATH="/opt/homebrew/share/espeak-ng-data",
+                   PHONEMIZER_ESPEAK_LIBRARY="/opt/homebrew/lib/libespeak-ng.dylib")
+        try:
+            subprocess.run([str(KOKORO_PY), str(KOKORO_RUNNER), "--jobs", str(Path(d) / "jobs.json"),
+                            "--results", str(Path(d) / "results.json")], env=env, capture_output=True, text=True,
+                           timeout=60 + 30 * len(items), stdin=subprocess.DEVNULL)
+        except subprocess.TimeoutExpired:
+            print("Kokoro timed out; using edge-tts", file=sys.stderr)
+            return out
+        for j, (text, mp3) in zip(jobs, items):
+            try:
+                words = json.loads(Path(j["words"]).read_text())
+            except (OSError, ValueError):
+                continue
+            if words and len(words) >= 0.8 * len(text.split()) and Path(mp3).exists() and Path(mp3).stat().st_size:
+                out[mp3] = words
+    return out
+
+
 def main() -> None:
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     force = "--force" in sys.argv
@@ -168,16 +228,29 @@ def main() -> None:
     old = {}
     if timing_path.exists():
         old = {s["index"]: s for s in json.loads(timing_path.read_text()).get("scenes", [])}
+    key = eleven_key()
+    use_kokoro = not key and kokoro_on()
+    # Kokoro audio is cached under its own hash (voice and speed included), so a storyboard narrated before the switch
+    # is re-narrated whole instead of mixing cached edge scenes with new Kokoro ones
+    kk = f"kk|{kokoro_voice(voice)}|{kokoro_speed(rate)}|" if use_kokoro else ""
+    pending = []
+    for i, sc in enumerate(sb["scenes"]):
+        text = (sc.get("narration") or "").strip()
+        h = hashlib.sha1(kk.encode() + f"{voice}|{rate}|{text}".encode()).hexdigest()[:12]
+        prev = old.get(i)
+        mp3 = out_dir / "audio" / f"scene-{i}.mp3"
+        if use_kokoro and text and (force or not (prev and prev.get("hash") == h and mp3.exists())):
+            pending.append((text, mp3))
+    kokoro_words = synth_kokoro_batch(pending, voice, rate) if use_kokoro else {}
     scenes = []
     for i, sc in enumerate(sb["scenes"]):
         text = (sc.get("narration") or "").strip()
         if not text:
             scenes.append({"index": i, "audio": None, "duration": 0, "words": [], "hash": ""})
             continue
-        key = eleven_key()
-        engine = "elevenlabs" if key else "edge"
-        # edge keeps its original hash so existing caches stay valid; ElevenLabs audio is cached separately
-        h = hashlib.sha1((f"el|{eleven_voice(voice)}|{ELEVEN_MODEL}|" if key else "") .encode() + f"{voice}|{rate}|{text}".encode()).hexdigest()[:12]
+        engine = "elevenlabs" if key else ("kokoro" if use_kokoro else "edge")
+        # edge keeps its original hash so existing caches stay valid; ElevenLabs and Kokoro audio are cached separately
+        h = hashlib.sha1((f"el|{eleven_voice(voice)}|{ELEVEN_MODEL}|" if key else kk).encode() + f"{voice}|{rate}|{text}".encode()).hexdigest()[:12]
         mp3 = out_dir / "audio" / f"scene-{i}.mp3"
         prev = old.get(i)
         if not force and prev and prev.get("hash") == h and mp3.exists():
@@ -190,6 +263,12 @@ def main() -> None:
                 raw = synth_eleven(text, voice, rate, mp3, key)
             except Exception as e:  # quota, network, bad key: fall back to edge-tts for this scene
                 print(f"scene {i}: ElevenLabs failed ({type(e).__name__}: {str(e)[:120]}); using edge-tts", file=sys.stderr)
+                engine = "edge"
+                h = hashlib.sha1(f"{voice}|{rate}|{text}".encode()).hexdigest()[:12]
+        if raw is None and use_kokoro:
+            raw = kokoro_words.get(mp3)
+            if raw is None:
+                print(f"scene {i}: Kokoro failed; using edge-tts", file=sys.stderr)
                 engine = "edge"
                 h = hashlib.sha1(f"{voice}|{rate}|{text}".encode()).hexdigest()[:12]
         if raw is None:
