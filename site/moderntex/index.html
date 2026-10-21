@@ -29,7 +29,7 @@
     <link rel="stylesheet" href="/styles.css?v=99bdcc3053">
     <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
     <link rel="stylesheet" href="/product-flair.css?v=2011265381">
-    <link rel="stylesheet" href="/moderntex/seats.css?v=0008c4f083">
+    <link rel="stylesheet" href="/moderntex/seats.css?v=82f34cd842">
     <link rel="stylesheet" href="/buy.css?v=cb10cb94d2">
     <script src="/site.js?v=b02458d823" defer></script>
     <script src="/support-box.js?v=17ed70cc53" defer></script>
@@ -259,6 +259,7 @@
       </figure>
     </div>
     <script src="/moderntex/seats.js?v=372cfdf34a" defer></script>
+    <script src="/moderntex/quotes.js?v=d329bb524d" defer></script>
     <script src="/moderntex/poll.js?v=55072754b3" defer></script>
     <script src="/exp-moderntex-hero.js?v=144980bbe3"></script>
 
@@ -272,50 +273,63 @@
       </div>
     </section>
 
-    <section class="press-quotes" id="customers" aria-label="What customers said">
-      <figure class="press-quote">
-        <svg class="press-quote-ornament" viewBox="0 0 240 24" width="240" height="24" aria-hidden="true" focusable="false">
-          <path d="M0 12H92M148 12H240" fill="none" stroke="currentColor" stroke-width="1"/>
-          <path d="M104 12L120 4L136 12L120 20Z" fill="none" stroke="currentColor" stroke-width="1.25"/>
-          <circle cx="120" cy="12" r="1.8" fill="currentColor"/>
-        </svg>
-        <blockquote class="press-quote-text">
-          <p>This is exactly the integration I was hoping for.</p>
-        </blockquote>
-        <figcaption class="press-quote-by">
-          <span class="press-quote-name">Leszek</span>
-          <span class="press-quote-role">Independent LaTeX enthusiast working on his first technical book</span>
-          <span class="press-quote-context">On the opt-in project <code>.latexmkrc</code> support added in ModernTex 1.10, for a book built with LuaLaTeX, PythonTeX, Biber and texindy.</span>
-        </figcaption>
-      </figure>
-      <figure class="press-quote">
-        <svg class="press-quote-ornament" viewBox="0 0 240 24" width="240" height="24" aria-hidden="true" focusable="false">
-          <path d="M0 12H92M148 12H240" fill="none" stroke="currentColor" stroke-width="1"/>
-          <path d="M104 12L120 4L136 12L120 20Z" fill="none" stroke="currentColor" stroke-width="1.25"/>
-          <circle cx="120" cy="12" r="1.8" fill="currentColor"/>
-        </svg>
-        <blockquote class="press-quote-text">
-          <p>The overall experience is now just as smooth as my previous setup on Windows.</p>
-        </blockquote>
-        <figcaption class="press-quote-by">
-          <span class="press-quote-name">Walter</span>
-          <span class="press-quote-role">Wireless communications researcher</span>
-        </figcaption>
-      </figure>
-      <figure class="press-quote">
-        <svg class="press-quote-ornament" viewBox="0 0 240 24" width="240" height="24" aria-hidden="true" focusable="false">
-          <path d="M0 12H92M148 12H240" fill="none" stroke="currentColor" stroke-width="1"/>
-          <path d="M104 12L120 4L136 12L120 20Z" fill="none" stroke="currentColor" stroke-width="1.25"/>
-          <circle cx="120" cy="12" r="1.8" fill="currentColor"/>
-        </svg>
-        <blockquote class="press-quote-text">
-          <p>Because you're an academic you know the game and it shows in your products.</p>
-        </blockquote>
-        <figcaption class="press-quote-by">
-          <span class="press-quote-name">Michael</span>
-          <span class="press-quote-role">Biologist at Wake Forest University</span>
-        </figcaption>
-      </figure>
+    <section class="press-quotes press-quotes--scroll" id="customers" aria-labelledby="customers-h" data-quote-scroller>
+      <div class="press-quotes-head">
+        <h2 id="customers-h">What customers say</h2>
+        <div class="press-quotes-nav" data-quote-nav hidden>
+          <button type="button" class="press-quotes-btn" data-quote-prev aria-label="Previous quote">&larr;</button>
+          <span class="press-quotes-count" data-quote-count aria-live="polite">1 of 5</span>
+          <button type="button" class="press-quotes-btn" data-quote-next aria-label="Next quote">&rarr;</button>
+        </div>
+      </div>
+      <div class="press-quotes-track" data-quote-track tabindex="0" role="region" aria-label="Customer quotes, scroll sideways for more">
+        <figure class="press-quote">
+          <blockquote class="press-quote-text">
+            <p>Because you're an academic you know the game and it shows in your products.</p>
+          </blockquote>
+          <figcaption class="press-quote-by">
+            <span class="press-quote-name">Michael</span>
+            <span class="press-quote-role">Biologist at Wake Forest University</span>
+          </figcaption>
+        </figure>
+        <figure class="press-quote">
+          <blockquote class="press-quote-text">
+            <p>It makes organizing and managing my writing projects easy, from first draft through to final copy.</p>
+          </blockquote>
+          <figcaption class="press-quote-by">
+            <span class="press-quote-name">Mark</span>
+            <span class="press-quote-role">Retired, writes personal projects in ModernTex</span>
+          </figcaption>
+        </figure>
+        <figure class="press-quote">
+          <blockquote class="press-quote-text">
+            <p>Amazing, it's fixed now! It's a very nice app!</p>
+          </blockquote>
+          <figcaption class="press-quote-by">
+            <span class="press-quote-name">Uziel</span>
+            <span class="press-quote-role">Researcher at the School of Advanced Study, London</span>
+          </figcaption>
+        </figure>
+        <figure class="press-quote">
+          <blockquote class="press-quote-text">
+            <p>The overall experience is now just as smooth as my previous setup on Windows.</p>
+          </blockquote>
+          <figcaption class="press-quote-by">
+            <span class="press-quote-name">Walter</span>
+            <span class="press-quote-role">Wireless communications researcher</span>
+          </figcaption>
+        </figure>
+        <figure class="press-quote">
+          <blockquote class="press-quote-text">
+            <p>This is exactly the integration I was hoping for.</p>
+          </blockquote>
+          <figcaption class="press-quote-by">
+            <span class="press-quote-name">Leszek</span>
+            <span class="press-quote-role">Independent LaTeX enthusiast working on his first technical book</span>
+            <span class="press-quote-context">On the opt-in project <code>.latexmkrc</code> support added in ModernTex 1.10, for a book built with LuaLaTeX, PythonTeX, Biber and texindy.</span>
+          </figcaption>
+        </figure>
+      </div>
     </section>
 
     <section class="flair-scene" id="sync" data-flair="steps" aria-labelledby="sync-h">
