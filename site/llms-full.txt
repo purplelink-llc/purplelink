@@ -1605,6 +1605,16 @@ ExportWord, HTML, Markdown, plain text, SRT, VTT and JSON, and a timestamped Wor
 
 RecordingRecord from the microphone in the app, then transcribe straight into the review screen.
 
+Call recordingRecords a Zoom, Teams, Meet or FaceTime call with the call's sound on its own track beside your microphone, and no bot joins the call. Your words are labelled You from the microphone track, and the people on the call are told apart on the call track. You start and stop it yourself, and before each call Tapefolio asks you to confirm that everyone has agreed to be recorded. Recording laws differ, and in some places everyone on the call must agree.
+
+Find and word listFind any word or phrase in the open transcript and jump the audio to it. A word list of names, places and jargon helps Whisper and Apple's recognition spell them, and fixes words it hears wrong, such as a participant's pseudonym.
+
+DictationPress Control-Option-Space in any app, speak, and press it again. The text is transcribed on your Mac and typed where the cursor is, with your dictionary, snippets and a choice of styles. The audio is deleted once it is transcribed. Typing for you needs Accessibility permission; without it the text goes to the clipboard.
+
+Draft summaryOptional. Apple's on-device model writes a short overview and a list of topics with times. A quote is shown only when it matches the transcript word for word. It is a draft that can be wrong or leave things out. It needs a Mac with Apple Intelligence turned on, and nothing is downloaded or sent anywhere.
+
+AI appsOptional. Claude Desktop and other apps that support MCP can search and read your saved transcripts, read only. By default names and other identifiers are replaced by codes such as [PERSON 1], speakers show as Speaker 1 and so on, and file names are never shown. Key files are never read. What the AI app reads is sent to its own servers, for example Anthropic's for Claude, so check a transcript before you share it this way. It is off until you add it to the AI app.
+
 Batch OCRReads photos, scans and PDFs, one file or a whole folder, and keeps two-column pages in reading order. Output is a searchable PDF with an invisible text layer, or text, Markdown, Word, JSON or CSV. You can save a workflow and run it again, and replace identifiers in the text with a separate key file. Each run writes a provenance record with a SHA-256 for every input file.
 
 ## What it will not do
@@ -1619,7 +1629,7 @@ Promise results in other languagesWhat has been measured is English meeting audi
 
 Run on an Intel Mac or an older macOSIt needs macOS 26 or later and Apple silicon. There is no Windows, iPhone or iPad version.
 
-Send your files anywhereThere is no cloud transcription and there are no accounts. Nothing you open in Tapefolio is uploaded.
+Send your files anywhereThere is no cloud transcription and there are no accounts. Nothing you open in Tapefolio is uploaded. The one exception is your choice: if you connect an AI app such as Claude Desktop, the text it reads goes to that app's servers.
 
 ## How well it works
 
@@ -1639,11 +1649,11 @@ Scanned textOn 9 generated test files (11 pages), the OCR word error rate was 1.
 
 ### Your files stay on your Mac
 
-Transcription, speaker labels, identifier removal and OCR run on your Mac. There are no accounts. If your ethics board requires that recordings stay on your own computer, Tapefolio does its work there. Whether that meets the board's rules is for you and the board to decide.
+Transcription, speaker labels, identifier removal, OCR, dictation and draft summaries run on your Mac. There are no accounts. If your ethics board requires that recordings stay on your own computer, Tapefolio does its work there. Whether that meets the board's rules is for you and the board to decide.
 
 ### Downloads, each once
 
-The internet is used for three things, and none of them carries your files. The optional model downloads inside the app come from Hugging Face, once each. The app's check for a new version sends the app's name, its version, the macOS version and the app's update token to purplelink.llc. And macOS itself may download Apple's own speech model once if you use Apple's speech recognition. There is no analytics and no account. Details are on the privacy page.
+The internet is used for three things, and none of them carries your files. The optional model downloads inside the app come from Hugging Face, once each. The app's check for a new version sends the app's name, its version, the macOS version and the app's update token to purplelink.llc. And macOS itself may download Apple's own speech model once if you use Apple's speech recognition. There is no analytics and no account. If you connect an AI app such as Claude Desktop, the transcript text it reads goes to that app's servers, with identifiers replaced by codes unless you turn that off. Details are on the privacy page.
 
 ### Voices are opt-in
 
@@ -1689,31 +1699,33 @@ MacApple silicon. There is no Intel version.
 
 Disk spaceThe app is about 40 MB, plus the optional models you choose to download (see the sizes above).
 
-PermissionsmacOS asks for microphone access the first time you record in the app.
+PermissionsmacOS asks for microphone access the first time you record in the app, and for permission to record system audio the first time you record a call. Dictation types for you only with Accessibility permission.
+
+Draft summaryA Mac with Apple Intelligence turned on. Everything else works without it.
 
 Comparison
 
 ## How it compares
 
-Tapefolio is one of several Mac apps that transcribe on the device. These are the three people most often compare it with.
+Tapefolio is one of several Mac apps that transcribe on the device. Here are four of them.
 
-Tapefolio compared with MacWhisper, Aiko and Buzz
+Tapefolio compared with MacWhisper, Aiko, Buzz and Biscotti
 
-TopicTapefolioMacWhisperAikoBuzz
+TopicTapefolioMacWhisperAikoBuzzBiscotti
 
-Price$29.99 once, after a 7-day trial.Free tier. Pro is a one-time €64 with lifetime updates.$24 once.Free, MIT license.
+Price$29.99 once, after a 7-day trial.Free tier. Pro is a one-time €64 with lifetime updates.$24 once.Free, MIT license.Free, source available (PolyForm Perimeter license).
 
-Where it transcribesOn your Mac. Nothing from your files is sent anywhere.On your Mac with local models. Cloud services are optional.On your device. The page says audio is never uploaded.Offline, on your computer.
+Where it transcribesOn your Mac. Nothing from your files is sent anywhere.On your Mac with local models. Cloud services are optional.On your device. The page says audio is never uploaded.Offline, on your computer.On your Mac. The page says audio and transcripts are not uploaded.
 
-Speaker labelsYes, on the Mac.Listed as a feature.Not supported yet, per its page.Listed as a feature, as speaker identification.
+Speaker labelsYes, on the Mac.Listed as a feature.Not supported yet, per its page.Listed as a feature, as speaker identification.Yes, with voiceprints matched across meetings.
 
-PlatformmacOS 26 or later, Apple silicon only.Minimum macOS not stated.macOS, iOS and visionOS.macOS, Windows and Linux. Macs need Apple silicon.
+PlatformmacOS 26 or later, Apple silicon only.Minimum macOS not stated.macOS, iOS and visionOS.macOS, Windows and Linux. Macs need Apple silicon.macOS 15 or later, Apple silicon. 16 GB of memory recommended.
 
-Free way to tryThe full app for 7 days.A free tier with no time limit.Not stated.Free.
+Free way to tryThe full app for 7 days.A free tier with no time limit.Not stated.Free.Free.
 
-Competitor facts from macwhisper.com, sindresorhus.com/aiko and github.com/chidiwilliams/buzz, checked on October 13, 2026. "Not stated" means the page did not say. I did not test the other apps.
+Competitor facts from macwhisper.com, sindresorhus.com/aiko github.com/chidiwilliams/buzz (checked on October 13, 2026) and github.com/scosman/Biscotti (checked on October 20, 2026). "Not stated" means the page did not say. I did not test the other apps.
 
-Pick MacWhisper or Buzz if you want a free option. Check the MacWhisper requirements first if you have an Intel Mac or an older macOS, because Tapefolio will not run on either. Pick Aiko for the lowest one-time price when you do not need speaker labels. Pick Tapefolio when you want speaker labels, a review step for names and other identifiers, and OCR in one app on your Mac. Prices for more apps, including cloud services, text to speech and OCR, are in the Mac apps for transcription, text to speech and OCR guide.
+Pick MacWhisper or Buzz if you want a free option. Check the MacWhisper requirements first if you have an Intel Mac or an older macOS, because Tapefolio will not run on either. Pick Biscotti if you want free meeting notes with summaries and action items. Pick Aiko for the lowest one-time price when you do not need speaker labels. Pick Tapefolio when you want speaker labels, a review step for names and other identifiers, and OCR in one app on your Mac. Prices for more apps, including cloud services, text to speech and OCR, are in the Mac apps for transcription, text to speech and OCR guide.
 
 ## Frequently asked questions
 
@@ -1723,7 +1735,7 @@ macOS 26 or later on a Mac with Apple silicon. There is no Intel version.
 
 Do my recordings leave my Mac?
 
-No. Transcription, speaker labels, identifier removal and OCR all run on the Mac, and nothing from your files is sent anywhere. The internet is used for three things. First, the optional model downloads inside the app come from Hugging Face and happen once each. Second, the app's check for a new version sends the app's name, its version, the macOS version and the app's update token to purplelink.llc. Third, macOS itself may download Apple's own speech model once if you use Apple's speech recognition. There is no analytics and no account.
+No. Transcription, speaker labels, identifier removal and OCR all run on the Mac, and nothing from your files is sent anywhere. The internet is used for three things. First, the optional model downloads inside the app come from Hugging Face and happen once each. Second, the app's check for a new version sends the app's name, its version, the macOS version and the app's update token to purplelink.llc. Third, macOS itself may download Apple's own speech model once if you use Apple's speech recognition. There is no analytics and no account. If you choose to connect an AI app such as Claude Desktop, the transcript text it reads goes to that app's servers, with names and other identifiers replaced by codes unless you turn that off.
 
 How accurate is it?
 
@@ -1776,6 +1788,14 @@ Email ben@purplelink.llc. If you lose your download link, the Find a purchase pa
 Why not use a free app like MacWhisper or Buzz?
 
 You can, and for a plain transcript a free app may be the better value. MacWhisper has a free tier and Buzz is free and open source, and both transcribe on your Mac. Tapefolio costs $29.99 once. What that pays for is the work around the transcript: speaker labels, a review step for names and other identifiers, and OCR, all on your Mac. Try the 7-day trial on one recording before you decide.
+
+Can it record a Zoom or Teams call?
+
+Yes. Record a call puts the call's sound on its own track beside your microphone, and no bot joins the call. Your words are labelled You, and the people on the call are told apart on the call track. You start and stop it yourself. Before each call Tapefolio asks you to confirm that everyone has agreed to be recorded, because recording laws differ and some places require everyone's consent. macOS asks once for permission to record system audio.
+
+Can I ask Claude about my transcripts?
+
+Yes, if you choose to. Tapefolio can act as a read-only MCP server for Claude Desktop and other apps that support MCP: Settings, AI apps shows the line to add. By default the AI app sees names and other identifiers as codes such as [PERSON 1], speakers as Speaker 1 and so on, and never the file names or the key files. The removal can miss some names, and what the AI app reads goes to its own servers, so check a transcript before you share it this way.
 
 Does it work offline?
 
