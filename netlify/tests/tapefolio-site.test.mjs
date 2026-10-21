@@ -68,9 +68,9 @@ test("the page has every section the brief asks for", () => {
 test("LAUNCHED: launch.js ships live with valid facts, and the static page already says the live wording", () => {
   const src = read("tapefolio/launch.js");
   assert.match(src, /live: true,/);
-  assert.match(src, /version: "1\.0\.1",/);
-  assert.match(src, /sizeMb: "43",/);
-  assert.match(src, /released: "2026-10-09"/);
+  assert.match(src, /version: "1\.1\.0",/);
+  assert.match(src, /sizeMb: "44",/);
+  assert.match(src, /released: "2026-10-20"/);
   const cfg = JSON.parse(src.match(/window\.TAPEFOLIO_LAUNCH = (\{[\s\S]*?\});/)[1].replace(/(\w+):/g, '"$1":'));
   assert.equal(cfg.live, true);
   assert.match(cfg.version, /^\d+\.\d+\.\d+$/);
@@ -87,16 +87,17 @@ test("LAUNCHED: launch.js ships live with valid facts, and the static page alrea
   assert.match(html, /id="checkout-btn" data-product="tapefolio"[^>]*>Buy Tapefolio<\/button>/);
   assert.doesNotMatch(html, /Not released yet|opens at release|are listed here when|data-tf-pre-only/);
   assert.doesNotMatch(html, /data-tf-live-only hidden/);
-  assert.match(html, /<span data-tf-facts>Version 1\.0\.1, released October 9, 2026\. 43 MB disk image\.<\/span>/);
+  assert.match(html, /<span data-tf-facts>Version 1\.1\.0, released October 20, 2026\. 44 MB disk image\.<\/span>/);
   assert.equal([...html.matchAll(/>Try it free for 7 days<\/a>/g)].length, 2);
   // What launch.js would write into the page is exactly what the static page already says.
-  assert.equal(`Version ${cfg.version}, released October 9, 2026. ${cfg.sizeMb} MB disk image.`, "Version 1.0.1, released October 9, 2026. 43 MB disk image.");
-  // The size is the published DMG's: 1.0.1 is 43,259,420 bytes, 43 MB to the nearest whole megabyte.
-  assert.equal(Math.round(43259420 / 1e6), Number(cfg.sizeMb));
+  assert.equal(`Version ${cfg.version}, released October 20, 2026. ${cfg.sizeMb} MB disk image.`, "Version 1.1.0, released October 20, 2026. 44 MB disk image.");
+  // The size is the published DMG's: 1.1.0 is 43,683,811 bytes, 44 MB to the nearest whole megabyte.
+  assert.equal(Math.round(43683811 / 1e6), Number(cfg.sizeMb));
   const llms = read("llms.txt");
-  assert.match(llms.slice(llms.indexOf("### Tapefolio")), /\*\*Status:\*\* Shipping, version 1\.0\.1/);
+  assert.match(llms.slice(llms.indexOf("### Tapefolio")), /\*\*Status:\*\* Shipping, version 1\.1\.0/);
   assert.doesNotMatch(llms, /Not yet released/);
   const log = read("changelog/index.html");
+  assert.match(log, /<span class="changelog-date">October 20, 2026<\/span>\s*<div class="changelog-content">\s*<span class="changelog-tag tag-update">Update<\/span>\s*<h2>Tapefolio 1\.1\.0<\/h2>/);
   assert.match(log, /<span class="changelog-date">October 9, 2026<\/span>\s*<div class="changelog-content">\s*<span class="changelog-tag tag-update">Update<\/span>\s*<h2>Tapefolio 1\.0\.1<\/h2>\s*<p>Fixes speaker labels\. The standard speaker separation had been dropping about half of the speech in long recordings\. NVIDIA Nemotron 3 speaker separation, an optional download, is now used automatically when it is installed\./);
   assert.match(log, /<span class="changelog-date">October 9, 2026<\/span>\s*<div class="changelog-content">\s*<span class="changelog-tag tag-launch">Launch<\/span>\s*<h2>Tapefolio 1\.0<\/h2>/);
   // The scheduled deploy and blog jobs regenerate lastmod dates, so require a valid date on or after the 2026-10-09 launch, not that exact day.
@@ -232,9 +233,10 @@ test("the page never claims anonymization, guaranteed compliance, or anything th
   const allowed = new Set(["21%", "29%", "39%", "83%", "84%", "11.3%", "1.9%", "8.5%", "1.7%", "1.1%", "1.4%", "0.5%", "0.0%", "1.5%"]);
   const withoutCaptions = visibleText(html.replace(/<section class="screenshots-section" aria-labelledby="shots-h">[\s\S]*?<\/section>/, ""));
   for (const m of withoutCaptions.matchAll(/\d+(?:\.\d+)?%/g)) assert.ok(allowed.has(m[0]), `unexpected figure ${m[0]}`);
-  // Features that are not built are not named.
-  for (const unbuilt of ["live captions", "real-time transcription", "cloud sync", "sync across", "team", "collaborat", "translation", "summar", "read-aloud", "ChatGPT", "OpenAI API"]) {
-    assert.ok(!text.toLowerCase().includes(unbuilt.toLowerCase()), `the page mentions: ${unbuilt}`);
+  // Features that are not built are not named. (Draft summaries are built since 1.1.0; "Microsoft Teams" is a call app, not a team feature.)
+  const named = text.replace(/Microsoft Teams/g, "");
+  for (const unbuilt of ["live captions", "real-time transcription", "cloud sync", "sync across", "team", "collaborat", "translation", "read-aloud", "ChatGPT", "OpenAI API"]) {
+    assert.ok(!named.toLowerCase().includes(unbuilt.toLowerCase()), `the page mentions: ${unbuilt}`);
   }
 });
 
