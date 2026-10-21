@@ -197,6 +197,11 @@ research and writing; everything else is scripted. Ben chose fully automatic pub
    `latexmk-command-not-found.json`), with `thumbs` A/B/C in at least two templates.
 4. `node build-howto.mjs <slug>`: gate, narration (ElevenLabs when its key exists, edge-tts otherwise), the 16:9
    tutorial, the 9:16 Short (scenes marked `short`), thumbnails. Review the frames.
+   After the full build, `python3 ../scripts/howto_gate.py storyboards/howto/<slug>.json --video out/howto/<slug>/<slug>-16x9.mp4
+   --video out/howto/<slug>/<slug>-9x16.mp4` checks the renders with `TikTokPipeline/shared_media/video_qa.py`: no one-frame
+   pops, no stretch over 6 s without change, text at 4.5:1 or better (boxes measured in `HowTo.jsx`, saved as `.qa.json`
+   beside each mp4), and writes `<name>-contact-sheet.jpg` next to each render to look at. Visual cues start 0.08 s before
+   the word they match (`CUE_LEAD`) and holds drift by 1.5% (`DRIFT`), both in `src/howto/plan.js`.
 5. `python3 ../scripts/howto-publish.py <slug>`: gate again, the tutorial public with a Test & Compare A/B/C test,
    the Short public linking to it, ledger and rotation updated, change logged. Links use
    `utm_source=youtube&utm_medium=video|short&utm_campaign=howto-link-test&utm_content=<slug>`; from 2026-10-20 odd
