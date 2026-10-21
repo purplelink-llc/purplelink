@@ -87,6 +87,38 @@
             "@type": "Answer",
             "text": "No. The count runs in your browser and nothing you paste leaves the page."
           }
+        },
+        {
+          "@type": "Question",
+          "name": "My venue is not on the list. Can I still use it?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Choose “Another venue: enter the limit”, type the word limit from the instructions for authors, and the count and bar work the same way. You will not get the section and reference-style notes for a venue the tool does not know."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it count my title, keywords or references?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It counts whatever you paste and nothing else. If the limit applies to the abstract alone, paste only the abstract. If a venue counts the title or keywords inside the limit, add them to the box before you check."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does the venue’s own system show a different number?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Counters disagree about hyphenated words, numbers, symbols, math and special characters. This one counts each space-separated piece of text that contains a letter or digit, so a hyphenated word counts once. Leave a few words of margin below the limit."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are the limits current?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "They are the figures recorded in the rule library when it was last updated. Some source links point to a specific year, such as the NeurIPS 2024 call for papers, and limits can change between years and article types. Use the source link shown under each venue to confirm before you submit."
+          }
         }
       ]
     }
@@ -145,12 +177,35 @@
         <p class="tool-next" data-tool-next="#ac-venue-facts" hidden>The <a data-track="tool_next" data-track-meta="abstract-checker" href="/tools/paper-review/#faq-journals">Journal Pack</a> ($11 with a Paper Review) checks the whole manuscript against these rules: main-text length, required sections and reference style, alongside four AI reviewers.</p>
       </div>
 
+      <section class="tool-howto">
+        <h2>How the check works</h2>
+        <p>Choose a venue and the limit, the sections it expects, its reference style and its review type appear under the box. Type or paste your abstract and the count updates as you go, with a bar that fills toward the limit and turns to an over-limit warning once you pass it. Below the count you also get the character and sentence totals. Your choice of venue is remembered in this browser for next time, and a link ending in <code>?venue=nature</code> opens the page with that venue selected.</p>
+        <p>The list covers 25 venues in four groups: machine learning (NeurIPS, ICML, ICLR, AAAI, TMLR, JMLR), general science and medicine (including Nature, Science, Cell, PLOS ONE, JAMA, NEJM, The Lancet and The BMJ), psychology and management, and chemistry and materials. Abstract limits range from 125 words for Science to 350 for JAMA, TMLR and The BMJ. If your venue is not listed, choose &ldquo;Another venue&rdquo; and type its limit yourself.</p>
+      </section>
+
+      <section class="tool-howto">
+        <h2>What gets counted</h2>
+        <p>The counter is meant for text that may contain LaTeX, so it works the way a reader would. It drops comments that start with <code>%</code>, drops <code>\cite</code>, <code>\ref</code>, <code>\eqref</code> and <code>\label</code> along with their arguments, and drops every other backslash command while keeping the words inside braces. Each piece of inline math between single dollar signs counts as one word. A piece of text counts only if it contains a letter or a digit, so a lone dash or bullet is ignored.</p>
+        <p>Two things to know. Paste only the abstract text, because a wrapper such as <code>\begin{abstract}</code> leaves the word &ldquo;abstract&rdquo; behind at each end and adds two words. And display math written with double dollar signs is not treated as one word, so its contents are counted as ordinary words.</p>
+      </section>
+
+      <section class="tool-howto">
+        <h2>A worked example</h2>
+        <p>Suppose you paste this line:</p>
+        <p><code>We study $n$ firms \cite{lee2020} and find that effects persist.% draft note</code></p>
+        <p>The comment is removed, the citation is removed, and <code>$n$</code> counts as one word, which leaves nine: We, study, the math, firms, and, find, that, effects, persist. Against Science&rsquo;s 125-word limit the page would report 116 to spare.</p>
+      </section>
+
       <section class="tool-faq">
         <h2>Questions</h2>
         <p>Before you submit, you can also <a href="/guides/check-manuscript-word-limit/">check a manuscript against a journal word limit</a>.</p>
         <details><summary>Where do the limits come from?</summary><div class="faq-body">From the same rule library the paid Journal Pack uses, which records each venue's instructions for authors with a link to the source. Limits change between years and article types, so confirm in the venue's own instructions before you submit.</div></details>
         <details><summary>How are words counted?</summary><div class="faq-body">As a reader would count them: LaTeX commands, citations and comments are left out, the text inside braces is kept, and each piece of inline math counts as one word. Journals' own counters differ slightly, so leave a few words of margin.</div></details>
         <details><summary>Is my abstract sent anywhere?</summary><div class="faq-body">No. The count runs in your browser and nothing you paste leaves the page.</div></details>
+        <details><summary>My venue is not on the list. Can I still use it?</summary><div class="faq-body">Yes. Choose &ldquo;Another venue: enter the limit&rdquo;, type the word limit from the instructions for authors, and the count and bar work the same way. You will not get the section and reference-style notes for a venue the tool does not know.</div></details>
+        <details><summary>Does it count my title, keywords or references?</summary><div class="faq-body">It counts whatever you paste and nothing else. If the limit applies to the abstract alone, paste only the abstract. If a venue counts the title or keywords inside the limit, add them to the box before you check.</div></details>
+        <details><summary>Why does the venue&rsquo;s own system show a different number?</summary><div class="faq-body">Counters disagree about hyphenated words, numbers, symbols, math and special characters. This one counts each space-separated piece of text that contains a letter or digit, so a hyphenated word counts once. Leave a few words of margin below the limit.</div></details>
+        <details><summary>Are the limits current?</summary><div class="faq-body">They are the figures recorded in the rule library when it was last updated. Some source links point to a specific year, such as the NeurIPS 2024 call for papers, and limits can change between years and article types. Use the source link shown under each venue to confirm before you submit.</div></details>
       </section>
     </main>
 

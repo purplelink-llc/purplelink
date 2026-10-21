@@ -13,12 +13,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://purplelink.llc/ballbouncer/</loc>
-    <lastmod>2026-10-18</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://purplelink.llc/batterymeter/</loc>
     <lastmod>2026-10-18</lastmod>
     <changefreq>monthly</changefreq>
@@ -203,12 +197,6 @@
     <lastmod>2026-10-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/checklist/</loc>
-    <lastmod>2026-10-18</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://purplelink.llc/desk/</loc>
@@ -1257,12 +1245,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://purplelink.llc/photography/canada/</loc>
-    <lastmod>2026-10-18</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://purplelink.llc/photography/denmark/</loc>
     <lastmod>2026-10-18</lastmod>
     <changefreq>monthly</changefreq>
@@ -1299,12 +1281,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://purplelink.llc/photography/netherlands/</loc>
-    <lastmod>2026-10-18</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
     <loc>https://purplelink.llc/photography/panama/</loc>
     <lastmod>2026-10-18</lastmod>
     <changefreq>monthly</changefreq>
@@ -1312,12 +1288,6 @@
   </url>
   <url>
     <loc>https://purplelink.llc/photography/switzerland/</loc>
-    <lastmod>2026-10-18</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/united-kingdom/</loc>
     <lastmod>2026-10-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -1348,12 +1318,6 @@
   </url>
   <url>
     <loc>https://purplelink.llc/products/</loc>
-    <lastmod>2026-10-18</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/recover/</loc>
     <lastmod>2026-10-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -1402,12 +1366,6 @@
   </url>
   <url>
     <loc>https://purplelink.llc/sheets/live/funding-feed/</loc>
-    <lastmod>2026-10-18</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/sheets/live/</loc>
     <lastmod>2026-10-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
