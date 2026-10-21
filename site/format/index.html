@@ -49,6 +49,15 @@
         }
       ]
     }
+    ,{
+      "@type": "FAQPage",
+      "mainEntity": [
+        {"@type": "Question", "name": "Do these pages format my references for me?", "acceptedAnswer": {"@type": "Answer", "text": "No. The converter on each page changes the file format of your references, for example BibTeX to EndNote. The formatting itself comes from the venue's style file or reference-manager style, which each page names where one exists."}},
+        {"@type": "Question", "name": "What if a venue has no BibTeX style?", "acceptedAnswer": {"@type": "Answer", "text": "Then the page says so. Keep your .bib file as the source of record and apply the venue's pattern in your reference manager or by hand. The JMIS page is an example of this case."}},
+        {"@type": "Question", "name": "Are my references sent anywhere?", "acceptedAnswer": {"@type": "Answer", "text": "No. The converter runs in your browser. Nothing is uploaded or stored."}},
+        {"@type": "Question", "name": "How current is the information?", "acceptedAnswer": {"@type": "Answer", "text": "Each page was read against its sources when it was written, and many show the date. Venue rules change, so use the linked instructions to confirm before you submit."}}
+      ]
+    }
   ]
 }
     </script>
@@ -143,6 +152,26 @@
           <li><a href="/format/references-for-acm-csur/"><strong>ACM CSUR</strong>: ACM Computing Surveys</a></li>
           <li><a href="/format/references-for-springer-lncs/"><strong>Springer LNCS</strong>: Springer Lecture Notes in Computer Science</a></li>
       </ul>
+
+      <section class="tool-howto">
+        <h2>How to use these pages</h2>
+        <p>Find your venue in the lists above and open its page. Every page has a section on what the venue expects and a LaTeX template section, a short list of frequently asked questions, and a &ldquo;Where this comes from&rdquo; section with links to the venue&rsquo;s own instructions. Most pages go further. They show the bibliography setup, three example references, common mistakes and ways to check your .bib file, and many show the date the rules were last read against the sources.</p>
+        <p>Every page also carries the same reference converter, which turns BibTeX, RIS or EndNote into one of the other two. It opens already set to the output the venue is likely to need: BibTeX on most pages, and EndNote on the MISQ, JMIS, ISJ and ICIS pages. The conversion happens in your browser and nothing you paste is uploaded.</p>
+      </section>
+
+      <section class="tool-howto">
+        <h2>What you can and cannot rely on here</h2>
+        <p>The pages summarize each venue&rsquo;s published author instructions. They do not replace them. Journals and conferences revise their rules between cycles, and a conference may publish a new call every year, so treat a page as a starting point and read the current instructions through the sources linked at the bottom before you submit. Several venues publish no BibTeX style at all, and where that is so the page says so rather than guessing at one.</p>
+        <p>The groups above are information systems, security, machine learning and NLP, HCI and data mining, general science, and two publisher series (ACM Computing Surveys and Springer LNCS). If your venue is missing, the full reference converter handles any target, and the LaTeX templates page lists class files by venue.</p>
+      </section>
+
+      <section class="tool-faq">
+        <h2>Questions</h2>
+        <details><summary>Do these pages format my references for me?</summary><div class="faq-body">No. The converter on each page changes the file format of your references, for example BibTeX to EndNote. The formatting itself comes from the venue&rsquo;s style file or reference-manager style, which each page names where one exists.</div></details>
+        <details><summary>What if a venue has no BibTeX style?</summary><div class="faq-body">Then the page says so. Keep your .bib file as the source of record and apply the venue&rsquo;s pattern in your reference manager or by hand. The JMIS page is an example of this case.</div></details>
+        <details><summary>Are my references sent anywhere?</summary><div class="faq-body">No. The converter runs in your browser. Nothing is uploaded or stored.</div></details>
+        <details><summary>How current is the information?</summary><div class="faq-body">Each page was read against its sources when it was written, and many show the date. Venue rules change, so use the linked instructions to confirm before you submit.</div></details>
+      </section>
 
       <p class="tool-support">Don't see your venue? Use the <a href="/tools/reference-converter/">full reference converter</a>. It converts between BibTeX, RIS, and EndNote for any target. For class files and skeletons, see <a href="/templates/">LaTeX templates by venue</a>.</p>
     </main>

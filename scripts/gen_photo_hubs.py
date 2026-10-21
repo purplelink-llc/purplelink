@@ -423,7 +423,9 @@ def main():
         desc = f"{n} travel photographs from {c['name']} by Benjamin Ampel: " + ", ".join(p["name"] for p in cdata["places"])[:160] + ". Prints and licenses."
         write(OUT / cs / "index.html",
               page(title, desc[:300], curl, all_imgs, body,
-                   [("Home", BASE + "/"), ("Photography", BASE + "/photography/"), (c["name"], curl)]),
+                   [("Home", BASE + "/"), ("Photography", BASE + "/photography/"), (c["name"], curl)],
+                   # "noindex": true in photo-places.json marks a country page too short to index (2026-10-21)
+                   robots="noindex, follow" if c.get("noindex") else "index, follow"),
               a.check, changed)
         sitemap.append((curl, extra))
         data["countries"].append(cdata)

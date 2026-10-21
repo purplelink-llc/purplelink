@@ -56,6 +56,38 @@
             "@type": "Answer",
             "text": "Author-year (e.g. \u201c(Norman 1977)\u201d), with references listed alphabetically, per the INFORMS house style guide."
           }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I submit to ISR in Word?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. ISR accepts LaTeX or Word manuscripts. Word authors can use the INFORMS EndNote style, “Inf Syst Res.ens”, to format the reference list."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which should I use, the BibTeX style or the EndNote style?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use the one that matches how you write. LaTeX authors use the BibTeX style that comes with the INFORMS LaTeX files. Authors working in Word and a reference manager use the EndNote style. Do not mix the two in one manuscript."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does this page format my references in ISR style?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It converts reference data between BibTeX, RIS and EndNote. The ISR formatting, author-year citations with an alphabetical list, comes from the INFORMS style you apply afterwards."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Where do I confirm the current ISR rules?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "On the INFORMS author portal, linked in the sources section at the bottom of this page. Instructions change between submission cycles, so read the current version before you submit."
+          }
         }
       ]
     },
@@ -180,11 +212,54 @@
       </section>
 
 
+      <section class="tool-howto">
+        <h2>Two routes to an ISR reference list</h2>
+        <p>INFORMS supports two ways of producing a reference list that matches its house style, and the one you use follows from how you write the manuscript.</p>
+        <ul>
+          <li><strong>LaTeX.</strong> Keep your references in a <code>.bib</code> file and use the INFORMS journal LaTeX style files. They include a BibTeX style, so the author-year citations and the alphabetical list are built for you. You download the files from the INFORMS author portal linked under &ldquo;Where this comes from&rdquo; below.</li>
+          <li><strong>Word.</strong> Use the INFORMS EndNote style, named &ldquo;Inf Syst Res.ens&rdquo;, in EndNote or another reference manager that can read it. Your library supplies the data and the style does the formatting.</li>
+        </ul>
+        <p>Either way, the formatting is done by the INFORMS style, not by this page. What this page&rsquo;s converter does is move reference data between BibTeX, RIS and EndNote, which is useful when your references live in one format and the route you chose needs another.</p>
+      </section>
+
+      <section class="tool-howto">
+        <h2>A worked example</h2>
+        <p>Say you collected references in a reference manager and need a <code>.bib</code> file for the LaTeX route. Export them as RIS or EndNote, paste them into the box above, leave &ldquo;From&rdquo; on auto-detect and keep &ldquo;To&rdquo; on BibTeX. Going the other way, this entry in BibTeX:</p>
+        <pre class="rc-out"><code>@article{smith2020,
+  title   = {On Things},
+  author  = {Smith, Jane and Doe, John},
+  journal = {Journal of Examples},
+  year    = {2020},
+  volume  = {12},
+  pages   = {3--14},
+  doi     = {10.1000/example}
+}</code></pre>
+        <p>converts to EndNote as the tagged lines below, one tag per field, which a reference manager can import for the Word route.</p>
+        <pre class="rc-out"><code>%0 Journal Article
+%A Smith, Jane
+%A Doe, John
+%T On Things
+%D 2020
+%J Journal of Examples
+%V 12
+%P 3-14
+%R 10.1000/example</code></pre>
+      </section>
+
+      <section class="tool-howto">
+        <h2>What the converter keeps and what it leaves out</h2>
+        <p>The conversion runs in your browser, so nothing is uploaded. It reads each entry into a fixed set of fields: type, title, authors, year, journal or book title, volume, issue, pages, publisher, DOI, URL, abstract and keywords. It writes those fields in the format you choose and drops anything else, such as a <code>note</code> or an editor field. It also builds a new BibTeX key from the first author&rsquo;s surname and the year, so <code>smith2020</code> may differ from the key you used in your text. After converting, compare the keys with your <code>\cite</code> commands, and check the result against your source list before you submit.</p>
+      </section>
+
       <section class="tool-faq">
         <h2>Frequently asked</h2>
         <div class="faq-list">
           <details><summary>What LaTeX template does ISR use?</summary><p>INFORMS journal LaTeX style files (includes a BibTeX .bst matching INFORMS reference format)</p></details>
           <details><summary>What citation style does ISR use?</summary><p>Author-year (e.g. “(Norman 1977)”), with references listed alphabetically, per the INFORMS house style guide.</p></details>
+          <details><summary>Can I submit to ISR in Word?</summary><p>Yes. ISR accepts LaTeX or Word manuscripts. Word authors can use the INFORMS EndNote style, &ldquo;Inf Syst Res.ens&rdquo;, to format the reference list.</p></details>
+          <details><summary>Which should I use, the BibTeX style or the EndNote style?</summary><p>Use the one that matches how you write. LaTeX authors use the BibTeX style that comes with the INFORMS LaTeX files. Authors working in Word and a reference manager use the EndNote style. Do not mix the two in one manuscript.</p></details>
+          <details><summary>Does this page format my references in ISR style?</summary><p>No. It converts reference data between BibTeX, RIS and EndNote. The ISR formatting, author-year citations with an alphabetical list, comes from the INFORMS style you apply afterwards.</p></details>
+          <details><summary>Where do I confirm the current ISR rules?</summary><p>On the INFORMS author portal, linked in the sources section at the bottom of this page. Instructions change between submission cycles, so read the current version before you submit.</p></details>
         </div>
       </section>
 

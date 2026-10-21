@@ -359,6 +359,7 @@
     },
     {
       "slug": "united-kingdom",
+      "noindex": true,
       "name": "United Kingdom",
       "intro": "London in November: Westminster at sunset, the river, and the city after dark.",
       "places": [
@@ -438,6 +439,7 @@
     },
     {
       "slug": "netherlands",
+      "noindex": true,
       "name": "Netherlands",
       "intro": "Amsterdam in December 2025: canals, the Amstel, bicycles and the Rijksmuseum.",
       "places": [
@@ -645,6 +647,7 @@
     },
     {
       "slug": "canada",
+      "noindex": true,
       "name": "Canada",
       "intro": "Vancouver: the harbour, Stanley Park and the mountains behind the city.",
       "places": [
