@@ -514,6 +514,168 @@
   to = "/blog/keeping-up-when-your-research-crosses-fields/"
   status = 301
 
+# The 16 short "Why it matters" pages (an index and 15 explainers of 186 to 261 words) were removed on 2026-10-21
+# before the AdSense re-review. Each explainer has a fuller section with the same id in the methodology guide.
+[[redirects]]
+  from = "/guides/why-it-matters/blinding-not-evidenced/"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#blinding-not-evidenced"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/blinding-not-evidenced"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#blinding-not-evidenced"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/cherry-picked-seeds/"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#cherry-picked-seeds"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/cherry-picked-seeds"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#cherry-picked-seeds"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/figure-presentation/"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#figure-presentation"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/figure-presentation"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#figure-presentation"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/garden-of-forking-paths/"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#garden-of-forking-paths"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/garden-of-forking-paths"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#garden-of-forking-paths"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/hallucinated-citation/"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#hallucinated-citation"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/hallucinated-citation"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#hallucinated-citation"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/hark-ing/"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#hark-ing"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/hark-ing"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#hark-ing"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/hyperparameter-asymmetry/"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#hyperparameter-asymmetry"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/hyperparameter-asymmetry"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#hyperparameter-asymmetry"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/llm-self-judge/"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#llm-self-judge"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/llm-self-judge"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#llm-self-judge"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/missing-ablations/"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#missing-ablations"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/missing-ablations"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#missing-ablations"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/multiple-comparisons/"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#multiple-comparisons"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/multiple-comparisons"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#multiple-comparisons"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/p-hacking/"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#p-hacking"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/p-hacking"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#p-hacking"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/test-train-contamination/"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#test-train-contamination"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/test-train-contamination"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#test-train-contamination"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/trial-not-registered/"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#trial-not-registered"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/trial-not-registered"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#trial-not-registered"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/underpowered-sample/"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#underpowered-sample"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/underpowered-sample"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#underpowered-sample"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/weird-sample/"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#weird-sample"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/weird-sample"
+  to = "/guides/methodology-problems-peer-reviewers-flag/#weird-sample"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters/*"
+  to = "/guides/methodology-problems-peer-reviewers-flag/"
+  status = 301
+
+[[redirects]]
+  from = "/guides/why-it-matters"
+  to = "/guides/methodology-problems-peer-reviewers-flag/"
+  status = 301
+
 # Frontlink was briefly a daily game here; it is now a standalone project, so its old address goes to the hub.
 [[redirects]]
   from = "/games/frontlink/*"
