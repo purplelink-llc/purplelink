@@ -3662,6 +3662,10 @@ Remove author names, GPS and edit history from photos, PDFs, Office files and vi
 
 Turn a Zoom or Teams .vtt, an .srt or a labelled .txt into readable text, with speaker names kept if you want them, or keep the timestamps for NVivo or MAXQDA. Nothing is uploaded.
 
+### PII Checker
+
+Paste text and see the email addresses, phone numbers, ID and card numbers it contains, marked in the text. It does not find names. Nothing is uploaded.
+
 ### Word Counter
 
 Live word, character, sentence, and reading-time stats in your browser.
@@ -6828,13 +6832,13 @@ Comparison
 
 # Best tools to redact personal information before you use ChatGPT and other AI chats (2026)
 
-By Benjamin Ampel · October 4, 2026, updated October 14, 2026
+By Benjamin Ampel · October 4, 2026, updated October 21, 2026
 
 This guide is for anyone who keeps pasting client, patient, student or personal details into an AI chat. Each option gets what it does, what it costs, where the checking happens and what it misses. Three of the options are not software you install: provider settings, a local model and find-and-replace.
 
 Disclosure up front: I make one of the tools on this list (Outbound Veil, a Mac menu-bar app). In several cases a competitor is the better choice. Predact is free and handles files, which Outbound Veil does not. PrivacyScrubber works on Windows and Linux, which Outbound Veil does not. If your data cannot leave your machine at all, a local model beats every redaction tool here.
 
-Prices and platforms were read on each vendor's own page on October 4, 2026, and they change. MetaVeils was added on October 9, 2026, and I read its page that day. Data Guard, Prompt Guard and Whiteout were added on October 14, 2026, each from a page I read that day. Where a vendor says its software runs on your device, I write "says": I have not audited that.
+Prices and platforms were read on each vendor's own page on October 4, 2026, and they change. MetaVeils was added on October 9, 2026, and I read its page that day. Data Guard, Prompt Guard and Whiteout were added on October 14, 2026, each from a page I read that day. Redaktr and MaskPaste were added on October 21, 2026, the same way. Where a vendor says its software runs on your device, I write "says": I have not audited that.
 
 ## The short answer
 
@@ -6898,7 +6902,11 @@ Prompt Guard (Firefox)Not stated on the listing, as listed on 2026-10-14Firefox 
 
 Whiteout (Mac)$9.99 once, with a 7-day free trial, as listed on hunted.space on 2026-10-14Mac menu-bar appThe listing says fully offline, with no cloud, no accounts and no data leaving your machine. That is the listing's claimScreenshots: the listing says it scans them for details such as phone numbers, Social Security numbers, credit cards and API keys, saves a redacted copy and keeps the original in a backup folderScreenshots only, not typed text. I could not find the developer's own page, so this row rests on the hunted.space listing alone, as listed on 2026-10-14. Not tested by us
 
-Sources. Rows come from the sections below and the vendor pages they cite, read October 4, 2026. MetaVeils: metaveils.com, read October 9, 2026. Not tested. The last seven rows are the narrower options described near the end of the tool sections. Data Guard: its Firefox add-on listing, read October 14, 2026. Prompt Guard: its Firefox add-on listing, read October 14, 2026. Whiteout: its hunted.space listing, read October 14, 2026. Those three rows are as listed on 2026-10-14 and not tested by us.
+Redaktr (Mac)Free trial, then $39 once, as listed on Product Hunt on 2026-10-21Mac appThe listing says scanning and redaction run entirely on the Mac with no server involved, and that license activation and update checks do use the network. That is the maker's claimScreenshots: the listing says it checks them for secrets, customer data, faces, QR codes and policy terms before you share themScreenshots only, not typed text. As listed on 2026-10-21 and not tested by us
+
+MaskPaste (Mac)Not stated on the listing, as listed on 2026-10-21Mac appThe listing calls it local-first. That is the listing's claimText: the listing says you select names, company names and addresses, choose replacements, copy the masked text into an AI tool, then paste the reply back to restore your originalsIts only listing I could read is on hunted.space. As listed on 2026-10-21 and not tested by us
+
+Sources. Rows come from the sections below and the vendor pages they cite, read October 4, 2026. MetaVeils: metaveils.com, read October 9, 2026. Not tested. The last seven rows are the narrower options described near the end of the tool sections. Data Guard: its Firefox add-on listing, read October 14, 2026. Prompt Guard: its Firefox add-on listing, read October 14, 2026. Whiteout: its hunted.space listing, read October 14, 2026. Those three rows are as listed on 2026-10-14 and not tested by us. Redaktr: its Product Hunt listing, read October 21, 2026. MaskPaste: its hunted.space listing, read October 21, 2026. Those two rows are as listed on 2026-10-21 and not tested by us.
 
 ## What you actually need to stop leaking data into AI chats
 
@@ -7082,6 +7090,8 @@ PIIGuardAI is an open-source Mac menu-bar proxy that blocks AI requests containi
 
 Three more were added on October 14, 2026, each as listed that day and not tested by us. Data Guard and Prompt Guard are Firefox add-ons for AI chat sites, which matters if you use Firefox, since several tools above are Chrome extensions. Data Guard warns without blocking, and Prompt Guard masks matches. Neither listing states a price. Whiteout is a Mac menu-bar app for screenshots, and its only listing I could read is on hunted.space. Mac screenshot apps cover images and Outbound Veil covers typed text, so they do not replace each other.
 
+Two more Mac apps were added on October 21, 2026, each as listed that day and not tested by us. Redaktr checks screenshots on the Mac before you share them, with a free trial and then $39 once, as listed on Product Hunt. MaskPaste masks names, companies and addresses before you paste into a chatbot and swaps the originals back into the reply, as listed on hunted.space; it does not state a price there. Outbound Veil checks typed text and does not swap originals back.
+
 ## What redaction cannot do
 
 Some vendors above say this plainly, and everyone should assume it. Rampart, the model behind Outbound Veil, calls itself harm reduction, not perfect protection, and Presidio says there is no guarantee it finds everything.
@@ -7108,7 +7118,7 @@ A detector that catches names and numbers is neither route, so text it has clean
 
 FERPA (the Family Educational Rights and Privacy Act). The law gives parents, and students once they are 18 or in postsecondary school, rights over personally identifiable information in education records. If you grade, advise or write recommendations, check your institution's AI policy before pasting anything that names a student. Removing the name is a habit, not a rule.
 
-Client and participant confidentiality. Lawyers, therapists, consultants and researchers have duties in codes of conduct and contracts. The American Bar Association's Formal Opinion 512 (July 2024) is reported to say that a lawyer's confidentiality duty applies to generative AI tools. It is also reported to say that tools which train on inputs call for the client's informed consent.
+Client and participant confidentiality. Lawyers, therapists, consultants and researchers have duties in codes of conduct and contracts. The American Bar Association's Formal Opinion 512 (July 2024) is reported to say that a lawyer's confidentiality duty applies to generative AI tools. It is also reported to say that tools which train on inputs call for the client's informed consent. In California, SB 574 adds section 6068.1 to the Business and Professions Code from January 1, 2027: a lawyer must not enter confidential, personal identifying or other nonpublic information into a generative AI system unless access to it is restricted to the lawyer and people bound to keep it confidential (the chaptered text, read October 21, 2026; what it lists as personal identifying information). This is not legal advice.
 
 For research, your IRB (institutional review board) protocol and data management plan probably already say who may see participant data, and an AI service is a new recipient. For manuscripts, see what publishers allow when you run your own manuscript through AI.
 

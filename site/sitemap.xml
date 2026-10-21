@@ -578,7 +578,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/guides/before-you-paste-client-notes-into-chatgpt/</loc>
-    <lastmod>2026-10-20</lastmod>
+    <lastmod>2026-10-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -632,7 +632,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/guides/best-pii-redaction-tools-for-chatgpt/</loc>
-    <lastmod>2026-10-20</lastmod>
+    <lastmod>2026-10-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -1609,6 +1609,11 @@
   <url>
     <loc>https://purplelink.llc/tools/pdf-tools/</loc>
     <lastmod>2026-10-18</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://purplelink.llc/tools/pii-checker/</loc>
+    <lastmod>2026-10-21</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
