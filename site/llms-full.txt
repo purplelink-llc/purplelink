@@ -7190,6 +7190,8 @@ If the material must not leave your machine, yes. Ollama and LM Studio run open 
 
 - Can you use AI to check your own manuscript? What publishers allow.
 
+- Do researchers need a VPN?: what a VPN hides and what it does not, for sensitive research data.
+
 - Best Mac apps for transcription, text to speech and OCR: if the text you will paste into a chat comes from a recording or a scan.
 
 - Purplelink's privacy page, the Mac Suite and all guides.
