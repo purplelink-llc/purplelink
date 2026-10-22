@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>VS Code and LaTeX Workshop on a Mac: Setup and the latexmk Error | Purplelink</title>
+    <meta name="description" content="Set up VS Code with the LaTeX Workshop extension on a Mac, check that latexmk is on the PATH, and fix spawn latexmk ENOENT, with the commands I ran and the settings.json block.">
+    <link rel="canonical" href="https://purplelink.llc/guides/vscode-latex-workshop-mac/">
+    <meta property="og:title" content="VS Code and LaTeX Workshop on a Mac: Setup and the latexmk Error">
+    <meta property="og:description" content="Install LaTeX Workshop, quit VS Code with Command-Q, check latexmk in Terminal, and fix spawn latexmk ENOENT with a PATH setting.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/vscode-latex-workshop-mac/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/guides-vscode-latex-workshop-mac.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="VS Code and LaTeX Workshop on a Mac: Setup and the latexmk Error">
+    <meta name="twitter:description" content="Install LaTeX Workshop, quit VS Code with Command-Q, check latexmk in Terminal, and fix spawn latexmk ENOENT with a PATH setting.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/guides-vscode-latex-workshop-mac.jpg">
+    <meta name="twitter:image:alt" content="VS Code and LaTeX Workshop on a Mac, setup guide">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "headline": "VS Code and LaTeX Workshop on a Mac: Setup and the latexmk Error",
+          "description": "Set up VS Code with the LaTeX Workshop extension on a Mac, check that latexmk is on the PATH, and fix spawn latexmk ENOENT, with the commands I ran and the settings.json block.",
+          "author": { "@id": "https://purplelink.llc/about/#person" },
+          "publisher": { "@id": "https://purplelink.llc/#organization" },
+          "datePublished": "2026-10-22",
+          "dateModified": "2026-10-22",
+          "image": "https://purplelink.llc/assets/og/purplelink-card.png",
+          "mainEntityOfPage": "https://purplelink.llc/guides/vscode-latex-workshop-mac/"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home",   "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://purplelink.llc/guides/" },
+            { "@type": "ListItem", "position": 3, "name": "VS Code and LaTeX Workshop on a Mac", "item": "https://purplelink.llc/guides/vscode-latex-workshop-mac/" }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Why does VS Code not find latexmk when Terminal does?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The two can have different PATHs. Terminal builds its PATH when a window opens, and macOS adds /Library/TeX/texbin for MacTeX then. A VS Code that was already running during the TeX install can still have the older PATH. Quit VS Code with Command-Q and open it again. If the error stays, give the latexmk tool its own PATH in settings.json, as shown above."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need MacTeX, or is BasicTeX enough?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The LaTeX Workshop install page says the only requirement is a compatible distribution on the PATH, and lists TinyTeX as a lighter option. Its default build runs latexmk, so the distribution must include that program. latexmk is a TeX Live package, so tlmgr can add it to a small install. TUG recommends the full MacTeX for most people because nothing is missing."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does LaTeX Workshop work offline?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Building does. The build runs latexmk and the TeX programs on your own Mac, and the extension's built-in PDF viewer opens the result in a VS Code tab. Installing the extension and the TeX distribution needs a connection. On TinyTeX the hover that shows a package's documentation does not work, because TinyTeX ships no offline documentation, according to the extension's install page."
+      }
+    }
+  ]
+}
+</script>
+    <script src="/theme.js?v=4d162f3e8a"></script>
+<link rel="stylesheet" href="/styles.css?v=99bdcc3053">
+    <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
+    <script src="/site.js?v=b02458d823" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">How-to</p>
+        <h1 class="post-title">VS Code and LaTeX Workshop on a Mac: Setup and the latexmk Error</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-22">October 22, 2026</time></p>
+        <p class="post-lede">LaTeX Workshop is a free VS Code extension that builds your <code>.tex</code> file with <code>latexmk</code>. It needs a TeX distribution on the PATH of the running VS Code. If the build stops with <code>spawn latexmk ENOENT</code>, VS Code cannot find <code>latexmk</code>. Quit VS Code with Command-Q, open it again, and if the error stays, give the build tool its own PATH in <code>settings.json</code>.</p>
+      </div>
+
+      <article class="post-body">
+        <p>Disclosure: I make ModernTex, a Mac LaTeX editor, and it gets one short mention near the end. This page is about VS Code. I ran the Terminal commands below on a Mac and say what each one printed. I did not install LaTeX Workshop or open VS Code for this page, so the steps inside VS Code come from the extension's own wiki and are marked that way.</p>
+
+        <h2 id="distribution">1. Install a TeX distribution first</h2>
+        <p>The extension does not include LaTeX. Its install page says the only requirement is a compatible distribution on your PATH (the list of folders a program searches for commands), and it lists TeX Live, TinyTeX and MiKTeX. On a Mac that usually means MacTeX, BasicTeX or TinyTeX. <a href="/guides/install-latex-on-mac/">How to install LaTeX on a Mac</a> covers the choice and the steps.</p>
+        <p>Where the programs end up matters later. MacTeX keeps a link at <code>/Library/TeX/texbin</code> that points to them, and TinyTeX puts them in a folder under <code>~/Library/TinyTeX/bin</code>. On the Mac I used, which has TinyTeX, that folder is <code>~/Library/TinyTeX/bin/universal-darwin</code>.</p>
+
+        <h2 id="extension">2. Install the LaTeX Workshop extension</h2>
+        <p>Per the extension's wiki, you find it in the Visual Studio Code Marketplace, or you press Command-P in VS Code and run <code>ext install latex-workshop</code>. In the Extensions view, search for LaTeX Workshop and check that the publisher is James Yu. The extension is free and MIT-licensed.</p>
+
+        <h2 id="restart">3. Quit VS Code with Command-Q and open it again</h2>
+        <p>The extension never edits your PATH. Its wiki says that if VS Code cannot find the TeX programs, the system's setting is at fault, and that you must restart VS Code after changing the variable. A report on r/LaTeX from October 2026 describes the same thing: a student got <code>spawn latexmk ENOENT</code> although <code>which -a latexmk</code> found the program, and quitting and reopening VS Code fixed it.</p>
+        <p>On a Mac, closing the window leaves VS Code running. Press Command-Q, or choose Code, then Quit Code, so the whole app stops, then open it again. I did not test whether closing the window alone would leave the old PATH in place, so treat the full quit as the safe habit rather than a proven requirement.</p>
+
+        <h2 id="check">4. Check latexmk from Terminal</h2>
+        <p>Open a new Terminal window and run this. <code>-a</code> lists every match, so you see if two installs compete.</p>
+        <pre><code>which -a latexmk</code></pre>
+        <p>With MacTeX you expect a path under <code>/Library/TeX/texbin</code>. On the Mac I tested, the command printed <code>latexmk not found</code>, because TinyTeX is installed there but its folder is not on the PATH. Calling the program by its full path worked:</p>
+        <pre><code>~/Library/TinyTeX/bin/universal-darwin/latexmk -v</code></pre>
+        <p>That printed <code>Latexmk, John Collins, 9 March 2026. Version 4.88</code>. So the program exists and only the PATH is wrong, which is the situation behind most reports of this error. If nothing prints on your Mac in either form, <code>latexmk</code> may be missing. It is a TeX Live package, and <code>tlmgr info latexmk</code> shows its status (on my install it reported <code>installed: Yes</code>). The install command for a missing package is <code>sudo tlmgr install latexmk</code>, without <code>sudo</code> on TinyTeX. I did not run that command, because I installed nothing for this page.</p>
+        <p>The wiki adds that <code>latexmk</code> needs Perl. macOS includes a Perl at <code>/usr/bin/perl</code>, which the settings below keep on the path.</p>
+
+        <h2 id="settings">5. Give the build its own PATH in settings.json</h2>
+        <p>If a full quit did not help, the wiki offers a way out: override PATH with the <code>env</code> property of a tool in <code>latex-workshop.latex.tools</code>. It warns that only placeholders such as <code>%DIR%</code> are expanded, and variables such as <code>$PATH</code> are not. So you write the whole PATH out as plain text. To open the file, press Command-Shift-P and run Preferences: Open User Settings (JSON). Add this block for MacTeX or BasicTeX:</p>
+        <pre><code>{
+  "latex-workshop.latex.tools": [
+    {
+      "name": "latexmk",
+      "command": "latexmk",
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-pdf",
+        "-outdir=%OUTDIR%",
+        "%DOC%"
+      ],
+      "env": { "PATH": "/Library/TeX/texbin:/usr/bin:/bin:/usr/sbin:/sbin" }
+    }
+  ]
+}</code></pre>
+        <p>The tool's name, command and arguments are the defaults from the wiki, so the only change is the <code>env</code> line. Replace <code>/Library/TeX/texbin</code> with the TinyTeX folder if that is what you use. Setting <code>latex-workshop.latex.tools</code> replaces the default list, so the other default tools, such as the XeLaTeX and LuaLaTeX variants, are gone until you add them back.</p>
+        <p>I tested the same idea in a plain shell, with a clean environment, since I did not open VS Code. I ran the extension's default <code>latexmk</code> arguments on a small file, with the TinyTeX folder where the block above has <code>/Library/TeX/texbin</code>. The results:</p>
+        <ul>
+          <li><strong>Only the full path to latexmk, with no TeX folder on the PATH:</strong> latexmk started, then stopped with <code>sh: pdflatex: command not found</code>. Pointing <code>command</code> at <code>/Library/TeX/texbin/latexmk</code> alone is therefore not enough, because latexmk looks up <code>pdflatex</code> on the PATH too.</li>
+          <li><strong>The TeX folder plus the system folders on the PATH:</strong> the build finished and wrote <code>hello.pdf</code> and <code>hello.synctex.gz</code>.</li>
+        </ul>
+        <p>I also reproduced the error text itself. A small Node script that starts <code>latexmk</code> with no TeX folder on the PATH reports <code>spawn latexmk ENOENT</code>, and with the TinyTeX folder added it starts normally. VS Code extensions run on Node, so I read the VS Code error as the same failure. I have not seen it inside VS Code myself.</p>
+
+        <h2 id="build">6. First build and SyncTeX</h2>
+        <p>These keys are from the extension's wiki, not from my own run. Open a <code>.tex</code> file and look at the TeX icon in the sidebar. The command Build LaTeX project is bound to Ctrl-Option-B, and the first recipe in the list, <code>latexmk</code>, is the default. To view the PDF, press Ctrl-Option-V or click the preview icon at the top right of the editor. Forward search, from source to PDF, is Command-Option-J on a Mac. Inverse search, from PDF to source, is Ctrl-click in the built-in viewer by default. <a href="/guides/synctex-on-mac/">SyncTeX on Mac</a> has the settings, and what to check when the jump fails.</p>
+        <p>If a build fails, the wiki says the raw compiler logs are in the Output pane under LaTeX Compiler. Read that panel first, because it holds the real error.</p>
+
+        <h2 id="errors">7. Errors and what they mean</h2>
+        <table class="compare-table compare-stack">
+          <caption>Messages seen when a LaTeX Workshop build does not start, with the cause and the fix</caption>
+          <thead>
+            <tr>
+              <th scope="col">Message</th>
+              <th scope="col">Cause</th>
+              <th scope="col">Fix</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row"><code>spawn latexmk ENOENT</code></th>
+              <td data-label="Cause">VS Code cannot find <code>latexmk</code> on the PATH it started with.</td>
+              <td data-label="Fix">Quit with Command-Q and reopen. If it stays, use the <code>env</code> block in section 5.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>Recipe terminated with fatal error</code></th>
+              <td data-label="Cause">A program in the recipe stopped with an error. The message does not say which.</td>
+              <td data-label="Fix">Open Output, then LaTeX Compiler, and read the lines above it. This one is the wiki's description of where the log lives, and I did not trigger the message.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>zsh: command not found: latexmk</code> in Terminal</th>
+              <td data-label="Cause">Terminal cannot find it either, so the program is missing or its folder is not on the PATH. I saw this on the Mac I tested.</td>
+              <td data-label="Fix">Open a new Terminal window. Check <code>/Library/TeX/texbin</code> or the TinyTeX folder as in section 4. Add the package with tlmgr if it is missing.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>sh: pdflatex: command not found</code> in the build log</th>
+              <td data-label="Cause">latexmk started, but the TeX programs are not on the PATH it passes on. I reproduced this.</td>
+              <td data-label="Fix">Set the PATH in <code>env</code>, with the TeX folder included, as in section 5.</td>
+            </tr>
+            <tr>
+              <th scope="row"><code>/Library/TeX/texbin</code> is a link to a missing folder</th>
+              <td data-label="Cause">The link points at a folder that is gone, which fits a MacTeX that was removed. On the Mac I tested, <code>ls /Library/TeX/texbin/</code> printed <code>No such file or directory</code> although the PATH names that folder.</td>
+              <td data-label="Fix">Reinstall MacTeX or BasicTeX, or use TinyTeX and put its folder on the PATH.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2 id="moderntex">8. If you would rather not configure an editor</h2>
+        <p>TeXShop is free and comes with MacTeX, so it needs no setup. ModernTex, my own app, is $19.99 once after a 7-day free trial. On first launch it looks for MacTeX or TinyTeX, and if it finds neither it offers to install TinyTeX. See <a href="/moderntex/?utm_source=guide&amp;utm_medium=internal&amp;utm_campaign=vscode-latex-workshop-mac">ModernTex</a>. For a wider comparison, read <a href="/guides/best-mac-latex-editors/">the best LaTeX editors for Mac</a>.</p>
+
+        <h2 id="checked">What I ran and what I did not</h2>
+        <p>October 22, 2026. Run on a Mac with TinyTeX installed and without MacTeX, VS Code or LaTeX Workshop: <code>which -a latexmk</code>, <code>latexmk -v</code> by full path, <code>tlmgr info latexmk</code>, <code>ls -la /Library/TeX/texbin</code>, a Node <code>spawn</code> of <code>latexmk</code> with and without the TeX folder on the PATH, and <code>latexmk</code> with the default extension arguments on a one-page file in a clean environment. The build and SyncTeX file were written as expected. Not run: installing the extension, opening VS Code, the Command-Q test, the keys in section 6, and any MacTeX or BasicTeX step. Those come from the sources below.</p>
+        <ul>
+          <li>LaTeX Workshop wiki: <a href="https://github.com/James-Yu/LaTeX-Workshop/wiki/Install" rel="noopener">Install</a> (requirement, PATH, restart, extension install), <a href="https://github.com/James-Yu/LaTeX-Workshop/wiki/Compile" rel="noopener">Compile</a> (default tool, <code>env</code>, placeholders, compiler log) and <a href="https://github.com/James-Yu/LaTeX-Workshop/wiki/View" rel="noopener">View</a> (SyncTeX keys).</li>
+          <li>r/LaTeX, October 2026: a user report of <code>spawn latexmk ENOENT</code> that quitting and reopening VS Code fixed. This is a user's account, not tested here.</li>
+        </ul>
+        <p>If something here is out of date or wrong, write to <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> and I will fix it.</p>
+      </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>Why does VS Code not find latexmk when Terminal does?</summary><div class="faq-body">The two can have different PATHs. Terminal builds its PATH when a window opens, and macOS adds /Library/TeX/texbin for MacTeX then. A VS Code that was already running during the TeX install can still have the older PATH. Quit VS Code with Command-Q and open it again. If the error stays, give the latexmk tool its own PATH in settings.json, as shown above.</div></details>
+        <details><summary>Do I need MacTeX, or is BasicTeX enough?</summary><div class="faq-body">The LaTeX Workshop install page says the only requirement is a compatible distribution on the PATH, and lists TinyTeX as a lighter option. Its default build runs latexmk, so the distribution must include that program. latexmk is a TeX Live package, so tlmgr can add it to a small install. TUG recommends the full MacTeX for most people because nothing is missing.</div></details>
+        <details><summary>Does LaTeX Workshop work offline?</summary><div class="faq-body">Building does. The build runs latexmk and the TeX programs on your own Mac, and the extension's built-in PDF viewer opens the result in a VS Code tab. Installing the extension and the TeX distribution needs a connection. On TinyTeX the hover that shows a package's documentation does not work, because TinyTeX ships no offline documentation, according to the extension's install page.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools and guides">
+        <h2>Related tools and guides</h2>
+        <ul>
+          <li><a href="/guides/install-latex-on-mac/">How to install LaTeX on a Mac</a></li>
+          <li><a href="/guides/best-mac-latex-editors/">Best LaTeX editors for Mac</a></li>
+          <li><a href="/guides/synctex-on-mac/">SyncTeX on Mac</a></li>
+          <li><a href="/guides/move-overleaf-project-to-mac-with-git/">Move an Overleaf project to a Mac with Git</a></li>
+          <li><a href="/guides/latex/">LaTeX guides hub</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=38a584a70d" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>

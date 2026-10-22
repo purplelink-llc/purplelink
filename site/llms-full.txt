@@ -5760,7 +5760,7 @@ With a distribution installed, any editor below can compile your files, provided
 
 - TeXstudio. Free and open source (GPL version 2), for macOS 13 or later, Windows and Linux. Its site notes that it has no Apple Developer account, so macOS may warn about an unidentified developer when you first open it.
 
-- VS Code with LaTeX Workshop. Free, and cross-platform. LaTeX Workshop is an extension under the MIT licence, and its documentation says the only requirement is a compatible distribution on your PATH. It lists TinyTeX as an alternative to TeX Live. The extension's default recipe uses latexmk, so install that package if a build reports it missing.
+- VS Code with LaTeX Workshop. Free, and cross-platform. LaTeX Workshop is an extension under the MIT licence, and its documentation says the only requirement is a compatible distribution on your PATH. It lists TinyTeX as an alternative to TeX Live. The extension's default recipe uses latexmk, so install that package if a build reports it missing. VS Code and LaTeX Workshop on a Mac covers the setup and the spawn latexmk ENOENT error.
 
 - Texifier. Paid, with a free demo. It runs on macOS and iOS, and its site lists Windows as coming soon. It has live typesetting and a built-in PDF viewer.
 
@@ -6605,7 +6605,7 @@ What it's good at: consistency with the rest of your toolchain if you spend most
 
 What it lacks: a manuscript-first feel. VS Code is a code editor, so the document feels like a code file, not like a paper. Outline navigation works but isn't built for chapters and bibliographies.
 
-Pick VS Code if you already live in VS Code and want one less context switch.
+Pick VS Code if you already live in VS Code and want one less context switch. The setup, and the spawn latexmk ENOENT error some people hit on a first build, are in VS Code and LaTeX Workshop on a Mac.
 
 ## Overleaf
 
