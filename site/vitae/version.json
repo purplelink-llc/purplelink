@@ -1,5 +1,5 @@
 {
-  "version": "1.5.0",
-  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.5.0.dmg",
-  "releaseNotes": "Adds a review history, Reviewing on your CV, and a PDF library. Reviews keeps every paper and proposal you review, with due dates, your recommendation and the editor's decision, and shows your own numbers. Service on the CV and the annual report list your reviewing from it, without manuscript titles. You can keep the PDF of each paper with its project, submission or reference. Vitae Plus reads titles, abstracts and keywords from those PDFs on your Mac to improve topics. Manuscripts you review are confidential: they stay on your Mac and are never synced, exported or read for topics, and Vitae offers to delete them when you submit."
+  "version": "1.6.0",
+  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.6.0.dmg",
+  "releaseNotes": "Adds posters and talks linked to grants. Link a poster or talk to the grants that supported it, record who presented it and mark it Student-led. Each grant page lists its posters and talks, and a CV setting can list them under each grant. Also includes the first parts of iCloud sync, which is not switched on yet."
 }
