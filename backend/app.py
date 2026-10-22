@@ -2,6 +2,8 @@
 import datetime
 import logging
 import os
+import sys
+import re
 
 import modal
 
@@ -1223,10 +1225,25 @@ def web():
             },
         )
 
+    def _log_reason(text: str) -> str:
+        """A validation or compile message with any quoted user text (file names) replaced, keeping file extensions."""
+        text = re.sub(r"'([^']*)'", lambda m: m.group(0) if re.fullmatch(r"\.[A-Za-z0-9]{1,8}", m.group(1)) else "'<name>'", str(text))
+        return re.sub(r"`[^']*'", "`<name>'", text)[:120]
+
+    def _invalid(e) -> Response:
+        """400 for an upload that failed validation. Logs which check fired (never the file) so failed tool runs can be
+        explained; the free tools record only ok/error in analytics (2026-10-22)."""
+        logger.warning("tool 400 in %s: %s", sys._getframe(1).f_code.co_name, _log_reason(e))
+        return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
+
     def _result_or_error(res) -> Response:
         if res.timed_out:
+            logger.warning("tool 422 in %s: timeout", sys._getframe(1).f_code.co_name)
             return JSONResponse({"error": "timeout"}, status_code=422)
         if not res.ok:
+            first = (res.errors or [{}])[0]
+            logger.warning("tool 422 in %s: compile failed, %d errors, first: %s", sys._getframe(1).f_code.co_name,
+                           len(res.errors or []), _log_reason(first.get("message", "") if isinstance(first, dict) else first))
             return JSONResponse(
                 {"error": "compile", "errors": res.errors,
                  "log": res.log[:50_000]},
@@ -1245,7 +1262,7 @@ def web():
         try:
             tex, zip_bytes = await _read_upload(file)
         except core.ValidationError as e:
-            return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
+            return _invalid(e)
 
         def _do():
             with tempfile.TemporaryDirectory(dir="/tmp") as d:
@@ -1258,7 +1275,7 @@ def web():
         try:
             res = await run_in_threadpool(_do)
         except core.ValidationError as e:
-            return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
+            return _invalid(e)
         return _result_or_error(res) or _pdf_response(res.pdf_bytes, "compiled.pdf")
 
     @api.post("/diff")
@@ -1275,7 +1292,7 @@ def web():
             old_tex, old_zip = await _read_upload(old)
             new_tex, new_zip = await _read_upload(new)
         except core.ValidationError as e:
-            return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
+            return _invalid(e)
 
         def _do():
             with tempfile.TemporaryDirectory(dir="/tmp") as d:
@@ -1312,7 +1329,7 @@ def web():
         try:
             res = await run_in_threadpool(_do)
         except core.ValidationError as e:
-            return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
+            return _invalid(e)
         return _result_or_error(res) or _pdf_response(res.pdf_bytes, "diff.pdf")
 
     _DOCX_MIME = (
@@ -1333,7 +1350,7 @@ def web():
         try:
             tex, zip_bytes = await _read_upload(file)
         except core.ValidationError as e:
-            return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
+            return _invalid(e)
 
         def _do():
             with tempfile.TemporaryDirectory(dir="/tmp") as d:
@@ -1350,7 +1367,7 @@ def web():
         try:
             res = await run_in_threadpool(_do)
         except core.ValidationError as e:
-            return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
+            return _invalid(e)
         if not res.ok:
             return JSONResponse(
                 {"error": "convert", "detail": res.error}, status_code=422
@@ -1427,7 +1444,7 @@ def web():
         try:
             core.validate_docx_upload(file.filename or "", len(data))
         except core.ValidationError as e:
-            return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
+            return _invalid(e)
 
         import subprocess as _sp
 
@@ -1747,7 +1764,7 @@ def web():
         try:
             core.validate_bib_upload(file.filename or "", len(data))
         except core.ValidationError as e:
-            return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
+            return _invalid(e)
 
         bib_text = data.decode("utf-8", errors="replace")
         results = bibcheck.parse_bib(bib_text)
@@ -1804,7 +1821,7 @@ def web():
             try:
                 core.validate_md_upload(file.filename or "", len(data))
             except core.ValidationError as e:
-                return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
+                return _invalid(e)
             md_source = data.decode("utf-8", errors="replace")
         else:
             md_source = text
@@ -1901,7 +1918,7 @@ def web():
         try:
             core.validate_pdf_upload(file.filename or "", len(data))
         except core.ValidationError as e:
-            return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
+            return _invalid(e)
         if not data.startswith(b"%PDF-"):
             return JSONResponse({"error": "invalid", "detail": "File is not a valid PDF."}, status_code=400)
 
@@ -1970,7 +1987,7 @@ def web():
         try:
             core.validate_doc2md_upload(filename, len(data))
         except core.ValidationError as e:
-            return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
+            return _invalid(e)
         if not core.doc2md_signature_ok(filename, data):
             return JSONResponse(
                 {"error": "invalid", "detail": "File contents do not match its type."},
@@ -2033,7 +2050,7 @@ def web():
         try:
             core.validate_pdf_upload(file.filename or "", len(data))
         except core.ValidationError as e:
-            return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
+            return _invalid(e)
         if not data.startswith(b"%PDF-"):
             return JSONResponse(
                 {"error": "invalid", "detail": "File is not a valid PDF."},
@@ -2104,7 +2121,7 @@ def web():
         try:
             core.validate_wordstats_upload(filename, len(data))
         except core.ValidationError as e:
-            return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
+            return _invalid(e)
 
         name_lc = filename.lower()
         is_pdf = name_lc.endswith(".pdf")
@@ -3514,7 +3531,7 @@ def web():
         try:
             core.validate_paper_upload(file.filename or "", len(data))
         except core.ValidationError as e:
-            return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
+            return _invalid(e)
         if not data.startswith(b"%PDF-"):
             return JSONResponse({"error": "invalid", "detail": "File is not a valid PDF."}, status_code=400)
         claimed = await _start_adjacent(token, session_id, entry, product="anonymity-check", spawn_kwargs={
@@ -3558,7 +3575,7 @@ def web():
         try:
             core.validate_paper_upload(file.filename or "", len(data))
         except core.ValidationError as e:
-            return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
+            return _invalid(e)
         if not data.startswith(b"%PDF-"):
             return JSONResponse({"error": "invalid", "detail": "File is not a valid PDF."}, status_code=400)
         claimed = await _start_adjacent(token, session_id, entry, product="citation-gap", spawn_kwargs={
@@ -3605,7 +3622,7 @@ def web():
         try:
             core.validate_paper_upload(file.filename or "", len(data))
         except core.ValidationError as e:
-            return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
+            return _invalid(e)
         if not data.startswith(b"%PDF-"):
             return JSONResponse({"error": "invalid", "detail": "File is not a valid PDF."}, status_code=400)
         claimed = await _start_adjacent(token, session_id, entry, product="revision-review", spawn_kwargs={
@@ -3656,7 +3673,7 @@ def web():
         try:
             core.validate_paper_upload(file.filename or "", len(data))
         except core.ValidationError as e:
-            return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
+            return _invalid(e)
         if not data.startswith(b"%PDF-"):
             return JSONResponse({"error": "invalid", "detail": "File is not a valid PDF."}, status_code=400)
         claimed = await _start_adjacent(token, session_id, entry, product="response-review", spawn_kwargs={
@@ -3707,7 +3724,7 @@ def web():
         try:
             core.validate_resume_upload(filename, len(data))
         except core.ValidationError as e:
-            return JSONResponse({"error": "invalid", "detail": str(e)}, status_code=400)
+            return _invalid(e)
         if not core.doc2md_signature_ok(filename, data):
             return JSONResponse({"error": "invalid", "detail": "File doesn't match its extension."}, status_code=400)
         claimed = await _start_adjacent(token, session_id, entry, product="resume-review", spawn_kwargs={
