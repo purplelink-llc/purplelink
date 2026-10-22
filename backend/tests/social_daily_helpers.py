@@ -102,6 +102,14 @@ def site(h: FakeHttp | None = None, panely="1.1.0") -> FakeHttp:
 def denv(env, tmp_path, monkeypatch):
     """The social env plus the daily pipeline's private paths, all inside tmp_path. Config enables all four platforms
     with the real expected identities so the pipeline's platform filter works."""
+    # The tests pass the pipeline a fixed clock on 2026-10-20, but approval and posting check staleness against
+    # items.now(). Pin that clock too (just after every test time, within the 48-hour stale window), or the suite
+    # fails once the real date is more than 48 hours past 2026-10-20 (it did on 2026-10-22).
+    import datetime as _dt
+    from socialpost import engine as _engine, items as _items
+    _frozen = _dt.datetime(2026, 10, 21, 2, 0, tzinfo=_dt.timezone.utc)
+    monkeypatch.setattr(_items, "now", lambda: _frozen)
+    monkeypatch.setattr(_engine, "now", lambda: _frozen)
     monkeypatch.setenv("PL_SOCIAL_DAILY_CONFIG", str(tmp_path / "social-daily.json"))
     monkeypatch.setenv("PL_SOCIAL_METRICS", str(tmp_path / "metrics.json"))
     tenv = tmp_path / "traffic.env"
