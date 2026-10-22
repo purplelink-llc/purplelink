@@ -61,7 +61,30 @@ function validBibClientSide(file, statusEl) {
   return true;
 }
 
+// A failed run is when the page's ModernTex card is most relevant, but the card sits below the FAQ where few scroll
+// (5 views in five weeks against about 30 failed runs, 2026-10-22). On the first failure, move that same card up under
+// the error. It keeps its analytics (offer_view, offer_click) and its link gains utm_content=after-error.
+function surfaceOffer(resultEl) {
+  const card = document.querySelector("aside.tool-offer[data-offer]");
+  if (!card || card.dataset.surfaced) return;
+  card.dataset.surfaced = "1";
+  const link = card.querySelector("a.tool-offer-link");
+  if (link) {
+    try {
+      const u = new URL(link.getAttribute("href"), window.location.href);
+      u.searchParams.set("utm_content", "after-error");
+      link.setAttribute("href", u.pathname + u.search);
+    } catch (_) { /* keep the original link */ }
+  }
+  resultEl.insertAdjacentElement("afterend", card);
+}
+
 function renderError(resultEl, status, payload) {
+  renderErrorText(resultEl, status, payload);
+  if (status !== 429) surfaceOffer(resultEl);
+}
+
+function renderErrorText(resultEl, status, payload) {
   if (status === 429) { resultEl.innerHTML = '<div class="tool-error" role="alert">You\'ve reached the daily limit. Please try again tomorrow.</div>'; return; }
   if (payload && payload.error === "timeout") { resultEl.innerHTML = '<div class="tool-error" role="alert">Compilation took too long (over 60s). Your document may have an infinite loop or be too large for the free tool.</div>'; return; }
   if (payload && payload.errors && payload.errors.length) {
