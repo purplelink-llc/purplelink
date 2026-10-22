@@ -6406,13 +6406,13 @@ Use File, Submit, choose a journal or service, and select Download project ZIP w
 ---
 
 Source: https://purplelink.llc/guides/best-mac-latex-editors/
-Title: LaTeX Editor for Mac: Best macOS Editors of 2026, 17 Compared
+Title: LaTeX Editor for Mac: Best macOS Editors of 2026, 18 Compared
 
 ← All guides
 
 Comparison
 
-# LaTeX editor for Mac: the best macOS LaTeX editors of 2026, 3 tested and 17 compared
+# LaTeX editor for Mac: the best macOS LaTeX editors of 2026, 3 tested and 18 compared
 
 By Benjamin Ampel · May 31, 2026, updated October 15, 2026
 
@@ -6497,6 +6497,8 @@ LatteX$29.99 once for one device, free 7-day trial, or in the developer's catalo
 
 OleaflyFree, open source (AGPL-3.0)macOS (Apple Silicon), Windows, LinuxNot statedPDF pane, SyncTeX not stated on the pages readParts of the app are labeled beta on its page, not tested
 
+JetBrains IDEs with TeXiFy-IDEA or LaTeX ProTeXiFy-IDEA: free, open source (MIT). LaTeX Pro: paid, 7-day trialPlugins for IntelliJ Platform IDEs, which run on macOS, Windows and LinuxNot statedNot statedNeeds a JetBrains IDE, and TeXiFy-IDEA needs a TeX distribution, not tested
+
 Sources for the added rows, read October 9, 2026. texspark: texspark.io. Oleafly: oleafly.com and its editor documentation. LatteX, read October 17, 2026: its page at getapps.cafe (version 2.1.0); AlternativeTo lists it as a monthly subscription, but the developer's page offers the one-off price. I did not install or test any of the three, and they are in the table only, not in the sections below. All other rows use the facts stated in this guide.
 
 ## What each option costs per year
@@ -6555,7 +6557,7 @@ previewing.
 
 - ModernTex: $19.99, native macOS, focused on the academic manuscript workflow.
 
-Those six are the ones worth a real look. Eight more that run on a Mac are covered further down, including TeXstudio and Texmaker. Each has a short note on why it is not on the shortlist.
+Those six are the ones worth a real look. Nine more that run on a Mac are covered further down, including TeXstudio and Texmaker. Each has a short note on why it is not on the shortlist.
 
 ## TeXShop
 
@@ -6634,7 +6636,7 @@ Pick ModernTex if you write journal articles or dissertation chapters on a Mac a
 Try ModernTex free for 7 days
 ModernTex page
 
-## Eight more LaTeX editors that run on a Mac
+## Nine more LaTeX editors that run on a Mac
 
 Every one of these works on macOS today. They are not on the shortlist because, for someone choosing an editor on a Mac in 2026, one of the six above does each one's best job better. The exception is TeXstudio, which is the right answer for a specific person: anyone who also works on Windows or Linux.
 
@@ -6702,7 +6704,15 @@ VimTeX is excellent. It handles compilation, syntax, text objects for environmen
 
 Pick VimTeX if Vim is already how you write everything. Otherwise VS Code with LaTeX Workshop gives you most of the benefit with none of the modal editing.
 
-Sublime Text with the LaTeXTools package and BBEdit with its TeX syntax highlighting also exist. Neither adds anything the eight above do not, so they are not covered separately.
+### JetBrains IDEs with TeXiFy-IDEA or LaTeX Pro
+
+Cost: TeXiFy-IDEA is free, open source (MIT). LaTeX Pro is paid, with a 7-day trial. Platform: plugins for IntelliJ Platform IDEs.
+
+TeXiFy-IDEA is a free plugin that adds LaTeX support to IntelliJ IDEA. Its installation guide uses IntelliJ IDEA Community, which is free. LaTeX Pro is a paid plugin for IntelliJ Platform IDEs from a different developer, Jetplugins. Its October 2026 release added a TikZ designer and an equation editor. TeXiFy-IDEA needs a TeX distribution installed; its Mac instructions name MiKTeX, and I have not checked whether LaTeX Pro needs one. Not tested by me. Everything here is what the makers state on their own pages, read October 22, 2026.
+
+Pick a JetBrains plugin if you already write code in a JetBrains IDE and want LaTeX in the same window. Otherwise one of the six above is simpler.
+
+Sublime Text with the LaTeXTools package and BBEdit with its TeX syntax highlighting also exist. Neither adds anything the nine above do not, so they are not covered separately.
 
 ## Decision matrix
 
