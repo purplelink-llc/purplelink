@@ -12,6 +12,13 @@ from socialpost.errors import Ambiguous, Refused, SocialError
 NOON = dt.datetime(2026, 10, 20, 16, 0, tzinfo=dt.timezone.utc)  # Tuesday 12:00 Eastern
 
 
+@pytest.fixture(autouse=True)
+def _pin_item_clock(monkeypatch):
+    """The engine runs on the clock each test passes, but items.approve() checks staleness against items.now().
+    Pin it to NOON, or every approval of a NOON-relative item fails once the real date is 48 hours past it."""
+    monkeypatch.setattr(items, "now", lambda: NOON)
+
+
 class Fake(Adapter):
     """Scripted adapter. Behaviour is chosen by class attribute `plan` (name -> list of outcomes)."""
     plan: dict = {}
