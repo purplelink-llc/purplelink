@@ -48,5 +48,29 @@
    "https://email.esm.psu.edu/pipermail/macosx-tex/2019-December/056853.html",
    "https://snorriheim.atlassian.net/wiki/spaces/TechnicalNotes/pages/528121857/Xelatex"
   ]
+ },
+ {
+  "slug": "howto-gaps-between-tiled-windows",
+  "app": "panely",
+  "date": "2026-10-22",
+  "title": "Gaps between tiled windows on Mac (turn off Tiled windows have margins)",
+  "long_id": "fz1auFFf8xA",
+  "short_id": "2ptmnUyf-nk",
+  "link_arm": "A",
+  "link_utm_content": "howto-gaps-between-tiled-windows",
+  "sources": [
+   "https://mjtsai.com/blog/2024/06/11/window-tiling-and-snapping-in-sequoia/",
+   "https://tidbits.com/2024/11/08/how-to-tame-sequoias-window-tiling/"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "fz1auFFf8xA",
+    "caption_id": "AUieDab7kWBGBtCzKCEUQ8sF1GY3lfh8f_SkD-oRjZB-fRffrD5-Rl4g"
+   },
+   "short": {
+    "video_id": "2ptmnUyf-nk",
+    "caption_id": "AUieDaYNnFt0_DZt8WqsnWJpxJFvWmk5wOdxE_BXOhU6F9au0-3IZuiv"
+   }
+  }
  }
 ]

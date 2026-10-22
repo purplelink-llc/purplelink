@@ -1,0 +1,42 @@
+{
+ "id": "howto-gaps-between-tiled-windows",
+ "app": "panely",
+ "title": "Gaps between tiled windows on Mac (turn off Tiled windows have margins)",
+ "short_title": "Gaps between tiled windows on your Mac? One switch removes them",
+ "url": "purplelink.llc/panely",
+ "page": "https://purplelink.llc/panely/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://mjtsai.com/blog/2024/06/11/window-tiling-and-snapping-in-sequoia/",
+  "https://tidbits.com/2024/11/08/how-to-tame-sequoias-window-tiling/"
+ ],
+ "verify": {
+  "runs": [
+   {"cmd": "defaults read com.apple.WindowManager EnableTiledWindowMargins", "output": "0"}
+  ],
+  "docs": ["https://support.apple.com/guide/mac-help/mchl118087b0/mac"],
+  "notes": "Apple's Mac User Guide page 'Change window tiling settings' (macOS 27 version, read 2026-10-22) lists the switch Tiled windows have margins under System Settings, Desktop & Dock, Windows. The check is a read-only defaults read on Ben's Mac mini (macOS 27.0.1), where the switch is off and the key reads 0; nothing was changed. The key name is not in Apple's documentation, so the video presents it only as an optional check. Panely's page states a margin around the screen and a gap between windows, each from 0 to 32 points."
+ },
+ "scenes": [
+  {"type": "hook", "short": true, "kicker": "Window tiling on a Mac", "title": "Gaps between tiled windows", "sub": "Space you did not ask for.",
+   "narration": "When you tile two windows on a Mac, macOS leaves a gap between them and around the edge of the screen. If you would rather the windows sat flush, here is the switch."},
+  {"type": "cause", "text": "macOS adds margins to tiled windows by default. A setting turns them off.",
+   "narration": "This is not a bug. Since window tiling arrived, macOS adds margins to every tiled window by default. A single setting turns them off."},
+  {"type": "steps", "short": true, "label": "System Settings",
+   "lines": ["Open System Settings", "Click Desktop & Dock", "Go to Windows", "Turn off Tiled windows have margins"],
+   "ui": "The change applies the next time you tile a window.",
+   "narration": "Open System Settings and click Desktop and Dock. Go to the Windows section, and turn off Tiled windows have margins. Tile a window again, and it fills its half of the screen with no gap."},
+  {"type": "check", "short": true, "label": "Terminal", "ok": "Margins off",
+   "lines": ["$ defaults read com.apple.WindowManager EnableTiledWindowMargins", "0"],
+   "narration": "If you want to confirm it in Terminal, this setting reads zero when the margins are off."},
+  {"type": "app", "name": "Panely", "line": "Snaps windows with a shortcut or a drag, with a margin around the screen and a gap between windows, each from 0 to 32 points.",
+   "url": "purplelink.llc/panely", "img": "site/panely/img/layout-quarters.webp", "icon": "site/assets/panely-icon.webp",
+   "narration": "Panely is a menu bar app that snaps windows with a shortcut or a drag. The macOS switch covers every margin at once. In Panely, you set the screen margin and the window gap separately, from zero to 32 points."}
+ ],
+ "thumbs": {
+  "A": {"kind": "error", "pill": "Window tiling", "msg": "Gaps between tiled windows"},
+  "B": {"kind": "long", "pill": "Window tiling", "msg": "Tiled windows have margins", "n": 1, "unit": "switch", "sub": "removes the gaps"},
+  "C": {"kind": "product", "name": "Panely", "line": "Set your own window gaps", "img": "site/panely/img/layout-quarters.webp", "icon": "site/assets/panely-icon.webp", "zoom": 1.3, "pos": "50% 50%"}
+ }
+}
