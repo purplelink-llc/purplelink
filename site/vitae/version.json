@@ -1,5 +1,5 @@
 {
-  "version": "1.4.3",
-  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.4.3.dmg",
-  "releaseNotes": "Fixes crashes after deleting records. Vitae could quit while you worked if a record was deleted and something still read it: Insights and Spotlight updating in the background, Undo in the Inbox after the matched submission was deleted, or a detail pane still showing what you had just deleted. With iCloud sync on, opening a record deleted on another Mac now shows nothing selected instead of stopping the app."
+  "version": "1.5.0",
+  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.5.0.dmg",
+  "releaseNotes": "Adds a review history, Reviewing on your CV, and a PDF library. Reviews keeps every paper and proposal you review, with due dates, your recommendation and the editor's decision, and shows your own numbers. Service on the CV and the annual report list your reviewing from it, without manuscript titles. You can keep the PDF of each paper with its project, submission or reference. Vitae Plus reads titles, abstracts and keywords from those PDFs on your Mac to improve topics. Manuscripts you review are confidential: they stay on your Mac and are never synced, exported or read for topics, and Vitae offers to delete them when you submit."
 }
