@@ -179,7 +179,7 @@ kept finding was checked by hand against the source. Reports and the per-finding
   paper says its ablation supports, with no ablation variant that tests it; a research question about
   latency that no result measures.
 - The one false positive: two R-squared figures (bootstrapped and not) read as a conflict.
-- Recall is unmeasured. A planted-defect set is the next step before launch.
+- Recall: see "Planted-defect recall" below (2026-10-23).
 - **Measured cost: about $0.50 per paper** (extraction $0.19, cross-check $0.15, verifier $0.14), so a $5
   standalone price leaves about $4 after Stripe and the model.
 - Noise to fix: type labels are sometimes wrong (design principles filed as hypotheses), some quotes are
@@ -194,3 +194,52 @@ Rule checks alone (no model), 2026-10-23:
   hypotheses stated and later "not tested" for reliability reasons, needs the model stage.
 - One of the owner's own LaTeX drafts (21 sections): no rule findings; its three research questions are
   each answered in Results. Also correct.
+
+## Planted-defect recall (2026-10-23)
+
+`backend/benchmark/coherence_planted.py` plants known defects in three open-access arXiv papers and runs the
+full check: 2411.17157 (.tex source, CC BY, 9 plants), 2105.08927 (PDF, CC BY, 8) and 2209.04900 (PDF,
+CC BY-SA, 8). Each planted copy ran twice (50 plant instances); each original ran once as a baseline. A plant
+counts as found when a kept finding names it; every match was checked by hand. Reports, planted copies and
+the per-finding judgments are kept privately (`docs/growth-briefs/coherence-recall/`, git-ignored).
+
+| Planted defect | Instances | Found (right type) | Found (any type) |
+|---|---|---|---|
+| Abstract number changed | 6 | 6 | 6 |
+| Two hypothesis or role labels swapped | 6 | 6 | 6 |
+| Hypothesis stated, result dropped or never tested | 4 | 3 | 4 |
+| Construct redefined in another section | 6 | 6 | 6 |
+| Promised contribution not delivered | 6 | 6 | 6 |
+| Term renamed midway | 6 | 6 | 6 |
+| Unqualified claim a stated limitation contradicts | 6 | 6 | 6 |
+| Theory introduced and never used | 4 | 4 | 4 |
+| Research question never answered | 2 | 2 | 2 |
+| Sample size changed in one place | 2 | 2 | 2 |
+| One source cited for opposite claims | 2 | 2 | 2 |
+| **All** | **50** | **49 (98%)** | **50 (100%)** |
+
+- The rule stage alone (free) found 4 of the 25 plants: two abstract sample sizes, the sample change, and
+  a renamed term caught as an acronym with two expansions. The model stages found the rest.
+- The verifier dropped no planted defect. What it did drop were the rule false positives (a hypothesis
+  table that the PDF split under a "Hypotheses" heading; "Modelling" versus "modeling" read as two
+  expansions of SEM) and weaker model points.
+- **Precision on unplanted findings: 14 of 16 real** (8 of 8 in the planted runs, 6 of 8 in the baselines).
+  The real ones are defects the published papers already have: H5 and H6 swapped between a paper's
+  hypotheses and its results table, a study dated January in the method and February in the results, tweet
+  sentiment counts summing to 3,998 rather than the stated 3,989, fit indices called acceptable while
+  missing their own stated thresholds. The two false ones were a Web3 definition read as a contradiction and
+  an unexplained drop from 7,410 crawled tweets to 3,989 analysed that the method partly explains.
+- Counting every kept finding across the 9 runs: 65 of 67 were real (97%).
+- **Cost: $0.26 to $0.42 per check** ($2.89 for all nine runs), below the earlier $0.50 estimate.
+
+Read the 98% as an upper bound. The plants are clean, single-sentence edits written by someone who knew the
+check types; real defects are subtler. The paper's own, unplanted defects give a better guide: across the
+three runs of each paper, the eight real pre-existing issues were found 14 times out of a possible 24 (58%).
+The three plain ones (the H5/H6 swap, the January and February dates, the abstract stating a result the
+body qualifies) were found every run; five quieter ones (the 3,998 sum, the fit indices, an introduction
+misstating which result failed, a ten-day study framed as longer-term, a construct recast in the Discussion)
+were each found in one run of three. So a single run reliably catches planted-style contradictions and
+absences, and catches about a third of the subtler real ones; running the cross-check twice and merging
+would likely raise that, at about $0.15 more per paper. Type labels are
+sometimes off (a label swap filed as term drift or as a construct conflict), which matters for the report's
+headings but not for whether the issue is shown.
