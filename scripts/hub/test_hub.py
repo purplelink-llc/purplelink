@@ -256,6 +256,9 @@ def test_listing_checks():
     f = hub.read_facts("<p>Other App version 1.0 $1.00</p>" + "x" * 900 + "<p>Widget version 1.2.0, $9.99</p>", "Widget")
     assert f["versions"] == ["1.2.0"] and f["prices"] == ["9.99"]
     assert hub.read_facts("<p>Nothing here version 3.0</p>", "Widget")["mentions"] is False
+    # script and style contents never count, whatever the end tag looks like
+    f = hub.read_facts("<script>var x='Widget version 9.9.9 $1.00'</script ><style>p{}</style\n><p>Widget version 1.2.0</p>", "Widget")
+    assert f["versions"] == ["1.2.0"] and f["prices"] == []
     # MacUpdate's daily reading is compared without a fetch
     run("import")
     con = db()

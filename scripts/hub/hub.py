@@ -637,10 +637,33 @@ def listing_check(seen: dict, asset: dict) -> str:
     return "ok"
 
 
+def page_text(html: str) -> str:
+    """Visible text of a page, without script and style contents (the stdlib parser handles every end-tag form)."""
+    from html.parser import HTMLParser
+
+    class Text(HTMLParser):
+        def __init__(self):
+            super().__init__(convert_charrefs=True)
+            self.parts, self.skip = [], 0
+
+        def handle_starttag(self, tag, attrs):
+            self.skip += tag in ("script", "style")
+
+        def handle_endtag(self, tag):
+            if tag in ("script", "style") and self.skip:
+                self.skip -= 1
+
+        def handle_data(self, data):
+            if not self.skip:
+                self.parts.append(data)
+    t = Text()
+    t.feed(html)
+    t.close()
+    return re.sub(r"\s+", " ", " ".join(t.parts))
+
+
 def read_facts(html: str, asset_name: str) -> dict:
-    text = re.sub(r"<script.*?</script>|<style.*?</style>", " ", html, flags=re.S | re.I)
-    text = re.sub(r"<[^>]+>", " ", text)
-    text = re.sub(r"\s+", " ", text)
+    text = page_text(html)
     # Directory pages list many apps, so only the text just around our app's name counts.
     low, name = text.lower(), (asset_name or "").lower()
     near = " ".join(text[max(0, m.start() - 150):m.start() + 500] for m in re.finditer(re.escape(name), low)) if name else ""
