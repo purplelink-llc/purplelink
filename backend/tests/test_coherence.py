@@ -365,7 +365,7 @@ def test_short_quote_expands_to_its_sentence_across_pdf_line_wraps():
 
 def test_voice_rules_reach_the_check_prompt():
     assert c.VOICE_RULES in c.CHECK_SYSTEM
-    for rule in ("second person", "em-dashes", "However,", "never adjectives"):
+    for rule in ("second person", "em-dashes", "However,", "never adjectives", '"but"'):
         assert rule in c.VOICE_RULES
 
 
@@ -399,3 +399,8 @@ def test_coherence_section_goes_after_data_to_claim():
     assert out2.index("## Coherence Check") < out2.index("## Panel Transcript")
     assert backend_app._insert_coherence_section("## A\nx", "").startswith("## A")
     assert backend_app._insert_coherence_section("## A\nx", "## Coherence Check\n").rstrip().endswith("## Coherence Check")
+
+
+def test_label_mismatch_is_a_known_type_in_both_prompts():
+    assert "label_mismatch" in c.CHECK_TYPES and "label_mismatch" in c.TYPE_TITLES
+    assert "label_mismatch" in c.CHECK_SYSTEM and "label_mismatch" in c.VERIFY_SYSTEM

@@ -67,6 +67,8 @@ PANDOC_TIMEOUT_SECONDS = 60
 CHECK_TYPES = {
     "construct_definition_conflict": "A construct or key term is defined or operationalised in two incompatible ways.",
     "abstract_results_mismatch": "A number or result in the abstract differs from, or is missing in, the body.",
+    "label_mismatch": "One label (a hypothesis, research question, design principle or table number) is attached "
+                      "to different content in different places, e.g. H6 and H7 swapped between hypotheses and results.",
     "hypothesis_untested": "A hypothesis is stated but never tested or reported.",
     "hypothesis_undeclared": "A hypothesis is reported in the results but never stated beforehand.",
     "research_question_unanswered": "A research question is posed but never answered.",
@@ -83,6 +85,7 @@ CHECK_TYPES = {
 TYPE_TITLES = {
     "construct_definition_conflict": "A construct is defined two ways",
     "abstract_results_mismatch": "The abstract and the body disagree",
+    "label_mismatch": "A label points to different content in different places",
     "hypothesis_untested": "A hypothesis is stated but never reported",
     "hypothesis_undeclared": "A hypothesis is reported but never stated",
     "research_question_unanswered": "A research question is not answered",
@@ -1119,8 +1122,8 @@ VOICE_RULES = """## Voice for "title", "why" and "fix"
 Write to the author in plain academic prose, second person ("your abstract", "state H3 in Section 2").
 - Sentences of 12 to 20 words, each opening with its subject. No framing openers ("It is worth noting
   that", "The key point is", "In terms of").
-- Carry contrast only with a sentence-initial "However,". Never "although", "while" or "whereas"
-  mid-sentence.
+- Carry contrast only with a sentence-initial "However,". Never "but", "although", "while" or "whereas"
+  mid-sentence: write two sentences instead.
 - Put asides in parentheses. Never use em-dashes or semicolons.
 - Intensity comes from the paper's own numbers, never adjectives: "0.33 in the text and 0.35 in Table 5",
   not "a major discrepancy". Never invent a number.
