@@ -21,9 +21,12 @@ def put(rel, text):
 put("repo/site/llms.txt", """## Products — available now
 
 ### Widget (macOS)
+- **Pricing:** Free 7-day trial, then $9.99 once.
+- **Status:** Shipping, version 1.2.0 (October 2026). Version 1.1.0 added things.
 - **Trial and purchase:** https://purplelink.llc/widget/
 
 ### Gadget Pro (macOS)
+- **Pricing:** Free. Optional Gadget Plus, $2.99 a month.
 - **Page:** https://purplelink.llc/gadget/
 
 ## Tools (free web tools)
@@ -87,9 +90,21 @@ put("social/20261018-dryrun-bluesky-test.md", '---\nid: "20261018-dryrun-bluesky
 put("repo/video/howto/ledger.json", json.dumps([{"slug": "howto-x", "app": "widget", "date": "2026-10-22",
                                                   "title": "Fix x", "long_id": "LONG1", "short_id": "SHORT1",
                                                   "link_utm_content": "howto-x"}]))
-put("history.json", json.dumps({"macupdate": {"gadget": {"url": "https://gadget.macupdate.com/",
-                                                         "snapshots": {"2026-10-18": {"downloads": 5, "price": 9.99, "version": "1.0"},
-                                                                       "2026-10-19": {"downloads": 7, "price": 9.99, "version": "1.1"}}}}}))
+put("history.json", json.dumps({
+    "macupdate": {"gadget": {"url": "https://gadget.macupdate.com/",
+                             "snapshots": {"2026-10-18": {"downloads": 5, "price": 9.99, "version": "1.0"},
+                                           "2026-10-19": {"downloads": 7, "price": 9.99, "version": "1.1"}}}},
+    "ledger": {
+        "a": {"kind": "order", "product": "widget", "ts": 1792700000, "attr": {"first": {"s": "bluesky"}}, "heard": "reddit"},
+        "b": {"kind": "order", "product": "widget", "ts": 1792700000, "attr": {"first": {"s": "bluesky"}}, "refunded": 1},
+        "c": {"kind": "order", "product": "widget", "ts": 1700000000, "attr": {"first": {"s": "bluesky"}}},
+    }}))
+put("social-metrics.json", json.dumps({"posts": {"20261021-daily-release-widget-1-2": {"platforms": {"bluesky": {
+    "snapshots": {"2026-10-21": {"likes": 1, "views": None}, "2026-10-22": {"likes": 3, "views": None}}}}}}}))
+os.environ["PURPLELINK_SOCIAL_METRICS"] = str(tmp / "social-metrics.json")
+FUNNEL = {"bluesky": {"pageviews": 9, "pageviewsByPath": {"/widget/": 6, "/": 3}, "trial": {"widget": 2}, "checkout": {"widget": 1}},
+          "youtube-latex": {"pageviews": 4, "pageviewsByPath": {"/widget/": 4}, "trial": {}, "checkout": {}}}
+put("hub/funnel.json", json.dumps({"asOf": "2026-10-23", "windows": {str(w): FUNNEL for w in hub.FUNNEL_WINDOWS}}))
 
 
 def run(*argv):
@@ -151,7 +166,7 @@ def test_all():
     # video and MacUpdate: tied to their product, MacUpdate readings kept as results
     assert assets_of(con, "video:LONG1") == ["widget"] and "video:SHORT1" in ids
     assert assets_of(con, "macupdate:gadget") == ["gadget"]
-    assert [r[0] for r in con.execute("SELECT value FROM results WHERE placement_id = 'macupdate:gadget' ORDER BY date")] == [5, 7]
+    assert [r[0] for r in con.execute("SELECT value FROM results WHERE placement_id = 'macupdate:gadget' AND metric = 'downloads-total' ORDER BY date")] == [5, 7]
 
     # commands
     assert "widget:" in run("where", "Widget")
@@ -171,7 +186,137 @@ def test_sources_untouched():
     assert snap() == before
 
 
+def test_results_and_followups():
+    import datetime as dt
+    run("import")
+    con = db()
+    # llms.txt: newest version on the status line; a free app with a paid add-on has no price to check
+    w = con.execute("SELECT version, price FROM assets WHERE id = 'widget'").fetchone()
+    assert (w["version"], w["price"]) == ("1.2.0", "9.99"), tuple(w)
+    assert con.execute("SELECT price FROM assets WHERE id = 'gadget'").fetchone()[0] is None
+    r = {row["metric"]: (row["value"], row["confidence"]) for row in
+         con.execute("SELECT * FROM results WHERE placement_id = 'social:20261021-daily-release-widget-1-2:bluesky'")}
+    assert r["first-touch-visits"][0] == 6 and r["trials"][0] == 2 and r["checkout-clicks"][0] == 1
+    assert r["orders"][0] == 1, r  # refunded and older orders do not count
+    assert r["likes"][0] == 3       # latest social snapshot
+    # the YouTube video counts its "youtube-latex" family
+    v = {row["metric"]: row["value"] for row in con.execute("SELECT * FROM results WHERE placement_id = 'video:LONG1'")}
+    assert v["first-touch-visits"] == 4
+    # how-heard answers are their own table, never merged into tagged counts
+    assert [tuple(x) for x in con.execute("SELECT product, answer, channel, orders FROM heard")] == [("widget", "reddit", "reddit", 1)]
+    # channel stats exist and are judged on visits, not placement count
+    rows = {(x["product"], x["channel"]): x for x in con.execute("SELECT * FROM channel_stats")}
+    assert rows[("widget", "bluesky")]["verdict"] == "building"
+
+
+def test_follow_up_rules():
+    import datetime as dt
+    today = dt.date(2026, 10, 23)
+    mk = lambda days, ch="email", notes="": {"channel": ch, "status": "live", "notes": notes,
+                                              "date": (today - dt.timedelta(days=days)).isoformat()}
+    assert hub.follow_up(mk(2), today) == ("live", "2026-10-25")       # waiting
+    assert hub.follow_up(mk(6), today)[1] == "2026-10-21"               # due
+    assert hub.follow_up(mk(20), today) == ("live", "")                 # window closed, not nagged
+    assert hub.follow_up(mk(30), today) == ("no-response", "")
+    assert hub.follow_up(mk(6, notes="replied 10-20"), today) == ("live", "")
+    assert hub.follow_up(mk(6, ch="photo-pitch"), today) == ("live", "")  # paused line: never prompted
+    assert hub.follow_up(mk(6, ch="bluesky"), today) == ("live", "")
+
+
+def test_stop_rule_and_interval():
+    import datetime as dt
+    lo, hi = hub.clopper_pearson(0, 150)
+    assert lo == 0 and 0.023 < hi < 0.026        # rule of three: about 3/150
+    lo, hi = hub.clopper_pearson(5, 50)
+    assert 0.03 < lo < 0.04 and 0.21 < hi < 0.23
+    today = dt.date(2026, 10, 23)
+    assets = {"widget": {"kind": "product", "url": "https://purplelink.llc/widget/"}}
+    start = (today - dt.timedelta(days=44)).isoformat()
+    pls = [{"id": f"p{i}", "channel": "bluesky", "status": "live", "date": start, "url": "", "landing_url": "", "utm": ""}
+           for i in range(8)]
+    links = {f"p{i}": ["widget"] for i in range(8)}
+
+    def verdict(visits, trials):
+        fun = {"asOf": "x", "windows": {"45": {"bluesky": {"pageviewsByPath": {"/widget/": visits}, "trial": {"widget": trials}}}}}
+        return hub.channel_stats(pls, links, assets, fun, [], today)[0][9]
+    assert verdict(149, 0) == "unmeasured"
+    assert verdict(150, 0) == "pause-candidate"
+    assert verdict(150, 3) == "early"
+    assert verdict(150, 6) == "working"
+    assert hub.channel_stats(pls[:7], links, assets, {"windows": {"45": {}}}, [], today)[0][9] == "building"
+
+
+def test_listing_checks():
+    assert hub.listing_check({"error": "403"}, {"version": "1.2.0"}) == "manual"
+    assert hub.listing_check({"versions": [], "prices": []}, {"version": "1.2.0"}) == "manual"
+    assert hub.listing_check({"versions": ["1.1.0"], "prices": []}, {"version": "1.2.0"}) == "stale"
+    assert hub.listing_check({"versions": ["1.2.0"], "prices": ["9.99"]}, {"version": "1.2.0", "price": "9.99"}) == "ok"
+    assert hub.listing_check({"versions": ["1.2.0"], "prices": ["4.99"]}, {"version": "1.2.0", "price": "9.99"}) == "stale"
+    # only text near our app's name counts on a page that lists many apps
+    f = hub.read_facts("<p>Other App version 1.0 $1.00</p>" + "x" * 900 + "<p>Widget version 1.2.0, $9.99</p>", "Widget")
+    assert f["versions"] == ["1.2.0"] and f["prices"] == ["9.99"]
+    assert hub.read_facts("<p>Nothing here version 3.0</p>", "Widget")["mentions"] is False
+    # MacUpdate's daily reading is compared without a fetch
+    run("import")
+    con = db()
+    assert con.execute("SELECT check_state FROM placements WHERE id = 'macupdate:gadget'").fetchone()[0] in ("ok", "manual", "stale")
+    # check-listings fetches, records and never marks a failed fetch stale
+    put("repo/Outreach/OUTREACH-LOG.md", (tmp / "repo/Outreach/OUTREACH-LOG.md").read_text())
+    calls = []
+
+    def fake(url):
+        calls.append(url)
+        raise OSError("blocked")
+    out = hub.check_listings(hub.paths(), get=fake)
+    assert out["checked"] == len(calls) == 1 and calls == ["https://dir.example/widget"]
+    run("import")
+    assert db().execute("SELECT check_state FROM placements WHERE url = 'https://dir.example/widget'").fetchone()[0] == "manual"
+    hub.check_listings(hub.paths(), get=lambda u: "<h2>Widget</h2> Version 1.1.0 for $9.99")
+    run("import")
+    assert db().execute("SELECT check_state FROM placements WHERE url = 'https://dir.example/widget'").fetchone()[0] == "stale"
+    assert hub.check_listings(hub.paths(), if_older=7, get=fake)["skipped"] == 1
+
+
+def test_fetch_funnel_keeps_token_out_of_url():
+    put("traffic.env", "PURPLELINK_STATS_TOKEN=secret-token\n")
+    os.environ["PURPLELINK_TRAFFIC_ENV"] = str(tmp / "traffic.env")
+    seen = []
+
+    def fake(url, headers):
+        seen.append((url, headers))
+        return {"funnelByChannel": FUNNEL}
+    saved = (tmp / "hub" / "funnel.json").read_text()
+    out = hub.fetch_funnel(hub.paths(), get=fake)
+    assert len(seen) == len(hub.FUNNEL_WINDOWS) and all("secret" not in u and h["x-stats-token"] == "secret-token" for u, h in seen)
+    assert set(out["windows"]) == {str(w) for w in hub.FUNNEL_WINDOWS}
+    put("hub/funnel.json", saved)
+
+
+def test_export_has_no_contacts():
+    run("import")
+    out = tmp / "export"
+    run("export", str(out))
+    names = sorted(f.name for f in out.glob("*.json"))
+    assert names == sorted(f"marketing_{n}.json" for n in ("summary", "grid", "channels", "placements", "followups", "listings", "heard"))
+    blob = "".join(f.read_text() for f in out.glob("*.json"))
+    assert not hub.EMAIL_RE.search(blob.replace("@purplelink", ""))
+    assert "OUTREACH-LOG" not in blob and "Pat" not in blob and "Reviewer" not in blob and "Example University" not in blob
+    for f in out.glob("*.json"):
+        assert isinstance(json.loads(f.read_text()), list), f.name
+    pl = json.loads((out / "marketing_placements.json").read_text())
+    em = [r for r in pl if r["channel"] in ("email", "libguide")]
+    assert em and all(r["target"] is None and r["url"] is None for r in em)
+    s = json.loads((out / "marketing_summary.json").read_text())[0]
+    assert s["placements"] > 0 and "gadget" not in s["untouched"]
+
+
 if __name__ == "__main__":
     test_all()
     test_sources_untouched()
+    test_results_and_followups()
+    test_follow_up_rules()
+    test_stop_rule_and_interval()
+    test_listing_checks()
+    test_fetch_funnel_keeps_token_out_of_url()
+    test_export_has_no_contacts()
     print("ok")
