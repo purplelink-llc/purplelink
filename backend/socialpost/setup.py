@@ -97,6 +97,8 @@ def setup(platform: str) -> int:
         return _setup_mastodon(cfg)
     if platform == "x":
         return _setup_x(cfg)
+    if platform == "instagram":
+        return _setup_instagram(cfg)
     raise SystemExit(f"unknown platform {platform}")
 
 
@@ -126,6 +128,33 @@ def _setup_threads(cfg: dict) -> int:
     note_token_time("threads")
     a = build_adapter(cfg, "threads")
     return 0 if _confirm_identity("threads", a, {"user_id": "id", "username": "username"}) else 1
+
+
+def _setup_instagram(cfg: dict) -> int:
+    tok = _ask_secret("Instagram access token (long-lived, from the app dashboard's Generate token)")
+    app_secret = _ask_secret("Instagram app secret, or Enter if the token is already long-lived", required=False)
+    if app_secret:
+        # Meta documents the short-to-long exchange as a GET with query parameters.
+        q = urlencode({"grant_type": "ig_exchange_token", "client_secret": app_secret, "access_token": tok})
+        r = Http().request("GET", f"https://graph.instagram.com/access_token?{q}")
+        new = (r.json() or {}).get("access_token")
+        if r.status != 200 or not new:
+            err = (r.json() or {}).get("error") or {}
+            msg = err.get("message", "") if isinstance(err, dict) else ""
+            print(f"The exchange failed (HTTP {r.status}). Nothing stored. {_scrub(msg, tok, app_secret)}".rstrip())
+            return 1
+        tok = new
+    sysutil.keychain_set("instagram", "access_token", tok)
+    note_token_time("instagram")
+    a = build_adapter(cfg, "instagram")
+    got = a.whoami()
+    if "rubblefront" in str(got.get("username") or "").lower():
+        print("That token belongs to RubbleFront's account. Purplelink never posts there. Nothing pinned.")
+        return 1
+    ok = _confirm_identity("instagram", a, {"user_id": "user_id", "username": "username"})
+    if ok:
+        print("Next: social.py instagram preview --dry-run  (renders a Reel and an image post, posts nothing)")
+    return 0 if ok else 1
 
 
 def _setup_mastodon(cfg: dict) -> int:

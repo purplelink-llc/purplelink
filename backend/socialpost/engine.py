@@ -19,11 +19,13 @@ SEP_RE = "|"
 
 def registry() -> dict[str, type[Adapter]]:
     from .adapters.bluesky import Bluesky
+    from .adapters.instagram import Instagram
     from .adapters.linkedin import LinkedIn
     from .adapters.mastodon import Mastodon
     from .adapters.threads import Threads
     from .adapters.x import X
-    return {"linkedin": LinkedIn, "bluesky": Bluesky, "threads": Threads, "mastodon": Mastodon, "x": X}
+    return {"linkedin": LinkedIn, "bluesky": Bluesky, "threads": Threads, "mastodon": Mastodon, "x": X,
+            "instagram": Instagram}
 
 
 def build_adapter(cfg: dict, platform: str, factory=None, **kw) -> Adapter:
@@ -160,21 +162,25 @@ def run_due(cfg: dict | None = None, factory=None, when: dt.datetime | None = No
     return lines
 
 
+REFRESHED = ("threads", "instagram")
+
+
 def maybe_refresh_tokens(cfg: dict, factory, say, when, kw) -> None:
-    """Threads tokens last 60 days; renew at 30. A failure is logged and notified, never fatal."""
-    if not cfgmod.platform_cfg(cfg, "threads").get("enabled"):
-        return
+    """Threads and Instagram tokens last 60 days; renew at 30. A failure is logged and notified, never fatal."""
     from .setup import note_token_time, token_age_days
-    age = token_age_days("threads", when)
-    if age is None or age < 30:
-        return
-    try:
-        build_adapter(cfg, "threads", factory, **kw).refresh()
-        note_token_time("threads", when)
-        say("threads: token refreshed")
-    except Exception as e:
-        say(f"threads: token refresh failed: {type(e).__name__}")
-        sysutil.notify("Threads token refresh failed; run: social.py refresh threads")
+    for plat in REFRESHED:
+        if not cfgmod.platform_cfg(cfg, plat).get("enabled"):
+            continue
+        age = token_age_days(plat, when)
+        if age is None or age < 30:
+            continue
+        try:
+            build_adapter(cfg, plat, factory, **kw).refresh()
+            note_token_time(plat, when)
+            say(f"{plat}: token refreshed")
+        except Exception as e:
+            say(f"{plat}: token refresh failed: {type(e).__name__}")
+            sysutil.notify(f"{plat.capitalize()} token refresh failed; run: social.py refresh {plat}")
 
 
 def _process(item: Item, cfg: dict, factory, when, say, notify, finish, kw) -> None:

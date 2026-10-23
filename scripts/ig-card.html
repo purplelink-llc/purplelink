@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow">
+<!-- Instagram feed image (1080x1350) and Reel frame (1080x1920) for backend/socialpost/instagram/render.py.
+     Same system as og-card.html: Fraunces title, Plus Jakarta Sans text, hue-310 purple on a dark ground.
+     Rendered by headless Chrome from a local server rooted at the repo; never served by the site. -->
+<style>
+  @font-face { font-family: 'Fraunces'; font-weight: 300 900; src: url('/site/assets/fonts/fraunces-latin.woff2') format('woff2'); }
+  @font-face { font-family: 'Plus Jakarta Sans'; font-weight: 400 700; src: url('/site/assets/fonts/plus-jakarta-sans-latin.woff2') format('woff2'); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1350px; overflow: hidden; background: #140a22; }
+  body.reel, body.reel .card { height: 1920px; }
+  .card { width: 1080px; height: 1350px; position: relative; color: oklch(96% 0.01 310);
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif; padding: 96px 92px 88px;
+    display: flex; flex-direction: column; justify-content: space-between; background-size: cover; background-position: center; }
+  .card::before { content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(14,6,26,.62) 0%, rgba(14,6,26,.80) 48%, rgba(14,6,26,.94) 100%); }
+  .card > * { position: relative; }
+  .top { display: flex; align-items: center; gap: 20px; }
+  .top img { width: 60px; height: 60px; }
+  .top .brand { font-family: 'Fraunces', serif; font-weight: 600; font-size: 38px; letter-spacing: -0.5px; }
+  .mid { display: flex; flex-direction: column; gap: 34px; }
+  .eyebrow { font-size: 28px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: oklch(84% 0.12 310); }
+  h1 { font-family: 'Fraunces', serif; font-weight: 600; line-height: 1.04; letter-spacing: -1.5px; }
+  .tagline { font-size: 38px; font-weight: 400; color: oklch(90% 0.02 300); line-height: 1.35; }
+  .bottom { display: flex; align-items: center; justify-content: space-between; border-top: 2px solid oklch(60% 0.08 310 / .5); padding-top: 34px; }
+  .url { font-size: 32px; font-weight: 600; color: oklch(84% 0.12 310); }
+  .foot { font-size: 28px; font-weight: 500; color: oklch(82% 0.03 300); }
+  /* Reel frame: ffmpeg lays the 16:9 video over the window at y=656 (centered, 1080x608); the frame is drawn around it */
+  .reel .card { display: block; }
+  .reel .top { position: absolute; top: 96px; left: 92px; }
+  .reel .mid { position: absolute; top: 220px; left: 92px; right: 92px; height: 400px; justify-content: flex-end; gap: 26px; }
+  .reel .window { position: absolute; top: 656px; left: 0; width: 1080px; height: 608px; background: #000; }
+  .reel .tagline { position: absolute; top: 1310px; left: 92px; right: 92px; font-size: 36px; }
+  .reel .bottom { position: absolute; left: 92px; right: 92px; bottom: 96px; }
+</style></head>
+<body><div class="card" id="card">
+  <div class="top"><img src="/site/assets/purplelink-logo.png" alt=""><span class="brand">Purplelink</span></div>
+  <div class="mid" id="mid"><span class="eyebrow" id="kicker"></span><h1 id="title"></h1><p class="tagline" id="tagline"></p></div>
+  <div class="bottom"><span class="url">purplelink.llc</span><span class="foot" id="foot"></span></div>
+</div>
+<script>
+  const q = new URLSearchParams(location.search);
+  const reel = q.get('reel') === '1';
+  if (reel) {
+    document.body.classList.add('reel');
+    const card = document.getElementById('card');
+    const w = document.createElement('div'); w.className = 'window';
+    card.appendChild(w);
+    card.appendChild(document.getElementById('tagline'));
+  }
+  document.getElementById('card').style.backgroundImage = "url('/site/assets/og/bg/" + (q.get('bg') || 'general') + ".jpg')";
+  const t = q.get('t') || '';
+  const h = document.getElementById('title'); h.textContent = t;
+  h.style.fontSize = ((reel ? 0.84 : 1) * (t.length <= 24 ? 104 : t.length <= 44 ? 88 : t.length <= 70 ? 72 : 60)) + 'px';
+  document.getElementById('kicker').textContent = q.get('k') || '';
+  document.getElementById('tagline').textContent = q.get('s') || '';
+  document.getElementById('foot').textContent = q.get('f') || '';
+</script></body></html>

@@ -176,6 +176,14 @@ duplicate in 21 days) must pass. Nothing else is covered: X, Reddit, replies, li
 profile, other kinds of post. Never post as Ben personally except Mastodon as above. `scripts/social/poster.py` no
 longer posts (detection library only). See `docs/social-posting.md`.
 
+**Instagram, standing approval (Ben, 2026-10-23):** Ben asked that every video on the Purplelink YouTube channel also
+goes to the Purplelink Instagram (@purplelink.llc) as a Reel, and every LinkedIn company-page post also gets an Instagram
+post with a branded image. `backend/socialpost/instagram` builds, vets and queues both under
+`approved_by: "ben (standing, 2026-10-23)"` (Instagram only, its own items only; run by the social-daily wrapper,
+posted by `run-due`). Never RubbleFront's Instagram (same Meta account; the adapter refuses it by name). Nothing else
+changes: no posts as Ben, Reddit stays manual. Needs Ben's Meta app and token first (`social.py setup instagram`).
+See `docs/social-posting.md`, "Instagram".
+
 **Scheduled posts (Ben, 2026-10-18):** `backend/scripts/social.py` posts approved queue items to the company accounts
 (LinkedIn page 120183926, Bluesky @purplelink.llc, Threads, Mastodon, X) through launchd `com.purplelink.social-scheduler`.
 Run `social.py approve <id>` only when Ben says so in chat for that item; never edit an item after approving it, never

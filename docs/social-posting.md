@@ -1,7 +1,7 @@
 # Social posting: scheduled posts to the company accounts
 
 `backend/scripts/social.py` is one front for posting to Purplelink's own accounts: the LinkedIn company page,
-Bluesky @purplelink.llc, Threads, Mastodon and X. Ben writes and approves a post; a launchd job sends approved posts at
+Bluesky @purplelink.llc, Threads, Mastodon, X and Instagram @purplelink.llc. Ben writes and approves a post; a launchd job sends approved posts at
 their scheduled time. Decided by Ben on 2026-10-18. The code is public; the queue, the config and every secret are not.
 
 ## One posting path
@@ -95,6 +95,75 @@ with its numbers in `~/.purplelink/social/daily/learned.json`, lasts 30 days, th
 **Pause:** `social.py pause` (creates `~/.purplelink/social/PAUSE`; nothing queues or posts) and `social.py resume`.
 `launchctl bootout gui/$(id -u)/com.purplelink.social-daily` stops the pick job.
 
+## Instagram (standing approval, 2026-10-23)
+
+Ben asked on 2026-10-23 that every video on the Purplelink YouTube channel also goes to the Purplelink Instagram as a
+Reel, and that every LinkedIn company-page post also gets an Instagram post with an image. That request extends the
+standing approval to the company Instagram @purplelink.llc for exactly these two kinds of post, recorded as
+`approved_by: "ben (standing, 2026-10-23)"`. Only `socialpost/instagram/` writes it, only for items it built
+(`source: instagram-reel` or `instagram-companion`), and only for the platform `instagram`; `approval_valid` refuses
+it anywhere else, and the 2026-10-18 approval does not reach Instagram. Never RubbleFront's Instagram (same Meta
+account): the adapter refuses any account whose username contains "rubblefront" before it checks the pinned identity.
+Nothing else changed: no posts as Ben, X needs Ben, Reddit stays manual.
+
+**API.** Instagram API with Instagram Login (`graph.instagram.com`), permissions `instagram_business_basic` and
+`instagram_business_content_publish`, long-lived token in the keychain (`purplelink-social-instagram`/`access_token`,
+refreshed by `run-due` at 30 days). No Facebook Page is needed on this path. Facts read 2026-10-23 from
+developers.facebook.com/docs/instagram-platform/content-publishing: JPEG only, `alt_text` on image posts (not Reels),
+100 API posts per 24 hours, containers polled until `status_code` is FINISHED. Captions: 2,200 characters, at most 5
+hashtags, no link (it would not be clickable): every caption ends "Link in bio.".
+
+**Reels** (`social.py instagram reel-add`, then `run`):
+
+- `scripts/howto-publish.py` hands each how-to Short (the 9:16 cut) to `reel-add` right after the upload, with its
+  title, description and page, and the long cut's id as `--also` (so one Reel covers the pair). The result is
+  recorded under `instagram` in `video/howto/ledger.json`. It never fails a publish.
+- `scripts/yt-api-upload.py --channel purplelink` does the same for any other public Purplelink upload.
+- A video uploaded another way: `social.py instagram reel-add --video F --youtube-id ID --title T
+  --description-file D --link https://purplelink.llc/<page>/`. `instagram run` reads the channel's public feed once a
+  day after 12:00 (`scan`) and sends one notification for each public upload of the last 7 days that has no Reel.
+- The file: re-encoded to 1080x1920 H.264/AAC 30 fps. A vertical video is scaled; a 16:9 video is laid into the
+  window of a 1080x1920 frame drawn from `scripts/ig-card.html` (title above, a sentence of the description below,
+  purplelink.llc at the foot). Longer than 3 minutes: cut at 179.5 s with a fade, and the caption says the full
+  walkthrough is on YouTube. Inbox: `~/.purplelink/social/instagram/reels/<youtube id>/`.
+- Caption: the YouTube title, up to two prose sentences of the description (no links, commands, source lists or
+  sentences that repeat the title), "Link in bio.", and the description's own hashtags plus the app's tag
+  (at least 3, at most 5, never #shorts). The Reel's description (kept as `video.alt`; the API takes no alt text
+  for Reels) is the title and one sentence.
+- Hosting: Meta fetches the video from a public URL, and a Netlify function cannot answer with a file this large.
+  The Reel goes to the public R2 bucket named by `media.video.env_file` in `social.json` (now
+  `TikTokPipeline/BallSimPipeline/secrets/r2_media.env`, the bucket the Instagram Reels of the other pipelines use,
+  under the prefix `purplelink-social/`) and is deleted right after the publish call, whatever its outcome.
+
+**Companions** (`instagram run`): every queue item whose `linkedin` result is `posted` in the last 3 days (the daily
+pipeline's or one Ben approved) gets one Instagram item: a 1080x1350 JPEG from `scripts/ig-card.html` (the kicker
+and title from the post's first line, e.g. "Release / Vitae 1.4.2", and its first fact sentence), alt text naming
+what the card shows, and the LinkedIn text without its link, plus "Link in bio." and up to 3 topic hashtags.
+
+**Gate** (`socialpost/instagram/pipeline.py vet`): the daily voice rules, the facts rule against the item's own
+source (YouTube title and description, or the LinkedIn text), alt text, the queue validator (JPEG, 1080x1920 Reel of
+3 to 180 s, hashtags, no caption link), the link answers 200, and no caption repeated within 21 days. A failure is
+logged, notified once and not retried. At most 3 Instagram posts a day, 90 minutes apart (`max_per_day`,
+`spacing_minutes` in the `instagram` block of `social.json`); the rest wait for the next day. The engine posts them
+with the same identity check, PAUSE switch, retries, results and OUTREACH-LOG rows as every platform.
+
+**Link in bio.** `https://purplelink.llc/instagram/` (`netlify/functions/instagram-links.mjs`) lists the latest 12
+posted Instagram items, newest first, each link tagged `utm_source=instagram&utm_medium=social&utm_campaign=<campaign>`
+(companions keep the LinkedIn post's campaign; Reels use `ig-reel`). `instagram run` writes the list to the
+`instagram-links` Blobs store (`latest.json`) when it changes. With an empty store the page lists products, guides and
+tools. The profile's link is set once, in the Instagram app (the API cannot set it):
+`https://purplelink.llc/instagram/?utm_source=instagram&utm_medium=social&utm_campaign=bio`.
+
+**Dry run.** `social.py instagram preview [--out DIR]` builds the next Reel and image post, runs the gate, copies the
+files and captions to DIR and queues nothing. It works before Instagram is enabled. The first one (2026-10-23, from the
+BatteryMeter video 741nCr3zq1g and the Vitae 1.4.2 LinkedIn post) passed.
+
+**Ben's steps** (`social.py setup instagram` prints them): a new Meta app with the use case "Manage messaging &
+content on Instagram", API setup with Instagram login, add @purplelink.llc (accept the tester invite in the Instagram
+app if asked), generate the token, run `social.py setup instagram` and type yes on the identity, set the bio link in
+the app. Then `social.py instagram preview`. The pipeline queues nothing until setup has pinned the account and
+enabled the platform.
+
 ## Files
 
 | What | Where |
@@ -106,6 +175,7 @@ with its numbers in `~/.purplelink/social/daily/learned.json`, lasts 30 days, th
 | Daily pick and metrics | launchd `com.purplelink.social-daily` (15 min) and `com.purplelink.social-metrics` (hourly, once a day); wrappers `~/.purplelink/bin/social-daily.sh`, `social-metrics.sh`; tuning `~/.config/purplelink/social-daily.json`; state `~/.purplelink/social/daily/`; metrics `~/.purplelink/social/metrics.json` |
 | Scheduler | launchd `com.purplelink.social-scheduler`, every 10 minutes, runs `~/.purplelink/bin/social-run-due.sh` (a copy of `backend/scripts/run_social.sh`) |
 | Bluesky session | `~/.purplelink/bluesky-profile` |
+| Instagram | inbox `~/.purplelink/social/instagram/reels/`, cards `.../instagram/cards/`, state `.../instagram/state.json`, bio list `.../instagram/links.json`; run by the `com.purplelink.social-daily` wrapper (`social.py instagram run` after `daily run`) |
 
 ## A queue item
 
@@ -159,8 +229,9 @@ python3 backend/scripts/social.py post <id> [--platform p] [--dry-run]
 python3 backend/scripts/social.py run-due
 python3 backend/scripts/social.py status
 python3 backend/scripts/social.py whoami [platform]
-python3 backend/scripts/social.py setup threads|mastodon|x|bluesky
-python3 backend/scripts/social.py refresh threads|x
+python3 backend/scripts/social.py setup threads|mastodon|x|bluesky|instagram
+python3 backend/scripts/social.py refresh threads|x|instagram
+python3 backend/scripts/social.py instagram reel-add|run|scan|preview
 python3 backend/scripts/social.py pause | resume
 ```
 
@@ -195,6 +266,7 @@ and the campaign name. `approve` refuses an item that fails validation or is mor
 | Threads | long-lived token (60 days), `threads_basic` + `threads_content_publish` | 500 | 20 in a carousel, JPEG or PNG, 8 MB, public URL | `alt_text` on each container |
 | Mastodon | app token, `read:accounts write:statuses write:media` | 500 (server's limit) | 4, 16 MB | `description` on `POST /api/v2/media` |
 | X | OAuth 2.0 user token, refresh token | 280 | 4, `POST /2/media/upload` | `POST /2/media/metadata` |
+| Instagram | long-lived token (60 days), `instagram_business_basic` + `instagram_business_content_publish` | 2,200, 5 hashtags, no links | 1 JPEG (8 MB) or 1 Reel, public URL | `alt_text` on images; none for Reels |
 
 - Threads publishes a container with `POST /{user-id}/threads`, waits for `FINISHED`, then `threads_publish`; 250
   posts a day per profile. The token is refreshed by `run-due` after 30 days (24 hours minimum age).
@@ -226,6 +298,7 @@ Everything below is run in your own terminal. No agent creates accounts, develop
   secret, shows which profile the token belongs to, and pins it only if you type `yes`.
 - **Mastodon**: `social.py setup mastodon`: create the account, tick the automated flag, create an application token
   with the three scopes, paste the server URL and token.
+- **Instagram**: `social.py setup instagram` (see "Instagram" above).
 - **X**: `social.py setup x` (buy credits first). It runs the authorization on 127.0.0.1:8765. It leaves X disabled.
 
 After each setup run `social.py whoami`; the first real post of each platform should be a dry run followed by a
@@ -234,4 +307,4 @@ post you watch.
 ## Tests
 
 `backend/tests/test_social_*.py` (mocked HTTP, fake browser pages, no keychain) and
-`netlify/tests/social-media.test.mjs`. CI runs them with the backend and Netlify test jobs.
+`netlify/tests/social-media.test.mjs`, `netlify/tests/instagram-links.test.mjs`. CI runs them with the backend and Netlify test jobs.

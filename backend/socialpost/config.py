@@ -11,7 +11,12 @@ DEFAULT = {
     "windows": {"days": [0, 1, 2, 3, 4, 5, 6], "start": "07:00", "end": "21:00"},
     "link_hosts": ["purplelink.llc", "www.purplelink.llc", "www.youtube.com", "youtu.be"],  # YouTube: video picks
     "media": {"base_url": "https://purplelink.llc/social-media/", "store": "social-media",
-              "netlify_cwd": "/Volumes/Extreme SSD/Purplelink LLC"},
+              "netlify_cwd": "/Volumes/Extreme SSD/Purplelink LLC",
+              # Reels: Instagram fetches the video from a public URL. Netlify functions cannot answer with a file
+              # this large, so videos go to an S3-compatible public bucket for the minutes it takes Meta to fetch
+              # them, and are deleted after the post. The env file holds MEDIA_BUCKET, MEDIA_S3_ENDPOINT,
+              # MEDIA_PUBLIC_BASE, MEDIA_S3_KEY and MEDIA_S3_SECRET; it never enters the repo.
+              "video": {"env_file": "", "prefix": "purplelink-social/"}},
     "retry": {"max_attempts": 3, "backoff_minutes": [10, 40, 120]},
     "stale_hours": 48,
     "platforms": {
@@ -20,6 +25,7 @@ DEFAULT = {
         "threads": {"enabled": False, "expected": {"user_id": "", "username": ""}},
         "mastodon": {"enabled": False, "instance": "", "expected": {"acct": ""}},
         "x": {"enabled": False, "paid_posting_ok": False, "expected": {"user_id": "", "username": ""}},
+        "instagram": {"enabled": False, "expected": {"user_id": "", "username": ""}},
     },
 }
 

@@ -29,4 +29,9 @@ fi
 timeout 60 git -C "$REPO" fetch -q origin main 2>/dev/null || true
 
 "$PYTHON" "$SCRIPT" daily run
-exit $?
+rc=$?
+
+# Instagram (Ben, 2026-10-23): a Reel for each Purplelink YouTube video in the inbox and an image post for each
+# LinkedIn company post that went out. Queues only; the scheduler posts. Does nothing until Instagram is enabled.
+"$PYTHON" "$SCRIPT" instagram run || log "instagram run exited $?"
+exit $rc
