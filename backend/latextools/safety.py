@@ -114,6 +114,7 @@ _OUR_TAGS = {
     "skeptical_reviewer_findings", "tone_editor_findings",
     "editor_in_chief_verdict",
     "claim", "source_abstract", "deterministic_checks",
+    "paper_bible", "coherence_findings",
 }
 
 # Phrases that, when seen, raise suspicion of an injection attempt.
