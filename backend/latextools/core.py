@@ -467,7 +467,10 @@ def parse_latex_log(log_text: str) -> list[dict]:
                   "message": _missing_file_message(n)} for n in missing]
         rest = [e for e in errors if not _NOISE.match(e["message"]) and not any(n in e["message"] for n in missing)]
         errors = (first + rest)[:MAX_REPORTED_ERRORS]
-    return errors
+    # "Emergency stop" and "==> Fatal error occurred" only restate that the run stopped. Drop them whenever a real
+    # error remains (2026-10-23); keep them when they are all the log has, so the visitor still sees something.
+    real = [e for e in errors if not _NOISE.match(e["message"])]
+    return real or errors
 
 
 def log_has_tex_error(log_text: str) -> bool:
