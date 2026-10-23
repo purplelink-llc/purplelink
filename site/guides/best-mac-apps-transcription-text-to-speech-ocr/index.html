@@ -34,7 +34,7 @@
         "@id": "https://purplelink.llc/#organization"
       },
       "datePublished": "2026-10-09",
-      "dateModified": "2026-10-09",
+      "dateModified": "2026-10-23",
       "image": "https://purplelink.llc/assets/og/tapefolio.png",
       "mainEntityOfPage": "https://purplelink.llc/guides/best-mac-apps-transcription-text-to-speech-ocr/"
     },
@@ -79,6 +79,14 @@
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "MacWhisper, Aiko, Buzz and Tapefolio (which I make) say they transcribe on the device. MacWhisper can also be pointed at cloud models with your own API keys, so check its settings. Otter, Descript, Happy Scribe, Sonix and Rev are cloud services. Whether an on-device app meets your ethics board's rules is for you and the board to decide."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I record a Zoom or Teams call on a Mac without a bot joining?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Granola, TranscribeX and Tapefolio (which I make) record from your Mac, so nothing joins the meeting. Granola sends the audio to outside transcription services; TranscribeX and Tapefolio transcribe on the Mac. Tell the people on the call that you are recording."
       }
     },
     {
@@ -182,6 +190,15 @@
         </ul>
         <p>Every automatic transcript needs a listen-through. Whisper-based tools (the open speech model behind several apps above) can invent words, and their developers link this to pauses, background sounds and music <a href="https://gigazine.net/gsc_news/en/20241027-openai-whisper-hallucination" rel="noopener">[Gigazine summary]</a>. A university library guide to running Whisper locally says the output may need review and editing, particularly with technical terms or several speakers <a href="https://library.smu.edu.sg/topics-insights/campus-whisper-ai-safe-and-irb-compliant-transcription-research-projects" rel="noopener">[SMU Libraries]</a>. Plan a correction pass, and quote only text you have checked against the audio.</p>
 
+        <h2 id="calls-without-a-bot">Recording calls without a bot</h2>
+        <p>Some apps record a call from your Mac instead of sending a bot into the meeting, so no extra participant appears in the list. Where the sound is turned into text still differs, and that is the question to ask.</p>
+        <ul>
+          <li><strong>Granola:</strong> no bot, and you start it yourself. Its security page says transcription uses outside providers such as Deepgram and AssemblyAI, and that it keeps the transcript and your notes but not the audio (<a href="https://www.granola.ai/security" rel="noopener">granola.ai/security</a>, read October 23, 2026).</li>
+          <li><strong>TranscribeX:</strong> no bot; transcription and summaries run on the Mac. Free, with a $39 one-time Pro. Its developer says it can start when it detects a call, or ask first (<a href="https://www.producthunt.com/products/transcribex" rel="noopener">Product Hunt listing</a>, read October 23, 2026).</li>
+          <li><strong>Tapefolio (mine):</strong> no bot; the call's sound is recorded on its own track beside your microphone and transcribed on the Mac. You start it by hand, with a consent reminder each time. $29.99 once after a 7-day trial.</li>
+        </ul>
+        <p>Whichever you use, tell the people on the call that you are recording. Consent rules for recording differ by state and country, and a research study may have its own.</p>
+
         <h2 id="text-to-speech">Text to speech</h2>
         <div class="u-scroll-x">
           <table class="u-table-wide">
@@ -235,9 +252,12 @@
         <p>Google Drive can also convert a photo or PDF to text. However, it uploads the file and, per <a href="https://support.google.com/drive/answer/176692" rel="noopener">Google's help page</a>, the file should be 2 MB or smaller. Neither suits a confidential scan.</p>
 
         <h2 id="tapefolio">Where Tapefolio fits</h2>
-        <p>Tapefolio is a Mac app for transcribing interviews and meetings and reading scans, made for people whose recordings cannot be uploaded. It costs $29.99 once after a 7-day trial. There is one download: after the trial it asks for a license key, and one key works on two Macs. It is also part of the $59.99 <a href="/suite/">Mac Suite</a>. It needs macOS 26 or later and a Mac with Apple silicon, with no Intel version. The current version is 1.0.1, released October 9, 2026, so it is the newest and least proven app here. As of that date it does the following:</p>
+        <p>Tapefolio is a Mac app for transcribing interviews and meetings and reading scans, made for people whose recordings cannot be uploaded. It costs $29.99 once after a 7-day trial. There is one download: after the trial it asks for a license key, and one key works on two Macs. It is also part of the $59.99 <a href="/suite/">Mac Suite</a>. It needs macOS 26 or later and a Mac with Apple silicon, with no Intel version. The current version is 1.1.0, released October 20, 2026. It is the newest and least proven app here. As of that version it does the following:</p>
         <ul>
           <li><strong>Transcribes on your Mac</strong> with the time of every word, from audio files or from the microphone inside the app.</li>
+          <li><strong>Records calls without a bot.</strong> A Zoom, Teams, Google Meet or FaceTime call is recorded with the call's sound on its own track beside your microphone. You start it by hand, and it shows a consent reminder each time.</li>
+          <li><strong>Dictates into any app.</strong> Press Control-Option-Space, speak, and press it again; the text is transcribed on your Mac and typed where the cursor is.</li>
+          <li><strong>Finds words and learns names.</strong> Find jumps the audio to a word in the open transcript, and a word list of names and jargon helps the recognition spell them.</li>
           <li><strong>Speech model:</strong> the download is about 40 MB and includes no speech model. Until you download one, it uses Apple's on-device speech recognition, and macOS may fetch Apple's own model once. Better models are optional downloads in Settings, from Hugging Face, each once: NVIDIA Parakeet (English), Whisper base (English) and Whisper large-v3 turbo (many languages). Settings can delete any of them.</li>
           <li><strong>Labels speakers</strong> on your Mac. You name each speaker once and merge labels that are one person in the review screen, which plays the audio beside the text.</li>
           <li><strong>Remembers a voice only if you ask it to.</strong> Speaker memory is off until you turn it on for a project and record a consent note. Voices are stored encrypted on your Mac, the app only suggests matches for you to confirm, and you can delete them.</li>
@@ -247,7 +267,7 @@
         </ul>
         <p><strong>What it does not do.</strong> It will mishear words and mislabel speakers. It does not anonymize a transcript or make a study compliant, and it cannot tell when a detail identifies someone only in context. It does not read text aloud. It has no text to speech. It has been measured on generated OCR test files only, not on handwriting or phone photos, and on English meeting audio only. It has no Intel, Windows, iPhone or iPad version.</p>
         <p><strong>The measurements, from its page.</strong> On two meetings from the AMI corpus, the word error rate (the share of words transcribed wrongly) was between 21% and 29% for Apple's engine, Parakeet and Whisper large-v3 turbo. For Whisper base it was between 29% and 39%. Word accuracy on a real recorded two-person conversation has not been measured. OCR on nine generated test files (11 pages) had a word error rate of 1.5%. These are small checks on one machine, so treat every transcript as a draft.</p>
-        <p>Transcription, speaker labels, identifier removal and OCR run on the Mac, and nothing from your files is uploaded. The internet is used for the optional model downloads, an update check, and macOS itself if you use Apple's speech recognition. Whether that meets your ethics board's rules is for you and the board to decide.</p>
+        <p>Transcription, call recording, dictation, speaker labels, identifier removal and OCR run on the Mac, and nothing from your files is uploaded. Two optional 1.1.0 features are worth knowing about: a draft summary from Apple's on-device model (needs Apple Intelligence), and a read-only connection for AI apps such as Claude Desktop, which shows names as codes by default; text an AI app reads goes to that app's servers. The internet is used for the optional model downloads, an update check, and macOS itself if you use Apple's speech recognition. Whether that meets your ethics board's rules is for you and the board to decide.</p>
         <p><strong>If a free tool above does the job, use that.</strong> Buzz or MacWhisper's free tier handle a transcript that must stay on your Mac, and Live Text handles a single image. Tapefolio is for the case where you want speaker labels, identifier replacement, a review screen and batch OCR in one place. You also need a Mac that can run it.</p>
 
         <h2>Choose in one minute</h2>
@@ -260,6 +280,8 @@
         <h2 id="faq">Frequently asked</h2>
         <h3>Which Mac transcription apps keep the recording on my Mac?</h3>
         <p>MacWhisper, Aiko, Buzz and Tapefolio (which I make) say they transcribe on the device. MacWhisper can also be pointed at cloud models with your own API keys, so check its settings. Otter, Descript, Happy Scribe, Sonix and Rev are cloud services. Whether an on-device app meets your ethics board's rules is for you and the board to decide.</p>
+        <h3>Can I record a Zoom or Teams call on a Mac without a bot joining?</h3>
+        <p>Yes. Granola, TranscribeX and Tapefolio (which I make) record from your Mac, so nothing joins the meeting. Granola sends the audio to outside transcription services; TranscribeX and Tapefolio transcribe on the Mac. Tell the people on the call that you are recording.</p>
         <h3>Is there a free way to read text aloud on a Mac?</h3>
         <p>Yes. Turn on Speak selection in Read &amp; Speak settings, select text and press Option-Escape. Piper - Neural TTS is a free App Store app that adds more natural voices to the system, and Voicebox is free and open source.</p>
         <h3>Does Tapefolio read text aloud?</h3>
@@ -270,6 +292,7 @@
         <h2>Related guides</h2>
         <ul>
           <li><a href="/tapefolio/">Tapefolio</a>: the Purplelink Mac app described above.</li>
+          <li><a href="/guides/on-device-dictation-mac/">Dictation on a Mac that stays on the Mac</a>: Apple Dictation, VoiceInk, Superwhisper, Wispr Flow and others by where your voice goes.</li>
           <li><a href="/guides/best-pii-redaction-tools-for-chatgpt/">Best tools to redact personal information before using ChatGPT</a>: if a transcript will go into an AI chat.</li>
           <li><a href="/guides/mac-privacy-permissions-explained/">Is it safe to allow Full Disk Access, Input Monitoring or Accessibility on a Mac?</a>: what the permissions an app asks for allow.</li>
           <li><a href="/privacy/">Purplelink's privacy page</a>, <a href="/products/">all products</a> and <a href="/guides/">all guides</a>.</li>
