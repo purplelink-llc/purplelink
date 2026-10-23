@@ -424,11 +424,27 @@ MAX_REPORTED_ERRORS = 20
 _FILE_LINE_ERROR = re.compile(r"^(?P<file>[^:\n]+\.tex):(?P<line>\d+):\s*(?P<msg>.+)$")
 
 
+_MISSING_FILE = re.compile(r"File [`']([^'`\s]+)' not found")
+_NOISE = re.compile(r"^(Emergency stop\.?|==> Fatal error occurred.*|Fatal error occurred.*)$")
+_PROJECT_FILE = re.compile(r"(/|\.(png|jpe?g|pdf|eps|svg|tex|bib|csv|dat|tikz|pgf)$)", re.IGNORECASE)
+
+
+def _missing_file_message(name: str) -> str:
+    """A plain explanation for a file TeX could not find (2026-10-23: these showed only as "Emergency stop")."""
+    if _PROJECT_FILE.search(name):
+        return (f"File not found: {name}. Upload the whole project as a .zip, with main.tex and this file in "
+                "the same folders as in your project.")
+    return (f"File not found: {name}. This class or package is not installed in the free compiler; if it "
+            "came with your template, include it in a .zip with main.tex.")
+
+
 def parse_latex_log(log_text: str) -> list[dict]:
     """Extract structured errors from a latexmk/pdflatex log.
 
     Returns a list of {"file", "line", "message"} dicts, capped at
-    MAX_REPORTED_ERRORS. Returns [] when no errors are found.
+    MAX_REPORTED_ERRORS. Returns [] when no errors are found. A file TeX could not find is reported first in
+    plain words; a missing class or package otherwise surfaces only as "Emergency stop", because that message
+    is not written in file:line form.
     """
     errors: list[dict] = []
     for raw in log_text.splitlines():
@@ -444,7 +460,19 @@ def parse_latex_log(log_text: str) -> list[dict]:
         )
         if len(errors) >= MAX_REPORTED_ERRORS:
             break
+    missing = list(dict.fromkeys(_MISSING_FILE.findall(log_text)))[:5]
+    if missing:
+        anchor = next((e for e in errors if any(n in e["message"] for n in missing)), errors[0] if errors else None)
+        first = [{"file": anchor["file"] if anchor else "main.tex", "line": anchor["line"] if anchor else 1,
+                  "message": _missing_file_message(n)} for n in missing]
+        rest = [e for e in errors if not _NOISE.match(e["message"]) and not any(n in e["message"] for n in missing)]
+        errors = (first + rest)[:MAX_REPORTED_ERRORS]
     return errors
+
+
+def log_has_tex_error(log_text: str) -> bool:
+    """True when the TeX log records an error ("! ..." or file:line: form), not just warnings."""
+    return any(line.startswith("! ") for line in log_text.splitlines()) or bool(parse_latex_log(log_text))
 
 
 _PICTUREENV = r"PICTUREENV=(?:picture|DIFnomarkup|tabular)[\w\d*@]*"

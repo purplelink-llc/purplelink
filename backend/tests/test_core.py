@@ -327,3 +327,44 @@ def test_extract_project_zip_top_level_main_tex_is_kept_as_is(tmp_path):
     z = _make_zip({"main.tex": b"%root", "paper.tex": DOC})
     core.extract_project_zip(z, tmp_path)
     assert (tmp_path / "main.tex").read_bytes() == b"%root"
+
+
+MISSING_CLASS_LOG = """This is pdfTeX, Version 3.141592653
+! LaTeX Error: File `IEEEtran.cls' not found.
+
+Type X to quit or <RETURN> to proceed,
+or enter new name. (Default extension: cls)
+
+Enter file name: 
+./main.tex:1: Emergency stop.
+<read *> 
+./main.tex:1: ==> Fatal error occurred, no output PDF file produced!
+"""
+
+MISSING_FIGURE_LOG = """./main.tex:5: Package pdftex.def Error: File `figures/results.png' not found: using draft setting.
+./main.tex:5: Emergency stop.
+"""
+
+
+def test_parse_latex_log_names_a_missing_class_instead_of_emergency_stop():
+    errs = core.parse_latex_log(MISSING_CLASS_LOG)
+    assert errs[0]["line"] == 1
+    assert "IEEEtran.cls" in errs[0]["message"] and "not installed" in errs[0]["message"]
+    assert not any(e["message"].startswith(("Emergency stop", "==> Fatal")) for e in errs)
+
+
+def test_parse_latex_log_explains_a_missing_project_file():
+    errs = core.parse_latex_log(MISSING_FIGURE_LOG)
+    assert len(errs) == 1 and errs[0]["line"] == 5
+    assert "figures/results.png" in errs[0]["message"] and ".zip" in errs[0]["message"]
+
+
+def test_parse_latex_log_leaves_ordinary_errors_alone():
+    log = "./main.tex:12: Undefined control sequence.\n"
+    assert core.parse_latex_log(log) == [{"file": "./main.tex", "line": 12, "message": "Undefined control sequence."}]
+
+
+def test_log_has_tex_error_ignores_warnings():
+    assert not core.log_has_tex_error("LaTeX Warning: Citation `knuth84' on page 1 undefined on input line 3.\n")
+    assert core.log_has_tex_error("! Undefined control sequence.\n")
+    assert core.log_has_tex_error(MISSING_FIGURE_LOG)

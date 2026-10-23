@@ -57,6 +57,10 @@ def run_compile(
 
     if proc.returncode == 0 and pdf_path.exists():
         return CompileResult(True, pdf_path.read_bytes(), [], log)
+    # latexmk exits non-zero when bibtex or biber fails (for example a missing .bib), yet the PDF is complete
+    # apart from unresolved citations. Return it when TeX itself recorded no error (2026-10-23).
+    if pdf_path.exists() and not core.log_has_tex_error(log):
+        return CompileResult(True, pdf_path.read_bytes(), [], log)
     return CompileResult(False, None, core.parse_latex_log(log), log)
 
 

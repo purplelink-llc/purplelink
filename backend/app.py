@@ -30,6 +30,12 @@ image = (
         "texlive-latex-extra",
         "texlive-fonts-recommended",
         "texlive-xetex",
+        # Journal and conference classes (IEEEtran, acmart, elsarticle, llncs, revtex), siunitx and algorithm
+        # packages, and pgfplots. Without them the IEEE, ACM and Elsevier templates failed with "Emergency stop"
+        # (2026-10-23 replay of 16 realistic documents).
+        "texlive-publishers",
+        "texlive-science",
+        "texlive-pictures",
         "latexmk",
         "latexdiff",
         "biber",
