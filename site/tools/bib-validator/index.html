@@ -4,28 +4,28 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
-    <title>BibTeX Validator Online: Required Fields and DOIs</title>
-    <meta name="description" content="Free online BibTeX validator. Checks required fields and duplicate keys. Optional: DOIs resolve, and titles and authors match CrossRef.">
+    <title>BibTeX Validator and Verifier: Are Your References Real?</title>
+    <meta name="description" content="Free BibTeX validator: checks each reference against CrossRef so made-up (AI-hallucinated) citations stand out, plus required fields and duplicate keys.">
     <link rel="canonical" href="https://purplelink.llc/tools/bib-validator/">
-    <meta property="og:title" content="BibTeX Validator Online: Required Fields and DOIs">
-    <meta property="og:description" content="Free online BibTeX validator. Checks required fields and duplicate keys. Optional: DOIs resolve, and titles and authors match CrossRef.">
+    <meta property="og:title" content="BibTeX Validator and Verifier: Are Your References Real?">
+    <meta property="og:description" content="Free BibTeX validator: checks each reference against CrossRef so made-up (AI-hallucinated) citations stand out, plus required fields and duplicate keys.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/tools/bib-validator/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/bib-validator.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="BibTeX Validator Online: Required Fields and DOIs">
-    <meta name="twitter:description" content="Free online BibTeX validator. Checks required fields and duplicate keys. Optional: DOIs resolve, and titles and authors match CrossRef.">
+    <meta name="twitter:title" content="BibTeX Validator and Verifier: Are Your References Real?">
+    <meta name="twitter:description" content="Free BibTeX validator: checks each reference against CrossRef so made-up (AI-hallucinated) citations stand out, plus required fields and duplicate keys.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/bib-validator.png">
-    <meta name="twitter:image:alt" content="BibTeX Validator Online: Required Fields and DOIs">
+    <meta name="twitter:image:alt" content="BibTeX Validator and Verifier: Are Your References Real?">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@graph": [
         {
           "@type": "WebApplication",
-          "name": "BibTeX Validator",
+          "name": "BibTeX Verifier",
           "url": "https://purplelink.llc/tools/bib-validator/",
           "applicationCategory": "UtilitiesApplication",
           "operatingSystem": "Any (web-based)",
@@ -60,12 +60,12 @@
             {
               "@type": "Question",
               "name": "Can it detect AI-hallucinated citations?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Enable the CrossRef and/or Semantic Scholar checks. For each entry with a title, the tool queries the database and reports how closely the title matches a real paper. Low-confidence matches are flagged as potential hallucinations." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. The CrossRef check is on by default, and Semantic Scholar can be added. For each entry with a title, the tool queries the database and reports how closely the title matches a real paper. Low-confidence matches are flagged as potential hallucinations." }
             },
             {
               "@type": "Question",
               "name": "Are my files stored?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No. Your .bib file is validated in an ephemeral container and discarded immediately. When you enable DOI or database checks, titles and authors are sent to CrossRef and/or Semantic Scholar. That is disclosed clearly before you run the check." }
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Your .bib file is validated in an ephemeral container and discarded immediately. When the CrossRef, DOI or Semantic Scholar checks run, titles and authors are sent to CrossRef and/or Semantic Scholar. That is disclosed clearly before you run the check." }
             },
             {
               "@type": "Question",
@@ -84,7 +84,7 @@
           "itemListElement": [
             { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
             { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://purplelink.llc/tools/" },
-            { "@type": "ListItem", "position": 3, "name": "BibTeX Validator", "item": "https://purplelink.llc/tools/bib-validator/" }
+            { "@type": "ListItem", "position": 3, "name": "BibTeX Verifier", "item": "https://purplelink.llc/tools/bib-validator/" }
           ]
         }
       ]
@@ -120,8 +120,8 @@
       <a class="back-link" href="/tools/">← All tools</a>
       <div class="tools-hero">
         <p class="eyebrow">Free web tool</p>
-        <h1>BibTeX Validator</h1>
-        <p>Upload or paste a <code>.bib</code> file to check syntax, missing fields, duplicate citation keys, and dead DOIs. The tool also verifies that your citations exist and that the authors and years are correct. Download a corrected <code>.bib</code> where CrossRef returns a confident match. The checks catch AI-hallucinated references (citations a language model made up). <strong>Files are never stored.</strong></p>
+        <h1>BibTeX Verifier</h1>
+        <p>Upload or paste a <code>.bib</code> file. Each reference is looked up in CrossRef, so a citation that does not exist, such as one an AI tool made up, stands out. The same run checks syntax, required fields and duplicate citation keys, and can also check DOIs and Semantic Scholar. Download a corrected <code>.bib</code> where CrossRef returns a confident match. <strong>Files are never stored.</strong></p>
       </div>
 
       <div class="tool-app">
@@ -154,6 +154,10 @@
           <legend>Checks to run</legend>
           <div class="bib-checks">
             <label>
+              <input type="checkbox" id="check-crossref" checked>
+              <span>Check each reference exists in CrossRef (catches made-up citations)</span>
+            </label>
+            <label>
               <input type="checkbox" checked disabled>
               <span>Syntax, required fields &amp; duplicate keys <em class="u-faint">(always on)</em></span>
             </label>
@@ -162,16 +166,12 @@
               <span>DOI resolution: verify each DOI is a live link</span>
             </label>
             <label>
-              <input type="checkbox" id="check-crossref">
-              <span>CrossRef: check titles exist in CrossRef (catches hallucinations)</span>
-            </label>
-            <label>
               <input type="checkbox" id="check-s2">
-              <span>Semantic Scholar: check titles in Semantic Scholar</span>
+              <span>Semantic Scholar: also look titles up in Semantic Scholar</span>
             </label>
           </div>
           <p id="privacy-notice" class="bib-privacy-notice" role="note">
-            Enabling DOI or database checks will send entry titles and authors to external services (doi.org, CrossRef, Semantic Scholar).
+            The CrossRef check sends each entry's title and authors to CrossRef (up to 100 entries); DOI and Semantic Scholar checks send them to doi.org and Semantic Scholar. Untick a check to skip it.
           </p>
         </fieldset>
         <div class="tool-options u-mt-075">
@@ -181,6 +181,7 @@
 
         <p class="tool-status" id="status" aria-live="polite"></p>
         <div class="tool-result" id="result"></div>
+        <p class="tool-next" id="bib-unmatched-next" hidden><span id="bib-unmatched-count"></span> <a data-track="tool_next" data-track-meta="bib-validator" href="/tools/paper-review/?utm_source=tool-bib-validator&amp;utm_medium=tool&amp;utm_campaign=paper-review&amp;utm_content=unmatched">Paper Review</a> checks the references inside your manuscript the same way, flags retracted sources, and in the $9 review checks whether each cited paper supports the claim it is attached to. Its reference check is free.</p>
         <p class="tool-privacy">Files are never written to disk or logged.</p>
       </div>
 
@@ -188,7 +189,7 @@
         <h2>How to validate a BibTeX file online</h2>
         <ol>
           <li>Upload your <code>.bib</code> file (drag-and-drop or click), or switch to <strong>Paste text</strong> and drop the BibTeX directly. Up to 2 MB.</li>
-          <li>Syntax, required-field and duplicate-key checks run automatically. Enable DOI resolution and/or CrossRef / Semantic Scholar checks to verify your citations actually exist (and that authors and years match).</li>
+          <li>The CrossRef existence check is on by default, and syntax, required-field and duplicate-key checks always run. Tick DOI resolution or Semantic Scholar to add them, or untick CrossRef to skip outside lookups.</li>
           <li>Click <strong>Validate .bib</strong>. A color-coded table shows each entry. Click any row to see the original BibTeX, plus the corrected version when CrossRef returned a confident match. Use the filter chips to focus on warnings or errors.</li>
           <li>Download the <strong>annotated</strong> <code>.bib</code> (your file with status comments) or the <strong>corrected</strong> <code>.bib</code> (entries rewritten from CrossRef metadata where confidence is high).</li>
         </ol>
@@ -251,9 +252,9 @@
 
       <section class="tool-faq">
         <h2>About this tool</h2>
-        <p>This tool validates BibTeX files in layers: syntax, completeness and duplicate keys (always, with no external calls), DOI resolution (opt-in), and existence checks against CrossRef and Semantic Scholar (opt-in). When you enable the database checks, it also compares authors and publication years and can produce a corrected <code>.bib</code> for high-confidence matches. This catches AI-hallucinated citations, which have plausible-looking metadata but do not correspond to real papers.</p>
-        <details><summary>Can it detect AI-hallucinated citations?</summary><div class="faq-body">Yes. Enable the CrossRef and/or Semantic Scholar checks. For each entry with a title, the tool queries the database. It reports how closely the title and author list match a real paper and whether the year is off. Low-confidence title matches (below 50%) and author mismatches on otherwise-confident matches are flagged as likely hallucinations. For the full workflow and how the detection methods compare, see the guide on <a href="/guides/catch-ai-hallucinated-citations/">catching AI-hallucinated citations</a>.</div></details>
-        <details><summary>Are my files stored?</summary><div class="faq-body">No. Your .bib file is validated in an ephemeral container and discarded immediately. When you enable DOI or database checks, titles and authors are sent to those external services. This is disclosed before you run the check.</div></details>
+        <p>This tool validates BibTeX files in layers: syntax, completeness and duplicate keys (always, with no external calls), DOI resolution (opt-in), an existence check against CrossRef (on by default) and Semantic Scholar (opt-in). When you enable the database checks, it also compares authors and publication years and can produce a corrected <code>.bib</code> for high-confidence matches. This catches AI-hallucinated citations, which have plausible-looking metadata but do not correspond to real papers.</p>
+        <details><summary>Can it detect AI-hallucinated citations?</summary><div class="faq-body">Yes. The CrossRef check is on by default, and Semantic Scholar can be added. For each entry with a title, the tool queries the database. It reports how closely the title and author list match a real paper and whether the year is off. Low-confidence title matches (below 50%) and author mismatches on otherwise-confident matches are flagged as likely hallucinations. For the full workflow and how the detection methods compare, see the guide on <a href="/guides/catch-ai-hallucinated-citations/">catching AI-hallucinated citations</a>.</div></details>
+        <details><summary>Are my files stored?</summary><div class="faq-body">No. Your .bib file is validated in an ephemeral container and discarded immediately. When the CrossRef, DOI or Semantic Scholar checks run, titles and authors are sent to those external services. This is disclosed before you run the check.</div></details>
         <details><summary>How does the duplicate-key check work?</summary><div class="faq-body">It compares the citation keys of all entries in the file, ignoring letter case, because BibTeX does. Every entry after the first that reuses a key is marked as an error, and the message gives the line of the first use. <code>@string</code>, <code>@preamble</code> and <code>@comment</code> blocks are not entries and are ignored. Separately, an entry with a different key but the same DOI, or the same title, as an earlier entry gets a "possible duplicate" note. That note does not change the entry's status, because the same paper can legitimately appear twice.</div></details>
         <details><summary>What does the annotated .bib contain?</summary><div class="faq-body">Your original .bib file with a comment line above each entry. The comment shows the validation status: missing required fields, duplicate keys, DOI result, title and author confidence scores, and any year mismatch. Paste it straight back into your editor.</div></details>
         <details><summary>What is the corrected .bib?</summary><div class="faq-body">The corrected .bib covers each entry where CrossRef returned a high-confidence match (title similarity at least 85%). It replaces the entry's fields with CrossRef metadata: title, author list, year, DOI, journal or booktitle, volume, issue, pages, and publisher. Entries without a confident match are passed through unchanged. Each rewritten entry is marked with a "CORRECTED from CrossRef" comment so you can audit the changes.</div></details>
@@ -333,6 +334,8 @@
         [chkDoi, chkCr, chkS2].forEach(function (cb) {
           cb.addEventListener("change", updatePrivacyNotice);
         });
+        // CrossRef is ticked by default (2026-10-23), so the notice must show before any click.
+        updatePrivacyNotice();
 
         // ---------------------- Upload-mode dropzone ----------------------
         wireDropzone("dropzone", "file", function (f) {
@@ -516,6 +519,19 @@
           }
 
           resultEl.innerHTML = html;
+          // References with no close CrossRef or Semantic Scholar match (under 50%, shown as a cross) are the case
+          // Paper Review's citation check is for (2026-10-23).
+          var unmatched = data.entries.filter(function (e) {
+            var cr = e.crossref_confidence, s2 = e.s2_confidence;
+            var checked = (cr !== null && cr !== undefined) || (s2 !== null && s2 !== undefined);
+            return checked && !(cr >= 0.5) && !(s2 >= 0.5);
+          }).length;
+          var nextEl = document.getElementById("bib-unmatched-next");
+          if (nextEl) {
+            document.getElementById("bib-unmatched-count").textContent = unmatched === 1
+              ? "1 reference had no close match." : unmatched + " references had no close match.";
+            nextEl.hidden = unmatched === 0;
+          }
 
           // Wire filter chips
           resultEl.querySelectorAll(".bib-filter-chip").forEach(function (chip) {

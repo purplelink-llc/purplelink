@@ -3833,15 +3833,15 @@ If this saves you time, you can leave a tip. It helps keep these tools free and 
 ---
 
 Source: https://purplelink.llc/tools/bib-validator/
-Title: BibTeX Validator Online: Required Fields and DOIs
+Title: BibTeX Validator and Verifier: Are Your References Real?
 
 ← All tools
 
 Free web tool
 
-# BibTeX Validator
+# BibTeX Verifier
 
-Upload or paste a .bib file to check syntax, missing fields, duplicate citation keys, and dead DOIs. The tool also verifies that your citations exist and that the authors and years are correct. Download a corrected .bib where CrossRef returns a confident match. The checks catch AI-hallucinated references (citations a language model made up). Files are never stored.
+Upload or paste a .bib file. Each reference is looked up in CrossRef, so a citation that does not exist, such as one an AI tool made up, stands out. The same run checks syntax, required fields and duplicate citation keys, and can also check DOIs and Semantic Scholar. Download a corrected .bib where CrossRef returns a confident match. Files are never stored.
 
 Drag a .bib file here, or choose one. Max 2 MB.
 
@@ -3849,17 +3849,19 @@ Paste up to 2 MB of BibTeX directly. Same checks, no file needed.
 
 Checks to run
 
+Check each reference exists in CrossRef (catches made-up citations)
+
 Syntax, required fields & duplicate keys (always on)
 
 DOI resolution: verify each DOI is a live link
 
-CrossRef: check titles exist in CrossRef (catches hallucinations)
+Semantic Scholar: also look titles up in Semantic Scholar
 
-Semantic Scholar: check titles in Semantic Scholar
-
-Enabling DOI or database checks will send entry titles and authors to external services (doi.org, CrossRef, Semantic Scholar).
+The CrossRef check sends each entry's title and authors to CrossRef (up to 100 entries); DOI and Semantic Scholar checks send them to doi.org and Semantic Scholar. Untick a check to skip it.
 
 Choose a .bib file or paste entries above to start.
+
+Paper Review checks the references inside your manuscript the same way, flags retracted sources, and in the $9 review checks whether each cited paper supports the claim it is attached to. Its reference check is free.
 
 Files are never written to disk or logged.
 
@@ -3867,7 +3869,7 @@ Files are never written to disk or logged.
 
 - Upload your .bib file (drag-and-drop or click), or switch to Paste text and drop the BibTeX directly. Up to 2 MB.
 
-- Syntax, required-field and duplicate-key checks run automatically. Enable DOI resolution and/or CrossRef / Semantic Scholar checks to verify your citations actually exist (and that authors and years match).
+- The CrossRef existence check is on by default, and syntax, required-field and duplicate-key checks always run. Tick DOI resolution or Semantic Scholar to add them, or untick CrossRef to skip outside lookups.
 
 - Click Validate .bib. A color-coded table shows each entry. Click any row to see the original BibTeX, plus the corrected version when CrossRef returned a confident match. Use the filter chips to focus on warnings or errors.
 
@@ -3938,15 +3940,15 @@ The file has six entries and the table lists five. The last entry, with the uncl
 
 ## About this tool
 
-This tool validates BibTeX files in layers: syntax, completeness and duplicate keys (always, with no external calls), DOI resolution (opt-in), and existence checks against CrossRef and Semantic Scholar (opt-in). When you enable the database checks, it also compares authors and publication years and can produce a corrected .bib for high-confidence matches. This catches AI-hallucinated citations, which have plausible-looking metadata but do not correspond to real papers.
+This tool validates BibTeX files in layers: syntax, completeness and duplicate keys (always, with no external calls), DOI resolution (opt-in), an existence check against CrossRef (on by default) and Semantic Scholar (opt-in). When you enable the database checks, it also compares authors and publication years and can produce a corrected .bib for high-confidence matches. This catches AI-hallucinated citations, which have plausible-looking metadata but do not correspond to real papers.
 
 Can it detect AI-hallucinated citations?
 
-Yes. Enable the CrossRef and/or Semantic Scholar checks. For each entry with a title, the tool queries the database. It reports how closely the title and author list match a real paper and whether the year is off. Low-confidence title matches (below 50%) and author mismatches on otherwise-confident matches are flagged as likely hallucinations. For the full workflow and how the detection methods compare, see the guide on catching AI-hallucinated citations.
+Yes. The CrossRef check is on by default, and Semantic Scholar can be added. For each entry with a title, the tool queries the database. It reports how closely the title and author list match a real paper and whether the year is off. Low-confidence title matches (below 50%) and author mismatches on otherwise-confident matches are flagged as likely hallucinations. For the full workflow and how the detection methods compare, see the guide on catching AI-hallucinated citations.
 
 Are my files stored?
 
-No. Your .bib file is validated in an ephemeral container and discarded immediately. When you enable DOI or database checks, titles and authors are sent to those external services. This is disclosed before you run the check.
+No. Your .bib file is validated in an ephemeral container and discarded immediately. When the CrossRef, DOI or Semantic Scholar checks run, titles and authors are sent to those external services. This is disclosed before you run the check.
 
 How does the duplicate-key check work?
 
