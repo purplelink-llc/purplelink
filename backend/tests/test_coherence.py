@@ -340,3 +340,12 @@ def test_endpoint_rules_mode(api, monkeypatch):
     assert body["report"]["mode"] == "rules_only"
     assert any(f["key"] == "hypothesis_untested:h3" for f in body["report"]["findings"])
     assert r.headers["cache-control"] == "no-store"
+
+
+def test_pipeline_mounts_coherence_flags_secret():
+    # COHERENCE_IN_REVIEW reaches the paid pipeline only through this secret.
+    import inspect
+    import app as backend_app
+    src = inspect.getsource(backend_app)
+    block = src[src.index("def paper_review_pipeline(") - 400:src.index("def paper_review_pipeline(")]
+    assert "coherence_flags_secret" in block

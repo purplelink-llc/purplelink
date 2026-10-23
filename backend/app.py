@@ -272,6 +272,9 @@ paper_review_shared_secret = modal.Secret.from_name("paper-review-shared")
 stripe_secret = modal.Secret.from_name("stripe-secret")
 subscribe_secret = modal.Secret.from_name("subscribe-secret")
 resend_secret = modal.Secret.from_name("resend")
+# Feature flags for the coherence check (latextools/coherence.py). Holds COHERENCE_IN_REVIEW=1 since
+# 2026-10-23 (Ben); edit the secret to turn it off: new containers read it at start.
+coherence_flags_secret = modal.Secret.from_name("coherence-flags")
 
 # Product catalog — single source of truth shared between the webhook
 # (which maps Stripe price_id → product), the register-token endpoint
@@ -551,7 +554,7 @@ async def _credit_referral(referrer_email: str, referee_email: str) -> None:
     cpu=2.0,
     memory=4096,
     max_containers=4,
-    secrets=[anthropic_secret, resend_secret],
+    secrets=[anthropic_secret, resend_secret, coherence_flags_secret],
 )
 def paper_review_pipeline(
     token: str,
