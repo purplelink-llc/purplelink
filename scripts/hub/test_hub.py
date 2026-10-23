@@ -396,6 +396,26 @@ def test_phase2_kits_rules_week_log():
     assert log.startswith("# Placements (generated)") and "Do not edit" in log and not hub.EMAIL_RE.search(log)
 
 
+def test_overrides():
+    run("import")
+    con = db()
+    d = con.execute("SELECT id FROM placements WHERE target = 'Planned University'").fetchone()[0]
+    lib = con.execute("SELECT id FROM placements WHERE target LIKE 'Example University%'").fetchone()[0]
+    put("hub/overrides.json", json.dumps({
+        lib: {"url": "https://guides.example.edu/latex", "assets": ["widget", "paper-review"], "status": "live"},
+        d: {"exclude": True},
+    }))
+    run("import")
+    con = db()
+    row = con.execute("SELECT url, status FROM placements WHERE id = ?", (lib,)).fetchone()
+    assert tuple(row) == ("https://guides.example.edu/latex", "live")
+    assert sorted(r[0] for r in con.execute("SELECT asset_id FROM placement_assets WHERE placement_id = ?", (lib,))) == ["paper-review", "widget"]
+    assert con.execute("SELECT kind FROM assets WHERE id = 'paper-review'").fetchone()[0] == "line"
+    assert con.execute("SELECT count(*) FROM placements WHERE id = ?", (d,)).fetchone()[0] == 0
+    (tmp / "hub" / "overrides.json").unlink()
+    run("import")
+
+
 if __name__ == "__main__":
     test_all()
     test_sources_untouched()
@@ -407,4 +427,5 @@ if __name__ == "__main__":
     test_export_has_no_contacts()
     test_phase2_tags_and_link_results()
     test_phase2_kits_rules_week_log()
+    test_overrides()
     print("ok")
