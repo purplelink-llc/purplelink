@@ -597,6 +597,11 @@ def paper_review_pipeline(
                 )
                 if source_note and final.get("result_md"):
                     final["result_md"] = _prepend_source_note(final["result_md"], source_note)
+                from latextools import coherence as _coh
+                if _coh.in_review_enabled() and final.get("result_md"):
+                    # Behind a flag until Ben approves it for buyers; inside the same usage tracker, so it
+                    # counts against this order's cost ceiling.
+                    final["result_md"] += await _coherence_markdown_for_review(pdf_bytes)
                 job_status = "done" if final.get("result_md") else "error"
                 replacement_token = None
                 if job_status == "error":
@@ -677,6 +682,47 @@ def paper_review_pipeline(
                 _write_usage_ledger(token, product_key, "error", usage)
 
     _asyncio.run(_run())
+
+
+# Ceiling for one coherence check (internal runs and the in-review add-on). A full check measured about
+# $0.5 to $1 per paper; this stops a runaway, not a normal run.
+COHERENCE_COST_CEILING_USD = 3.0
+
+
+async def _coherence_markdown_for_review(pdf_bytes: bytes) -> str:
+    """The coherence section appended to a paid review when COHERENCE_IN_REVIEW=1. Never raises: a failure
+    here returns "" so the paid review is delivered without it."""
+    try:
+        from latextools import coherence as _coh
+        ms = _coh.load_manuscript(pdf_bytes, "manuscript.pdf")
+        report = await _coh.run_coherence_check(ms)
+        return "\n\n" + _coh.render_markdown(report)
+    except Exception as e:
+        logger.warning("coherence section skipped: %s", type(e).__name__)
+        return ""
+
+
+@app.function(
+    image=image,
+    timeout=600,
+    cpu=1.0,
+    memory=2048,
+    max_containers=2,
+    secrets=[anthropic_secret],
+)
+def coherence_check_job(data: bytes, filename: str, use_model: bool = True) -> dict:
+    """Run the coherence check on one manuscript and return {report, markdown, usage}. Called only by the
+    flag-gated internal endpoint. Holds the manuscript in memory; nothing is written to a Dict."""
+    import asyncio as _asyncio
+    from latextools import coherence as _coh, papercheck
+
+    async def _go() -> dict:
+        ms = _coh.load_manuscript(data, filename)
+        with papercheck.UsageTracker(max_cost_usd=COHERENCE_COST_CEILING_USD) as usage:
+            report = await _coh.run_coherence_check(ms, use_model=use_model)
+        return {"report": report, "markdown": _coh.render_markdown(report), "usage": usage.to_dict()}
+
+    return _asyncio.run(_go())
 
 
 @app.function(
@@ -3388,6 +3434,51 @@ def web():
                 logger.error("paper preview failed: %s", type(e).__name__)
                 return _preview_error("failed", "This PDF could not be read. Export it again from your editor and retry.", 422)
         return JSONResponse(result, headers={"Cache-Control": "no-store"})
+
+    # ------------------------------------------------------------------
+    # /paper-review/coherence/internal — coherence check (Paper Bible), not
+    # sold yet. Off unless COHERENCE_CHECK_ENABLED=1, and even then only for
+    # callers holding BACKEND_WEBHOOK_SECRET. mode=rules runs the free rule
+    # checks here; mode=full runs the model stages in coherence_check_job,
+    # which mounts the Anthropic key this function does not. Nothing is
+    # stored and no manuscript text is logged.
+    # ------------------------------------------------------------------
+    @api.post("/paper-review/coherence/internal")
+    async def paper_review_coherence_internal(
+        request: Request, file: UploadFile = File(...), mode: str = Form("rules"),
+    ):
+        from latextools import coherence as _coh
+        if not _coh.check_enabled():
+            return JSONResponse({"error": "not_found"}, status_code=404)
+        expected = os.environ.get("BACKEND_WEBHOOK_SECRET", "")
+        import hmac as _hmac
+        if not expected or not _hmac.compare_digest(request.headers.get("x-webhook-secret", ""), expected):
+            return JSONResponse({"error": "unauthorized"}, status_code=401)
+        if _too_large(request, core.MAX_PAPER_UPLOAD_BYTES):
+            return JSONResponse({"error": "invalid", "detail": "File is too large (max 20 MB)."}, status_code=400)
+        try:
+            data = await _read_capped(file, core.MAX_PAPER_UPLOAD_BYTES)
+        except _UploadTooLarge:
+            return JSONResponse({"error": "invalid", "detail": "File is too large (max 20 MB)."}, status_code=400)
+        filename = file.filename or ""
+        if not data or not filename.lower().endswith((".pdf", ".docx", ".tex")):
+            return JSONResponse({"error": "invalid", "detail": "Upload a .tex, .docx or .pdf manuscript."},
+                                status_code=400)
+        if mode == "full":
+            try:
+                out = await coherence_check_job.remote.aio(data, filename, True)
+            except Exception as e:
+                logger.error("coherence job failed: %s", type(e).__name__)
+                return JSONResponse({"error": "failed"}, status_code=500)
+            return JSONResponse(out, headers={"Cache-Control": "no-store"})
+        try:
+            ms = await run_in_threadpool(_coh.load_manuscript, data, filename)
+            report = await _coh.run_coherence_check(ms, use_model=False)
+        except Exception as e:
+            logger.error("coherence rules check failed: %s", type(e).__name__)
+            return JSONResponse({"error": "unreadable"}, status_code=422)
+        return JSONResponse({"report": report, "markdown": _coh.render_markdown(report)},
+                            headers={"Cache-Control": "no-store"})
 
     # ------------------------------------------------------------------
     # /paper-review/journals — list journal compliance specs for a domain
