@@ -69,6 +69,15 @@
     <div class="changelog-list">
 
       <div class="changelog-entry">
+        <span class="changelog-date">October 23, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
+          <h2>Buddy 0.9.1</h2>
+          <p>Exact usage no longer asks for your Mac's password again and again. Claude Code rewrites its keychain sign-in each time it renews it, which removed Buddy's permission, so macOS asked again every few hours; Buddy now reads it through <code>/usr/bin/security</code>, the tool Claude Code stores it with, which is always allowed. Exact usage also no longer drops back to the estimate every day. Claude Code's sign-in lasts about eight hours and only the <code>claude</code> command renews it, which the Claude app's chats don't do, so when it has expired Buddy runs <code>claude doctor</code>, a one-second health check that uses none of your plan, to renew it. <a href="/buddy/">Buddy</a>.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
         <span class="changelog-date">October 22, 2026</span>
         <div class="changelog-content">
           <span class="changelog-tag tag-update">Update</span>
