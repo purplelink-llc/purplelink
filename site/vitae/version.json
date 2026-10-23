@@ -1,5 +1,5 @@
 {
-  "version": "1.6.0",
-  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.6.0.dmg",
-  "releaseNotes": "Adds posters and talks linked to grants. Link a poster or talk to the grants that supported it, record who presented it and mark it Student-led. Each grant page lists its posters and talks, and a CV setting can list them under each grant. Also includes the first parts of iCloud sync, which is not switched on yet."
+  "version": "1.6.1",
+  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.6.1.dmg",
+  "releaseNotes": "Adds a View on Altmetric link to each paper that has a DOI, PubMed ID or arXiv ID; it opens the paper's Altmetric page in your browser. Version 1.6.0 added posters and talks linked to grants. Link a poster or talk to the grants that supported it, record who presented it and mark it Student-led. Each grant page lists its posters and talks, and a CV setting can list them under each grant. Also includes the first parts of iCloud sync, which is not switched on yet."
 }
