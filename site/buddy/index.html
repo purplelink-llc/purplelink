@@ -38,7 +38,7 @@
           "name": "Buddy",
           "applicationCategory": "DeveloperApplication",
           "operatingSystem": "macOS 14.0 or later",
-          "softwareVersion": "0.9.0",
+          "softwareVersion": "0.9.1",
           "url": "https://purplelink.llc/buddy/",
           "image": "https://purplelink.llc/assets/og/buddy.png",
           "downloadUrl": "https://github.com/purplelink-llc/buddy/releases/latest/download/Buddy.zip",
@@ -112,7 +112,7 @@
           <a class="btn btn-primary" href="https://github.com/purplelink-llc/buddy/releases/latest/download/Buddy.zip" rel="noopener" data-track="download" data-track-meta="buddy">Download for Mac</a>
           <a class="btn btn-ghost" href="https://github.com/purplelink-llc/buddy" rel="noopener">Source on GitHub</a>
         </div>
-        <p class="waitlist-fine-print">Version 0.9.0. A ZIP file from the <a href="https://github.com/purplelink-llc/buddy/releases/latest" rel="noopener">latest GitHub release</a>. Open it and move Buddy to Applications. The app is notarized (checked by Apple).</p>
+        <p class="waitlist-fine-print">Version 0.9.1. A ZIP file from the <a href="https://github.com/purplelink-llc/buddy/releases/latest" rel="noopener">latest GitHub release</a>. Open it and move Buddy to Applications. The app is notarized (checked by Apple).</p>
         <p class="waitlist-fine-print">Needs a Mac with Apple silicon, macOS 14 or later, and Claude Code. MIT license. Made by Purplelink LLC.</p>
       </div>
       <figure class="app-hero-window buddy-hero-window">
@@ -162,7 +162,7 @@
         <li><strong>Automation, if you allow it.</strong> macOS asks once before Buddy brings a Terminal or iTerm2 tab forward or sends "continue" to it.</li>
         <li><strong>A small log.</strong> Buddy keeps a log of what it does, chat titles included, in <code>~/Library/Logs/Buddy/buddy.log</code>, capped at about 1 MB.</li>
         <li><strong>Token counts in your transcripts.</strong> For the usage number, Buddy adds up the tokens your chats on this Mac used in the current 5-hour window and compares that with what your recent session limits took. It shows the result with "≈".</li>
-        <li><strong>Your Claude Code sign-in, if you turn it on.</strong> Exact usage from Anthropic is off by default. If you turn it on in Settings, Buddy reads Claude Code's sign-in from your keychain, and macOS asks first. It then asks Anthropic's usage service every few minutes for your exact session and weekly usage. The sign-in is used only for that request and is never stored or logged. Settings shows which account it is and can switch accounts or sign out.</li>
+        <li><strong>Your Claude Code sign-in, if you turn it on.</strong> Exact usage from Anthropic is off by default. If you turn it on in Settings, Buddy reads Claude Code's sign-in from your keychain with <code>/usr/bin/security</code>, the same tool Claude Code stores it with, so there is no password prompt. When the sign-in has expired, Buddy runs <code>claude doctor</code> to renew it. It then asks Anthropic's usage service every few minutes for your exact session and weekly usage. The sign-in is used only for that request and is never stored or logged. Settings shows which account it is and can switch accounts or sign out.</li>
       </ul>
       <p class="specs-more">Buddy uses the network for two things only: the daily update check, which fetches <code>appcast.xml</code> from the purplelink-llc/buddy repository on GitHub and the update itself from GitHub Releases, and exact usage if you turn it on. Both can be turned off in Settings. Everything else stays on your Mac.</p>
     </section>

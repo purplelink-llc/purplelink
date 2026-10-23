@@ -41,7 +41,7 @@ class BuddyPage(unittest.TestCase):
     def test_json_ld(self):
         app = [d for d in self.nodes if d.get("@type") == "SoftwareApplication"][0]
         self.assertEqual(float(app["offers"]["price"]), 0)
-        self.assertEqual(app["softwareVersion"], "0.9.0")
+        self.assertEqual(app["softwareVersion"], "0.9.1")
         self.assertEqual(app["operatingSystem"], "macOS 14.0 or later")
         self.assertEqual(app["downloadUrl"], ZIP)
         self.assertIn("BreadcrumbList", {d.get("@type") for d in self.nodes})
