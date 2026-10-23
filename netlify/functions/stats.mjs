@@ -262,6 +262,7 @@ export default async function handler(request) {
     guideTrialByPlacement: {}, guidePageByPlacement: {},
     byDay: {},
     funnelByChannel: {},
+    funnelByContent: {},
     excludedHosts: {},
     journeysByDay: {},
   };
@@ -336,6 +337,15 @@ export default async function handler(request) {
         else if (rec.type === "checkout_click") bump(fc.checkout, rec.meta || "unknown");
         else if (/_?trial_download$/.test(rec.type)) bump(fc.trial, rec.meta || rec.type);
         else if (rec.type === "guide_mtx_trial") bump(fc.trial, "guide_mtx_trial");
+        // The same counts by the first-touch link tag (utm_content), so one placement can be read on its own.
+        if (rec.fc) {
+          const fk = String(rec.fc).slice(0, 60);
+          const fx = s.funnelByContent[fk] || (s.funnelByContent[fk] = { channel: ft, pageviews: 0, pageviewsByPath: {}, trial: {}, checkout: {} });
+          if (rec.type === "pageview") { fx.pageviews++; bump(fx.pageviewsByPath, rec.path); }
+          else if (rec.type === "checkout_click") bump(fx.checkout, rec.meta || "unknown");
+          else if (/_?trial_download$/.test(rec.type)) bump(fx.trial, rec.meta || rec.type);
+          else if (rec.type === "guide_mtx_trial") bump(fx.trial, "guide_mtx_trial");
+        }
       }
 
       if (rec.type === "pageview") {
@@ -448,6 +458,11 @@ export default async function handler(request) {
     ...(hostFilter ? {} : { journeysByDay: Object.fromEntries(Object.entries(s.journeysByDay).sort()) }),
     funnelByChannel: Object.fromEntries(Object.entries(s.funnelByChannel).map(([ch, v]) => [ch, {
       pageviews: v.pageviews, pageviewsByPath: Object.fromEntries(topN(v.pageviewsByPath, 40).map((x) => [x.key, x.count])),
+      trial: v.trial, checkout: v.checkout,
+    }])),
+    funnelByContent: Object.fromEntries(Object.entries(s.funnelByContent).map(([k, v]) => [k, {
+      channel: v.channel, pageviews: v.pageviews,
+      pageviewsByPath: Object.fromEntries(topN(v.pageviewsByPath, 20).map((x) => [x.key, x.count])),
       trial: v.trial, checkout: v.checkout,
     }])),
   });

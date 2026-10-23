@@ -18,6 +18,13 @@ Phase 1 (results):
   hub.py check-listings [--if-older DAYS]   fetch live listing pages; record price and version seen (facts.json)
   hub.py export DIR             aggregate JSON arrays for the dashboard's Marketing tab (no contacts, no email targets)
 
+Phase 2 (the hub as the gate):
+  hub.py utm URL --asset A --channel C [--source S] [--campaign X]   the link with a utm_content no placement uses yet
+  hub.py kits [--write ASSET|all]   submission kits from site/llms.txt; says which stored kit is out of date
+  hub.py rules [--checked CHANNEL]  platform rules per company channel, due for a re-check after 90 days
+  hub.py week pick|measure [--write]   Monday: up to 5 assets to draft for; Sunday: what the week's placements did
+  hub.py log                    write Outreach/PLACEMENTS.md, a generated read-only view of every placement
+
 Sources: approval queue items (pending, approved, done; outward kinds only), the social queue (posted and scheduled
 company posts, one placement per platform), Outreach/OUTREACH-LOG.md tables, video/howto/ledger.json, and the MacUpdate
 readings in the traffic dashboard history. Assets come from site/llms.txt and site/sitemap.xml.
@@ -266,15 +273,22 @@ def from_queue(p: dict) -> list:
                 continue
             target = str(fm.get("target", ""))
             result = section(body, "Result")
+            draft = section(body, "Draft")
             res_urls = [u for u in URL_RE.findall(result) if not site_path(u)]
             date = (DATE_RE.findall(result) or [str(fm.get("decided") or fm.get("created") or "")[:10]])[-1]
+            # Phase 2 fields, when an item carries them, win over inference: assets, channel, placement_url, live.
+            contents = list(dict.fromkeys(re.findall(r"utm_content=([\w.\-]+)", draft)))
             out.append({
                 "id": f"queue:{fm.get('id', f.stem)}", "source": "approval-queue",
-                "channel": channel_of(target + " " + str(fm.get("kind")), "email" if fm.get("kind") == "email" else "other"),
-                "kind": fm.get("kind"), "target": mask(target)[:200], "status": status, "date": date[:10],
-                "url": res_urls[0] if res_urls else "", "landing_url": "", "utm": "",
+                "channel": str(fm.get("channel") or "") or channel_of(target + " " + str(fm.get("kind")), "email" if fm.get("kind") == "email" else "other"),
+                "kind": fm.get("kind"), "target": mask(target)[:200], "status": status,
+                "date": str(fm.get("live") or date)[:10],
+                "url": str(fm.get("placement_url") or "") or (res_urls[0] if res_urls else ""), "landing_url": "",
+                "utm": "utm_content=" + ",".join(contents) if contents else "",
                 "approval": fm.get("id", ""), "contact_ref": "", "notes": mask(result)[:300],
-                "_text": " ".join([target, section(body, "Ask"), section(body, "Draft")]),
+                "_text": " ".join([target, section(body, "Ask"), draft]),
+                "_assets": [a.strip() for a in str(fm.get("assets") or "").split(",") if a.strip()],
+                "_contents": contents,
             })
     return out
 
@@ -373,6 +387,7 @@ def from_videos(p: dict) -> list:
                 "landing_url": "", "utm": f"utm_content={v.get('link_utm_content', '')}" if v.get("link_utm_content") else "",
                 "approval": "standing:daily-howto", "contact_ref": "", "notes": v.get("title", "")[:200],
                 "_text": str(v.get("app", "")), "_assets": [str(v.get("app", ""))],
+                "_contents": [v["link_utm_content"]] if v.get("link_utm_content") else [],
             })
     return out
 
@@ -454,6 +469,7 @@ def fetch_funnel(p: dict, get=None) -> dict:
     for w in FUNNEL_WINDOWS:
         data = get(f"{STATS_URL}?days={w}", {"x-stats-token": tok, "User-Agent": "purplelink-marketing-hub"})
         out["windows"][str(w)] = data.get("funnelByChannel") or {}
+        out.setdefault("content", {})[str(w)] = data.get("funnelByContent") or {}
     p["funnel"].parent.mkdir(parents=True, exist_ok=True)
     p["funnel"].write_text(json.dumps(out, indent=1))
     return out
@@ -594,6 +610,19 @@ def placement_results(pls: list, links: dict, assets: dict, funnel: dict, orders
             n = sum(1 for o in orders if o["product"] in products and o["date"] >= pl["date"]
                     and o["first"] and key_matches(o["first"], keys))
             rows.append((pl["id"], asof, "orders", n, "ledger", "first-touch"))
+    # Per-link counts (utm_content, recorded since 2026-10-23): exact for this placement, not shared with its channel.
+    cont = funnel.get("content") or {}
+    for pl, w, keys, paths, products in plan:
+        tags = pl.get("_contents") or re.findall(r"utm_content=([\w.\-]+)", (pl.get("utm") or "") + " " + (pl.get("landing_url") or ""))
+        if not tags or not w or str(w) not in cont:
+            continue
+        rows_w = cont[str(w)]
+        hit = [rows_w[t] for t in tags if t in rows_w]
+        v = sum(x.get("pageviews", 0) for x in hit)
+        tr = sum(sum((x.get("trial") or {}).get(prod, 0) for prod in products) if products else sum((x.get("trial") or {}).values()) for x in hit)
+        ck = sum(sum((x.get("checkout") or {}).get(prod, 0) for prod in products) if products else sum((x.get("checkout") or {}).values()) for x in hit)
+        for metric, val in (("link-visits", v), ("link-trials", tr), ("link-checkout-clicks", ck)):
+            rows.append((pl["id"], asof, metric, val, f"funnel-link:{w}d", "exact-link"))
     for item, post in (metrics.get("posts") or {}).items():
         for plat, v in (post.get("platforms") or {}).items():
             snaps = v.get("snapshots") or {}
@@ -758,6 +787,239 @@ def channel_stats(pls: list, links: dict, assets: dict, funnel: dict, orders: li
             why += f"; {trials} trials against {visits} product-page visits: trials also start on guides, and link checkers can trigger them, so no rate is given"
         rows.append((prod, ch, g["n"], visits, trials, n_orders, n_heard, lo, hi, verdict, why))
     return rows
+
+
+# --- phase 2: tags, kits, channel rules, weekly loop, generated log ------------------------------------------------
+
+def slug(s: str, n: int = 24) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", (s or "").lower()).strip("-")[:n].strip("-")
+
+
+def used_contents(p: dict) -> set:
+    """Every utm_content already in use: queue drafts in any folder, the video ledger, the outreach log, the social queue."""
+    seen: set = set()
+    texts = []
+    if p["queue"].is_dir():
+        texts += [f.read_text(errors="replace") for f in p["queue"].glob("*/*.md")]
+    for k in ("outreach", "videos"):
+        if p[k].exists():
+            texts.append(p[k].read_text(errors="replace"))
+    if p["social"].is_dir():
+        texts += [f.read_text(errors="replace") for f in p["social"].glob("*.md")]
+    for t in texts:
+        seen.update(re.findall(r"utm_content=([\w.\-]+)", t))
+        seen.update(re.findall(r'"link_utm_content":\s*"([\w.\-]+)"', t))
+    return seen
+
+
+def make_utm(p: dict, url: str, asset: str, channel: str, source: str = "", campaign: str = "",
+             today: dt.date | None = None) -> str:
+    """The link with utm_source, utm_medium, utm_campaign and a utm_content no other placement uses:
+    <asset>-<channel>-<yymmdd>, with -2, -3 ... when that is taken."""
+    if not site_path(url):
+        raise SystemExit("only links to purplelink.llc are tagged")
+    today = today or dt.date.today()
+    base = f"{slug(asset.split(':')[-1], 28)}-{slug(channel, 16)}-{today.strftime('%y%m%d')}"
+    taken = used_contents(p)
+    content, n = base, 2
+    while content in taken:
+        content, n = f"{base}-{n}", n + 1
+    medium = {"email": "email", "newsletter": "email", "press": "email", "libguide": "referral", "directory": "referral",
+              "alternativeto": "referral", "macupdate": "referral", "marketplace": "referral", "github": "referral",
+              "texse": "community", "reddit": "community", "hn": "community", "youtube": "video"}.get(channel, "social")
+    url = re.sub(r"[?&]utm_[a-z]+=[^&#]*", "", url).rstrip("?&")
+    q = {"utm_source": slug(source or channel, 30), "utm_medium": medium, "utm_campaign": slug(campaign or f"hub-{asset.split(':')[-1]}", 40),
+         "utm_content": content}
+    frag = ""
+    if "#" in url:
+        url, frag = url.split("#", 1)
+        frag = "#" + frag
+    return url + ("&" if "?" in url else "?") + "&".join(f"{k}={v}" for k, v in q.items()) + frag
+
+
+def kit_for(asset_id: str, a: dict) -> dict:
+    """A submission kit from what site/llms.txt says, so every listing starts from the same current text."""
+    import hashlib
+    body = {k: a.get(k) for k in ("name", "url", "version", "price", "category", "description", "short")}
+    body["kit_version"] = hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest()[:10]
+    body["asset"] = asset_id
+    return body
+
+
+def product_texts(p: dict) -> dict:
+    """Description and category lines per product page path, from llms.txt (for kits)."""
+    out, cur, buf = {}, None, {}
+    text = p["llms"].read_text() if p["llms"].exists() else ""
+    for line in text.splitlines():
+        if line.startswith("### ") or line.startswith("## "):
+            if cur:
+                out[cur] = buf
+            cur, buf = None, {}
+            continue
+        m = re.match(r"- \*\*(Description|Category):\*\* (.+)", line)
+        if m:
+            buf[m.group(1).lower()] = m.group(2).strip()
+        for u in URL_RE.findall(line):
+            sp = site_path(u)
+            if sp and sp.count("/") == 2 and not cur:
+                cur = sp.strip("/")
+    if cur:
+        out[cur] = buf
+    return out
+
+
+def kits(p: dict, write: list | None = None) -> list:
+    """Compare stored kits with what the site says now. `write` lists asset ids to (re)write."""
+    assets = load_assets(p)
+    texts = product_texts(p)
+    d = p["db"].parent / "kits"
+    rows = []
+    for aid, a in sorted(assets.items()):
+        if a["kind"] != "product":
+            continue
+        t = texts.get(aid, {})
+        desc = t.get("description", "")
+        short = re.split(r"(?<=[.!?])\s", desc, 1)[0] if desc else ""
+        now = kit_for(aid, {**a, "category": t.get("category"), "description": desc, "short": short})
+        f = d / f"{aid}.json"
+        old = load_json(f, None)
+        if write is not None and (aid in write or "all" in write):
+            d.mkdir(parents=True, exist_ok=True)
+            f.write_text(json.dumps(now, indent=1, ensure_ascii=False))
+            old = now
+        state = "none" if old is None else ("current" if old.get("kit_version") == now["kit_version"] else "out of date")
+        rows.append({"asset": aid, "state": state, "kit_version": (old or {}).get("kit_version"), "site_version": now["kit_version"],
+                     "changed": sorted(k for k in now if old and k not in ("kit_version",) and old.get(k) != now.get(k))})
+    return rows
+
+
+# Platform rules for the company accounts, from docs/growth-briefs/marketing-hub-research-2026-10-23.md. Seeded once
+# into channels.json; `rules --checked NAME` updates last_checked. Account-setting actions wait for Ben's yes.
+CHANNEL_RULES = {
+    "linkedin": {"rule": "Company page 120183926 only, posted through the Posts API with the admin role; no browser automation, never Ben's profile.",
+                 "source": "https://www.linkedin.com/legal/user-agreement", "action": None},
+    "bluesky": {"rule": "No dedicated bot policy; spam, undisclosed commercial content and signal manipulation are banned. An 'automated' self-label exists.",
+                "source": "https://bsky.social/about/support/community-guidelines",
+                "action": "Turn on the automated self-label for @purplelink.llc (account setting: needs Ben's yes)"},
+    "threads": {"rule": "At most 5 links in a text post (from 2025-12-22); 500 characters; 250 posts a day.",
+                "source": "https://developers.facebook.com/docs/threads/posts", "action": None},
+    "mastodon": {"rule": "Each server sets its own rules; mastodon.social's rules cover automated accounts and promotion. 300 requests per 5 minutes.",
+                 "source": "https://mastodon.social/about",
+                 "action": "Read mastodon.social's current rules and mark @purplelink_llc as a bot account (account setting: needs Ben's yes)"},
+    "reddit": {"rule": "Always posted by Ben by hand; each subreddit's self-promotion rule checked and dated in the draft.",
+               "source": "CLAUDE.md", "action": None},
+    "texse": {"rule": "Answer the question first; disclose that Ben is the developer; link only where it answers the question.",
+              "source": "https://tex.stackexchange.com/help/promotion", "action": None},
+}
+RULE_RECHECK_DAYS = 90
+
+
+def rules(p: dict, checked: str | None = None, today: dt.date | None = None) -> list:
+    today = today or dt.date.today()
+    f = p["db"].parent / "channels.json"
+    store = load_json(f, {})
+    for k, v in CHANNEL_RULES.items():
+        store.setdefault(k, {**v, "last_checked": None})
+    if checked:
+        if checked not in store:
+            raise SystemExit(f"unknown channel {checked!r}; known: {', '.join(sorted(store))}")
+        store[checked]["last_checked"] = today.isoformat()
+    f.parent.mkdir(parents=True, exist_ok=True)
+    f.write_text(json.dumps(store, indent=1, ensure_ascii=False))
+    out = []
+    for k, v in sorted(store.items()):
+        lc = v.get("last_checked")
+        due = not lc or (today - dt.date.fromisoformat(lc)).days >= RULE_RECHECK_DAYS
+        out.append({"channel": k, "due": due, **v})
+    return out
+
+
+def week_pick(p: dict, today: dt.date | None = None, n: int = 5) -> tuple:
+    """Monday: up to n assets to draft for this week, each with the reason. Nothing is drafted or sent here."""
+    today = today or dt.date.today()
+    con = connect(p)
+    since30 = (today - dt.timedelta(days=30)).isoformat()
+    picks = []
+    # 1. a release in the last 14 days with few placements since it shipped (social queue release items carry the version)
+    for r in con.execute("SELECT id, version FROM assets WHERE kind = 'product' AND version IS NOT NULL"):
+        rel = con.execute("SELECT max(date) FROM placements p JOIN placement_assets x ON x.placement_id = p.id "
+                          "WHERE x.asset_id = ? AND p.id LIKE 'social:%release%'", (r["id"],)).fetchone()[0]
+        if rel and rel >= (today - dt.timedelta(days=14)).isoformat():
+            after = con.execute("SELECT count(*) FROM placements p JOIN placement_assets x ON x.placement_id = p.id "
+                                "WHERE x.asset_id = ? AND p.date >= ? AND p.source != 'social-queue' AND p.status IN ('live','replied','queued','approved')",
+                                (r["id"], rel)).fetchone()[0]
+            if after < 3:
+                picks.append((3, r["id"], f"released {r['version']} around {rel}; {after} placements beyond the daily post since"))
+    # 2. a listing showing an old price or version
+    for r in con.execute("SELECT DISTINCT x.asset_id FROM placements p JOIN placement_assets x ON x.placement_id = p.id "
+                         "WHERE p.check_state = 'stale'"):
+        picks.append((2, r[0], "a listing shows an old price or version: send the correction"))
+    # 3. a product with no placement in 30 days
+    for r in con.execute("SELECT a.id, max(p.date) last FROM assets a LEFT JOIN placement_assets x ON x.asset_id = a.id "
+                         "LEFT JOIN placements p ON p.id = x.placement_id AND p.status IN ('live','replied') "
+                         "WHERE a.kind = 'product' GROUP BY a.id HAVING last IS NULL OR last < ?", (since30,)):
+        picks.append((1, r["id"], f"no placement since {r['last']}" if r["last"] else "never placed anywhere on record"))
+    seen, out = set(), []
+    for score, aid, why in sorted(picks, key=lambda x: -x[0]):
+        if aid in seen:
+            continue
+        seen.add(aid)
+        out.append((aid, why))
+    # channels that worked elsewhere, as hints for the drafter
+    hints = [dict(r) for r in con.execute("SELECT product, channel, trials, visits FROM channel_stats "
+                                          "WHERE verdict IN ('working','early') AND trials > 0 ORDER BY trials DESC LIMIT 5")]
+    return out[:n], hints
+
+
+def week_measure(p: dict, today: dt.date | None = None) -> dict:
+    today = today or dt.date.today()
+    con = connect(p)
+    since7 = (today - dt.timedelta(days=7)).isoformat()
+    live7 = con.execute("SELECT channel, count(*) n FROM placements WHERE status IN ('live','replied') AND date >= ? "
+                        "GROUP BY channel ORDER BY n DESC", (since7,)).fetchall()
+    chan = [dict(r) for r in con.execute("SELECT * FROM channel_stats ORDER BY product, placements DESC")]
+    fu = con.execute("SELECT count(*) FROM placements WHERE follow_up_due != '' AND follow_up_due <= ?", (today.isoformat(),)).fetchone()[0]
+    nr = con.execute("SELECT count(*) FROM placements WHERE status = 'no-response'").fetchone()[0]
+    stale = [dict(r) for r in con.execute("SELECT p.target, p.url, x.asset_id FROM placements p JOIN placement_assets x "
+                                          "ON x.placement_id = p.id WHERE p.check_state = 'stale'")]
+    links = [dict(r) for r in con.execute("SELECT p.id, p.channel, p.date, r.value FROM results r JOIN placements p ON p.id = r.placement_id "
+                                          "WHERE r.metric = 'link-trials' AND r.value > 0 ORDER BY r.value DESC LIMIT 10")]
+    return {"live7": [dict(r) for r in live7], "channels": chan, "followups_due": fu, "no_response": nr,
+            "stale": stale, "link_trials": links}
+
+
+def write_brief(p: dict, name: str, text: str) -> Path:
+    d = env_path("PURPLELINK_REPO", REPO) / "docs" / "growth-briefs" / "hub"
+    d.mkdir(parents=True, exist_ok=True)
+    f = d / name
+    f.write_text(text)
+    return f
+
+
+def placements_log(p: dict) -> str:
+    """A generated, read-only markdown view of every placement (Outreach/PLACEMENTS.md): the record the outreach log's
+    hand-written rows used to be. Private: Outreach/ is git-ignored."""
+    con = connect(p)
+    links: dict = {}
+    for r in con.execute("SELECT placement_id, asset_id FROM placement_assets"):
+        links.setdefault(r[0], []).append(r[1])
+    meta = dict(con.execute("SELECT key, value FROM meta").fetchall())
+    out = ["# Placements (generated)", "",
+           f"Generated by scripts/hub/hub.py log at {meta.get('built')}. Do not edit: record a send with "
+           "`approval_queue.py done ID --url URL`, and this file is rebuilt. The hand-written OUTREACH-LOG.md stays as the "
+           "record of everything before 2026-10-24.", ""]
+    rows = con.execute("SELECT * FROM placements ORDER BY date DESC, channel").fetchall()
+    by_chan: dict = {}
+    for r in rows:
+        by_chan.setdefault(r["channel"], []).append(r)
+    for ch in sorted(by_chan, key=lambda c: -len(by_chan[c])):
+        out += [f"## {ch} ({len(by_chan[ch])})", "", "| Date | Asset | Target | Status | Link or reference |", "|---|---|---|---|---|"]
+        for r in by_chan[ch]:
+            ref = r["url"] or r["contact_ref"] or r["approval"]
+            tgt = r["target"].replace("|", "/")[:80]
+            out.append(f"| {r['date'] or ''} | {', '.join(links.get(r['id'], [])) or '?'} | {tgt} | {r['status']} | {ref} |")
+        out.append("")
+    return "\n".join(out)
 
 
 # --- build --------------------------------------------------------------------------------------------------------
@@ -1033,6 +1295,7 @@ def export_rows(p: dict) -> dict:
             "channel": x["channel"], "kind": x["kind"] or None, "status": x["status"],
             "target": label(x), "url": x["url"] if public(x) and x["url"].startswith("http") else None,
             "visits": n(r.get("first-touch-visits", (None,))[0]), "trials": n(r.get("trials", (None,))[0]),
+            "linkVisits": n(r.get("link-visits", (None,))[0]), "linkTrials": n(r.get("link-trials", (None,))[0]),
             "orders": n(r.get("orders", (None,))[0]), "confidence": r.get("first-touch-visits", (None, None))[1],
             "approval": "standing" if (x["approval"] or "").startswith("standing") else ("queue" if x["approval"] else None),
         })
@@ -1084,6 +1347,64 @@ def cmd_export(a, p):
     print(f"exported marketing datasets to {out}")
 
 
+def cmd_utm(a, p):
+    print(make_utm(p, a.url, a.asset, a.channel, a.source or "", a.campaign or ""))
+
+
+def cmd_kits(a, p):
+    for r in kits(p, [a.write] if a.write else None):
+        extra = f" (changed: {', '.join(r['changed'])})" if r["changed"] else ""
+        print(f"  {r['asset']:15} {r['state']:12} kit {r['kit_version'] or '-':10} site {r['site_version']}{extra}")
+    print(f"kits live in {p['db'].parent / 'kits'}; write one with --write ASSET (or all)")
+
+
+def cmd_rules(a, p):
+    for r in rules(p, a.checked):
+        print(f"  {r['channel']:9} {'RECHECK' if r['due'] else 'ok':7} last checked {r['last_checked'] or 'never'}: {r['rule']}")
+        if r.get("action"):
+            print(f"            pending: {r['action']}")
+
+
+def cmd_week(a, p):
+    today = dt.date.today()
+    if a.step == "pick":
+        picks, hints = week_pick(p, today)
+        lines = [f"# Marketing hub: this week's picks ({today.isoformat()})", "",
+                 "Up to five assets to draft placements for this week, from `hub.py week pick`. Drafts go through the approval "
+                 "queue as usual (at most 3 new items a day); nothing here is sent.", ""]
+        lines += [f"{i}. **{aid}**: {why}" for i, (aid, why) in enumerate(picks, 1)] or ["Nothing stands out this week."]
+        if hints:
+            lines += ["", "Channels with trials so far (product, channel, trials, visits): " +
+                      "; ".join(f"{h['product']} {h['channel']} {h['trials']}/{h['visits']}" for h in hints)]
+        name = f"{today.isoformat()}-pick.md"
+    else:
+        m = week_measure(p, today)
+        lines = [f"# Marketing hub: the week measured ({today.isoformat()})", "",
+                 "Live placements in the last 7 days by channel: " + (", ".join(f"{r['channel']} {r['n']}" for r in m["live7"]) or "none") + ".", "",
+                 "## Channels, last 45 days", "", "| Product | Channel | Placed | Visits | Trials | Orders | Reading |", "|---|---|---|---|---|---|---|"]
+        for r in m["channels"]:
+            lines.append(f"| {r['product']} | {r['channel']} | {r['placements']} | {r['visits'] if r['visits'] is not None else '-'} | "
+                         f"{r['trials'] if r['trials'] is not None else '-'} | {r['orders']} | {r['verdict']}: {r['why']} |")
+        lines += ["", f"Follow-ups due: {m['followups_due']}. Marked no-response (28 days): {m['no_response']}.",
+                  "Listings out of date: " + (", ".join(f"{s['asset_id']} on {s['target']}" for s in m["stale"]) or "none") + ".",
+                  "Placements whose own link brought trials: " + (", ".join(f"{x['id']} ({int(x['value'])})" for x in m["link_trials"]) or "none yet (link tags are counted from 2026-10-23)") + ".",
+                  "", "A pause candidate still needs Ben's yes. On the first Sunday of a month, also review the standing approvals "
+                  "in docs/growth-briefs/standing-approvals.md."]
+        name = f"{today.isoformat()}-measure.md"
+    text = "\n".join(lines) + "\n"
+    if a.write:
+        print(f"wrote {write_brief(p, name, text)}")
+    else:
+        print(text, end="")
+
+
+def cmd_log(a, p):
+    f = env_path("PURPLELINK_REPO", REPO) / "Outreach" / "PLACEMENTS.md"
+    f.parent.mkdir(parents=True, exist_ok=True)
+    f.write_text(placements_log(p))
+    print(f"wrote {f}")
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -1097,10 +1418,17 @@ def main(argv=None) -> int:
     sub.add_parser("followups")
     cl = sub.add_parser("check-listings"); cl.add_argument("--if-older", type=int, default=0)
     ex = sub.add_parser("export"); ex.add_argument("dir")
+    ut = sub.add_parser("utm"); ut.add_argument("url"); ut.add_argument("--asset", required=True)
+    ut.add_argument("--channel", required=True); ut.add_argument("--source"); ut.add_argument("--campaign")
+    kt = sub.add_parser("kits"); kt.add_argument("--write")
+    ru = sub.add_parser("rules"); ru.add_argument("--checked")
+    wk = sub.add_parser("week"); wk.add_argument("step", choices=["pick", "measure"]); wk.add_argument("--write", action="store_true")
+    sub.add_parser("log")
     a = ap.parse_args(argv)
     {"import": cmd_import, "where": cmd_where, "grid": cmd_grid, "gaps": cmd_gaps, "unmatched": cmd_unmatched,
      "status": cmd_status, "channels": cmd_channels, "followups": cmd_followups, "check-listings": cmd_check_listings,
-     "export": cmd_export}[a.cmd](a, paths())
+     "export": cmd_export, "utm": cmd_utm, "kits": cmd_kits, "rules": cmd_rules, "week": cmd_week,
+     "log": cmd_log}[a.cmd](a, paths())
     return 0
 
 
