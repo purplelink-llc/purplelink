@@ -149,6 +149,24 @@ def test_acronym_conflict_but_not_plural_or_case():
     assert found == {"acronym_conflict:sem"}
 
 
+def test_acronym_british_and_us_spelling_are_one_expansion():
+    ms = c.Manuscript(sections=[
+        c.Section("S1", "Intro", 1, "We apply Structural Equation Modelling (SEM) to a survey.", "introduction"),
+        c.Section("S2", "Method", 1, "We use partial least squares structural equation modeling (SEM).", "method"),
+        c.Section("S3", "Method", 1, "The International Standards Organisation (ISO) and the International "
+                                     "Standards Organization (ISO) agree.", "method"),
+    ])
+    assert c.check_acronyms(ms) == []
+
+
+def test_hypotheses_heading_after_results_counts_as_results():
+    ms = c.from_plain_text("1. Introduction\nWe study trust.\n2. Hypotheses\nH1: X raises Y.\n"
+                           "3. Results\nThe model fits well.\n4. Hypotheses\nH1 supported (beta = 0.31).\n"
+                           "5. Conclusion\nDone.")
+    assert [s.role for s in ms.sections] == ["introduction", "theory", "results", "results", "conclusion"]
+    assert c.check_labels(ms, "H") == []
+
+
 def _pad(ms):
     # the abstract-number rule needs a body of some length to be meaningful
     ms.sections.append(c.Section("S99", "Appendix", 1, "filler words " * 200, "appendix"))
