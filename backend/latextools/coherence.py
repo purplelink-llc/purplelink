@@ -1392,6 +1392,12 @@ async def run_coherence_check(ms: Manuscript, *, client=None, use_model: bool = 
     return report
 
 
+# What buyers should expect, measured on 2026-10-23: 49 of 50 planted disagreements found; real, subtle ones
+# about one run in three (docs/products/paper-review-coherence.md).
+SCOPE_NOTE = ("_This check reliably catches plain disagreements: swapped labels, numbers that changed between "
+              "sections, results that were never reported. It finds subtler ones (a claim that partly outruns its "
+              "evidence) less often, so a short list is not proof that none remain._")
+
 _BIBLE_HEADINGS = [
     ("research_question", "Research questions"),
     ("hypothesis", "Hypotheses"),
@@ -1418,6 +1424,7 @@ def render_markdown(report: dict, include_bible: bool = True) -> str:
     else:
         lines.append(f"{len(findings)} place{'s' if len(findings) != 1 else ''} where the manuscript may disagree "
                      "with itself, surest first. Each quote is copied from your text.")
+    lines += ["", SCOPE_NOTE]
     if report.get("truncated"):
         lines += ["", "_The manuscript was longer than the check reads at once, so its end was not read._"]
     for k, f in enumerate(findings, 1):

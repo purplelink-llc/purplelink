@@ -421,3 +421,10 @@ def test_review_hook_returns_empty_pair_on_failure(monkeypatch):
     import app as backend_app
     out = asyncio.run(backend_app._coherence_markdown_for_review(b"not a pdf"))
     assert out == ("", "")
+
+
+def test_report_states_its_scope_to_the_buyer():
+    report = asyncio.run(c.run_coherence_check(_ms(), use_model=False))
+    md = c.render_markdown(report)
+    assert c.SCOPE_NOTE in md
+    assert c.SCOPE_NOTE in c.render_markdown({"findings": [], "sections": []})
