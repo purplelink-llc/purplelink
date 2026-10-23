@@ -561,9 +561,11 @@ def orders_from_ledger(p: dict) -> list:
     for o in led.values():
         if o.get("kind") != "order" or o.get("refunded") or o.get("disputed"):
             continue
-        first = ((o.get("attr") or {}).get("first") or {}).get("s") or ""
+        ft = (o.get("attr") or {}).get("first") or {}
         day = dt.datetime.fromtimestamp(float(o.get("ts") or 0), dt.timezone.utc).date().isoformat()
-        out.append({"product": o.get("product") or "", "first": first, "heard": o.get("heard") or "", "date": day})
+        # tag: the first-touch link's utm_content, stored by checkout.mjs from 2026-10-24
+        out.append({"product": o.get("product") or "", "first": ft.get("s") or "", "tag": ft.get("t") or "",
+                    "heard": o.get("heard") or "", "date": day})
     return out
 
 
@@ -614,6 +616,9 @@ def placement_results(pls: list, links: dict, assets: dict, funnel: dict, orders
     cont = funnel.get("content") or {}
     for pl, w, keys, paths, products in plan:
         tags = pl.get("_contents") or re.findall(r"utm_content=([\w.\-]+)", (pl.get("utm") or "") + " " + (pl.get("landing_url") or ""))
+        if tags:
+            n = sum(1 for o in orders if o["tag"] in tags and o["date"] >= pl["date"] and (not products or o["product"] in products))
+            rows.append((pl["id"], asof, "link-orders", n, "ledger", "exact-link"))
         if not tags or not w or str(w) not in cont:
             continue
         rows_w = cont[str(w)]
@@ -1296,6 +1301,7 @@ def export_rows(p: dict) -> dict:
             "target": label(x), "url": x["url"] if public(x) and x["url"].startswith("http") else None,
             "visits": n(r.get("first-touch-visits", (None,))[0]), "trials": n(r.get("trials", (None,))[0]),
             "linkVisits": n(r.get("link-visits", (None,))[0]), "linkTrials": n(r.get("link-trials", (None,))[0]),
+            "linkOrders": n(r.get("link-orders", (None,))[0]),
             "orders": n(r.get("orders", (None,))[0]), "confidence": r.get("first-touch-visits", (None, None))[1],
             "approval": "standing" if (x["approval"] or "").startswith("standing") else ("queue" if x["approval"] else None),
         })
