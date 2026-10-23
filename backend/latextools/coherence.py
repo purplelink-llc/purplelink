@@ -180,6 +180,14 @@ def assign_roles(sections: list[Section]) -> None:
             s.role = own
         parents = {l: r for l, r in parents.items() if l < s.level}
         parents[s.level] = s.role
+    # A "Hypotheses" heading after the results began holds the hypothesis-test table (common in PLS-SEM
+    # papers), so it reports results rather than stating hypotheses.
+    seen_results = False
+    for s in sections:
+        if s.role == "results":
+            seen_results = True
+        elif seen_results and s.role == "theory":
+            s.role = "results"
 
 
 def _number_sections(raw: list[tuple[str, int, str]]) -> list[Section]:
@@ -799,6 +807,9 @@ def _best_long_form(short: str, words: list[str]) -> Optional[str]:
 def _norm_expansion(form: str) -> str:
     t = re.sub(r"[-\u2010-\u2015]", " ", form.lower())
     t = re.sub(r"[^a-z0-9 ]", "", t)
+    # British and US spellings are one expansion: modelling/modeling, organisation/organization.
+    t = re.sub(r"([a-z])\1", r"\1", t)
+    t = re.sub(r"is(ation|e|ed|ing)\b", r"iz\1", t)
     words = [w[:-1] if len(w) > 3 and w.endswith("s") and not w.endswith("ss") else w for w in t.split()]
     return " ".join(words)
 
