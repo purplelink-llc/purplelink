@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Find the Electron apps on your Mac and how much space they take | Purplelink</title>
+    <meta name="description" content="One read-only Terminal command lists the Electron apps on a Mac with their size and Electron version. What Electron is, what the version means, and what to do. Checked 2026-10-23.">
+    <link rel="canonical" href="https://purplelink.llc/guides/find-electron-apps-on-mac/">
+    <meta property="og:title" content="Find the Electron apps on your Mac and how much space they take">
+    <meta property="og:description" content="Electron apps each carry their own copy of a browser engine. One read-only Terminal command lists them with size and Electron version; this guide explains what the version means and what, if anything, to do.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/find-electron-apps-on-mac/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/legroom.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Find the Electron apps on your Mac and how much space they take">
+    <meta name="twitter:description" content="Electron apps each carry their own copy of a browser engine. One read-only Terminal command lists them with size and Electron version; this guide explains what the version means and what, if anything, to do.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/legroom.png">
+    <meta name="twitter:image:alt" content="Find the Electron apps on your Mac: a read-only Terminal command">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "Find the Electron apps on your Mac and how much space they take",
+      "description": "Electron apps each carry their own copy of a browser engine. One read-only Terminal command lists them with size and Electron version; this guide explains what the version means and what, if anything, to do.",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "datePublished": "2026-10-23",
+      "dateModified": "2026-10-23",
+      "image": "https://purplelink.llc/assets/og/legroom.png",
+      "mainEntityOfPage": "https://purplelink.llc/guides/find-electron-apps-on-mac/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://purplelink.llc/guides/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Find the Electron apps on your Mac",
+          "item": "https://purplelink.llc/guides/find-electron-apps-on-mac/"
+        }
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "List the Electron apps on a Mac",
+      "totalTime": "PT2M",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Open Terminal",
+          "text": "Open Terminal from Applications, then Utilities."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Run the read-only command",
+          "text": "Paste the find command from this guide and press Return. It reads the Applications folders and changes nothing."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Read the three columns",
+          "text": "Each line shows the app's size on disk, the Electron version inside it and its location, largest first. Update any app whose Electron version is old."
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I know if a Mac app uses Electron?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Look inside the app for a folder named Electron Framework.framework in Contents, Frameworks. The Terminal command in this guide does that for every app in Applications and prints the Electron version from that framework."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Should I delete Electron apps?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No, not because they are Electron. Electron describes how an app is built, not whether it is safe or good. Remove apps you never use the normal way, and keep the rest updated."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why do Electron apps make my Mac lag on macOS 26?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Older Electron versions overrode a private macOS drawing method, which made the window server work hard on macOS 26. Electron fixed it in 36.9.2, 37.6.0, 38.2.0 and 39 onward. Update the app; if it is still old, the fix is up to its maker."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much space does Electron take?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "On my Mac the Electron Framework inside one app was 286 MB, and the whole app was 615 MB, measured October 23, 2026. Each Electron app carries its own copy, so several of them add up. I found no official typical figure."
+      }
+    }
+  ]
+}
+    </script>
+    <script src="/theme.js?v=4d162f3e8a"></script>
+<link rel="stylesheet" href="/styles.css?v=99bdcc3053">
+    <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
+    <script src="/site.js?v=b02458d823" defer></script>
+    <script src="/motion.js?v=0c540c5924" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+    <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">How-to</p>
+        <h1 class="post-title">Find the Electron apps on your Mac and how much space they take</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-23">October 23, 2026</time></p>
+        <p class="post-lede">Some Mac apps are built with Electron, which means each one carries its own copy of a browser engine. One line in Terminal lists them with their size and Electron version. Here is what that list means and what, if anything, to do about it.</p>
+      </div>
+
+      <article class="post-body">
+        <p><strong>Disclosure:</strong> I make <a href="/legroom/">Legroom</a>, a disk space app, and <a href="/batterymeter/">BatteryMeter</a>, a free battery readout. Neither one lists Electron apps; this guide uses only what is built into macOS. I ran the command below on my own Mac on October 23, 2026. Electron facts come from the Electron project's own pages, read the same day.</p>
+
+        <h2>What an Electron app is</h2>
+        <p>Electron is a way to build a desktop app with web technology. Its documentation says it packages Chromium, the engine inside Google Chrome, and Node.js into each app. So every Electron app carries its own copy of a browser engine. Slack, Discord, Visual Studio Code and Obsidian are well-known examples.</p>
+        <p>That is a design choice, not a warning sign. Electron apps are ordinary, signed software from their makers. The costs are size, since each app brings its own engine, and keeping that engine up to date, which only the app's maker can do.</p>
+
+        <h2 id="command">List the Electron apps on your Mac</h2>
+        <p>Open Terminal (in Applications, then Utilities), paste this line and press Return. It only reads: nothing is installed, changed or sent anywhere.</p>
+        <pre><code>find /Applications ~/Applications -maxdepth 5 -type d -name "Electron Framework.framework" 2&gt;/dev/null | while read -r fw; do app="${fw%%/Contents/Frameworks/*}"; printf '%s\t%s\t%s\n' "$(du -sh "$app" | cut -f1)" "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$fw/Resources/Info.plist")" "$app"; done | sort -rh</code></pre>
+        <p>It prints one line per Electron app, largest first: the app's size on disk, the Electron version inside it, and where it is. On my Mac it printed one app, Claude, at 615 MB with Electron 44.9.3. The Electron Framework alone was 286 MB of that.</p>
+        <p>What it does not see: apps elsewhere than Applications, apps added to Applications as a shortcut (an alias or symbolic link), and apps built on the similar Chromium Embedded Framework, such as Adobe Acrobat. Sizes are in units of 1,024, so they read a little smaller than Finder's Get Info.</p>
+
+        <h2 id="version">What the Electron version tells you</h2>
+        <p>The Electron team supports the latest three major versions. Electron 45 came out on October 20, 2026, which makes 43, 44 and 45 the supported ones on the date of this guide (<a href="https://releases.electronjs.org/schedule" rel="noopener">release schedule</a>, <a href="https://www.electronjs.org/docs/latest/tutorial/electron-timelines" rel="noopener">support policy</a>). Electron's <a href="https://www.electronjs.org/docs/latest/tutorial/security" rel="noopener">security guidance</a> tells app makers to use the latest version, because updates bring fixes for the bundled Chromium and Node.js. An app on an older version is not necessarily unsafe, but it is missing those fixes until its maker updates it.</p>
+        <p>The macOS 26 slowdown. After macOS 26 Tahoe shipped, some Electron apps made the whole Mac lag. Electron fixed it in September 2025 (<a href="https://github.com/electron/electron/pull/48376" rel="noopener">pull request 48376</a>), in versions 36.9.2, 37.6.0 and 38.2.0 and every version from 39 on. If an app shows a lower version than those, update it. The community tracker <a href="https://avarayr.github.io/shamelectron/" rel="noopener">ShameElectron</a> listed 56 fixed and 27 unfixed apps when I read it.</p>
+
+        <h2 id="what-to-do">What to do about it</h2>
+        <ul>
+          <li><strong>Keep using the apps you need.</strong> The list is information, not a to-do list.</li>
+          <li><strong>Update them.</strong> Use the app's Check for Updates command or the App Store. That is the only way an app gets a newer Electron.</li>
+          <li><strong>Remove the ones you never open,</strong> the normal way: drag the app to the Trash, or use its own uninstaller. Never delete or edit files inside an app, which breaks its signature and stops it opening.</li>
+          <li><strong>Consider the web version</strong> for a service you already use in a browser tab, if you would rather run one browser engine than two. I have not measured the difference.</li>
+        </ul>
+        <p>I found no careful public measurement of how much more memory or battery Electron apps use than native ones, so this guide gives no number. To see your own: Activity Monitor's Memory and Energy tabs show it per app, and <a href="/batterymeter/">BatteryMeter</a> lists the apps using the most power. For disk space as a whole, <a href="/legroom/">Legroom</a> ($9.99 once after a 7-day trial; its menu-bar readout and low-space alerts stay free) shows where the space went.</p>
+
+        <h2 id="faq">Frequently asked</h2>
+        <h3>How do I know if a Mac app uses Electron?</h3>
+        <p>Look inside the app for a folder named Electron Framework.framework in Contents, Frameworks. The Terminal command in this guide does that for every app in Applications and prints the Electron version from that framework.</p>
+        <h3>Should I delete Electron apps?</h3>
+        <p>No, not because they are Electron. Electron describes how an app is built, not whether it is safe or good. Remove apps you never use the normal way, and keep the rest updated.</p>
+        <h3>Why do Electron apps make my Mac lag on macOS 26?</h3>
+        <p>Older Electron versions overrode a private macOS drawing method, which made the window server work hard on macOS 26. Electron fixed it in 36.9.2, 37.6.0, 38.2.0 and 39 onward. Update the app; if it is still old, the fix is up to its maker.</p>
+        <h3>How much space does Electron take?</h3>
+        <p>On my Mac the Electron Framework inside one app was 286 MB, and the whole app was 615 MB, measured October 23, 2026. Each Electron app carries its own copy, so several of them add up. I found no official typical figure.</p>
+
+        <h2>Related guides</h2>
+        <ul>
+          <li><a href="/guides/mac-system-data-huge/">Why System Data is huge on a Mac</a>: the other common surprise in Storage settings</li>
+          <li><a href="/guides/delete-mac-app-and-leftover-files/">Delete a Mac app and its leftover files</a>: the safe way to remove an app</li>
+          <li><a href="/guides/best-disk-space-analyzer-for-mac/">Best disk space analyzer for Mac</a>: see what is using space</li>
+          <li><a href="/guides/check-mac-battery-health-voltage-and-cycle-count/">Check Mac battery health</a>: and which apps use the most power</li>
+        </ul>
+      </article>
+
+    </main>
+
+
+        <footer class="footer">
+          <div class="footer-grid">
+            <div class="footer-about">
+              <a class="footer-brand" href="/">
+                <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+                <span>Purplelink LLC</span>
+              </a>
+              <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+              <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+            </div>
+            <nav class="footer-col" aria-label="Products">
+              <p class="footer-head">Products</p>
+              <ul>
+                <li><a href="/moderntex/">ModernTex</a></li>
+                <li><a href="/outbound-veil/">Outbound Veil</a></li>
+                <li><a href="/vitae/">Vitae</a></li>
+                <li><a href="/legroom/">Legroom</a></li>
+                <li><a href="/keyfeel/">Keyfeel</a></li>
+                <li><a href="/tapefolio/">Tapefolio</a></li>
+                <li><a href="/panely/">Panely</a></li>
+                <li><a href="/summonly/">Summonly</a></li>
+                <li><a href="/batterymeter/">BatteryMeter</a></li>
+                <li><a href="/tools/paper-review/">Paper Review</a></li>
+                <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+                <li><a href="/products/">All products</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Free tools">
+              <p class="footer-head">Free tools</p>
+              <ul>
+                <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+                <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+                <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+                <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+                <li><a href="/tools/word-counter/">Word Counter</a></li>
+                <li><a href="/games/">Daily games</a></li>
+                <li><a href="/games/sports/">Sports games</a></li>
+                <li><a href="/tools/">All tools</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Learn">
+              <p class="footer-head">Learn</p>
+              <ul>
+                <li><a href="/guides/">Guides</a></li>
+                <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+                <li><a href="/templates/">LaTeX templates</a></li>
+                <li><a href="/latex-errors/">LaTeX errors</a></li>
+                <li><a href="/format/">Reference formats</a></li>
+                <li><a href="/blog/">Blog</a></li>
+                <li><a href="/changelog/">Changelog</a></li>
+                <li><a href="/search/">Search</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Company">
+              <p class="footer-head">Company</p>
+              <ul>
+                <li><a href="/about/">About</a></li>
+                <li><a href="/pricing/">Pricing</a></li>
+                <li><a href="/press/">Press</a></li>
+                <li><a href="/photography/">Photography</a></li>
+                <li><a href="/support/">Support</a></li>
+                <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+                <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+                <li><a href="/privacy/">Privacy</a></li>
+                <li><a href="/terms/">Terms</a></li>
+                <li><a href="/recover/">Find a purchase</a></li>
+                <li><a href="/labs/">For labs</a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="footer-bottom">
+            <span>&copy; 2026 Purplelink LLC</span>
+            <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+            <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+          </div>
+        </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=38a584a70d" defer></script>
+  <script src="/ethicalads.js?v=c8d9be094c" defer></script>
+</body>
+</html>
