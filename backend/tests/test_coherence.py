@@ -349,3 +349,53 @@ def test_pipeline_mounts_coherence_flags_secret():
     src = inspect.getsource(backend_app)
     block = src[src.index("def paper_review_pipeline(") - 400:src.index("def paper_review_pipeline(")]
     assert "coherence_flags_secret" in block
+
+
+# --- voice, type correction, quote expansion, placement (2026-10-23) ------------------------------
+
+def test_short_quote_expands_to_its_sentence_across_pdf_line_wraps():
+    text = ("Attitude toward technical infrastructure also had a significant relationship\n"
+            "with job satisfaction with a small effect size supporting H6. Sociotechnical\n"
+            "infrastructure was not a significant predictor.")
+    q = c.expand_quote("with a small effect size supporting", text)
+    assert q.startswith("Attitude toward technical infrastructure") and q.endswith("supporting H6.")
+    assert c.quote_in_text(q, text)
+    assert c.expand_quote("not in this text at all", text) == "not in this text at all"
+
+
+def test_voice_rules_reach_the_check_prompt():
+    assert c.VOICE_RULES in c.CHECK_SYSTEM
+    for rule in ("second person", "em-dashes", "However,", "never adjectives"):
+        assert rule in c.VOICE_RULES
+
+
+def test_verifier_corrects_model_finding_type():
+    f = c.Finding("sample_inconsistency", "H6 and H7 swap", ["S1"], [], "w", "f", source="model")
+    rule = c.Finding("acronym_conflict", "SEM two ways", ["S1"], [], "w", "f", source="rule")
+
+    async def fake(client, *, system, user_content, max_tokens, model, on_truncated=None, effort=None):
+        return json.dumps([{"n": 1, "verdict": "keep", "type": "hypothesis_undeclared", "confidence": "high"},
+                           {"n": 2, "verdict": "keep", "type": "term_drift", "confidence": "high"}])
+
+    kept, dropped, status = asyncio.run(c.verify(object(), _ms(), [f, rule], message_fn=fake))
+    assert [k.type for k in kept] == ["hypothesis_undeclared", "acronym_conflict"]   # rules keep their type
+
+
+def test_rule_copy_has_no_banned_style():
+    ms = _pad(_ms())
+    text = " ".join(f.why + " " + f.fix + " " + f.title for f in c.rule_findings(ms))
+    assert text
+    for bad in ("—", ";", "moreover", "notably", "it is worth", "crucial"):
+        assert bad not in text.lower()
+
+
+def test_coherence_section_goes_after_data_to_claim():
+    import app as backend_app
+    md = "## What's Working\nA\n\n## Data-to-Claim Contradictions\nB\n\n## Equation Audit\nC\n\n## Panel Transcript\nD\n"
+    out = backend_app._insert_coherence_section(md, "## Coherence Check\n\nX\n")
+    assert out.index("## Data-to-Claim") < out.index("## Coherence Check") < out.index("## Equation Audit")
+    md2 = "## What's Working\nA\n\n## Panel Transcript\nD\n"
+    out2 = backend_app._insert_coherence_section(md2, "## Coherence Check\n\nX\n")
+    assert out2.index("## Coherence Check") < out2.index("## Panel Transcript")
+    assert backend_app._insert_coherence_section("## A\nx", "").startswith("## A")
+    assert backend_app._insert_coherence_section("## A\nx", "## Coherence Check\n").rstrip().endswith("## Coherence Check")
