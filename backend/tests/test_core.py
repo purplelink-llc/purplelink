@@ -368,3 +368,14 @@ def test_log_has_tex_error_ignores_warnings():
     assert not core.log_has_tex_error("LaTeX Warning: Citation `knuth84' on page 1 undefined on input line 3.\n")
     assert core.log_has_tex_error("! Undefined control sequence.\n")
     assert core.log_has_tex_error(MISSING_FIGURE_LOG)
+
+
+def test_parse_latex_log_drops_fatal_error_noise_after_a_real_error():
+    log = "./main.tex:3: LaTeX Error: Unicode character \u2264 (U+2264)\n./main.tex:3: ==> Fatal error occurred, no output PDF file produced!\n"
+    errs = core.parse_latex_log(log)
+    assert [e["message"] for e in errs] == ["LaTeX Error: Unicode character \u2264 (U+2264)"]
+
+
+def test_parse_latex_log_keeps_the_noise_when_it_is_all_there_is():
+    log = "./main.tex:9: Emergency stop.\n"
+    assert core.parse_latex_log(log) == [{"file": "./main.tex", "line": 9, "message": "Emergency stop."}]
