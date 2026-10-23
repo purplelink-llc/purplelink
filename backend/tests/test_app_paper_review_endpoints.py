@@ -353,6 +353,32 @@ def test_register_token_rejects_amount_mismatch(client, monkeypatch):
     assert "s-mismatch" not in backend_app.paper_tokens_dict._data
 
 
+@pytest.mark.parametrize("paid", [0, 450])
+def test_register_token_accepts_discounted_order(client, monkeypatch, paid):
+    """A promotion code lowers what was paid (to 0 for a 100%-off code). The list price still matches the
+    product, so the order gets its token: before 2026-10-23 it was refused as amount_mismatch."""
+    http, backend_app = client
+    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "correct-secret")
+    price = backend_app.PAID_PRODUCTS["paper-review-standard"]["amount"]
+    r = http.post("/paper-review/register-token", headers={"x-webhook-secret": "correct-secret"}, json={
+        "session_id": f"s-disc-{paid}", "product": "paper-review-standard", "email": "a@b.com",
+        "amount_paid": paid, "amount_subtotal": price,
+    })
+    assert r.status_code == 200, r.text
+    assert f"s-disc-{paid}" in backend_app.paper_tokens_dict._data
+
+
+@pytest.mark.parametrize("subtotal,paid", [(3800, 0), (900, 1000)])
+def test_register_token_rejects_wrong_list_price_or_overpayment(client, monkeypatch, subtotal, paid):
+    http, backend_app = client
+    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "correct-secret")
+    r = http.post("/paper-review/register-token", headers={"x-webhook-secret": "correct-secret"}, json={
+        "session_id": "s-bad", "product": "paper-review-standard", "email": "a@b.com",
+        "amount_paid": paid, "amount_subtotal": subtotal,
+    })
+    assert r.status_code == 400 and r.json()["error"] == "amount_mismatch"
+
+
 def test_register_token_rejects_out_of_bounds_qty(client, monkeypatch):
     """Defense-in-depth: PAID_PRODUCTS qty is static today (1, 5, or 20), but
     the catalog comment notes entries can be overridden by env vars at

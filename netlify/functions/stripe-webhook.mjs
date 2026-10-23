@@ -738,7 +738,12 @@ export default async function handler(request) {
     const emailed = session.status === "complete" && to ? await emailLiveSetupLink(to, session.id, sessionProduct) : false;
     return jsonResponse(200, { status: "live_sheet_acknowledged", product: sessionProduct, emailed });
   }
-  if (session.payment_status !== "paid") {
+  // A 100%-off promotion code (early-reviewer and test codes) completes the session with payment_status
+  // "no_payment_required" and a $0 total. That order is owed its delivery like a paid one; before
+  // 2026-10-23 it was answered "not_paid" and the buyer waited on the upload page forever.
+  const freeOrder = session.payment_status === "no_payment_required" &&
+    session.status === "complete" && (session.amount_total || 0) === 0;
+  if (session.payment_status !== "paid" && !freeOrder) {
     return jsonResponse(200, { status: "not_paid", payment_status: session.payment_status });
   }
 
@@ -748,6 +753,9 @@ export default async function handler(request) {
     session.customer_email ||
     "";
   const amountPaid = session.amount_total || 0;   // in cents
+  // Before discounts: the backend checks the product's list price against this, so a promotion code
+  // does not read as a mismapped product.
+  const amountSubtotal = Number.isInteger(session.amount_subtotal) ? session.amount_subtotal : amountPaid;
   // The checkout function stamps the product key into metadata so we can
   // dispatch on it here without needing a separate price_id → product map.
   const rawProduct = (session.metadata && session.metadata.product) || "";
@@ -864,6 +872,7 @@ export default async function handler(request) {
         session_id: sessionId,
         email,
         amount_paid: amountPaid,
+        amount_subtotal: amountSubtotal,
         product,
         referral_code: referralCode,
       }),

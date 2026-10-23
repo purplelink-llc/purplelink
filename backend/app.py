@@ -2343,6 +2343,9 @@ def web():
         session_id = (payload or {}).get("session_id", "")
         email = (payload or {}).get("email", "")
         amount_paid = (payload or {}).get("amount_paid", 0)
+        # The price before discounts. A promotion code lowers amount_paid (to 0 for a free code), so the
+        # mismapping check below compares the catalog price with this instead. Older webhooks omit it.
+        amount_subtotal = (payload or {}).get("amount_subtotal", amount_paid)
         product_key = (payload or {}).get("product", "paper-review-standard")
         referral_code = (payload or {}).get("referral_code", "")
         referral_code = referral_code.strip()[:32] if isinstance(referral_code, str) else ""
@@ -2363,12 +2366,13 @@ def web():
         # catalog's expected amount for this product before minting tokens,
         # so a mismapped 5-pack can't mint a 20-pack's worth of tokens.
         expected_amount = product_cfg.get("amount")
+        list_amount = amount_subtotal if isinstance(amount_subtotal, int) else 0
         paid_amount = amount_paid if isinstance(amount_paid, int) else 0
-        if expected_amount is not None and paid_amount != expected_amount:
+        if expected_amount is not None and (list_amount != expected_amount or not 0 <= paid_amount <= list_amount):
             return JSONResponse(
                 {
                     "error": "amount_mismatch",
-                    "detail": f"product {product_key} expects {expected_amount}, got {paid_amount}",
+                    "detail": f"product {product_key} expects {expected_amount}, got {list_amount} (paid {paid_amount})",
                 },
                 status_code=400,
             )
