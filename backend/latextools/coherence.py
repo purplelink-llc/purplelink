@@ -630,18 +630,39 @@ def trim_quote(text: str, max_words: int = MAX_QUOTE_WORDS) -> str:
     return " ".join(words[:max_words]) + " ..."
 
 
+_SENT_END_RE = re.compile(r"[.!?][\"\u201d')\]]?\s|\n\s*\n")
+
+
 def _sentence_around(text: str, start: int, end: int, max_words: int = MAX_QUOTE_WORDS) -> str:
-    """The sentence holding text[start:end], cut to max_words around the match."""
-    left = max(text.rfind(". ", 0, start), text.rfind("\n", 0, start))
-    right_candidates = [p for p in (text.find(". ", end), text.find("\n", end)) if p != -1]
-    right = min(right_candidates) if right_candidates else len(text)
-    sent = re.sub(r"\s+", " ", text[left + 1:right + 1]).strip()
+    """The sentence holding text[start:end], cut to max_words around the match. A single line break is
+    not a sentence end (PDF text wraps every line); a full stop or a blank line is."""
+    lo_bound = max(0, start - 800)
+    ends_before = [m.end() for m in _SENT_END_RE.finditer(text, lo_bound, start)]
+    left = ends_before[-1] if ends_before else lo_bound
+    m_after = _SENT_END_RE.search(text, end, min(len(text), end + 800))
+    right = m_after.start() + 1 if m_after else min(len(text), end + 800)
+    sent = re.sub(r"\s+", " ", text[left:right]).strip()
     words = sent.split(" ")
     if len(words) <= max_words:
         return sent
-    before = len(re.sub(r"\s+", " ", text[left + 1:start]).split())
+    before = len(re.sub(r"\s+", " ", text[left:start]).split())
     lo = max(0, min(before - max_words // 3, len(words) - max_words))
     return ("... " if lo else "") + " ".join(words[lo:lo + max_words]) + (" ..." if lo + max_words < len(words) else "")
+
+
+MIN_QUOTE_WORDS = 12
+
+
+def expand_quote(quote: str, text: str) -> str:
+    """A quote shorter than MIN_QUOTE_WORDS ("with a small effect size supporting") rarely shows the problem
+    on its own, so it is widened to the sentence it comes from. The result is still verbatim text."""
+    words = re.findall(r"[0-9A-Za-z\u00c0-\uffff]+", quote)
+    if not words or len(words) >= MIN_QUOTE_WORDS:
+        return trim_quote(quote)
+    m = re.search(r"[\W_]*".join(re.escape(w) for w in words), text, re.I)
+    if not m:
+        return trim_quote(quote)
+    return _sentence_around(text, m.start(), m.end())
 
 
 def quote_in_text(quote: str, text: str) -> bool:
@@ -743,10 +764,10 @@ def check_labels(ms: Manuscript, family: str) -> list[Finding]:
                 title=f"{label} is stated but no results, discussion or conclusion section mentions it",
                 sections=[first_sec.id],
                 quotes=[{"section": first_sec.id, "text": quote}],
-                why=(f"A reviewer looks for the outcome of every {noun}. When {label} is never named after it is "
-                     f"stated, they cannot tell whether it was tested, dropped or answered under another name."),
-                fix=(f"Name {label} where it is tested or answered (checked: {', '.join(late_titles[:5])}), "
-                     f"or remove it if it was dropped."),
+                why=(f"Reviewers look for the outcome of every {noun}. Without a later mention, they cannot tell "
+                     f"whether {label} was tested, dropped or renamed."),
+                fix=(f"Name {label} where you test or answer it (sections checked: {', '.join(late_titles[:5])}), "
+                     f"or remove it if you dropped it."),
                 confidence="medium", source="rule", key=f"{ftype}:{label.lower()}",
             ))
         elif family == "H" and not hit_in(label, _EARLY_ROLES):
@@ -756,7 +777,7 @@ def check_labels(ms: Manuscript, family: str) -> list[Finding]:
                 sections=[first_sec.id],
                 quotes=[{"section": first_sec.id, "text": quote}],
                 why="A hypothesis that first appears with its result reads as post hoc.",
-                fix=f"State {label} with its rationale in the theory or hypothesis section, or relabel the result.",
+                fix=f"State {label} with its rationale in your theory or hypothesis section, or relabel the result.",
                 confidence="medium", source="rule", key=f"hypothesis_undeclared:{label.lower()}",
             ))
     nums = sorted({int(re.search(r"\d+", l).group()) for l in mentions})
@@ -768,7 +789,7 @@ def check_labels(ms: Manuscript, family: str) -> list[Finding]:
                 type="label_gap",
                 title=f"The {noun} numbering skips {labels}",
                 sections=[], quotes=[],
-                why=f"Readers will assume a {noun} was removed and the text not updated.",
+                why=f"Readers will assume you removed a {noun} and did not update the text.",
                 fix=f"Renumber the {noun}s, or restore {labels}.",
                 confidence="low", source="rule", key=f"label_gap:{family.lower()}",
             ))
@@ -841,8 +862,8 @@ def check_acronyms(ms: Manuscript) -> list[Finding]:
             title=f"{short} is expanded as " + " and as ".join(f'"{p[0]}"' for p in picks),
             sections=list(dict.fromkeys(p[1].id for p in picks)),
             quotes=[{"section": p[1].id, "text": _sentence_around(p[1].text, p[2], p[3])} for p in picks],
-            why="Two expansions make a reader wonder whether two different things are meant.",
-            fix=f"Pick one expansion of {short}, define it once at first use, and use the acronym after that.",
+            why="Two expansions suggest two different concepts to a reader.",
+            fix=f"Choose one expansion of {short}, define it once at first use, and use only the acronym after that.",
             confidence="high", source="rule", key=f"acronym_conflict:{short.lower()}",
         ))
     return findings
@@ -905,19 +926,19 @@ def check_abstract_numbers(ms: Manuscript) -> list[Finding]:
         )[:2]
         shown = val + ("%" if is_pct else "")
         if near:
-            title = f"The abstract reports {shown}; the closest value in the body is " + " or ".join(
+            title = f"Your abstract reports {shown}. The closest value in the body is " + " or ".join(
                 n + ("%" if is_pct else "") for n in near)
             conf = "medium"
         else:
-            title = f"The abstract reports {shown}, which appears nowhere in the body"
+            title = f"Your abstract reports {shown}, and the body never reports it"
             conf = "low" if "." not in val and not is_pct else "medium"
         sid = abs_sec.id if abs_sec else ""
         findings.append(Finding(
             type="abstract_results_mismatch", title=title, sections=[sid] if sid else [],
             quotes=[{"section": sid, "text": _sentence_around(ms.abstract, a, b)}],
-            why="Reviewers check the abstract's numbers against the tables first. A number they cannot find, "
-                "or one that differs, suggests a stale abstract.",
-            fix=f"Make the abstract's {shown} match the value reported in the results, or report it in the body.",
+            why="Reviewers check abstract numbers against the tables first. A number they cannot find (or one "
+                "that differs) suggests a stale abstract.",
+            fix=f"Make {shown} in your abstract match the results, or report the value in the body.",
             confidence=conf, source="rule", key=f"abstract_results_mismatch:{val}",
         ))
     return findings[:8]
@@ -1038,7 +1059,7 @@ def accept_items(raw_items: list, ms: Manuscript, allowed_sections: list[str]) -
             "kind": kind,
             "label": str(it.get("label", "")).strip()[:80],
             "text": str(it.get("text", "")).strip()[:300],
-            "quote": trim_quote(quote),
+            "quote": expand_quote(quote, sec.text),
         })
     return kept, dropped
 
@@ -1091,6 +1112,30 @@ def bible_counts(items: list[dict]) -> dict:
 # Stage 3: cross-section check and verification
 # ---------------------------------------------------------------------------
 
+# Ben Ampel's academic voice (the benampel skill), for every sentence the model writes to the author. The
+# skill cannot run inside Modal, so its rules that apply to short feedback are restated here.
+VOICE_RULES = """## Voice for "title", "why" and "fix"
+
+Write to the author in plain academic prose, second person ("your abstract", "state H3 in Section 2").
+- Sentences of 12 to 20 words, each opening with its subject. No framing openers ("It is worth noting
+  that", "The key point is", "In terms of").
+- Carry contrast only with a sentence-initial "However,". Never "although", "while" or "whereas"
+  mid-sentence.
+- Put asides in parentheses. Never use em-dashes or semicolons.
+- Intensity comes from the paper's own numbers, never adjectives: "0.33 in the text and 0.35 in Table 5",
+  not "a major discrepancy". Never invent a number.
+- At most one hedge per claim ("may", "suggests"), used only when the evidence is uncertain.
+- Plain "is", not "serves as", "stands as" or "represents". Active voice.
+- No praise or reassurance, no rhetorical questions, no "not only ... but also", no "X rather than Y"
+  foils, and no trailing "-ing" clauses that add interpretation (", highlighting the need for ...").
+- Expand an acronym the first time a finding uses it, unless the paper's own label (H3, RQ2) is meant.
+- Never use: delve, landscape, crucial, pivotal, paramount, myriad, robust, leverage, moreover,
+  furthermore, notably, importantly, nevertheless, consequently, utilize, seamless, showcase, foster,
+  highlighting, interplay, groundbreaking, it is important to note.
+- "title": one sentence in sentence case that names both places that disagree.
+- "fix": one concrete edit as an imperative ("Report H3 in Table 4, or remove it from Section 2.").
+"""
+
 _CHECK_SYSTEM_CORE = """You check an academic manuscript for internal coherence: places where its sections
 disagree with each other. You do not see the manuscript itself, only its Paper Bible: items extracted from
 each section, each with an id (B12), the section it came from (with the section's role), a kind, a label,
@@ -1121,7 +1166,7 @@ Output ONLY a JSON array:
 CHECK_SYSTEM = _safety.SAFETY_PREAMBLE + "\n\n" + _CHECK_SYSTEM_CORE.format(
     types="\n".join(f"- {k}: {v}" for k, v in CHECK_TYPES.items() if k not in ("acronym_conflict", "label_gap")),
     max_findings=MAX_FINDINGS,
-)
+) + "\n" + VOICE_RULES
 
 _VERIFY_SYSTEM_CORE = """You are the last check before a coherence report reaches an author. You see the
 full manuscript text (sections opened by lines like [[S4 | Results]]) and a numbered list of candidate
@@ -1139,12 +1184,17 @@ Drop a finding when:
 Keep it when a careful reviewer reading the whole paper would still raise it. Be strict: the author pays for
 precision, and one false alarm costs more trust than one missed issue.
 
+For every finding you keep, also give the type from this list that fits it best. Correct the candidate's
+type when it is wrong (two swapped hypothesis labels are a hypothesis problem, not a sample problem):
+{types}
+
 Output ONLY a JSON array with one object per finding, in the same order:
-[{"n": 1, "verdict": "keep", "confidence": "high", "note": "<at most 30 words: why>"}]
+[{{"n": 1, "verdict": "keep", "type": "hypothesis_undeclared", "confidence": "high", "note": "<at most 30 words: why>"}}]
 where verdict is "keep" or "drop" and confidence is "high", "medium" or "low".
 """
 
-VERIFY_SYSTEM = _safety.SAFETY_PREAMBLE + "\n\n" + _VERIFY_SYSTEM_CORE
+VERIFY_SYSTEM = _safety.SAFETY_PREAMBLE + "\n\n" + _VERIFY_SYSTEM_CORE.format(
+    types="\n".join(f"- {k}: {v}" for k, v in CHECK_TYPES.items()))
 
 
 def _bible_for_prompt(ms: Manuscript, items: list[dict]) -> str:
@@ -1267,6 +1317,9 @@ async def verify(client, ms: Manuscript, findings: list[Finding], *,
         conf = str(v.get("confidence", "")).lower()
         if conf in CONFIDENCE_ORDER:
             f.confidence = conf
+        vtype = str(v.get("type", "")).strip()
+        if vtype in CHECK_TYPES and vtype != f.type and f.source == "model":
+            f.type = vtype
         (dropped if str(v.get("verdict", "")).lower() == "drop" else kept).append(f)
     return kept, dropped, status
 

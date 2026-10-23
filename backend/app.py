@@ -604,7 +604,8 @@ def paper_review_pipeline(
                 if _coh.in_review_enabled() and final.get("result_md"):
                     # Behind a flag until Ben approves it for buyers; inside the same usage tracker, so it
                     # counts against this order's cost ceiling.
-                    final["result_md"] += await _coherence_markdown_for_review(pdf_bytes)
+                    final["result_md"] = _insert_coherence_section(
+                        final["result_md"], await _coherence_markdown_for_review(pdf_bytes))
                 job_status = "done" if final.get("result_md") else "error"
                 replacement_token = None
                 if job_status == "error":
@@ -699,10 +700,27 @@ async def _coherence_markdown_for_review(pdf_bytes: bytes) -> str:
         from latextools import coherence as _coh
         ms = _coh.load_manuscript(pdf_bytes, "manuscript.pdf")
         report = await _coh.run_coherence_check(ms)
-        return "\n\n" + _coh.render_markdown(report)
+        return _coh.render_markdown(report)
     except Exception as e:
         logger.warning("coherence section skipped: %s", type(e).__name__)
         return ""
+
+
+def _insert_coherence_section(report_md: str, section: str) -> str:
+    """Place the coherence section right after "Data-to-Claim Contradictions" (its closest neighbour), else
+    before the panel transcript, else at the end."""
+    if not section:
+        return report_md
+    section = section.strip() + "\n\n"
+    m = re.search(r"^## Data-to-Claim Contradictions\s*$", report_md, re.M)
+    nxt = re.search(r"^## ", report_md[m.end():], re.M) if m else None
+    if nxt:
+        at = m.end() + nxt.start()
+        return report_md[:at] + section + report_md[at:]
+    m = re.search(r"^## Panel Transcript\s*$", report_md, re.M)
+    if m:
+        return report_md[:m.start()] + section + report_md[m.start():]
+    return report_md.rstrip() + "\n\n" + section
 
 
 @app.function(
