@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import io
+import logging
 import ipaddress
 import re
 import zipfile
@@ -263,7 +264,7 @@ def extract_project_zip(zip_bytes: bytes, workdir: Path) -> None:
     Security invariants enforced:
     - No path traversal (rejects '..' components and paths outside workdir)
     - No symlinks (Unix external_attr mode check)
-    - Extension whitelist (TeX-ecosystem types only)
+    - Extension whitelist (TeX-ecosystem types only; other files are skipped, never written)
     - File-count cap (MAX_ZIP_FILES)
     - Uncompressed-size cap (MAX_UNCOMPRESSED_BYTES, zip-bomb guard)
 
@@ -278,6 +279,7 @@ def extract_project_zip(zip_bytes: bytes, workdir: Path) -> None:
     workdir_real = workdir.resolve()
     total_uncompressed = 0
     file_count = 0
+    skipped: set[str] = set()
 
     with zf_handle as zf:
         for info in zf.infolist():
@@ -314,12 +316,14 @@ def extract_project_zip(zip_bytes: bytes, workdir: Path) -> None:
                     f"ZIP path escapes workdir: {info.filename!r}"
                 )
 
+            # Skip, never write, any other file type. Project folders routinely carry stray files (desktop.ini,
+            # .DS_Store, __MACOSX/ copies, editor settings); rejecting the whole ZIP over one of them failed real
+            # latex-diff runs (2026-10-23, a ".ini"). A skipped file is never extracted, so this is as safe as the old
+            # rejection: only allowlisted types ever reach disk or the TeX run.
             suffix = Path(info.filename).suffix.lower()
-            if suffix not in ALLOWED_ZIP_EXTENSIONS:
-                raise ValidationError(
-                    f"ZIP contains unsupported file type {suffix!r}. "
-                    f"Allowed: {', '.join(sorted(ALLOWED_ZIP_EXTENSIONS))}"
-                )
+            if suffix not in ALLOWED_ZIP_EXTENSIONS or parts[0] == "__MACOSX":
+                skipped.add(suffix or "(none)")
+                continue
 
             total_uncompressed += info.file_size
             if total_uncompressed > MAX_UNCOMPRESSED_BYTES:
@@ -331,6 +335,8 @@ def extract_project_zip(zip_bytes: bytes, workdir: Path) -> None:
             dest.parent.mkdir(parents=True, exist_ok=True)
             dest.write_bytes(zf.read(info.filename))
 
+    if skipped:
+        logging.getLogger(__name__).warning("project zip: skipped file types %s", ", ".join(sorted(skipped))[:120])
     if not (workdir / "main.tex").exists():
         raise ValidationError(
             "ZIP must contain a top-level main.tex."
