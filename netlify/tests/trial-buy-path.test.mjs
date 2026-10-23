@@ -88,6 +88,59 @@ test("checkout keeps the campaign field, so the trial day reaches the Stripe ord
   assert.equal(meta.c, "trial-day-5");
 });
 
+test("the link tag (utm_content) is stored with the arrival and reaches the Stripe order", async () => {
+  assert.equal(arrive("?utm_source=macmenubar&utm_content=keyfeel-directory-261024").first.t, "keyfeel-directory-261024");
+  let captured = null;
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url, opts) => {
+    captured = opts.body;
+    return new Response(JSON.stringify({ id: "cs_test_t", url: "https://checkout.stripe.com/pay/cs_test_t" }), { status: 200 });
+  };
+  try {
+    const touch = { s: "macmenubar", t: "keyfeel-directory-261024<script>", d: "2026-10-24" };
+    const res = await handler(new Request("https://purplelink.llc/.netlify/functions/checkout", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-nf-client-connection-ip": "203.0.113.72" },
+      body: JSON.stringify({ product: "keyfeel", attr: { first: touch, last: touch } }),
+    }));
+    assert.equal(res.status, 200);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+  const meta = JSON.parse(new URLSearchParams(captured).get("metadata[attr_first]"));
+  assert.equal(meta.s, "macmenubar");
+  assert.equal(meta.t, "keyfeel-directory-261024script");
+});
+
+test("with every field at its cap the attribution still fits Stripe's 500 characters and keeps the link tag", async () => {
+  let captured = null;
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url, opts) => {
+    captured = opts.body;
+    return new Response(JSON.stringify({ id: "cs_test_m", url: "https://checkout.stripe.com/pay/cs_test_m" }), { status: 200 });
+  };
+  const big = (n) => "x".repeat(n);
+  try {
+    const touch = { s: big(60), m: big(40), c: big(80), r: big(80), l: "/" + big(119), d: "2026-10-24", g: 1, t: big(60) };
+    const res = await handler(new Request("https://purplelink.llc/.netlify/functions/checkout", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-nf-client-connection-ip": "203.0.113.73" },
+      body: JSON.stringify({ product: "keyfeel", attr: { first: touch, last: touch } }),
+    }));
+    assert.equal(res.status, 200);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+  for (const k of ["metadata[attr_first]", "metadata[attr_last]"]) {
+    const raw = new URLSearchParams(captured).get(k);
+    assert.ok(raw.length <= 500, `${k} is ${raw.length} characters`);
+    const meta = JSON.parse(raw);
+    assert.equal(meta.t, big(60));
+    assert.equal(meta.s, big(60));
+    assert.ok(meta.l.length < 120);
+  }
+});
+
 // ---- buy page -----------------------------------------------------------------------------------------
 test("/moderntex/buy/ is noindex, loads analytics before its own script, and auto-starts only with from=trial", () => {
   const html = read("site/moderntex/buy/index.html");

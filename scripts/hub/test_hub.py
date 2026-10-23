@@ -98,6 +98,7 @@ put("history.json", json.dumps({
         "a": {"kind": "order", "product": "widget", "ts": 1792700000, "attr": {"first": {"s": "bluesky"}}, "heard": "reddit"},
         "b": {"kind": "order", "product": "widget", "ts": 1792700000, "attr": {"first": {"s": "bluesky"}}, "refunded": 1},
         "c": {"kind": "order", "product": "widget", "ts": 1700000000, "attr": {"first": {"s": "bluesky"}}},
+        "d": {"kind": "order", "product": "widget", "ts": 1793050000, "attr": {"first": {"s": "otherdir", "t": "widget-directory-261025"}}},
     }}))
 put("social-metrics.json", json.dumps({"posts": {"20261021-daily-release-widget-1-2": {"platforms": {"bluesky": {
     "snapshots": {"2026-10-21": {"likes": 1, "views": None}, "2026-10-22": {"likes": 3, "views": None}}}}}}}))
@@ -355,6 +356,7 @@ https://purplelink.llc/widget/?utm_source=otherdir&utm_content=widget-directory-
     assert "widget-directory-261025" in q["utm"]
     r = {x["metric"]: (x["value"], x["confidence"]) for x in con.execute("SELECT * FROM results WHERE placement_id = 'queue:q-20261025-dir'")}
     assert r.get("link-visits") == (5, "exact-link") and r.get("link-trials") == (2, "exact-link"), r
+    assert r.get("link-orders") == (1, "exact-link"), r  # the order whose first touch carried this link's tag
     put("hub/funnel.json", saved)
     (tmp / "queue/done/2026-10-25-listing-dir.md").unlink()
     run("import")

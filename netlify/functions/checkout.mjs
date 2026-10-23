@@ -284,10 +284,15 @@ function formEncode(params) {
 
 // Channel attribution sent by analytics.js: how the buyer first and most
 // recently arrived (campaign tags, referring site, a Google-ad-click flag,
-// landing page, date). Untrusted and optional. Each field is clipped to a
-// short safe charset so the JSON stays under Stripe's 500-character metadata
-// limit; sales.mjs reads it back to report revenue by channel.
-const ATTR_FIELDS = { s: 60, m: 40, c: 80, r: 80, l: 120, d: 10 };
+// landing page, date, and t: the utm_content tag naming the one link, so the
+// marketing hub can credit an order to a single placement). Untrusted and
+// optional. Each field is clipped to a short safe charset; sales.mjs reads it
+// back to report revenue by channel.
+const ATTR_FIELDS = { s: 60, m: 40, c: 80, r: 80, l: 120, d: 10, t: 60 };
+// Stripe allows 500 characters per metadata value. With every field at its cap
+// the JSON would be a little over, so the landing path (the least useful field)
+// is shortened first, then the campaign, until it fits.
+const ATTR_MAX = 500;
 function cleanTouch(t) {
   if (!t || typeof t !== "object") return null;
   const out = {};
@@ -297,7 +302,13 @@ function cleanTouch(t) {
     if (v) out[k] = v;
   }
   if (t.g === 1 || t.g === true) out.g = 1;
-  return Object.keys(out).length ? JSON.stringify(out) : "";
+  if (!Object.keys(out).length) return "";
+  for (const k of ["l", "c"]) {
+    const over = JSON.stringify(out).length - ATTR_MAX;
+    if (over > 0 && out[k]) out[k] = out[k].slice(0, Math.max(0, out[k].length - over));
+    if (out[k] === "") delete out[k];
+  }
+  return JSON.stringify(out);
 }
 
 export default async function handler(request) {
