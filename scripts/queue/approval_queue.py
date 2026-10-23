@@ -14,7 +14,7 @@ approved/. Stdlib only.
   approval_queue.py reject ID --reason CODE [--text TEXT]
   approval_queue.py edit ID --file NEWDRAFT.md   store the edit as a diff, status edited
   approval_queue.py snooze ID YYYY-MM-DD
-  approval_queue.py done ID [--result TEXT]
+  approval_queue.py done ID [--result TEXT] [--url URL]   --url: where the placement went live (marketing hub)
   approval_queue.py expire                       move overdue items to expired/
   approval_queue.py requeue                      re-lint needs-work; move passing items to pending
   approval_queue.py stats [--days 30]
@@ -37,6 +37,11 @@ REQUIRED_FIELDS = ["id", "created", "job", "model", "kind", "target", "executor"
 REQUIRED_SECTIONS = ["Ask", "Why now", "Draft", "Verify", "If approved", "If rejected", "Evidence"]
 WORD_CAPS = {"email": 150, "post": 220}
 PENDING_CAP = 15
+# Marketing hub (docs/growth-briefs/marketing-hub-2026-10-23.md): from this date every link to purplelink.llc in an
+# outward draft carries utm_source and a utm_content no other item uses, so each placement is counted on its own
+# (scripts/hub/hub.py utm makes one). Older items are not re-linted for it.
+PLACEMENT_TAGS_SINCE = dt.date(2026, 10, 24)
+TAGGED_KINDS = {"post", "email", "listing", "submission"}
 SELF_PROMO = {"post", "submission", "email"}
 
 BANNED_PHRASES = [
@@ -355,6 +360,30 @@ def lint(fm: dict, body: str, offline: bool = False, others: list | None = None,
     checks["duplicate_30d"] = "fail" if dup else "pass"
     checks["rate_limit"] = "fail" if rate else "pass"
 
+    # placement tags
+    try:
+        created = dt.date.fromisoformat(str(fm.get("created", ""))[:10])
+    except ValueError:
+        created = today
+    if fm.get("kind") in TAGGED_KINDS and created >= PLACEMENT_TAGS_SINCE:
+        tag_problems = []
+        mine = set()
+        for u in re.findall(r"https?://(?:www\.)?purplelink\.llc[^\s)>\]\"']*", draft_text):
+            q = dict(re.findall(r"[?&](utm_[a-z]+)=([^&#\s]*)", u))
+            if not q.get("utm_source") or not q.get("utm_content"):
+                tag_problems.append(f"link without utm_source and utm_content: {u[:80]}")
+            else:
+                mine.add(q["utm_content"])
+        for o in others or []:
+            if o["fm"].get("id") == fm.get("id") or o["folder"] in ("rejected", "expired"):
+                continue
+            theirs = set(re.findall(r"utm_content=([^&#\s)\]\"']+)", sections(o["body"]).get("Draft", "")))
+            clash = mine & theirs
+            if clash:
+                tag_problems.append(f"utm_content {sorted(clash)[0]} is already used by {o['fm'].get('id')}")
+        problems += tag_problems
+        checks["placement_tags"] = "fail" if tag_problems else "pass"
+
     # urls
     urls = sorted({u.rstrip(".,;:") for u in re.findall(r"https?://[^\s)>\]\"']+", draft_text + "\n" + ver)})
     if offline or not urls:
@@ -471,7 +500,12 @@ def digest_text(maxn: int = 7, today: dt.date | None = None) -> str:
     for n, it in enumerate(items[:maxn], 1):
         fm, sec = it["fm"], sections(it["body"])
         why = [l.strip("- ").strip() for l in sec.get("Why now", "").split("\n") if l.strip().startswith("-")][:2]
-        lines.append(f"{n}. [{fm.get('kind')}] {first_line(sec.get('Ask', ''))} {fm.get('effort_minutes')} min, expires {fm.get('expires')}, risk {fm.get('risk')}.")
+        try:
+            age = (today - dt.date.fromisoformat(str(fm.get("created", ""))[:10])).days
+        except ValueError:
+            age = None
+        waited = "" if age is None else (" new today," if age <= 0 else f" waiting {age} day{'s' if age != 1 else ''},")
+        lines.append(f"{n}. [{fm.get('kind')}] {first_line(sec.get('Ask', ''))} {fm.get('effort_minutes')} min,{waited} expires {fm.get('expires')}, risk {fm.get('risk')}.")
         for w in why:
             lines.append(f"   Evidence: {w}")
         lines.append(f"   -> approve {fm.get('id')}")
@@ -547,8 +581,15 @@ def cmd_done(a):
     it = find_item(a.item)
     if it["folder"] != "approved":
         sys.exit("only approved items can be marked done")
-    body = it["body"].rstrip() + f"\n\n## Result\n{a.result or 'done'} ({dt.datetime.now().astimezone().isoformat(timespec='minutes')})\n"
-    move(it, "done", {"status": "done"}, body)
+    if a.url and not re.match(r"https?://", a.url):
+        sys.exit("--url must be the http(s) address where the placement went live")
+    now = dt.datetime.now().astimezone()
+    body = it["body"].rstrip() + f"\n\n## Result\n{a.result or 'done'}{' ' + a.url if a.url else ''} ({now.isoformat(timespec='minutes')})\n"
+    # The marketing hub reads placement_url and live as the record of where and when it went out.
+    updates = {"status": "done", "live": now.date().isoformat()}
+    if a.url:
+        updates["placement_url"] = a.url
+    move(it, "done", updates, body)
     log_event(it["fm"]["id"], "done"); git_commit(f"done {it['fm']['id']}")
     print(f"done {it['fm']['id']}")
 
@@ -655,7 +696,7 @@ def main(argv=None) -> int:
     p = sub.add_parser("reject"); p.add_argument("item"); p.add_argument("--reason", required=True); p.add_argument("--text")
     p = sub.add_parser("edit"); p.add_argument("item"); p.add_argument("--file", required=True)
     p = sub.add_parser("snooze"); p.add_argument("item"); p.add_argument("date")
-    p = sub.add_parser("done"); p.add_argument("item"); p.add_argument("--result")
+    p = sub.add_parser("done"); p.add_argument("item"); p.add_argument("--result"); p.add_argument("--url")
     sub.add_parser("expire")
     p = sub.add_parser("requeue"); p.add_argument("--offline", action="store_true")
     p = sub.add_parser("stats"); p.add_argument("--days", type=int, default=30)

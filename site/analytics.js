@@ -61,6 +61,7 @@
       if (/(^|\.)(stripe\.com|purplelink\.llc)$/.test(r)) r = "";
       var t = {
         s: clip(utmSource(), 60), m: clip(q.get("utm_medium"), 40), c: clip(q.get("utm_campaign") || trialDay(q), 80),
+        t: clip(q.get("utm_content"), 60),
         r: clip(r, 80), g: (q.get("gclid") || q.get("gbraid") || q.get("wbraid")) ? 1 : 0,
         l: clip(location.pathname, 120), d: new Date().toISOString().slice(0, 10)
       };
@@ -123,6 +124,13 @@
     var label = f.s || f.r || "direct";
     return isLinkedin(label) ? "linkedin" : clip(label, 40);
   }
+  // The tag naming the one link that brought the first arrival (utm_content, for example a single directory listing
+  // or one email batch), so a placement can be counted on its own rather than shared with its whole channel. Sent with
+  // the same funnel events as the channel label, never alone. Empty when the link carried none.
+  function contentTag() {
+    var f = attr.first || attr.last;
+    return f && f.t ? clip(f.t, 60) : "";
+  }
   var FUNNEL = /^(checkout_click|trial_download|ov_trial_download|lg_trial_download|kf_trial_download|tf_trial_download|pn_trial_download|sm_trial_download|guide_mtx_trial)$/;
 
   function send(payload) {
@@ -138,7 +146,7 @@
 
   window.plTrack = function (type, meta) {
     var ev = { t: type || "event", p: location.pathname, h: location.hostname, r: refHost(), u: utmSource(), m: meta || "" };
-    if (type === "pageview" || FUNNEL.test(type || "")) ev.ft = channel();
+    if (type === "pageview" || FUNNEL.test(type || "")) { ev.ft = channel(); var fc = contentTag(); if (fc) ev.fc = fc; }
     send(ev);
   };
 

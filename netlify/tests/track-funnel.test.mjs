@@ -53,3 +53,22 @@ test("the channel label is clipped and stripped to a safe charset; events withou
   assert.equal(keys.length, 1);
   assert.ok(keys[0].length <= 40 && !/[<>]/.test(keys[0]));
 });
+
+test("the first-touch link tag (utm_content) is stored with the channel and grouped on its own", async () => {
+  await post({ t: "pageview", p: "/keyfeel/", h: "purplelink.llc", ft: "macmenubar", fc: "keyfeel-directory-261008" });
+  await post({ t: "kf_trial_download", p: "/keyfeel/", h: "purplelink.llc", m: "keyfeel", ft: "macmenubar", fc: "keyfeel-directory-261008" });
+  await post({ t: "pageview", p: "/keyfeel/", h: "purplelink.llc", ft: "macmenubar" });
+  await post({ t: "pageview", p: "/", h: "purplelink.llc", fc: "no-channel-so-dropped" });
+  await post({ t: "pageview", p: "/", h: "purplelink.llc", ft: "x", fc: "<b>" + "y".repeat(90) });
+  const out = await read();
+  const c = out.funnelByContent["keyfeel-directory-261008"];
+  assert.equal(c.channel, "macmenubar");
+  assert.equal(c.pageviews, 1);
+  assert.equal(c.pageviewsByPath["/keyfeel/"], 1);
+  assert.equal(c.trial.keyfeel, 1);
+  assert.equal(out.funnelByChannel.macmenubar.pageviews, 2);
+  assert.ok(!("no-channel-so-dropped" in out.funnelByContent));
+  const odd = Object.keys(out.funnelByContent).filter((k) => k !== "keyfeel-directory-261008");
+  assert.equal(odd.length, 1);
+  assert.ok(odd[0].length <= 60 && !/[<>]/.test(odd[0]));
+});

@@ -313,6 +313,87 @@ def test_export_has_no_contacts():
     assert s["placements"] > 0 and "gadget" not in s["untouched"]
 
 
+def test_phase2_tags_and_link_results():
+    import datetime as dt
+    P = hub.paths()
+    u = hub.make_utm(P, "https://purplelink.llc/widget/#buy", "widget", "directory", "somedir", today=dt.date(2026, 10, 25))
+    assert u == "https://purplelink.llc/widget/?utm_source=somedir&utm_medium=referral&utm_campaign=hub-widget&utm_content=widget-directory-261025#buy", u
+    # a tag already used anywhere gets a suffix
+    put("queue/done/2026-10-25-listing-dir.md", """---
+id: q-20261025-dir
+created: 2026-10-25T08:00:00-04:00
+kind: listing
+target: "Some Other Directory"
+assets: widget
+channel: directory
+placement_url: "https://other.example/widget"
+live: 2026-10-26
+status: done
+---
+
+## Ask
+List Widget.
+
+## Draft
+https://purplelink.llc/widget/?utm_source=otherdir&utm_content=widget-directory-261025
+""")
+    assert hub.make_utm(P, "https://purplelink.llc/widget/", "widget", "directory", today=dt.date(2026, 10, 25)).endswith("utm_content=widget-directory-261025-2")
+    try:
+        hub.make_utm(P, "https://example.com/", "widget", "directory"); assert False
+    except SystemExit:
+        pass
+    # the queue item's own fields win, and its link tag is read exactly from funnelByContent
+    saved = (tmp / "hub" / "funnel.json").read_text()
+    f = json.loads(saved)
+    f["content"] = {str(w): {"widget-directory-261025": {"channel": "otherdir", "pageviews": 5, "pageviewsByPath": {"/widget/": 5},
+                                                         "trial": {"widget": 2}, "checkout": {}}} for w in hub.FUNNEL_WINDOWS}
+    put("hub/funnel.json", json.dumps(f))
+    run("import")
+    con = db()
+    q = con.execute("SELECT * FROM placements WHERE id = 'queue:q-20261025-dir'").fetchone()
+    assert (q["channel"], q["url"], q["date"]) == ("directory", "https://other.example/widget", "2026-10-26"), tuple(q)
+    assert "widget-directory-261025" in q["utm"]
+    r = {x["metric"]: (x["value"], x["confidence"]) for x in con.execute("SELECT * FROM results WHERE placement_id = 'queue:q-20261025-dir'")}
+    assert r.get("link-visits") == (5, "exact-link") and r.get("link-trials") == (2, "exact-link"), r
+    put("hub/funnel.json", saved)
+    (tmp / "queue/done/2026-10-25-listing-dir.md").unlink()
+    run("import")
+
+
+def test_phase2_kits_rules_week_log():
+    import datetime as dt
+    P = hub.paths()
+    rows = {r["asset"]: r for r in hub.kits(P)}
+    assert rows["widget"]["state"] == "none"
+    hub.kits(P, ["widget"])
+    assert {r["asset"]: r for r in hub.kits(P)}["widget"]["state"] == "current"
+    kit = json.loads((tmp / "hub" / "kits" / "widget.json").read_text())
+    assert kit["version"] == "1.2.0" and kit["price"] == "9.99" and kit["url"] == "https://purplelink.llc/widget/"
+    # the site changes: the stored kit is out of date and says what changed
+    llms = (tmp / "repo/site/llms.txt").read_text()
+    put("repo/site/llms.txt", llms.replace("version 1.2.0", "version 1.3.0"))
+    w = {r["asset"]: r for r in hub.kits(P)}["widget"]
+    assert w["state"] == "out of date" and "version" in w["changed"], w
+    put("repo/site/llms.txt", llms)
+    # rules: seeded once, re-check due after 90 days; account-setting actions only listed, never done
+    r = {x["channel"]: x for x in hub.rules(P, today=dt.date(2026, 10, 23))}
+    assert r["bluesky"]["due"] and "needs Ben's yes" in r["bluesky"]["action"]
+    r = {x["channel"]: x for x in hub.rules(P, checked="bluesky", today=dt.date(2026, 10, 23))}
+    assert not r["bluesky"]["due"] and r["threads"]["due"]
+    assert {x["channel"]: x for x in hub.rules(P, today=dt.date(2027, 2, 1))}["bluesky"]["due"]
+    # weekly loop
+    run("import")
+    picks, hints = hub.week_pick(P, dt.date(2026, 10, 23))
+    assert len(picks) <= 5 and all(isinstance(w, str) and w for _, w in picks)
+    assert "pick" in run("week", "pick") and "measured" in run("week", "measure")
+    out = run("week", "measure", "--write")
+    assert (tmp / "repo/docs/growth-briefs/hub").is_dir() and "wrote" in out
+    # generated log: read-only view with no email addresses
+    run("log")
+    log = (tmp / "repo/Outreach/PLACEMENTS.md").read_text()
+    assert log.startswith("# Placements (generated)") and "Do not edit" in log and not hub.EMAIL_RE.search(log)
+
+
 if __name__ == "__main__":
     test_all()
     test_sources_untouched()
@@ -322,4 +403,6 @@ if __name__ == "__main__":
     test_listing_checks()
     test_fetch_funnel_keeps_token_out_of_url()
     test_export_has_no_contacts()
+    test_phase2_tags_and_link_results()
+    test_phase2_kits_rules_week_log()
     print("ok")

@@ -107,4 +107,37 @@ fe["expires"] = (TODAY - dt.timedelta(days=1)).isoformat(); fe["id"] = "q-old-00
 aq.main(["expire"])
 check((aq.ROOT / "expired" / "old.md").exists(), "expire sweep")
 check("Approval queue" in txt and Path(aq.ROOT / "queue.json").exists(), "index written")
+check("waiting" in txt or "new today" in txt, "digest shows how long an item has waited")
+
+# placement tags (marketing hub): from 2026-10-24, links to the site carry utm_source and a unique utm_content
+LATER = aq.PLACEMENT_TAGS_SINCE + dt.timedelta(days=1)
+def tagged(link, **over):
+    t, f, b = item(created=LATER.isoformat() + "T08:00:00-04:00", target="Some Directory", **over)
+    return f, b.replace("Native macOS LaTeX editor for journal manuscripts.", f"Native macOS LaTeX editor. {link}")
+f, b = tagged("https://purplelink.llc/moderntex/")
+c, p = aq.lint(f, b, offline=True, others=[], today=LATER)
+check(c.get("placement_tags") == "fail" and any("utm_content" in x for x in p), f"untagged link fails {p}")
+f, b = tagged("https://purplelink.llc/moderntex/?utm_source=somedir&utm_content=moderntex-directory-261025")
+c, p = aq.lint(f, b, offline=True, others=[], today=LATER)
+check(c.get("placement_tags") == "pass", f"tagged link passes {p}")
+other = {"fm": {"id": "q-other"}, "folder": "done", "body": "## Draft\nhttps://purplelink.llc/moderntex/?utm_source=x&utm_content=moderntex-directory-261025\n"}
+c, p = aq.lint(f, b, offline=True, others=[other], today=LATER)
+check(c.get("placement_tags") == "fail" and any("already used" in x for x in p), f"reused utm_content fails {p}")
+f, b = tagged("https://purplelink.llc/moderntex/")
+f["created"] = (aq.PLACEMENT_TAGS_SINCE - dt.timedelta(days=1)).isoformat()
+c, p = aq.lint(f, b, offline=True, others=[], today=LATER)
+check("placement_tags" not in c, "items created before the rule are not re-linted")
+
+# done --url records where and when the placement went live
+_, fd, bd = item(target="Done With Url")
+aq.main(["new", write("du.md", aq.join_item(fd, bd)), "--offline"])
+du = [i for i in aq.all_items() if i["fm"].get("target") == "Done With Url"][0]["fm"]["id"]
+aq.main(["approve", du])
+aq.main(["done", du, "--result", "listed", "--url", "https://dir.example/moderntex"])
+dfm = aq.find_item(du)["fm"]
+check(dfm.get("placement_url") == "https://dir.example/moderntex" and dfm.get("live") == TODAY.isoformat(), f"done --url {dfm}")
+try:
+    aq.main(["done", du, "--url", "not a url"]); check(False, "bad --url should exit")
+except SystemExit:
+    pass
 print("approval queue tests ok")

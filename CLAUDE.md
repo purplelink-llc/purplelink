@@ -167,6 +167,14 @@ This repo is public (Netlify's free plan cannot deploy a private organization re
 
 The 50 skills from coreyhaines31/marketingskills are installed in `~/.claude/skills/` (clone at `/Volumes/Extreme SSD/marketingskills`, refresh with `/Volumes/Extreme SSD/marketingskills-local/update.sh`). Read `.agents/product-marketing.md` (local, shared product and voice context) before marketing work. The scheduled task `daily-gap-analysis` writes its briefs under `docs/growth-briefs/gap-analysis/` (git-ignored, see the private repo note above). Nothing outward (posts, emails, spend, sign-ups) happens without an approved queue item or Ben's explicit yes.
 
+**Marketing hub (2026-10-23):** `scripts/hub/hub.py` indexes every placement (where each asset was marketed, with its
+result) in a private database under `~/.purplelink/hub/`; the dashboard's Marketing tab shows it. From 2026-10-24 every
+link to purplelink.llc in an outward queue draft needs `utm_source` and a `utm_content` no other placement uses (the queue
+lint rejects it otherwise): make the link with `python3 scripts/hub/hub.py utm URL --asset A --channel C`. Record a send
+with `approval_queue.py done ID --url <where it went live>` instead of a new hand-written row in `Outreach/OUTREACH-LOG.md`
+(the rows already there stay; the social engine still writes its own). `hub.py log` writes the generated view,
+`Outreach/PLACEMENTS.md`. Design: `docs/growth-briefs/marketing-hub-2026-10-23.md` (private).
+
 **One exception, standing approval (Ben, 2026-10-18):** the daily ranked pipeline (`backend/socialpost/daily`, run by
 launchd `com.purplelink.social-daily`) picks one company item a day (a release, guide, video, blog post, tool or an
 evergreen page), vets it and queues it as `approved_by: "ben (standing, 2026-10-18)"`; `social.py run-due` posts it to
