@@ -209,7 +209,7 @@ def test_extract_project_zip_basic(tmp_path):
 
 def test_extract_project_zip_requires_main_tex(tmp_path):
     z = _make_zip({"other.tex": b"hello"})
-    with pytest.raises(core.ValidationError, match="main.tex"):
+    with pytest.raises(core.ValidationError, match="main"):
         core.extract_project_zip(z, tmp_path)
 
 
@@ -243,7 +243,7 @@ def test_extract_project_zip_still_rejects_traversal_with_an_unknown_suffix(tmp_
 
 def test_extract_project_zip_only_stray_files_still_needs_main_tex(tmp_path):
     z = _make_zip({"desktop.ini": b"x", "notes.docx": b"y"})
-    with pytest.raises(core.ValidationError, match="main.tex"):
+    with pytest.raises(core.ValidationError, match="main"):
         core.extract_project_zip(z, tmp_path)
 
 
@@ -284,3 +284,46 @@ def test_rate_limit_check_blocks_over_limit():
     allowed, remaining = core.check_and_increment(store, "k")
     assert allowed is False
     assert remaining == 0
+
+
+DOC = b"\\documentclass{article}\n\\begin{document}\nHi\n\\end{document}\n"
+
+
+def test_extract_project_zip_steps_into_a_single_wrapping_folder(tmp_path):
+    z = _make_zip({"proj/main.tex": DOC, "proj/refs.bib": b"@a{b}", "proj/fig/f.png": b"\x89PNG",
+                   "__MACOSX/proj/._main.tex": b"junk"})
+    core.extract_project_zip(z, tmp_path)
+    assert (tmp_path / "main.tex").read_bytes() == DOC
+    assert (tmp_path / "refs.bib").exists() and (tmp_path / "fig" / "f.png").exists()
+    assert not (tmp_path / "proj").exists()
+
+
+def test_extract_project_zip_uses_the_one_document_when_not_named_main(tmp_path):
+    z = _make_zip({"paper.tex": DOC, "intro.tex": b"\\section{Intro}", "refs.bib": b"@a{b}"})
+    core.extract_project_zip(z, tmp_path)
+    assert (tmp_path / "main.tex").read_bytes() == DOC
+    assert (tmp_path / "paper.tex").exists() and (tmp_path / "intro.tex").exists()
+
+
+def test_extract_project_zip_wrapped_folder_with_another_name(tmp_path):
+    z = _make_zip({"sample/sample-sigconf.tex": DOC, "sample/acmart.cls": b"%cls"})
+    core.extract_project_zip(z, tmp_path)
+    assert (tmp_path / "main.tex").read_bytes() == DOC and (tmp_path / "acmart.cls").exists()
+
+
+def test_extract_project_zip_prefers_a_conventional_name_among_several_documents(tmp_path):
+    z = _make_zip({"supplement.tex": DOC.replace(b"Hi", b"Supp"), "paper.tex": DOC})
+    core.extract_project_zip(z, tmp_path)
+    assert (tmp_path / "main.tex").read_bytes() == DOC
+
+
+def test_extract_project_zip_several_documents_without_a_conventional_name_is_rejected(tmp_path):
+    z = _make_zip({"a.tex": DOC, "b.tex": DOC})
+    with pytest.raises(core.ValidationError, match="more than one main"):
+        core.extract_project_zip(z, tmp_path)
+
+
+def test_extract_project_zip_top_level_main_tex_is_kept_as_is(tmp_path):
+    z = _make_zip({"main.tex": b"%root", "paper.tex": DOC})
+    core.extract_project_zip(z, tmp_path)
+    assert (tmp_path / "main.tex").read_bytes() == b"%root"

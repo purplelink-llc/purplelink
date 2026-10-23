@@ -11,6 +11,7 @@ import io
 import logging
 import ipaddress
 import re
+import shutil
 import zipfile
 from pathlib import Path
 
@@ -337,10 +338,57 @@ def extract_project_zip(zip_bytes: bytes, workdir: Path) -> None:
 
     if skipped:
         logging.getLogger(__name__).warning("project zip: skipped file types %s", ", ".join(sorted(skipped))[:120])
-    if not (workdir / "main.tex").exists():
+    _settle_main_tex(workdir)
+
+
+# Preferred names when a ZIP holds more than one complete document at its root.
+_MAIN_NAMES = ("main", "paper", "manuscript", "article", "thesis", "dissertation", "report")
+
+
+def _is_document(path: Path) -> bool:
+    try:
+        head = path.read_text(encoding="utf-8", errors="replace")[:200_000]
+    except OSError:
+        return False
+    return "\\documentclass" in head and "\\begin{document}" in head
+
+
+def _settle_main_tex(workdir: Path) -> None:
+    """Make sure *workdir* has a top-level main.tex, the entry point every tool uses.
+
+    Real uploads often lack one (2026-10-23: three of six realistic ZIP shapes failed): a folder zipped in Finder
+    puts everything under proj/, and Overleaf exports and journal templates name the file paper.tex or
+    sample-sigconf.tex. In order: keep a top-level main.tex; else step into a single top-level folder; else use the
+    one root .tex that is a complete document (copied to main.tex, so its relative includes still resolve);
+    with several, prefer a conventional name. Raises ValidationError when no document can be chosen.
+    """
+    if (workdir / "main.tex").exists():
+        return
+    entries = [p for p in workdir.iterdir() if not p.name.startswith(".")]
+    if len(entries) == 1 and entries[0].is_dir() and not entries[0].is_symlink():
+        inner = entries[0]
+        for child in list(inner.iterdir()):
+            target = workdir / child.name
+            if target.exists():
+                break
+            shutil.move(str(child), str(target))
+        else:
+            inner.rmdir()
+        if (workdir / "main.tex").exists():
+            return
+    docs = sorted(p for p in workdir.glob("*.tex") if p.is_file() and _is_document(p))
+    if not docs:
         raise ValidationError(
-            "ZIP must contain a top-level main.tex."
+            "ZIP must contain a main .tex file (one with \\documentclass and \\begin{document}) at its top level."
         )
+    if len(docs) > 1:
+        ranked = [d for name in _MAIN_NAMES for d in docs if d.stem.lower() == name]
+        if not ranked:
+            raise ValidationError(
+                "ZIP has more than one main .tex file at its top level. Rename the one to use main.tex."
+            )
+        docs = ranked[:1]
+    shutil.copyfile(docs[0], workdir / "main.tex")
 
 
 # Engine name -> latexmk engine flag. LuaLaTeX deliberately excluded (spec §RCE).
