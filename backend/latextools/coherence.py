@@ -1122,8 +1122,8 @@ VOICE_RULES = """## Voice for "title", "why" and "fix"
 Write to the author in plain academic prose, second person ("your abstract", "state H3 in Section 2").
 - Sentences of 12 to 20 words, each opening with its subject. No framing openers ("It is worth noting
   that", "The key point is", "In terms of").
-- Carry contrast only with a sentence-initial "However,". Never "but", "although", "while" or "whereas"
-  mid-sentence: write two sentences instead.
+- Carry contrast only with a sentence-initial "However,". Never "but", "yet", "although", "while" or
+  "whereas" mid-sentence: write two sentences instead.
 - Put asides in parentheses. Never use em-dashes or semicolons.
 - Intensity comes from the paper's own numbers, never adjectives: "0.33 in the text and 0.35 in Table 5",
   not "a major discrepancy". Never invent a number.
@@ -1403,7 +1403,9 @@ _BIBLE_HEADINGS = [
 ]
 
 
-def render_markdown(report: dict) -> str:
+def render_markdown(report: dict, include_bible: bool = True) -> str:
+    """The Coherence Check section. With include_bible=False the Paper Bible is left out, so a paid review can
+    place it at the end of the report (render_bible_markdown) while the findings sit mid-report."""
     sec_title = {s["id"]: s["title"] for s in report.get("sections", [])}
     findings = report.get("findings", [])
     lines = ["## Coherence Check", ""]
@@ -1428,17 +1430,33 @@ def render_markdown(report: dict) -> str:
             lines += [f"**Why it matters.** {f['why']}", ""]
         if f.get("fix"):
             lines.append(f"**Suggested fix.** {f['fix']}")
-    items = report.get("bible", {}).get("items", [])
-    if items:
-        lines += ["", "### Paper Bible", "",
-                  "What each section states, as read for this check. Use it to confirm the paper says what you "
-                  "meant it to say."]
-        for kind, heading in _BIBLE_HEADINGS:
-            rows = [it for it in items if it["kind"] == kind]
-            if not rows:
-                continue
-            lines += ["", f"**{heading}**", ""]
-            for it in rows[:20]:
-                label = f"{it['label']}: " if it.get("label") else ""
-                lines.append(f"- {label}{it['text']} ({sec_title.get(it['section'], it['section'])})")
+    if include_bible:
+        bible = _bible_lines(report, "###")
+        if bible:
+            lines += [""] + bible
     return "\n".join(lines).rstrip() + "\n"
+
+
+def _bible_lines(report: dict, level: str) -> list[str]:
+    sec_title = {s["id"]: s["title"] for s in report.get("sections", [])}
+    items = report.get("bible", {}).get("items", [])
+    if not items:
+        return []
+    lines = [f"{level} Paper Bible", "",
+             "What each section of your manuscript states, as read for the coherence check. Use it to confirm "
+             "the paper says what you meant it to say."]
+    for kind, heading in _BIBLE_HEADINGS:
+        rows = [it for it in items if it["kind"] == kind]
+        if not rows:
+            continue
+        lines += ["", f"**{heading}**", ""]
+        for it in rows[:20]:
+            label = f"{it['label']}: " if it.get("label") else ""
+            lines.append(f"- {label}{it['text']} ({sec_title.get(it['section'], it['section'])})")
+    return lines
+
+
+def render_bible_markdown(report: dict) -> str:
+    """The Paper Bible as its own top-level section, for the end of a paid review. "" when it is empty."""
+    lines = _bible_lines(report, "##")
+    return ("\n".join(lines).rstrip() + "\n") if lines else ""

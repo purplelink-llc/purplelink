@@ -604,8 +604,11 @@ def paper_review_pipeline(
                 if _coh.in_review_enabled() and final.get("result_md"):
                     # Behind a flag until Ben approves it for buyers; inside the same usage tracker, so it
                     # counts against this order's cost ceiling.
-                    final["result_md"] = _insert_coherence_section(
-                        final["result_md"], await _coherence_markdown_for_review(pdf_bytes))
+                    _findings_md, _bible_md = await _coherence_markdown_for_review(pdf_bytes)
+                    final["result_md"] = _insert_coherence_section(final["result_md"], _findings_md)
+                    if _bible_md:
+                        # The Paper Bible is reference material: last, after the panel transcript.
+                        final["result_md"] = final["result_md"].rstrip() + "\n\n" + _bible_md
                 job_status = "done" if final.get("result_md") else "error"
                 replacement_token = None
                 if job_status == "error":
@@ -693,17 +696,17 @@ def paper_review_pipeline(
 COHERENCE_COST_CEILING_USD = 3.0
 
 
-async def _coherence_markdown_for_review(pdf_bytes: bytes) -> str:
-    """The coherence section appended to a paid review when COHERENCE_IN_REVIEW=1. Never raises: a failure
-    here returns "" so the paid review is delivered without it."""
+async def _coherence_markdown_for_review(pdf_bytes: bytes) -> tuple[str, str]:
+    """(findings section, Paper Bible section) for a paid review when COHERENCE_IN_REVIEW=1. Never raises: a
+    failure returns ("", "") so the paid review is delivered without them."""
     try:
         from latextools import coherence as _coh
         ms = _coh.load_manuscript(pdf_bytes, "manuscript.pdf")
         report = await _coh.run_coherence_check(ms)
-        return _coh.render_markdown(report)
+        return _coh.render_markdown(report, include_bible=False), _coh.render_bible_markdown(report)
     except Exception as e:
         logger.warning("coherence section skipped: %s", type(e).__name__)
-        return ""
+        return "", ""
 
 
 def _insert_coherence_section(report_md: str, section: str) -> str:
