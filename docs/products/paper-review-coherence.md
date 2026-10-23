@@ -1,6 +1,6 @@
 # Paper Review: Coherence Check (spec, 2026-10-23)
 
-Status: prototype behind two feature flags, not visible to buyers. Pricing and launch are Ben's decision.
+Status: since 2026-10-23 included in every paid Paper Review report (`COHERENCE_IN_REVIEW=1`); no standalone tier yet. Pricing and launch are Ben's decision.
 Code: `backend/latextools/coherence.py`, tests `backend/tests/test_coherence.py`, CLI
 `backend/scripts/coherence_check.py`, internal endpoint `POST /paper-review/coherence/internal`.
 
@@ -141,8 +141,8 @@ avoids that.
 - `COHERENCE_CHECK_ENABLED=1` (web function's secret): enables the internal endpoint. Callers also need
   `x-webhook-secret: $BACKEND_WEBHOOK_SECRET`. `mode=rules` runs inline; `mode=full` runs in the
   `coherence_check_job` Modal function, which is the only one that mounts the Anthropic key.
-- `COHERENCE_IN_REVIEW=1` (pipeline function's secret): appends the coherence section to paid Paper Review
-  reports. It runs inside the order's usage tracker, so it counts against the order's cost ceiling, and a
+- `COHERENCE_IN_REVIEW=1` (Modal secret `coherence-flags`, mounted on `paper_review_pipeline`; **on since
+  2026-10-23**, Ben's decision): appends the coherence section to paid Paper Review reports. It runs inside the order's usage tracker, so it counts against the order's cost ceiling, and a
   failure returns an empty section rather than failing the paid review.
 - `COHERENCE_EXTRACT_MODEL` (default `claude-sonnet-5-5`), `COHERENCE_CHECK_MODEL` (default the review's
   `DEFAULT_MODEL`), `COHERENCE_EFFORT`.
