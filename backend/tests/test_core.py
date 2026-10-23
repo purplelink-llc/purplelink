@@ -219,9 +219,31 @@ def test_extract_project_zip_rejects_path_traversal(tmp_path):
         core.extract_project_zip(z, tmp_path)
 
 
-def test_extract_project_zip_rejects_bad_extension(tmp_path):
+def test_extract_project_zip_never_writes_a_disallowed_file(tmp_path):
     z = _make_zip({"main.tex": b"ok", "script.sh": b"rm -rf /"})
-    with pytest.raises(core.ValidationError, match="unsupported file type"):
+    core.extract_project_zip(z, tmp_path)
+    assert (tmp_path / "main.tex").read_bytes() == b"ok"
+    assert not (tmp_path / "script.sh").exists()
+
+
+def test_extract_project_zip_skips_stray_folder_files(tmp_path):
+    z = _make_zip({
+        "main.tex": b"ok", "refs.bib": b"@a{b}", "desktop.ini": b"[.ShellClassInfo]", ".DS_Store": b"\0",
+        "__MACOSX/._main.tex": b"junk", "sub/settings.json": b"{}", "README": b"no suffix",
+    })
+    core.extract_project_zip(z, tmp_path)
+    assert sorted(p.name for p in tmp_path.rglob("*") if p.is_file()) == ["main.tex", "refs.bib"]
+
+
+def test_extract_project_zip_still_rejects_traversal_with_an_unknown_suffix(tmp_path):
+    z = _make_zip({"main.tex": b"ok", "../evil.ini": b"bad"})
+    with pytest.raises(core.ValidationError, match="path traversal|escapes workdir"):
+        core.extract_project_zip(z, tmp_path)
+
+
+def test_extract_project_zip_only_stray_files_still_needs_main_tex(tmp_path):
+    z = _make_zip({"desktop.ini": b"x", "notes.docx": b"y"})
+    with pytest.raises(core.ValidationError, match="main.tex"):
         core.extract_project_zip(z, tmp_path)
 
 
