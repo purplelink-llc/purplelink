@@ -190,7 +190,8 @@ def test_findings_from_model_uses_only_bible_quotes():
               "quote": "trust is belief"},
              {"id": "B2", "section": "S5", "kind": "construct_definition", "label": "trust", "text": "b",
               "quote": "trust is behaviour"}]
-    raw = [{"type": "construct_definition_conflict", "item_ids": ["B1", "B2", "B77"], "title": "Trust two ways",
+    items.append({"id": "B3", "section": "S5", "kind": "claim", "label": "x", "text": "c", "quote": "Trust is behaviour."})
+    raw = [{"type": "construct_definition_conflict", "item_ids": ["B1", "B2", "B3", "B77"], "title": "Trust two ways",
             "why": "w", "fix": "f", "confidence": "HIGH", "quotes": ["invented by the model"]},
            {"type": "made_up_type", "item_ids": ["B1"]},
            {"type": "term_drift", "item_ids": ["B99"]}]

@@ -1156,7 +1156,13 @@ def findings_from_model(raw: list, items: list[dict]) -> list[Finding]:
         ids = [i for i in (f.get("item_ids") or []) if isinstance(i, str) and i in by_id]
         if ftype not in CHECK_TYPES or not ids:
             continue
-        cited = [by_id[i] for i in ids[:4]]
+        cited, seen = [], set()
+        for i in ids:
+            q = _norm_for_match(by_id[i]["quote"])
+            if q not in seen:           # two items can carry the same span
+                seen.add(q)
+                cited.append(by_id[i])
+        cited = cited[:4]
         conf = str(f.get("confidence", "medium")).lower()
         out.append(Finding(
             type=ftype,

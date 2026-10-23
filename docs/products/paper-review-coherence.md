@@ -118,7 +118,7 @@ Options considered:
 its sample, and the full check folded into all three existing tiers at no price change.**
 
 - $5 sits under the $9 Standard and next to the $5 Citation Gap, so it reads as an entry point, not a
-  discount. Measured model cost per paper is in "Prototype runs" below; Stripe takes about $0.45 of $5.
+  discount. Measured model cost is about $0.50 per paper (see "Prototype runs"); Stripe takes about $0.45 of $5.
 - The free sample works like the existing free preview: run the rules, show the count and the first
   finding, and say how many sections the full check reads. A draft with labelled hypotheses or a stale
   abstract number shows something real before payment.
@@ -163,7 +163,28 @@ disagree, with the exact sentences quoted. $5."
 
 ## Prototype runs
 
-Pending: the two live runs need a non-production Anthropic key (`BENCH_ANTHROPIC_KEY`).
+Two full runs on 2026-10-23 (Sonnet 5.5 extraction, Opus 5.5 cross-check and verifier, effort medium). Every
+kept finding was checked by hand against the source. Reports and the per-finding judgment are kept privately
+(they quote an unpublished manuscript).
+
+| Paper | Input | Kept | Real | Verifier dropped | Cost |
+|---|---|---|---|---|---|
+| Open-access ICSE 2026 survey (15 hypotheses) | PDF | 9 | 8 | 3 (all correctly) | $0.48 |
+| One of the owner's own drafts | .tex | 6 | 6 | 7 (2 arguably worth keeping) | $0.55 |
+
+- **Precision 14/15 (93%)** on kept findings; 11/15 counting only clear contradictions or absences (the
+  rest are fair reviewer-style points, such as causal wording against a cross-sectional design).
+- Best catches: hypotheses H6 and H7 swapped between the hypothesis list and the results; a reference
+  cited under the wrong number; a promised sensitivity analysis that never appears; a design principle the
+  paper says its ablation supports, with no ablation variant that tests it; a research question about
+  latency that no result measures.
+- The one false positive: two R-squared figures (bootstrapped and not) read as a conflict.
+- Recall is unmeasured. A planted-defect set is the next step before launch.
+- **Measured cost: about $0.50 per paper** (extraction $0.19, cross-check $0.15, verifier $0.14), so a $5
+  standalone price leaves about $4 after Stripe and the model.
+- Noise to fix: type labels are sometimes wrong (design principles filed as hypotheses), some quotes are
+  short fragments, and PDF input loses Bible items whose quotes do not match the extracted text (14 lost
+  on the PDF, 0 on the .tex).
 
 Rule checks alone (no model), 2026-10-23:
 

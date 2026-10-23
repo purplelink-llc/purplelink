@@ -54,11 +54,12 @@ def main() -> int:
     report = asyncio.run(go())
     md = coherence.render_markdown(report)
     if args.out:
-        out = Path(args.out)
-        out.parent.mkdir(parents=True, exist_ok=True)
-        out.with_suffix(".json").write_text(json.dumps(report, indent=2, ensure_ascii=False))
-        out.with_suffix(".md").write_text(md)
-        print(f"wrote {out.with_suffix('.json')} and {out.with_suffix('.md')}", file=sys.stderr)
+        # Appended, not with_suffix: "reports/2512.00869" would lose ".00869".
+        json_path, md_path = Path(args.out + ".json"), Path(args.out + ".md")
+        json_path.parent.mkdir(parents=True, exist_ok=True)
+        json_path.write_text(json.dumps(report, indent=2, ensure_ascii=False))
+        md_path.write_text(md)
+        print(f"wrote {json_path} and {md_path}", file=sys.stderr)
     else:
         print(md)
     u = report["usage"]
