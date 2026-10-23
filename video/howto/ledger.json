@@ -72,5 +72,29 @@
     "caption_id": "AUieDaYNnFt0_DZt8WqsnWJpxJFvWmk5wOdxE_BXOhU6F9au0-3IZuiv"
    }
   }
+ },
+ {
+  "slug": "howto-spotlight-not-finding-files-external-drive",
+  "app": "summonly",
+  "date": "2026-10-23",
+  "title": "Spotlight not finding files on an external drive on Mac (reindex the drive)",
+  "long_id": "XAyZ2nzNB1w",
+  "short_id": "NAN6uPThskU",
+  "link_arm": "B",
+  "link_utm_content": "howto-spotlight-not-finding-files-external-drive",
+  "sources": [
+   "https://discussions.apple.com/thread/255593987",
+   "https://talk.tidbits.com/t/include-external-drive-in-spotlight-search/20161"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "XAyZ2nzNB1w",
+    "caption_id": "AUieDaamEjEAKmt4D8wAu1-isPOHxLev-BidM8njNDN9x4AzuRjG2_Ko"
+   },
+   "short": {
+    "video_id": "NAN6uPThskU",
+    "caption_id": "AUieDaYk3QqC8vW7UO1msSqKCmcdaGIblzmTFTjxQdEJNdt_x_TKccMS"
+   }
+  }
  }
 ]

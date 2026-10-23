@@ -1,0 +1,43 @@
+{
+ "id": "howto-spotlight-not-finding-files-external-drive",
+ "app": "summonly",
+ "title": "Spotlight not finding files on an external drive on Mac (reindex the drive)",
+ "short_title": "Spotlight cannot find files on your external drive? Reindex it",
+ "url": "purplelink.llc/summonly",
+ "page": "https://purplelink.llc/summonly/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://discussions.apple.com/thread/255593987",
+  "https://talk.tidbits.com/t/include-external-drive-in-spotlight-search/20161"
+ ],
+ "verify": {
+  "runs": [
+   {"cmd": "mdutil -s \"/Volumes/Extreme SSD\"", "output": "/System/Volumes/Data/Volumes/Extreme SSD:\n\tIndexing enabled. "},
+   {"cmd": "diskutil info \"/Volumes/Extreme SSD\" | grep 'File System Personality'", "output": "   File System Personality:   APFS"}
+  ],
+  "docs": ["https://support.apple.com/en-us/102321"],
+  "notes": "Apple's article 'About Spotlight indexing and search results on Apple devices' (read 2026-10-23) gives the reindex method for a disk or folder: System Settings, Spotlight, Search Privacy, add the item with +, wait a few seconds, select it and click -, then Done. The checks are read-only (mdutil -s, diskutil info) on Ben's Mac mini (macOS 27.0.1) against its APFS USB SSD, which is indexed; nothing was changed. The Apple Community thread is a drive Spotlight and Finder could not search, fixed by reindexing overnight. Summonly's page states it searches external SSDs, USB drives and other partitions by file and folder name from its own index."
+ },
+ "scenes": [
+  {"type": "hook", "short": true, "kicker": "Spotlight on a Mac", "title": "Spotlight cannot find files on your external drive", "sub": "Finder opens them. Spotlight finds nothing.",
+   "narration": "Your file is on an external drive, and Finder opens it. But Spotlight finds nothing. Here is why, and how to fix it."},
+  {"type": "cause", "text": "Spotlight only searches a drive it has indexed. A drive left out of the index, or missed while it was unplugged, returns nothing.",
+   "narration": "Spotlight does not look through the drive when you search. It looks in an index. If the drive is on Spotlight's privacy list, or it was disconnected while the index was built, its files are simply not in it."},
+  {"type": "steps", "short": true, "label": "System Settings",
+   "lines": ["Open System Settings, then Spotlight", "Click Search Privacy", "Click + and choose the drive", "Wait a few seconds", "Select the drive, click -, then Done"],
+   "ui": "Spotlight reindexes the drive. Keep it connected until that finishes.",
+   "narration": "Apple's own fix is to reindex the drive. Open System Settings and click Spotlight. Click Search Privacy, click the plus button, and choose the drive. Wait a few seconds, then select it, click the minus button, and click Done. Spotlight now reindexes the drive. Leave it connected until it finishes, which can take a while on a large drive."},
+  {"type": "check", "short": true, "label": "Terminal", "ok": "Drive indexed",
+   "lines": ["$ mdutil -s \"/Volumes/Extreme SSD\"", "/System/Volumes/Data/Volumes/Extreme SSD:", "Indexing enabled."],
+   "narration": "To check a drive, run mdutil with the s flag and the drive's path. Indexing enabled means Spotlight is including it."},
+  {"type": "app", "name": "Summonly", "line": "Keeps its own small index, and searches external SSDs and USB drives by file and folder name.",
+   "url": "purplelink.llc/summonly", "img": "site/summonly/img/panel.webp", "icon": "site/assets/summonly-icon.webp",
+   "narration": "Summonly is a Mac search box you open with Option Space. It keeps its own small index on your Mac, separate from Spotlight, and it searches external SSDs, USB drives and other partitions by file and folder name. It follows drives as you connect and eject them. There is a free seven day trial."}
+ ],
+ "thumbs": {
+  "A": {"kind": "error", "pill": "Spotlight", "msg": "Spotlight cannot find files on your external drive"},
+  "B": {"kind": "long", "pill": "Spotlight", "msg": "External drive not indexed", "n": 1, "unit": "list", "sub": "Search Privacy reindexes it"},
+  "C": {"kind": "product", "name": "Summonly", "line": "Search your external drives", "img": "site/summonly/img/panel.webp", "icon": "site/assets/summonly-icon.webp", "zoom": 1.2, "pos": "50% 40%"}
+ }
+}
