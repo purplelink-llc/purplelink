@@ -25,6 +25,9 @@ Phase 2 (the hub as the gate):
   hub.py week pick|measure [--write]   Monday: up to 5 assets to draft for; Sunday: what the week's placements did
   hub.py log                    write Outreach/PLACEMENTS.md, a generated read-only view of every placement
 
+Hand corrections go in ~/.purplelink/hub/overrides.json: {"<placement id>": {"url", "status", "date", "channel",
+"assets": [...], "exclude": true}}. They are applied on every import; the sources are never edited.
+
 Sources: approval queue items (pending, approved, done; outward kinds only), the social queue (posted and scheduled
 company posts, one placement per platform), Outreach/OUTREACH-LOG.md tables, video/howto/ledger.json, and the MacUpdate
 readings in the traffic dashboard history. Assets come from site/llms.txt and site/sitemap.xml.
@@ -71,6 +74,7 @@ def paths() -> dict:
         "videos": repo / "video" / "howto" / "ledger.json",
         "funnel": env_path("PURPLELINK_HUB", HOME / ".purplelink" / "hub") / "funnel.json",
         "facts": env_path("PURPLELINK_HUB", HOME / ".purplelink" / "hub") / "facts.json",
+        "overrides": env_path("PURPLELINK_HUB", HOME / ".purplelink" / "hub") / "overrides.json",
         "social_metrics": env_path("PURPLELINK_SOCIAL_METRICS", HOME / ".purplelink" / "social" / "metrics.json"),
         "traffic_env": env_path("PURPLELINK_TRAFFIC_ENV", HOME / ".config" / "purplelink" / "traffic.env"),
     }
@@ -1051,6 +1055,20 @@ def build(p: dict) -> dict:
         q["date"] = pl["date"] or q["date"]
         q["_text"] += " " + pl["_text"]
     placements = queue + social + kept + from_videos(p) + mu
+    # Hand corrections, kept apart from the sources (the outreach log stays as written): overrides.json maps a
+    # placement id to any of url, status, date, channel, assets (ids; an unknown id becomes a "line" asset such as
+    # paper-review) or exclude (a test or not a placement).
+    overrides = load_json(p["overrides"], {})
+    for pl in placements:
+        o = overrides.get(pl["id"]) or {}
+        for k in ("url", "status", "date", "channel"):
+            if o.get(k):
+                pl[k] = o[k]
+        if o.get("assets"):
+            pl["_assets"] = list(o["assets"])
+            for a in o["assets"]:
+                assets.setdefault(a, {"kind": "line", "name": a, "product": None, "url": "", "names": []})
+    placements = [pl for pl in placements if not (overrides.get(pl["id"]) or {}).get("exclude")]
     for pl in placements:
         add_linked_assets(pl["_text"] + " " + pl["landing_url"], assets)
     today = dt.date.today()
