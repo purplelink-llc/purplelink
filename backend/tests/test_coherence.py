@@ -365,7 +365,7 @@ def test_short_quote_expands_to_its_sentence_across_pdf_line_wraps():
 
 def test_voice_rules_reach_the_check_prompt():
     assert c.VOICE_RULES in c.CHECK_SYSTEM
-    for rule in ("second person", "em-dashes", "However,", "never adjectives", '"but"'):
+    for rule in ("second person", "em-dashes", "However,", "never adjectives", '"but"', '"yet"'):
         assert rule in c.VOICE_RULES
 
 
@@ -404,3 +404,20 @@ def test_coherence_section_goes_after_data_to_claim():
 def test_label_mismatch_is_a_known_type_in_both_prompts():
     assert "label_mismatch" in c.CHECK_TYPES and "label_mismatch" in c.TYPE_TITLES
     assert "label_mismatch" in c.CHECK_SYSTEM and "label_mismatch" in c.VERIFY_SYSTEM
+
+
+def test_paper_bible_renders_separately_for_paid_reviews():
+    fake = _FakeModel()
+    report = asyncio.run(c.run_coherence_check(_ms(), client=object(), message_fn=fake))
+    findings_only = c.render_markdown(report, include_bible=False)
+    assert "Paper Bible" not in findings_only and "## Coherence Check" in findings_only
+    bible = c.render_bible_markdown(report)
+    assert bible.startswith("## Paper Bible")
+    assert "### Paper Bible" in c.render_markdown(report)          # standalone report keeps it inline
+    assert c.render_bible_markdown({"bible": {"items": []}}) == ""
+
+
+def test_review_hook_returns_empty_pair_on_failure(monkeypatch):
+    import app as backend_app
+    out = asyncio.run(backend_app._coherence_markdown_for_review(b"not a pdf"))
+    assert out == ("", "")
