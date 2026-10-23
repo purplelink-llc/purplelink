@@ -2400,6 +2400,8 @@ rectification checklist, and an honest novelty estimate.
 
 - An anonymity scan for double-blind submission on every tier: author names, institutions, funders, protocol numbers and self-citations left in the text.
 
+- A coherence check: the places where your sections disagree with each other (a hypothesis stated but never reported, an abstract number the tables no longer match, a term defined two ways), each with the sentences quoted. It catches plain disagreements reliably. It finds subtler ones (a claim that partly outruns its evidence) less often, so a short list is not proof that none remain.
+
 - A Markdown report and an annotated PDF with comments on the pages they refer to.
 
 - Standard reviews are usually ready in 4-8 minutes, Deep Review in 10-15, on a status page that updates itself.
