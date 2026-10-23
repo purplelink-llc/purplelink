@@ -774,6 +774,20 @@
   status = 200
   force = true
 
+# Instagram link in bio: the latest Instagram posts' tagged links, from the instagram-links Blobs store
+# (instagram-links.mjs, written by backend/socialpost/instagram). Read-only, one fixed key.
+[[redirects]]
+  from = "/instagram/"
+  to = "/.netlify/functions/instagram-links"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/instagram"
+  to = "/instagram/"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "/*"
   to = "/404.html"

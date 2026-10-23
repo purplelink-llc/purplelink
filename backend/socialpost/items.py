@@ -11,7 +11,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from . import fmt, paths
-from .spec import IMAGE_EXT, PLATFORMS, SPEC
+from .spec import IMAGE_EXT, MB, PLATFORMS, SPEC
 from .text import link_errors, text_limit_errors, utm_link
 
 # Ben's standing approval (2026-10-18) for the daily ranked pipeline: guides, videos, releases and other company news
@@ -22,6 +22,17 @@ from .text import link_errors, text_limit_errors, utm_link
 STANDING_BY = "ben (standing, 2026-10-18)"
 STANDING_PLATFORMS = ("linkedin", "bluesky", "threads", "mastodon")
 STANDING_SOURCE = "social-daily"
+
+# Ben's second standing approval (2026-10-23): every video on the Purplelink YouTube channel also goes to the Purplelink
+# Instagram (@purplelink.llc) as a Reel, and every post that went out on the LinkedIn company page gets an Instagram
+# feed post with a branded image. Only socialpost.instagram writes it, only for the items it built, only for Instagram.
+# Never RubbleFront's account (the adapter refuses it by name as well as by the pinned identity).
+IG_STANDING_BY = "ben (standing, 2026-10-23)"
+IG_STANDING_PLATFORMS = ("instagram",)
+IG_STANDING_SOURCES = ("instagram-reel", "instagram-companion")
+STANDING = {STANDING_BY: (STANDING_PLATFORMS, (STANDING_SOURCE,)),
+            IG_STANDING_BY: (IG_STANDING_PLATFORMS, IG_STANDING_SOURCES)}
+HASHTAG_RE = re.compile(r"(?<![\w&])#\w+")
 
 STATUSES = ("draft", "approved", "posted", "failed", "cancelled", "stale")
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]{2,80}$")
@@ -84,6 +95,11 @@ class Item:
     def document(self) -> dict | None:
         return self.meta.get("document") or None
 
+    def video(self) -> dict | None:
+        """A Reel: {"path": mp4, "duration": s, "width": px, "height": px, "alt": text, "cover": optional jpg}.
+        Instagram only."""
+        return self.meta.get("video") or None
+
     # -- text
     def raw_text(self, platform: str) -> str:
         return self.sections.get(platform) or self.sections.get("default") or ""
@@ -91,6 +107,8 @@ class Item:
     def render(self, platform: str) -> str:
         """The exact text the platform will receive, with the platform's UTM link."""
         text = self.raw_text(platform).strip()
+        if platform == "instagram":  # a caption link is not clickable; the caption points to the link in bio
+            return text.replace("{link}", "").strip()
         if not self.link:
             return text
         url = utm_link(self.link, platform, self.campaign)
@@ -107,6 +125,11 @@ class Item:
         for im in (self.meta.get("images") or []):
             f = _resolve(im.get("path", ""), base)
             h.update(hashlib.sha256(f.read_bytes()).digest() if f.is_file() else b"missing")
+        v = self.video()
+        if v:
+            f = _resolve(v.get("path", ""), base)
+            h.update(json.dumps(v, sort_keys=True).encode())
+            h.update(_file_digest(f) if f.is_file() else b"missing")
         d = self.document()
         if d:
             f = _resolve(d.get("path", ""), base)
@@ -119,14 +142,16 @@ class Item:
         m = self.meta
         if m.get("status") != "approved":
             return False, "status is not approved"
-        if m.get("approved_by") not in ("ben", STANDING_BY) or not m.get("approved_at"):
+        if (m.get("approved_by") != "ben" and m.get("approved_by") not in STANDING) or not m.get("approved_at"):
             return False, "approved_by is not 'ben' or approved_at is missing"
-        if m.get("approved_by") == STANDING_BY:
-            bad = [p for p in self.platforms if p not in STANDING_PLATFORMS]
+        if m.get("approved_by") in STANDING:
+            plats, sources = STANDING[m["approved_by"]]
+            bad = [p for p in self.platforms if p not in plats]
             if bad:
                 return False, f"standing approval does not cover {', '.join(bad)}; Ben approves those by hand"
-            if m.get("source") != STANDING_SOURCE:
-                return False, "standing approval only covers items the daily pipeline built"
+            if m.get("source") not in sources:
+                who = "the daily pipeline" if m["approved_by"] == STANDING_BY else "socialpost.instagram"
+                return False, f"standing approval only covers items {who} built"
         if m.get("approved_hash") != self.content_hash():
             return False, "content changed after approval; approve it again"
         return True, ""
@@ -135,6 +160,14 @@ class Item:
 def _resolve(p: str, base: Path) -> Path:
     q = Path(os.path.expanduser(p))
     return q if q.is_absolute() else (base / q)
+
+
+def _file_digest(f: Path) -> bytes:
+    h = hashlib.sha256()
+    with f.open("rb") as fh:
+        for chunk in iter(lambda: fh.read(1 << 20), b""):
+            h.update(chunk)
+    return h.digest()
 
 
 def image_path(item: Item, im: dict) -> Path:
@@ -185,6 +218,10 @@ def validate(item: Item, cfg: dict) -> tuple[list[str], list[str]]:
                 errors.append(f"{p}: documents are LinkedIn only")
         for im in imgs:
             errors += _image_errors(p, im, item)
+        if p == "instagram":
+            errors += _instagram_errors(item, imgs)
+    if item.video() and item.platforms != ["instagram"]:
+        errors.append("video (a Reel) is Instagram only; put it in an item whose only platform is instagram")
     d = item.document()
     if d:
         f = _resolve(d.get("path", ""), item.path.parent)
@@ -195,6 +232,47 @@ def validate(item: Item, cfg: dict) -> tuple[list[str], list[str]]:
         if "linkedin" not in item.platforms:
             errors.append("document is only used by linkedin, which is not in platforms")
     return errors, warnings
+
+
+def _instagram_errors(item: Item, imgs: list[dict]) -> list[str]:
+    from .spec import REEL
+    out: list[str] = []
+    text = item.render("instagram")
+    tags = HASHTAG_RE.findall(text)
+    if len(tags) > SPEC["instagram"]["hashtags"]:
+        out.append(f"instagram: {len(tags)} hashtags, limit {SPEC['instagram']['hashtags']}")
+    if re.search(r"https?://", text):
+        out.append("instagram: a link in the caption is not clickable; say 'link in bio' instead")
+    v = item.video()
+    if v and imgs:
+        out.append("instagram: a post is either one image or one Reel, not both")
+    if not v and not imgs:
+        out.append("instagram: needs one image or a Reel (Instagram has no text-only post)")
+    if v:
+        f = _resolve(v.get("path", ""), item.path.parent)
+        tag = f"instagram: video {v.get('path')!r}"
+        if f.suffix.lower() != ".mp4" or not f.is_file():
+            out.append(f"{tag} must be an existing .mp4")
+        else:
+            if f.stat().st_size > REEL["max_bytes"]:
+                out.append(f"{tag} is over {REEL['max_bytes'] // MB} MB")
+            if f.open("rb").read(12)[4:8] != b"ftyp":
+                out.append(f"{tag} is not really an MP4 file")
+        try:
+            dur = float(v.get("duration") or 0)
+        except (TypeError, ValueError):
+            dur = 0.0
+        if not REEL["min_s"] <= dur <= REEL["max_s"]:
+            out.append(f"{tag} is {dur:.1f} s; a Reel here is {REEL['min_s']:.0f} to {REEL['max_s']:.0f} s")
+        if (v.get("width"), v.get("height")) != (REEL["width"], REEL["height"]):
+            out.append(f"{tag} is {v.get('width')}x{v.get('height')}, not {REEL['width']}x{REEL['height']} (9:16)")
+        if not str(v.get("alt") or "").strip():
+            out.append(f"{tag} has no description (kept as the Reel's alt text record; the API takes none)")
+        if v.get("cover"):
+            c = _resolve(v["cover"], item.path.parent)
+            if c.suffix.lower() not in (".jpg", ".jpeg") or not c.is_file():
+                out.append(f"instagram: cover {v['cover']!r} must be an existing JPEG")
+    return out
 
 
 def _image_errors(platform: str, im: dict, item: Item) -> list[str]:
@@ -316,6 +394,17 @@ def approve_standing(item: Item, cfg: dict) -> None:
     if item.meta.get("source") != STANDING_SOURCE:
         raise ValueError("standing approval only covers items built by the daily pipeline")
     approve(item, cfg, STANDING_BY)
+
+
+def approve_instagram_standing(item: Item, cfg: dict) -> None:
+    """Approve an Instagram item under Ben's 2026-10-23 standing approval: Instagram only, and only items built by
+    socialpost.instagram (a Reel of a Purplelink YouTube video, or the companion of a posted LinkedIn company post)."""
+    bad = [p for p in item.platforms if p not in IG_STANDING_PLATFORMS]
+    if bad:
+        raise ValueError(f"the Instagram standing approval does not cover {', '.join(bad)}")
+    if item.meta.get("source") not in IG_STANDING_SOURCES:
+        raise ValueError("the Instagram standing approval only covers items built by socialpost.instagram")
+    approve(item, cfg, IG_STANDING_BY)
 
 
 def cancel(item: Item) -> None:

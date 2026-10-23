@@ -82,3 +82,20 @@ def briefs_dir() -> Path:
 
 def repo_root() -> Path:
     return Path(os.environ.get("PL_REPO_ROOT") or Path(__file__).resolve().parents[2])
+
+
+# ---- Instagram (socialpost/instagram). Private, outside the repo.
+def instagram_dir() -> Path:
+    return home() / "instagram"
+
+
+def chrome() -> Path:
+    return Path(os.environ.get("PL_CHROME") or "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome")
+
+
+def ffmpeg() -> str:
+    return os.environ.get("PL_FFMPEG") or "/opt/homebrew/bin/ffmpeg"
+
+
+def ffprobe() -> str:
+    return os.environ.get("PL_FFPROBE") or "/opt/homebrew/bin/ffprobe"

@@ -75,7 +75,28 @@ def main(argv=None, **injected):
     print(r["url"])
     print(f"privacy: {r['privacy']}")
     print(f"verified channel: {r['channel_id']} ({r['channel_title']})")
+    if a.channel == "purplelink" and r["privacy"] == "public" and not r["duplicate"] and not injected:
+        add_reel(a.file, r["id"], a.title, desc)
     return 0
+
+
+def add_reel(path, video_id, title, desc):
+    """Every public Purplelink video also becomes an Instagram Reel (Ben, 2026-10-23): hand the file to the social
+    pipeline's Reel inbox, which pads a 16:9 video to 9:16, vets and queues it. Never fails the upload."""
+    import subprocess
+    import tempfile
+    social = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "backend", "scripts", "social.py")
+    with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False, encoding="utf-8") as fh:
+        fh.write(desc or "")
+    try:
+        p = subprocess.run([sys.executable, social, "instagram", "reel-add", "--video", os.path.abspath(path),
+                            "--youtube-id", video_id, "--title", title, "--description-file", fh.name],
+                           capture_output=True, text=True, timeout=1800)
+        print(f"instagram: {(p.stdout or p.stderr).strip()[-300:]}")
+    except Exception as e:
+        print(f"instagram: Reel not added ({type(e).__name__}); the channel scan will flag it", file=sys.stderr)
+    finally:
+        os.unlink(fh.name)
 
 
 if __name__ == "__main__":

@@ -183,6 +183,11 @@ def cmd_daily(a, cfg) -> int:
     return run(a, cfg)
 
 
+def cmd_instagram(a, cfg) -> int:
+    from .instagram.cmd import cmd_instagram as run
+    return run(a, cfg)
+
+
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(prog="social.py", description="Purplelink company-account social posting")
     sp = ap.add_subparsers(dest="cmd", required=True)
@@ -217,13 +222,23 @@ def build_parser() -> argparse.ArgumentParser:
     p = add("whoami", cmd_whoami, "check the identity of every configured account; posts nothing")
     p.add_argument("platform", nargs="?", choices=PLATFORMS)
     p = add("setup", cmd_setup, "guided setup for one platform (Ben runs this in his own terminal)")
-    p.add_argument("platform", choices=("threads", "mastodon", "x", "bluesky"))
-    p = add("refresh", cmd_refresh, "renew a token (threads, x)")
-    p.add_argument("platform", choices=("threads", "x"))
+    p.add_argument("platform", choices=("threads", "mastodon", "x", "bluesky", "instagram"))
+    p = add("refresh", cmd_refresh, "renew a token (threads, x, instagram)")
+    p.add_argument("platform", choices=("threads", "x", "instagram"))
     p = add("daily", cmd_daily, "daily ranked pipeline: run (pick, vet, queue), metrics, weekly")
     p.add_argument("what", choices=("run", "metrics", "weekly"))
     p.add_argument("--dry-run", action="store_true", help="run: show today's pick, write nothing")
     p.add_argument("--force", action="store_true", help="run: ignore the time of day and done-today; metrics: redo the weekly report")
+    p = add("instagram", cmd_instagram, "Instagram Reels and LinkedIn companions: reel-add, run, scan, preview")
+    p.add_argument("what", choices=("reel-add", "run", "scan", "preview"))
+    p.add_argument("--video", help="reel-add: the video file (9:16 is used as is; 16:9 is padded to 9:16)")
+    p.add_argument("--youtube-id", help="reel-add: the YouTube video id this Reel comes from")
+    p.add_argument("--title", help="reel-add: the YouTube title")
+    p.add_argument("--description-file", help="reel-add: a file holding the YouTube description")
+    p.add_argument("--link", help="reel-add: the purplelink.llc page the video is about (bare, no UTM)")
+    p.add_argument("--also", default="", help="reel-add: other YouTube ids this Reel covers (the long cut of a Short)")
+    p.add_argument("--dry-run", action="store_true", help="run/preview: build and show, queue nothing")
+    p.add_argument("--out", help="preview: folder for the rendered Reel and image")
     add("pause", cmd_pause, "create the PAUSE file: the scheduler posts nothing")
     add("resume", cmd_resume, "remove the PAUSE file")
     return ap

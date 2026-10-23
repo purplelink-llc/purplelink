@@ -163,6 +163,27 @@ def add_captions(video_id: str, srt: Path) -> dict:
     return res
 
 
+def add_reel(short_file: Path, short_id: str, title: str, desc: str, page: str, long_id: str) -> dict:
+    """Hand the Short to the Instagram Reel inbox (backend/socialpost/instagram, Ben's 2026-10-23 request): the 9:16
+    cut becomes the Purplelink Instagram Reel, queued and vetted by the social pipeline. Never fails the publish."""
+    import tempfile
+    social = REPO / "backend" / "scripts" / "social.py"
+    with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False, encoding="utf-8") as fh:
+        fh.write(desc)
+    try:
+        r = subprocess.run([PY, str(social), "instagram", "reel-add", "--video", str(short_file), "--youtube-id", short_id,
+                            "--title", title, "--description-file", fh.name, "--link", page, "--also", long_id],
+                           capture_output=True, text=True, timeout=1800)
+    except Exception as e:
+        print(f"instagram: Reel not added ({type(e).__name__}); the channel scan will flag it")
+        return {"error": type(e).__name__}
+    finally:
+        Path(fh.name).unlink(missing_ok=True)
+    out = (r.stdout or r.stderr).strip()[-300:]
+    print(f"instagram: {out}")
+    return {"ok": r.returncode == 0}
+
+
 def main() -> int:
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     if not args:
@@ -200,11 +221,13 @@ def main() -> int:
     short_id = upload(files["9x16.mp4"], sb["short_title"], short_d, ["--thumbnail", str(files["thumb-A.jpg"])])
     captions = {"long": add_captions(long_id, out / f"{slug}-16x9.srt"),
                 "short": add_captions(short_id, out / f"{slug}-9x16.srt")}
+    instagram = add_reel(files["9x16.mp4"], short_id, sb["short_title"], short_d, sb["page"], long_id)
     today = eastern_today().isoformat()
     ledger = json.loads(LEDGER.read_text()) if LEDGER.exists() else []
     ledger.append({"slug": sb["id"], "app": sb["app"], "date": today, "title": sb["title"],
                    "long_id": long_id, "short_id": short_id, "link_arm": arm,
-                   "link_utm_content": sb["id"], "sources": sb.get("sources", []), "captions": captions})
+                   "link_utm_content": sb["id"], "sources": sb.get("sources", []), "captions": captions,
+                   "instagram": instagram})
     LEDGER.write_text(json.dumps(ledger, indent=1) + "\n")
     rot = json.loads(ROTATION.read_text())
     if rot["cycle"][rot["next"] % len(rot["cycle"])] == sb["app"]:

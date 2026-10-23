@@ -55,4 +55,26 @@ Bluesky @purplelink.llc uses a saved browser session, no API credential. A brows
 account, then press Enter in this terminal. The session is kept in ~/.purplelink/bluesky-profile.
 """
 
-GUIDES = {"threads": THREADS, "mastodon": MASTODON, "x": X, "bluesky": BLUESKY}
+INSTAGRAM = """\
+Instagram (official API with Instagram Login, graph.instagram.com). One-time setup, about 15 minutes.
+The account is @purplelink.llc (a Business account). Never RubbleFront's: both sit in the same Meta account, so check
+which profile Instagram is signed in as at every step. This tool refuses a token for any account named rubblefront.
+
+1. https://developers.facebook.com/apps  ->  Create app  ->  use case "Manage messaging & content on Instagram".
+   Make it a new app; leave the Threads app as it is. The app can stay in Development mode: an account that has a
+   role on the app can publish without App Review.
+2. App dashboard -> Use cases -> Instagram API -> "API setup with Instagram login".
+   Permissions: instagram_business_basic and instagram_business_content_publish (the others are not used).
+3. "Generate access tokens" -> Add account -> sign in to Instagram as purplelink.llc. If it asks you to accept a
+   tester invite: Instagram app, signed in as purplelink.llc -> Settings -> Website permissions -> Apps and websites
+   -> Tester invites -> Accept. Then press Generate token next to purplelink.llc and copy it (valid 60 days).
+4. Paste the token below and press Enter at the app secret prompt (the dashboard token is already long-lived).
+   This tool shows which account it belongs to and pins it only if you type yes. run-due renews it at 30 days.
+5. Link in bio (only the Instagram app can set it): Edit profile -> Links -> Add external link ->
+   https://purplelink.llc/instagram/?utm_source=instagram&utm_medium=social&utm_campaign=bio
+6. Then run: social.py instagram preview   (the dry run: renders the next Reel and image post, posts nothing)
+Images are served from https://purplelink.llc/social-media/ (JPEG). Reels are put on the public video bucket named by
+media.video.env_file in ~/.config/purplelink/social.json for the minutes Meta needs to fetch them, then deleted.
+"""
+
+GUIDES = {"instagram": INSTAGRAM, "threads": THREADS, "mastodon": MASTODON, "x": X, "bluesky": BLUESKY}

@@ -48,3 +48,73 @@ def ensure_hosted(cfg: dict, path: Path, http, run=subprocess.run) -> str:
     if not live():
         raise SocialError(f"uploaded {key} but {url} does not serve it yet (is the social-media function deployed?)")
     return url
+
+
+# ---------------------------------------------------------------- videos (Instagram Reels)
+VIDEO_ENV_KEYS = ("MEDIA_BUCKET", "MEDIA_S3_ENDPOINT", "MEDIA_PUBLIC_BASE", "MEDIA_S3_KEY", "MEDIA_S3_SECRET")
+
+
+def read_env_file(path: str) -> dict:
+    """`export NAME="value"` lines of a private env file. Values are returned, never printed."""
+    out: dict[str, str] = {}
+    if not path:
+        return out
+    try:
+        text = Path(path).expanduser().read_text(encoding="utf-8")
+    except OSError:
+        return out
+    for line in text.splitlines():
+        line = line.strip()
+        if line.startswith("export "):
+            line = line[7:]
+        name, sep, value = line.partition("=")
+        if sep and name.strip() in VIDEO_ENV_KEYS:
+            out[name.strip()] = value.strip().strip('"').strip("'")
+    return out
+
+
+def video_key(cfg: dict, path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as fh:
+        for chunk in iter(lambda: fh.read(1 << 20), b""):
+            h.update(chunk)
+    return f"{cfg['media'].get('video', {}).get('prefix', 'purplelink-social/')}{h.hexdigest()[:40]}.mp4"
+
+
+def _s3(env: dict, client_factory=None):
+    if client_factory:
+        return client_factory(env)
+    import boto3  # only needed on the posting Mac
+    return boto3.client("s3", endpoint_url=env["MEDIA_S3_ENDPOINT"], aws_access_key_id=env["MEDIA_S3_KEY"],
+                        aws_secret_access_key=env["MEDIA_S3_SECRET"], region_name="auto")
+
+
+def host_video(cfg: dict, path: Path, http, client_factory=None) -> tuple[str, str]:
+    """Upload the Reel to the public bucket and return (url, key). Raises SocialError unless an anonymous HEAD sees
+    the same size. The caller deletes it with delete_video once Instagram has fetched it."""
+    env = read_env_file(cfg["media"].get("video", {}).get("env_file", ""))
+    missing = [k for k in VIDEO_ENV_KEYS if not env.get(k)]
+    if missing:
+        raise SocialError("no public video host configured (media.video.env_file in social.json); Reels cannot post")
+    key = video_key(cfg, path)
+    url = env["MEDIA_PUBLIC_BASE"].rstrip("/") + "/" + key
+    try:
+        _s3(env, client_factory).upload_file(str(path), env["MEDIA_BUCKET"], key,
+                                             ExtraArgs={"ContentType": "video/mp4"})
+    except Exception as e:
+        raise SocialError(f"could not upload the Reel to the video host ({type(e).__name__})")
+    r = http.request("HEAD", url)
+    if r.status != 200 or r.header("Content-Length", "") not in ("", str(path.stat().st_size)):
+        raise SocialError(f"uploaded the Reel but {url} answers {r.status}; Instagram could not fetch it")
+    return url, key
+
+
+def delete_video(cfg: dict, key: str, client_factory=None) -> bool:
+    env = read_env_file(cfg["media"].get("video", {}).get("env_file", ""))
+    if not env.get("MEDIA_BUCKET") or not key.startswith(cfg["media"].get("video", {}).get("prefix", "purplelink-social/")):
+        return False
+    try:
+        _s3(env, client_factory).delete_object(Bucket=env["MEDIA_BUCKET"], Key=key)
+        return True
+    except Exception:
+        return False
