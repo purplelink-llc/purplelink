@@ -16,9 +16,9 @@
 // and logs why to the console, so a half-filled launch cannot sell anything.
 window.SUMMONLY_LAUNCH = {
   live: true,
-  version: "1.3.4",
+  version: "1.3.5",
   sizeMb: "5",
-  released: "2026-10-17"
+  released: "2026-10-24"
 };
 
 (function () {

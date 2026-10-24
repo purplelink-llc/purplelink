@@ -1003,7 +1003,7 @@ Try it free for 7 days
 
 Refunded if you email within 14 days of purchase.
 
-The trial runs for seven days from the first time you open it, with no account. After it ends, the menu-bar readout and the low-space alerts keep working, and the app asks for a license key to unlock the rest. Buying is a single $9.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.4.0 · 8.1 MB disk image · macOS 14 or later, Apple silicon and Intel · signed and notarized.
+The trial runs for seven days from the first time you open it, with no account. After it ends, the menu-bar readout and the low-space alerts keep working, and the app asks for a license key to unlock the rest. Buying is a single $9.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.5.0 · 8.3 MB disk image · macOS 14 or later, Apple silicon and Intel · signed and notarized.
 
 If you installed version 1.0.0, the app cannot update itself. Download the current version once from this page; updates work from then on.
 
@@ -1519,7 +1519,7 @@ Tapefolio transcribes interview and meeting recordings on your Mac, labels the s
 
 Try it free for 7 days
 
-The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $29.99 payment, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays valid, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.1.0, released October 20, 2026. 44 MB disk image. Needs macOS 26 or later on a Mac with Apple silicon.
+The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $29.99 payment, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays valid, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.1.1, released October 24, 2026. 44 MB disk image. Needs macOS 26 or later on a Mac with Apple silicon.
 
 Comparing options? See Mac apps for transcription, text to speech and OCR compared.
 
@@ -1806,7 +1806,7 @@ Title: Vitae: Academic CV & Research Management for macOS | Purplelink LLC
 ← All products
 
 macOS
-Free app · optional Plus from $2.99 a month · v1.8.0 Beta
+Free app · optional Plus from $2.99 a month · v1.8.1 Beta
 
 # Vitae
 
@@ -1823,7 +1823,7 @@ Your research record on one screen: projects, papers under review, open revision
 
 Vitae is a free Mac app for academics that keeps your submissions, grants, projects, co-authors, teaching, service and CV in one record on your own Mac, with no account. It needs macOS 15 or later. An optional subscription, Vitae Plus, costs $2.99 a month or $23.99 a year and adds reports and Word export. Vitae does not fill in your university's reporting system for you, and it has no iPhone, web or Windows version.
 
-Facts as of version 1.8.0, October 2026.
+Facts as of version 1.8.1, October 2026.
 
 QuestionAnswer
 
@@ -2034,7 +2034,7 @@ Download Vitae, free
 
 Vitae Plus is an optional subscription for the free Vitae Mac app: $2.99 a month or $23.99 a year, with a 7-day free trial, or included for life in the Mac Suite. You do not need it to keep your record, build a CV, run Annual Review for any period or export publications as RIS and BibTeX. Those stay free. Plus adds Word (.docx) export with your own templates, the annual report Word file and missing details check, reports, the revision workspace, Shareables, the collaboration map and research timeline, the extra For You nudges, ORCID sync and batch DOI lookup, calendar sync, and iCloud sync between your Macs.
 
-Free and Plus features as of Vitae 1.8.0, October 2026.
+Free and Plus features as of Vitae 1.8.1, October 2026.
 
 FeatureFreePlus
 
@@ -4459,11 +4459,11 @@ ProductLatest versionReleased
 
 ModernTex1.11.1October 2026
 
-Vitae1.8.0October 2026
+Vitae1.8.1October 2026
 
-Legroom1.4.0October 2026
+Legroom1.5.0October 2026
 
-Keyfeel1.6.0October 2026
+Keyfeel1.6.1October 2026
 
 Tapefolio1.0.1October 2026
 
@@ -4471,7 +4471,7 @@ Panely1.0.4October 2026
 
 Summonly1.0October 2026
 
-Outbound Veil1.2.0October 2026
+Outbound Veil1.3.0October 2026
 
 BatteryMeter1.4.0October 2026
 
@@ -9923,7 +9923,7 @@ Google Drive can also convert a photo or PDF to text. However, it uploads the fi
 
 ## Where Tapefolio fits
 
-Tapefolio is a Mac app for transcribing interviews and meetings and reading scans, made for people whose recordings cannot be uploaded. It costs $29.99 once after a 7-day trial. There is one download: after the trial it asks for a license key, and one key works on two Macs. It is also part of the $59.99 Mac Suite. It needs macOS 26 or later and a Mac with Apple silicon, with no Intel version. The current version is 1.1.0, released October 20, 2026. It is the newest and least proven app here. As of that version it does the following:
+Tapefolio is a Mac app for transcribing interviews and meetings and reading scans, made for people whose recordings cannot be uploaded. It costs $29.99 once after a 7-day trial. There is one download: after the trial it asks for a license key, and one key works on two Macs. It is also part of the $59.99 Mac Suite. It needs macOS 26 or later and a Mac with Apple silicon, with no Intel version. The current version is 1.1.1, released October 24, 2026. It is the newest and least proven app here. As of that version it does the following:
 
 - Transcribes on your Mac with the time of every word, from audio files or from the microphone inside the app.
 
