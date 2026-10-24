@@ -61,9 +61,9 @@ test("after launch, the static page already shows the live wording and the trial
 test("launch.js ships switched on with valid facts", () => {
   const src = read("keyfeel/launch.js");
   assert.match(src, /live: true,/);
-  assert.match(src, /version: "1\.6\.0",/);
+  assert.match(src, /version: "1\.6\.1",/);
   assert.match(src, /sizeMb: "7",/);
-  assert.match(src, /released: "2026-10-20"/);
+  assert.match(src, /released: "2026-10-24"/);
 });
 
 class FakeEl {
