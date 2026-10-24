@@ -48,7 +48,7 @@
             {
               "@type": "Question",
               "name": "Are my files stored?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No. Both files are processed in an ephemeral container and discarded immediately." }
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Both files are written to a temporary folder on our server only while the PDF is built, then deleted." }
             },
             {
               "@type": "Question",
@@ -125,7 +125,7 @@
         <p class="tool-status" id="status" aria-live="polite"></p>
         <div class="tool-result" id="result"></div>
         <p class="tool-next" data-tool-next="#result" hidden>For the revision itself, <a data-track="tool_next" data-track-meta="latex-diff" href="/tools/paper-review/revision/">Revision Review</a> ($2) checks the revised manuscript against an earlier Paper Review. <a data-track="tool_next" data-track-meta="latex-diff" href="/tools/response-review/">Response to Reviewers</a> ($6) reads your response letter against each comment.</p>
-        <p class="tool-privacy">Changes inside tables are shown in final form only (not marked). Files are never written to disk.</p>
+        <p class="tool-privacy">Changes inside tables are shown in final form only (not marked). Files are not kept: they sit in a temporary folder on our server only while the PDF is built, then they are deleted.</p>
       </div>
 
       <section class="tool-howto">
@@ -141,7 +141,7 @@
         <h2>About this tool</h2>
         <p>Project with several files, or need latexdiff options? See <a href="/guides/latexdiff-online/">latexdiff online for a multi-file project</a> for local commands.</p>
         <p>This runs <code>latexdiff</code> with table-safe defaults, then compiles the result. Added text is blue and underlined. Deleted text is red and struck through. Upload plain <code>.tex</code> files or full project <code>.zip</code> archives.</p>
-        <details><summary>Are my files stored?</summary><div class="faq-body">No. Both files are processed in an ephemeral container and discarded immediately.</div></details>
+        <details><summary>Are my files stored?</summary><div class="faq-body">No. Both files are written to a temporary folder on our server only while the PDF is built, then deleted.</div></details>
         <details><summary>Can I diff a project with figures?</summary><div class="faq-body">Yes. Zip each version with main.tex at the root and upload the .zip files. The new version's assets (figures, styles) are used for compilation, so the output PDF renders correctly.</div></details>
         <details><summary>Why aren't changes inside my tables marked?</summary><div class="faq-body">Tables are treated as opaque blocks, which prevents column-alignment errors. Edited tables appear in their final form only.</div></details>
       </section>
