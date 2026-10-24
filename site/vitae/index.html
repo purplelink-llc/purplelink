@@ -50,7 +50,7 @@
             { "@type": "Offer", "name": "Vitae Plus, annual (optional)", "price": "23.99", "priceCurrency": "USD", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "23.99", "priceCurrency": "USD", "billingDuration": "P1Y", "unitCode": "ANN" }, "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/vitae/plus/", "category": "Subscription" }
           ],
           "downloadUrl": "https://purplelink.llc/vitae/download",
-          "softwareVersion": "1.6.1",
+          "softwareVersion": "1.7.0",
           "screenshot": "https://purplelink.llc/assets/vitae-screens/dashboard.webp",
           "publisher": { "@id": "https://purplelink.llc/#organization" },
           "creator":   { "@id": "https://purplelink.llc/about/#person" }
@@ -86,7 +86,7 @@
             {
               "@type": "Question",
               "name": "Where is my data stored?",
-              "acceptedAnswer": { "@type": "Answer", "text": "All your records are stored locally on your Mac using SwiftData, with no account and no sync. Vitae goes online for lookups you ask for, such as citation counts from Crossref or OpenAlex and Grants.gov funding searches, and reads your email only if you connect a mailbox, read-only. It also makes two small requests to purplelink.llc on its own. One is the daily update check. The other is the daily fetch of the sidebar card's text, unless you hide the card. Neither sends anything about you or your records. iCloud sync is supported in the schema and can be enabled in future versions." }
+              "acceptedAnswer": { "@type": "Answer", "text": "All your records are stored locally on your Mac using SwiftData, with no account. Vitae goes online for lookups you ask for, such as citation counts from Crossref or OpenAlex and Grants.gov funding searches, and reads your email only if you connect a mailbox, read-only. It also makes two small requests to purplelink.llc on its own. One is the daily update check. The other is the daily fetch of the sidebar card's text, unless you hide the card. Neither sends anything about you or your records. Vitae Plus can sync your library between your Macs through your private iCloud. It is off until you turn it on in Settings, Backups, and private fields are encrypted." }
             },
             {
               "@type": "Question",
@@ -151,7 +151,7 @@
       <div class="app-hero-copy">
         <div class="app-hero-meta">
           <span class="platform-tag platform-macos">macOS</span>
-          <span class="product-status">Free app · optional Plus from $2.99 a month · v1.6.1 Beta</span>
+          <span class="product-status">Free app · optional Plus from $2.99 a month · v1.7.0 Beta</span>
         </div>
         <h1 class="app-hero-name">Vitae</h1>
         <p class="app-hero-tagline">Academic research management for macOS. Track submissions, grants, projects, collaborators, and your CV in one local-first app. The app is free, with no limits on your record. Vitae Plus is an optional subscription for reports, Word templates and more: $2.99 a month or $23.99 a year, with a 7-day trial, or included for life in the Mac Suite. Notarized, no App Store.</p>
@@ -174,21 +174,22 @@
       <h2 id="short-h">Vitae in short</h2>
       <p class="hero-lede">Vitae is a free Mac app for academics that keeps your submissions, grants, projects, co-authors, teaching, service and CV in one record on your own Mac, with no account. It needs macOS 15 or later. An optional subscription, Vitae Plus, costs $2.99 a month or $23.99 a year and adds reports and Word export. Vitae does not fill in your university's reporting system for you, and it has no iPhone, web or Windows version.</p>
       <table class="compare-table compare-stack specs-table">
-        <caption>Facts as of version 1.6.1, October 2026.</caption>
+        <caption>Facts as of version 1.7.0, October 2026.</caption>
         <thead><tr><th scope="col">Question</th><th scope="col">Answer</th></tr></thead>
         <tbody>
           <tr><th scope="row">Price</th><td data-label="Answer">Free. Vitae Plus is optional: $2.99 a month or $23.99 a year, with a 7-day trial. Included for life in the <a href="/suite/">Mac Suite</a>.</td></tr>
           <tr><th scope="row">Platform</th><td data-label="Answer">macOS 15 Sequoia or later. Direct download, Apple-notarized, not on the Mac App Store.</td></tr>
-          <tr><th scope="row">Where the data lives</th><td data-label="Answer">On your Mac. No account. No sync between machines yet.</td></tr>
+          <tr><th scope="row">Where the data lives</th><td data-label="Answer">On your Mac. No account. Vitae Plus can sync the library between your Macs through your private iCloud; it is off until you turn it on.</td></tr>
           <tr><th scope="row">Brings in</th><td data-label="Answer">A CV from Word, PDF, RTF, ODT or a web page; publications from DOIs, pasted BibTeX or Zotero; each is shown for review before saving.</td></tr>
           <tr><th scope="row">Free exports</th><td data-label="Answer">CV and packages as PDF, rich text (.rtf), HTML and Markdown; publications as RIS and BibTeX; CSV tables.</td></tr>
           <tr><th scope="row">Plus exports</th><td data-label="Answer">Word (.docx) with your own templates, short and one-page CV variants, and reports such as an NIH biosketch draft.</td></tr>
           <tr><th scope="row">Annual review</th><td data-label="Answer">Free. Pick a calendar year, an academic year with the start month you choose, or custom dates, and Vitae limits the report to it. Papers under review are left out. Publications carry a year only, so in an academic year a paper can land in the neighbouring period.</td></tr>
           <tr><th scope="row">For You, topics and the map</th><td data-label="Answer">For You reads your own record and lists what may need you. Three of its items are free: a decision taking long, the annual review period ending with details missing, and a paper just accepted or published. The rest, the world map of your co-authors' institutions, the research timeline and the visual share cards need Plus. Topics for each paper are free to view and edit. The topic list and institution registry are bundled in the app, so nothing is sent to a server.</td></tr>
           <tr><th scope="row">Review history</th><td data-label="Answer">Free. A Reviews screen keeps every paper and proposal you review for others: venue, role, manuscript ID, round, due date, your recommendation and the editor's decision. Group by venue, role, recommendation, status or year. It shows reviews per year and venue, how often you accept an invitation, how often you finish on time, your median turnaround and how often you matched the editor. Under Service, your CV, annual review, annual report file and tenure count list your reviewing from it, without manuscript titles; a venue you entered by hand is not listed twice.</td></tr>
-          <tr><th scope="row">PDF library</th><td data-label="Answer">Keep the PDF of each paper with its project, published version, submission or reference. Free: attaching, Quick Look, finding the same file twice. Vitae Plus reads the title, abstract and keywords on your Mac, with no network, to improve topics and the knowledge graph. PDFs are files in a folder next to your library, not in snapshots; an optional setting, off by default, also sends them through your iCloud once library sync is available.</td></tr>
+          <tr><th scope="row">PDF library</th><td data-label="Answer">Keep the PDF of each paper with its project, published version, submission or reference. Free: attaching, Quick Look, finding the same file twice. Vitae Plus reads the title, abstract and keywords on your Mac, with no network, to improve topics and the knowledge graph. PDFs are files in a folder next to your library, not in snapshots; an optional setting, off by default, also sends them through your iCloud when you turn on iCloud sync.</td></tr>
           <tr><th scope="row">Manuscripts you review</th><td data-label="Answer">Confidential. A PDF attached to a review stays on your Mac: never synced, exported, read for topics, shown in the graph, or listed on a CV or report. Vitae asks whether to delete it when you mark the review submitted, and deleting the review deletes it. Calendar entries show the venue and manuscript ID, not the title.</td></tr>
           <tr><th scope="row">Posters and talks on grants</th><td data-label="Answer">Free. Link a poster or talk to the grants that supported it, record who presented it, and mark it Student-led. Each grant page lists its posters and talks, and a CV setting can list them under each grant.</td></tr>
+          <tr><th scope="row">iCloud sync between Macs</th><td data-label="Answer">A Vitae Plus feature, off until you turn it on in Settings, Backups. It syncs your library through your private iCloud, with private fields encrypted. Mail, snapshots and preferences stay on each Mac, and so do PDFs unless you turn on Sync PDFs.</td></tr>
           <tr><th scope="row">Altmetric link</th><td data-label="Answer">Free. A paper with a DOI, PubMed ID or arXiv ID has a View on Altmetric link, on its row in Impact and in the reach editor. It opens the paper's Altmetric page in your browser. Vitae does not fetch anything from Altmetric.</td></tr>
           <tr><th scope="row">Faculty180, Faculty Success</th><td data-label="Answer">Export for Annual Report writes the period's RIS and BibTeX files, free, meant for their publication importers. Vitae Plus adds a faculty activity Word file and a README. I have not tested any of these against a live campus system. See <a href="/guides/faculty-annual-report-import-faculty180-faculty-success/">what each system can import</a>.</td></tr>
           <tr><th scope="row">Not related to</th><td data-label="Answer">The career hub called Vitae that The Chronicle of Higher Education launched in 2014. It is a different product with the same name.</td></tr>
@@ -349,7 +350,7 @@
         </details>
         <details class="faq-item">
           <summary>Where is my data stored?</summary>
-          <div class="faq-body">All your records are stored locally on your Mac using SwiftData, with no account and no sync. Vitae goes online for lookups you ask for, such as citation counts from Crossref or OpenAlex and Grants.gov funding searches, and reads your email only if you connect a mailbox, read-only. It also makes two small requests to purplelink.llc on its own. One is the daily update check. The other is the daily fetch of the sidebar card's text, unless you hide the card. Neither sends anything about you or your records. iCloud sync is supported in the schema and can be enabled in future versions.</div>
+          <div class="faq-body">All your records are stored locally on your Mac using SwiftData, with no account. Vitae goes online for lookups you ask for, such as citation counts from Crossref or OpenAlex and Grants.gov funding searches, and reads your email only if you connect a mailbox, read-only. It also makes two small requests to purplelink.llc on its own. One is the daily update check. The other is the daily fetch of the sidebar card's text, unless you hide the card. Neither sends anything about you or your records. Vitae Plus can sync your library between your Macs through your private iCloud. It is off until you turn it on in Settings, Backups, and private fields are encrypted.</div>
         </details>
         <details class="faq-item">
           <summary>How do I install it?</summary>

@@ -1850,7 +1850,7 @@ Title: Vitae — Academic CV & Research Management for macOS | Purplelink LLC
 ← All products
 
 macOS
-Free app · optional Plus from $2.99 a month · v1.6.1 Beta
+Free app · optional Plus from $2.99 a month · v1.7.0 Beta
 
 # Vitae
 
@@ -1867,7 +1867,7 @@ Your research record on one screen: projects, papers under review, open revision
 
 Vitae is a free Mac app for academics that keeps your submissions, grants, projects, co-authors, teaching, service and CV in one record on your own Mac, with no account. It needs macOS 15 or later. An optional subscription, Vitae Plus, costs $2.99 a month or $23.99 a year and adds reports and Word export. Vitae does not fill in your university's reporting system for you, and it has no iPhone, web or Windows version.
 
-Facts as of version 1.6.1, October 2026.
+Facts as of version 1.7.0, October 2026.
 
 QuestionAnswer
 
@@ -1875,7 +1875,7 @@ PriceFree. Vitae Plus is optional: $2.99 a month or $23.99 a year, with a 7-day 
 
 PlatformmacOS 15 Sequoia or later. Direct download, Apple-notarized, not on the Mac App Store.
 
-Where the data livesOn your Mac. No account. No sync between machines yet.
+Where the data livesOn your Mac. No account. Vitae Plus can sync the library between your Macs through your private iCloud; it is off until you turn it on.
 
 Brings inA CV from Word, PDF, RTF, ODT or a web page; publications from DOIs, pasted BibTeX or Zotero; each is shown for review before saving.
 
@@ -1889,11 +1889,13 @@ For You, topics and the mapFor You reads your own record and lists what may need
 
 Review historyFree. A Reviews screen keeps every paper and proposal you review for others: venue, role, manuscript ID, round, due date, your recommendation and the editor's decision. Group by venue, role, recommendation, status or year. It shows reviews per year and venue, how often you accept an invitation, how often you finish on time, your median turnaround and how often you matched the editor. Under Service, your CV, annual review, annual report file and tenure count list your reviewing from it, without manuscript titles; a venue you entered by hand is not listed twice.
 
-PDF libraryKeep the PDF of each paper with its project, published version, submission or reference. Free: attaching, Quick Look, finding the same file twice. Vitae Plus reads the title, abstract and keywords on your Mac, with no network, to improve topics and the knowledge graph. PDFs are files in a folder next to your library, not in snapshots; an optional setting, off by default, also sends them through your iCloud once library sync is available.
+PDF libraryKeep the PDF of each paper with its project, published version, submission or reference. Free: attaching, Quick Look, finding the same file twice. Vitae Plus reads the title, abstract and keywords on your Mac, with no network, to improve topics and the knowledge graph. PDFs are files in a folder next to your library, not in snapshots; an optional setting, off by default, also sends them through your iCloud when you turn on iCloud sync.
 
 Manuscripts you reviewConfidential. A PDF attached to a review stays on your Mac: never synced, exported, read for topics, shown in the graph, or listed on a CV or report. Vitae asks whether to delete it when you mark the review submitted, and deleting the review deletes it. Calendar entries show the venue and manuscript ID, not the title.
 
 Posters and talks on grantsFree. Link a poster or talk to the grants that supported it, record who presented it, and mark it Student-led. Each grant page lists its posters and talks, and a CV setting can list them under each grant.
+
+iCloud sync between MacsA Vitae Plus feature, off until you turn it on in Settings, Backups. It syncs your library through your private iCloud, with private fields encrypted. Mail, snapshots and preferences stay on each Mac, and so do PDFs unless you turn on Sync PDFs.
 
 Altmetric linkFree. A paper with a DOI, PubMed ID or arXiv ID has a View on Altmetric link, on its row in Impact and in the reach editor. It opens the paper's Altmetric page in your browser. Vitae does not fetch anything from Altmetric.
 
@@ -2012,7 +2014,7 @@ Vitae requires macOS 15 Sequoia or later.
 
 Where is my data stored?
 
-All your records are stored locally on your Mac using SwiftData, with no account and no sync. Vitae goes online for lookups you ask for, such as citation counts from Crossref or OpenAlex and Grants.gov funding searches, and reads your email only if you connect a mailbox, read-only. It also makes two small requests to purplelink.llc on its own. One is the daily update check. The other is the daily fetch of the sidebar card's text, unless you hide the card. Neither sends anything about you or your records. iCloud sync is supported in the schema and can be enabled in future versions.
+All your records are stored locally on your Mac using SwiftData, with no account. Vitae goes online for lookups you ask for, such as citation counts from Crossref or OpenAlex and Grants.gov funding searches, and reads your email only if you connect a mailbox, read-only. It also makes two small requests to purplelink.llc on its own. One is the daily update check. The other is the daily fetch of the sidebar card's text, unless you hide the card. Neither sends anything about you or your records. Vitae Plus can sync your library between your Macs through your private iCloud. It is off until you turn it on in Settings, Backups, and private fields are encrypted.
 
 How do I install it?
 
@@ -2080,9 +2082,9 @@ Download Vitae, free
 
 ## Vitae Plus in short
 
-Vitae Plus is an optional subscription for the free Vitae Mac app: $2.99 a month or $23.99 a year, with a 7-day free trial, or included for life in the Mac Suite. You do not need it to keep your record, build a CV, run Annual Review for any period or export publications as RIS and BibTeX. Those stay free. Plus adds Word (.docx) export with your own templates, the annual report Word file and missing details check, reports, the revision workspace, Shareables, the collaboration map and research timeline, the extra For You nudges, ORCID sync and batch DOI lookup, and calendar sync.
+Vitae Plus is an optional subscription for the free Vitae Mac app: $2.99 a month or $23.99 a year, with a 7-day free trial, or included for life in the Mac Suite. You do not need it to keep your record, build a CV, run Annual Review for any period or export publications as RIS and BibTeX. Those stay free. Plus adds Word (.docx) export with your own templates, the annual report Word file and missing details check, reports, the revision workspace, Shareables, the collaboration map and research timeline, the extra For You nudges, ORCID sync and batch DOI lookup, calendar sync, and iCloud sync between your Macs.
 
-Free and Plus features as of Vitae 1.6.1, October 2026.
+Free and Plus features as of Vitae 1.7.0, October 2026.
 
 FeatureFreePlus
 
@@ -2121,6 +2123,8 @@ PDF reading on your Mac: title, abstract and keywords used for topics and the kn
 Collaboration map and research timelineNoYes
 
 Shareables, including the five visual cardsNoYes
+
+iCloud sync between your Macs, off until you turn it on, with private fields encryptedNoYes
 
 Revision workspace, calendar sync, themesNoYes
 
@@ -4511,7 +4515,7 @@ ProductLatest versionReleased
 
 ModernTex1.11.1October 2026
 
-Vitae1.6.1October 2026
+Vitae1.7.0October 2026
 
 Legroom1.4.0October 2026
 
@@ -7289,7 +7293,7 @@ There are also two kinds of record. An institutional faculty-activity or dossier
 
 Keeping the record on your Mac
 
-I make Vitae, a free Mac app that keeps your submissions, grants, projects, co-authors, teaching, service and CV in one record on your own Mac, with no account. It runs on a Mac only, and the record does not sync between machines yet. Vitae Plus is optional: $2.99 a month or $23.99 a year, with a 7-day trial.
+I make Vitae, a free Mac app that keeps your submissions, grants, projects, co-authors, teaching, service and CV in one record on your own Mac, with no account. It runs on a Mac only, and the record can sync between your Macs through iCloud with Vitae Plus, and nowhere else. Vitae Plus is optional: $2.99 a month or $23.99 a year, with a 7-day trial.
 
 About Vitae
 
@@ -7323,7 +7327,7 @@ The CV is built from the record. You can import the CV you have, from Word, PDF,
 
 What it's good at: covering the work in motion and the finished record in one place that lives on your machine. Everything is stored on your Mac with a daily backup and undo, and the free tier is the whole record.
 
-What it lacks: it runs on a Mac only, with no Windows, Linux, iPhone, iPad or web version. Records are not synced between machines. The page says iCloud sync is supported in the data model and may be enabled in a future version. It is a one-person, one-computer record. I found nothing on its page describing shared editing, so coauthors are people you record, not people who log in. It does not submit anything to Interfolio or Watermark, so you export and upload. The revision workspace (which splits a decision letter into reviewer points and exports a response letter) is a Plus feature. So are the NIH biosketch and Current and Pending drafts, Word templates and ORCID sync. It is a new app with a beta label, and the forecasts and counts are only as good as what you enter.
+What it lacks: it runs on a Mac only, with no Windows, Linux, iPhone, iPad or web version. Records sync only between Macs, through iCloud, and only with Vitae Plus. It is a one-person record. I found nothing on its page describing shared editing, so coauthors are people you record, not people who log in. It does not submit anything to Interfolio or Watermark, so you export and upload. The revision workspace (which splits a decision letter into reviewer points and exports a response letter) is a Plus feature. So are the NIH biosketch and Current and Pending drafts, Word templates and ORCID sync. It is a new app with a beta label, and the forecasts and counts are only as good as what you enter.
 
 Pick Vitae if you work on a Mac and want the pipeline, the record and the CV in one place you own. Pick something else if you are on Windows or Linux, need to work from a phone, or want one record that several people edit. Vitae is a free download.
 
@@ -7531,7 +7535,7 @@ No. ORCID is a registry of works, funding, employment and similar items, and Goo
 
 ### Does Vitae work on Windows or iPhone, and does it sync?
 
-No. Vitae runs on macOS 15 or later only, and records live on your Mac with no sync between machines. Its page says iCloud sync is supported in the data model and may be enabled in a future version. For a phone or a second computer, use a web tool or Google Sheets.
+No. Vitae runs on macOS 15 or later only, and records live on your Mac. Since version 1.7.0, Vitae Plus can sync the library between your Macs through your private iCloud, off until you turn it on. There is still no iPhone or web version, so for a phone use a web tool or Google Sheets.
 
 ### Is a spreadsheet good enough?
 
@@ -7562,7 +7566,7 @@ Vitae is a free Mac app for your submissions, review rounds, grants, projects an
 Get Vitae for Mac, free
 See what Plus adds
 
-Requires macOS 15 or later. Mac only, with no sync between machines. Version 1.3.0, labelled beta.
+Requires macOS 15 or later. Mac only. iCloud sync between Macs needs Vitae Plus. Version 1.7.0, labelled beta.
 
 
 ---

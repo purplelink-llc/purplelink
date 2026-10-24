@@ -1,5 +1,5 @@
 {
-  "version": "1.6.1",
-  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.6.1.dmg",
-  "releaseNotes": "Adds a View on Altmetric link to each paper that has a DOI, PubMed ID or arXiv ID; it opens the paper's Altmetric page in your browser. Version 1.6.0 added posters and talks linked to grants. Link a poster or talk to the grants that supported it, record who presented it and mark it Student-led. Each grant page lists its posters and talks, and a CV setting can list them under each grant. Also includes the first parts of iCloud sync, which is not switched on yet."
+  "version": "1.7.0",
+  "downloadURL": "https://purplelink.llc/vitae/Vitae-1.7.0.dmg",
+  "releaseNotes": "Adds iCloud sync between your Macs, a Vitae Plus feature that is off until you turn it on in Settings, Backups. It syncs your library through your private iCloud, with private fields encrypted. Mail, snapshots, preferences and attached files stay on each Mac, and PDFs sync only if you turn on Sync PDFs. Version 1.6.1 added a View on Altmetric link to each paper that has a DOI, PubMed ID or arXiv ID. Version 1.6.0 added posters and talks linked to grants."
 }
