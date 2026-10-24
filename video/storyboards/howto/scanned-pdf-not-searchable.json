@@ -1,0 +1,50 @@
+{
+ "id": "howto-scanned-pdf-not-searchable",
+ "app": "tapefolio",
+ "title": "Scanned PDF not searchable on Mac (add OCR text to the PDF)",
+ "short_title": "Scanned PDF not searchable? Run OCR on it",
+ "url": "purplelink.llc/tapefolio",
+ "page": "https://purplelink.llc/tapefolio/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://discussions.apple.com/thread/522689",
+  "https://discussions.apple.com/thread/253718020"
+ ],
+ "verify": {
+  "runs": [
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf 'Interview 4, March 2019. Riverside clinic.\\n' > note.txt && cupsfilter note.txt > text-page.pdf 2>/dev/null && sips -s format png text-page.pdf --out page.png >/dev/null && sips -s format pdf page.png --out scan.pdf >/dev/null && grep -a -c '/Font' text-page.pdf scan.pdf",
+    "output": "text-page.pdf:4\nscan.pdf:0"
+   }
+  ],
+  "docs": [
+   "https://purplelink.llc/tapefolio/",
+   "https://support.apple.com/guide/preview/welcome/mac"
+  ],
+  "notes": "Built 2026-10-24 on Ben's Mac in a mktemp folder. text-page.pdf is typed text from cupsfilter; scan.pdf is the same page rendered to a PNG by sips and wrapped as a PDF, so it holds an image and no fonts. The fix is the app's own Batch OCR with searchable PDF output (feature list on the Tapefolio page); its recognition runs on the Mac, and the GUI steps are not re-run here."
+ },
+ "scenes": [
+  {"type": "hook", "short": true, "kicker": "Scanned PDFs on a Mac", "title": "Scanned PDF won't search on Mac", "sub": "Find returns nothing, even for a word you can see on the page.",
+   "narration": "If Find returns nothing in a scanned PDF on your Mac, the file has no text in it, only a picture of the page. Here is how to check, and how to fix it."},
+  {"type": "symptom", "short": true, "label": "Terminal",
+   "lines": ["$ grep -a -c '/Font' text-page.pdf scan.pdf", "text-page.pdf:4", "scan.pdf:0"],
+   "narration": "Here is a typed PDF and a scan of the same page. Grep counts the fonts in each. Typed text needs fonts, so the typed file has four. The scan has none, and a picture has no words for Find to match."},
+  {"type": "cause", "text": "A scan is a picture of the page. Find can only match text that is in the file.",
+   "narration": "A scan is a picture of the page. Find can only match text that is actually in the file, and a scan has none until text recognition runs on it."},
+  {"type": "steps", "short": true, "label": "Tapefolio",
+   "lines": ["Open Tapefolio and choose Batch OCR.", "Add the scanned PDF.", "Turn on searchable PDF output.", "Run it, then open the new PDF."],
+   "ui": "Recognition runs on your Mac. Nothing you scan is sent anywhere.",
+   "narration": "Open Tapefolio and choose Batch OCR. Add the scanned PDF, choose searchable PDF output, and run it. Recognition runs on your Mac, and nothing you scan leaves it. Then open the new PDF that the batch writes."},
+  {"type": "check", "label": "Preview", "ok": "Word found",
+   "narration": "Open the new PDF in Preview, press Command F, and search for a word you know is on the page. If it highlights, the text layer is there. If nothing highlights, run the batch again on a straight, sharp scan."},
+  {"type": "app", "name": "Tapefolio", "line": "Reads photos, scans and PDFs into searchable text on your Mac. Your files are not uploaded.",
+   "url": "purplelink.llc/tapefolio", "img": "site/assets/tapefolio-screens/ocr-results.webp", "icon": "site/assets/tapefolio-icon.webp",
+   "narration": "Tapefolio reads photos, scans and PDFs into searchable text on your Mac, and your files are not uploaded. There is a seven day free trial."}
+ ],
+ "thumbs": {
+  "A": {"kind": "error", "msg": "Find returns nothing"},
+  "B": {"kind": "long", "msg": "Scanned PDF not searchable", "n": 4, "unit": "steps", "sub": "and Find works"},
+  "C": {"kind": "product", "name": "Tapefolio", "line": "Scanned PDF not searchable? Add OCR text", "img": "site/assets/tapefolio-screens/ocr-results.webp", "icon": "site/assets/tapefolio-icon.webp"}
+ }
+}
