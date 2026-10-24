@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>Convert Markdown to PDF or Word - Free | Purplelink LLC</title>
-    <meta name="description" content="Free online Markdown converter. Paste or upload Markdown and download a clean PDF or Word document. Powered by Pandoc. Nothing is stored.">
+    <meta name="description" content="Free online Markdown converter. Paste or upload Markdown and download a clean PDF or Word document. Powered by Pandoc. Files are deleted after the result is built.">
     <link rel="canonical" href="https://purplelink.llc/tools/markdown-to-pdf/">
     <meta property="og:title" content="Convert Markdown to PDF or Word - Free">
-    <meta property="og:description" content="Paste or upload Markdown and download a clean PDF or Word document. Powered by Pandoc. Nothing is stored.">
+    <meta property="og:description" content="Paste or upload Markdown and download a clean PDF or Word document. Powered by Pandoc. Files are deleted after the result is built.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/tools/markdown-to-pdf/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/markdown-to-pdf.png">
@@ -16,7 +16,7 @@
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Convert Markdown to PDF or Word - Free">
-    <meta name="twitter:description" content="Paste or upload Markdown and download a clean PDF or Word document. Powered by Pandoc. Nothing is stored.">
+    <meta name="twitter:description" content="Paste or upload Markdown and download a clean PDF or Word document. Powered by Pandoc. Files are deleted after the result is built.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/markdown-to-pdf.png">
     <meta name="twitter:image:alt" content="Convert Markdown to PDF or Word - Free">
     <script type="application/ld+json">
@@ -31,13 +31,13 @@
           "operatingSystem": "Any (web-based)",
           "browserRequirements": "Requires JavaScript",
           "image": "https://purplelink.llc/assets/og/markdown-to-pdf.png",
-          "description": "A free online Markdown converter. Paste or upload Markdown and download a PDF or Word document, powered by Pandoc. Files are never stored.",
+          "description": "A free online Markdown converter. Paste or upload Markdown and download a PDF or Word document, powered by Pandoc. Files are deleted from our server after the result is built.",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
           "featureList": [
             "Convert Markdown to PDF via Pandoc + pdfLaTeX",
             "Convert Markdown to a Word .docx document",
             "Paste text or upload a .md file",
-            "Zero file retention - nothing is stored"
+            "Files are deleted after the result is built"
           ],
           "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
         },
@@ -52,7 +52,7 @@
             {
               "@type": "Question",
               "name": "Is my content stored?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No. Your Markdown is converted in an ephemeral container and discarded immediately. Nothing is written to durable storage or logs." }
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Your Markdown is written to a temporary folder on our server only while the result is built, then deleted. Contents are not logged." }
             },
             {
               "@type": "Question",
@@ -145,7 +145,7 @@
         </div>
         <p class="tool-status" id="status" aria-live="polite"></p>
         <div class="tool-result" id="result"></div>
-        <p class="tool-privacy">Your content is never written to disk or logged.</p>
+        <p class="tool-privacy">Your content is not kept: it sits in a temporary folder on our server only while the result is built, then it is deleted. Contents are not logged.</p>
       </div>
 
       <section class="tool-howto">
@@ -185,7 +185,7 @@
         <p>This runs <code>pandoc</code> to turn Pandoc-flavored Markdown into a PDF (via pdfLaTeX) or a Word <code>.docx</code> document. Use it to turn notes, READMEs, or drafts into a file you can share.</p>
         <details><summary>What Markdown features are supported?</summary><div class="faq-body">Headings, bold, italic, ordered and unordered lists, links, images, fenced code blocks, blockquotes, tables, and footnotes. LaTeX math between <code>$…$</code> renders in PDF output.</div></details>
         <details><summary>Why does PDF take a few seconds?</summary><div class="faq-body">PDF output compiles your document through a LaTeX engine, which gives typeset-quality results. Word output is usually faster.</div></details>
-        <details><summary>Is my content stored?</summary><div class="faq-body">No. Your Markdown is converted in an ephemeral container and discarded immediately.</div></details>
+        <details><summary>Is my content stored?</summary><div class="faq-body">No. Your Markdown is written to a temporary folder on our server only while the result is built, then deleted. Contents are not logged.</div></details>
         <details><summary>Can I include pictures?</summary><div class="faq-body">Not through this tool. Images are replaced by their alt text, so the output has no pictures. If you need figures, convert the text here and add the images in Word, or build the document in LaTeX.</div></details>
         <details><summary>Is there a limit on how many files I can convert?</summary><div class="faq-body">Yes. Each tool allows a limited number of conversions per network address per day, currently 25. When you reach it the page says so and asks you to try again the next day.</div></details>
         <details><summary>Can I write raw LaTeX inside the Markdown?</summary><div class="faq-body">Math between dollar signs works in PDF output. Raw LaTeX goes straight to pdfLaTeX, which runs without shell access, so commands that run programs or read files outside the document do not work.</div></details>

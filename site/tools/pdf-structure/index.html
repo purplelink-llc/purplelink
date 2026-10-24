@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>PDF to Structured Data - Markdown &amp; JSON for AI/RAG | Purplelink</title>
-    <meta name="description" content="Free PDF to Markdown and RAG-ready JSON converter. Keeps reading order, tables, math as LaTeX, and figure captions. Runs on our servers. Files are not stored.">
+    <meta name="description" content="Free PDF to Markdown and RAG-ready JSON converter. Keeps reading order, tables, math as LaTeX, and figure captions. Runs on our servers. Files are deleted after conversion.">
     <link rel="canonical" href="https://purplelink.llc/tools/pdf-structure/">
     <meta property="og:title" content="PDF to Structured Data - Markdown &amp; JSON for AI/RAG">
-    <meta property="og:description" content="Turn a PDF into reading-order Markdown and RAG-ready JSON - tables, math as LaTeX, and figure captions preserved. Free, and your file is never stored.">
+    <meta property="og:description" content="Turn a PDF into reading-order Markdown and RAG-ready JSON - tables, math as LaTeX, and figure captions preserved. Free, and your file is deleted after conversion.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/tools/pdf-structure/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/pdf-structure.png">
@@ -16,7 +16,7 @@
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="PDF to Structured Data - Markdown &amp; JSON for AI/RAG">
-    <meta name="twitter:description" content="Turn a PDF into reading-order Markdown and RAG-ready JSON - tables, math as LaTeX, and figure captions preserved. Free, files never stored.">
+    <meta name="twitter:description" content="Turn a PDF into reading-order Markdown and RAG-ready JSON - tables, math as LaTeX, and figure captions preserved. Free, files deleted after conversion.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/pdf-structure.png">
     <meta name="twitter:image:alt" content="PDF to Structured Data - Markdown and JSON for AI/RAG">
     <script type="application/ld+json">
@@ -31,7 +31,7 @@
           "operatingSystem": "Any (web-based)",
           "browserRequirements": "Requires JavaScript",
           "image": "https://purplelink.llc/assets/og/pdf-structure.png",
-          "description": "A free online tool that converts a PDF into reading-order Markdown and RAG-ready JSON, preserving tables, math as LaTeX, and figure captions. Extraction runs on Purplelink's own infrastructure using OpenDataLoader (Apache-2.0). The file is processed in memory and never stored.",
+          "description": "A free online tool that converts a PDF into reading-order Markdown and RAG-ready JSON, preserving tables, math as LaTeX, and figure captions. Extraction runs on Purplelink's own infrastructure using OpenDataLoader (Apache-2.0). The file is deleted from our server after conversion.",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
           "featureList": [
             "Reading-order Markdown extraction",
@@ -39,7 +39,7 @@
             "Math formulas as LaTeX",
             "Figure caption extraction",
             "RAG-ready structured JSON with bounding boxes",
-            "Files are processed in memory and never stored"
+            "Files are deleted after conversion"
           ],
           "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
         },
@@ -54,7 +54,7 @@
             {
               "@type": "Question",
               "name": "Is my PDF stored?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No. The PDF is processed in memory in an ephemeral container and discarded immediately. Extraction runs on Purplelink's own infrastructure. Your document is never sent to any third-party service, and nothing is written to durable storage or logs." }
+              "acceptedAnswer": { "@type": "Answer", "text": "No. The PDF is written to a temporary folder on our server only while it is converted, then deleted. Extraction runs on Purplelink's own infrastructure. Your document is never sent to any third-party service, and its contents are not logged." }
             },
             {
               "@type": "Question",
@@ -105,7 +105,7 @@
       <div class="tools-hero">
         <p class="eyebrow">Free web tool</p>
         <h1>PDF to Structured Data</h1>
-        <p>Turn a PDF into reading-order <strong>Markdown</strong> and RAG-ready <strong>JSON</strong>, with tables, math as LaTeX, and figure captions preserved. Use it to feed papers into AI and retrieval pipelines. Your file is processed in memory and never stored.</p>
+        <p>Turn a PDF into reading-order <strong>Markdown</strong> and RAG-ready <strong>JSON</strong>, with tables, math as LaTeX, and figure captions preserved. Use it to feed papers into AI and retrieval pipelines. Your file sits in a temporary folder on our server only while it is converted, then it is deleted.</p>
       </div>
 
       <div class="tool-app">
@@ -141,7 +141,7 @@
           </div>
         </div>
 
-        <p class="tool-privacy">Your PDF is processed in memory and discarded immediately. Nothing is stored. Extraction runs on our own infrastructure using <a href="/tools/pdf-structure/ATTRIBUTION.md">OpenDataLoader (Apache-2.0)</a>. Your document never leaves it.</p>
+        <p class="tool-privacy">Your PDF sits in a temporary folder on our server only while it is converted, then it is deleted. Extraction runs on our own infrastructure using <a href="/tools/pdf-structure/ATTRIBUTION.md">OpenDataLoader (Apache-2.0)</a>. Your document never leaves it.</p>
       </div>
 
       <section class="tool-howto">
@@ -158,7 +158,7 @@
         <h2>About this tool</h2>
         <p>This tool extracts a PDF's content as structured data. The Markdown output keeps reading order for humans. The JSON tree (blocks, tables, math, figure captions, bounding boxes) is for AI and retrieval pipelines. Extraction is deterministic and runs locally on our infrastructure.</p>
         <details><summary>What file formats does it accept?</summary><div class="faq-body">PDF files up to 20 MB. For Word, PowerPoint, Excel, HTML, or EPUB, use the <a href="/tools/file-to-markdown/">File to Markdown</a> tool instead.</div></details>
-        <details><summary>Is my PDF stored?</summary><div class="faq-body">No. The PDF is processed in memory in an ephemeral container and discarded immediately. Extraction runs on Purplelink's own infrastructure. Your document is never sent to any third-party service, and nothing is written to durable storage or logs.</div></details>
+        <details><summary>Is my PDF stored?</summary><div class="faq-body">No. The PDF is written to a temporary folder on our server only while it is converted, then deleted. Extraction runs on Purplelink's own infrastructure. Your document is never sent to any third-party service, and its contents are not logged.</div></details>
         <details><summary>How is this different from the File to Markdown tool?</summary><div class="faq-body">File to Markdown is multi-format but simpler. This tool is PDF-only and extraction-grade: it preserves reading order, detects tables, renders math as LaTeX, and returns structured JSON suited to RAG and AI pipelines.</div></details>
         <details><summary>Does it handle scanned PDFs?</summary><div class="faq-body">Not yet. This version reads PDFs that already contain a text layer. Scanned, image-only PDFs need OCR, which this free tool does not include.</div></details>
       </section>

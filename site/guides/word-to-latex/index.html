@@ -119,7 +119,7 @@
         <h2>Q&amp;A</h2>
 
         <h3>Is my file stored?</h3>
-        <p>No. The file is processed in a temporary container and discarded the moment the output is returned. Nothing is written to durable storage or logged.</p>
+        <p>No. The file sits in a temporary folder on our server only while the output is built, then it is deleted. File contents are not logged.</p>
 
         <h3>My equation looks wrong in the output. What should I do?</h3>
         <p>Pandoc converts from Word's internal equation format to LaTeX math. Complex equations often need manual rewriting. Check each one against your original document.</p>

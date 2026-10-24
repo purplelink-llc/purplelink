@@ -45,7 +45,7 @@
             "Corrected .bib download — replaces fields from CrossRef for high-confidence matches",
             "Paste-text input as alternative to file upload",
             "Filter results by status and inspect original vs corrected entries inline",
-            "Zero file retention - nothing is stored"
+            "The .bib file is not kept"
           ],
           "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
         },
@@ -65,7 +65,7 @@
             {
               "@type": "Question",
               "name": "Are my files stored?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No. Your .bib file is validated in an ephemeral container and discarded immediately. When the CrossRef, DOI or Semantic Scholar checks run, titles and authors are sent to CrossRef and/or Semantic Scholar. That is disclosed clearly before you run the check." }
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Your .bib file is read on our server for the check and not kept. When the CrossRef, DOI or Semantic Scholar checks run, titles and authors are sent to CrossRef and/or Semantic Scholar. That is disclosed clearly before you run the check." }
             },
             {
               "@type": "Question",
@@ -121,7 +121,7 @@
       <div class="tools-hero">
         <p class="eyebrow">Free web tool</p>
         <h1>BibTeX Verifier</h1>
-        <p>Upload or paste a <code>.bib</code> file. Each reference is looked up in CrossRef, so a citation that does not exist, such as one an AI tool made up, stands out. The same run checks syntax, required fields and duplicate citation keys, and can also check DOIs and Semantic Scholar. Download a corrected <code>.bib</code> where CrossRef returns a confident match. <strong>Files are never stored.</strong></p>
+        <p>Upload or paste a <code>.bib</code> file. Each reference is looked up in CrossRef, so a citation that does not exist, such as one an AI tool made up, stands out. The same run checks syntax, required fields and duplicate citation keys, and can also check DOIs and Semantic Scholar. Download a corrected <code>.bib</code> where CrossRef returns a confident match. <strong>The file is read on our server for the check and not kept.</strong></p>
       </div>
 
       <div class="tool-app">
@@ -182,7 +182,7 @@
         <p class="tool-status" id="status" aria-live="polite"></p>
         <div class="tool-result" id="result"></div>
         <p class="tool-next" id="bib-unmatched-next" hidden><span id="bib-unmatched-count"></span> <a data-track="tool_next" data-track-meta="bib-validator" href="/tools/paper-review/?utm_source=tool-bib-validator&amp;utm_medium=tool&amp;utm_campaign=paper-review&amp;utm_content=unmatched">Paper Review</a> checks the references inside your manuscript the same way, flags retracted sources, and in the $9 review checks whether each cited paper supports the claim it is attached to. Its reference check is free.</p>
-        <p class="tool-privacy">Files are never written to disk or logged.</p>
+        <p class="tool-privacy">The file is read on our server for the check and not kept. Its contents are not logged.</p>
       </div>
 
       <section class="tool-howto">
@@ -254,7 +254,7 @@
         <h2>About this tool</h2>
         <p>This tool validates BibTeX files in layers: syntax, completeness and duplicate keys (always, with no external calls), DOI resolution (opt-in), an existence check against CrossRef (on by default) and Semantic Scholar (opt-in). When you enable the database checks, it also compares authors and publication years and can produce a corrected <code>.bib</code> for high-confidence matches. This catches AI-hallucinated citations, which have plausible-looking metadata but do not correspond to real papers.</p>
         <details><summary>Can it detect AI-hallucinated citations?</summary><div class="faq-body">Yes. The CrossRef check is on by default, and Semantic Scholar can be added. For each entry with a title, the tool queries the database. It reports how closely the title and author list match a real paper and whether the year is off. Low-confidence title matches (below 50%) and author mismatches on otherwise-confident matches are flagged as likely hallucinations. For the full workflow and how the detection methods compare, see the guide on <a href="/guides/catch-ai-hallucinated-citations/">catching AI-hallucinated citations</a>.</div></details>
-        <details><summary>Are my files stored?</summary><div class="faq-body">No. Your .bib file is validated in an ephemeral container and discarded immediately. When the CrossRef, DOI or Semantic Scholar checks run, titles and authors are sent to those external services. This is disclosed before you run the check.</div></details>
+        <details><summary>Are my files stored?</summary><div class="faq-body">No. Your .bib file is read on our server for the check and not kept. When the CrossRef, DOI or Semantic Scholar checks run, titles and authors are sent to those external services. This is disclosed before you run the check.</div></details>
         <details><summary>How does the duplicate-key check work?</summary><div class="faq-body">It compares the citation keys of all entries in the file, ignoring letter case, because BibTeX does. Every entry after the first that reuses a key is marked as an error, and the message gives the line of the first use. <code>@string</code>, <code>@preamble</code> and <code>@comment</code> blocks are not entries and are ignored. Separately, an entry with a different key but the same DOI, or the same title, as an earlier entry gets a "possible duplicate" note. That note does not change the entry's status, because the same paper can legitimately appear twice.</div></details>
         <details><summary>What does the annotated .bib contain?</summary><div class="faq-body">Your original .bib file with a comment line above each entry. The comment shows the validation status: missing required fields, duplicate keys, DOI result, title and author confidence scores, and any year mismatch. Paste it straight back into your editor.</div></details>
         <details><summary>What is the corrected .bib?</summary><div class="faq-body">The corrected .bib covers each entry where CrossRef returned a high-confidence match (title similarity at least 85%). It replaces the entry's fields with CrossRef metadata: title, author list, year, DOI, journal or booktitle, volume, issue, pages, and publisher. Entries without a confident match are passed through unchanged. Each rewritten entry is marked with a "CORRECTED from CrossRef" comment so you can audit the changes.</div></details>

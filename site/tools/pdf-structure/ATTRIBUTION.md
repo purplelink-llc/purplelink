@@ -12,5 +12,5 @@ License 2.0 (chosen from veraPDF's dual-licensed options).
 Full Apache License 2.0 text: https://www.apache.org/licenses/LICENSE-2.0
 
 Purplelink LLC claims no endorsement by, or affiliation with, any of the
-above projects. Uploaded documents are processed in memory and never
-retained.
+above projects. Uploaded documents are kept in a temporary folder only while
+they are converted, then deleted.

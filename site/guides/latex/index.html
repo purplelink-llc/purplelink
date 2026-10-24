@@ -76,11 +76,11 @@
         <p class="post-date">Topic hub</p>
         <h1 class="post-title">LaTeX for academic writing</h1>
         <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-05-31">May 31, 2026</time></p>
-        <p class="post-lede">Practical guides and free in-browser tools for the academic LaTeX workflow, from compiling your manuscript to handing off a clean Word document for the journal. There are no installs, and nothing is stored.</p>
+        <p class="post-lede">Practical guides and free in-browser tools for the academic LaTeX workflow, from compiling your manuscript to handing off a clean Word document for the journal. There are no installs, and the server tools delete your file once the result is built.</p>
       </div>
 
       <article class="post-body">
-        <p>This is the hub page for everything LaTeX-related on Purplelink. If you are writing a dissertation, a journal submission, or a conference paper, the guides and tools below cover the full workflow. That workflow includes compilation, multi-file projects, equations, tables, bibliography management, format conversion, tracked changes, and word counts. Every tool runs in your browser against a hosted backend. The backend processes files in memory and discards them when your download finishes. There is no account, no install, and no retention.</p>
+        <p>This is the hub page for everything LaTeX-related on Purplelink. If you are writing a dissertation, a journal submission, or a conference paper, the guides and tools below cover the full workflow. That workflow includes compilation, multi-file projects, equations, tables, bibliography management, format conversion, tracked changes, and word counts. Some tools run entirely in your browser; the rest send the file to a hosted backend, which keeps it in a temporary folder only while the result is built and then deletes it. There is no account and no install.</p>
 
         <h2>Compile and render</h2>
         <p>A manuscript that compiles reliably is the foundation of the workflow. Plain pdfLaTeX (the default LaTeX compiler) handles what most papers need. XeLaTeX adds OpenType font support. Biber + BibLaTeX is a newer bibliography engine than classic BibTeX.</p>
@@ -132,7 +132,7 @@
         <p>The tools above run in a browser. If you write LaTeX manuscripts regularly on a Mac, <strong><a href="/moderntex/">ModernTex</a></strong> is the native alternative. ModernTex is a native macOS editor built around the academic manuscript workflow. It has multi-file projects, synchronized PDF preview, plain-language compile errors, BibTeX autocomplete that searches by author or title, revision snapshots, and submission-readiness checks. Version 1.0 shipped in September 2026 at $19.99, one-time, with all updates included, forever.</p>
 
         <h2>About these tools</h2>
-        <p>Every web tool listed here is free, runs without an account, and processes files in memory only. The backend container is recreated per request and never writes your file to durable storage. If you need stronger guarantees, the codebase is observable. Most validation logic ships open-source, and the tools page documents the backend architecture. Files you upload are also covered under the <a href="/terms/">Terms of Service</a> and the <a href="/privacy/">Privacy Policy</a>.</p>
+        <p>Every web tool listed here is free, runs without an account, and either runs in your browser or keeps your file in a temporary folder on our server only while the result is built, then deletes it. <a href="/security/">Security and data handling</a> lists what each tool sends and where. Files you upload are also covered under the <a href="/terms/">Terms of Service</a> and the <a href="/privacy/">Privacy Policy</a>.</p>
       </article>
 
       <section class="waitlist-section">

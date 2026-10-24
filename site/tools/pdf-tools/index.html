@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>Free PDF Tools - Merge, Split &amp; Compress | Purplelink LLC</title>
-    <meta name="description" content="Free online PDF tools: merge several PDFs, split out a page range, or compress a PDF. Merge and split run in your browser. Nothing is stored.">
+    <meta name="description" content="Free online PDF tools: merge several PDFs, split out a page range, or compress a PDF. Merge and split run in your browser. Compression deletes the file after it runs.">
     <link rel="canonical" href="https://purplelink.llc/tools/pdf-tools/">
     <meta property="og:title" content="Free PDF Tools - Merge, Split & Compress">
-    <meta property="og:description" content="Merge several PDFs into one, split out a page range, or compress a PDF. Merge and split run in your browser. Nothing is stored.">
+    <meta property="og:description" content="Merge several PDFs into one, split out a page range, or compress a PDF. Merge and split run in your browser. Compression deletes the file after it runs.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/tools/pdf-tools/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/pdf-tools.png">
@@ -16,7 +16,7 @@
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Free PDF Tools - Merge, Split & Compress">
-    <meta name="twitter:description" content="Merge several PDFs into one, split out a page range, or compress a PDF. Merge and split run in your browser. Nothing is stored.">
+    <meta name="twitter:description" content="Merge several PDFs into one, split out a page range, or compress a PDF. Merge and split run in your browser. Compression deletes the file after it runs.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/pdf-tools.png">
     <meta name="twitter:image:alt" content="Free PDF Tools - Merge, Split & Compress">
     <script type="application/ld+json">
@@ -37,7 +37,7 @@
             "Merge multiple PDFs into one document, in your browser",
             "Split out a page or page range, in your browser",
             "Compress a PDF to a smaller file size",
-            "Zero file retention - nothing is stored"
+            "Merge and split stay in your browser; compression deletes the file after it runs"
           ],
           "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
         },
@@ -47,7 +47,7 @@
             {
               "@type": "Question",
               "name": "Do my PDFs get uploaded?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Merge and split run entirely in your browser. Those files never leave your device. Compression sends the file to a hosted backend that processes it in memory and discards it immediately. Nothing is stored or logged." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Merge and split run entirely in your browser. Those files never leave your device. Compression sends the file to a hosted backend, which writes it to a temporary folder only while Ghostscript runs, then deletes it. File contents are not logged." }
             },
             {
               "@type": "Question",
@@ -162,7 +162,7 @@
 
         <p class="tool-status" id="status" aria-live="polite"></p>
         <div class="tool-result" id="result"></div>
-        <p class="tool-privacy">Merge and split never upload your files. Compression processes in memory and stores nothing.</p>
+        <p class="tool-privacy">Merge and split never upload your files. Compression keeps the file in a temporary folder on our server only while it runs, then deletes it.</p>
       </div>
 
       <section class="tool-howto">
@@ -176,8 +176,8 @@
 
       <section class="tool-faq">
         <h2>About these tools</h2>
-        <p>Merge and split run with <a href="https://pdf-lib.js.org/" target="_blank" rel="noopener">pdf-lib</a> directly in your browser. Your files never leave your device. Compression uses Ghostscript on a hosted backend that processes the file in memory and discards it immediately.</p>
-        <details><summary>Do my PDFs get uploaded?</summary><div class="faq-body">For merge and split, no. Everything happens locally. For compress, the file is sent over an encrypted connection, processed in an ephemeral container, and discarded right away.</div></details>
+        <p>Merge and split run with <a href="https://pdf-lib.js.org/" target="_blank" rel="noopener">pdf-lib</a> directly in your browser. Your files never leave your device. Compression uses Ghostscript on a hosted backend that keeps the file in a temporary folder only while it runs, then deletes it.</p>
+        <details><summary>Do my PDFs get uploaded?</summary><div class="faq-body">For merge and split, no. Everything happens locally. For compress, the file is sent over an encrypted connection, kept in a temporary folder on our server only while it is compressed, then deleted.</div></details>
         <details><summary>How much smaller will compression make my PDF?</summary><div class="faq-body">It depends on the file. Image-heavy PDFs shrink a lot at lower quality levels. Text-only PDFs may barely change. Try "Balanced" first.</div></details>
         <details><summary>Is there a size limit?</summary><div class="faq-body">Compression accepts PDFs up to 20 MB. Merge and split are limited only by your device's memory.</div></details>
       </section>
