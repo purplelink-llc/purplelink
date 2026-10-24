@@ -96,5 +96,33 @@
     "caption_id": "AUieDaYk3QqC8vW7UO1msSqKCmcdaGIblzmTFTjxQdEJNdt_x_TKccMS"
    }
   }
+ },
+ {
+  "slug": "howto-scanned-pdf-not-searchable",
+  "app": "tapefolio",
+  "date": "2026-10-24",
+  "title": "Scanned PDF not searchable on Mac (add OCR text to the PDF)",
+  "long_id": "03ygYpJqZ0E",
+  "short_id": "4OBcv-wqug0",
+  "link_arm": "A",
+  "link_utm_content": "howto-scanned-pdf-not-searchable",
+  "sources": [
+   "https://discussions.apple.com/thread/522689",
+   "https://discussions.apple.com/thread/253718020"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "03ygYpJqZ0E",
+    "caption_id": "AUieDabk2LvEU-FL3Kh84pXtO0H-ISzbkfFnUyTFa73E4OJnerki1Bma"
+   },
+   "short": {
+    "video_id": "4OBcv-wqug0",
+    "caption_id": "AUieDaYhwPaeOY3CyBk3gx-Ujt0NHFa1rEJIDLKqiUm1mbpHTTLLfyvn"
+   }
+  },
+  "instagram": {
+   "ok": true
+  },
+  "note": "Long video uploaded public by howto-publish.py; thumbnail A could not be set and the A/B/C test was not started. Short uploaded separately after the run stopped."
  }
 ]
