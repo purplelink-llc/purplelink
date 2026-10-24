@@ -107,7 +107,7 @@
 
         <h2>What's happening under the hood</h2>
 
-        <p>Your upload lands in an ephemeral container created for that request. The tool runs <code>latexmk</code> with your chosen engine, which handles the multi-pass build automatically. The sequence: a first LaTeX pass to produce auxiliary files with cross-references, a BibTeX or Biber pass if a <code>.bib</code> file is present, then one or two more passes to resolve all citations and labels. Once done, the compiled PDF streams back to your browser and the container is discarded. Nothing is written to durable storage or logged. LuaLaTeX is not available; documents that depend on it will need a local LaTeX installation.</p>
+        <p>Your upload is written to a temporary folder on our server for that request and deleted once the PDF is built. The tool runs <code>latexmk</code> with your chosen engine, which handles the multi-pass build automatically. The sequence: a first LaTeX pass to produce auxiliary files with cross-references, a BibTeX or Biber pass if a <code>.bib</code> file is present, then one or two more passes to resolve all citations and labels. Once done, the compiled PDF streams back to your browser and the container is discarded. Nothing is written to durable storage or logged. LuaLaTeX is not available; documents that depend on it will need a local LaTeX installation.</p>
 
         <h2>Q&amp;A</h2>
 

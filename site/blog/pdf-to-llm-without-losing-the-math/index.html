@@ -95,7 +95,7 @@
 
       <p>You open <a href="/tools/pdf-structure/">purplelink.llc/tools/pdf-structure/</a>. Drag the paper in. About ten seconds later you have two outputs.</p>
 
-      <p>The Markdown version has the body text in reading order, not column order, which is what most extractors produce on a two-column layout. Table 2 is a real Markdown table. The equations come through as LaTeX strings. Figure captions are preserved. Nothing is stored; the file is processed in memory and discarded.</p>
+      <p>The Markdown version has the body text in reading order, not column order, which is what most extractors produce on a two-column layout. Table 2 is a real Markdown table. The equations come through as LaTeX strings. Figure captions are preserved. The file sits in a temporary folder on our server only while it is converted, then it is deleted.</p>
 
       <p>The JSON output has the same content split into labeled blocks, useful if you're scripting across multiple papers or building a vector store for retrieval. Most of the time, the Markdown is enough. You paste it into the LLM prompt, or drop it into your note-taking app alongside your annotations.</p>
 

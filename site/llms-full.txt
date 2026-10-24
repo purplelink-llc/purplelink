@@ -314,7 +314,7 @@ Free · in your browser
 
 ### LaTeX and citation tools
 
-Compile LaTeX to PDF, diff two versions, validate a .bib file, generate citations, convert to and from Word, and more. Files are processed in memory and never stored.
+Compile LaTeX to PDF, diff two versions, validate a .bib file, generate citations, convert to and from Word, and more. Files are deleted from our server once the result is built.
 
 Browse the tools →
 
@@ -3536,7 +3536,7 @@ Tools for academics
 
 # LaTeX tools and AI manuscript review
 
-Free in-browser tools for LaTeX, citations and document conversion, plus pay-per-use AI checks for a manuscript before it goes out. The free tools process files in memory and never store them. Each paid tool explains its data handling on its own page.
+Free in-browser tools for LaTeX, citations and document conversion, plus pay-per-use AI checks for a manuscript before it goes out. The free tools keep a file on our server only while the result is built, then delete it. Some run entirely in your browser. Each paid tool explains its data handling on its own page.
 
 Filter tools
 
@@ -3754,7 +3754,7 @@ See Vitae →
 
 ## Privacy-respecting tools, free and paid
 
-The free tools are LaTeX, citation, and conversion utilities for academic authors. They compile to PDF, convert to and from Word, diff versions, validate BibTeX, render equations, and more. They run in your browser against a hosted backend. Your files are processed in memory and discarded the moment your download is ready, so unpublished manuscripts stay private.
+The free tools are LaTeX, citation, and conversion utilities for academic authors. They compile to PDF, convert to and from Word, diff versions, validate BibTeX, render equations, and more. They run in your browser against a hosted backend. Your files sit in a temporary folder on our server only while the result is built, then they are deleted, so unpublished manuscripts are not kept.
 
 The paid Paper Review tool runs an AI red-team review of an uploaded manuscript. That review depends on a third-party language model (Anthropic's Claude API), so its data-handling guarantees differ from the in-house free tools. The Paper Review page lists the retention details before you upload.
 
@@ -3766,7 +3766,7 @@ The LaTeX and citation utilities are free with no account and no install. The on
 
 Do you store my files?
 
-For the free tools: no. Files are processed in memory in an ephemeral container and discarded immediately. Nothing is written to durable storage or logs. For the paid Paper Review tool, your manuscript is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring (not for training). Purplelink itself does not retain the manuscript or the resulting review after delivery. See the Paper Review page for full details.
+For the free tools: no. A file sits in a temporary folder on our server only while the result is built, then it is deleted. File contents are not logged. For the paid Paper Review tool, your manuscript is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring (not for training). Purplelink itself does not retain the manuscript or the resulting review after delivery. See the Paper Review page for full details.
 
 Do I need to install anything?
 
@@ -3786,7 +3786,7 @@ Free web tool
 
 # Compile LaTeX to PDF
 
-Upload a .tex file or a project .zip (figures, .bib, .sty included) and download a compiled PDF. Your files are processed in memory and never stored.
+Upload a .tex file or a project .zip (figures, .bib, .sty included) and download a compiled PDF. Files are not kept: they sit in a temporary folder on our server only while the PDF is built, then they are deleted.
 
 Drag a .tex file or project .zip here, or choose one. Max 5 MB (.tex) / 10 MB (.zip).
 
@@ -3797,7 +3797,7 @@ XeLaTeX
 
 Compiling this often? ModernTex for Mac compiles locally with your own TeX, keeps the PDF in sync with the source and explains errors in plain language. 7-day free trial, then $19.99 once.
 
-Accepts a single .tex or a project .zip with main.tex at the root. Files are never written to disk.
+Accepts a single .tex or a project .zip with main.tex at the root. Files are not kept: they sit in a temporary folder on our server only while the PDF is built, then they are deleted.
 
 ## How to compile LaTeX to PDF online
 
@@ -3817,7 +3817,7 @@ Compiling on your own Mac instead? See how to install LaTeX on a Mac (MacTeX, Ba
 
 Are my files stored?
 
-No. Your files are compiled in an ephemeral container and discarded immediately. Nothing is written to durable storage or logs.
+No. Your files are written to a temporary folder on our server only while the PDF is built, then deleted. File contents are not logged.
 
 Can I upload a project with figures and a .bib file?
 
@@ -3849,7 +3849,7 @@ Free web tool
 
 # BibTeX Verifier
 
-Upload or paste a .bib file. Each reference is looked up in CrossRef, so a citation that does not exist, such as one an AI tool made up, stands out. The same run checks syntax, required fields and duplicate citation keys, and can also check DOIs and Semantic Scholar. Download a corrected .bib where CrossRef returns a confident match. Files are never stored.
+Upload or paste a .bib file. Each reference is looked up in CrossRef, so a citation that does not exist, such as one an AI tool made up, stands out. The same run checks syntax, required fields and duplicate citation keys, and can also check DOIs and Semantic Scholar. Download a corrected .bib where CrossRef returns a confident match. The file is read on our server for the check and not kept.
 
 Drag a .bib file here, or choose one. Max 2 MB.
 
@@ -3871,7 +3871,7 @@ Choose a .bib file or paste entries above to start.
 
 Paper Review checks the references inside your manuscript the same way, flags retracted sources, and in the $9 review checks whether each cited paper supports the claim it is attached to. Its reference check is free.
 
-Files are never written to disk or logged.
+The file is read on our server for the check and not kept. Its contents are not logged.
 
 ## How to validate a BibTeX file online
 
@@ -3956,7 +3956,7 @@ Yes. The CrossRef check is on by default, and Semantic Scholar can be added. For
 
 Are my files stored?
 
-No. Your .bib file is validated in an ephemeral container and discarded immediately. When the CrossRef, DOI or Semantic Scholar checks run, titles and authors are sent to those external services. This is disclosed before you run the check.
+No. Your .bib file is read on our server for the check and not kept. When the CrossRef, DOI or Semantic Scholar checks run, titles and authors are sent to those external services. This is disclosed before you run the check.
 
 How does the duplicate-key check work?
 
@@ -4559,7 +4559,7 @@ Purplelink is a one-person studio. Small means accountable: every line of code a
 
 The Mac apps have no account, and your files stay on your Mac. Their routine network use is a once-a-day check for a new version. The privacy policy and each product page say what else an app contacts and what the request carries.
 
-The free web tools that run on our server process a file in memory and discard it when the answer is returned. The paid manuscript checks send the manuscript to Anthropic's Claude API, which keeps inputs for up to 30 days for abuse monitoring and does not train on them. Purplelink deletes its own copy within a day. Security and data handling lists every service that touches data, product by product.
+The free web tools that run on our server keep a file in a temporary folder only while the answer is built, then delete it. The paid manuscript checks send the manuscript to Anthropic's Claude API, which keeps inputs for up to 30 days for abuse monitoring and does not train on them. Purplelink deletes its own copy within a day. Security and data handling lists every service that touches data, product by product.
 
 ## Photography
 
@@ -4765,7 +4765,7 @@ The most reliable check is a colleague who knows your field and reads the manusc
 
 If you want a first pass before that, Purplelink's Paper Review ($9) reads a manuscript PDF and reports methodology concerns in the terms used on this page. Several of these problems are flagged automatically, including hyperparameter asymmetry, missing sample-size justification, single-seed results, figure presentation problems and references that do not resolve. Findings link to the matching short explainer. It is advisory, it can be wrong, and it does not replace a person who knows your field. Its field profiles list what each one checks: machine learning, biomedicine, psychology and social science, and chemistry and materials.
 
-For citations alone, the free BibTeX Validator checks each entry in a .bib file against CrossRef and Semantic Scholar and flags entries that do not match a real paper. The file is checked on our server and not stored.
+For citations alone, the free BibTeX Validator checks each entry in a .bib file against CrossRef and Semantic Scholar and flags entries that do not match a real paper. The file is checked on our server and not kept.
 
 ## References
 

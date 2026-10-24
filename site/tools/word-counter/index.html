@@ -45,7 +45,7 @@
             "Character-set anomaly detection",
             "Citation density",
             "CSV export of all statistics",
-            "Statistics computed client-side - your text is never stored"
+            "Statistics computed in your browser; pasted text is never uploaded"
           ],
           "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
         },
@@ -75,7 +75,7 @@
             {
               "@type": "Question",
               "name": "Is my text stored?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Pasted text never leaves your browser. Uploaded files are converted to text in an ephemeral container that is discarded immediately. Nothing is written to durable storage or logs. All statistics are then computed locally in your browser." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Pasted text never leaves your browser. An uploaded file is sent to our server only to pull out its text: plain text is read in memory, and other formats sit in a temporary folder until the text is out, then are deleted. File contents are not logged. All statistics are then computed locally in your browser." }
             }
           ]
         },
@@ -139,7 +139,7 @@
           <div class="dropzone wc-dropzone" id="wc-dropzone" aria-label="Upload a document">
             <input type="file" id="wc-file" accept=".pdf,.docx,.odt,.rtf,.epub,.html,.htm,.csv,.tex,.md,.markdown,.txt" aria-describedby="wc-upload-note">
             <p>Drag a document here, or choose one. PDF, Word, LaTeX, Markdown, EPUB, RTF, ODT, HTML, up to 20 MB.</p>
-            <p class="tool-privacy" id="wc-upload-note">A file is sent to our server only to pull out its text, then discarded. Pasted text never leaves your browser.</p>
+            <p class="tool-privacy" id="wc-upload-note">A file is sent to our server only to pull out its text, then deleted. Pasted text never leaves your browser.</p>
             <p id="wc-filename" class="tool-privacy"></p>
           </div>
         </div>
@@ -172,7 +172,7 @@
         <div id="wc-report"></div>
         <p class="tool-next" data-tool-next="#wc-report" hidden>Submitting to one of 25 journals or conferences? The <a data-track="tool_next" data-track-meta="word-counter" href="/tools/paper-review/#faq-journals">Journal Pack</a> ($11 with a Paper Review) checks word and abstract limits and required sections against that venue's rules.</p>
 
-        <p class="tool-privacy" id="wc-privacy">Pasted text never leaves your browser. Uploaded files are converted to text in an ephemeral container that is discarded immediately. All statistics are then computed locally in your browser. Nothing is stored.</p>
+        <p class="tool-privacy" id="wc-privacy">Pasted text never leaves your browser. An uploaded file is sent to our server only to pull out its text: plain text is read in memory, and other formats sit in a temporary folder until the text is out, then are deleted. All statistics are then computed locally in your browser.</p>
       </div>
 
       <section class="tool-howto">
@@ -193,7 +193,7 @@
         <details><summary>Can it count words without the references or appendix?</summary><div class="faq-body">Yes. For academic papers, the tool splits your document into sections and lets you toggle which sections to include, so you can get "main text without references and appendix" in one click.</div></details>
         <details><summary>What readability scores does it compute?</summary><div class="faq-body">Flesch Reading Ease, Flesch-Kincaid Grade, Gunning Fog, SMOG, Coleman-Liau, and the Automated Readability Index, plus average words-per-sentence and syllables-per-word.</div></details>
         <details><summary>Does the AI-writing audit detect AI-generated text?</summary><div class="faq-body">No. It flags phrases and patterns that appear often in AI-generated prose and shows you where they occur. It never outputs a probability or verdict. AI-detection tools are unreliable and disproportionately false-flag non-native English writers, so we do not claim to detect AI authorship. Treat the audit as a writing-style mirror, not evidence.</div></details>
-        <details><summary>Is my text stored?</summary><div class="faq-body">Pasted text never leaves your browser. Uploaded files are converted to text in an ephemeral container that is discarded immediately. Nothing is written to durable storage or logs.</div></details>
+        <details><summary>Is my text stored?</summary><div class="faq-body">Pasted text never leaves your browser. An uploaded file is sent to our server only to pull out its text: plain text is read in memory, and other formats sit in a temporary folder until the text is out, then are deleted. File contents are not logged.</div></details>
       </section>
 
       <nav class="tool-related" aria-label="Related tools">

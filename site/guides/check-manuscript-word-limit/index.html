@@ -120,7 +120,7 @@
 
         <h2>What's happening under the hood</h2>
 
-        <p>Uploaded files are converted to plain text in an ephemeral server container, then discarded. Nothing is written to storage. All statistics run locally in your browser after that.</p>
+        <p>Uploaded files are sent to our server only to pull out their text: plain text is read in memory, and other formats sit in a temporary folder until the text is out, then are deleted. All statistics run locally in your browser after that.</p>
 
         <p>Section detection matches heading patterns against common academic section names. For LaTeX files it reads section commands directly. For PDFs and Word documents it uses heading styles or capitalized headers. Detection is best-effort: if a split looks wrong, export to Word or LaTeX and re-upload.</p>
 

@@ -80,7 +80,7 @@
           "mainEntity": [
         { "@type": "Question", "name": "Where does the BibTeX data come from?", "acceptedAnswer": { "@type": "Answer", "text": "Crossref (the publisher metadata registry) resolves DOIs. arXiv IDs use arXiv's own metadata. Both are authoritative sources, so the core fields are usually correct." } },
         { "@type": "Question", "name": "What if the title's capitalization is wrong?", "acceptedAnswer": { "@type": "Answer", "text": "BibTeX lowercases titles unless you protect words with braces. Wrap proper nouns or acronyms in braces to keep their capitalization." } },
-        { "@type": "Question", "name": "Is the BibTeX builder free and private?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The builder fetches the entry and stores nothing. The identifier and result are not retained." } },
+        { "@type": "Question", "name": "Is the BibTeX builder free and private?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The builder fetches the entry and keeps nothing. The identifier and result are not retained." } },
         { "@type": "Question", "name": "Can I get BibTeX from an arXiv ID without a DOI?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Paste the arXiv ID directly. The builder retrieves the metadata from arXiv." } }
           ]
         },
@@ -139,7 +139,7 @@
           <li><strong>DOI</strong> → <a href="https://www.crossref.org/" rel="noopener">CrossRef</a>, the registry where publishers submit canonical metadata. CrossRef returns the title, full author list, journal or proceedings name, volume, issue, page range, year, publisher, and the DOI itself.</li>
           <li><strong>arXiv ID</strong> → arXiv's own API. It returns the title, authors (cleanly formatted), abstract, category, and submission date. An arXiv preprint often has a separately registered DOI on the journal version (see "Preprint vs published" below).</li>
         </ul>
-        <p>Because the data comes from the publisher's own submission, it is typically accurate. The Builder does not store any of it. Your identifier is sent to CrossRef or arXiv, the response is formatted as BibTeX, and the result is returned to your browser without touching durable storage.</p>
+        <p>Because the data comes from the publisher's own submission, it is typically accurate. The Builder does not keep any of it. Your identifier is sent to CrossRef or arXiv, the response is formatted as BibTeX, and the result is returned to your browser.</p>
 
         <h2>Step-by-step</h2>
         <ol>

@@ -149,7 +149,7 @@ latexdiff old-flat.tex new-flat.tex &gt; diff.tex</code></pre>
           <li>The output is a PDF with additions in blue and underlined and deletions in red and struck through.</li>
           <li>For zip uploads, the page says the new version's assets, such as figures and styles, are used for compilation.</li>
           <li>Changes inside tables are shown in final form only and are not marked.</li>
-          <li>The page says files are processed in an ephemeral container, discarded immediately and never written to disk.</li>
+          <li>The page says files sit in a temporary folder on our server only while the PDF is built, then are deleted.</li>
         </ul>
         <p>The tool page does not list any latexdiff options, so you cannot pass <code>--math-markup</code> or <code>--append-textcmd</code> to it, and it does not say how it handles a bibliography. If your project needs those, run latexdiff locally with the commands above. <a href="/guides/install-latex-on-mac/">Install LaTeX on a Mac</a> if you do not have a TeX distribution yet.</p>
 

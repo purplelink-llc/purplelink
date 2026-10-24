@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>Convert Word to LaTeX Online - Free | Purplelink LLC</title>
-    <meta name="description" content="Free online Word to LaTeX converter. Upload a .docx file and download a .tex starting point. Powered by Pandoc. Files are never stored.">
+    <meta name="description" content="Free online Word to LaTeX converter. Upload a .docx file and download a .tex starting point. Powered by Pandoc. Files are deleted after the .tex is built.">
     <link rel="canonical" href="https://purplelink.llc/tools/word-to-latex/">
     <meta property="og:title" content="Convert Word to LaTeX Online - Free">
-    <meta property="og:description" content="Free online Word to LaTeX converter. Upload a .docx file and download a .tex starting point. Files are never stored.">
+    <meta property="og:description" content="Free online Word to LaTeX converter. Upload a .docx file and download a .tex starting point. Files are deleted after the .tex is built.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/tools/word-to-latex/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/word-to-latex.png">
@@ -16,7 +16,7 @@
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Convert Word to LaTeX Online - Free">
-    <meta name="twitter:description" content="Free online Word to LaTeX converter. Upload a .docx file and download a .tex starting point. Files are never stored.">
+    <meta name="twitter:description" content="Free online Word to LaTeX converter. Upload a .docx file and download a .tex starting point. Files are deleted after the .tex is built.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/word-to-latex.png">
     <meta name="twitter:image:alt" content="Convert Word to LaTeX Online - Free">
     <script type="application/ld+json">
@@ -31,12 +31,12 @@
           "operatingSystem": "Any (web-based)",
           "browserRequirements": "Requires JavaScript",
           "image": "https://purplelink.llc/assets/og/word-to-latex.png",
-          "description": "A free online Word to LaTeX converter. Upload a .docx file and download a .tex starting point, powered by Pandoc. Files are never stored.",
+          "description": "A free online Word to LaTeX converter. Upload a .docx file and download a .tex starting point, powered by Pandoc. Files are deleted from our server after the .tex is built.",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
           "featureList": [
             "Convert .docx to LaTeX via Pandoc --standalone",
             "Produces a compilable .tex file with preamble",
-            "Zero file retention - nothing is stored"
+            "Files are deleted after the .tex is built"
           ],
           "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
         },
@@ -51,7 +51,7 @@
             {
               "@type": "Question",
               "name": "Are my files stored?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No. Your file is converted in an ephemeral container and discarded immediately. Nothing is written to durable storage or logs." }
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Your file is written to a temporary folder on our server only while the .tex is built, then deleted. File contents are not logged." }
             }
           ]
         },
@@ -113,7 +113,7 @@
         <p class="tool-status" id="status" aria-live="polite"></p>
         <div class="tool-result" id="result"></div>
         <p class="tool-next" data-tool-next="#result" hidden>Do your co-authors stay in Word? <a data-track="tool_next" data-track-meta="word-to-latex" href="/moderntex/">ModernTex</a> for Mac brings tracked changes and comments from a reviewed Word file back into the LaTeX source. 7-day free trial, then $19.99 once.</p>
-        <p class="tool-privacy">Files are never written to disk or logged.</p>
+        <p class="tool-privacy">Files are not kept: they sit in a temporary folder on our server only while the .tex is built, then they are deleted. File contents are not logged.</p>
       </div>
 
       <section class="tool-howto">
@@ -130,7 +130,7 @@
         <p>This runs <code>pandoc --standalone</code> to produce a complete, compilable <code>.tex</code> file from your Word document. The output is a <strong>starting point</strong>. Standard elements (headings, bold, italic, lists, tables) convert well. However, complex Word formatting, field codes and macros may need manual attention.</p>
         <details><summary>What converts well?</summary><div class="faq-body">Headings, paragraph text, bold, italic, unordered and numbered lists, basic tables, and footnotes. The output includes a standard LaTeX preamble with common packages.</div></details>
         <details><summary>What may need cleanup?</summary><div class="faq-body">Multi-column layouts, text boxes, Word styles with no LaTeX equivalent, embedded objects, and cross-references (which become plain text). Pandoc preserves equations as well as it can.</div></details>
-        <details><summary>Are my files stored?</summary><div class="faq-body">No. Your file is converted in an ephemeral container and discarded immediately.</div></details>
+        <details><summary>Are my files stored?</summary><div class="faq-body">No. Your file is written to a temporary folder on our server only while the .tex is built, then deleted. File contents are not logged.</div></details>
       </section>
 
       <!-- tool-offer -->

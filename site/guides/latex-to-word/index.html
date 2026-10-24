@@ -48,7 +48,7 @@
               "@type": "HowToStep",
               "position": 2,
               "name": "Upload the file",
-              "text": "Open the LaTeX to Word tool and upload your .tex file. The tool runs Pandoc on the server in an ephemeral container."
+              "text": "Open the LaTeX to Word tool and upload your .tex file. The tool runs Pandoc on our server."
             },
             {
               "@type": "HowToStep",
@@ -84,7 +84,7 @@
         {
           "@type": "FAQPage",
           "mainEntity": [
-        { "@type": "Question", "name": "Is the LaTeX to Word converter free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The converter is free. Files are converted on our server and never stored." } },
+        { "@type": "Question", "name": "Is the LaTeX to Word converter free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The converter is free. Files are converted on our server and deleted once the result is built." } },
         { "@type": "Question", "name": "Will my equations survive the conversion?", "acceptedAnswer": { "@type": "Answer", "text": "Most inline and display math converts to native Word equations. Very complex or custom-macro math should be spot-checked after conversion." } },
         { "@type": "Question", "name": "How do I keep my citations?", "acceptedAnswer": { "@type": "Answer", "text": "Include your .bib file by uploading a ZIP of your project. The converter resolves cite commands and builds the bibliography in the Word document." } },
         { "@type": "Question", "name": "Can I anonymize the paper for blind review?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The converter has an optional anonymize step that strips author identifying information for double-blind submissions." } }
@@ -139,7 +139,7 @@
       <article class="post-body">
         <p>LaTeX is excellent for typesetting, but at some point a journal's submission system, a co-author, or a grant office will ask for a Word document. Converting cleanly is mostly about knowing what transfers and what needs a manual pass.</p>
         <h2>The fastest way: a direct .tex → .docx converter</h2>
-        <p>The quickest route is to upload your <code>.tex</code> file (or a ZIP of your project) to a converter that runs Pandoc under the hood. Our free <a href="/tools/latex-to-word/">LaTeX to Word converter</a> produces a double-spaced manuscript-style .docx, with an optional anonymize pass for blind review. Your files are processed and never stored.</p>
+        <p>The quickest route is to upload your <code>.tex</code> file (or a ZIP of your project) to a converter that runs Pandoc under the hood. Our free <a href="/tools/latex-to-word/">LaTeX to Word converter</a> produces a double-spaced manuscript-style .docx, with an optional anonymize pass for blind review. Your files are deleted from our server once the result is built.</p>
         <aside class="guide-app-card" aria-label="Writing the LaTeX on a Mac?">
           <p class="guide-app-card-title">Writing the LaTeX on a Mac?</p>
           <p>I make ModernTex, a native Mac editor for LaTeX papers. It builds on your Mac with MacTeX or TinyTeX, so there is no compile timeout, and it keeps the source and the PDF in sync. The trial is the full app for 7 days, with no account. After that it is $19.99, once.</p>
@@ -172,7 +172,7 @@
 
       <section class="tool-faq">
         <h2>Frequently asked questions</h2>
-        <details><summary>Is the LaTeX to Word converter free?</summary><div class="faq-body">Yes. The <a href="/tools/latex-to-word/">converter</a> is free, runs in your browser, and your files are never stored.</div></details>
+        <details><summary>Is the LaTeX to Word converter free?</summary><div class="faq-body">Yes. The <a href="/tools/latex-to-word/">converter</a> is free, runs on our server, and your files are deleted once the result is built.</div></details>
         <details><summary>Will my equations survive the conversion?</summary><div class="faq-body">Most inline and display math converts to native Word equations. Very complex or custom-macro math should be spot-checked after conversion.</div></details>
         <details><summary>How do I keep my citations?</summary><div class="faq-body">Include your <code>.bib</code> file by uploading a ZIP of your project. The converter resolves <code>\cite</code> commands and builds the bibliography in the Word document.</div></details>
         <details><summary>Can I anonymize the paper for blind review?</summary><div class="faq-body">Yes. The converter has an optional anonymize step that strips author identifying information for double-blind submissions.</div></details>
