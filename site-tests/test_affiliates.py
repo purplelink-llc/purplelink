@@ -63,7 +63,8 @@ class Rewrite(unittest.TestCase):
                 self.assertEqual((p.status, p.link, p.deep_link, p.tag, p.tag_param), ("approved", "", "", "benjamin", "aff"))
                 continue
             # Proton and pCloud were applied for through CJ on 2026-10-14.
-            expected = "applied" if i in ("setapp", "1password", "proton", "pcloud") else "candidate"
+            # 1Password and Proton declined on CJ (seen 2026-10-24).
+            expected = {"1password": "rejected", "proton": "rejected"}.get(i, "applied" if i in ("setapp", "pcloud") else "candidate")
             self.assertEqual((p.status, p.link, p.deep_link, p.tag), (expected, "", "", ""), i)
             self.assertTrue(p.source_url.startswith("http"), i)
 

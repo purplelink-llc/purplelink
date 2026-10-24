@@ -87,12 +87,12 @@ REGISTRY: tuple = (
         name="1Password",
         domains=("1password.com",),
         network="CJ Affiliate",
-        status="applied",
+        status="rejected",
         commission="Reported between $2 plus 25% of the first payment and 40% of sales; sources disagree. "
                    "Read the official page before applying.",
         terms_checked="2026-10-12",
         source_url="https://1password.com/affiliate",
-        notes="Only where a guide really discusses password managers. Applied 2026-10-13 through CJ, pending review. Official terms page not read yet.",
+        notes="Applied 2026-10-13 through CJ; declined (seen in CJ 2026-10-24). No page links it.",
         topics=("privacy", "security"),
     ),
     Program(
@@ -162,13 +162,13 @@ REGISTRY: tuple = (
         name="Proton",
         domains=("proton.me", "protonvpn.com"),
         network="CJ Affiliate",
-        status="applied",
+        status="rejected",
         commission="30% on new subscriptions and renewals for most products; one product group differs; $100 minimum payout; cookie length not stated (Proton partner page, read 2026-10-12)",
         terms_checked="2026-10-12",
         source_url="https://proton.me/partners/affiliates",
         notes="Partners must disclose the relationship. Paid search on brand terms and cookie stuffing are banned. "
               "Applied 2026-10-14 through CJ (Proton Partners Program, advertiser 5227916; CJ lists 30% to 100%), pending. "
-              "Linked unpaid from /guides/do-researchers-need-a-vpn/ until approved.",
+              "Declined on CJ (seen 2026-10-24); the VPN guide keeps its plain, unpaid Proton links.",
         topics=("privacy","security"),
     ),
     Program(
