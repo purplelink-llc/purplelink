@@ -123,6 +123,6 @@
   "instagram": {
    "ok": true
   },
-  "note": "Long video uploaded public by howto-publish.py; thumbnail A could not be set and the A/B/C test was not started. Short uploaded separately after the run stopped."
+  "note": "Long video uploaded public by howto-publish.py. Thumbnail A was set and the A/B/C Test & Compare was started on 2026-10-24 after a rebuild. The Short was uploaded separately after the run stopped; its custom thumbnail had not reached the public image at last check."
  }
 ]
