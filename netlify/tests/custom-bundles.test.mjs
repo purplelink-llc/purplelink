@@ -279,7 +279,8 @@ test("a bundle of two apps with no signed key still gets its page link", async (
   const mail = sentMail();
   assert.match(mail.text, /Your bundle: Outbound Veil and Legroom\./);
   assert.match(mail.text, /the Outbound Veil and Legroom downloads/);
-  assert.doesNotMatch(mail.text, /Vitae|MTX1|KFL1|Keyfeel|ModernTex/);
+  // Key prefixes must start a token: a random Legroom key can contain "MTX1" mid-string.
+  assert.doesNotMatch(mail.text, /Vitae|\bMTX1-|\bKFL1-|Keyfeel|ModernTex/);
 });
 
 // ---- recovery ----
