@@ -91,7 +91,7 @@
 .dock-app:focus-visible {
   border-color: var(--line);
   background: color-mix(in oklch, var(--purple) 8%, var(--bg));
-  transform: translateY(-3px);
+  transform: translateY(-1px);
 }
 
 .dock-art {

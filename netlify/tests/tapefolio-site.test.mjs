@@ -332,7 +332,7 @@ test("the sitemap, llms.txt, the search index, the products and pricing pages, t
   assert.ok(JSON.parse(read("search-index.json")).some((e) => e.u === "/tapefolio/"));
   assert.match(read("products/index.html"), /<a class="catalog-card" href="\/tapefolio\/">/);
   assert.match(read("products/index.html"), /"name": "Tapefolio", "url": "https:\/\/purplelink\.llc\/tapefolio\/"/);
-  assert.match(read("products/index.html"), /Eight Mac apps, a set of pay-per-use/);
+  assert.match(read("products/index.html"), /Mac apps, a set of pay-per-use/);
   assert.match(read("pricing/index.html"), /Tapefolio for Mac/);
   assert.match(read("pricing/index.html"), /\$29\.99 once/);
   assert.match(read("index.html"), /<a href="\/tapefolio\/">Tapefolio<\/a>, after a 7-day trial/);

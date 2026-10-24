@@ -18,6 +18,18 @@ function wireDropzone(zoneId, inputId, onFile) {
   const zone = document.getElementById(zoneId);
   const input = document.getElementById(inputId);
   zone.addEventListener("click", () => input.click());
+  // The chosen file name is written inside the zone, which is a role="button", and assistive tech reads that as
+  // presentational. A separate, empty live region next to the zone says what was chosen.
+  const live = document.createElement("p");
+  live.className = "visually-hidden";
+  live.setAttribute("role", "status");
+  zone.insertAdjacentElement("afterend", live);
+  const choose = onFile;
+  onFile = function (file) {
+    choose(file);
+    live.textContent = "";
+    setTimeout(() => { live.textContent = "Chosen: " + file.name + "."; }, 50);
+  };
   zone.setAttribute("tabindex", "0");
   zone.setAttribute("role", "button");
   zone.addEventListener("keydown", (e) => {

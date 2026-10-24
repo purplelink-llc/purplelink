@@ -157,6 +157,10 @@
 @media (prefers-reduced-motion: no-preference) {
   /* Scroll distance: about two thirds of a screen per step. */
   .flair-scene.is-pinned .flair-track { height: calc(100svh + var(--flair-steps, 3) * 68svh); }
+  /* Three short captions should not cost three screens of scrolling on a phone. */
+  @media (max-width: 760px) {
+    .flair-scene.is-pinned .flair-track { height: calc(100svh + var(--flair-steps, 3) * 38svh); }
+  }
 
   .flair-scene.is-pinned .flair-stage {
     position: sticky;

@@ -90,6 +90,11 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* An em word-spacing inherited from body is computed once, on 16px, so a 128px heading would get the same 1px as
+   body text and read as "Askthe person". Headings set their own, scaled to their own size. */
+:where(h1, h2, h3) { word-spacing: 0.05em; }
+.contact-heading, .stage-title, .flagship-title { word-spacing: 0.1em; }
+
 a { color: inherit; }
 
 /* Form controls reset word-spacing to normal in the UA sheet, which brings
@@ -273,7 +278,7 @@ select { max-width: 100%; }
 
 .btn-ghost {
   background: transparent;
-  border: 1.5px solid var(--line);
+  border: 1.5px solid var(--field-line);
   color: var(--ink);
 }
 
@@ -325,10 +330,9 @@ select { max-width: 100%; }
 }
 
 .eyebrow {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   color: var(--purple);
 }
 
@@ -597,29 +601,28 @@ select { max-width: 100%; }
 
 .platform-tag {
   display: inline-block;
-  padding: 2px 9px;
+  padding: 2px 10px;
   border-radius: 100px;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 
 .platform-macos {
-  background: oklch(88% 0.07 250);
-  color: oklch(30% 0.12 250);
+  background: var(--purple-light);
+  color: var(--ink);
 }
 
 .platform-ios {
-  background: oklch(91% 0.06 180);
-  color: oklch(30% 0.12 180);
+  background: var(--purple-light);
+  color: var(--ink);
 }
 
 .product-status {
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: var(--muted);
-  letter-spacing: 0.03em;
+  letter-spacing: 0.01em;
 }
 
 .product-name {
@@ -883,11 +886,10 @@ dd {
 
 .footer-head {
   margin-bottom: 12px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: oklch(99% 0.003 310 / 0.66);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: oklch(99% 0.003 310 / 0.72);
 }
 
 .footer-col ul { list-style: none; display: grid; gap: 8px; }
@@ -1063,16 +1065,15 @@ dd {
 
 .scholar-inner {
   display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: clamp(32px, 5vw, 72px);
   align-items: center;
 }
 
 .scholar-kicker {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   opacity: 0.9;
   margin-bottom: 16px;
 }
@@ -1106,62 +1107,9 @@ dd {
   opacity: 0.7;
 }
 
-/* Real store credential — sourced numbers, not a decorative metric wall. */
-.scholar-proof {
-  border: 1px solid oklch(99% 0.003 310 / 0.22);
-  border-radius: 16px;
-  padding: clamp(26px, 3vw, 40px);
-  background: oklch(99% 0.003 310 / 0.045);
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.scholar-stat {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.scholar-stat-num {
-  font-family: var(--font-display);
-  font-size: clamp(2.2rem, 4vw, 3.1rem);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1;
-}
-
-.scholar-stat-max {
-  font-size: 0.5em;
-  font-weight: 700;
-  opacity: 0.55;
-}
-
-.scholar-stat-label {
-  font-size: 0.85rem;
-  line-height: 1.35;
-  opacity: 0.78;
-}
-
-.scholar-rating {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.scholar-stars {
-  color: oklch(90% 0.05 310);
-  font-size: 1rem;
-  letter-spacing: 2px;
-}
-
-.scholar-divider {
-  height: 1px;
-  background: oklch(99% 0.003 310 / 0.16);
-}
-
 .scholar-source {
-  font-size: 0.74rem;
+  margin-top: 18px;
+  font-size: 0.8125rem;
   opacity: 0.85;
   line-height: 1.5;
 }
@@ -2859,32 +2807,6 @@ dd {
   :where(:root:not([data-theme="light"])) .waitlist-form button,
   :where(:root:not([data-theme="light"])) .skip-link { color: oklch(18% 0.06 310); }
 
-/* ─── "Coming soon" purchase buttons ─────────────────────────────────── */
-/* All Stripe-checkout buttons are disabled while we wait for Stripe
-   activation. The site.js IIFE swaps the label to "Coming soon · $X" and
-   adds .btn-coming-soon. Remove the IIFE in site.js to re-enable. */
-.btn.btn-coming-soon,
-button.btn-coming-soon {
-  opacity: 0.55;
-  cursor: not-allowed !important;
-  background: var(--muted) !important;
-  color: var(--bg) !important;
-  border-color: var(--muted) !important;
-  box-shadow: none !important;
-  filter: grayscale(35%);
-}
-.btn.btn-coming-soon:hover,
-button.btn-coming-soon:hover {
-  /* explicit no-op hover so users don't get a misleading affordance */
-  background: var(--muted) !important;
-  transform: none !important;
-}
-.btn.btn-coming-soon:focus-visible,
-button.btn-coming-soon:focus-visible {
-  outline: 2px dashed var(--muted);
-  outline-offset: 3px;
-}
-
 /* ─── Under-construction banner ──────────────────────────────────────── */
 /* Site-wide notice injected by site.js at the top of every page.
    Dismissible per browser; CSS lives here so the CSP `style-src 'self'`
@@ -3415,10 +3337,9 @@ button.btn-coming-soon:focus-visible {
 
 .report-card figcaption {
   margin-bottom: 14px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   color: var(--muted);
 }
 
@@ -4351,7 +4272,7 @@ html { scroll-padding-top: 96px; }
 .u-mt-05 { margin-top: 0.5rem; }
 .u-mt-035 { margin-top: 0.35rem; }
 .u-mt-0 { margin-top: 0; }
-.u-faint { font-weight: 400; opacity: 0.7; }
+.u-faint { font-weight: 400; color: var(--muted); }
 .u-table-wide { border-collapse: collapse; font-size: 0.92rem; min-width: 660px; }
 .u-matrix { min-width: 880px; }
 .u-matrix tbody th { text-align: left; font-weight: 600; padding: 4px 12px; min-width: 12rem; }
@@ -4394,6 +4315,8 @@ html { scroll-padding-top: 96px; }
   .sticky-cta-text strong { display: block; color: var(--ink); font-size: 0.95rem; }
   .sticky-cta .btn { flex: none; padding: 10px 18px; min-height: 44px; }
   body.has-sticky-cta { padding-bottom: calc(4.5rem + env(safe-area-inset-bottom)); }
+  /* Keyboard focus must not land under the fixed bar. */
+  html:has(body.has-sticky-cta) { scroll-padding-bottom: 5.5rem; }
 }
 
 /* Response letter template tool */
@@ -4829,7 +4752,9 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 .section-scholar .scholar-demo { max-width: 620px; }
 .scholar-shot { margin: 0; max-width: 620px; }
 .scholar-shot img { display: block; width: 100%; height: auto; border-radius: 14px; border: 1px solid var(--line); background: #fff; }
-.scholar-shot figcaption { margin-top: 12px; font-size: 0.8rem; color: var(--muted); }
+.scholar-shot figcaption { margin-top: 12px; font-size: 0.8125rem; color: var(--muted); }
+/* On the home page the figure sits on the fixed purple band, so --muted (dark in light mode) would be 1.5:1. */
+.section-scholar .scholar-shot figcaption { color: oklch(99% 0.003 310 / 0.82); }
 .catalog-hero-with-visual .scholar-shot.catalog-hero-visual { max-width: 680px; }
 
 .scholar-demo-light {
@@ -5458,7 +5383,7 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
   .cost-ladder { grid-template-columns: 1fr; }
   .cost-step {
     display: grid;
-    grid-template-columns: 6.5rem minmax(0, 1fr);
+    grid-template-columns: max-content minmax(0, 1fr);
     gap: 14px;
     align-items: baseline;
     padding: 12px 0;
@@ -5473,7 +5398,7 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 .house-promo-body { flex: 1 1 auto; min-width: 0; }
 .house-promo-body p { margin: 2px 0 0; color: var(--muted); font-size: 0.95rem; text-wrap: pretty; }
 .house-promo-body strong { color: var(--ink); }
-.house-promo-tag { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.house-promo-tag { font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.01em; color: var(--muted); }
 .house-promo-cta { flex: none; white-space: nowrap; padding: 9px 16px; font-size: 0.9rem; }
 .house-promo-hide { flex: none; border: 0; background: transparent; color: var(--muted); font: 600 0.8rem var(--font-body); cursor: pointer; padding: 6px; border-radius: 6px; }
 .house-promo-hide:hover { color: var(--ink); }
@@ -5712,4 +5637,3 @@ dialog, [role="dialog"], [aria-modal="true"], .sales-scroll { overscroll-behavio
   .topbar { background: var(--bg); backdrop-filter: none; -webkit-backdrop-filter: none; border-bottom-color: var(--ink); }
   .btn-ghost, .btn-secondary { border-color: var(--ink); }
 }
-

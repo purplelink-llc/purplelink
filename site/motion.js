@@ -44,14 +44,31 @@
       });
   }, { threshold: 0.12, rootMargin: '0px 0px -24px 0px' });
 
+  // Queue first, measure once, then write: reading a rect and setting an attribute per element forces a layout
+  // each time on pages that arm hundreds of rows.
+  const queue = [];
   const arm = (el) => {
     // site.js already reveals some elements; one system per element.
     if (el.closest('.will-reveal')) return;
-    // Already on screen at load: leave it alone so nothing flashes.
-    if (el.getBoundingClientRect().top < window.innerHeight * 0.9) return;
-    el.setAttribute('data-motion-armed', '');
-    armed.add(el);
-    reveal.observe(el);
+    queue.push(el);
+  };
+  const flush = () => {
+    // A page that is not being drawn (background tab, link preview, archive crawler) or that fits in one screen
+    // has nothing to scroll to: leave everything visible instead of arming it.
+    if (doc.visibilityState !== 'visible' || doc.documentElement.scrollHeight <= window.innerHeight * 1.05) {
+      queue.length = 0;
+      return;
+    }
+    const limit = window.innerHeight * 0.9;
+    const tops = queue.map((el) => el.getBoundingClientRect().top);
+    queue.forEach((el, i) => {
+      // Already on screen at load: leave it alone so nothing flashes.
+      if (tops[i] < limit) return;
+      el.setAttribute('data-motion-armed', '');
+      armed.add(el);
+      reveal.observe(el);
+    });
+    queue.length = 0;
   };
 
   /* Hero video -------------------------------------------------------- */
@@ -199,6 +216,8 @@
     }
   }
 
+  flush();
+
   const revealAll = () => {
     [...armed].forEach(show);
     finishers.forEach((fn) => fn());
@@ -207,6 +226,13 @@
   doc.addEventListener('visibilitychange', () => { if (doc.hidden) revealAll(); });
   window.addEventListener('beforeprint', revealAll);
   if (doc.hidden) revealAll();
+
+  // The observer only fires for a page that is actually drawn and scrolled. A renderer that never scrolls would
+  // otherwise get the armed blocks at opacity 0 for good (same reasoning as the fallback in site.js). If nobody has
+  // scrolled after a few seconds, show what is waiting. A visitor who has scrolled keeps the animation.
+  let scrolled = false;
+  window.addEventListener('scroll', () => { scrolled = true; }, { passive: true, once: true });
+  setTimeout(() => { if (!scrolled && armed.size) revealAll(); }, 3000);
 
   reduce.addEventListener('change', () => {
     if (!reduce.matches) return;

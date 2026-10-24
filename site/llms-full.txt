@@ -7,11 +7,9 @@
 Source: https://purplelink.llc/products/
 Title: Products: Mac Apps and Manuscript Tools for Researchers | Purplelink
 
-Products
-
 # Tools for the paper, from first draft to accepted.
 
-Eight Mac apps, a set of pay-per-use manuscript checks, and free tools, all made by one researcher who writes and submits papers too. Prices are listed here, and all on one page. None of it needs an account.
+Mac apps, a set of pay-per-use manuscript checks, and free tools, all made by one researcher who writes and submits papers too. Prices are listed here, and all on one page. None of it needs an account.
 
 ## What you can check before you install
 
@@ -47,15 +45,11 @@ Email goes to the person who wrote the code. There is no ticket system and no ac
 
 Benjamin Ampel, assistant professor at Georgia State University. Purplelink LLC, Atlanta, founded 2026.
 
-Watch the overview
-
 ## Everything Purplelink makes
 
 A short look at each product, with prices.
 
 Play the video on YouTube
-
-Which one do I need?
 
 ## Start from where the paper is
 
@@ -227,8 +221,6 @@ A small companion for Claude Code that lives in your MacBook notch. It shows wha
 
 See Buddy →
 
-Before you submit
-
 ## Manuscript checks, paid per use
 
 Upload, pay once through Stripe, and get the result in minutes on a page that updates itself. The manuscript and the review are deleted within about a day after you first open the result, or within 48 hours if you never open it. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded.
@@ -297,8 +289,6 @@ An ATS screener, a hiring manager and a recruiter read your resume before you ap
 
 Review my resume →
 
-Free
-
 ## No account, no charge
 
 Free · Chrome extension
@@ -352,15 +342,11 @@ A double-entry ledger on your Mac that imports income and expenses with your own
 
 Join the waitlist →
 
-For builders
-
 ## Kits
 
 Production-tested automation systems, each with a setup guide: a content pipeline, a static-site monetization stack and a clip pipeline. One-time purchase, from $10.
 
 See the kits
-
-For researchers
 
 ## Spreadsheets
 
@@ -394,8 +380,6 @@ Or get the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Pan
 The trial is the full app for seven days, no account, nothing to enter. Buying is $19.99 once, with all updates included, forever (terms). The receipt email includes a permanent license key. After the seven days the app asks for it. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded. Already using the trial? Choose Enter license key in the app, paste the key, and the copy you have unlocks straight away, with no reinstall. Version 1.11.1 · 13 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements. Also in the Mac Suite with Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life, $59.99 once. First ten minutes: install and first build.
 
 ModernTex on a sample manuscript: source on the left, the PDF it builds on the right.
-
-Watch the tour
 
 ## Sixty-five seconds, start to submission
 
@@ -459,11 +443,9 @@ In Live mode the PDF rebuilds as you type. The sample in this window compiled in
 
 Click a line in the source to find it in the PDF, or click the PDF to land on the line that made it.
 
-New in 1.3
-
 ## Two things nobody enjoys writing by hand
 
-A TikZ diagram and a results table are both capable LaTeX. However, neither is a pleasant place to start from a blank line and a syntax reference. ModernTex builds both visually and drops in the real source underneath. Nothing is hidden, and you could have typed all of it yourself.
+A TikZ diagram or a results table usually starts as a syntax reference and a blank line. ModernTex builds both visually and drops in the real source underneath. Nothing is hidden, and you could have typed all of it yourself.
 
 ### TikZ Designer
 
@@ -476,8 +458,6 @@ Paste a range straight from Excel or Google Sheets and it lands in the right cel
 Read more about both on the blog →
 
 Your manuscript stays a folder of ordinary .tex and .bib files on your Mac. It builds on your Mac, so there is no compile timeout. There is no account to make and no subscription to cancel.
-
-Features
 
 ## What the manuscript needs
 
@@ -497,10 +477,6 @@ Forward and inverse search: click the source to jump to the PDF, click the PDF t
 
 BibTeX autocomplete that searches your bibliography by author, title, or key, not only the keys you have already cited. Suggestions come from your .bib files as you type a citation.
 
-### Plain-language error diagnostics
-
-LaTeX error messages are terse. ModernTex translates them into plain explanations with suggested fixes, so you spend less time decoding errors.
-
 ### Submission readiness checks
 
 Automatically check anonymization, page limits, required sections, and submission packaging before you hit send, so formatting problems are caught before a journal returns the paper.
@@ -509,23 +485,17 @@ Automatically check anonymization, page limits, required sections, and submissio
 
 Take a snapshot at any point, such as before a major revision, after peer review, or before resubmission. Compare any two snapshots in a diff.
 
-### Live TikZ figure editor
-
-Build flowcharts and diagrams by dragging boxes and drawing connections on a canvas. ModernTex generates the TikZ code as you go. Insert it at your cursor when it is ready.
-
 ### Table editor
 
 Paste a range from Excel or Google Sheets straight into the right cells. Resize columns by dragging, set a table-wide font, and generate clean booktabs-style LaTeX underneath.
 
 ### Native macOS app
 
-Built in Swift for macOS 14+. It has native dark and light mode, system fonts, and standard keyboard shortcuts.
-
-Plain-language errors
+Runs on macOS 14 or later, follows your light or dark setting, and uses the standard Mac shortcuts.
 
 ## From a cryptic error to a fix
 
-LaTeX reports a mistake in its own terms and leaves you to work out what it means. ModernTex reads the error and says what went wrong in plain language, with a suggested fix.
+LaTeX reports a mistake in its own terms and leaves you to work out what it means. ModernTex translates the error into plain explanations, with a suggested fix.
 
 What LaTeX prints
 
@@ -545,8 +515,6 @@ Suggested fix
 
 This is an illustrative example, not a capture from the app. The wording varies with the error.
 
-Who it's for
-
 ## For academic authors
 
 ### PhD students
@@ -563,8 +531,6 @@ You join someone else's LaTeX project, learn its structure, fix compilation issu
 
 Not the right fit if several co-authors need to type in the same document at the same moment (keep Overleaf for that draft), you work on Windows, Linux or an iPad, or you would rather not have a TeX distribution on your Mac. ModernTex was first released in September 2026, so it has less of a track record than TeXShop or Texifier. The comparison of Mac LaTeX editors covers the alternatives.
 
-Switching
-
 ## Coming from another editor
 
 ### From Overleaf
@@ -578,8 +544,6 @@ Open the same folder; there is nothing to convert. What changes is plain-languag
 ### From VS Code
 
 VS Code with LaTeX Workshop is free and very configurable. ModernTex is for people who want build, PDF, bibliography and submission checks to work without setting anything up. If you like building your own setup, stay where you are. What I tested.
-
-At a glance
 
 ## ModernTex, in facts
 
@@ -669,13 +633,11 @@ Current version1.11.1, released October 18, 2026. Every update since launch is l
 
 - Sep 51.0.1Clearer bibliography build errors, pointing at the .bib line.
 
-Every update is included in the $19.99, forever, and the app installs it in place. Your work stays in ordinary .tex files, so you can open it in Overleaf or TeXShop whenever you like. Full changelog
+The app installs updates in place. Your work stays in ordinary .tex files, so you can open it in Overleaf or TeXShop whenever you like. Full changelog
 
 Coming from Overleaf? What changes when you write locally, or see how the Mac LaTeX editors compare, including ModernTex against TeXShop and TeXstudio.
 
 Submitting soon? Work through the free submission checklist, or try the free reference and retraction check on your PDF. You can also see a sample Paper Review report ($9, back in minutes).
-
-Comparison
 
 ## ModernTex compared with Overleaf
 
@@ -705,8 +667,6 @@ Two limits. Overleaf's Git integration is a paid Overleaf feature: it is availab
 
 For two Macs, or a co-author who uses GitHub or GitLab, Get Changes and Send Changes work with any plain Git remote, and Changes Since Last Sync builds a PDF with your edits marked. Step by step: Move an Overleaf project to a local Mac editor with Git.
 
-Comparison
-
 ## ModernTex compared with TeXShop and TeXstudio
 
 TeXShop and TeXstudio are the two free editors most Mac users try first.
@@ -727,9 +687,7 @@ Price, license and platform: texstudio.org and the TeXShop page, checked on Octo
 
 Prefer TeXShop or TeXstudio when free matters most, or, for TeXstudio, when you also work on Windows or Linux. In the same test TeXstudio ran BibTeX by itself, and TeXShop needed BibTeX run as a separate step. Prefer ModernTex when you want submission-readiness checks and an anonymized export for blind review in a Mac app. More detail: ModernTex against TeXShop and TeXstudio and the LaTeX editors for Mac compared.
 
-Before you install
-
-## What ModernTex needs.
+## What ModernTex needs
 
 A Mac running macOS 14 or later and a TeX distribution. MacTeX or TinyTeX both work, and you do not have to set either up first: if ModernTex cannot find one when you compile, it offers a one-click TinyTeX install in the editor. After checkout you get a signed disk image. Open it and drag ModernTex to Applications. Bookmark the download page, which always gives you the newest version.
 
@@ -738,8 +696,6 @@ First ten minutes: install and first build
 Want one email when a notable version ships? Leave your address. No newsletters, no follow-ups.
 
 Your email is used for release notes and nothing else. Privacy Policy · Why ModernTex →
-
-For labs and departments
 
 ## Buying for more than one person?
 
@@ -831,12 +787,12 @@ A question about ModernTex that this page does not answer? Write to Ben here.
 
 Prefer your own mail app? Write to ben@purplelink.llc. The form delivers your message by email through Resend and does not store it on this site. Privacy.
 
-## Try it on your own manuscript.
+## Try it on your own manuscript
 
-Seven days of the full app, no account and nothing to enter. If it earns a place in your workflow, it's $19.99 once, with all updates included, forever.
+Seven days of the full app, no account. If it earns a place in your workflow, it's $19.99 once.
 
 Download the free trial
-See how to buy, $19.99
+See how to buy
 
 macOS 14 or later · Apple silicon and Intel · Signed and notarized
 
@@ -1845,7 +1801,7 @@ Get Tapefolio
 ---
 
 Source: https://purplelink.llc/vitae/
-Title: Vitae — Academic CV & Research Management for macOS | Purplelink LLC
+Title: Vitae: Academic CV & Research Management for macOS | Purplelink LLC
 
 ← All products
 
@@ -1905,8 +1861,6 @@ Faculty180, Faculty SuccessExport for Annual Report writes the period's RIS and 
 
 Not related toThe career hub called Vitae that The Chronicle of Higher Education launched in 2014. It is a different product with the same name.
 
-What's inside
-
 ## Everything an academic needs, nothing they don't
 
 ### Submission tracking
@@ -1937,15 +1891,11 @@ Vitae builds a map of how your papers, co-authors, venues, grants and ideas conn
 
 Everything is stored on your Mac with SwiftData. No account and no cloud sync required, and keeping your record needs no subscription. Vitae takes a daily backup and lets you undo changes, so a bad import or merge is never permanent.
 
-Watch the tour
-
 ## Your academic record, in one place
 
 Submissions, grants, projects and co-authors tracked in one local record, with your CV built from it.
 
 Play the video on YouTube
-
-Shareables
 
 ## Share cards drawn from your record
 
@@ -1982,8 +1932,6 @@ Requested and awarded amounts, your share, the project timeline and each reporti
 ### How close you are to tenure
 
 Set your tenure date and your department’s expectations, and Vitae counts your record against each one: articles, lead-author papers, funding, h-index, invited talks and service.
-
-Free & open to support
 
 ## Vitae is free. If it saves you time, consider supporting it.
 
@@ -2603,7 +2551,7 @@ How to use the report
 ---
 
 Source: https://purplelink.llc/tools/paper-review/packs/
-Title: Paper Review Volume Packs — 5 for $38 or 20 for $150 | Purplelink
+Title: Paper Review Volume Packs: 5 for $38 or 20 for $150 | Purplelink
 
 ← Paper Review
 
@@ -4032,7 +3980,7 @@ The free preview on the Paper Review page does: upload a PDF or Word file and it
 ---
 
 Source: https://purplelink.llc/tools/citation-generator/
-Title: Free Citation Generator — APA, MLA, IEEE | Purplelink
+Title: Free Citation Generator: APA, MLA, IEEE | Purplelink
 
 ← All tools
 
@@ -4341,8 +4289,6 @@ Books and quarterly tax estimates for solo founders, indie developers and creato
 
 Join the waitlist
 
-What it does today
-
 ## What works in the current beta build
 
 ### Double-entry ledger
@@ -4369,8 +4315,6 @@ Profit and loss, balance sheet, monthly cash flow, and a per-platform breakdown 
 
 Invoices with sales tax, payment terms and printable statements. Marking one paid posts a balanced entry. Billable time converts to invoices.
 
-Still in beta
-
 ## Rough edges and work in progress
 
 ### Connector coverage
@@ -4384,8 +4328,6 @@ Connectors for PayPal, Shopify, Etsy, Wise, Google AdSense and AdMob, Brex, Ramp
 ### Multiple businesses and states
 
 Grouping income into several Schedule C activities and a multi-state sales-tax nexus alert exist in early form. State income tax beyond a rate lookup is not built.
-
-What it does not do
 
 ## Limits, stated plainly
 
