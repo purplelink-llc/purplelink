@@ -98,7 +98,8 @@
       if (first) { first.focus(); return; }
 
       btn.disabled = true;
-      btn.textContent = "Sending";
+      btn.textContent = "Sending…";
+      say("Sending your message…", false);
       try {
         // The server refuses a form sent within three seconds of showing. A fast
         // paste should not trip that, so wait out the rest of the time first.

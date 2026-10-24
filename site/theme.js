@@ -23,7 +23,6 @@
   const sync = (btn) => {
     const light = root.getAttribute('data-theme') === 'light';
     btn.textContent = light ? 'Use dark theme' : 'Use light theme';
-    btn.setAttribute('aria-pressed', light ? 'true' : 'false');
   };
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-theme-toggle]').forEach((btn) => {

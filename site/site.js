@@ -83,27 +83,28 @@
 
   const viewH = window.innerHeight;
 
-  SELECTORS.forEach(sel => {
-    document.querySelectorAll(sel).forEach(el => {
-      const rect = el.getBoundingClientRect();
-      // skip elements already fully in viewport on load
-      if (rect.bottom < viewH * 0.85) return;
+  // Measure every candidate first, then write: a read and a write per element forces a layout each time.
+  const targets = [];
+  SELECTORS.forEach(sel => document.querySelectorAll(sel).forEach(el => targets.push([el, sel])));
+  const bottoms = targets.map(([el]) => el.getBoundingClientRect().bottom);
+  targets.forEach(([el, sel], n) => {
+    // skip elements already fully in viewport on load
+    if (bottoms[n] < viewH * 0.85) return;
 
-      el.classList.add('will-reveal');
+    el.classList.add('will-reveal');
 
-      // stagger siblings within the same parent
-      const siblings = el.parentElement
-        ? [...el.parentElement.querySelectorAll(sel)]
-        : [];
-      const idx = siblings.indexOf(el);
-      if (idx > 0) {
-        // Short and capped: a fast scroll should never meet a blank block waiting its turn.
-        el.style.transitionDelay = `${Math.min(idx * 0.04, 0.12)}s`;
-      }
+    // stagger siblings within the same parent
+    const siblings = el.parentElement
+      ? [...el.parentElement.querySelectorAll(sel)]
+      : [];
+    const idx = siblings.indexOf(el);
+    if (idx > 0) {
+      // Short and capped: a fast scroll should never meet a blank block waiting its turn.
+      el.style.transitionDelay = `${Math.min(idx * 0.04, 0.12)}s`;
+    }
 
-      io.observe(el);
-      hidden.add(el);
-    });
+    io.observe(el);
+    hidden.add(el);
   });
 
   // The observer only fires for a page that is actually being drawn. A
@@ -232,9 +233,19 @@
   if (!bar) return;
   const items = [...document.querySelectorAll(".blog-post-item[data-topic]")];
   const buttons = [...bar.querySelectorAll("button[data-filter]")];
+  // An empty status node goes into the page first and gets its text later, so screen readers announce the change.
+  const live = document.createElement("p");
+  live.className = "visually-hidden";
+  live.setAttribute("role", "status");
+  bar.insertAdjacentElement("afterend", live);
   const apply = (topic) => {
     buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.filter === topic)));
-    items.forEach((it) => { it.hidden = topic !== "all" && it.dataset.topic !== topic; });
+    let shown = 0;
+    items.forEach((it) => {
+      it.hidden = topic !== "all" && it.dataset.topic !== topic;
+      if (!it.hidden) shown++;
+    });
+    live.textContent = topic === "all" ? "" : `${shown} ${shown === 1 ? "post" : "posts"} shown`;
   };
   buttons.forEach((b) => b.addEventListener("click", () => apply(b.dataset.filter)));
   bar.hidden = false;
@@ -251,14 +262,19 @@
     btn.type = "button";
     btn.className = "code-copy";
     btn.textContent = "Copy";
+    const live = document.createElement("span");
+    live.className = "visually-hidden";
+    live.setAttribute("role", "status");
     btn.addEventListener("click", () => {
       navigator.clipboard.writeText(text).then(() => {
         btn.textContent = "Copied";
-        setTimeout(() => { btn.textContent = "Copy"; }, 1600);
-      }, () => { btn.textContent = "Select and copy"; });
+        live.textContent = "Copied to clipboard";
+        setTimeout(() => { btn.textContent = "Copy"; live.textContent = ""; }, 1600);
+      }, () => { btn.textContent = "Select and copy"; live.textContent = "Could not copy. Select the code and copy it."; });
     });
     pre.classList.add("has-copy");
     pre.appendChild(btn);
+    pre.appendChild(live);
   });
 })();
 
@@ -324,9 +340,9 @@
     setTimeout(() => input.scrollIntoView({ block: "start", behavior: smooth ? "smooth" : "auto" }), 250);
   });
   document.addEventListener("keydown", (e) => {
-    if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return;
-    const t = e.target;
-    if (t.closest && t.closest("input, textarea, select, [contenteditable]")) return;
+    // A single printable key would fire while someone types elsewhere or dictates (WCAG 2.1.4), so the shortcut
+    // needs a modifier: Cmd+K on a Mac, Ctrl+K elsewhere.
+    if (e.key.toLowerCase() !== "k" || !(e.metaKey || e.ctrlKey) || e.altKey || e.shiftKey) return;
     e.preventDefault();
     input.focus();
   });
@@ -356,7 +372,7 @@
       // to open on the Mac instead, with the download still one tap away.
       e.preventDefault();
       const head = form.querySelector(".trial-remind-head");
-      head.textContent = "ModernTex runs on a Mac. Enter your email and we will send the download link, with a setup guide, to open there.";
+      head.textContent = "ModernTex runs on a Mac. Enter your email and I will send the download link, with a setup guide, to open there.";
       const note = form.querySelector("[data-trial-status]");
       if (!form.querySelector("[data-trial-anyway]")) {
         const p = document.createElement("p");
@@ -497,8 +513,10 @@
   close.setAttribute("aria-label", "Dismiss");
   close.textContent = "\u00d7";
   close.addEventListener("click", () => note.remove());
-  note.append(p, close);
+  // Insert the empty status node first and fill it a moment later: many screen readers skip a live region
+  // that arrives with its text already inside.
   main.prepend(note);
+  setTimeout(() => note.append(p, close), 100);
   if (window.plTrack) window.plTrack("checkout_canceled", location.pathname);
 })();
 
@@ -879,7 +897,7 @@
         return;
       }
       btn.disabled = true;
-      btn.textContent = "Sending";
+      btn.textContent = "Sending…";
       say("");
       try {
         const r = await fetch(API, {
@@ -961,6 +979,12 @@
       text: 'Recorded keyboard, click and scroll sounds for your Mac, with optional trackpad haptics. Free 7-day trial, then $9.99.', own: ['/keyfeel/', '/suite/'] },
     { id: 'tapefolio', name: 'Tapefolio', href: '/tapefolio/', icon: '/assets/tapefolio-icon-128.webp', cta: 'Try it free',
       text: 'Transcribes interviews and reads scanned pages on your Mac, and your files are not uploaded. Free 7-day trial, then $29.99.', own: ['/tapefolio/', '/suite/'] },
+    { id: 'panely', name: 'Panely', href: '/panely/', icon: '/assets/panely-icon-128.webp', cta: 'Try it free',
+      text: 'Snaps windows to halves, thirds and corners and saves a layout for each monitor setup. Free 7-day trial, then $9.99.', own: ['/panely/', '/suite/'] },
+    { id: 'summonly', name: 'Summonly', href: '/summonly/', icon: '/assets/summonly-icon-128.webp', cta: 'Try it free',
+      text: 'Finds files, apps and clipboard history from one box, using a private index of the folders you choose. Free 7-day trial, then $9.99.', own: ['/summonly/', '/suite/'] },
+    { id: 'batterymeter', name: 'BatteryMeter', href: '/batterymeter/', icon: '/assets/batterymeter-icon-128.webp', cta: 'Get it free',
+      text: 'Shows battery percent, power in watts and cycle count in the Mac menu bar. Free, with no account.', own: ['/batterymeter/'] },
     { id: 'vitae', name: 'Vitae', href: '/vitae/', icon: '/assets/vitae-icon.webp', cta: 'Get it free',
       text: 'Track submissions, grants and your CV in one place. Free for Mac, with an optional Plus subscription from $2.99 a month.', own: ['/vitae/'] },
     { id: 'paper-review', name: 'Paper Review', href: '/tools/paper-review/', icon: '/assets/purplelink-logo-64.png', cta: 'See how it works',
@@ -968,7 +992,7 @@
     { id: 'scholar-utility-belt', name: 'Scholar Utility Belt', href: '/scholar-utility-belt/', icon: '/assets/scholar-utility-belt-icon.webp', cta: 'Add to Chrome',
       text: 'Journal rankings, h-index and retraction alerts inside Google Scholar. A free Chrome extension.', own: ['/scholar-utility-belt/'] },
     { id: 'mac-suite', name: 'Mac Suite', href: '/suite/', icon: '/assets/moderntex-icon.webp', cta: 'See the bundle',
-      text: 'ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus together for $59.99, once.', own: ['/suite/', '/moderntex/', '/outbound-veil/', '/legroom/', '/keyfeel/', '/tapefolio/', '/vitae/plus/'] },
+      text: 'ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus together for $59.99, once.', own: ['/suite/', '/moderntex/', '/outbound-veil/', '/legroom/', '/keyfeel/', '/tapefolio/', '/panely/', '/summonly/', '/vitae/plus/'] },
     { id: 'globepin', name: 'GlobePin', href: '/globepin/', icon: '/assets/globepin-icon.webp', cta: 'Get it free',
       text: 'Mark every place you have been on a map. Free for iPhone.', own: ['/globepin/'] },
   ];

@@ -10,7 +10,13 @@
 }
 .seat-option:has(input:checked) { border-color: var(--purple); background: color-mix(in oklch, var(--purple) 8%, var(--panel)); }
 .seat-option:has(input:focus-visible) { outline: 2px solid var(--purple); outline-offset: 2px; }
+.seat-option { position: relative; cursor: pointer; }
+.seat-option input[type="radio"] { width: 1.25rem; height: 1.25rem; margin: 0; }
 .seat-count { font-weight: 600; cursor: pointer; }
+/* The label's box is stretched over the whole row, so the price, the gaps and the edges all select the option. */
+.seat-count::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+/* The seat-count field of the "25 or more" row has to stay clickable above that cover. */
+.seat-qty { position: relative; z-index: 1; cursor: auto; }
 .seat-unit, .seat-total { color: var(--muted); font-variant-numeric: tabular-nums; }
 .seat-total { color: var(--ink); font-weight: 600; min-width: 5.5rem; text-align: right; }
 .seat-qty { grid-column: 2 / -1; display: flex; align-items: center; gap: 0.5rem; color: var(--muted); }
