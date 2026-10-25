@@ -25,6 +25,12 @@ UTC = dt.timezone.utc
 NOW = dt.datetime(2026, 10, 23, 15, 0, tzinfo=UTC)   # 11:00 US Eastern
 
 
+@pytest.fixture(autouse=True)
+def frozen_clock(monkeypatch):
+    # approve() checks staleness against items.now(); pin it to NOW so the fixed dates above never go stale.
+    monkeypatch.setattr(items, "now", lambda: NOW)
+
+
 def jpeg(path: Path) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     Image.new("RGB", (1080, 1350), (20, 10, 34)).save(path, "JPEG")
