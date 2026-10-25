@@ -27,15 +27,24 @@
  * Counts are requests we decided to serve (GET, non-crawler User-Agent), not
  * confirmed completions or unique machines. Crawlers are served but not counted:
  * the page's structured data advertises the download URL, so Googlebot fetches it.
+ * Requests from our own addresses (PURPLELINK_OWN_IPS, see lib/visitor.mjs) are
+ * served but not counted either.
+ *
+ * Every new-user GET also writes one event, `ev:<day>:<ts>-<id>` in vitae-stats:
+ *   { ts, file, vid, cls, counted, own }
+ * vid is the same daily visitor hash track.mjs puts on beacon events, so a download
+ * can be joined to that day's page views; cls is "browser", "crawler" or "other"
+ * (the user agent itself is not stored). Update downloads write no event.
  */
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { getStore } from "@netlify/blobs";
+import { clientIp } from "../lib/ratelimit.mjs";
+import { BOT_UA, clientClass, isOwnIp, visitorId } from "../lib/visitor.mjs";
 
 const FILE_STORE = "vitae-files";
 const STATS_STORE = "vitae-stats";
 const DMG_NAME = /^Vitae-\d+\.\d+(\.\d+)?\.dmg$/;
 const DAILY_LIMIT = 20;
-const BOT_UA = /bot|crawl|spider|slurp|preview|facebookexternalhit|curl|wget|python-requests|httpclient|headless/i;
 
 function json(status, body) {
   return new Response(JSON.stringify(body), {
@@ -170,19 +179,32 @@ export default async function handler(request) {
   }
 
   const ua = request.headers.get("user-agent") || "";
+  const ip = clientIp(request);
+  const day = new Date().toISOString().slice(0, 10);
+  const own = isOwnIp(ip, Netlify.env.get("PURPLELINK_OWN_IPS") || "");
+  const counted = Boolean(ua) && !BOT_UA.test(ua) && !own;
   if (ua && !BOT_UA.test(ua)) {
     // Bandwidth guard, same as the ModernTex trial door: a generous per-address cap.
-    const ip = request.headers.get("x-nf-client-connection-ip") || request.headers.get("x-forwarded-for") || "unknown";
-    const day = new Date().toISOString().slice(0, 10);
     const rl = getStore("rate-limits");
     const rlKey = `rl:vitae:${day}:${createHash("sha256").update(ip).digest("hex").slice(0, 16)}`;
     const n = parseInt((await rl.get(rlKey)) || "0", 10) || 0;
     if (n >= DAILY_LIMIT) return json(429, { error: "rate_limited", detail: "Too many downloads from this address today." });
     await rl.set(rlKey, String(n + 1));
+  }
 
-    const stats = getStore(STATS_STORE);
+  const stats = getStore(STATS_STORE);
+  if (counted) {
     await bump(stats, `downloads:${name}`);
     await bump(stats, `day:${day}`);
+  }
+  try {
+    const ts = Date.now();
+    await stats.setJSON(`ev:${day}:${ts}-${randomUUID().slice(0, 8)}`, {
+      ts, file: name, vid: ip === "unknown" ? "" : visitorId(day, ip), cls: clientClass(ua), counted, own,
+    });
+  } catch (err) {
+    // The event is for analysis only; never fail a download over it.
+    console.error("vitae-download: event not stored", err?.message);
   }
 
   return streamBlob(store, name);
