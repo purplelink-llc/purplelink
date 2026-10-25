@@ -1,0 +1,45 @@
+{
+ "id": "howto-pdflatex-command-not-found-after-mactex",
+ "app": "moderntex",
+ "title": "pdflatex: command not found on Mac after installing MacTeX (PATH fix)",
+ "short_title": "pdflatex not found after MacTeX? Fix your PATH",
+ "url": "purplelink.llc/moderntex",
+ "page": "https://purplelink.llc/moderntex/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://email.esm.psu.edu/pipermail/macosx-tex/2006-December/027188.html"
+ ],
+ "verify": {
+  "runs": [
+   {"cmd": "env -i PATH=/usr/bin:/bin /bin/zsh -c 'pdflatex main.tex'", "output": "zsh:1: command not found: pdflatex"},
+   {"cmd": "cat /etc/paths.d/TeX", "output": "/Library/TeX/texbin"}
+  ],
+  "docs": ["https://tug.org/mactex/", "https://tug.org/mactex/morepackages.html"],
+  "notes": "The symptom was captured with a PATH that lacks the TeX folder. MacTeX writes /etc/paths.d/TeX, read here from a real install; only new login shells read that folder. The export line is the standard fix given in the cited threads."
+ },
+ "scenes": [
+  {"type": "hook", "short": true, "kicker": "LaTeX on a Mac", "title": "pdflatex: command not found", "sub": "MacTeX is installed, but Terminal cannot see it.",
+   "narration": "If you installed MacTeX and Terminal still says pdflatex: command not found, the tools are there. Your shell just does not know where to look."},
+  {"type": "symptom", "short": true, "label": "Terminal",
+   "lines": ["$ pdflatex main.tex", "zsh:1: command not found: pdflatex"],
+   "narration": "This is the message. Editors that call pdflatex report the same thing in their own words."},
+  {"type": "cause", "text": "MacTeX puts its programs in /Library/TeX/texbin. A shell only finds them if that folder is on its PATH.",
+   "narration": "MacTeX puts its programs in the folder /Library/TeX/texbin. A shell only finds them if that folder is on its PATH. The installer adds it through a small file in etc paths d, but only new Terminal windows read it, and a PATH line in your zsh startup file can overwrite it."},
+  {"type": "check", "short": true, "label": "Terminal", "ok": "Installer file is present",
+   "lines": ["$ cat /etc/paths.d/TeX", "/Library/TeX/texbin"],
+   "narration": "First, look at the file the installer wrote. If it names the texbin folder, the install is fine and the problem is in your shell."},
+  {"type": "steps", "short": true, "label": "Terminal",
+   "lines": ["$ nano ~/.zshrc", "PATH=/Library/TeX/texbin:$PATH", "$ source ~/.zshrc", "$ pdflatex --version"],
+   "ui": "Add the PATH line to the file, then save. Close every Terminal window and open a new one if you would rather not edit the file.",
+   "narration": "Open your zsh startup file and add a line that puts the texbin folder on your PATH. Then reload the file, and run pdflatex with the version flag. If it prints a version, you are done. Otherwise close every Terminal window and open a new one."},
+  {"type": "app", "name": "ModernTex", "line": "Uses MacTeX or TinyTeX, and offers a one-click TinyTeX install in the editor when it cannot find one.",
+   "url": "purplelink.llc/moderntex", "img": "site/assets/moderntex-screens/01-editor-clean-1440.webp", "icon": "site/assets/moderntex-icon.png",
+   "narration": "If you write LaTeX on a Mac, ModernTex uses MacTeX or TinyTeX, and if it cannot find one when you compile, it offers a one click TinyTeX install in the editor."}
+ ],
+ "thumbs": {
+  "A": {"kind": "error", "msg": "pdflatex: command not found"},
+  "B": {"kind": "long", "msg": "pdflatex: command not found", "n": 3, "unit": "lines", "sub": "and Terminal finds MacTeX"},
+  "C": {"kind": "product", "name": "ModernTex", "line": "pdflatex not found? Fix your PATH", "img": "site/assets/moderntex-screens/01-editor-clean-1440.webp", "icon": "site/assets/moderntex-icon.png", "zoom": 1.7, "pos": "28% 22%"}
+ }
+}

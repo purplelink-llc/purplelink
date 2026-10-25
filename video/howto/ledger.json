@@ -124,5 +124,31 @@
    "ok": true
   },
   "note": "Long video uploaded public by howto-publish.py. Thumbnail A was set and the A/B/C Test & Compare was started on 2026-10-24 after a rebuild. The Short was uploaded separately after the run stopped; its custom thumbnail had not reached the public image at last check."
+ },
+ {
+  "slug": "howto-pdflatex-command-not-found-after-mactex",
+  "app": "moderntex",
+  "date": "2026-10-25",
+  "title": "pdflatex: command not found on Mac after installing MacTeX (PATH fix)",
+  "long_id": "S7iq7ogwcPs",
+  "short_id": "Vy5qsyzKs2k",
+  "link_arm": "B",
+  "link_utm_content": "howto-pdflatex-command-not-found-after-mactex",
+  "sources": [
+   "https://email.esm.psu.edu/pipermail/macosx-tex/2006-December/027188.html"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "S7iq7ogwcPs",
+    "caption_id": "AUieDaaXlCLV0WrqzjuvOB2KuuXzlXRFBXx0aWJCQWNS8Gyz5evAjOz7"
+   },
+   "short": {
+    "video_id": "Vy5qsyzKs2k",
+    "caption_id": "AUieDaYlO-nu_XU4PM40cYZ3NovTgCnRmpLvarSgnXferbvVOdBujNDb"
+   }
+  },
+  "instagram": {
+   "ok": true
+  }
  }
 ]
