@@ -29,7 +29,8 @@ Hand corrections go in ~/.purplelink/hub/overrides.json: {"<placement id>": {"ur
 "assets": [...], "exclude": true}}. They are applied on every import; the sources are never edited.
 
 Sources: approval queue items (pending, approved, done; outward kinds only), the social queue (posted and scheduled
-company posts, one placement per platform), Outreach/OUTREACH-LOG.md tables, video/howto/ledger.json, and the MacUpdate
+company posts, one placement per platform), Outreach/OUTREACH-LOG.md tables, video/howto/ledger.json, the launch videos that
+scripts/app-release-watch.py published (~/.purplelink/app-release-watch/state.json), and the MacUpdate
 readings in the traffic dashboard history. Assets come from site/llms.txt and site/sitemap.xml.
 
 Contacts are not copied: an outreach row keeps a `contact_ref` (file and line) and email addresses in notes are masked.
@@ -72,6 +73,7 @@ def paths() -> dict:
         "llms": repo / "site" / "llms.txt",
         "sitemap": repo / "site" / "sitemap.xml",
         "videos": repo / "video" / "howto" / "ledger.json",
+        "app_releases": env_path("PURPLELINK_APP_RELEASE_STATE", HOME / ".purplelink" / "app-release-watch" / "state.json"),
         "funnel": env_path("PURPLELINK_HUB", HOME / ".purplelink" / "hub") / "funnel.json",
         "facts": env_path("PURPLELINK_HUB", HOME / ".purplelink" / "hub") / "facts.json",
         "overrides": env_path("PURPLELINK_HUB", HOME / ".purplelink" / "hub") / "overrides.json",
@@ -392,6 +394,30 @@ def from_videos(p: dict) -> list:
                 "approval": "standing:daily-howto", "contact_ref": "", "notes": v.get("title", "")[:200],
                 "_text": str(v.get("app", "")), "_assets": [str(v.get("app", ""))],
                 "_contents": [v["link_utm_content"]] if v.get("link_utm_content") else [],
+            })
+    return out
+
+
+def from_app_releases(p: dict) -> list:
+    """Launch videos made public by scripts/app-release-watch.py when an app went live (state.json, written by that job)."""
+    out = []
+    state = load_json(p["app_releases"], {}) or {}
+    for app, st in (state.get("apps") or {}).items():
+        slug = re.sub(r"[^a-z0-9]+", "-", str(app).lower()).strip("-")
+        for pl in st.get("placements") or []:
+            vid = pl.get("video")
+            if not vid:
+                continue
+            short = pl.get("kind") == "short"
+            out.append({
+                "id": f"release-video:{vid}", "source": "app-release-watch", "channel": "youtube", "kind": "video",
+                "target": f"Purplelink YouTube ({'youtube-short' if short else 'youtube'}, launch video)", "status": "live",
+                "date": pl.get("date", ""),
+                "url": f"https://www.youtube.com/shorts/{vid}" if short else f"https://www.youtube.com/watch?v={vid}",
+                "landing_url": st.get("storeUrl", ""), "utm": "",
+                "approval": "standing:app-release (Ben, 2026-10-24)", "contact_ref": "",
+                "notes": f"{app} launch {'Short' if short else 'video'}, public when the app went live"[:200],
+                "_text": str(app), "_assets": [slug],
             })
     return out
 
@@ -1054,7 +1080,7 @@ def build(p: dict) -> dict:
         q["contact_ref"] = pl["contact_ref"]
         q["date"] = pl["date"] or q["date"]
         q["_text"] += " " + pl["_text"]
-    placements = queue + social + kept + from_videos(p) + mu
+    placements = queue + social + kept + from_videos(p) + from_app_releases(p) + mu
     # Hand corrections, kept apart from the sources (the outreach log stays as written): overrides.json maps a
     # placement id to any of url, status, date, channel, assets (ids; an unknown id becomes a "line" asset such as
     # paper-review) or exclude (a test or not a placement).
