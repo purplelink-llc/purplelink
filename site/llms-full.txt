@@ -4190,14 +4190,6 @@ Join the waitlist
 Coming to the
 App Store
 
-Watch the tour
-
-## Health patterns that stay on your phone
-
-Readiness, training and the habits behind them, analyzed on the device.
-
-Play the video on YouTube
-
 In the app
 
 ## Your health, at a glance
@@ -4230,7 +4222,7 @@ Turn a metric into a clean card for your story or feed.
 
 Haea reads sleep, heart rate, HRV, workouts and weight from Apple Health. It does not log food: it reads the nutrition that apps such as MacroFactor or Cronometer write to Apple Health.
 
-Premium: $1.99 / month or $14.99 / year
+Premium: $1.99 / month, $14.99 / year, or $49.99 once
 
 ## Haea Premium
 
@@ -4274,7 +4266,7 @@ Haea is expected to launch in 2026. Join the waitlist above to be notified when 
 
 Is there a free tier?
 
-Yes. Haea is free to download, and the daily briefing, strength log, running and share cards work without a subscription. Premium ($1.99/month or $14.99/year) adds the deeper analysis: energy balance, circadian rhythm, running analytics, advanced models, biological age and VO2 max, and widgets.
+Yes. Haea is free to download, and the daily briefing, strength log, running and share cards work without a subscription. Premium ($1.99 a month, $14.99 a year, or a one-time $49.99 for lifetime access) adds the deeper analysis: energy balance, circadian rhythm, running analytics, advanced models, biological age and VO2 max, and widgets.
 
 Does Haea sync to the cloud?
 
@@ -10630,7 +10622,7 @@ Comparison
 
 # Best health tracking apps that keep your data on your phone (2026)
 
-By Benjamin Ampel · May 31, 2026, updated October 4, 2026
+By Benjamin Ampel · May 31, 2026, updated October 25, 2026
 
 Where each iPhone health app keeps your sleep, food, weight, workout, mood and heart data. Each entry gives its App Store privacy label, its cost and what it tracks. Short version: a handful keep it on the phone, and food logging is the gap.
 
@@ -10788,15 +10780,15 @@ Status: In development. Platform: iOS 17 or later, per the product page. Cost: n
 
 I searched the App Store on October 4, 2026 and found no listing named Haea from Purplelink. The product page has a waitlist and says 2026. I am giving no date. I recommend it to nobody today. This is what the page says is planned, not what ships:
 
-- Free: logging for food, weight, water, exercise and mood, import from HealthKit, 7-day and 30-day trend charts, an activity timeline and an optional morning daily briefing.
+- Free: a daily readiness briefing from Apple Health data, a strength training log, run tracking with route planning on iPhone or Apple Watch, and share cards. It does not log food; it reads nutrition that other apps write to Apple Health.
 
-- Premium, planned at $1.99 a month or $14.99 a year: energy balance and TDEE (total daily energy expenditure), circadian analysis, running analytics, machine-learning models, and "biological metrics".
+- Premium, planned at $1.99 a month, $14.99 a year or $49.99 once: energy balance and TDEE (total daily energy expenditure), circadian analysis, running analytics, statistical models of which habits move sleep, pace, weight and mood, and biological age and VO₂ max estimates.
 
-- Privacy design: no cloud sync of its own, no analytics or advertising SDKs, no ads, and local storage in a GRDB.sqlite database. Food search and barcode lookup send the barcode or search text to Open Food Facts, and the optional Oura connection fetches data from Oura.
+- Privacy design: no cloud sync of its own, no analytics or advertising SDKs, no ads, and local storage in a GRDB.sqlite database. Planning a running route asks Apple Maps for the path, and the optional Oura connection fetches data from Oura. The coach uses Apple Intelligence on the device.
 
-The page's claims about biological age and causal models are the developer's description. It cites no validation, and I would treat them as unproven until there is an app to test. Where Purplelink's own pages disagreed, I checked the app source. Haea has no sync of its own, and anything on several devices would come through Apple Health and your iCloud account. The page now says so, and also names the two network features above.
+The page's claims about biological age and causal models are the developer's description. It cites no validation, and I would treat them as unproven until there is an app to test. Where Purplelink's own pages disagreed, I checked the app source. Haea has no sync of its own, and anything on several devices would come through Apple Health and your iCloud account. The page now says so, and also names the two network features above. An earlier version of the page described food logging with Open Food Facts lookups; the app no longer has food logging.
 
-Where others are better today: every app above that exists. If you need a tracker this month, use Apple Health as the store, Athlytic or Gentler Streak for Watch training data, AutoSleep for sleep and Daylio for mood. The gap Haea is aimed at is food, weight and mood in one app with no account, which nothing on this list fills. When it ships I will read its App Store label the same way as the others and update this page, whatever it says.
+Where others are better today: every app above that exists. If you need a tracker this month, use Apple Health as the store, Athlytic or Gentler Streak for Watch training data, AutoSleep for sleep and Daylio for mood. The gap Haea is aimed at is readiness and training guidance from Apple Health with no account and no server. It does not fill the food gap: for a food log you still need an app such as MacroFactor or Cronometer, or a spreadsheet. When it ships I will read its App Store label the same way as the others and update this page, whatever it says.
 
 ## Eight more worth knowing
 
@@ -10892,7 +10884,7 @@ BearableTrackingFor backupPhone, EU serversFree, $6.99 a monthSymptoms, mood
 
 SpreadsheetNone to readNoYour fileFreeAnything
 
-Haea (planned)No listingNot statedPlanned: phone onlyPlanned: free, $1.99 a monthPlanned: food, weight, mood
+Haea (planned)No listingNot statedPlanned: phone onlyPlanned: free, $1.99 a monthPlanned: readiness, strength, running
 
 ## How to read an App Store privacy label
 
