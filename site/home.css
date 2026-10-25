@@ -66,6 +66,16 @@
 
 /* ── Launchpad ─────────────────────────────────────────────────────────── */
 
+.dock-group { display: grid; gap: clamp(6px, 1vw, 12px); }
+
+.dock-heading {
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
 .dock {
   list-style: none;
   display: grid;
@@ -93,6 +103,11 @@
   background: color-mix(in oklch, var(--purple) 8%, var(--bg));
   transform: translateY(-1px);
 }
+
+/* Not yet in the App Store: a dashed edge and a muted price line mark it, while the text stays at full AA contrast. */
+.dock-soon .dock-app { border: 1px dashed var(--line); }
+.dock-soon .dock-price { color: var(--muted); }
+.dock-static { cursor: default; }
 
 .dock-art {
   display: block;
@@ -168,7 +183,7 @@
 .studio-col ul { list-style: none; display: grid; gap: 8px; }
 .studio-col li a { color: var(--ink); text-decoration-color: var(--purple); text-underline-offset: 3px; }
 
-/* Ten tiles: two rows of five where each keeps a readable column, then two columns. */
+/* Up to five tiles to a row where each keeps a readable column, then two columns. */
 .dock { gap: clamp(10px, 1.6vw, 24px); }
 @media (max-width: 999px) {
   .dock { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -231,8 +246,6 @@
   .dock > li:nth-child(6) { animation-delay: 0.325s; }
   .dock > li:nth-child(7) { animation-delay: 0.36s; }
   .dock > li:nth-child(8) { animation-delay: 0.395s; }
-  .dock > li:nth-child(9) { animation-delay: 0.43s; }
-  .dock > li:nth-child(10) { animation-delay: 0.465s; }
 }
 
 @media (prefers-reduced-motion: reduce) {
