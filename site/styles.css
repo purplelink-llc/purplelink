@@ -5188,6 +5188,37 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
   .post-banner-photo img { aspect-ratio: 4 / 3; }
 }
 
+/* Centre the reading column on wide screens. The hero and the body share one width, so the title,
+   lede and article text start at the same left edge; the hero's band still runs full width. */
+.post-hero,
+.post-body {
+  max-width: calc(860px + 2 * clamp(24px, 6vw, 80px));
+  margin-inline: auto;
+}
+/* With the hero column centred, its band and glows span the whole window instead of
+   showing the column's edges; main clips the bleed so a visible scrollbar cannot add a sideways scroll. */
+.post-hero::before {
+  left: calc(50% - 50vw);
+  right: calc(50% - 50vw);
+  box-shadow: none;
+  clip-path: none;
+}
+main:has(> .post-hero) { overflow-x: clip; }
+.post-banner { margin-inline: auto; }
+/* "All guides" / "All posts" link above a post: same left edge as the centred column */
+.back-link:has(+ .post-hero) {
+  margin-left: max(0px, (100% - (860px + 2 * clamp(24px, 6vw, 80px))) / 2);
+}
+.post-signature {
+  width: min(860px, calc(100% - 2 * clamp(24px, 6vw, 80px)));
+  margin: 48px auto 0;
+}
+@media (min-width: 1200px) {
+  .post-body .compare-table {
+    margin-inline: calc((100% - min(1240px, 100vw - 160px)) / 2);
+  }
+}
+
 .pr-grant-note { max-width: 64ch; margin: 24px clamp(24px, 6vw, 80px) 0; color: var(--muted); font-size: 0.95rem; }
 
 /* Link to this tool: appended by site.js after .tool-app on free tool pages. */
