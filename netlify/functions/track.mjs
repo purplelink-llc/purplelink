@@ -26,6 +26,7 @@
 import { getStore } from "@netlify/blobs";
 import { createHash, randomUUID } from "node:crypto";
 import { toolSlugFromPath, countField, bumpToolCount } from "../lib/tool-counts.mjs";
+import { visitorId } from "../lib/visitor.mjs";
 
 const BOT_RE = /bot|spider|crawl|slurp|bingpreview|headless|lighthouse|preview|facebookexternalhit|embedly/i;
 
@@ -104,7 +105,7 @@ export default async function handler(request, context) {
     request.headers.get("x-forwarded-for") ||
     "unknown";
   const day = new Date().toISOString().slice(0, 10);
-  const vid = createHash("sha256").update(`${day}|pl|${ip}`).digest("hex").slice(0, 16);
+  const vid = visitorId(day, ip);
 
   // Country only (see countryCode). Always present; "" when Netlify gave none. Older records have no cc at all.
   const rec = { type, path, host, refHost, utm, meta, vid, ts: Date.now(), cc: countryCode(request, context) };
