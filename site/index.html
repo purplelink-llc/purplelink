@@ -9,7 +9,7 @@
 
     <!-- Primary meta -->
     <title>Purplelink: Mac Apps, an iPhone App and Free Online Tools</title>
-    <meta name="description" content="Mac and iPhone apps and free tools from a one-person studio in Atlanta: ModernTex, a $19.99 LaTeX editor, Outbound Veil, Legroom and GlobePin.">
+    <meta name="description" content="Mac apps, the GlobePin iPhone app and free tools from a one-person studio in Atlanta. ModernTex is a $19.99 LaTeX editor. Haea and Watchlight are coming.">
     <meta name="author" content="Purplelink LLC">
     <link rel="canonical" href="https://purplelink.llc/">
     <link rel="alternate" type="application/atom+xml" title="Purplelink blog" href="https://purplelink.llc/blog/feed.xml">
@@ -45,7 +45,7 @@
           "legalName": "Purplelink LLC",
           "url": "https://purplelink.llc/",
           "logo": "https://purplelink.llc/assets/purplelink-logo.png",
-          "description": "Purplelink LLC is a one-person software studio in Atlanta, Georgia that makes apps and tools: ModernTex (a native macOS LaTeX editor), Outbound Veil (a macOS app that checks what you type for personal information), Legroom (a macOS disk space app), Vitae (a macOS academic record app), GlobePin (an iPhone and iPad travel app), Scholar Utility Belt (a Chrome extension for Google Scholar), Paper Review (AI pre-submission manuscript review) and free online tools.",
+          "description": "Purplelink LLC is a one-person software studio in Atlanta, Georgia that makes apps and tools: ModernTex (a native macOS LaTeX editor), Outbound Veil (a macOS app that checks what you type for personal information), Legroom (a macOS disk space app), Vitae (a macOS academic record app), GlobePin (an iPhone and iPad travel app, available now), Haea (an iPhone app that turns Apple Health data into a daily readiness briefing, coming to the App Store), Watchlight (an iPhone app that sorts scam and spam texts, coming to the App Store), Scholar Utility Belt (a Chrome extension for Google Scholar), Paper Review (AI pre-submission manuscript review) and free online tools.",
           "foundingDate": "2026",
           "address": {
             "@type": "PostalAddress",
@@ -134,7 +134,7 @@
     <script src="/theme.js?v=f0ab0f06a1"></script>
     <link rel="stylesheet" href="styles.css?v=3b6abff6b7">
     <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
-    <link rel="stylesheet" href="/home.css?v=37693d4425">
+    <link rel="stylesheet" href="/home.css?v=24c81e13b6">
     <link rel="stylesheet" href="/rf-promo.css?v=df8d00daf5">
     <script src="/site.js?v=a4e5158728" defer></script>
     <script src="/motion.js?v=d35f4b4ee4" defer></script>
@@ -173,7 +173,9 @@
 
         <p class="stage-lede">One person in Atlanta making apps and tools. Each page says plainly what happens to your data.</p>
 
-        <ul class="dock" aria-label="Purplelink apps">
+        <div class="dock-group">
+          <h2 class="dock-heading" id="dock-mac-h">Mac apps</h2>
+          <ul class="dock" aria-label="Purplelink Mac apps">
           <li>
             <a class="dock-app" href="/moderntex/" data-track="home_cta" data-track-meta="dock-moderntex">
               <span class="dock-art"><img src="/assets/moderntex-icon.webp" alt="" width="96" height="96" decoding="async"></span>
@@ -238,14 +240,11 @@
               <span class="dock-price">Free app, optional Plus from $2.99 a month</span>
             </a>
           </li>
-          <li>
-            <a class="dock-app" href="/scholar-utility-belt/" data-track="home_cta" data-track-meta="dock-scholar">
-              <span class="dock-art"><img src="/assets/scholar-utility-belt-icon.webp" alt="" width="96" height="96" decoding="async"></span>
-              <strong class="dock-name">Scholar Utility Belt</strong>
-              <span class="dock-desc">Journal rankings and h-index inside Google Scholar.</span>
-              <span class="dock-price">Free Chrome extension</span>
-            </a>
-          </li>
+          </ul>
+        </div>
+        <div class="dock-group">
+          <h2 class="dock-heading" id="dock-ios-h">iPhone and iPad</h2>
+          <ul class="dock" aria-label="Purplelink iPhone and iPad apps">
           <li>
             <a class="dock-app" href="/globepin/" data-track="home_cta" data-track-meta="dock-globepin">
               <span class="dock-art"><img src="/assets/globepin-icon.webp" alt="" width="96" height="96" decoding="async"></span>
@@ -254,7 +253,37 @@
               <span class="dock-price">Free for iPhone and iPad</span>
             </a>
           </li>
-        </ul>
+          <li class="dock-soon">
+            <a class="dock-app" href="/haea/" data-track="home_cta" data-track-meta="dock-haea">
+              <span class="dock-art"><img src="/assets/haea-dock-icon.webp" alt="" width="96" height="96" decoding="async"></span>
+              <strong class="dock-name">Haea</strong>
+              <span class="dock-desc">Turns Apple Health data into a daily readiness briefing.</span>
+              <span class="dock-price">Coming to the App Store. Free, with an optional subscription</span>
+            </a>
+          </li>
+          <li class="dock-soon">
+            <div class="dock-app dock-static">
+              <span class="dock-art"><img src="/assets/watchlight-icon.webp" alt="" width="96" height="96" decoding="async"></span>
+              <strong class="dock-name">Watchlight</strong>
+              <span class="dock-desc">Sorts scam and spam texts into Junk on your iPhone, and says why.</span>
+              <span class="dock-price">Coming to the App Store</span>
+            </div>
+          </li>
+          </ul>
+        </div>
+        <div class="dock-group">
+          <h2 class="dock-heading" id="dock-web-h">For your browser</h2>
+          <ul class="dock" aria-label="Purplelink Chrome extension">
+          <li>
+            <a class="dock-app" href="/scholar-utility-belt/" data-track="home_cta" data-track-meta="dock-scholar">
+              <span class="dock-art"><img src="/assets/scholar-utility-belt-icon.webp" alt="" width="96" height="96" decoding="async"></span>
+              <strong class="dock-name">Scholar Utility Belt</strong>
+              <span class="dock-desc">Journal rankings and h-index inside Google Scholar.</span>
+              <span class="dock-price">Free Chrome extension</span>
+            </a>
+          </li>
+          </ul>
+        </div>
 
         <p class="stage-suite">ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life, together: <a href="/suite/">the Mac Suite, $59.99 once</a>.</p>
       </section>
