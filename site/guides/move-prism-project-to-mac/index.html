@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Move a Prism project to a Mac before it shuts down | Purplelink</title>
+    <meta name="description" content="Export your Prism projects as a zip, open them in a local Mac editor, and build with a TeX distribution. Covers what the export keeps and what it drops.">
+    <link rel="canonical" href="https://purplelink.llc/guides/move-prism-project-to-mac/">
+    <meta property="og:title" content="Move a Prism project to a Mac before it shuts down">
+    <meta property="og:description" content="Export your Prism projects as a zip, open them in a local Mac editor, and build with a TeX distribution. Covers what the export keeps and what it drops.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/move-prism-project-to-mac/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/guides-move-prism-project-to-mac.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Move a Prism project to a Mac before it shuts down">
+    <meta name="twitter:description" content="Export your Prism projects as a zip, open them in a local Mac editor, and build with a TeX distribution. Covers what the export keeps and what it drops.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/guides-move-prism-project-to-mac.jpg">
+    <meta name="twitter:image:alt" content="Move a Prism project to a Mac before it shuts down">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "Move a Prism project to a Mac before it shuts down",
+      "description": "Export your Prism projects as a zip, open them in a local Mac editor, and build with a TeX distribution. Covers what the export keeps and what it drops.",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "datePublished": "2026-10-25",
+      "dateModified": "2026-10-25",
+      "image": "https://purplelink.llc/assets/og/purplelink-card.png",
+      "mainEntityOfPage": "https://purplelink.llc/guides/move-prism-project-to-mac/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://purplelink.llc/guides/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Move a Prism project to a Mac",
+          "item": "https://purplelink.llc/guides/move-prism-project-to-mac/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Where do I export my Prism projects?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In Prism, open Settings, then Data Controls, then Export all projects (zip), then Download zip. To export one project, use Export (zip) in its project-title menu. This is the route in OpenAI's Prism to Codex migration guide, read October 25, 2026."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does the Prism export not include?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "OpenAI lists project history, inline comments, collaborator permissions and the live Zotero connection as not moving with the project files. The all-project archive may include a conversations folder for reference."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need a TeX distribution to build an exported Prism project?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes for most multi-file projects. OpenAI's guide says they need a local TeX toolchain. On a Mac that means MacTeX or TinyTeX."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can ModernTex open a Prism project?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. A Prism export is a folder of ordinary .tex, .bib and figure files, and ModernTex opens a folder like that. It builds with MacTeX or TinyTeX and offers a one-click TinyTeX install if neither is present. I have not tested a real Prism export, so check the build and compare it to your last Prism PDF."
+      }
+    }
+  ]
+}
+</script>
+    <script src="/theme.js?v=f0ab0f06a1"></script>
+<link rel="stylesheet" href="/styles.css?v=33aa5b7792">
+    <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
+    <script src="/site.js?v=a4e5158728" defer></script>
+    <script src="/motion.js?v=d35f4b4ee4" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">How-to</p>
+        <h1 class="post-title">Move a Prism project to a Mac before it shuts down</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-25">October 25, 2026</time></p>
+        <p class="post-lede">OpenAI is retiring Prism and says all Prism data will be deleted after shutdown. Export each project as a zip now, then build it on your Mac. The zip holds your source, figures and bibliography. It does not hold history, comments or collaborators.</p>
+      </div>
+
+      <article class="post-body">
+        <p><strong>Disclosure up front:</strong> I make ModernTex, which is one of the options at the end. The export steps come from <a href="https://help.openai.com/en/articles/20001615-prism-to-codex-migration-guide" rel="noopener">OpenAI's Prism to Codex migration guide</a>, read October 25, 2026. I have not run an export from a real Prism account, so I describe what OpenAI says it produces and what a folder of this kind needs on a Mac.</p>
+
+        <h2>What OpenAI says about the shutdown</h2>
+        <p>The help centre says Prism is being retired and that after shutdown all Prism-related data will be deleted and cannot be recovered. The date given in OpenAI's notice is January 1, 2027. Export before then and keep a backup.</p>
+
+        <h2>Step 1: export your projects</h2>
+        <ol>
+          <li>In Prism, open the user or workspace menu, then Settings, then Data Controls, then Export all projects (zip), then Download zip.</li>
+          <li>To export one project, use Export (zip) in its project-title menu. For a project someone else owns, this keeps the files but not your Prism conversation history.</li>
+          <li>Unzip the archive. Keep one untouched copy and work on another.</li>
+          <li>For each important project, open it with its latest good preview loaded and choose Download PDF in the PDF viewer. You will compare your Mac build against that PDF.</li>
+        </ol>
+        <p>If an export fails, OpenAI says to check <code>export-errors.json</code> in the archive and retry from the project menu.</p>
+
+        <h2>What the zip does not carry</h2>
+        <ul>
+          <li>Project history and inline comments.</li>
+          <li>Collaborator permissions. Whoever you wrote with has to be set up again wherever you go next.</li>
+          <li>The live Zotero connection. Export or refresh your <code>.bib</code> file from Zotero.</li>
+          <li>Prism chats. Some archives include a conversations folder of JSON files. Treat it as an archive.</li>
+        </ul>
+
+        <h2>Step 2: build it on your Mac</h2>
+        <p>An exported project is a folder of ordinary <code>.tex</code>, <code>.bib</code> and figure files. OpenAI's guide notes that most multi-file projects need a local TeX toolchain. On a Mac that is MacTeX or the smaller TinyTeX; the <a href="/guides/install-latex-on-mac/">install guide</a> compares them. If the project has a <code>latexmkrc</code>, build with <code>latexmk -pdf</code> from the project folder so the same settings apply.</p>
+        <p>Then compare the new PDF with the one you downloaded from Prism: title and authors, section order, figures, tables, equation numbers, citations, bibliography and page count. Fix differences before you edit the text.</p>
+
+        <h2>Editors for the folder</h2>
+        <p>Any editor works on the folder. <a href="/guides/best-mac-latex-editors/">The Mac editor comparison</a> lists the options. VS Code with LaTeX Workshop is covered in <a href="/guides/vscode-latex-workshop-mac/">its own guide</a>. OpenAI's guide points to Codex, which can edit and help build the files but, per the same page, is not a shared real-time editor.</p>
+        <p>ModernTex is my option. It opens the project folder, finds the root file, builds with MacTeX or TinyTeX (one-click TinyTeX install if neither is present) and shows a synchronized PDF preview. It costs $19.99 once after a 7-day trial, and has no account or compile limit. It is not a fit if several co-authors must type in the same document at the same moment.</p>
+
+        <h2>Co-authors</h2>
+        <p>A local folder has no live co-editing. Agree on one editor at a time, or keep the draft in a service built for it. If your co-authors use Overleaf, <a href="/guides/move-overleaf-project-to-mac-with-git/">this guide</a> covers the Git route, which needs a paid Overleaf plan.</p>
+      </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>Where do I export my Prism projects?</summary><div class="faq-body">In Prism, open Settings, then Data Controls, then Export all projects (zip), then Download zip. To export one project, use Export (zip) in its project-title menu. This is the route in OpenAI's Prism to Codex migration guide, read October 25, 2026.</div></details>
+        <details><summary>What does the Prism export not include?</summary><div class="faq-body">OpenAI lists project history, inline comments, collaborator permissions and the live Zotero connection as not moving with the project files. The all-project archive may include a conversations folder for reference.</div></details>
+        <details><summary>Do I need a TeX distribution to build an exported Prism project?</summary><div class="faq-body">Yes for most multi-file projects. OpenAI's guide says they need a local TeX toolchain. On a Mac that means MacTeX or TinyTeX.</div></details>
+        <details><summary>Can ModernTex open a Prism project?</summary><div class="faq-body">Yes. A Prism export is a folder of ordinary .tex, .bib and figure files, and ModernTex opens a folder like that. It builds with MacTeX or TinyTeX and offers a one-click TinyTeX install if neither is present. I have not tested a real Prism export, so check the build and compare it to your last Prism PDF.</div></details>
+      </section>
+
+      <!-- moderntex-cta -->
+      <section class="waitlist-section mt-cta">
+        <p class="eyebrow">From the maker of these tools</p>
+        <h2>Leaving Prism for a Mac?</h2>
+        <p>ModernTex opens a project folder, builds it with MacTeX or TinyTeX and previews the PDF beside the source. $19.99 once, after a free trial.</p>
+        <div class="waitlist-actions">
+          <a class="btn btn-primary" href="/.netlify/functions/moderntex-download?src=guide&amp;trial=1" data-track="guide_mtx_trial" data-track-meta="move-prism-project-to-mac">Try free for 7 days</a>
+          <a class="btn btn-ghost" href="/moderntex/" data-track="guide_mtx_click" data-track-meta="move-prism-project-to-mac:page">See what it does</a>
+        </div>
+        <p class="waitlist-fine-print">I make ModernTex. $19.99 once after the trial, macOS 14 or later, no account.</p>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools and guides">
+        <h2>Related tools and guides</h2>
+        <ul>
+          <li><a href="/moderntex/">ModernTex for Mac</a></li>
+          <li><a href="/guides/move-overleaf-project-to-mac-with-git/">Move an Overleaf project with Git</a></li>
+          <li><a href="/guides/overleaf-alternative-mac/">Overleaf alternatives for Mac</a></li>
+          <li><a href="/guides/overleaf-compile-timeout/">Fix an Overleaf compile timeout</a></li>
+          <li><a href="/guides/synctex-on-mac/">SyncTeX on Mac</a></li>
+          <li><a href="/guides/latexdiff-online/">Mark changes with latexdiff</a></li>
+          <li><a href="/guides/install-latex-on-mac/">How to install LaTeX on a Mac</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/suite/">Mac Suite</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=e11921f8d6" defer></script>
+</body>
+</html>

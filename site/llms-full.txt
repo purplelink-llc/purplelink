@@ -5332,6 +5332,8 @@ The clean way to do this is Git. Overleaf offers Git integration (clone the proj
 
 Step by step, with the token setup and the commands: Move an Overleaf project to a local Mac editor with Git.
 
+Coming from Prism, which OpenAI is retiring? See Move a Prism project to a Mac before it shuts down.
+
 A few habits keep this working:
 
 - Pull before you start, push when you stop. If a co-author edits the same lines on Overleaf while you edit locally, Git will ask you to resolve a conflict. Short sessions and frequent pushes keep conflicts rare.
