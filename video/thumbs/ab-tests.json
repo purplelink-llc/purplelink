@@ -65,5 +65,16 @@
   "started": "2026-10-23",
   "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
   "checked": "2026-10-23"
+ },
+ {
+  "video": "S7iq7ogwcPs",
+  "variants": {
+   "A": "video/out/howto/pdflatex-command-not-found-after-mactex/pdflatex-command-not-found-after-mactex-thumb-A.jpg",
+   "B": "video/out/howto/pdflatex-command-not-found-after-mactex/pdflatex-command-not-found-after-mactex-thumb-B.jpg",
+   "C": "video/out/howto/pdflatex-command-not-found-after-mactex/pdflatex-command-not-found-after-mactex-thumb-C.jpg"
+  },
+  "started": "2026-10-25",
+  "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
+  "checked": "2026-10-25"
  }
 ]
