@@ -365,20 +365,20 @@ test("every shared footer that links Keyfeel also links Tapefolio, and the layou
   assert.match(readFileSync(join(SITE, "..", "scripts", "gen_llms_full.py"), "utf8"), /"tapefolio\/",/);
 });
 
-test("the home page dock has a tile for Tapefolio with its icon, and the dock CSS lays ten out in rows of five", () => {
+test("the home page dock has a tile for Tapefolio with its icon, and the dock CSS groups the tiles by platform and lays up to five in a row", () => {
   const home = read("index.html");
   const tiles = [...home.matchAll(/<a class="dock-app" href="([^"]+)"/g)].map((m) => m[1]);
-  assert.deepEqual(tiles, ["/moderntex/", "/outbound-veil/", "/legroom/", "/keyfeel/", "/tapefolio/", "/panely/", "/summonly/", "/vitae/", "/scholar-utility-belt/", "/globepin/"]);
+  assert.deepEqual(tiles, ["/moderntex/", "/outbound-veil/", "/legroom/", "/keyfeel/", "/tapefolio/", "/panely/", "/summonly/", "/vitae/", "/globepin/", "/haea/", "/scholar-utility-belt/"]);
   assert.match(home, /<a class="dock-app" href="\/tapefolio\/" data-track="home_cta" data-track-meta="dock-tapefolio">\s*<span class="dock-art"><img src="\/assets\/tapefolio-icon\.webp" alt="" width="96" height="96" decoding="async"><\/span>\s*<strong class="dock-name">Tapefolio<\/strong>/);
   assert.match(home, /Free for 7 days, \$29\.99/);
   const css = read("home.css");
   assert.match(css, /\.dock \{[^}]*grid-template-columns: repeat\(5, minmax\(0, 1fr\)\)/);
   assert.match(css, /@media \(max-width: 999px\) \{\s*\.dock \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
-  assert.match(css, /\.dock > li:nth-child\(10\) \{ animation-delay/);
-  // No endless idle float (WCAG 2.2.2), and the ten tiles finish landing within half a second.
+  assert.match(css, /\.dock > li:nth-child\(8\) \{ animation-delay/);
+  // No endless idle float (WCAG 2.2.2), and the tiles finish landing within half a second.
   assert.doesNotMatch(css, /dock-float/);
   const delays = [...css.matchAll(/\.dock > li:nth-child\(\d+\) \{ animation-delay: ([\d.]+)s/g)].map((m) => Number(m[1]));
-  assert.equal(delays.length, 10);
+  assert.equal(delays.length, 8);
   assert.ok(Math.max(...delays) <= 0.5);
   assert.doesNotMatch(css, /repeat\(7,/);
   assert.doesNotMatch(css, /repeat\(8,/);
