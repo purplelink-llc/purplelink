@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>Haea - On-Device Health Analytics | Purplelink LLC</title>
-    <meta name="description" content="Haea is an on-device iOS health analytics app tracking sleep, nutrition, exercise, and biometrics, surfacing patterns with ML. Data stays on your phone.">
+    <meta name="description" content="Haea is an iOS app that reads Apple Health and gives you a daily readiness briefing, a strength log, running with route planning and Insights. Analysis runs on your phone.">
     <link rel="canonical" href="https://purplelink.llc/haea/">
     <meta property="og:title" content="Haea - On-Device Health Analytics">
-    <meta property="og:description" content="An on-device iOS health app for sleep, nutrition, activity, and biometrics. Your health records stay on your phone.">
+    <meta property="og:description" content="A daily readiness briefing, strength and running training, and Insights from your Apple Health data, analyzed on your iPhone.">
     <meta property="og:image" content="https://purplelink.llc/assets/og/haea.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -16,7 +16,7 @@
     <meta property="og:url" content="https://purplelink.llc/haea/">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Haea - On-Device Health Analytics">
-    <meta name="twitter:description" content="An on-device iOS health app for sleep, nutrition, activity, and biometrics. Your health records stay on your phone.">
+    <meta name="twitter:description" content="A daily readiness briefing, strength and running training, and Insights from your Apple Health data, analyzed on your iPhone.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/haea.png">
     <meta name="twitter:image:alt" content="Haea, on-device iOS health analytics">
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
@@ -29,6 +29,7 @@
     <link rel="stylesheet" href="/styles.css?v=3b6abff6b7">
     <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
     <script src="/site.js?v=a4e5158728" defer></script>
+    <script src="/support-box.js?v=119d97fc71" defer></script>
     <script src="/motion.js?v=d35f4b4ee4" defer></script>
     <script type="application/ld+json">
     {
@@ -42,7 +43,7 @@
           "operatingSystem": "iOS 17+",
           "url": "https://purplelink.llc/haea/",
           "image": "https://purplelink.llc/assets/og/haea.png",
-          "description": "An on-device iOS health app for sleep, nutrition, activity, and biometrics. All analysis runs on the phone. No cloud sync, no analytics, no advertising SDKs.",
+          "description": "An iOS app that reads Apple Health and gives you a daily readiness briefing, a strength training log, running with route planning, and Insights into which habits move your sleep, pace, weight and mood. All analysis runs on the phone. No account, no cloud sync, no analytics or advertising SDKs.",
           "offers": [
             { "@type": "Offer", "price": "0",     "priceCurrency": "USD", "name": "Free tier",       "availability": "https://schema.org/PreOrder" },
             { "@type": "Offer", "price": "1.99",  "priceCurrency": "USD", "name": "Premium monthly", "availability": "https://schema.org/PreOrder" },
@@ -62,17 +63,17 @@
             {
               "@type": "Question",
               "name": "Is there a free tier?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Haea has a free tier for core health logging and charts. Premium ($1.99/month or $14.99/year) adds Kalman-filtered recovery state, Granger causality analysis between health variables, and biological age estimation." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Haea is free to download, and the daily briefing, strength log, running and share cards work without a subscription. Premium ($1.99/month or $14.99/year) adds the deeper analysis: energy balance, circadian rhythm, running analytics, advanced models, biological age and VO2 max, and widgets." }
             },
             {
               "@type": "Question",
               "name": "Does Haea sync to the cloud?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Your health records are stored and analyzed on your device. Haea has no cloud sync of its own, no ads, and no analytics or advertising SDKs. Two features reach the network: food search and barcode lookup send the barcode or search text to Open Food Facts, a public food database, and the optional Oura connection fetches your Oura data with your authorization." }
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Haea has no account, no cloud sync, no ads and no analytics or advertising SDKs. Your records are stored and analyzed on your iPhone, and your health data is never sent to Purplelink or anyone else. If you plan a running route, Apple Maps calculates the path, and if you connect Oura with a personal access token, Haea fetches your Oura data directly from Oura to your phone." }
             },
             {
               "@type": "Question",
-              "name": "What health data sources does Haea support?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Haea reads from Apple Health and combines sleep, nutrition, weight, exercise, and biometric data, including heart rate, heart rate variability (HRV), and blood oxygen." }
+              "name": "What data does Haea use? Does it log food?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Haea reads from Apple Health: sleep, heart rate, heart rate variability (HRV), workouts, weight and more. Haea does not log food. It reads the nutrition that apps such as MacroFactor or Cronometer write to Apple Health. You can also connect an Oura ring." }
             },
             {
               "@type": "Question",
@@ -120,7 +121,7 @@
           <span class="product-status">In development · 2026</span>
         </div>
         <h1 class="app-hero-name">Haea</h1>
-        <p class="app-hero-tagline">Your health data, analyzed on your phone. Haea combines sleep, nutrition, activity, and biometrics and uses machine learning (ML) to surface patterns you would otherwise miss. All analysis runs on the device.</p>
+        <p class="app-hero-tagline">Haea turns the data you already have in Apple Health into one daily answer: how ready you are today, and what to do about it. All analysis runs on your iPhone.</p>
         <div class="app-hero-actions">
           <a class="btn btn-primary" href="#waitlist">Join the waitlist</a>
         </div>
@@ -142,7 +143,7 @@
     <section class="screenshots-section tour-section">
       <p class="eyebrow">Watch the tour</p>
       <h2>Health patterns that stay on your phone</h2>
-      <p class="section-intro">Sleep, nutrition, exercise and biometrics, analyzed on the device.</p>
+      <p class="section-intro">Readiness, training and the habits behind them, analyzed on the device.</p>
       <div class="yt-embed" data-motion="youtube" data-youtube-id="rerU61qAMvM" data-youtube-title="Haea: on-device health analytics for iOS">
         <img class="yt-poster" src="/assets/video/haea-poster.webp" alt="" width="1440" height="810" loading="lazy" decoding="async">
         <a class="yt-play" href="https://www.youtube.com/watch?v=rerU61qAMvM" rel="noopener">Play the video on YouTube</a>
@@ -155,64 +156,70 @@
       <div class="screenshot-grid">
         <figure class="frame-phone"><img src="/assets/haea-screens/01-today.webp" srcset="/assets/haea-screens/01-today-800.webp 800w, /assets/haea-screens/01-today.webp 1206w" sizes="(max-width: 900px) 46vw, 30vw" alt="Haea Today view - daily briefing and circadian insights" width="1206" height="2622" decoding="async" loading="lazy"></figure>
         <figure class="frame-phone"><img src="/assets/haea-screens/02-strength.webp" srcset="/assets/haea-screens/02-strength-800.webp 800w, /assets/haea-screens/02-strength.webp 1206w" sizes="(max-width: 900px) 46vw, 30vw" alt="Haea Strength - workout programs and mobility assessment" width="1206" height="2622" decoding="async" loading="lazy"></figure>
-        <figure class="frame-phone"><img src="/assets/haea-screens/03-nutrition.webp" srcset="/assets/haea-screens/03-nutrition-800.webp 800w, /assets/haea-screens/03-nutrition.webp 1206w" sizes="(max-width: 900px) 46vw, 30vw" alt="Haea Nutrition - macro tracking and nutrition intelligence" width="1206" height="2622" decoding="async" loading="lazy"></figure>
       </div>
     </section>
 
     <section class="features-section">
       <div class="features-header">
-        <p class="eyebrow">Free</p>
-        <h2>Free features</h2>
+        <p class="eyebrow">In the app</p>
+        <h2>What Haea does</h2>
       </div>
       <div class="features-grid">
         <div class="feature-item">
-          <h3>Complete logging</h3>
-          <p>Log food, weight, water, exercise, and mood in one place. Haea connects to HealthKit (Apple's health data store) to pull in data you have already logged.</p>
+          <h3>Daily readiness briefing</h3>
+          <p>A short morning briefing with your readiness score and one suggestion for the day. Tap it for the full plan: what is helping, what is holding you back, and what to avoid.</p>
         </div>
         <div class="feature-item">
-          <h3>Trend charts</h3>
-          <p>7-day and 30-day views of every metric, so you can see where each one is heading without reading tables.</p>
+          <h3>Strength training log</h3>
+          <p>Log workouts with your own routines or proven programs. See weekly volume by muscle, personal records with estimated one-rep maxes, your strength level against population standards, and a deload check that watches your fatigue.</p>
         </div>
         <div class="feature-item">
-          <h3>Activity timeline</h3>
-          <p>One chronological feed of everything you have logged: workouts, meals, weight entries, and sleep.</p>
+          <h3>Running and route planning</h3>
+          <p>Track runs on iPhone or Apple Watch, plan a route on the map and follow it, and see training load, weekly distance, personal records and time in each heart rate zone.</p>
         </div>
         <div class="feature-item">
-          <h3>Daily briefing</h3>
-          <p>An optional 8am summary of your key metrics from the day before.</p>
+          <h3>Insights</h3>
+          <p>Pick an outcome (sleep, running pace, weight or mood) and see which of your habits move it most, how strong each link is, and how it has changed. Try a small experiment to test a change.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Share cards</h3>
+          <p>Turn a metric into a clean card for your story or feed.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Reads Apple Health</h3>
+          <p>Haea reads sleep, heart rate, HRV, workouts and weight from Apple Health. It does not log food: it reads the nutrition that apps such as MacroFactor or Cronometer write to Apple Health.</p>
         </div>
       </div>
     </section>
-
     <section class="features-section bg-purple-xlight">
       <div class="features-header">
         <p class="eyebrow">Premium: $1.99 / month or $14.99 / year</p>
-        <h2>Premium analytics</h2>
+        <h2>Haea Premium</h2>
       </div>
       <div class="features-grid">
         <div class="feature-item">
           <h3>Energy balance and TDEE</h3>
-          <p>Calculates your total daily energy expenditure (TDEE, the calories you burn in a day) from your logged weight and calorie data. Haea detects eating patterns and shows your caloric balance over rolling windows.</p>
+          <p>Estimates your total daily energy expenditure (TDEE, the calories you burn in a day) from your weight and the calories in Apple Health, and shows your balance over rolling windows.</p>
         </div>
         <div class="feature-item">
-          <h3>Circadian rhythm tracking</h3>
-          <p>Tracks your circadian phase (where you are in your body's 24-hour cycle). Haea identifies your best windows for energy, focus, and sleep, then shows the transition between active and wind-down phases.</p>
+          <h3>Circadian rhythm</h3>
+          <p>Shows how your energy and sleep change through the day, with your best windows for focus and for winding down.</p>
         </div>
         <div class="feature-item">
           <h3>Running analytics</h3>
-          <p>FIT file export, route maps colored by pace, mean max power curves, and a polarized training zone breakdown for serious runners.</p>
+          <p>FIT file export, route maps colored by pace, mean max power curves, and a polarized training zone breakdown.</p>
         </div>
         <div class="feature-item">
-          <h3>Advanced ML models</h3>
-          <p>Dose-response curves, Granger causality analysis (a test of whether one measure helps predict another), adaptation tracking, and Kalman-filtered recovery state estimation. Together they show which changes in your data precede others.</p>
+          <h3>Advanced models</h3>
+          <p>Dose-response curves, Granger causality (a test of whether one measure helps predict another) and adaptation tracking show which changes in your data come before others.</p>
         </div>
         <div class="feature-item">
-          <h3>Biological metrics</h3>
-          <p>Biological age estimation, VO₂ max tracking, DFA-α1 heart rate variability analysis, and circadian age (CosinorAge). Each metric is tracked over time.</p>
+          <h3>Biological age and VO&#8322; max</h3>
+          <p>An estimate of your biological age and your aerobic fitness, tracked over time.</p>
         </div>
         <div class="feature-item">
           <h3>Private by design</h3>
-          <p>Haea has no cloud sync, no analytics or advertising SDKs, and no ads. Your records are kept in a local GRDB.sqlite database, and all analytics run on the phone. Two features reach the network: food search and barcode lookup send the barcode or search text to Open Food Facts, a public food database, and the optional Oura connection fetches your Oura data with your authorization.</p>
+          <p>No account, no cloud sync, no ads and no analytics or advertising SDKs. Your records are kept in a database on your iPhone, and all analysis runs there. The coach uses Apple Intelligence on the device. See <a href="/privacy/#haea">Haea and your health data</a>.</p>
         </div>
       </div>
     </section>
@@ -239,15 +246,15 @@
         </details>
         <details class="faq-item">
           <summary>Is there a free tier?</summary>
-          <div class="faq-body">Yes. Haea has a free tier for core health logging and charts. Premium ($1.99/month or $14.99/year) adds Kalman-filtered recovery state, Granger causality analysis between health variables, and biological age estimation.</div>
+          <div class="faq-body">Yes. Haea is free to download, and the daily briefing, strength log, running and share cards work without a subscription. Premium ($1.99/month or $14.99/year) adds the deeper analysis: energy balance, circadian rhythm, running analytics, advanced models, biological age and VO2 max, and widgets.</div>
         </details>
         <details class="faq-item">
           <summary>Does Haea sync to the cloud?</summary>
-          <div class="faq-body">Your health records are stored and analyzed on your device. Haea has no cloud sync of its own, no ads, and no analytics or advertising SDKs. Two features reach the network: food search and barcode lookup send the barcode or search text to Open Food Facts, a public food database, and the optional Oura connection fetches your Oura data with your authorization.</div>
+          <div class="faq-body">No. Haea has no account, no cloud sync, no ads and no analytics or advertising SDKs. Your records are stored and analyzed on your iPhone, and your health data is never sent to Purplelink or anyone else. If you plan a running route, Apple Maps calculates the path, and if you connect Oura with a personal access token, Haea fetches your Oura data directly from Oura to your phone.</div>
         </details>
         <details class="faq-item">
-          <summary>What health data sources does it support?</summary>
-          <div class="faq-body">Haea reads from Apple Health and combines sleep, nutrition, weight, exercise, and biometric data, including heart rate, heart rate variability (HRV), and blood oxygen.</div>
+          <summary>What data does Haea use? Does it log food?</summary>
+          <div class="faq-body">Haea reads from Apple Health: sleep, heart rate, heart rate variability (HRV), workouts, weight and more. Haea does not log food. It reads the nutrition that apps such as MacroFactor or Cronometer write to Apple Health. You can also connect an Oura ring.</div>
         </details>
         <details class="faq-item">
           <summary>Is Haea HIPAA-compliant?</summary>
@@ -255,6 +262,31 @@
         </details>
       </div>
     </section>
+
+    <!-- support-box:start -->
+    <section class="support-box support-box--compact" data-support-box data-support-topic="haea" aria-labelledby="sb-heading">
+      <h2 class="support-box-head" id="sb-heading">Write to Ben</h2>
+      <p class="support-box-lede">A question about Haea that this page does not answer? Write to Ben here.</p>
+      <form class="support-box-form" novalidate hidden>
+      <div class="support-box-field">
+        <label for="sb-email">Your email</label>
+        <input type="email" id="sb-email" name="email" autocomplete="email" inputmode="email" spellcheck="false" maxlength="254" required aria-describedby="sb-email-hint sb-email-error">
+        <p class="support-box-hint" id="sb-email-hint">Used only to reply to this message.</p>
+        <p class="support-box-error" id="sb-email-error" hidden></p>
+      </div>
+      <div class="support-box-field">
+        <label for="sb-message">Message</label>
+        <textarea id="sb-message" name="message" rows="6" maxlength="5000" required aria-describedby="sb-message-hint sb-message-error"></textarea>
+        <p class="support-box-hint" id="sb-message-hint">What you did, what you expected and what you saw. For a purchase, include the email you paid with.</p>
+        <p class="support-box-error" id="sb-message-error" hidden></p>
+      </div>
+      <input type="text" name="website" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <button type="submit" class="btn btn-primary">Send message</button>
+      </form>
+      <p class="support-box-status" data-sb-status role="status" aria-live="polite"></p>
+      <p class="support-box-fine">Prefer your own mail app? Write to <a href="mailto:ben@purplelink.llc?subject=Support%3A%20Haea">ben@purplelink.llc</a>. The form delivers your message by email through Resend and does not store it on this site. <a href="/privacy/#support-form">Privacy</a>.</p>
+    </section>
+    <!-- support-box:end -->
 
     </main>
     <div class="sticky-cta" data-sticky-cta data-hide-when=".app-hero-actions, #waitlist, .footer" hidden>

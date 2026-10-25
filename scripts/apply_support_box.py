@@ -39,6 +39,7 @@ TOPICS = {
     "summonly": "Summonly",
     "vitae": "Vitae",
     "batterymeter": "BatteryMeter",
+    "haea": "Haea",
     "paper-review": "Paper Review",
     "refund": "Refund",
     "bug": "Bug report",
@@ -56,6 +57,7 @@ PAGES = {
     "summonly/index.html": ("summonly", "compact"),
     "vitae/index.html": ("vitae", "compact"),
     "batterymeter/index.html": ("batterymeter", "compact"),
+    "haea/index.html": ("haea", "compact"),
 }
 
 
