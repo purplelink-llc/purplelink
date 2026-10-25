@@ -4183,7 +4183,7 @@ In development · 2026
 
 # Haea
 
-Your health data, analyzed on your phone. Haea combines sleep, nutrition, activity, and biometrics and uses machine learning (ML) to surface patterns you would otherwise miss. All analysis runs on the device.
+Haea turns the data you already have in Apple Health into one daily answer: how ready you are today, and what to do about it. All analysis runs on your iPhone.
 
 Join the waitlist
 
@@ -4194,7 +4194,7 @@ Watch the tour
 
 ## Health patterns that stay on your phone
 
-Sleep, nutrition, exercise and biometrics, analyzed on the device.
+Readiness, training and the habits behind them, analyzed on the device.
 
 Play the video on YouTube
 
@@ -4202,53 +4202,61 @@ In the app
 
 ## Your health, at a glance
 
-Free
+In the app
 
-## Free features
+## What Haea does
 
-### Complete logging
+### Daily readiness briefing
 
-Log food, weight, water, exercise, and mood in one place. Haea connects to HealthKit (Apple's health data store) to pull in data you have already logged.
+A short morning briefing with your readiness score and one suggestion for the day. Tap it for the full plan: what is helping, what is holding you back, and what to avoid.
 
-### Trend charts
+### Strength training log
 
-7-day and 30-day views of every metric, so you can see where each one is heading without reading tables.
+Log workouts with your own routines or proven programs. See weekly volume by muscle, personal records with estimated one-rep maxes, your strength level against population standards, and a deload check that watches your fatigue.
 
-### Activity timeline
+### Running and route planning
 
-One chronological feed of everything you have logged: workouts, meals, weight entries, and sleep.
+Track runs on iPhone or Apple Watch, plan a route on the map and follow it, and see training load, weekly distance, personal records and time in each heart rate zone.
 
-### Daily briefing
+### Insights
 
-An optional 8am summary of your key metrics from the day before.
+Pick an outcome (sleep, running pace, weight or mood) and see which of your habits move it most, how strong each link is, and how it has changed. Try a small experiment to test a change.
+
+### Share cards
+
+Turn a metric into a clean card for your story or feed.
+
+### Reads Apple Health
+
+Haea reads sleep, heart rate, HRV, workouts and weight from Apple Health. It does not log food: it reads the nutrition that apps such as MacroFactor or Cronometer write to Apple Health.
 
 Premium: $1.99 / month or $14.99 / year
 
-## Premium analytics
+## Haea Premium
 
 ### Energy balance and TDEE
 
-Calculates your total daily energy expenditure (TDEE, the calories you burn in a day) from your logged weight and calorie data. Haea detects eating patterns and shows your caloric balance over rolling windows.
+Estimates your total daily energy expenditure (TDEE, the calories you burn in a day) from your weight and the calories in Apple Health, and shows your balance over rolling windows.
 
-### Circadian rhythm tracking
+### Circadian rhythm
 
-Tracks your circadian phase (where you are in your body's 24-hour cycle). Haea identifies your best windows for energy, focus, and sleep, then shows the transition between active and wind-down phases.
+Shows how your energy and sleep change through the day, with your best windows for focus and for winding down.
 
 ### Running analytics
 
-FIT file export, route maps colored by pace, mean max power curves, and a polarized training zone breakdown for serious runners.
+FIT file export, route maps colored by pace, mean max power curves, and a polarized training zone breakdown.
 
-### Advanced ML models
+### Advanced models
 
-Dose-response curves, Granger causality analysis (a test of whether one measure helps predict another), adaptation tracking, and Kalman-filtered recovery state estimation. Together they show which changes in your data precede others.
+Dose-response curves, Granger causality (a test of whether one measure helps predict another) and adaptation tracking show which changes in your data come before others.
 
-### Biological metrics
+### Biological age and VO₂ max
 
-Biological age estimation, VO₂ max tracking, DFA-α1 heart rate variability analysis, and circadian age (CosinorAge). Each metric is tracked over time.
+An estimate of your biological age and your aerobic fitness, tracked over time.
 
 ### Private by design
 
-Haea has no cloud sync, no analytics or advertising SDKs, and no ads. Your records are kept in a local GRDB.sqlite database, and all analytics run on the phone. Two features reach the network: food search and barcode lookup send the barcode or search text to Open Food Facts, a public food database, and the optional Oura connection fetches your Oura data with your authorization.
+No account, no cloud sync, no ads and no analytics or advertising SDKs. Your records are kept in a database on your iPhone, and all analysis runs there. The coach uses Apple Intelligence on the device. See Haea and your health data.
 
 Early access
 
@@ -4266,19 +4274,25 @@ Haea is expected to launch in 2026. Join the waitlist above to be notified when 
 
 Is there a free tier?
 
-Yes. Haea has a free tier for core health logging and charts. Premium ($1.99/month or $14.99/year) adds Kalman-filtered recovery state, Granger causality analysis between health variables, and biological age estimation.
+Yes. Haea is free to download, and the daily briefing, strength log, running and share cards work without a subscription. Premium ($1.99/month or $14.99/year) adds the deeper analysis: energy balance, circadian rhythm, running analytics, advanced models, biological age and VO2 max, and widgets.
 
 Does Haea sync to the cloud?
 
-Your health records are stored and analyzed on your device. Haea has no cloud sync of its own, no ads, and no analytics or advertising SDKs. Two features reach the network: food search and barcode lookup send the barcode or search text to Open Food Facts, a public food database, and the optional Oura connection fetches your Oura data with your authorization.
+No. Haea has no account, no cloud sync, no ads and no analytics or advertising SDKs. Your records are stored and analyzed on your iPhone, and your health data is never sent to Purplelink or anyone else. If you plan a running route, Apple Maps calculates the path, and if you connect Oura with a personal access token, Haea fetches your Oura data directly from Oura to your phone.
 
-What health data sources does it support?
+What data does Haea use? Does it log food?
 
-Haea reads from Apple Health and combines sleep, nutrition, weight, exercise, and biometric data, including heart rate, heart rate variability (HRV), and blood oxygen.
+Haea reads from Apple Health: sleep, heart rate, heart rate variability (HRV), workouts, weight and more. Haea does not log food. It reads the nutrition that apps such as MacroFactor or Cronometer write to Apple Health. You can also connect an Oura ring.
 
 Is Haea HIPAA-compliant?
 
 Haea is a consumer app and not a covered entity under HIPAA (the US health privacy law for providers and insurers). All data is stored on your device with no cloud transmission or third-party access, so Purplelink holds no copy of your health records to breach.
+
+## Write to Ben
+
+A question about Haea that this page does not answer? Write to Ben here.
+
+Prefer your own mail app? Write to ben@purplelink.llc. The form delivers your message by email through Resend and does not store it on this site. Privacy.
 
 
 ---

@@ -7,7 +7,7 @@ import unittest
 
 from common import EMOJI, ROOT, read, read_site
 
-PAGES = ["support", "moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "panely", "summonly", "vitae", "batterymeter"]
+PAGES = ["support", "moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "panely", "summonly", "vitae", "batterymeter", "haea"]
 
 
 def function_topics():
