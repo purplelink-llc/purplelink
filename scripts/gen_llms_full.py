@@ -47,6 +47,7 @@ PAGES = [
     "tools/retraction-check/",
     "tools/citation-generator/",
     "globepin/",
+    "circled-hoops/",
     "haea/",
     "binnacle/",
     "about/",

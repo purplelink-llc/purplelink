@@ -22,6 +22,7 @@
 2. **Paid AI manuscript tools** — Paper Review and six smaller pre-submission checks, $2-$15 per use, no account.
 3. **Free in-browser tools and guides** — LaTeX compilation, BibTeX validation, citation generation, format conversion, and how-to guides for academic writing.
 4. **iOS apps** — GlobePin (travel mapping, shipping) and haea (on-device health analytics, in development).
+5. **Games** — Circled Hoops (free weekly fantasy basketball on the web, iPhone app in App Store review).
 
 ## Products — available now
 
@@ -162,6 +163,18 @@
 - **Requirements:** iPhone or iPad running iOS 17.0 or later
 - **Key differentiators:** 3D globe view for route visualization; complete flight log with stats; travel goals tied to actual history; anniversary reminders; iCloud sync without a separate account; no social network features
 
+### Circled Hoops (web and iOS)
+- **Platform:** Web (https://circledhoops.com). The iPhone app is in App Store review.
+- **Category:** Game / fantasy basketball
+- **Description:** Free weekly fantasy basketball. You set eight starters and circle one game for each, and only the circled games count. So games played no longer decide the week; the skill is picking the right night (back-to-backs, rest nights, slow defenses).
+- **Features (all live):** live snake and auction drafts with queues and autopick; trades with a league vote or commissioner review; FAAB waivers and IR; dynasty leagues with rookie drafts; median scoring; league chat with a recap every Monday; bots that fill empty teams and play well, which friends can take over; push and email reminders; bench backups whose game counts if a starter sits; auto-set.
+- **Pricing:** Every feature is free for every league. The iPhone app shows one small banner; an optional Ad-free subscription ($0.99 a month) removes it. No betting, and no money changes hands in leagues.
+- **Affiliation:** Not affiliated with the NBA or any team.
+- **Play:** https://circledhoops.com/
+- **Privacy:** https://circledhoops.com/privacy
+- **Terms:** https://circledhoops.com/terms
+- **Product page:** https://purplelink.llc/circled-hoops/
+
 ## Products in development
 
 ### haea (iOS)
@@ -243,6 +256,7 @@
   - Teammate chains between stars of different eras: https://purplelink.llc/games/sports/nba-teammate-chains/ , https://purplelink.llc/games/sports/nfl-teammate-chains/ , https://purplelink.llc/games/sports/mlb-teammate-chains/ , https://purplelink.llc/games/sports/nhl-teammate-chains/
 - Guides: https://purplelink.llc/guides/
 - GlobePin (iOS, free with ads, Pro $14.99 once, shipping): https://purplelink.llc/globepin/
+- Circled Hoops (free weekly fantasy basketball, web; iPhone app in App Store review): https://purplelink.llc/circled-hoops/
 - haea (iOS, in development): https://purplelink.llc/haea/
 - Kits (downloadable automation systems): https://purplelink.llc/kits/
 - About: https://purplelink.llc/about/

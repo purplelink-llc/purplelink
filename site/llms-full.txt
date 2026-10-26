@@ -322,6 +322,14 @@ A map of every place you have been and every flight you have taken, with stats, 
 
 See GlobePin →
 
+Free · Web, iPhone app in review
+
+### Circled Hoops
+
+Weekly fantasy basketball where you circle one game for each of eight starters, and only the circled games count. Every feature is free for every league, with no betting.
+
+See Circled Hoops →
+
 In development
 
 ### haea
@@ -4169,6 +4177,113 @@ In development
 haea
 
 A health app for iPhone that brings sleep, nutrition, activity, and biometrics together to surface patterns you would otherwise miss. Like GlobePin, it keeps your data on your own devices: all analysis runs on the phone. Join the waitlist to hear when it launches.
+
+
+---
+
+Source: https://purplelink.llc/circled-hoops/
+Title: Circled Hoops: Free Weekly Fantasy Basketball | Purplelink
+
+← All products
+
+Web and iPhone
+Free for every league
+
+# Circled Hoops
+
+Circled Hoops is free weekly fantasy basketball. You set eight starters and circle one game for each, and only the circled games count.
+
+Play on the web
+How a week works
+
+The iPhone app is in App Store review. The web version works on a phone or a computer.
+
+## How a week works
+
+Each week you pick eight starters from your roster. For each starter you circle one of that player's games, and only that game counts toward your score. A player's other games that week do not count.
+
+So the number of games a player has in a week no longer decides it. The skill is picking the right night: avoiding the second game of a back-to-back, taking the game after a rest night, or circling a matchup against a slow defense.
+
+Features
+
+## What every league gets
+
+### Live drafts
+
+Snake and auction drafts run live. Each manager can keep a draft queue, and autopick drafts for anyone who steps away.
+
+### Trades
+
+Trades go through a league vote or commissioner review, whichever the league chooses.
+
+### Waivers and IR
+
+Free agents are claimed with FAAB bids, and injured players can go on injured reserve.
+
+### Dynasty leagues
+
+Keep your roster from one season to the next, with a rookie draft each year.
+
+### Median scoring
+
+A league can turn on median scoring, so each week also counts against the league median.
+
+### League chat
+
+Each league has its own chat, and a recap of the week is posted there every Monday.
+
+### Bots that play well
+
+Bots fill empty teams, so a league can start before everyone has joined. They draft and manage their teams well, and a friend can take over a bot's team later.
+
+### Reminders
+
+Reminders arrive as push notifications or email.
+
+### Bench backups
+
+Set a backup on your bench. If a starter sits out, the backup's game counts instead.
+
+### Auto-set
+
+Auto-set fills in your lineup for a week you would rather not set by hand.
+
+## What it costs
+
+Every feature is free for every league. The iPhone app shows one small banner, and an optional Ad-free subscription at $0.99 a month removes it. There is no betting, and no money changes hands in leagues.
+
+Play on the web
+
+The iPhone app is in App Store review. Privacy Policy · Terms
+
+## Frequently asked questions
+
+What does Circled Hoops cost?
+
+Nothing. Every feature is free for every league. The iPhone app shows one small banner, and an optional Ad-free subscription at $0.99 a month removes it.
+
+Is there betting or prize money?
+
+No. Circled Hoops has no betting, and no money changes hands in leagues.
+
+Is there an iPhone app?
+
+The iPhone app is in App Store review. Until it is out, you can play on the web at circledhoops.com, on a phone or a computer.
+
+## Who makes it
+
+Circled Hoops is made by Purplelink LLC. Not affiliated with the NBA or any team.
+
+## Also from Purplelink
+
+- 
+
+iOS
+Free on the App Store
+
+GlobePin
+
+A map of every place you have been and every flight you have taken, with stats, travel goals and shareable cards. Syncs through iCloud, with no account.
 
 
 ---

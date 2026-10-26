@@ -36,7 +36,7 @@ SECTIONS = {
     "latex-errors": "LaTeX error",
     "format": "Reference format",
 }
-PRODUCT_PAGES = {"moderntex", "vitae", "globepin", "haea", "binnacle", "scholar-utility-belt", "kits", "products", "pricing", "labs", "desk"}
+PRODUCT_PAGES = {"moderntex", "vitae", "globepin", "circled-hoops", "haea", "binnacle", "scholar-utility-belt", "kits", "products", "pricing", "labs", "desk"}
 
 
 def clean(text: str) -> str:
