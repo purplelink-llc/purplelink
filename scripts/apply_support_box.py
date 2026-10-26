@@ -39,7 +39,7 @@ TOPICS = {
     "summonly": "Summonly",
     "vitae": "Vitae",
     "batterymeter": "BatteryMeter",
-    "haea": "Haea",
+    "haea": "haea",
     "paper-review": "Paper Review",
     "refund": "Refund",
     "bug": "Bug report",

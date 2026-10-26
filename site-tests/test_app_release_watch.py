@@ -230,10 +230,10 @@ class PureHelpers(unittest.TestCase):
 class Releases(unittest.TestCase):
     def test_a_third_app_is_just_another_file(self):
         e = Env(self)
-        e.add_release("Haea", "222", "HAEALONG001", "HAEASHORT01")
+        e.add_release("haea", "222", "haeaLONG001", "haeaSHORT01")
         e.add_release("Circled Hoops", "6826945896", "HOOPLONG001", "HOOPSHORT01")
         good, bad = arw.find_releases(e.videos)
-        self.assertEqual(sorted(r["app"] for r in good), ["Alpha", "Circled Hoops", "Haea"])
+        self.assertEqual(sorted(r["app"] for r in good), ["Alpha", "Circled Hoops", "haea"])
         self.assertEqual(bad, [])
 
     def test_incomplete_files_are_ignored_not_guessed(self):

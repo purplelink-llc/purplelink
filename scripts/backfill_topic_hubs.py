@@ -139,7 +139,7 @@ def topic_hub_skeleton(section_label, slug):
             <li><a href="/tools/paper-review/">Paper Review</a></li>
             <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
             <li><a href="/globepin/">GlobePin</a></li>
-            <li><a href="/haea/">Haea</a></li>
+            <li><a href="/haea/">haea</a></li>
             <li><a href="/kits/">Kits</a></li>
             <li><a href="/products/">All products</a></li>
           </ul>

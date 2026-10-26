@@ -673,7 +673,7 @@
     tikz: "ModernTex TikZ designer showing a flowchart and the generated TikZ code",
     pr: "A Paper Review report excerpt listing critical blind spots with quoted passages",
     vit: "The Vitae dashboard showing submissions, grants and deadlines",
-    gp: "GlobePin showing a 3D globe with places visited", haea: "Haea showing the Today view with sleep and activity"
+    gp: "GlobePin showing a 3D globe with places visited", haea: "haea showing the Today view with sleep and activity"
   };
   const PHONE = { gp: 1, haea: 1 };
 

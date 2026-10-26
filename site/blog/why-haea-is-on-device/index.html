@@ -4,31 +4,31 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
-    <title>Why we built Haea on-device | Purplelink LLC</title>
-    <meta name="description" content="Why Haea keeps all your health data on your iPhone - and why that decision shapes everything about how the app works.">
+    <title>Why we built haea on-device | Purplelink LLC</title>
+    <meta name="description" content="Why haea keeps all your health data on your iPhone - and why that decision shapes everything about how the app works.">
     <link rel="canonical" href="https://purplelink.llc/blog/why-haea-is-on-device/">
     <link rel="alternate" type="application/atom+xml" title="Purplelink blog" href="https://purplelink.llc/blog/feed.xml">
     <meta property="og:image" content="https://purplelink.llc/assets/og/cards/blog-why-haea-is-on-device.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/blog-why-haea-is-on-device.jpg">
-    <meta name="twitter:image:alt" content="Why we built Haea on-device">
-    <meta property="og:title" content="Why we built Haea on-device">
-    <meta property="og:description" content="Why Haea keeps all your health data on your iPhone - and why that decision shapes everything about how the app works.">
+    <meta name="twitter:image:alt" content="Why we built haea on-device">
+    <meta property="og:title" content="Why we built haea on-device">
+    <meta property="og:description" content="Why haea keeps all your health data on your iPhone - and why that decision shapes everything about how the app works.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://purplelink.llc/blog/why-haea-is-on-device/">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Why we built Haea on-device">
-    <meta name="twitter:description" content="Why Haea keeps all your health data on your iPhone - and why that decision shapes everything about how the app works.">
+    <meta name="twitter:title" content="Why we built haea on-device">
+    <meta name="twitter:description" content="Why haea keeps all your health data on your iPhone - and why that decision shapes everything about how the app works.">
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
     <meta name="theme-color" content="#19141d">
     <link rel="manifest" href="/manifest.json">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <script src="/theme.js?v=f0ab0f06a1"></script>
-    <link rel="stylesheet" href="/styles.css?v=3b6abff6b7">
+    <link rel="stylesheet" href="/styles.css?v=f29b65c694">
     <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
-    <script src="/site.js?v=a4e5158728" defer></script>
+    <script src="/site.js?v=b053086227" defer></script>
     <script src="/motion.js?v=d35f4b4ee4" defer></script>
     <script type="application/ld+json">
     {
@@ -36,8 +36,8 @@
       "@graph": [
         {
           "@type": "BlogPosting",
-          "headline": "Why we built Haea on-device",
-          "description": "Why Haea keeps all your health data on your iPhone - and why that decision shapes everything about how the app works.",
+          "headline": "Why we built haea on-device",
+          "description": "Why haea keeps all your health data on your iPhone - and why that decision shapes everything about how the app works.",
           "datePublished": "2026-05-27",
           "dateModified": "2026-10-25",
           "author": { "@id": "https://purplelink.llc/about/#person" },
@@ -53,7 +53,7 @@
           "itemListElement": [
             { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
             { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://purplelink.llc/blog/" },
-            { "@type": "ListItem", "position": 3, "name": "Why we built Haea on-device", "item": "https://purplelink.llc/blog/why-haea-is-on-device/" }
+            { "@type": "ListItem", "position": 3, "name": "Why we built haea on-device", "item": "https://purplelink.llc/blog/why-haea-is-on-device/" }
           ]
         }
       ]
@@ -82,13 +82,13 @@
     <a class="back-link" href="/blog/">← All posts</a>
 
     <div class="post-hero">
-      <h1 class="post-title">Why we built Haea on-device</h1>
+      <h1 class="post-title">Why we built haea on-device</h1>
         <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-05-27">May 27, 2026</time></p>
       <p class="post-lede">Your health data is the most personal data you have. Here's why we decided early on that none of it would leave your phone - and what that decision cost us.</p>
     </div>
 
     <article class="post-body">
-      <p>The first real architectural decision we made on Haea was this: no server. Your health data stays on your iPhone, full stop. No cloud sync to Purplelink's infrastructure, no processing on our end, no data stored anywhere we control.</p>
+      <p>The first real architectural decision we made on haea was this: no server. Your health data stays on your iPhone, full stop. No cloud sync to Purplelink's infrastructure, no processing on our end, no data stored anywhere we control.</p>
 
       <p>It's a hard constraint. It rules out features that would be straightforward with a server - cross-device sync that works instantly, personalized recommendations trained on aggregate data, collaborative features. We gave those up deliberately. Here's why.</p>
 
@@ -104,13 +104,13 @@
 
       <p>The practical reason on-device health analytics wasn't common five years ago is that the compute wasn't there. Running Kalman filtering on a week of biometric data in real time, or computing Granger causality between health variables, required server-side processing.</p>
 
-      <p>Apple Silicon changed that. The Neural Engine on a current iPhone does machine learning inference at a speed that would have required a server cluster a few years ago. The models we run in Haea - Kalman-filtered recovery state, circadian rhythm phase tracking, TDEE calculation, VO₂ max estimation - all run in milliseconds on-device.</p>
+      <p>Apple Silicon changed that. The Neural Engine on a current iPhone does machine learning inference at a speed that would have required a server cluster a few years ago. The models we run in haea - Kalman-filtered recovery state, circadian rhythm phase tracking, TDEE calculation, VO₂ max estimation - all run in milliseconds on-device.</p>
 
-      <p>This isn't a compromise. On-device computation is faster than a round trip to a server. Haea's analytics are available instantly, offline, without latency. The privacy constraint turned out to be the performance-optimal choice too.</p>
+      <p>This isn't a compromise. On-device computation is faster than a round trip to a server. haea's analytics are available instantly, offline, without latency. The privacy constraint turned out to be the performance-optimal choice too.</p>
 
       <h2>What we gave up</h2>
 
-      <p>We want to be honest about the tradeoffs. Haea has no sync of its own. Anything you want on several devices comes through Apple Health, which syncs through your iCloud account, Apple's infrastructure and not ours, with the constraints Apple imposes. Two features do use the network: planning a running route asks Apple Maps for the path, and the optional Oura connection fetches your Oura data directly from Oura to your phone. Haea does not log food; it reads the nutrition that apps such as MacroFactor or Cronometer write to Apple Health. Some features that are easy with a server are genuinely hard without one.</p>
+      <p>We want to be honest about the tradeoffs. haea has no sync of its own. Anything you want on several devices comes through Apple Health, which syncs through your iCloud account, Apple's infrastructure and not ours, with the constraints Apple imposes. Two features do use the network: planning a running route asks Apple Maps for the path, and the optional Oura connection fetches your Oura data directly from Oura to your phone. haea does not log food; it reads the nutrition that apps such as MacroFactor or Cronometer write to Apple Health. Some features that are easy with a server are genuinely hard without one.</p>
 
       <p>We also can't build certain types of population-level intelligence. A server-side health app can tell you "users with your sleep pattern tend to have lower recovery scores on Tuesdays." We can't - we don't see any user data at all. That's a real limitation we accepted.</p>
 
@@ -118,9 +118,9 @@
 
       <p>The health apps people stick with long-term are the ones they trust. Trust is hard to rebuild once it's lost, and health data breaches are the ones people remember. By making the on-device architecture a core constraint rather than an afterthought, we can make a promise to users that most apps can't: we literally cannot access your health data, because we never receive it.</p>
 
-      <p>That's not just a privacy policy. It's an architecture decision. And it's the decision that makes Haea worth building.</p>
+      <p>That's not just a privacy policy. It's an architecture decision. And it's the decision that makes haea worth building.</p>
 
-      <p>Haea is coming to the App Store in 2026. <a href="/haea/">Join the waitlist</a> to be notified at launch.</p>
+      <p>haea is coming to the App Store in 2026. <a href="/haea/">Join the waitlist</a> to be notified at launch.</p>
     </article>
 
     <div class="post-footer">

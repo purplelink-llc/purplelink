@@ -13,7 +13,7 @@ Output goes to `video/out/<id>/` (gitignored, never committed): `<id>-16x9.mp4`,
 
 ## Still-driven promos and the brand bumper
 
-Products without a screen recording (Vitae, GlobePin, Haea, Scholar Utility Belt, Paper Review, the brand sizzle) are driven by real screenshots inside a device frame (`mac`, `phone`, `browser`) with eased pans, punch-ins, rings, a cursor or tap ripple and lower thirds. The plan for each lives in `src/products/<name>.js` (pure data from the narration timing; see `src/stillplan.js`), the narration in `storyboards/<id>.json`, the renderer in `src/Stills.jsx`.
+Products without a screen recording (Vitae, GlobePin, haea, Scholar Utility Belt, Paper Review, the brand sizzle) are driven by real screenshots inside a device frame (`mac`, `phone`, `browser`) with eased pans, punch-ins, rings, a cursor or tap ripple and lower thirds. The plan for each lives in `src/products/<name>.js` (pure data from the narration timing; see `src/stillplan.js`), the narration in `storyboards/<id>.json`, the renderer in `src/Stills.jsx`.
 
 ```
 python3 capture.py                       # browser captures: /tools/paper-review/, /products/ (serve site/ on 127.0.0.1:8765 first), extension mockups with invented names, icons

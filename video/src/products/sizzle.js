@@ -35,7 +35,7 @@ export function build(timing) {
   R(tP + 0.6, b1.e + 0.1, [80, 3066 - Y.review, 416, 414]);
   L(tP + 0.15, b1.e - 0.05, "Paper Review", "Four AI reviewers. $9, $11 or $15.");
 
-  // Scholar Utility Belt, GlobePin and Haea
+  // Scholar Utility Belt, GlobePin and haea
   const tS = b2.s, tG = b2.cue("globepin") - 0.2;
   S(tS, Y.free, 1.0);
   K(tS, 520, 420, [1.2, 1.5], 1.1, { ay: [0.44, 0.42] });
@@ -44,7 +44,7 @@ export function build(timing) {
   S(tG, Y.ios, 1.0);
   K(tG, 720, 420, [1.1, 1.35], 1.1, { ay: [0.44, 0.42] });
   R(tG + 0.6, b2.e + 0.1, [80, 4600 - Y.ios, 1280, 300]);
-  L(tG + 0.15, b2.e - 0.05, "GlobePin and Haea", "For iPhone. GlobePin is free on the App Store.");
+  L(tG + 0.15, b2.e - 0.05, "GlobePin and haea", "For iPhone. GlobePin is free on the App Store.");
 
   const ENDs = b2.e;
   K(ENDs - 0.25, 720, 450, [0.82, 0.64], 0.9);

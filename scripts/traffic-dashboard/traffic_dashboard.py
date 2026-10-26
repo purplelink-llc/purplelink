@@ -127,7 +127,7 @@ SITES = [
         "token_env": "PURPLELINK_STATS_TOKEN",
         # (json key in byDay, display label) — engagement metrics beyond a visit
         "secondaries": [("toolRuns", "tool runs"),
-                        ("haeaSignups", "Haea waitlist signups"),
+                        ("haeaSignups", "haea waitlist signups"),
                         ("moderntexReleaseSignups", "ModernTex release-notes signups"),
                         ("trialDownloads", "trial downloads"),
                         ("ovTrialDownloads", "Outbound Veil trial downloads"),
@@ -2028,7 +2028,7 @@ def observations(summaries: list[dict], sales: dict | None = None) -> list[str]:
         for adj in s.get("synthetic", []):
             label = next((lbl for k, lbl in
                           (("checkoutClicks", "checkout clicks"), ("toolRuns", "tool runs"),
-                           ("haeaSignups", "Haea waitlist signups"),
+                           ("haeaSignups", "haea waitlist signups"),
                            ("moderntexReleaseSignups", "ModernTex release-notes signups"),
                            ("subscribes", "subscribes"),
                            ("calcRuns", "calculator runs"),

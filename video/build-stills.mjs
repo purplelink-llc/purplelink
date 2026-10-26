@@ -1,7 +1,7 @@
 // node build-stills.mjs <id> [--format 16x9|9x16|both] [--no-hero] [--stills t1,t2,...] [--skip-narrate] [--trend-bed]
 // --concurrency N (default 6) and --timeout MS (per frame, default 30000) for a busy machine.
 // --trend-bed mixes the shared trend-style synth bed (audio.mjs addTrendBed, never a recording) under each cut.
-// Still-driven promos (Vitae, GlobePin, Haea, Scholar Utility Belt, Paper Review, brand sizzle).
+// Still-driven promos (Vitae, GlobePin, haea, Scholar Utility Belt, Paper Review, brand sizzle).
 // Prereqs: python3 capture.py (browser captures) for the browser-framed products.
 // Outputs video/out/<id>/: <id>-16x9.mp4, <id>-9x16.mp4, <id>-poster.jpg, <id>-hero.mp4/.webm (1280x720, silent,
 // 8 s, under 1.5 MB), frames/*.png (review stills) and run-log.txt.

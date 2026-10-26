@@ -1,11 +1,11 @@
 {
   "id": "haea-promo",
-  "title": "Haea promo",
+  "title": "haea promo",
   "voice": "en-GB-SoniaNeural",
   "rate": "-4%",
   "scenes": [
     {
-      "narration": "Haea brings sleep, nutrition, activity and biometrics together on your iPhone."
+      "narration": "haea brings sleep, nutrition, activity and biometrics together on your iPhone."
     },
     {
       "narration": "Connect Apple Health for an optional eight a.m. briefing of yesterday's key metrics."
