@@ -1,4 +1,4 @@
-// Haea: iPhone frame, 1206x2622 stills. Facts from site/haea/index.html.
+// haea: iPhone frame, 1206x2622 stills. Facts from site/haea/index.html.
 import { beats, finish, WIDE, PHONE_AX, PHONE_AY } from "../stillplan.js";
 
 export const media = {
@@ -83,7 +83,7 @@ export function build(timing) {
   return finish(
     {
       id: "haea-promo", frame: "phone",
-      title: { name: "Haea", sub: "Your complete health picture, on your phone.", icon: "brand/haea-icon.png", iconRadius: 0.22 },
+      title: { name: "haea", sub: "Your complete health picture, on your phone.", icon: "brand/haea-icon.png", iconRadius: 0.22 },
       end: { pill: "In development. Join the waitlist", url: "purplelink.llc/haea" },
       stills, keys, rings, lower, cursors: [], hero,
       poster: b1.n + 1.4,

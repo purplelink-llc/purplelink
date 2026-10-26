@@ -324,7 +324,7 @@ See GlobePin →
 
 In development
 
-### Haea
+### haea
 
 Health analytics that run entirely on your iPhone: sleep, nutrition, training and biometrics, with nothing sent to a server. Join the waitlist.
 
@@ -4166,7 +4166,7 @@ GlobePin tracks the complete travel record: every place visited, every flight ta
 iOS
 In development
 
-Haea
+haea
 
 A health app for iPhone that brings sleep, nutrition, activity, and biometrics together to surface patterns you would otherwise miss. Like GlobePin, it keeps your data on your own devices: all analysis runs on the phone. Join the waitlist to hear when it launches.
 
@@ -4174,16 +4174,16 @@ A health app for iPhone that brings sleep, nutrition, activity, and biometrics t
 ---
 
 Source: https://purplelink.llc/haea/
-Title: Haea - On-Device Health Analytics | Purplelink LLC
+Title: haea - On-Device Health Analytics | Purplelink LLC
 
 ← All products
 
 iOS
 In development · 2026
 
-# Haea
+# haea
 
-Haea turns the data you already have in Apple Health into one daily answer: how ready you are today, and what to do about it. All analysis runs on your iPhone.
+haea turns the data you already have in Apple Health into one daily answer: how ready you are today, and what to do about it. All analysis runs on your iPhone.
 
 Join the waitlist
 
@@ -4196,7 +4196,7 @@ In the app
 
 In the app
 
-## What Haea does
+## What haea does
 
 ### Daily readiness briefing
 
@@ -4220,11 +4220,11 @@ Turn a metric into a clean card for your story or feed.
 
 ### Reads Apple Health
 
-Haea reads sleep, heart rate, HRV, workouts and weight from Apple Health. It does not log food: it reads the nutrition that apps such as MacroFactor or Cronometer write to Apple Health.
+haea reads sleep, heart rate, HRV, workouts and weight from Apple Health. It does not log food: it reads the nutrition that apps such as MacroFactor or Cronometer write to Apple Health.
 
 Premium: $1.99 / month, $14.99 / year, or $49.99 once
 
-## Haea Premium
+## haea Premium
 
 ### Energy balance and TDEE
 
@@ -4248,41 +4248,41 @@ An estimate of your biological age and your aerobic fitness, tracked over time.
 
 ### Private by design
 
-No account, no cloud sync, no ads and no analytics or advertising SDKs. Your records are kept in a database on your iPhone, and all analysis runs there. The coach uses Apple Intelligence on the device. See Haea and your health data.
+No account, no cloud sync, no ads and no analytics or advertising SDKs. Your records are kept in a database on your iPhone, and all analysis runs there. The coach uses Apple Intelligence on the device. See haea and your health data.
 
 Early access
 
-## Be first to know when Haea ships.
+## Be first to know when haea ships.
 
-Add your email and you will get one message the day Haea is on the App Store. You will get nothing else.
+Add your email and you will get one message the day haea is on the App Store. You will get nothing else.
 
 We will only use your email to notify you at launch. Privacy Policy · Why on-device → · Compare health apps that keep data on your phone →
 
 ## Frequently asked questions
 
-When does Haea ship?
+When does haea ship?
 
-Haea is expected to launch in 2026. Join the waitlist above to be notified when it is available.
+haea is expected to launch in 2026. Join the waitlist above to be notified when it is available.
 
 Is there a free tier?
 
-Yes. Haea is free to download, and the daily briefing, strength log, running and share cards work without a subscription. Premium ($1.99 a month, $14.99 a year, or a one-time $49.99 for lifetime access) adds the deeper analysis: energy balance, circadian rhythm, running analytics, advanced models, biological age and VO2 max, and widgets.
+Yes. haea is free to download, and the daily briefing, strength log, running and share cards work without a subscription. Premium ($1.99 a month, $14.99 a year, or a one-time $49.99 for lifetime access) adds the deeper analysis: energy balance, circadian rhythm, running analytics, advanced models, biological age and VO2 max, and widgets.
 
-Does Haea sync to the cloud?
+Does haea sync to the cloud?
 
-No. Haea has no account, no cloud sync, no ads and no analytics or advertising SDKs. Your records are stored and analyzed on your iPhone, and your health data is never sent to Purplelink or anyone else. If you plan a running route, Apple Maps calculates the path, and if you connect Oura with a personal access token, Haea fetches your Oura data directly from Oura to your phone.
+No. haea has no account, no cloud sync, no ads and no analytics or advertising SDKs. Your records are stored and analyzed on your iPhone, and your health data is never sent to Purplelink or anyone else. If you plan a running route, Apple Maps calculates the path, and if you connect Oura with a personal access token, haea fetches your Oura data directly from Oura to your phone.
 
-What data does Haea use? Does it log food?
+What data does haea use? Does it log food?
 
-Haea reads from Apple Health: sleep, heart rate, heart rate variability (HRV), workouts, weight and more. Haea does not log food. It reads the nutrition that apps such as MacroFactor or Cronometer write to Apple Health. You can also connect an Oura ring.
+haea reads from Apple Health: sleep, heart rate, heart rate variability (HRV), workouts, weight and more. haea does not log food. It reads the nutrition that apps such as MacroFactor or Cronometer write to Apple Health. You can also connect an Oura ring.
 
-Is Haea HIPAA-compliant?
+Is haea HIPAA-compliant?
 
-Haea is a consumer app and not a covered entity under HIPAA (the US health privacy law for providers and insurers). All data is stored on your device with no cloud transmission or third-party access, so Purplelink holds no copy of your health records to breach.
+haea is a consumer app and not a covered entity under HIPAA (the US health privacy law for providers and insurers). All data is stored on your device with no cloud transmission or third-party access, so Purplelink holds no copy of your health records to breach.
 
 ## Write to Ben
 
-A question about Haea that this page does not answer? Write to Ben here.
+A question about haea that this page does not answer? Write to Ben here.
 
 Prefer your own mail app? Write to ben@purplelink.llc. The form delivers your message by email through Resend and does not store it on this site. Privacy.
 
@@ -4435,7 +4435,7 @@ Purplelink also posts guides and release notes on LinkedIn.
 
 ## What we build
 
-ModernTex, Vitae, GlobePin and the web tools are shipping. Haea is in active development:
+ModernTex, Vitae, GlobePin and the web tools are shipping. haea is in active development:
 
 ### ModernTex
 
@@ -4457,7 +4457,7 @@ TeX
 
 LaTeX to PDF, BibTeX validation, citation generation, LaTeX diff and more, in your browser. Plus Scholar Utility Belt, a Chrome extension for Google Scholar with a free core.
 
-### Haea
+### haea
 
 An on-device iOS health analytics platform. Advanced ML models for recovery, circadian rhythm, and biological age, all running locally with no cloud sync.
 
@@ -4467,7 +4467,7 @@ An iOS travel tracking app for mapping everywhere you've been, every flight take
 
 ## What we have shipped
 
-The latest version of each product as the changelog and the product page list it. Haea is still in development and has no release.
+The latest version of each product as the changelog and the product page list it. haea is still in development and has no release.
 
 ProductLatest versionReleased
 
@@ -4501,7 +4501,7 @@ Every app is written in Swift for the Apple platform it belongs on. No cross-pla
 
 ### Privacy by design
 
-Haea runs fully on-device. No cloud sync, no analytics SDKs, no data sold. Privacy isn't a policy. It's an architecture decision.
+haea runs fully on-device. No cloud sync, no analytics SDKs, no data sold. Privacy isn't a policy. It's an architecture decision.
 
 ### Craft over speed
 
@@ -10626,7 +10626,7 @@ By Benjamin Ampel · May 31, 2026, updated October 25, 2026
 
 Where each iPhone health app keeps your sleep, food, weight, workout, mood and heart data. Each entry gives its App Store privacy label, its cost and what it tracks. Short version: a handful keep it on the phone, and food logging is the gap.
 
-Disclosure up front: Purplelink, which publishes this site, is building one app on this list, Haea. It is not out. It has no App Store listing, only a waitlist, and I am not recommending it to anyone today. I did not install or test any of the other apps either. Everything below is read from each app's App Store listing, its privacy label, and the vendor's own pages and privacy policy, on October 4, 2026. Prices and labels change. Where a vendor page would not load for me, I say so and write "reported as".
+Disclosure up front: Purplelink, which publishes this site, is building one app on this list, haea. It is not out. It has no App Store listing, only a waitlist, and I am not recommending it to anyone today. I did not install or test any of the other apps either. Everything below is read from each app's App Store listing, its privacy label, and the vendor's own pages and privacy policy, on October 4, 2026. Prices and labels change. Where a vendor page would not load for me, I say so and write "reported as".
 
 ## Two questions to settle first
 
@@ -10658,7 +10658,7 @@ The finding I did not expect: I found no food logger on this list that keeps its
 
 - A spreadsheet: the only food and weight log with no vendor.
 
-That is the best of what exists today. Haea is not on it because it does not exist yet. Eight more entries follow, then a decision matrix and how to read a privacy label.
+That is the best of what exists today. haea is not on it because it does not exist yet. Eight more entries follow, then a decision matrix and how to read a privacy label.
 
 ## Apple Health, Fitness and Journal
 
@@ -10774,11 +10774,11 @@ One row a day: weight, sleep hours, meals or calories, a mood score. A spreadshe
 
 Pick a spreadsheet if you want a food and weight log that no vendor ever holds, and you will type it in.
 
-## Haea (Purplelink's, not yet available)
+## haea (Purplelink's, not yet available)
 
 Status: In development. Platform: iOS 17 or later, per the product page. Cost: not on sale. The page plans a free tier and a Premium tier.
 
-I searched the App Store on October 4, 2026 and found no listing named Haea from Purplelink. The product page has a waitlist and says 2026. I am giving no date. I recommend it to nobody today. This is what the page says is planned, not what ships:
+I searched the App Store on October 4, 2026 and found no listing named haea from Purplelink. The product page has a waitlist and says 2026. I am giving no date. I recommend it to nobody today. This is what the page says is planned, not what ships:
 
 - Free: a daily readiness briefing from Apple Health data, a strength training log, run tracking with route planning on iPhone or Apple Watch, and share cards. It does not log food; it reads nutrition that other apps write to Apple Health.
 
@@ -10786,9 +10786,9 @@ I searched the App Store on October 4, 2026 and found no listing named Haea from
 
 - Privacy design: no cloud sync of its own, no analytics or advertising SDKs, no ads, and local storage in a GRDB.sqlite database. Planning a running route asks Apple Maps for the path, and the optional Oura connection fetches data from Oura. The coach uses Apple Intelligence on the device.
 
-The page's claims about biological age and causal models are the developer's description. It cites no validation, and I would treat them as unproven until there is an app to test. Where Purplelink's own pages disagreed, I checked the app source. Haea has no sync of its own, and anything on several devices would come through Apple Health and your iCloud account. The page now says so, and also names the two network features above. An earlier version of the page described food logging with Open Food Facts lookups; the app no longer has food logging.
+The page's claims about biological age and causal models are the developer's description. It cites no validation, and I would treat them as unproven until there is an app to test. Where Purplelink's own pages disagreed, I checked the app source. haea has no sync of its own, and anything on several devices would come through Apple Health and your iCloud account. The page now says so, and also names the two network features above. An earlier version of the page described food logging with Open Food Facts lookups; the app no longer has food logging.
 
-Where others are better today: every app above that exists. If you need a tracker this month, use Apple Health as the store, Athlytic or Gentler Streak for Watch training data, AutoSleep for sleep and Daylio for mood. The gap Haea is aimed at is readiness and training guidance from Apple Health with no account and no server. It does not fill the food gap: for a food log you still need an app such as MacroFactor or Cronometer, or a spreadsheet. When it ships I will read its App Store label the same way as the others and update this page, whatever it says.
+Where others are better today: every app above that exists. If you need a tracker this month, use Apple Health as the store, Athlytic or Gentler Streak for Watch training data, AutoSleep for sleep and Daylio for mood. The gap haea is aimed at is readiness and training guidance from Apple Health with no account and no server. It does not fill the food gap: for a food log you still need an app such as MacroFactor or Cronometer, or a spreadsheet. When it ships I will read its App Store label the same way as the others and update this page, whatever it says.
 
 ## Eight more worth knowing
 
@@ -10884,7 +10884,7 @@ BearableTrackingFor backupPhone, EU serversFree, $6.99 a monthSymptoms, mood
 
 SpreadsheetNone to readNoYour fileFreeAnything
 
-Haea (planned)No listingNot statedPlanned: phone onlyPlanned: free, $1.99 a monthPlanned: readiness, strength, running
+haea (planned)No listingNot statedPlanned: phone onlyPlanned: free, $1.99 a monthPlanned: readiness, strength, running
 
 ## How to read an App Store privacy label
 
@@ -10954,13 +10954,13 @@ It means the developer ties the data to your identity through an account, a devi
 
 Yes. It can sync to iCloud and appear in a phone backup. It can send usage or crash data through analytics tools. If you grant permission, it can also send what it reads from Apple Health to its own servers. Gentler Streak keeps health data local, yet its policy lists three analytics SDKs.
 
-### Is Haea available yet?
+### Is haea available yet?
 
-No. Haea is Purplelink's app. It is in development, has no App Store listing, and has a waitlist on its page. Everything described about it is planned, not shipped, and its claims about biological age and causal models are the developer's description, not validated.
+No. haea is Purplelink's app. It is in development, has no App Store listing, and has a waitlist on its page. Everything described about it is planned, not shipped, and its claims about biological age and causal models are the developer's description, not validated.
 
 ## Related guides
 
-- Haea: the product page, with the waitlist, and why Purplelink is building it on-device.
+- haea: the product page, with the waitlist, and why Purplelink is building it on-device.
 
 - Best travel map apps for iPhone: the same where-does-the-data-live question, for places and flights.
 
@@ -10968,10 +10968,10 @@ No. Haea is Purplelink's app. It is in development, has no App Store listing, an
 
 - Purplelink's privacy page, all products and all guides.
 
-Haea is not out yet
+haea is not out yet
 
-## Get one email when Haea reaches the App Store
+## Get one email when haea reaches the App Store
 
-Haea is Purplelink's planned iPhone health app. It is in development, there is no App Store listing, and nothing on the product page is released. Add your email and you will get one message the day it ships. Nothing else.
+haea is Purplelink's planned iPhone health app. It is in development, there is no App Store listing, and nothing on the product page is released. Add your email and you will get one message the day it ships. Nothing else.
 
-We use your email only to notify you at launch. Privacy Policy · What Haea plans to do
+We use your email only to notify you at launch. Privacy Policy · What haea plans to do

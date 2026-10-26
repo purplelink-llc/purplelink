@@ -1,6 +1,6 @@
 # Purplelink LLC
 
-> Purplelink LLC is a one-person software studio in Atlanta, Georgia, founded in 2026 by Benjamin Ampel, that makes native Mac apps and free web tools. Mac apps (all with a free 7-day trial in the same download, then a one-time license key): ModernTex ($19.99, a LaTeX editor), Outbound Veil ($29.99, a menu-bar check for personal information in what you type), Legroom ($9.99, a menu-bar disk space readout and cleaner), Keyfeel ($9.99, recorded keyboard-switch sounds as you type), Tapefolio ($29.99, on-device transcription and OCR for researchers, macOS 26 and Apple silicon), Panely ($9.99, window snapping and saved layouts), Summonly ($9.99, file search, launcher and clipboard history), and the Mac Suite ($59.99: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and a lifetime Vitae Plus). Also Vitae (a free Mac app for tracking submissions, grants and your CV, with an optional Plus subscription), Paper Review (AI pre-submission manuscript review, $9-$15), Scholar Utility Belt (a Chrome extension for Google Scholar, free core with an optional Pro tier), free in-browser LaTeX and BibTeX tools, GlobePin (a free iOS travel-mapping app) and Haea (an on-device iOS health app in development).
+> Purplelink LLC is a one-person software studio in Atlanta, Georgia, founded in 2026 by Benjamin Ampel, that makes native Mac apps and free web tools. Mac apps (all with a free 7-day trial in the same download, then a one-time license key): ModernTex ($19.99, a LaTeX editor), Outbound Veil ($29.99, a menu-bar check for personal information in what you type), Legroom ($9.99, a menu-bar disk space readout and cleaner), Keyfeel ($9.99, recorded keyboard-switch sounds as you type), Tapefolio ($29.99, on-device transcription and OCR for researchers, macOS 26 and Apple silicon), Panely ($9.99, window snapping and saved layouts), Summonly ($9.99, file search, launcher and clipboard history), and the Mac Suite ($59.99: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and a lifetime Vitae Plus). Also Vitae (a free Mac app for tracking submissions, grants and your CV, with an optional Plus subscription), Paper Review (AI pre-submission manuscript review, $9-$15), Scholar Utility Belt (a Chrome extension for Google Scholar, free core with an optional Pro tier), free in-browser LaTeX and BibTeX tools, GlobePin (a free iOS travel-mapping app) and haea (an on-device iOS health app in development).
 
 ## Company
 
@@ -21,7 +21,7 @@
 1. **Mac apps** — ModernTex (LaTeX manuscript editor), Outbound Veil (a menu-bar checker for personal information in what you type), Legroom (a menu-bar disk space readout and cleaner), Keyfeel (recorded keyboard-switch sounds, mouse clicks, scroll ticks and optional trackpad haptics, in the menu bar), Tapefolio (private on-device transcription and OCR for researchers), Panely (window snapping, a drag to a screen edge, and saved layouts that return when a monitor is reconnected), Summonly (a menu-bar launcher that finds files, apps and clipboard history, with quick answers), the Mac Suite bundle, and Vitae (free academic record keeping).
 2. **Paid AI manuscript tools** — Paper Review and six smaller pre-submission checks, $2-$15 per use, no account.
 3. **Free in-browser tools and guides** — LaTeX compilation, BibTeX validation, citation generation, format conversion, and how-to guides for academic writing.
-4. **iOS apps** — GlobePin (travel mapping, shipping) and Haea (on-device health analytics, in development).
+4. **iOS apps** — GlobePin (travel mapping, shipping) and haea (on-device health analytics, in development).
 
 ## Products — available now
 
@@ -164,9 +164,9 @@
 
 ## Products in development
 
-### Haea (iOS)
+### haea (iOS)
 - **Platform:** iOS 17+
-- **Bundle ID:** com.BAmpel.Haea
+- **Bundle ID:** com.BAmpel.haea
 - **Category:** Health & fitness
 - **Description:** A comprehensive on-device health analytics platform. Integrates sleep, nutrition, weight, exercise, and biometric data to surface patterns and trends through advanced ML models including Kalman filtering, TDEE calculation, circadian rhythm intelligence, Granger causality analysis, and VO₂ max tracking.
 - **Target users:** Health-conscious individuals who want advanced analytics without giving up their data
@@ -243,7 +243,7 @@
   - Teammate chains between stars of different eras: https://purplelink.llc/games/sports/nba-teammate-chains/ , https://purplelink.llc/games/sports/nfl-teammate-chains/ , https://purplelink.llc/games/sports/mlb-teammate-chains/ , https://purplelink.llc/games/sports/nhl-teammate-chains/
 - Guides: https://purplelink.llc/guides/
 - GlobePin (iOS, free with ads, Pro $14.99 once, shipping): https://purplelink.llc/globepin/
-- Haea (iOS, in development): https://purplelink.llc/haea/
+- haea (iOS, in development): https://purplelink.llc/haea/
 - Kits (downloadable automation systems): https://purplelink.llc/kits/
 - About: https://purplelink.llc/about/
 - Support (how to reach Ben, refunds, lost keys and purchases, update notes, data handling): https://purplelink.llc/support/
@@ -260,19 +260,19 @@
 ## Frequently asked questions
 
 **When do Purplelink's apps ship?**
-ModernTex (macOS) came out on 2026-09-04, has a free 7-day trial, and sells for $19.99 at https://purplelink.llc/moderntex/. Vitae (macOS) is free at https://purplelink.llc/vitae/, with an optional Vitae Plus subscription at $2.99 a month or $23.99 a year. GlobePin (iOS) came out on 2026-09-03 and is free with ads at https://apps.apple.com/us/app/globepin/id6762313540, and a one-time $14.99 Pro purchase removes the ads. Haea is still in development, with a waitlist on its product page.
+ModernTex (macOS) came out on 2026-09-04, has a free 7-day trial, and sells for $19.99 at https://purplelink.llc/moderntex/. Vitae (macOS) is free at https://purplelink.llc/vitae/, with an optional Vitae Plus subscription at $2.99 a month or $23.99 a year. GlobePin (iOS) came out on 2026-09-03 and is free with ads at https://apps.apple.com/us/app/globepin/id6762313540, and a one-time $14.99 Pro purchase removes the ads. haea is still in development, with a waitlist on its product page.
 
 **What platforms do the apps support?**
-ModernTex is a macOS app (macOS 14+). Vitae is a macOS app (macOS 15+). GlobePin and Haea are iOS apps (iOS 17+).
+ModernTex is a macOS app (macOS 14+). Vitae is a macOS app (macOS 15+). GlobePin and haea are iOS apps (iOS 17+).
 
-**Does Haea send my health data to a server?**
-No. All of Haea's data stays on-device. There is no cloud sync to Purplelink's infrastructure, no third-party SDKs, and no analytics. Your health data never leaves your iPhone.
+**Does haea send my health data to a server?**
+No. All of haea's data stays on-device. There is no cloud sync to Purplelink's infrastructure, no third-party SDKs, and no analytics. Your health data never leaves your iPhone.
 
-**Does Haea work with Apple Health?**
-Yes. Haea reads data from Apple Health including sleep, nutrition, weight, exercise, heart rate, HRV, and blood oxygen.
+**Does haea work with Apple Health?**
+Yes. haea reads data from Apple Health including sleep, nutrition, weight, exercise, heart rate, HRV, and blood oxygen.
 
-**Is Haea HIPAA-compliant?**
-Haea is a consumer app, not a covered entity under HIPAA. However, its architecture exceeds typical health app privacy standards: all data is on-device with no cloud transmission.
+**Is haea HIPAA-compliant?**
+haea is a consumer app, not a covered entity under HIPAA. However, its architecture exceeds typical health app privacy standards: all data is on-device with no cloud transmission.
 
 **Does GlobePin require an account?**
 No. GlobePin syncs via iCloud (CloudKit) using your existing Apple ID. No separate Purplelink account is required.
@@ -456,7 +456,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - How to install LaTeX on a Mac: https://purplelink.llc/guides/install-latex-on-mac/ : MacTeX (6.4 GB installer), BasicTeX (134 MB) and TinyTeX compared, install steps with Homebrew and the installer package, how to check the install, add packages with tlmgr, pick an editor, and fix common errors.
 - Best LaTeX editor for Mac in 2026: https://purplelink.llc/guides/best-mac-latex-editors/ — comparison of TeXShop, Texifier, Octree, VS Code, Overleaf, and ModernTex.
 - GlobePin vs Polarsteps vs Visited: https://purplelink.llc/guides/globepin-vs-polarsteps/ — comparison of three iOS travel-mapping approaches.
-- Best health tracking apps that keep your data on your phone (2026): https://purplelink.llc/guides/best-on-device-health-apps/ — about 30 iPhone health apps compared by App Store privacy label, account, where the data lives and price, with Haea (Purplelink's own, not yet released) disclosed.
+- Best health tracking apps that keep your data on your phone (2026): https://purplelink.llc/guides/best-on-device-health-apps/ — about 30 iPhone health apps compared by App Store privacy label, account, where the data lives and price, with haea (Purplelink's own, not yet released) disclosed.
 - Convert a LaTeX paper to Word: https://purplelink.llc/guides/latex-to-word/ — step-by-step .tex → .docx for journal submission.
 - Fix common BibTeX errors: https://purplelink.llc/guides/fix-bibtex-errors/ — diagnose and repair the most frequent .bib mistakes.
 - IEEE vs APA vs MLA vs Chicago: https://purplelink.llc/guides/citation-styles-explained/ — how the four major citation styles differ and when to use each.
@@ -470,7 +470,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 ## Blog (articles & updates)
 - Blog index: https://purplelink.llc/blog/
 - Starting Purplelink: https://purplelink.llc/blog/starting-purplelink/ - Why I formed a software LLC, what I'm building with it, and the philosophy behind making software that's...
-- Why we built Haea on-device: https://purplelink.llc/blog/why-haea-is-on-device/ - Why Haea keeps all your health data on your iPhone - and why that decision shapes everything about how the...
+- Why we built haea on-device: https://purplelink.llc/blog/why-haea-is-on-device/ - Why haea keeps all your health data on your iPhone - and why that decision shapes everything about how the...
 - What GlobePin does that no other travel app does: https://purplelink.llc/blog/what-globepin-does-differently/ - Why GlobePin is different from every travel tracking app on the market - and what we built that the others...
 - The LaTeX editor that academics actually want: https://purplelink.llc/blog/the-latex-editor-academics-want/ - Why existing LaTeX editors fail academic researchers - and what ModernTex does differently to serve the...
 - Seven free LaTeX tools, right in your browser: https://purplelink.llc/blog/free-latex-tools/ - We launched free in-browser LaTeX tools: compile to PDF, convert to and from Word, diff versions, validate...

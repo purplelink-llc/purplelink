@@ -2064,6 +2064,8 @@ dd {
   text-transform: uppercase;
   margin-bottom: 14px;
 }
+/* haea is always written lowercase, including in tags that are otherwise uppercased. */
+.changelog-tag.tag-lowercase { text-transform: none; }
 
 .tag-launch   { background: oklch(91% 0.08 145); color: oklch(30% 0.14 145); }
 .tag-update   { background: var(--purple-light); color: oklch(35% 0.20 310); }
