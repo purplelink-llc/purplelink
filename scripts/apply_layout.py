@@ -65,6 +65,7 @@ FOOTER_COLUMNS = [
         ("BatteryMeter", "/batterymeter/"),
         ("Paper Review", "/tools/paper-review/"),
         ("Scholar Utility Belt", "/scholar-utility-belt/"),
+        ("Mac Suite", "/suite/"),
         ("All products", "/products/"),
     ]),
     ("Free tools", [
