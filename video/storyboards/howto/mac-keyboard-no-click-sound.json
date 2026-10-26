@@ -1,0 +1,41 @@
+{
+ "id": "howto-mac-keyboard-no-click-sound",
+ "app": "keyfeel",
+ "title": "No keyboard click sound on Mac (Slow Keys click sounds, or real switch sounds)",
+ "short_title": "No typing click sound on your Mac? What macOS can and cannot do",
+ "url": "purplelink.llc/keyfeel",
+ "page": "https://purplelink.llc/keyfeel/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://talk.macpowerusers.com/t/key-click-sound-app/14934"
+ ],
+ "verify": {
+  "runs": [
+   {"cmd": "defaults read com.apple.universalaccess slowKey", "output": "0"}
+  ],
+  "docs": ["https://support.apple.com/guide/mac-help/mchlp2264/mac"],
+  "notes": "Apple's Mac User Guide page on Slow Keys (read 2026-10-26) gives the path Apple menu, System Settings, Accessibility, Keyboard, and says Use click key sounds plays a feedback sound each time the Mac responds to a keystroke; Slow Keys adds a delay between the key press and the response. The check is a read-only defaults read on Ben's Mac mini (macOS 27.0.1), where Slow Keys is off and the key reads 0; nothing was changed. Keyfeel's page states it plays recorded keyboard-switch sounds on each key press, runs in the menu bar and works offline, and uses key codes, never the characters typed. The forum thread shows a person asking for key click sounds on a Mac."
+ },
+ "scenes": [
+  {"type": "hook", "short": true, "kicker": "Typing on a Mac", "title": "No keyboard click sound", "sub": "Can macOS make one?",
+   "narration": "Some people want to hear a click when they type on a Mac, the way a phone keyboard clicks. macOS does not have a setting for that. Here is the closest built-in option, and what it costs."},
+  {"type": "cause", "text": "macOS has no typing sound setting. The nearest option is part of Slow Keys.",
+   "narration": "Unlike an iPhone, a Mac has no keyboard click setting. The nearest built-in option sits inside Slow Keys, an accessibility feature."},
+  {"type": "steps", "short": true, "label": "System Settings",
+   "lines": ["Open System Settings", "Click Accessibility, then Keyboard", "Turn on Slow Keys, then click the info button", "Turn on Use click key sounds"],
+   "ui": "Slow Keys also delays each key press.",
+   "narration": "Open System Settings, click Accessibility, then Keyboard. Turn on Slow Keys, click the info button, and turn on Use click key sounds. Be aware that Slow Keys also adds a delay between pressing a key and the Mac responding, which most fast typists will not want."},
+  {"type": "check", "short": true, "label": "Terminal", "ok": "Slow Keys off",
+   "lines": ["$ defaults read com.apple.universalaccess slowKey", "0"],
+   "narration": "To see whether Slow Keys is on right now, this setting reads zero when it is off."},
+  {"type": "app", "name": "Keyfeel", "line": "Plays recorded keyboard-switch sounds on each key press from the menu bar, offline, using key codes and never the characters you type.",
+   "url": "purplelink.llc/keyfeel", "img": "site/keyfeel/img/keyboard-typing.webp", "icon": "site/assets/keyfeel-icon.webp",
+   "narration": "Keyfeel is a menu bar app that plays recorded keyboard switch sounds when you press a key, and it works offline. It uses which key was pressed, never the characters you type."}
+ ],
+ "thumbs": {
+  "A": {"kind": "error", "pill": "Typing on a Mac", "msg": "No keyboard click sound"},
+  "B": {"kind": "long", "pill": "Slow Keys", "msg": "Use click key sounds", "n": 1, "unit": "setting", "sub": "but it adds a delay"},
+  "C": {"kind": "product", "name": "Keyfeel", "line": "Real switch sounds as you type", "img": "site/keyfeel/img/keyboard-typing.webp", "icon": "site/assets/keyfeel-icon.webp", "zoom": 1.2, "pos": "50% 50%"}
+ }
+}
