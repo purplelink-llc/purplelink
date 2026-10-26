@@ -8172,7 +8172,7 @@ Comparison
 
 # Best disk space analyzer and cleaner for Mac (2026): DaisyDisk alternatives compared
 
-By Benjamin Ampel · October 4, 2026, updated October 19, 2026
+By Benjamin Ampel · October 4, 2026, updated October 26, 2026
 
 This guide covers what is using your Mac's disk, what is safe to remove, and which tool to trust with the deleting. Short version: Apple's own settings plus a free or $10 disk map cover most full disks. The tools differ most in whether a delete goes to the Trash or is final.
 
@@ -8315,6 +8315,8 @@ A ring-shaped disk map. The vendor says it scans in seconds. You tear items off 
 The deletion model is stated plainly in its guide: files stay put until you click Delete. You then get 5 seconds to cancel, and DaisyDisk "permanently removes files and folders instead of moving them to the system Trash". It will not accept /System, /Library or your home folder into the Collector, and the site says it "doesn't collect or transmit anything".
 
 The Mac App Store edition is partly limited, according to the guide's snapshots page: no snapshot size estimates, and deleting snapshots means using Terminal. The guide does not describe the direct edition as limited.
+
+Scans can also slow down on the Containers folders. DaisyDisk's 4.26.1 release note (March 10, 2024) says a macOS Sonoma privacy check delays any third-party app that reads ~/Library/Containers and ~/Library/Group Containers, even after you grant access. Holding Option while clicking Scan skips those folders, at the cost of a somewhat larger hidden-space figure. Those folders hold Apple Mail's working data and many apps' data, so a scan that skips them shows less than is really there. I found no macOS 27 report of the same slowdown.
 
 What it's good at: the clearest picture of where space went, including the hidden part. What it lacks: any automation or rules, and a Trash step. Pick it if you want to look at a map and delete by hand, and you accept that deletes are final.
 

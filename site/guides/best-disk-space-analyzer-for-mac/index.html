@@ -30,7 +30,7 @@
           "author": { "@id": "https://purplelink.llc/about/#person" },
           "publisher": { "@id": "https://purplelink.llc/#organization" },
           "datePublished": "2026-10-04",
-          "dateModified": "2026-10-19",
+          "dateModified": "2026-10-26",
           "image": "https://purplelink.llc/assets/og/products.png",
           "mainEntityOfPage": "https://purplelink.llc/guides/best-disk-space-analyzer-for-mac/"
         },
@@ -140,7 +140,7 @@
       <div class="post-hero">
         <p class="post-date">Comparison</p>
         <h1 class="post-title">Best disk space analyzer and cleaner for Mac (2026): DaisyDisk alternatives compared</h1>
-        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-04">October 4, 2026</time>, updated <time datetime="2026-10-19">October 19, 2026</time></p>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-04">October 4, 2026</time>, updated <time datetime="2026-10-26">October 26, 2026</time></p>
         <p class="post-lede">This guide covers what is using your Mac's disk, what is safe to remove, and which tool to trust with the deleting. Short version: Apple's own settings plus a free or $10 disk map cover most full disks. The tools differ most in whether a delete goes to the Trash or is final.</p>
       </div>
 
@@ -237,6 +237,7 @@
         <p>A ring-shaped disk map. The vendor says it scans in seconds. You tear items off the map into a Collector area at the bottom, where they wait until you delete. It shows hidden space, which includes purgeable space and local snapshots, and can scan as administrator to reach restricted folders.</p>
         <p>The deletion model is stated plainly in <a href="https://daisydiskapp.com/guide/4/en/DeletingFiles/" rel="noopener">its guide</a>: files stay put until you click Delete. You then get 5 seconds to cancel, and DaisyDisk "permanently removes files and folders instead of moving them to the system Trash". It will not accept /System, /Library or your home folder into the Collector, and the site says it "doesn't collect or transmit anything".</p>
         <p>The Mac App Store edition is partly limited, according to the <a href="https://daisydiskapp.com/guide/4/en/Snapshots/" rel="noopener">guide's snapshots page</a>: no snapshot size estimates, and deleting snapshots means using Terminal. The guide does not describe the direct edition as limited.</p>
+        <p>Scans can also slow down on the Containers folders. DaisyDisk's <a href="https://daisydiskapp.com/blog/daisydisk-4-26-1-released/" rel="noopener">4.26.1 release note</a> (March 10, 2024) says a macOS Sonoma privacy check delays any third-party app that reads <code>~/Library/Containers</code> and <code>~/Library/Group Containers</code>, even after you grant access. Holding Option while clicking Scan skips those folders, at the cost of a somewhat larger hidden-space figure. Those folders hold Apple Mail's working data and many apps' data, so a scan that skips them shows less than is really there. I found no macOS 27 report of the same slowdown.</p>
         <p><strong>What it's good at:</strong> the clearest picture of where space went, including the hidden part. <strong>What it lacks:</strong> any automation or rules, and a Trash step. <strong>Pick it if</strong> you want to look at a map and delete by hand, and you accept that deletes are final.</p>
 
         <h2>GrandPerspective</h2>
