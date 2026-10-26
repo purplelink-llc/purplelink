@@ -230,30 +230,40 @@ def libguide_targets() -> dict[int, dict]:
     return targets
 
 
-def libguide_sent_titles() -> set[str]:
-    return {r[1] for r in log_table_rows("LibGuide outreach") if r[0]}
+def libguide_is_sent(t: dict) -> bool:
+    """True when a dated log row names this target's address or its institution.
+
+    Rows written by hand use short names ("TSU — Citation Tools"), so the
+    address in the Contact column is the reliable match; the title word is the
+    fallback for rows without one.
+    """
+    word = t["title"].split("·")[0].strip().split(" ")[0]
+    email = t["email"].lower()
+    return any(email in r[2].lower() or word in r[1]
+               for r in log_table_rows("LibGuide outreach") if r[0])
 
 
 def next_libguide() -> dict | None:
-    sent = libguide_sent_titles()
     for n, t in sorted(libguide_targets().items()):
-        short = t["title"].split("·")[0].strip()
-        if not any(short.split(" ")[0] in s for s in sent):
+        if not libguide_is_sent(t):
             return t
     return None
 
 
-def pick_sender() -> tuple[str, str, str, int]:
+def pick_sender() -> tuple[str, str, str, int] | None:
     for addr, service, host, port in SENDERS:
         pw = keychain(addr, service)
         if pw:
             return addr, pw, host, port
-    sys.exit("No SMTP credential in Keychain. Run scripts/setup-gmail.command "
-             "or add: security add-generic-password -a ben@purplelink.llc -s icloud-smtp -w")
+    return None
 
 
 def send_email(t: dict, dry_run: bool, to_override: str | None) -> int:
-    addr, pw, host, port = pick_sender()
+    sender = pick_sender()
+    if not sender:
+        print("SKIP: no SMTP credential in Keychain (send by hand from Mail, then log the row).")
+        return 4
+    addr, pw, host, port = sender
     to = to_override or t["email"]
     body = strip_md(t["body"])
     msg = EmailMessage()
@@ -520,11 +530,10 @@ def cmd_lint(a) -> int:
             label = f"{platform} post {n} ({topic})"
             print(f"\n== {label} [{len(text)} chars] ==\n{text}")
             problems += lint_text(label, text, LIMITS[platform])
-    sent = libguide_sent_titles()
     for n, t in sorted(libguide_targets().items()):
-        short = t["title"].split("·")[0].strip()
-        if any(short.split(" ")[0] in s for s in sent):
+        if libguide_is_sent(t):
             continue
+        short = t["title"].split("·")[0].strip()
         label = f"Email target {n} ({short})"
         body = strip_md(t["body"])
         print(f"\n== {label} -> {t['email']} ==\nSubject: {t['subject']}\n{body}")
@@ -551,7 +560,8 @@ def cmd_status(a) -> int:
         n = next_post(p)
         print(f"Next {p:9} {'Post %d (%s)' % (n[0], n[1]) if n else 'template posts done'}")
     print(f"Bluesky cred:  {'ok' if keychain(BSKY_HANDLE, BSKY_KEYCHAIN) else 'MISSING (see --help)'}")
-    print(f"SMTP cred:     {pick_sender()[0]}")
+    sender = pick_sender()
+    print(f"SMTP cred:     {sender[0] if sender else 'none (emails are sent by hand)'}")
     return 0
 
 
