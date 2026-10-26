@@ -15,10 +15,11 @@
   "kind": "long",
   "pill": "iPhone app",
   "msg": "Readiness from Apple Health",
-  "n": 4,
+  "n": 5,
   "unit": "tabs",
   "sub": "analyzed on the phone",
-  "variant": "B"
+  "variant": "B",
+  "bang": false
  },
  {
   "id": "haea-howto-thumb-C",
