@@ -150,5 +150,32 @@
   "instagram": {
    "ok": true
   }
+ },
+ {
+  "slug": "howto-mac-keyboard-no-click-sound",
+  "app": "keyfeel",
+  "date": "2026-10-26",
+  "title": "No keyboard click sound on Mac (Slow Keys click sounds, or real switch sounds)",
+  "long_id": "L5Yq6tS7ITA",
+  "short_id": "2uHNpT5yX8U",
+  "link_arm": "A",
+  "link_utm_content": "howto-mac-keyboard-no-click-sound",
+  "sources": [
+   "https://talk.macpowerusers.com/t/key-click-sound-app/14934"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "L5Yq6tS7ITA",
+    "caption_id": "AUieDaZrQ-ytj00XbcX8rQ8onqDrgu85xshFLnXTB_sDdo2qd4FWpVRI"
+   },
+   "short": {
+    "video_id": "2uHNpT5yX8U",
+    "caption_id": "AUieDab6UD5LzYBB9oWl30fTwjgGJqiJ3lRR5wNzaCCUxKw27hEQGohm"
+   }
+  },
+  "instagram": {
+   "ok": true
+  },
+  "note": "Long video uploaded public by howto-publish.py; thumbnail A was set afterwards with yt-thumbnail.py (live); the A/B/C Test & Compare was not started. Short, captions, ledger and rotation done by hand."
  }
 ]
