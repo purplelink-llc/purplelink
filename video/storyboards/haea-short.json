@@ -1,0 +1,38 @@
+{
+  "id": "haea-short",
+  "title": "haea Short",
+  "note": "Script: docs/video/haea-howto-script.md. Footage: simulator, demo data only.",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "+4%",
+  "scenes": [
+    {
+      "narration": "haea reads Apple Health and gives you a daily readiness briefing, all analyzed on your iPhone."
+    },
+    {
+      "narration": "One score, one suggestion for the day, and a warning only when something stands out."
+    },
+    {
+      "narration": "Log strength workouts, and see weekly volume, personal records and a deload check."
+    },
+    {
+      "narration": "Plan a running route on the map, then follow it on your run."
+    },
+    {
+      "narration": "Insights shows which habits move your sleep, pace, weight or mood."
+    },
+    {
+      "narration": "No account, no cloud sync, no ads. General wellness, not medical advice."
+    },
+    {
+      "narration": "haea, free on iPhone. The full tour is on our channel."
+    }
+  ],
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}
