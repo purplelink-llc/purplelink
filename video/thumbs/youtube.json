@@ -257,5 +257,15 @@
   "icon": "video/assets/watchlight/icon-1024.png",
   "pos": "top",
   "portrait": true
+ },
+ {
+  "id": "k_aluYUOxoU",
+  "kind": "product",
+  "name": "haea",
+  "line": "Your readiness today",
+  "img": "video/thumbs/assets/haea-today-crop.jpg",
+  "icon": "video/assets/haea/icon-1024.png",
+  "pos": "top",
+  "portrait": true
  }
 ]

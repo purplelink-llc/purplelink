@@ -1,0 +1,62 @@
+{
+  "id": "haea-howto",
+  "title": "haea how-to (long)",
+  "note": "Script: docs/video/haea-howto-script.md. Footage: simulator, demo data only.",
+  "voice": "en-GB-SoniaNeural",
+  "rate": "+4%",
+  "scenes": [
+    {
+      "narration": "This is haea, an iPhone app from Purplelink that reads Apple Health and gives you a daily readiness briefing. All of the analysis runs on the iPhone. Everything on screen in this video is demo data."
+    },
+    {
+      "narration": "The Today tab opens with the briefing: a readiness score, a short headline, and one suggestion for the day. Here the score is sixty-four, and the suggestion is a twenty-minute walk."
+    },
+    {
+      "narration": "Below that, a warning shows up only when something stands out, like sleep debt over the last five nights. Today's health shows sleep, movement, recovery and fuel, each with a seven-day trend."
+    },
+    {
+      "narration": "haea gets this from Apple Health: sleep, heart rate, heart rate variability, workouts and weight. You choose what to allow. It reads nutrition that other apps write there, and it doesn't log food itself."
+    },
+    {
+      "narration": "The Strength tab is your workout log. Tap Start workout, then choose one of your own routines or a program."
+    },
+    {
+      "narration": "It shows weekly volume by muscle, personal records with estimated one-rep maxes, and your strength level against population standards. A deload check watches your fatigue."
+    },
+    {
+      "narration": "The Running tab tracks runs on iPhone or Apple Watch. It suggests runs for the week, and shows training load, weekly distance and personal records."
+    },
+    {
+      "narration": "To plan a route, tap points on the map. haea can follow paths between them, using Apple Maps, and shows the distance as you go. Then you can follow the route on a run."
+    },
+    {
+      "narration": "Insights asks one question: what moves your sleep, running pace, weight or mood? Pick an outcome, and haea ranks your habits by how strongly each one is linked, using your own data."
+    },
+    {
+      "narration": "A link isn't proof that one thing causes another. To check one, tap Try a small test, and change a single habit."
+    },
+    {
+      "narration": "The Coach tab answers questions about your training. It uses Apple Intelligence on the device, on iPhones that support it."
+    },
+    {
+      "narration": "haea has no account, no cloud sync, no ads and no tracking. Your records stay in a database on the iPhone."
+    },
+    {
+      "narration": "haea is for general wellness. It is not medical advice, and it doesn't diagnose or treat anything. For medical questions, talk to a doctor."
+    },
+    {
+      "narration": "haea is free to download. The briefing, strength log and running work without paying. An optional Premium subscription adds deeper analysis. The options are in the description."
+    },
+    {
+      "narration": "haea. Your Apple Health data, analyzed on your iPhone."
+    }
+  ],
+  "bumper": {
+    "open": 2.2,
+    "close": 2.5,
+    "xf": 0.4,
+    "intro": "assets/sting-intro.wav",
+    "outro": "assets/sting-outro.wav",
+    "note": "Purplelink LLC brand bumper at start and end; narration never overlaps the bumpers."
+  }
+}

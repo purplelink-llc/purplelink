@@ -1,0 +1,34 @@
+[
+ {
+  "id": "haea-howto-thumb-A",
+  "kind": "product",
+  "name": "haea",
+  "line": "Your readiness today",
+  "img": "video/thumbs/assets/haea-today-crop.jpg",
+  "icon": "video/assets/haea/icon-1024.png",
+  "pos": "top",
+  "portrait": true,
+  "variant": "A"
+ },
+ {
+  "id": "haea-howto-thumb-B",
+  "kind": "long",
+  "pill": "iPhone app",
+  "msg": "Readiness from Apple Health",
+  "n": 5,
+  "unit": "tabs",
+  "sub": "analyzed on the phone",
+  "variant": "B",
+  "bang": false
+ },
+ {
+  "id": "haea-howto-thumb-C",
+  "kind": "product",
+  "name": "haea",
+  "line": "Plan a run route",
+  "img": "video/thumbs/assets/haea-route-crop.jpg",
+  "icon": "video/assets/haea/icon-1024.png",
+  "pos": "top",
+  "variant": "C"
+ }
+]

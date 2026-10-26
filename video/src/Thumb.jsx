@@ -67,13 +67,13 @@ function ErrorThumb({ level = "error", msg, pill }) {
   );
 }
 
-function LongThumb({ msg, n = 5, unit = "causes", sub = "and the fix for each", pill = "LaTeX error" }) {
+function LongThumb({ msg, n = 5, unit = "causes", sub = "and the fix for each", pill = "LaTeX error", bang = true }) {
   return (
     <Dark>
       <div style={{ position: "absolute", left: 80, top: 70, width: 700, display: "grid", gap: 30 }}>
         <Pill text={pill} color={ERR} />
         <div style={{ fontFamily: MONO, fontWeight: 700, fontSize: fit(msg, [[14, 104], [22, 86], [99, 68]]), lineHeight: 1.1, color: CODE, letterSpacing: "-0.02em" }}>
-          <span style={{ color: ERR }}>! </span>{msg}
+          {bang && <span style={{ color: ERR }}>! </span>}{msg}
         </div>
       </div>
       <div style={{ position: "absolute", left: 80, bottom: 70, display: "flex", alignItems: "center", gap: 20 }}>

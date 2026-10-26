@@ -13,6 +13,8 @@ import * as panely15 from "./panely15.js";
 import * as batterymeter from "./batterymeter.js";
 import * as watchlight from "./watchlight.js";
 import * as watchlightshort from "./watchlightshort.js";
+import * as haeahowto from "./haeahowto.js";
+import * as haeashort from "./haeashort.js";
 
 export const PRODUCTS = {
   "vitae-promo": vitae,
@@ -31,4 +33,6 @@ export const PRODUCTS = {
   "batterymeter-promo": batterymeter,
   "watchlight-howto": watchlight,
   "watchlight-short": watchlightshort,
+  "haea-howto": haeahowto,
+  "haea-short": haeashort,
 };
