@@ -69,6 +69,15 @@
     <div class="changelog-list">
 
       <div class="changelog-entry">
+        <span class="changelog-date">October 26, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
+          <h2>Buddy 0.10.0</h2>
+          <p>Auto and Continue now could open the Claude app's file picker instead of typing "continue". When another app had left a synthetic Command key held down, every key Buddy typed was sent as a shortcut, so "continue" became Cmd-C, Cmd-O, Cmd-N and so on, and Cmd-U opened the file picker. Buddy now sends each key with exactly the modifiers it means, releases a stuck modifier first, and stops if the first letter doesn't show up; "sent" now means the chat itself reported the new message, and the Send fallback presses the chat's own Send button. Buddy also types with the Claude app in front again, and only after the app reports that chat's own message box as focused, because typing in the background (0.9.0) couldn't control which box got the keys: with two chats side by side, "continue" could land in the other one. It finds a chat's box from the chat's own title and still puts you back in the app you were using. Settings opens shorter, at 460 × 560, can be resized to any size, and remembers its size and place. <a href="/buddy/">Buddy</a>.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
         <span class="changelog-date">October 25, 2026</span>
         <div class="changelog-content">
           <span class="changelog-tag tag-update">Update</span>
