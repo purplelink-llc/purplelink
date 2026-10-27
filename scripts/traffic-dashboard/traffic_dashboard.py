@@ -1615,6 +1615,8 @@ def merge_history(history: dict, key: str, payload: dict) -> None:
         "topUtm": payload.get("topUtm", []),
         "toolRuns": payload.get("toolRuns", []),
         "totals": payload.get("totals", {}),
+        # "<type>: <meta>" counts over the stats window, e.g. "download: RubbleFront-Demo-1.0.0-mac.dmg" (which file).
+        "otherEventDetail": payload.get("otherEventDetail", []),
     }
     audience = audience_summary(payload)
     if audience:
