@@ -8172,7 +8172,9 @@ Comparison
 
 # Best disk space analyzer and cleaner for Mac (2026): DaisyDisk alternatives compared
 
-By Benjamin Ampel · October 4, 2026, updated October 26, 2026
+Some links on this page are affiliate links. If you buy through one, Purplelink may earn a commission at no extra cost to you. It does not change which products we mention or what we say about them.
+
+By Benjamin Ampel · October 4, 2026, updated October 27, 2026
 
 This guide covers what is using your Mac's disk, what is safe to remove, and which tool to trust with the deleting. Short version: Apple's own settings plus a free or $10 disk map cover most full disks. The tools differ most in whether a delete goes to the Trash or is final.
 
@@ -8354,7 +8356,7 @@ What it lacks: removal in the free tier, which lists only the 8 biggest items. P
 
 Cost: Free to download from the vendor or App Store, with a 7-day trial, after which the listing says you are charged automatically. The App Store in-app list shows a Basic yearly plan at $39.99, Plus yearly at $65.99 and a monthly plan at $9.99. The vendor page says "from $3.33/month" and mentions a one-time option. I give no lifetime figure because the sources disagree. Platform: macOS 11 or later. Version 5.6.
 
-An all-in-one cleaner. The listing claims over 29 million downloads. It describes junk and cache cleaning, a malware scan, an uninstaller, duplicates, large and old files, and performance tools.
+An all-in-one cleaner. The listing claims over 29 million downloads. It describes junk and cache cleaning, a malware scan, an uninstaller, duplicates, large and old files, and performance tools. It is also available on Setapp(paid link).
 
 For disk space the relevant part is Space Lens, a storage map. MacPaw's help page describes a Review and Remove list where you can deselect items, then says CleanMyMac "deletes the items from your Mac". It does not say Trash or permanent. The app is notarized by Apple per the listing, and its label is "Data Not Linked to You", covering contact info, identifiers, usage data and diagnostics.
 
@@ -8450,11 +8452,11 @@ A scanner-style cleaner for macOS 12 or later, last updated October 2025. Free t
 
 ### Gemini 2
 
-MacPaw's duplicate finder. Free to download, with Yearly Access and Smart Cleanup each listed at $19.99, for macOS 10.13 or later. It finds duplicate and similar files and photos. Check which copy it keeps before accepting an auto-selection.
+MacPaw's duplicate finder. Free to download, with Yearly Access and Smart Cleanup each listed at $19.99, for macOS 10.13 or later. It finds duplicate and similar files and photos. Check which copy it keeps before accepting an auto-selection. It is also available on Setapp(paid link).
 
 ### Stats and iStat Menus
 
-System monitors for the menu bar. Stats is free and MIT-licensed, for macOS 12 or later, and lists disk utilization among its modules. iStat Menus 7 is $11.99 on the App Store for macOS 14 or later. Both are monitors, not cleaners.
+System monitors for the menu bar. Stats is free and MIT-licensed, for macOS 12 or later, and lists disk utilization among its modules. iStat Menus 7 is $11.99 on the App Store for macOS 14 or later. Both are monitors, not cleaners. iStat Menus is also available on Setapp(paid link).
 
 ### FreeSpace, and Disk Space Monitor & Analyzer
 
@@ -8515,6 +8517,12 @@ No tool can tell you what is safe on your Mac, and I have not tested any of them
 - Photos, Mail, Messages, device backups and Time Machine backups. Use each app's own storage controls, not Finder. DaisyDisk's FAQ says the same for Photos, iTunes and Time Machine. Apple's page lists deleting old iPhone and iPad backups as one way to free space.
 
 - Xcode simulators and archives. Unavailable simulators and unused runtimes can go through simctl, with --dry-run for runtimes. Keep Archives you may need to symbolicate crashes.
+
+## If you deleted something by mistake
+
+This is a different job from the tools above, so it is a note and not a ranked entry. Check the Trash, then Time Machine or iCloud Drive's recently deleted list, before any recovery app. A recovery app scans a drive for data that has not been overwritten, and on a Mac with an SSD deleted files are often gone for good, so stop using the disk and do not install anything onto it.
+
+iBoysoft Data Recovery is one such app. Setapp lists version 5.2.5 for macOS 11 or later, with support for internal drives, external drives, SD cards, and file systems including APFS, HFS+, FAT32 and exFAT, plus file preview before restoring. Setapp shows 90 percent positive ratings from 91 ratings, but one reviewer reported corrupt files after a restore and another said file names survived for about 70 percent of recovered files. I did not find dated release notes, and the pages I read gave no direct price, so check iBoysoft's own page, including any free recovery limit. It is also available on Setapp(paid link). Based on the Setapp listing and user reviews; we have not tested it ourselves yet.
 
 ## Frequently asked
 
@@ -9387,7 +9395,9 @@ Comparison
 
 # Best window managers for Mac (2026): Rectangle, Magnet, Moom and Panely compared
 
-By Benjamin Ampel · October 12, 2026
+Some links on this page are affiliate links. If you buy through one, Purplelink may earn a commission at no extra cost to you. It does not change which products we mention or what we say about them.
+
+By Benjamin Ampel · October 12, 2026, updated October 27, 2026
 
 Apps and built-in tools that snap and arrange windows on a Mac. The short version: macOS covers halves and quarters for free, Rectangle is the usual free pick, and Magnet and BetterSnapTool are low-priced. Moom is the deepest, and AeroSpace, yabai and Amethyst tile automatically. The real differences are custom layouts, what happens when you reconnect a monitor, price model and permissions.
 
@@ -9403,7 +9413,7 @@ The table below compares them by job, and a longer section on each app follows i
 
 ## The apps side by side
 
-October 12, 2026, as stated on each source page. Sources are listed in each section.
+October 12, 2026, as stated on each source page; the Lasso and Mosaic rows are from October 27, 2026. Sources are listed in each section.
 
 AppPrice modelOpen sourceKeyboard snappingDrag to edgesCustom areas or layoutsMulti-displayRemember or restorePermission stated
 
@@ -9420,6 +9430,10 @@ Moom$15, trial availableNoYes, with an on-screen keyboard controllerSnap zonesGr
 LoopFreeYes (GPLv3)Yes, a trigger key plus a directionNot statedRadial menu, repeat to cycleNot statedNot statedNot stated
 
 Swish$16 once with a 14-day trial, also on SetappNot statedYesTrackpad swipes on a title bar, not edges2x2, 3x2 and 3x3 gridsMoves windows between screensNot statedNot stated
+
+LassoFrom $6.99 a month on Setapp. A direct price is not on the pages I read. 7-day trialNot statedYes, a hotkey opens a grid overlayNot statedSaved layouts with their own hotkeys; adjustable gridsMultiple displays per its Setapp pageSaved layoutsNot stated
+
+Mosaic$5.99 a month on Setapp. A direct price is not on the pages I readNot statedYesDrag a window to place itCustom layoutsSame layout across displays per its Setapp pageSaved layoutsNot stated
 
 AeroSpaceNot statedNot verifiedYes, plus a command lineNot a drag toolAutomatic tree tilingMulti-monitor supportNot statedNot stated. Does not require turning off SIP
 
@@ -9454,6 +9468,10 @@ Whichever you pick, a window manager needs the Accessibility permission, which i
 - Loop: free, a radial menu.
 
 - Swish: trackpad gestures.
+
+- Lasso: a grid you drag across, with saved layouts.
+
+- Mosaic: drag-to-place and custom layouts; unclear support for the newest macOS.
 
 - AeroSpace, yabai and Amethyst: automatic tiling.
 
@@ -9517,7 +9535,27 @@ Cost: $16 once with a 14-day trial, per its site, which also says it is in Setap
 
 Swish is gesture based. It offers about 30 trackpad gestures for windows, the Dock and the menu bar. You snap by swiping a title bar to 2x2, 3x2 or 3x3 grids, resize several windows at once by dragging a divider, and move windows between screens. It also takes keyboard shortcuts.
 
-Pick it if you work on a trackpad and want gestures rather than shortcuts.
+Pick it if you work on a trackpad and want gestures rather than shortcuts. Swish is also available on Setapp(paid link).
+
+## Lasso
+
+Cost: Setapp lists Lasso on its own from $6.99 a month, and the developer's site offers a 7-day trial and a license sold through Paddle. I did not find a direct price on the pages I read; a Macworld review of an older version listed 9.99 euros for one Mac. Platform: macOS 13 or later. Setapp lists version 1.8.2.
+
+You press a hotkey, a transparent grid appears over your displays, and you drag across it to choose where a window goes. The Setapp page also lists saved layouts with their own hotkeys, adjustable grids and spacing, multi-display support and iCloud settings sync.
+
+Limits: it is a tool you drive, so it does not tile for you. Two Setapp reviews are worth knowing: one asks whether it crashes on macOS 27, and one found it hard to learn. I found no dated release notes.
+
+Pick it if you like placing a window by drawing its area rather than remembering shortcuts. Lasso is also available on Setapp(paid link). Based on the Setapp listing, the developer's site, a Macworld review and user reviews; we have not tested it ourselves yet.
+
+## Mosaic
+
+Cost: Setapp lists Mosaic alone at $5.99 a month. I did not find a standalone price on the pages I read. Platform: Setapp lists version 1.5.1 for macOS 10.13 or later.
+
+Mosaic, from Light Pillar Software, snaps and resizes windows by drag and drop, tiles several apps or documents, saves custom layouts, applies a layout across displays, and has Touch Bar support and an iOS remote. Setapp shows 92 percent positive ratings from about 2,600 ratings.
+
+Limits: I could not confirm when it last shipped an update or whether it supports the newest macOS. A 2025 Setapp review says the latest macOS was not supported, while 2026 reviews of 1.5.1 are positive, and a couple of reviewers call it dated or hard to figure out. Check the developer's page for your macOS version before paying.
+
+Pick it if you want custom layouts and drag placement and your macOS version is confirmed. Mosaic is also available on Setapp(paid link). Based on the Setapp listing and user reviews, plus a 2017 MacTrast review of the first version; we have not tested it ourselves yet.
 
 ## AeroSpace, yabai and Amethyst
 
@@ -9560,6 +9598,8 @@ Where others are better today: Rectangle for free and open source, Magnet or Bet
 - Want windows tiled for you? AeroSpace, yabai or Amethyst.
 
 - Want trackpad gestures? Swish.
+
+- Want to draw each window's area on a grid? Lasso.
 
 ## How to choose
 

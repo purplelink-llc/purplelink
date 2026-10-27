@@ -21,7 +21,7 @@ def _digest(url):
 
 def _live(monkeypatch):
     base = next(p for p in aff.REGISTRY if p.id == "setapp")
-    live = dataclasses.replace(base, status="approved", link="https://setapp.sjv.io/abc123")
+    live = dataclasses.replace(base, status="approved", domains=("setapp.com",), prefix="", link="https://setapp.sjv.io/abc123")
     monkeypatch.setattr(aff, "REGISTRY", (live,))
 
 

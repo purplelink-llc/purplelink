@@ -45,6 +45,7 @@ class Program:
     link: str = ""          # fixed tracked link (used when there is no template)
     deep_link: str = ""     # template containing {url}, which gets the percent-encoded destination
     tag: str = ""           # tracking id appended as a query parameter (see tag_param)
+    prefix: str = ""        # tracked links that are already per-item (Setapp): any URL starting with this is tracked
     tag_param: str = "tag"  # name of that query parameter: "tag" for Amazon, "aff" for Wordvice
     only_paths: str = ""    # regex; when set, only URL paths matching it are rewritten
     notes: str = ""
@@ -52,7 +53,7 @@ class Program:
 
     @property
     def live(self) -> bool:
-        return self.status == "approved" and bool(self.link or self.deep_link or self.tag)
+        return self.status == "approved" and bool(self.link or self.deep_link or self.tag or self.prefix)
 
 
 REGISTRY: tuple = (
@@ -73,13 +74,17 @@ REGISTRY: tuple = (
     Program(
         id="setapp",
         name="Setapp",
-        domains=("setapp.com",),
+        domains=("setapp.sjv.io",),
         network="Impact",
-        status="applied",
+        status="approved",
         commission="$25 flat per new paid user, 45-day cookie, $10 minimum payout (Setapp page, read 2026-10-12)",
-        terms_checked="2026-10-12",
+        terms_checked="2026-10-27",
         source_url="https://setapp.com/affiliate-program",
-        notes="Free to join, no traffic minimum, applications reviewed. Applied 2026-10-13 through Impact, in review.",
+        prefix="https://setapp.sjv.io/c/7961034/",
+        notes="Approved on Impact (program 5114, partner id 7961034); links sent by MacPaw 2026-10-26. Each app has its own "
+              "link (https://setapp.sjv.io/c/7961034/<id>/5114), so links are written by hand and recognised by prefix; "
+              "plain setapp.com links are left alone. Ids: CleanMyMac 344326, Gemini 344369, iStat Menus 344394, Swish 855412. "
+              "Used in the disk-space and window-manager guides.",
         topics=("mac-apps", "window-managers", "disk-space", "latex-editors"),
     ),
     Program(
@@ -302,6 +307,8 @@ def tracked_owner(url: str, registry=None) -> Optional[Program]:
     for p in (registry if registry is not None else REGISTRY):
         if not p.live:
             continue
+        if p.prefix and url.startswith(p.prefix):
+            return p
         if p.tag:
             if program_for(url, [p]) and re.search(r"[?&]" + re.escape(p.tag_param) + "=" + re.escape(p.tag) + r"(?:&|$)", url):
                 return p
@@ -438,7 +445,7 @@ def check_registry(registry=None, today: Optional[date] = None, max_age_days: in
         seen.add(p.id)
         if p.status not in ("candidate", "applied", "approved", "rejected"):
             problems.append(f"{p.id}: unknown status {p.status!r}")
-        has_link = bool(p.link or p.deep_link or p.tag)
+        has_link = bool(p.link or p.deep_link or p.tag or p.prefix)
         if p.status == "approved" and not has_link:
             problems.append(f"{p.id}: approved but no tracked link")
         if p.status != "approved" and has_link:
