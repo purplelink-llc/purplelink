@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Infinite Glue Shrinkage Found: What It Means and How to Fix It | Purplelink</title>
+    <meta name="description" content="What &quot;! Infinite glue shrinkage found in a paragraph&quot; and its variants (on current page, in box being split, inserted from \skip) mean, a real log excerpt, the usual causes and the fix for each.">
+    <link rel="canonical" href="https://purplelink.llc/latex-errors/infinite-glue-shrinkage/">
+    <meta property="og:title" content="Infinite glue shrinkage found: what it means and how to fix it">
+    <meta property="og:description" content="What &quot;! Infinite glue shrinkage found in a paragraph&quot; and its variants (on current page, in box being split, inserted from \skip) mean, a real log excerpt, the usual causes and the fix for each.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/latex-errors/infinite-glue-shrinkage/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/latex-errors.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Infinite glue shrinkage found: what it means and how to fix it">
+    <meta name="twitter:description" content="What &quot;! Infinite glue shrinkage found in a paragraph&quot; and its variants (on current page, in box being split, inserted from \skip) mean, a real log excerpt, the usual causes and the fix for each.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/latex-errors.png">
+    <meta name="twitter:image:alt" content="Infinite glue shrinkage found: what it means and how to fix it">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "headline": "Infinite glue shrinkage found: what it means and how to fix it",
+      "description": "What \"! Infinite glue shrinkage found in a paragraph\" and its variants (on current page, in box being split, inserted from \\skip) mean, a real log excerpt, the usual causes and the fix for each.",
+      "url": "https://purplelink.llc/latex-errors/infinite-glue-shrinkage/",
+      "mainEntityOfPage": "https://purplelink.llc/latex-errors/infinite-glue-shrinkage/",
+      "inLanguage": "en",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Purplelink LLC",
+        "url": "https://purplelink.llc/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://purplelink.llc/assets/purplelink-logo.png"
+        }
+      },
+      "datePublished": "2026-10-27",
+      "dateModified": "2026-10-27",
+      "image": "https://purplelink.llc/assets/og/latex-errors.png"
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can I ignore Infinite glue shrinkage found?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The PDF is still produced, because TeX changes the shrink to a finite amount and continues. The spacing near that point may not be what you meant, though, and the error will come back on every build. Find the space and fix it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the difference between fil, fill and filll?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "They are three orders of infinite stretch or shrink. A higher order wins: a space with plus 1fill takes all the extra room from one with plus 1fil. For stretch they are normal and useful, as in \\hfill and \\vfill. For shrink, TeX does not allow them where it breaks lines or pages."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does the log point at a blank line?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "TeX checks for infinite shrink when it breaks a paragraph into lines or a page into pieces, which happens at the end of the paragraph. The l. line is where TeX noticed. The space itself is usually a line or a few lines above."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "LaTeX errors",
+          "item": "https://purplelink.llc/latex-errors/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Infinite glue shrinkage found",
+          "item": "https://purplelink.llc/latex-errors/infinite-glue-shrinkage/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=f0ab0f06a1"></script>
+    <link rel="stylesheet" href="/styles.css?v=f29b65c694">
+    <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
+    <script src="/site.js?v=b053086227" defer></script>
+    <script src="/motion.js?v=d35f4b4ee4" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/latex-errors/">← All LaTeX errors</a>
+      <div class="post-hero">
+        <h1 class="post-title">Infinite glue shrinkage found</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-27">October 27, 2026</time></p>
+        <p class="post-lede">A space that can shrink without limit reached a place where TeX breaks lines or pages. TeX makes the shrink finite and keeps going, but the space is not doing what it was written to do.</p>
+      </div>
+
+      <article class="post-body">
+        <h2>What it means</h2>
+        <p>Glue is TeX's name for space that can change size. Every space has a natural size, an amount it can stretch (<code>plus</code>) and an amount it can shrink (<code>minus</code>). Stretch and shrink can be finite, in points, or infinite, in <code>fil</code>, <code>fill</code> or <code>filll</code> units. Infinite stretch is normal: <code>\hfill</code> and <code>\vfill</code> are exactly that. Infinite shrink is not allowed where TeX breaks a paragraph into lines or a page into parts, because a space that can shrink without limit would let any amount of material fit in one line or one page.</p>
+        <p>When TeX finds such a space there, it reports this error, makes the shrink finite and carries on, so the PDF is still produced. The amount stays the same but is read in points: <code>minus 1fil</code> becomes <code>minus 1pt</code>. The end of the message says where TeX found the space:</p>
+        <ul>
+          <li><code>found in a paragraph.</code>: a horizontal space in running text.</li>
+          <li><code>found on current page.</code>: a vertical space on a page being broken.</li>
+          <li><code>found in box being split.</code>: a vertical space in a box divided with <code>\vsplit</code>, which some packages use to break material into columns or across pages.</li>
+          <li><code>inserted from \skip253.</code>: the space above an insertion, such as footnotes. In LaTeX on TeX Live 2026, <code>\skip253</code> is <code>\skip\footins</code>, the space between the text and the footnotes.</li>
+        </ul>
+
+        <h2>The log line</h2>
+        <p>This small file triggers the error:</p>
+        <pre><code>\documentclass{article}
+\begin{document}
+Name\hspace{0pt minus 1fill}Date
+
+Next paragraph.
+\end{document}</code></pre>
+        <p>Compiled with pdfLaTeX (TeX Live 2026), it writes this to the <code>.log</code> file:</p>
+        <pre><code>! Infinite glue shrinkage found in a paragraph.
+&lt;argument&gt; ...hskip:D \c_zero_dim \fi: \tex_par:D
+                                                  \hook_use:n {para/after}\@...
+l.4
+
+The paragraph just ended includes some glue that has
+infinite shrinkability, e.g., `\hskip 0pt minus 1fil'.
+Such glue doesn't belong there---it allows a paragraph
+of any length to fit on one line. But it's safe to proceed,
+since the offensive shrinkability has been made finite.</code></pre>
+        <p>The <code>&lt;argument&gt;</code> lines are LaTeX's own code for ending a paragraph, and they say nothing about your source. The <code>l.4</code> line is the blank line that ended the paragraph, one line below the <code>\hspace</code>. TeX checks the spaces in a paragraph when it breaks the paragraph into lines, so the error always points at the end of the paragraph. The help text names the kind of space to look for: <code>minus</code> followed by a <code>fil</code> unit.</p>
+        <p>To try a fix without touching your project, save the example as a <code>.tex</code> file and compile it online with the <a href="/tools/latex-to-pdf/">LaTeX to PDF tool</a>.</p>
+
+        <h2>Why it happens</h2>
+        <p>The causes below are in order of likelihood. Each has a before and an after you can compare with your own source.</p>
+        <h3>1. A horizontal space with infinite shrink in text</h3>
+        <p><code>\hspace</code> or <code>\hskip</code> with <code>minus 1fil</code> or <code>minus 1fill</code>, or <code>\hss</code>, in a paragraph. To push text to the right edge, use <code>\hfill</code>, which stretches but does not shrink. <code>\hss</code> belongs inside a box of fixed width, such as <code>\hbox to 2cm{...}</code> or <code>\makebox</code>.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>Name\hspace{0pt minus 1fill}Date
+% ! Infinite glue shrinkage found in a paragraph.</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>Name\hfill Date</code></pre>
+        <h3>2. A vertical space with infinite shrink between paragraphs</h3>
+        <p>A <code>\vspace</code> or <code>\vskip</code> with <code>minus 1fil</code> or <code>minus 1fill</code>, often written to let LaTeX remove the space when the page is full. Give it a finite shrink instead. If the space should push things apart, use <code>\vfill</code> or <code>\vspace{\fill}</code>, which stretch but do not shrink.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>First paragraph.
+
+\vspace{0pt minus 1fill}
+
+Second paragraph.
+% ! Infinite glue shrinkage found on current page.</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>First paragraph.
+
+\vspace{0pt minus 2pt}
+
+Second paragraph.</code></pre>
+        <h3>3. The footnote spacing has infinite shrink</h3>
+        <p>The message ends in <code>inserted from \skip</code> and a number. Look in the preamble, and in any class or package that sets footnote spacing, for <code>\skip\footins</code>.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>\setlength{\skip\footins}{12pt minus 1fil}
+% ! Infinite glue shrinkage inserted from \skip253.</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\setlength{\skip\footins}{12pt plus 4pt minus 2pt}</code></pre>
+        <h3>4. A box with infinite shrink is split</h3>
+        <p>The message ends in <code>found in box being split.</code> A vertical space with a <code>fil</code> shrink sits inside a box that <code>\vsplit</code> divides, either in your own code or in a package that splits boxes. Give the space a finite shrink.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>\setbox\mybox=\vbox{First part.\par\vskip 0pt minus 1fil Second part.\par}
+\setbox0=\vsplit\mybox to 10pt
+% ! Infinite glue shrinkage found in box being split.</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\setbox\mybox=\vbox{First part.\par\vskip 0pt minus 2pt Second part.\par}
+\setbox0=\vsplit\mybox to 10pt</code></pre>
+
+        <h2>How to find the line</h2>
+        <p>The <code>l.</code> line is where TeX noticed the space, at the end of a paragraph or where a page was broken, so look at that line and a few lines above it. Search the source for <code>minus</code>, <code>fil</code> and <code>\hss</code> or <code>\vss</code>. If nothing in your own files matches, the space comes from a class, a package or a macro you defined in the preamble.</p>
+        <p>When you run <code>pdflatex</code> in a terminal without <code>-interaction=nonstopmode</code>, TeX stops at the error and prints a <code>?</code> prompt. Press Return to carry on past the error, type <code>x</code> to quit, or type <code>h</code> for TeX's own help text, which is the paragraph you see after the <code>l.</code> line in the log. Editors run TeX in non-stop mode, so you get the log and never see the prompt.</p>
+        <p>What each editor shows:</p>
+        <ul>
+          <li><strong>ModernTex</strong>: when a build fails, the Build button shows the error count and the last good PDF stays on screen. The Build Results panel lists each error, warning and note in plain language, <strong>Compile &rsaquo; Next Issue</strong> steps through them, and <strong>Raw Log</strong> shows the full LaTeX log. See <a href="/moderntex/">ModernTex</a>.</li>
+          <li><strong>Overleaf</strong>: the logs panel, opened with the button next to Recompile, lists each error and warning with its file and line, and the editor marks the line in the gutter. The unprocessed log is at the bottom of that panel.</li>
+          <li><strong>TeXShop</strong>: the console window shows the log as it is written and stops at the error. <strong>Goto Error</strong> moves the source window to the line. TeXShop's default pdfLaTeX command includes <code>--file-line-error</code>, so the message starts with the file and line instead of <code>!</code>: <code>./main.tex:4: Infinite glue shrinkage found in a paragraph.</code></li>
+        </ul>
+
+        <h2>Related errors</h2>
+        <ul>
+          <li><a href="/latex-errors/overfull-hbox/">Overfull \hbox</a>: the warning for the opposite problem, a line that cannot shrink enough.</li>
+          <li><a href="/latex-errors/paragraph-ended-before-complete/">Paragraph ended before \x was complete</a>: another message that points at the blank line ending a paragraph.</li>
+        </ul>
+      </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>Can I ignore Infinite glue shrinkage found?</summary><div class="faq-body">The PDF is still produced, because TeX changes the shrink to a finite amount and continues. The spacing near that point may not be what you meant, though, and the error will come back on every build. Find the space and fix it.</div></details>
+        <details><summary>What is the difference between fil, fill and filll?</summary><div class="faq-body">They are three orders of infinite stretch or shrink. A higher order wins: a space with plus 1fill takes all the extra room from one with plus 1fil. For stretch they are normal and useful, as in \hfill and \vfill. For shrink, TeX does not allow them where it breaks lines or pages.</div></details>
+        <details><summary>Why does the log point at a blank line?</summary><div class="faq-body">TeX checks for infinite shrink when it breaks a paragraph into lines or a page into pieces, which happens at the end of the paragraph. The l. line is where TeX noticed. The space itself is usually a line or a few lines above.</div></details>
+      </section>
+
+      <!-- moderntex-cta -->
+      <section class="waitlist-section mt-cta">
+        <p class="eyebrow">From the maker of these tools</p>
+        <h2>Writing LaTeX on a Mac?</h2>
+        <p>ModernTex is a native macOS LaTeX studio. It has multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.</p>
+        <div class="waitlist-actions">
+          <a class="btn btn-primary" href="/moderntex/?from=latex-errors">Get ModernTex &mdash; $19.99</a>
+          <a class="btn btn-ghost" href="/moderntex/?from=latex-errors">See what it does</a>
+        </div>
+        <p class="waitlist-fine-print">Requires macOS 14 or later. Free 7-day trial, no account.</p>
+      </section>
+
+      <nav class="tool-related" aria-label="More on LaTeX errors">
+        <h2>More on LaTeX errors</h2>
+        <ul>
+          <li><a href="/latex-errors/">All LaTeX error messages</a></li>
+          <li><a href="/guides/latex/">LaTeX guides for academic writing</a></li>
+          <li><a href="/guides/best-mac-latex-editors/">Best LaTeX editors for Mac, compared</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/suite/">Mac Suite</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=e11921f8d6" defer></script>
+</body>
+</html>

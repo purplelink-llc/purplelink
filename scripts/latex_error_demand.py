@@ -61,6 +61,8 @@ CANDIDATES = [
     ("font-shape-undefined", "font shape undefined", "Font shape `OT1/cmr/m/n' undefined"),
     ("underfull-hbox", "underfull hbox", "Underfull \\hbox"),
     ("tex-capacity-exceeded", "tex capacity exceeded", "TeX capacity exceeded, sorry"),
+    ("tfm-file-not-found", "tfm file not found", "Font x not loadable: Metric (TFM) file not found"),
+    ("infinite-glue-shrinkage", "infinite glue shrinkage", "Infinite glue shrinkage found in a paragraph"),
     ("missing-brace-inserted", "missing { inserted", "Missing { inserted"),
     ("argument-has-extra-brace", "argument has an extra", "Argument of \\x has an extra }"),
     ("unknown-option-for-package", "unknown option", "Unknown option for package"),

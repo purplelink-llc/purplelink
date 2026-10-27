@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Add the ModernTex call-to-action band to the LaTeX error pages (the hub and the twelve error pages).
+"""Add the ModernTex call-to-action band to the LaTeX error pages (the hub and every error page).
 
 The band is the one the tool and guide pages already carry (same words, same classes, so the same CSS), with
 its links tagged ?from=latex-errors so the funnel can tell a ModernTex visit that started on an error page
