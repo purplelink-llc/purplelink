@@ -177,5 +177,33 @@
    "ok": true
   },
   "note": "Long video uploaded public by howto-publish.py; thumbnail A was set afterwards with yt-thumbnail.py (live); the A/B/C Test & Compare was not started. Short, captions, ledger and rotation done by hand."
+ },
+ {
+  "slug": "howto-battery-percentage-not-showing-menu-bar",
+  "app": "batterymeter",
+  "date": "2026-10-27",
+  "title": "Battery percentage not showing in the menu bar on Mac (where Show Percentage moved)",
+  "long_id": "iOzRKPwgVUM",
+  "short_id": "iHQFMI1E_QY",
+  "link_arm": "B",
+  "link_utm_content": "howto-battery-percentage-not-showing-menu-bar",
+  "sources": [
+   "https://discussions.apple.com/thread/252038457",
+   "https://discussions.apple.com/thread/254295596",
+   "https://eshop.macsales.com/blog/72351-show-battery-level-indicator-big-sur/"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "iOzRKPwgVUM",
+    "caption_id": "AUieDabWykwRf29HSg7lySF-pNGBJeJmgLNUCr_wXwRkVDtg1SyqEUdL"
+   },
+   "short": {
+    "video_id": "iHQFMI1E_QY",
+    "caption_id": "AUieDaYGApTSgGRMfSLfaUUz4rnKOgu6U_qZo3fXX6K33VQ89xSjFWvi"
+   }
+  },
+  "instagram": {
+   "ok": true
+  }
  }
 ]

@@ -1,0 +1,51 @@
+{
+ "id": "howto-battery-percentage-not-showing-menu-bar",
+ "app": "batterymeter",
+ "title": "Battery percentage not showing in the menu bar on Mac (where Show Percentage moved)",
+ "short_title": "Battery percentage missing from your Mac menu bar? Here is where the switch went",
+ "url": "purplelink.llc/batterymeter",
+ "page": "https://purplelink.llc/batterymeter/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://discussions.apple.com/thread/252038457",
+  "https://discussions.apple.com/thread/254295596",
+  "https://eshop.macsales.com/blog/72351-show-battery-level-indicator-big-sur/"
+ ],
+ "verify": {
+  "runs": [
+   {"cmd": "sw_vers -productVersion", "output": "27.0.1"}
+  ],
+  "docs": [
+   "https://support.apple.com/guide/mac-help/mchlp1115/mac",
+   "https://support.apple.com/guide/mac-help/mchlad96d366/26/mac/26",
+   "https://support.apple.com/guide/mac-help/mchlad96d366/15.0/mac/15.0"
+  ],
+  "notes": "Apple's Mac User Guide page 'Monitor your Mac's battery' (current version, read 2026-10-27) gives System Settings, Menu Bar, Battery, Battery Options, Show Percentage. The macOS Tahoe 26 page 'Change Menu Bar settings' says the same (Battery Options, show the percentage) and that the percentage is always shown when Battery is in Control Center. The macOS Sequoia 15 page 'Change Control Center settings' lists Battery under Other Modules with Show in Menu Bar, and the percentage option for Mac laptops. The steps are GUI only and were not run: the recording machine is a Mac mini with no battery, so the only command shown is the read-only version check, run on that Mac (macOS 27.0.1). BatteryMeter's page states it shows the charge, an arrow for the direction and the battery power in watts in the menu bar, and how to hide Apple's icon and Command-drag BatteryMeter into its place. The Apple Community threads show people who could not find the percentage or the battery option after the settings moved."
+ },
+ "scenes": [
+  {"type": "hook", "short": true, "kicker": "Mac battery", "title": "No battery percentage in the menu bar", "sub": "Only the icon, or nothing at all.",
+   "narration": "If your MacBook shows only a battery icon in the menu bar, with no percentage, or no battery icon at all, the switch still exists. It has just moved more than once."},
+  {"type": "cause", "text": "The setting has moved between macOS versions. Where it lives depends on yours.",
+   "narration": "Apple has moved this setting several times, from Energy Saver, to Dock and Menu Bar, to Control Center, and now to its own Menu Bar page. So the first question is which version of macOS you have."},
+  {"type": "symptom", "label": "Terminal",
+   "lines": ["$ sw_vers -productVersion", "27.0.1"],
+   "narration": "About This Mac in the Apple menu shows it, or in Terminal, s w underscore vers prints it. This Mac runs macOS 27."},
+  {"type": "steps", "short": true, "label": "macOS Tahoe 26 and later",
+   "lines": ["Open System Settings", "Click Menu Bar in the sidebar", "Select Battery, then click Battery Options", "Turn on Show Percentage"],
+   "ui": "If Battery sits in Control Center, the percentage always shows there.",
+   "narration": "On macOS Tahoe and later, open System Settings and click Menu Bar in the sidebar. Select Battery, click Battery Options, and turn on Show Percentage."},
+  {"type": "steps", "short": true, "label": "macOS Sequoia 15 and earlier",
+   "lines": ["Open System Settings", "Click Control Center", "Find Battery under Other Modules", "Turn on Show in Menu Bar, then Show Percentage"],
+   "ui": "These options appear on Mac laptops only.",
+   "narration": "On Sequoia and a few versions before it, click Control Center instead. Find Battery under Other Modules, turn on Show in Menu Bar, then turn on Show Percentage. These options only appear on Mac laptops."},
+  {"type": "app", "name": "BatteryMeter", "line": "Shows the charge, an arrow for the direction it is moving, and the battery's power in watts in the menu bar.",
+   "url": "purplelink.llc/batterymeter", "img": "site/batterymeter/img/live-charging-1120.webp", "icon": "site/assets/batterymeter-icon.webp",
+   "narration": "BatteryMeter is a free app for Apple silicon MacBooks. It shows the charge, an arrow for the direction it is moving, and the battery's power in watts. BatteryMeter can also sit where Apple's icon was."}
+ ],
+ "thumbs": {
+  "A": {"kind": "error", "pill": "Mac battery", "msg": "Battery percentage not showing"},
+  "B": {"kind": "long", "pill": "System Settings", "msg": "Show Percentage moved", "n": 1, "unit": "switch", "sub": "now under Menu Bar"},
+  "C": {"kind": "product", "name": "BatteryMeter", "line": "Percent, direction and watts", "img": "site/batterymeter/img/live-charging-1120.webp", "icon": "site/assets/batterymeter-icon.webp", "zoom": 1.3, "pos": "100% 0%"}
+ }
+}
