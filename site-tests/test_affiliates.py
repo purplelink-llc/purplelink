@@ -15,7 +15,7 @@ PAGE = '<html><body><h1 class="post-title">T</h1><p><a class="x" href="https://s
 
 def live_setapp(**kw):
     base = next(p for p in aff.REGISTRY if p.id == "setapp")
-    return dataclasses.replace(base, status="approved", link="https://setapp.sjv.io/abc123", **kw)
+    return dataclasses.replace(base, status="approved", domains=("setapp.com",), prefix="", link="https://setapp.sjv.io/abc123", **kw)
 
 
 class Rewrite(unittest.TestCase):
@@ -62,9 +62,14 @@ class Rewrite(unittest.TestCase):
                 # approved 2026-10-13 (Tolt): any wordvice.com URL plus ?aff=benjamin
                 self.assertEqual((p.status, p.link, p.deep_link, p.tag, p.tag_param), ("approved", "", "", "benjamin", "aff"))
                 continue
+            if i == "setapp":
+                # approved on Impact 2026-10-26: per-app links, recognised by prefix
+                self.assertEqual((p.status, p.link, p.deep_link, p.tag, p.prefix),
+                                 ("approved", "", "", "", "https://setapp.sjv.io/c/7961034/"))
+                continue
             # Proton and pCloud were applied for through CJ on 2026-10-14.
             # 1Password and Proton declined on CJ (seen 2026-10-24).
-            expected = {"1password": "rejected", "proton": "rejected"}.get(i, "applied" if i in ("setapp", "pcloud") else "candidate")
+            expected = {"1password": "rejected", "proton": "rejected"}.get(i, "applied" if i == "pcloud" else "candidate")
             self.assertEqual((p.status, p.link, p.deep_link, p.tag), (expected, "", "", ""), i)
             self.assertTrue(p.source_url.startswith("http"), i)
 
@@ -141,7 +146,7 @@ class Registry(unittest.TestCase):
         self.assertEqual(aff.check_registry(), [])
 
     def test_unapproved_program_with_a_link_is_a_problem(self):
-        bad = dataclasses.replace(next(p for p in aff.REGISTRY if p.id == "setapp"), link="https://x.example/a")
+        bad = dataclasses.replace(next(p for p in aff.REGISTRY if p.id == "pcloud"), link="https://x.example/a")
         self.assertTrue(any("not approved" in p for p in aff.check_registry((bad,))))
 
     def test_approved_terms_go_stale(self):
