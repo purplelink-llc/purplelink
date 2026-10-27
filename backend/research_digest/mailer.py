@@ -37,12 +37,23 @@ BUTTONDOWN_API_URL = "https://api.buttondown.email/v1/emails"
 SUBSCRIBER_SEND_DELAY = timedelta(hours=24)
 
 
-async def notify_review(client, digest: WeeklyDigest, resend_key: str) -> bool:
+async def notify_review(client, digest: WeeklyDigest, resend_key: str,
+                        updated_articles: list[str] | None = None) -> bool:
     if not resend_key:
         logger.info("mailer: no RESEND_API_KEY; skipping review email")
         return False
     url = post_url(digest.slug)
     e = html.escape
+    updated_articles = updated_articles or []
+    # The evergreen updates auto-publish, so the review email is where they get
+    # a human look. Say how to pull one, as the roundup note below does.
+    evergreen_block = (
+        '<p style="font-weight:600;margin:24px 0 6px">Evergreen articles updated</p><ul style="padding-left:18px">'
+        + "".join(f'<li><a href="{e(u)}#newer-research">{e(u)}</a></li>' for u in updated_articles)
+        + '</ul><p style="font-size:13px;color:#8a9993">To pull an entry, delete it from <code>research/evergreen.json</code>; the next run re-renders the section.</p>'
+        if updated_articles else
+        '<p style="font-size:13px;color:#8a9993;margin-top:24px">No evergreen article matched this week\'s papers.</p>'
+    )
     rows = "".join(
         f'<li style="margin-bottom:10px"><a href="{e(it.paper.url)}">{e(it.paper.title)}</a>'
         f'<br><span style="color:#8a9993;font-size:13px">{e(it.paper.venue)} &middot; '
@@ -72,6 +83,7 @@ async def notify_review(client, digest: WeeklyDigest, resend_key: str) -> bool:
   <p style="margin:22px 0"><a href="{url}" style="background:#2f6f5e;color:#fff;padding:12px 24px;border-radius:100px;text-decoration:none;font-weight:600">Review the live post</a></p>
   <p style="font-weight:600;margin-bottom:6px">Papers included:</p>
   <ol style="padding-left:18px">{rows}</ol>
+  {evergreen_block}
   {reddit_block}
   <p style="font-size:13px;color:#8a9993;margin-top:24px">To pull a post, delete <code>research/{e(digest.slug)}/</code> from the repo (Netlify redeploys). Each summary is drawn from the abstract only.</p>
 </div>"""
@@ -79,6 +91,8 @@ async def notify_review(client, digest: WeeklyDigest, resend_key: str) -> bool:
     text = (f"Weekly research roundup live: {digest.week_label} ({digest.count} papers).\n"
             f"Review: {url}\n\n" +
             "\n".join(f"- {it.paper.title} ({it.paper.venue}) {it.paper.url}" for it in digest.items)
+            + "\n\nEvergreen articles updated:\n"
+            + ("\n".join(f"- {u}#newer-research" for u in updated_articles) or "- none this week")
             + f"\n\n--- paste-ready post for r/GLP_Research ---\n\n{r_title}\n\n{r_body}\n")
     try:
         resp = await client.post(

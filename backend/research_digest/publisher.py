@@ -13,7 +13,7 @@ import os
 import re
 
 from .models import WeeklyDigest
-from .renderer import render_post_html, render_hub_html, post_url
+from .renderer import POST_ROBOTS, render_post_html, render_hub_html
 
 MANIFEST_REL = "research/index.json"
 HUB_URL = "https://getmuscleonglp.com/research/"
@@ -34,16 +34,43 @@ def _url_block(loc: str, date: str, freq: str, prio: str) -> str:
             f"    <changefreq>{freq}</changefreq>\n    <priority>{prio}</priority>\n  </url>\n")
 
 
+_POST_ENTRY = re.compile(
+    r"[ \t]*<url>\s*<loc>https://getmuscleonglp\.com/research/\d{4}-\d{2}-\d{2}/</loc>.*?</url>\n?", re.S)
+_POST_DIR = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+_ROBOTS_META = re.compile(r'<meta name="robots" content="[^"]*">')
+
+
 def _sitemap_add(xml: str, slug: str, date: str) -> str:
-    additions = []
+    """Keep the /research/ hub listed and current; keep weekly posts out.
+
+    Posts are noindex (renderer.POST_ROBOTS), so listing them would send search
+    engines URLs they are told not to index. *slug* is no longer listed; the
+    argument stays so callers need not change.
+    """
+    xml = _POST_ENTRY.sub("", xml)
     if f"{HUB_URL}</loc>" not in xml:
-        additions.append(_url_block(HUB_URL, date, "weekly", "0.9"))
-    else:
-        xml = bump_lastmod(xml, HUB_URL, date)
-    post = post_url(slug)
-    if post not in xml:
-        additions.append(_url_block(post, date, "monthly", "0.7"))
-    return xml.replace("</urlset>", "".join(additions) + "</urlset>") if additions else xml
+        return xml.replace("</urlset>", _url_block(HUB_URL, date, "weekly", "0.9") + "</urlset>")
+    return bump_lastmod(xml, HUB_URL, date)
+
+
+def noindex_posts(site_dir: str) -> int:
+    """Give every existing weekly post the current POST_ROBOTS. Returns pages changed."""
+    root = os.path.join(site_dir, "research")
+    if not os.path.isdir(root):
+        return 0
+    changed = 0
+    for name in sorted(os.listdir(root)):
+        page = os.path.join(root, name, "index.html")
+        if not _POST_DIR.match(name) or not os.path.exists(page):
+            continue
+        with open(page) as f:
+            text = f.read()
+        new = _ROBOTS_META.sub(f'<meta name="robots" content="{POST_ROBOTS}">', text, count=1)
+        if new != text:
+            with open(page, "w") as f:
+                f.write(new)
+            changed += 1
+    return changed
 
 
 def write_into(site_dir: str, digest: WeeklyDigest) -> list[dict]:
@@ -71,4 +98,5 @@ def write_into(site_dir: str, digest: WeeklyDigest) -> list[dict]:
         new = _sitemap_add(xml, digest.slug, digest.date)
         if new != xml:
             open(smp, "w").write(new)
+    noindex_posts(site_dir)
     return manifest

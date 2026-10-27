@@ -11,6 +11,11 @@ import html
 from .models import WeeklyDigest
 
 SITE = "https://getmuscleonglp.com"
+# Weekly posts stay live for subscribers and the monthly guide, but are kept out
+# of search (Ben, 2026-10-26): Google never indexed one, and their findings now
+# go into the evergreen /learn/ articles instead (evergreen.py). "follow" keeps
+# the links to those articles counting.
+POST_ROBOTS = "noindex, follow"
 DISCLAIMER = (
     "This roundup is compiled automatically from the abstracts of newly published "
     "research and is a neutral summary, not medical advice, not peer review, and not "
@@ -109,7 +114,7 @@ def render_post_html(d: WeeklyDigest) -> str:
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <link rel="canonical" href="{post_url(d.slug)}">
-<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="robots" content="{POST_ROBOTS}">
 <meta name="author" content="MuscleOnGLP">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="MuscleOnGLP">

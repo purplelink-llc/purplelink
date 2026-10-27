@@ -44,12 +44,16 @@ def test_bump_lastmod_does_not_touch_a_longer_url_with_the_same_prefix():
     assert bump_lastmod(xml, HUB_URL, "2026-11-02") == xml
 
 
-def test_weekly_roundup_refreshes_the_hub_lastmod():
-    xml = _sitemap((HUB_URL, "2026-08-22"))
+def test_weekly_roundup_refreshes_the_hub_and_keeps_noindex_posts_out():
+    old_post = HUB_URL + "2026-10-19/"
+    learn = "https://getmuscleonglp.com/learn/"
+    xml = _sitemap((HUB_URL, "2026-08-22"), (old_post, "2026-10-19"), (learn, "2026-10-24"))
     out = _sitemap_add(xml, "2026-11-02", "2026-11-02")
     assert f"<loc>{HUB_URL}</loc>\n    <lastmod>2026-11-02</lastmod>" in out
-    assert "<loc>https://getmuscleonglp.com/research/2026-11-02/</loc>" in out
     assert out.count(f"<loc>{HUB_URL}</loc>") == 1
+    # Weekly posts are noindex now: the new one is not added, old ones are removed.
+    assert "/research/2026-11-02/" not in out and old_post not in out
+    assert f"<loc>{learn}</loc>" in out and out.count("<url>") == out.count("</url>") == 2
 
 
 def test_monthly_sitemap_add_refreshes_the_guides_hub(tmp_path):
