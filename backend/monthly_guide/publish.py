@@ -274,12 +274,15 @@ _LANDING_TEMPLATE = """<!DOCTYPE html>
 <meta property="og:title" content="__TITLE__">
 <meta property="og:description" content="A cited monthly synthesis of __LABEL__ GLP-1 and muscle research. $5 PDF.">
 <meta property="og:url" content="__ORIGIN__/guides/__SLUG__/">
-<meta property="og:image" content="__ORIGIN__/assets/og-card.png">
+<meta property="og:image" content="__ORIGIN__/assets/og/research-review.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="GLP-1 and muscle monthly research review: a month of studies in one short PDF">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="__TITLE__">
 <meta name="twitter:description" content="A cited monthly synthesis of __LABEL__ GLP-1 and muscle research. $5 PDF.">
-<meta name="twitter:image" content="__ORIGIN__/assets/og-card.png">
+<meta name="twitter:image" content="__ORIGIN__/assets/og/research-review.jpg">
 
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="stylesheet" href="/styles.css">
@@ -292,7 +295,7 @@ _LANDING_TEMPLATE = """<!DOCTYPE html>
   "description": "A $5 PDF that synthesizes every GLP-1 and muscle research roundup MuscleOnGLP published in __LABEL__ into one cited monthly review.",
   "brand": { "@type": "Brand", "name": "MuscleOnGLP" },
   "category": "Health & Fitness Guide",
-  "image": "__ORIGIN__/assets/og-card.png",
+  "image": "__ORIGIN__/assets/og/research-review.jpg",
   "offers": {
     "@type": "Offer",
     "price": "5.00",
