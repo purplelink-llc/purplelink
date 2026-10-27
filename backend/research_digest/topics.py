@@ -49,6 +49,17 @@ TOPICS: dict[str, dict] = {
         "scope": "Protein sources and quality (whey, plant, collagen, leucine) for muscle retention during weight loss.",
         "queries": ["best protein for glp-1", "whey protein glp-1", "best protein powder for glp 1"],
     },
+    "best-protein-shakes-glp1": {
+        "headline": "Best protein shakes for GLP-1 users: a 5-point label checklist",
+        "scope": "Protein shakes and powders for GLP-1 users: protein and leucine per serving, protein quality, tolerability, and supplement testing.",
+        "queries": ["best protein powder for glp 1", "whey protein glp-1", "easy to drink protein shake for glp-1 nausea",
+                    "which brands offer plant-based protein shakes suitable for glp-1 patients?"],
+    },
+    "fuel-workouts-glp1": {
+        "headline": "How to fuel workouts on a GLP-1 when you are barely hungry",
+        "scope": "Eating, protein timing and hydration around resistance exercise for people on GLP-1s, including hypoglycemia risk with diabetes medications.",
+        "queries": ["how to fuel workouts on glp-1", "semaglutide resistance training routine", "protein after workout glp-1"],
+    },
     "glp1-vegan-vegetarian-protein": {
         "headline": "Hitting your protein target on a GLP-1 as a vegetarian or vegan",
         "scope": "Plant-based protein adequacy and quality for GLP-1 users.",
