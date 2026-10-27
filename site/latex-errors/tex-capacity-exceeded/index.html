@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>TeX Capacity Exceeded, Sorry: What It Means and How to Fix It | Purplelink</title>
+    <meta name="description" content="What &quot;! TeX capacity exceeded, sorry [input stack size=10000]&quot; and its variants (grouping levels, save size, main memory size, number of strings) mean, a real log excerpt, the usual causes and the fix for each.">
+    <link rel="canonical" href="https://purplelink.llc/latex-errors/tex-capacity-exceeded/">
+    <meta property="og:title" content="TeX capacity exceeded, sorry: what it means and how to fix it">
+    <meta property="og:description" content="What &quot;! TeX capacity exceeded, sorry [input stack size=10000]&quot; and its variants (grouping levels, save size, main memory size, number of strings) mean, a real log excerpt, the usual causes and the fix for each.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/latex-errors/tex-capacity-exceeded/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/latex-errors.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TeX capacity exceeded, sorry: what it means and how to fix it">
+    <meta name="twitter:description" content="What &quot;! TeX capacity exceeded, sorry [input stack size=10000]&quot; and its variants (grouping levels, save size, main memory size, number of strings) mean, a real log excerpt, the usual causes and the fix for each.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/latex-errors.png">
+    <meta name="twitter:image:alt" content="TeX capacity exceeded, sorry: what it means and how to fix it">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "headline": "TeX capacity exceeded, sorry: what it means and how to fix it",
+      "description": "What \"! TeX capacity exceeded, sorry [input stack size=10000]\" and its variants (grouping levels, save size, main memory size, number of strings) mean, a real log excerpt, the usual causes and the fix for each.",
+      "url": "https://purplelink.llc/latex-errors/tex-capacity-exceeded/",
+      "mainEntityOfPage": "https://purplelink.llc/latex-errors/tex-capacity-exceeded/",
+      "inLanguage": "en",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Purplelink LLC",
+        "url": "https://purplelink.llc/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://purplelink.llc/assets/purplelink-logo.png"
+        }
+      },
+      "datePublished": "2026-10-27",
+      "dateModified": "2026-10-27",
+      "image": "https://purplelink.llc/assets/og/latex-errors.png"
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Should I increase TeX's memory in texmf.cnf?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Rarely. When a command calls itself, it fills any limit, so a larger limit only makes the error take longer. A changed texmf.cnf also applies only to your computer, so co-authors and journal systems still fail. Find the recursion first."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does the log name a LaTeX command I never used?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The line after the message shows the command TeX was expanding when the table filled. That can be an internal LaTeX command called by your own definition. Look at the l. line for the command of yours that started it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does LuaLaTeX avoid this error?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "For main memory, often yes: LuaLaTeX allocates memory as it needs it, so a large figure that fails in pdfLaTeX may build. A command that calls itself still fails in LuaLaTeX with the same input stack message."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "LaTeX errors",
+          "item": "https://purplelink.llc/latex-errors/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "TeX capacity exceeded, sorry",
+          "item": "https://purplelink.llc/latex-errors/tex-capacity-exceeded/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=f0ab0f06a1"></script>
+    <link rel="stylesheet" href="/styles.css?v=f29b65c694">
+    <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
+    <script src="/site.js?v=b053086227" defer></script>
+    <script src="/motion.js?v=d35f4b4ee4" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/latex-errors/">← All LaTeX errors</a>
+      <div class="post-hero">
+        <h1 class="post-title">TeX capacity exceeded, sorry</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-27">October 27, 2026</time></p>
+        <p class="post-lede">TeX filled one of its fixed-size internal tables and stopped. The name in square brackets says which one. Most of the time the cause is a command that calls itself, not a document that is too big.</p>
+      </div>
+
+      <article class="post-body">
+        <h2>What it means</h2>
+        <p>TeX keeps several internal tables with sizes fixed when the distribution is set up: one for the macros it is in the middle of expanding, one for open groups, one for command names, one for macro definitions and the boxes being built, and others. When one fills up, TeX stops at once. This is a fatal error: the build ends and no PDF is written.</p>
+        <p>The words in square brackets name the table, and the number is its size. The numbers below are the TeX Live 2026 defaults for pdfLaTeX.</p>
+        <ul>
+          <li><code>input stack size=10000</code>: too many macros expanding inside one another. Almost always a command that calls itself.</li>
+          <li><code>grouping levels=255</code>: more than 255 groups open at once, from <code>{</code> or <code>\begingroup</code>. Usually a command that calls itself inside braces.</li>
+          <li><code>save size=200000</code>: too many local changes waiting to be undone at the end of one group, usually from a long loop that runs inside a group.</li>
+          <li><code>main memory size=5000000</code>: no room left for macro definitions and the material being built. A macro that grows without end, or a very large figure.</li>
+          <li><code>number of strings</code>, <code>pool size</code> and <code>hash size</code>: no room for more command names and strings, usually from a loop that creates a new name on every pass.</li>
+          <li><code>buffer size</code>: the buffer that holds the line TeX is reading filled up. A line in a file that is too long usually produces a different message in TeX Live, <code>! Unable to read an entire line---bufsize=200000.</code>, which goes to the terminal and not to the log. Break the line into several.</li>
+        </ul>
+
+        <h2>The log line</h2>
+        <p>This small file triggers the error. The second definition was meant to add text to <code>\term</code>, but it calls <code>\term</code> itself:</p>
+        <pre><code>\documentclass{article}
+\newcommand{\term}{effect size}
+\renewcommand{\term}{\term\ (ES)}
+\begin{document}
+The \term{} is large.
+\end{document}</code></pre>
+        <p>Compiled with pdfLaTeX (TeX Live 2026), it writes this to the <code>.log</code> file:</p>
+        <pre><code>! TeX capacity exceeded, sorry [input stack size=10000].
+\term -&gt;\term
+              \ (ES)
+l.5 The \term
+             {} is large.
+If you really absolutely need more capacity,
+you can ask a wizard to enlarge me.
+
+
+Here is how much of TeX's memory you used:
+ 427 strings out of 468979
+ 8157 string characters out of 5454369
+ 438367 words of memory out of 5000000
+ 29654 multiletter control sequences out of 15000+600000
+ 628489 words of font info for 40 fonts, out of 8000000 for 9000
+ 36 hyphenation exceptions out of 8191
+ 10000i,0n,38p,154b,36s stack positions out of 10000i,1000n,20000p,200000b,200000s
+!  ==> Fatal error occurred, no output PDF file produced!</code></pre>
+        <p>The line after the message shows the macro TeX was expanding, <code>\term</code>, and its definition split at the point TeX had reached: just after the <code>\term</code> at the start. Each <code>\term</code> starts another one before it finishes, so the stack of unfinished macros grows until it holds 10,000. The <code>l.5</code> line is the first use in the document. The memory summary that follows shows which table is full: here <code>10000i</code> out of <code>10000i</code>, the input stack.</p>
+        <p>To try a fix without touching your project, save the example as a <code>.tex</code> file and compile it online with the <a href="/tools/latex-to-pdf/">LaTeX to PDF tool</a>.</p>
+
+        <h2>Why it happens</h2>
+        <p>The causes below are in order of likelihood. Each has a before and an after you can compare with your own source.</p>
+        <h3>1. A command is redefined in terms of itself</h3>
+        <p>Inside <code>\renewcommand</code>, the name always means the new definition, so the command calls itself forever. To extend a command, save a copy of the original under another name first and call the copy. <code>\NewCommandCopy</code> copies any command; for a command without an optional argument, <code>\let\oldterm\term</code> does the same.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>\newcommand{\term}{effect size}
+\renewcommand{\term}{\term\ (ES)}</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\newcommand{\term}{effect size}
+\NewCommandCopy{\oldterm}{\term}
+\renewcommand{\term}{\oldterm\ (ES)}</code></pre>
+        <h3>2. The same mistake inside braces or a group</h3>
+        <p>When the self-call sits inside braces, or inside a command such as <code>\textit</code> that opens a group, TeX runs out of group levels first and the bracket says <code>grouping levels=255</code>. The command named in the log can then be an internal LaTeX one, such as <code>\maybe@load@fontshape</code>, because it was the one opening the group. The fix is the same as for cause 1.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>\renewcommand{\term}{\textit{\term}}
+% ! TeX capacity exceeded, sorry [grouping levels=255].</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\NewCommandCopy{\oldterm}{\term}
+\renewcommand{\term}{\textit{\oldterm}}</code></pre>
+        <h3>3. A loop that never ends or makes too much</h3>
+        <p>A loop whose end condition is never met, or that defines a new command name on every pass with <code>\csname</code>, runs out of strings, names or save space. Check the end condition, and store data in fewer names.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>\loop\advance\n by 1 \expandafter\def\csname item\the\n\endcsname{x}\ifnum\n&lt;2000000 \repeat
+% ! TeX capacity exceeded, sorry [number of strings=468979].</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\loop\advance\n by 1 \expandafter\def\csname item\the\n\endcsname{x}\ifnum\n&lt;200 \repeat</code></pre>
+        <h3>4. A macro that grows without end</h3>
+        <p>A definition that adds to itself on every expansion fills main memory, especially inside <code>\edef</code>, which expands everything at once. Give the macro a way to stop.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>\def\a{x\a}
+\edef\b{\a}
+% ! TeX capacity exceeded, sorry [main memory size=5000000].</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\def\a{x}
+\edef\b{\a}</code></pre>
+        <h3>5. A very large TikZ or pgfplots figure</h3>
+        <p>A plot with many thousands of points can fill main memory in pdfLaTeX even when nothing is wrong with the code. Plot fewer points with pgfplots' <code>each nth point</code> key, externalize the figure so it is built once as its own PDF, or compile with LuaLaTeX, which allocates memory as it needs it. Externalizing needs shell escape, the <code>-shell-escape</code> option to pdflatex.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>\usepackage{pgfplots}
+% a plot of 200,000 data points</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\usepackage{pgfplots}
+\usetikzlibrary{external}
+\tikzexternalize
+% compile with: pdflatex -shell-escape main.tex</code></pre>
+
+        <h2>Raising the limits</h2>
+        <p>The sizes come from <code>texmf.cnf</code>, and they can be raised. That is rarely the right fix. A command that calls itself fills any size, so the error only takes longer to arrive. A changed <code>texmf.cnf</code> also applies only to your own computer, so co-authors and a journal's build system still fail on the same file. Raise a limit only when you know the document is large and nothing in it repeats without end.</p>
+
+        <h2>How to find the line</h2>
+        <p>Read the line just below the message first. It names the macro TeX was expanding and shows where in its definition TeX had got to. If it is your own command, look at its definition. If it is an internal LaTeX command, look at the <code>l.</code> line for the command of yours that started it.</p>
+        <p>When you run <code>pdflatex</code> in a terminal without <code>-interaction=nonstopmode</code>, TeX stops at the error and prints a <code>?</code> prompt. Press Return to carry on past the error, type <code>x</code> to quit, or type <code>h</code> for TeX's own help text, which is the paragraph you see after the <code>l.</code> line in the log. Editors run TeX in non-stop mode, so you get the log and never see the prompt.</p>
+        <p>What each editor shows:</p>
+        <ul>
+          <li><strong>ModernTex</strong>: when a build fails, the Build button shows the error count and the last good PDF stays on screen. The Build Results panel lists each error, warning and note in plain language, <strong>Compile &rsaquo; Next Issue</strong> steps through them, and <strong>Raw Log</strong> shows the full LaTeX log. See <a href="/moderntex/">ModernTex</a>.</li>
+          <li><strong>Overleaf</strong>: the logs panel, opened with the button next to Recompile, lists each error and warning with its file and line, and the editor marks the line in the gutter. The unprocessed log is at the bottom of that panel.</li>
+          <li><strong>TeXShop</strong>: the console window shows the log as it is written and stops at the error. <strong>Goto Error</strong> moves the source window to the line. TeXShop's default pdfLaTeX command includes <code>--file-line-error</code>, so the message starts with the file and line instead of <code>!</code>: <code>./main.tex:5: TeX capacity exceeded, sorry [input stack size=10000].</code></li>
+        </ul>
+
+        <h2>Related errors</h2>
+        <ul>
+          <li><a href="/latex-errors/too-many-closing-braces/">Too many }'s / Missing } inserted</a>: braces that do not pair up, a common reason a group is never closed.</li>
+          <li><a href="/latex-errors/runaway-argument/">Runaway argument</a>: another error where TeX reads on far past the mistake.</li>
+          <li><a href="/latex-errors/undefined-control-sequence/">Undefined control sequence</a>: what you get when a renamed copy such as <code>\oldterm</code> is used before it is defined.</li>
+        </ul>
+      </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>Should I increase TeX's memory in texmf.cnf?</summary><div class="faq-body">Rarely. When a command calls itself, it fills any limit, so a larger limit only makes the error take longer. A changed texmf.cnf also applies only to your computer, so co-authors and journal systems still fail. Find the recursion first.</div></details>
+        <details><summary>Why does the log name a LaTeX command I never used?</summary><div class="faq-body">The line after the message shows the command TeX was expanding when the table filled. That can be an internal LaTeX command called by your own definition. Look at the l. line for the command of yours that started it.</div></details>
+        <details><summary>Does LuaLaTeX avoid this error?</summary><div class="faq-body">For main memory, often yes: LuaLaTeX allocates memory as it needs it, so a large figure that fails in pdfLaTeX may build. A command that calls itself still fails in LuaLaTeX with the same input stack message.</div></details>
+      </section>
+
+      <!-- moderntex-cta -->
+      <section class="waitlist-section mt-cta">
+        <p class="eyebrow">From the maker of these tools</p>
+        <h2>Writing LaTeX on a Mac?</h2>
+        <p>ModernTex is a native macOS LaTeX studio. It has multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.</p>
+        <div class="waitlist-actions">
+          <a class="btn btn-primary" href="/moderntex/?from=latex-errors">Get ModernTex &mdash; $19.99</a>
+          <a class="btn btn-ghost" href="/moderntex/?from=latex-errors">See what it does</a>
+        </div>
+        <p class="waitlist-fine-print">Requires macOS 14 or later. Free 7-day trial, no account.</p>
+      </section>
+
+      <nav class="tool-related" aria-label="More on LaTeX errors">
+        <h2>More on LaTeX errors</h2>
+        <ul>
+          <li><a href="/latex-errors/">All LaTeX error messages</a></li>
+          <li><a href="/guides/latex/">LaTeX guides for academic writing</a></li>
+          <li><a href="/guides/best-mac-latex-editors/">Best LaTeX editors for Mac, compared</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/suite/">Mac Suite</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=e11921f8d6" defer></script>
+</body>
+</html>

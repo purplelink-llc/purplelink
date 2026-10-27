@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Metric (TFM) File Not Found: What It Means and How to Fix It | Purplelink</title>
+    <meta name="description" content="What &quot;! Font ... not loadable: Metric (TFM) file not found&quot; means in pdfLaTeX, XeLaTeX and LuaLaTeX, a real log excerpt, the usual causes (font package not installed, misspelled font name, font not installed on the computer) and the fix for each.">
+    <link rel="canonical" href="https://purplelink.llc/latex-errors/tfm-file-not-found/">
+    <meta property="og:title" content="Metric (TFM) file not found: what it means and how to fix it">
+    <meta property="og:description" content="What &quot;! Font ... not loadable: Metric (TFM) file not found&quot; means in pdfLaTeX, XeLaTeX and LuaLaTeX, a real log excerpt, the usual causes (font package not installed, misspelled font name, font not installed on the computer) and the fix for each.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/latex-errors/tfm-file-not-found/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/latex-errors.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Metric (TFM) file not found: what it means and how to fix it">
+    <meta name="twitter:description" content="What &quot;! Font ... not loadable: Metric (TFM) file not found&quot; means in pdfLaTeX, XeLaTeX and LuaLaTeX, a real log excerpt, the usual causes (font package not installed, misspelled font name, font not installed on the computer) and the fix for each.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/latex-errors.png">
+    <meta name="twitter:image:alt" content="Metric (TFM) file not found: what it means and how to fix it">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "headline": "Metric (TFM) file not found: what it means and how to fix it",
+      "description": "What \"! Font ... not loadable: Metric (TFM) file not found\" means in pdfLaTeX, XeLaTeX and LuaLaTeX, a real log excerpt, the usual causes (font package not installed, misspelled font name, font not installed on the computer) and the fix for each.",
+      "url": "https://purplelink.llc/latex-errors/tfm-file-not-found/",
+      "mainEntityOfPage": "https://purplelink.llc/latex-errors/tfm-file-not-found/",
+      "inLanguage": "en",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Purplelink LLC",
+        "url": "https://purplelink.llc/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://purplelink.llc/assets/purplelink-logo.png"
+        }
+      },
+      "datePublished": "2026-10-27",
+      "dateModified": "2026-10-27",
+      "image": "https://purplelink.llc/assets/og/latex-errors.png"
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is a .tfm file?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A TeX font metric file. It holds the size of every character in a font, which TeX needs to set text in it. pdfLaTeX can only use a font that has .tfm files in the TeX distribution."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which package do I install for a missing .tfm file?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Take the name after the = sign in the message, add .tfm, and run tlmgr search --global --file with it, for example tlmgr search --global --file pbkl8t.tfm. It prints the package that contains the file. Install that package with tlmgr install."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why can XeLaTeX use a font that pdfLaTeX cannot?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "pdfLaTeX only uses fonts set up for TeX, with .tfm metric files. XeLaTeX and LuaLaTeX with the fontspec package can also load OpenType and TrueType fonts installed on the computer, by name."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "LaTeX errors",
+          "item": "https://purplelink.llc/latex-errors/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Font not loadable: Metric (TFM) file not found",
+          "item": "https://purplelink.llc/latex-errors/tfm-file-not-found/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=f0ab0f06a1"></script>
+    <link rel="stylesheet" href="/styles.css?v=f29b65c694">
+    <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
+    <script src="/site.js?v=b053086227" defer></script>
+    <script src="/motion.js?v=d35f4b4ee4" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/latex-errors/">← All LaTeX errors</a>
+      <div class="post-hero">
+        <h1 class="post-title">Font not loadable: Metric (TFM) file not found</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-27">October 27, 2026</time></p>
+        <p class="post-lede">TeX tried to load a font and could not find its metric file. The font package is not installed, the font name is misspelled, or, in XeLaTeX and LuaLaTeX, the font is not installed on the computer.</p>
+      </div>
+
+      <article class="post-body">
+        <h2>What it means</h2>
+        <p>Before TeX can set a character in a font, it reads the font's metric file, a <code>.tfm</code> file with the size of every character. pdfLaTeX finds fonts only through these files. When the file named in the message is not in the TeX distribution, TeX reports this error, uses <code>\nullfont</code>, a font with no characters, and carries on. Text that should have been set in the missing font is left out of the PDF, and the log has a line such as <code>Missing character: There is no R in font nullfont!</code> for each character it dropped.</p>
+        <p>XeLaTeX and LuaLaTeX can also load fonts installed on the computer. Their versions of the message end differently: <code>Metric (TFM) file or installed font not found.</code> from XeLaTeX and <code>metric data not found or bad.</code> from LuaLaTeX.</p>
+
+        <h2>The log line</h2>
+        <p>This small file triggers the error on a TinyTeX installation, which includes the <code>bookman</code> package's style file but not the Bookman fonts:</p>
+        <pre><code>\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage{bookman}
+\begin{document}
+Results are in Table 2.
+\end{document}</code></pre>
+        <p>Compiled with pdfLaTeX (TeX Live 2026), it writes this to the <code>.log</code> file:</p>
+        <pre><code>! Font T1/pbk/m/n/10=pbkl8t at 10.0pt not loadable: Metric (TFM) file not found.
+&lt;to be read again&gt;
+                   relax
+l.4 \begin{document}
+
+I wasn't able to read the size data for this font,
+so I will ignore the font specification.
+[Wizards can fix TFM files using TFtoPL/PLtoTF.]
+You might try inserting a different font spec;
+e.g., type `I\font&lt;same font id&gt;=&lt;substitute font name&gt;'.
+
+! Font \T1/pbk/l/n/10=nullfont not loadable: Metric (TFM) file not found.</code></pre>
+        <p>The part after the <code>=</code> sign is the metric file TeX looked for: <code>pbkl8t</code>, so <code>pbkl8t.tfm</code>. The part before it is LaTeX's name for the font: encoding <code>T1</code>, family <code>pbk</code> (Bookman), weight <code>m</code>, upright shape <code>n</code>, 10 points. The <code>l.4</code> line points at <code>\begin{document}</code>, not at the <code>\usepackage</code> line, because LaTeX loads the main font when the document starts. The second error, with <code>nullfont</code>, follows from the first and goes away with it.</p>
+        <p>With XeLaTeX or LuaLaTeX and <code>\setmainfont{Minion Pro}</code> on a computer without that font, the first message comes from the fontspec package:</p>
+        <pre><code>! Package fontspec Error:
+(fontspec)                The font "Minion Pro" cannot be found; this may be
+(fontspec)                but usually is not a fontspec bug. Either there is
+(fontspec)                a typo in the font name/file, the font is not
+(fontspec)                installed (correctly), or there is a bug in the
+(fontspec)                underlying font loading engine (XeTeX/luaotfload).</code></pre>
+        <p>Further down the same XeLaTeX log is the engine's own message:</p>
+        <pre><code>! Font TU/MinionPro(0)/m/n/10="Minion Pro" at 10.0pt not loadable: Metric (TFM) file or installed font not found.</code></pre>
+        <p>To try a fix without touching your project, save the pdfLaTeX example as a <code>.tex</code> file and compile it online with the <a href="/tools/latex-to-pdf/">LaTeX to PDF tool</a>.</p>
+
+        <h2>Why it happens</h2>
+        <p>The causes below are in order of likelihood. Each has a before and an after you can compare with your own source.</p>
+        <h3>1. The font package is not installed</h3>
+        <p>Small distributions such as TinyTeX and BasicTeX ship a subset of packages, and a font's style file can be installed while its fonts are not. Search for the package that contains the metric file, using the name after the <code>=</code> sign, then <a href="/guides/install-latex-on-mac/">install it with tlmgr</a>, the TeX Live package manager. A full TeX Live or MacTeX installation already includes these fonts.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>\usepackage{bookman}
+% ! Font T1/pbk/m/n/10=pbkl8t at 10.0pt not loadable: Metric (TFM) file not found.</code></pre>
+        <p><strong>After (in a terminal)</strong></p>
+        <pre><code>tlmgr search --global --file pbkl8t.tfm
+# bookman:
+#     texmf-dist/fonts/tfm/adobe/bookman/pbkl8t.tfm
+tlmgr install bookman
+pdflatex main.tex</code></pre>
+        <p><code>tlmgr install</code> also registers the font's map file, which pdfLaTeX uses to find the font outlines it embeds in the PDF.</p>
+        <h3>2. The font name is misspelled</h3>
+        <p>A name given directly to <code>\font</code>, or in a <code>\DeclareFontShape</code> line, has to match a metric file exactly. A misspelled family name in <code>\fontfamily</code> gives a different message, a <code>Font shape ... undefined</code> warning, and LaTeX substitutes another font.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>\font\big=cmbx100 at 14pt
+% ! Font \big=cmbx100 at 14.0pt not loadable: Metric (TFM) file not found.</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\font\big=cmbx10 at 14pt</code></pre>
+        <h3>3. XeLaTeX or LuaLaTeX cannot find the font on the computer</h3>
+        <p>With fontspec, the name in <code>\setmainfont</code> has to match an installed font. On a Mac, open Font Book and copy the family name exactly, with its spaces and capitals. If the font is not installed, install it or choose one that is.</p>
+        <p><strong>Before</strong></p>
+        <pre><code>\usepackage{fontspec}
+\setmainfont{Minion Pro}
+% ! Package fontspec Error: The font "Minion Pro" cannot be found</code></pre>
+        <p><strong>After</strong></p>
+        <pre><code>\usepackage{fontspec}
+\setmainfont{Palatino}</code></pre>
+        <h3>4. Font files copied in by hand are not in TeX's file database</h3>
+        <p>If you copied <code>.tfm</code> files into the distribution's local tree by hand, run <code>mktexlsr</code> so that TeX's file database includes them. If the font came with a <code>.map</code> file, enable it as well, with <code>updmap-sys --enable Map=</code> and the map file's name, so pdfLaTeX can embed the font. With MacTeX, both commands need <code>sudo</code>. A <code>tlmgr install</code> does both for you.</p>
+        <p><strong>Before</strong></p>
+        <pre><code># .tfm files copied into texmf-local, nothing else run</code></pre>
+        <p><strong>After (in a terminal)</strong></p>
+        <pre><code>mktexlsr
+updmap-sys --enable Map=myfont.map</code></pre>
+
+        <h2>How to find the line</h2>
+        <p>For this error the font name in the message matters more than the line number. The <code>l.</code> line is where TeX first needed the font, which for the main text font is <code>\begin{document}</code>. Search your preamble for the package or command that chose the font.</p>
+        <p>When you run <code>pdflatex</code> in a terminal without <code>-interaction=nonstopmode</code>, TeX stops at the error and prints a <code>?</code> prompt. Press Return to carry on past the error, type <code>x</code> to quit, or type <code>h</code> for TeX's own help text, which is the paragraph you see after the <code>l.</code> line in the log. Editors run TeX in non-stop mode, so you get the log and never see the prompt.</p>
+        <p>What each editor shows:</p>
+        <ul>
+          <li><strong>ModernTex</strong>: when a build fails, the Build button shows the error count and the last good PDF stays on screen. The Build Results panel lists each error, warning and note in plain language, <strong>Compile &rsaquo; Next Issue</strong> steps through them, and <strong>Raw Log</strong> shows the full LaTeX log. See <a href="/moderntex/">ModernTex</a>.</li>
+          <li><strong>Overleaf</strong>: the logs panel, opened with the button next to Recompile, lists each error and warning with its file and line, and the editor marks the line in the gutter. The unprocessed log is at the bottom of that panel.</li>
+          <li><strong>TeXShop</strong>: the console window shows the log as it is written and stops at the error. <strong>Goto Error</strong> moves the source window to the line. TeXShop's default pdfLaTeX command includes <code>--file-line-error</code>, so the message starts with the file and line instead of <code>!</code>: <code>./main.tex:4: Font T1/pbk/m/n/10=pbkl8t at 10.0pt not loadable: ...</code></li>
+        </ul>
+
+        <h2>Related errors</h2>
+        <ul>
+          <li><a href="/latex-errors/file-not-found/">File `x.sty' not found</a>: the same problem one step earlier, when the package's style file is missing too.</li>
+          <li><a href="/latex-errors/tex-capacity-exceeded/">TeX capacity exceeded, sorry</a>: the other error where the log names something inside TeX rather than your source.</li>
+        </ul>
+      </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>What is a .tfm file?</summary><div class="faq-body">A TeX font metric file. It holds the size of every character in a font, which TeX needs to set text in it. pdfLaTeX can only use a font that has .tfm files in the TeX distribution.</div></details>
+        <details><summary>Which package do I install for a missing .tfm file?</summary><div class="faq-body">Take the name after the = sign in the message, add .tfm, and run tlmgr search --global --file with it, for example tlmgr search --global --file pbkl8t.tfm. It prints the package that contains the file. Install that package with tlmgr install.</div></details>
+        <details><summary>Why can XeLaTeX use a font that pdfLaTeX cannot?</summary><div class="faq-body">pdfLaTeX only uses fonts set up for TeX, with .tfm metric files. XeLaTeX and LuaLaTeX with the fontspec package can also load OpenType and TrueType fonts installed on the computer, by name.</div></details>
+      </section>
+
+      <!-- moderntex-cta -->
+      <section class="waitlist-section mt-cta">
+        <p class="eyebrow">From the maker of these tools</p>
+        <h2>Writing LaTeX on a Mac?</h2>
+        <p>ModernTex is a native macOS LaTeX studio. It has multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.</p>
+        <div class="waitlist-actions">
+          <a class="btn btn-primary" href="/moderntex/?from=latex-errors">Get ModernTex &mdash; $19.99</a>
+          <a class="btn btn-ghost" href="/moderntex/?from=latex-errors">See what it does</a>
+        </div>
+        <p class="waitlist-fine-print">Requires macOS 14 or later. Free 7-day trial, no account.</p>
+      </section>
+
+      <nav class="tool-related" aria-label="More on LaTeX errors">
+        <h2>More on LaTeX errors</h2>
+        <ul>
+          <li><a href="/latex-errors/">All LaTeX error messages</a></li>
+          <li><a href="/guides/latex/">LaTeX guides for academic writing</a></li>
+          <li><a href="/guides/best-mac-latex-editors/">Best LaTeX editors for Mac, compared</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/suite/">Mac Suite</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=e11921f8d6" defer></script>
+</body>
+</html>

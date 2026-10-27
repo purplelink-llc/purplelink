@@ -53,7 +53,7 @@ FIELDS = ["date", "videos", "tagged_urls", "views_7d", "views_28d", "search_shar
           "errpage_views_7d", "errpage_views_28d", "band_trials_7d", "band_trials_14d", "band_trials_28d",
           "band_buys_7d", "band_buys_28d"]
 BAND_CHANNEL = "from:latex-errors"   # first-touch label analytics.js gives a visit whose URL has ?from=latex-errors
-ERRPAGE_PREFIX = "/latex-errors"     # the hub and the 12 error pages
+ERRPAGE_PREFIX = "/latex-errors"     # the hub and the error pages
 BAND_MIN_TRIALS_14D = 5
 
 
