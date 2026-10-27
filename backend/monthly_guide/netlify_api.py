@@ -110,6 +110,15 @@ def set_env_var(token: str, site_id: str, key: str, value: str) -> None:
 _SIGNED_URL_ACCEPT = "application/json;type=signed-url"
 
 
+def _api_store(store: str) -> str:
+    """The store name as the Blobs API stores it. @netlify/blobs (which the site's
+    download.mjs reads through) and the Netlify CLI both keep a site-wide store
+    under a "site:" prefix, so a bare name here would land in a separate namespace
+    that nothing reads. That is how research-review-2026-09.pdf was stranded on
+    2026-10-01: uploaded and verified, but invisible to the download function."""
+    return store if store.startswith(("site:", "deploy:")) else f"site:{store}"
+
+
 def _blob_signed_url(client: httpx.Client, token: str, site_id: str,
                      store: str, key: str, method: str) -> str:
     """One leg of the Blobs handshake: ask the Netlify API for a short-lived
@@ -117,7 +126,7 @@ def _blob_signed_url(client: httpx.Client, token: str, site_id: str,
     (the request method to the API is the method you intend to use on the URL)."""
     res = client.request(
         method,
-        f"{NETLIFY_API}/blobs/{site_id}/{store}/{key}",
+        f"{NETLIFY_API}/blobs/{site_id}/{_api_store(store)}/{key}",
         headers={"Authorization": f"Bearer {token}", "Accept": _SIGNED_URL_ACCEPT},
     )
     if res.status_code != 200:
