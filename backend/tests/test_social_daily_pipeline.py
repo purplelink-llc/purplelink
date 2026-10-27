@@ -21,6 +21,13 @@ STATS = {"topPaths": [{"key": "/tools/word-counter/", "count": 90}, {"key": "/gu
                       {"key": "/blog/digest/", "count": 500}]}
 
 
+@pytest.fixture(autouse=True)
+def _clock_at_ten(monkeypatch):
+    """Approval checks scheduled_at against items.now(); pin it to the test day so these tests do not start failing
+    once the real clock passes 2026-10-22 (the 48-hour staleness rule)."""
+    monkeypatch.setattr(items, "now", lambda: TEN)
+
+
 def go(denv, http=None, when=TEN, **kw):
     http = http or site()
     kw.setdefault("stats", STATS)

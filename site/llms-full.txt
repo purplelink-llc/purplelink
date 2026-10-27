@@ -405,7 +405,7 @@ Michael
 Biologist at Wake Forest University
 On the double-blind review checks and the TODO panel.
 
-It makes organizing and managing my writing projects easy, from first draft through to final copy.
+ModernTex makes organizing and managing my writing projects easy, from first draft through to final copy.
 
 Mark
 Retired
