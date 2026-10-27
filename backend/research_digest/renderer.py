@@ -11,6 +11,11 @@ import html
 from .models import WeeklyDigest
 
 SITE = "https://getmuscleonglp.com"
+# Weekly posts stay live for subscribers and the monthly guide, but are kept out
+# of search (Ben, 2026-10-26): Google never indexed one, and their findings now
+# go into the evergreen /learn/ articles instead (evergreen.py). "follow" keeps
+# the links to those articles counting.
+POST_ROBOTS = "noindex, follow"
 DISCLAIMER = (
     "This roundup is compiled automatically from the abstracts of newly published "
     "research and is a neutral summary, not medical advice, not peer review, and not "
@@ -109,14 +114,17 @@ def render_post_html(d: WeeklyDigest) -> str:
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <link rel="canonical" href="{post_url(d.slug)}">
-<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="robots" content="{POST_ROBOTS}">
 <meta name="author" content="MuscleOnGLP">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="MuscleOnGLP">
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{post_url(d.slug)}">
-<meta property="og:image" content="https://getmuscleonglp.com/assets/og-card.png">
+<meta property="og:image" content="https://getmuscleonglp.com/assets/og/research.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="GLP-1 and muscle: weekly research, new studies cited and explained">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="stylesheet" href="/styles.css">
@@ -146,7 +154,7 @@ def render_post_html(d: WeeklyDigest) -> str:
       <div class="article-cta">
         <p class="k">Turn the evidence into a plan</p>
         <h3>The MuscleOnGLP handbook</h3>
-        <p>These studies point the same direction our guides already put into practice: resistance training and enough protein preserve muscle while you lose weight. The 30-page handbook is the full, cited protocol.</p>
+        <p>These studies point the same direction our guides already put into practice: resistance training and enough protein preserve muscle while you lose weight. The 33-page handbook is the full, cited protocol.</p>
         <a class="btn btn-primary btn-lg" href="/#pricing">See the handbook &mdash; $5 &rarr;</a>
       </div>
     </div>
@@ -204,7 +212,14 @@ def render_hub_html(posts: list[dict]) -> str:
 <meta property="og:title" content="GLP-1 & Muscle Research Roundup">
 <meta property="og:description" content="A weekly, cited roundup of new GLP-1 and muscle research.">
 <meta property="og:url" content="https://getmuscleonglp.com/research/">
-<meta property="og:image" content="https://getmuscleonglp.com/assets/og-card.png">
+<meta property="og:image" content="https://getmuscleonglp.com/assets/og/research.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="GLP-1 and muscle: weekly research, new studies cited and explained">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="GLP-1 &amp; Muscle Research Roundup">
+<meta name="twitter:description" content="A weekly, cited roundup of new GLP-1 and muscle research.">
+<meta name="twitter:image" content="https://getmuscleonglp.com/assets/og/research.jpg">
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="stylesheet" href="/styles.css">
 <script type="application/ld+json">{ld}</script>

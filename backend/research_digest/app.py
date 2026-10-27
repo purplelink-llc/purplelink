@@ -95,6 +95,19 @@ async def run_weekly_roundup(dry_run: bool = False):
         from research_digest.publisher import write_into
         write_into(site, digest)
 
+        # Route the week's papers into the evergreen articles they update, in the
+        # same commit as the roundup. Best-effort: the roundup still feeds the
+        # subscriber email and the monthly guide, so a routing failure must not
+        # stop it from publishing.
+        from research_digest import evergreen
+        updated_articles: list[str] = []
+        try:
+            routed = await evergreen.route(client, digest)
+            updated_articles = evergreen.apply_updates(site, routed, digest.date)
+        except Exception as err:  # noqa: BLE001
+            logger.warning("roundup: evergreen update skipped (%s)", err)
+        logger.info("roundup: evergreen articles updated=%d", len(updated_articles))
+
         subprocess.run(["git", "-C", site, "config", "user.email", "ben.ampel@gmail.com"], check=True)
         subprocess.run(["git", "-C", site, "config", "user.name", "MuscleOnGLP Bot"], check=True)
         subprocess.run(["git", "-C", site, "add", "-A"], check=True)
@@ -114,8 +127,15 @@ async def run_weekly_roundup(dry_run: bool = False):
         )
         logger.info("roundup: deployed %s to %s", digest.slug, post_url(digest.slug))
 
+        # Tell IndexNow engines what changed (best-effort). Not the weekly post:
+        # it is noindex, so pinging it would ask engines to crawl a page they
+        # are told to skip.
+        from research_digest import indexnow
+        from research_digest.publisher import HUB_URL
+        await indexnow.ping(client, [HUB_URL, *updated_articles])
+
         from research_digest.mailer import notify_review, notify_subscribers
-        sent = await notify_review(client, digest, resend_key)
+        sent = await notify_review(client, digest, resend_key, updated_articles=updated_articles)
         logger.info("roundup: review email sent=%s", sent)
 
         # Scheduled ~24h out (see mailer.notify_subscribers), so this call
