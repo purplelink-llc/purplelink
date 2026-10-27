@@ -25,6 +25,7 @@ import re
 import subprocess
 import sys
 from pathlib import Path
+from urllib.parse import urlsplit
 
 DRAFTS_DIR = Path.home() / ".purplelink" / "reddit"
 
@@ -36,9 +37,26 @@ URL_ID = re.compile(r"/comments/([a-z0-9]+)", re.I)
 # Older runs wrote "- Status: **HANDED TO BEN 2026-10-02**".
 STATUS = re.compile(r"^[-\s]*status:\s*\**(.+?)\**\s*$", re.M | re.I)
 FENCE = re.compile(r"^```[^\n]*\n(.*?)^```", re.M | re.S)
+# Link-shaped tokens in a reply, with or without a scheme ("getmuscleonglp.com/learn/x/").
+LINK_TOKEN = re.compile(r"(?:https?://)?(?:[a-z0-9-]+\.)+[a-z]{2,}(?:[/?#][^\s)\]]*)?", re.I)
+SITE_HOST = "getmuscleonglp.com"
 
 
 # ---------------------------------------------------------------- parse ----
+
+def links_to_site(reply: str) -> bool:
+    """True when the reply links the site, judged by each link's hostname.
+
+    A substring test would also match "getmuscleonglp.com.example.net" or a
+    path that merely contains the name, which mislabels the link badge.
+    """
+    for token in LINK_TOKEN.findall(reply):
+        url = token if "://" in token else "https://" + token
+        host = (urlsplit(url).hostname or "").lower()
+        if host == SITE_HOST or host.endswith("." + SITE_HOST):
+            return True
+    return False
+
 
 def parse(text: str) -> dict:
     """Split a drafts file into its header, the draft sections, and the rest.
@@ -91,7 +109,7 @@ def parse(text: str) -> dict:
             "status": status.group(1).strip() if status else "",
             "reply": reply,
             "words": len(reply.split()),
-            "has_link": "getmuscleonglp.com" in reply,
+            "has_link": links_to_site(reply),
             "context": context.strip(),
         })
     return {"title": title, "header": "\n".join(header).strip(), "drafts": drafts, "notes": notes}
