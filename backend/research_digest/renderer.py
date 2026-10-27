@@ -49,6 +49,7 @@ def _footer() -> str:
       <span><a href="/about/">About</a></span>
       <span><a href="/contact/">Contact</a></span>
       <span><a href="/editorial-policy/">Editorial policy</a></span>
+      <span><a href="/for-clinicians/">For clinicians</a></span>
       <span><a href="/privacy/">Privacy</a></span>
       <span>Not affiliated with Novo Nordisk, Eli Lilly, or any medication manufacturer.</span>
     </div>
