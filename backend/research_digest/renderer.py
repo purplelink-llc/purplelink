@@ -27,7 +27,7 @@ DISCLAIMER = (
 def _nav() -> str:
     return """<header class="nav">
   <div class="wrap nav-inner">
-    <a class="brand" href="/"><img class="brand-logo" src="/assets/logo.png" alt="" width="32" height="32"> MuscleOnGLP</a>
+    <a class="brand" href="/"><img class="brand-logo" src="/assets/logo-64.png" alt="" width="32" height="32"> MuscleOnGLP</a>
     <nav class="nav-links" aria-label="Primary">
       <a href="/research/">Research</a>
       <a href="/learn/">Learn</a>
