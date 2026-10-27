@@ -72,6 +72,15 @@
         <span class="changelog-date">October 27, 2026</span>
         <div class="changelog-content">
           <span class="changelog-tag tag-update">Update</span>
+          <h2>ModernTex 2.0.1</h2>
+          <p>HTML and EPUB export with the TeX4ht engine now keeps footnotes in the same page as the text. TeX4ht used to write each footnote to a separate HTML file; export now passes its fn-in option, as make4ht does on the command line. In an EPUB the footnotes sit in the chapter that cites them. A Footnotes setting in the export sheet switches back to separate pages. The Pandoc engine already kept footnotes in the page. <a href="/moderntex/">ModernTex</a></p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 27, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
           <h2>Legroom 1.8.1</h2>
           <p>A rule's preview now always shows that rule's own list. Opening a preview or a run right after closing another one could show the earlier rule's message, such as "The folder does not exist", instead of checking the new rule. <a href="/legroom/">Legroom</a>.</p>
         </div>
