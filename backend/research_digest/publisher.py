@@ -10,11 +10,23 @@ from __future__ import annotations
 
 import json
 import os
+import re
 
 from .models import WeeklyDigest
 from .renderer import render_post_html, render_hub_html, post_url
 
 MANIFEST_REL = "research/index.json"
+HUB_URL = "https://getmuscleonglp.com/research/"
+
+
+def bump_lastmod(xml: str, loc: str, date: str) -> str:
+    """Set the <lastmod> of the sitemap entry for *loc* to *date*, if it has one.
+
+    Adding a URL once is not enough for a hub page: /research/ changes every
+    week, but its lastmod sat at 2026-08-22 because nothing ever updated it.
+    """
+    pattern = re.compile(r"(<loc>" + re.escape(loc) + r"</loc>\s*<lastmod>)[^<]*(</lastmod>)")
+    return pattern.sub(lambda m: m.group(1) + date + m.group(2), xml, count=1)
 
 
 def _url_block(loc: str, date: str, freq: str, prio: str) -> str:
@@ -24,8 +36,10 @@ def _url_block(loc: str, date: str, freq: str, prio: str) -> str:
 
 def _sitemap_add(xml: str, slug: str, date: str) -> str:
     additions = []
-    if "https://getmuscleonglp.com/research/</loc>" not in xml:
-        additions.append(_url_block("https://getmuscleonglp.com/research/", date, "weekly", "0.9"))
+    if f"{HUB_URL}</loc>" not in xml:
+        additions.append(_url_block(HUB_URL, date, "weekly", "0.9"))
+    else:
+        xml = bump_lastmod(xml, HUB_URL, date)
     post = post_url(slug)
     if post not in xml:
         additions.append(_url_block(post, date, "monthly", "0.7"))

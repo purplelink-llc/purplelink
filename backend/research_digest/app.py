@@ -114,6 +114,11 @@ async def run_weekly_roundup(dry_run: bool = False):
         )
         logger.info("roundup: deployed %s to %s", digest.slug, post_url(digest.slug))
 
+        # Tell IndexNow engines the post and the hub changed (best-effort).
+        from research_digest import indexnow
+        from research_digest.publisher import HUB_URL
+        await indexnow.ping(client, [post_url(digest.slug), HUB_URL])
+
         from research_digest.mailer import notify_review, notify_subscribers
         sent = await notify_review(client, digest, resend_key)
         logger.info("roundup: review email sent=%s", sent)

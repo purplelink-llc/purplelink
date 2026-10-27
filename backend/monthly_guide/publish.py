@@ -14,12 +14,18 @@ from __future__ import annotations
 import logging
 import os
 
+from research_digest.publisher import bump_lastmod
+
 logger = logging.getLogger(__name__)
 
 PRODUCTS_REL = "netlify/functions/lib/products.mjs"
 GUIDES_HUB_REL = "guides/index.html"
 SITEMAP_REL = "sitemap.xml"
 SITE_ORIGIN = "https://getmuscleonglp.com"
+GUIDES_HUB_URL = f"{SITE_ORIGIN}/guides/"
+# The full handbook's price as the site shows it (repriced 2026-09-10). The
+# template said $5 and the September page shipped with it.
+HANDBOOK_PRICE = "$19"
 
 
 # --------------------------------------------------------------------------- #
@@ -157,6 +163,7 @@ def _render_landing(slug: str, title: str, label: str, papers: list) -> str:
         .replace("__SLUG__", slug)
         .replace("__ORIGIN__", SITE_ORIGIN)
         .replace("__INSIDE_ITEMS__", inside_items)
+        .replace("__HANDBOOK_PRICE__", HANDBOOK_PRICE)
     )
 
 
@@ -239,6 +246,8 @@ def sitemap_add(site_dir: str, slug: str, date: str) -> bool:
         f"    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>\n"
     )
     xml = xml.replace("</urlset>", block + "</urlset>")
+    # The new hub card changes /guides/ too.
+    xml = bump_lastmod(xml, GUIDES_HUB_URL, date)
     with open(path, "w") as f:
         f.write(xml)
     logger.info("publish: added sitemap entry for %s", slug)
@@ -358,12 +367,12 @@ __INSIDE_ITEMS__    </ul>
 <section class="section finalcta">
   <div class="wrap center">
     <h2>__TITLE__</h2>
-    <p class="lead">One dollar. Instant download. Every source named.</p>
+    <p class="lead">Five dollars. Instant download. Every source named.</p>
     <div style="margin-top:28px">
       <a class="btn btn-primary btn-lg" href="#buy">Get it for $5 &rarr;</a>
     </div>
     <p class="guarantee" style="margin-top:22px">Purchases are subject to our <a href="/terms/">Terms of Service</a> and medical disclaimer.</p>
-    <p class="guarantee">Want everything? The <a href="/#pricing">full 30-page handbook</a> covers the fundamentals for $5.</p>
+    <p class="guarantee">Want everything? The <a href="/#pricing">full 30-page handbook</a> covers the fundamentals for __HANDBOOK_PRICE__.</p>
   </div>
 </section>
 </main>
@@ -379,6 +388,7 @@ __INSIDE_ITEMS__    </ul>
   </div>
 </footer>
 
+<script src="/analytics.js" defer></script>
 <script src="/checkout.js"></script>
 </body>
 </html>
@@ -431,6 +441,7 @@ _SUCCESS_TEMPLATE = """<!DOCTYPE html>
 </footer>
 
 <script src="/download-link.js"></script>
+<script src="/analytics.js"></script>
 </body>
 </html>
 """

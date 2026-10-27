@@ -222,6 +222,10 @@ async def run_monthly_guide(dry_run: bool = False, month: str = ""):
         )
         logger.info("monthly: deployed %s", slug)
 
+        # Tell IndexNow engines the landing page and the guides hub changed (best-effort).
+        from research_digest import indexnow
+        await indexnow.ping(client, [publish.SITE_ORIGIN + publish.landing_path(slug), publish.GUIDES_HUB_URL])
+
         # 7. Email Ben that a NEW PAID guide is live.
         sent = await notify_new_guide(
             client, month_label=label, slug=slug, title=title, price_id=price_id,
