@@ -55,6 +55,11 @@ TOPICS: dict[str, dict] = {
         "queries": ["best protein powder for glp 1", "whey protein glp-1", "easy to drink protein shake for glp-1 nausea",
                     "which brands offer plant-based protein shakes suitable for glp-1 patients?"],
     },
+    "glp1-high-protein-meal-plan": {
+        "headline": "High-protein GLP-1 meal plan: a sample day with grams",
+        "scope": "Daily protein targets turned into meals for GLP-1 users: per-meal distribution, food choices and diet patterns that preserve lean mass.",
+        "queries": ["glp-1 meal plan", "high protein meal plan for ozempic", "glp 1 diet plan"],
+    },
     "fuel-workouts-glp1": {
         "headline": "How to fuel workouts on a GLP-1 when you are barely hungry",
         "scope": "Eating, protein timing and hydration around resistance exercise for people on GLP-1s, including hypoglycemia risk with diabetes medications.",
