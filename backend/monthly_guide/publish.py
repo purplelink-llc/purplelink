@@ -263,8 +263,8 @@ _LANDING_TEMPLATE = """<!DOCTYPE html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>__TITLE__ | MuscleOnGLP ($5 PDF)</title>
-<meta name="description" content="A $5 PDF that synthesizes every GLP-1 and muscle research roundup MuscleOnGLP published in __LABEL__ into one cited monthly review. Fully sourced, not medical advice.">
+<title>GLP-1 &amp; Muscle Research Review, __LABEL__ | MuscleOnGLP</title>
+<meta name="description" content="Every GLP-1 and muscle study from __LABEL__ in one cited $5 PDF review. Preprints flagged, every source named. Educational, not medical advice.">
 <link rel="canonical" href="__ORIGIN__/guides/__SLUG__/">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="author" content="MuscleOnGLP">
