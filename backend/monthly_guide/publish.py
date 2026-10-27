@@ -336,14 +336,21 @@ _LANDING_TEMPLATE = """<!DOCTYPE html>
 <section class="guide-hero">
   <div class="wrap">
     <p class="crumbs"><a href="/">Home</a><span>/</span><a href="/guides/">Mini-Guides</a><span>/</span>__TITLE__</p>
-    <span class="eyebrow">Monthly research review &middot; __LABEL__</span>
-    <h1>Every GLP-1 and muscle study from __LABEL__, synthesized into one cited review</h1>
-    <p class="guide-sub">This mini-guide pulls together every paper covered in the weekly research roundups during __LABEL__ and turns them into a single, plain-language synthesis. Every claim traces back to a study named in the guide, and preprints are flagged as such.</p>
-    <div class="guide-buybox" id="buy">
-      <div class="p"><span class="now">$5</span><span class="unit">one-time &middot; instant PDF download</span></div>
-      <button type="button" class="btn btn-primary btn-lg" data-checkout data-product="__SLUG__" data-status="status-__SLUG__">Buy now &mdash; instant download</button>
-      <p id="status-__SLUG__" class="checkout-status" role="status" aria-live="polite"></p>
-      <p class="guarantee">Secure checkout. You will be asked to accept our <a href="/terms/">Terms of Service</a> and medical disclaimer before payment.</p>
+    <div class="guide-hero-grid">
+      <div>
+        <img class="guide-cover" src="/assets/cover-research-review.png" width="900" height="1165"
+             alt="Cover of __TITLE__">
+      </div>
+      <div>
+        <h1>Research Review, __LABEL__</h1>
+        <p class="guide-sub">Every GLP-1 and muscle study from __LABEL__, in one cited review. It pulls together every paper covered in the weekly research roundups that month and turns them into a single, plain-language synthesis. Every claim traces back to a study named in the guide, and preprints are flagged as such.</p>
+        <div class="guide-buybox" id="buy">
+          <div class="p"><span class="now">$5</span><span class="unit">one-time &middot; instant PDF download</span></div>
+          <button type="button" class="btn btn-primary btn-lg" data-checkout data-product="__SLUG__" data-status="status-__SLUG__">Buy now &mdash; instant download</button>
+          <p id="status-__SLUG__" class="checkout-status" role="status" aria-live="polite"></p>
+          <p class="guarantee">Secure checkout. You will be asked to accept our <a href="/terms/">Terms of Service</a> and medical disclaimer before payment.</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
