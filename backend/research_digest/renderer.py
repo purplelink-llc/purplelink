@@ -154,7 +154,7 @@ def render_post_html(d: WeeklyDigest) -> str:
       <div class="article-cta">
         <p class="k">Turn the evidence into a plan</p>
         <h3>The MuscleOnGLP handbook</h3>
-        <p>These studies point the same direction our guides already put into practice: resistance training and enough protein preserve muscle while you lose weight. The 30-page handbook is the full, cited protocol.</p>
+        <p>These studies point the same direction our guides already put into practice: resistance training and enough protein preserve muscle while you lose weight. The 33-page handbook is the full, cited protocol.</p>
         <a class="btn btn-primary btn-lg" href="/#pricing">See the handbook &mdash; $5 &rarr;</a>
       </div>
     </div>

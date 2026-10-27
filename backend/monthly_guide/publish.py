@@ -375,7 +375,7 @@ __INSIDE_ITEMS__    </ul>
       <a class="btn btn-primary btn-lg" href="#buy">Get it for $5 &rarr;</a>
     </div>
     <p class="guarantee" style="margin-top:22px">Purchases are subject to our <a href="/terms/">Terms of Service</a> and medical disclaimer.</p>
-    <p class="guarantee">Want everything? The <a href="/#pricing">full 30-page handbook</a> covers the fundamentals for __HANDBOOK_PRICE__.</p>
+    <p class="guarantee">Want everything? The <a href="/#pricing">full 33-page handbook</a> covers the fundamentals for __HANDBOOK_PRICE__.</p>
   </div>
 </section>
 </main>
