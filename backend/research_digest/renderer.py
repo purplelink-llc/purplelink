@@ -121,7 +121,10 @@ def render_post_html(d: WeeklyDigest) -> str:
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{post_url(d.slug)}">
-<meta property="og:image" content="https://getmuscleonglp.com/assets/og-card.png">
+<meta property="og:image" content="https://getmuscleonglp.com/assets/og/research.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="GLP-1 and muscle: weekly research, new studies cited and explained">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="stylesheet" href="/styles.css">
@@ -209,7 +212,14 @@ def render_hub_html(posts: list[dict]) -> str:
 <meta property="og:title" content="GLP-1 & Muscle Research Roundup">
 <meta property="og:description" content="A weekly, cited roundup of new GLP-1 and muscle research.">
 <meta property="og:url" content="https://getmuscleonglp.com/research/">
-<meta property="og:image" content="https://getmuscleonglp.com/assets/og-card.png">
+<meta property="og:image" content="https://getmuscleonglp.com/assets/og/research.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="GLP-1 and muscle: weekly research, new studies cited and explained">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="GLP-1 &amp; Muscle Research Roundup">
+<meta name="twitter:description" content="A weekly, cited roundup of new GLP-1 and muscle research.">
+<meta name="twitter:image" content="https://getmuscleonglp.com/assets/og/research.jpg">
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 <link rel="stylesheet" href="/styles.css">
 <script type="application/ld+json">{ld}</script>
