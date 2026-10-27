@@ -341,10 +341,6 @@ _LANDING_TEMPLATE = """<!DOCTYPE html>
     <p class="guide-sub">This mini-guide pulls together every paper covered in the weekly research roundups during __LABEL__ and turns them into a single, plain-language synthesis. Every claim traces back to a study named in the guide, and preprints are flagged as such.</p>
     <div class="guide-buybox" id="buy">
       <div class="p"><span class="now">$5</span><span class="unit">one-time &middot; instant PDF download</span></div>
-      <label class="tos-check">
-        <input type="checkbox" data-terms>
-        <span>I have read and agree to the <a href="/terms/">Terms of Service</a>, including the medical disclaimer and the assumption of risk. I understand this is educational content, not medical advice.</span>
-      </label>
       <button type="button" class="btn btn-primary btn-lg" data-checkout data-product="__SLUG__" data-status="status-__SLUG__">Buy now &mdash; instant download</button>
       <p id="status-__SLUG__" class="checkout-status" role="status" aria-live="polite"></p>
       <p class="guarantee">Secure checkout. You will be asked to accept our <a href="/terms/">Terms of Service</a> and medical disclaimer before payment.</p>
@@ -452,7 +448,7 @@ _SUCCESS_TEMPLATE = """<!DOCTYPE html>
 
 _HUB_CARD_TEMPLATE = """      <article class="guide-card">
         <a class="gc-thumb" href="/guides/__SLUG__/" aria-label="__TITLE__">
-          <img src="/assets/cover.png" width="900" height="1165" loading="lazy"
+          <img src="/assets/cover-research-review.png" width="900" height="1165" loading="lazy"
                alt="Cover of __TITLE__">
         </a>
         <div class="gc-body">
@@ -463,12 +459,9 @@ _HUB_CARD_TEMPLATE = """      <article class="guide-card">
             <span class="gc-price">$5</span>
             <span class="gc-pages">Monthly &middot; fully cited</span>
           </div>
-          <label class="tos-check">
-            <input type="checkbox" data-terms>
-            <span>I agree to the <a href="/terms/">Terms</a> and medical disclaimer.</span>
-          </label>
           <button type="button" class="btn btn-primary" data-checkout data-product="__SLUG__" data-status="hub-__SLUG__">Buy now</button>
           <p id="hub-__SLUG__" class="checkout-status" role="status" aria-live="polite"></p>
+          <p class="tos-note">Buying confirms the <a href="/terms/">Terms</a> and medical disclaimer.</p>
           <a class="gc-more" href="/guides/__SLUG__/">Read what is inside &rarr;</a>
         </div>
       </article>
