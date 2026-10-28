@@ -159,10 +159,14 @@ tools. The profile's link is set once, in the Instagram app (the API cannot set 
 files and captions to DIR and queues nothing. It works before Instagram is enabled. The first one (2026-10-23, from the
 BatteryMeter video 741nCr3zq1g and the Vitae 1.4.2 LinkedIn post) passed.
 
-**Ben's steps** (`social.py setup instagram` prints them): a new Meta app with the use case "Manage messaging &
-content on Instagram", API setup with Instagram login, add @purplelink.llc (accept the tester invite in the Instagram
+**Ben's steps** (`social.py setup instagram` prints them): in the existing Instagram app BallSim's accounts use (a
+token belongs to one Instagram account, so purplelink.llc needs its own), API setup with Instagram login, add @purplelink.llc (accept the tester invite in the Instagram
 app if asked), generate the token, run `social.py setup instagram` and type yes on the identity, set the bio link in
-the app. Then `social.py instagram preview`. The pipeline queues nothing until setup has pinned the account and
+the app. Then `social.py instagram preview`. When Generate token loops on the Instagram login (Safari and Chrome both
+did on 2026-10-28), press Enter at the token prompt: setup prints a Business Login link (Instagram's own consent page),
+takes the address it returns to (`https://purplelink.llc/instagram/?code=...`, which must be listed as an OAuth redirect
+URI in the app's business login settings) and exchanges the code for a long-lived token with the Instagram app ID
+and secret. The pipeline queues nothing until setup has pinned the account and
 enabled the platform.
 
 ## Files

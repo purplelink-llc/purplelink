@@ -442,3 +442,20 @@ def test_each_reel_gets_its_own_tag_in_the_bio_link(env, cfg):
     it.save()
     url = igp.links(cfg, 12)[0]["url"]
     assert url.endswith("utm_campaign=ig-reel&utm_content=howto-x-reel")
+
+
+def test_business_login_link_code_and_exchange():
+    from socialpost import setup as st
+    url = st.ig_authorize_url("123", "STATE")
+    assert url.startswith("https://www.instagram.com/oauth/authorize?client_id=123&redirect_uri=")
+    assert "scope=instagram_business_basic%2Cinstagram_business_content_publish" in url and "state=STATE" in url
+    back = "https://purplelink.llc/instagram/?code=AQBabc&state=STATE#_"
+    assert st.ig_code_from(back, "STATE") == "AQBabc"
+    assert st.ig_code_from(back, "OTHER") is None             # a sign-in this run did not start
+    assert st.ig_code_from("AQBabc#_", "STATE") == "AQBabc"   # the bare code works too
+    h = FakeHttp([("POST", "api.instagram.com/oauth/access_token", jresp({"access_token": "SHORT", "user_id": 1}))])
+    assert st.ig_exchange_code(h, "123", "SECRET", "AQBabc") == ("SHORT", "")
+    assert h.calls[0]["form"]["redirect_uri"] == "https://purplelink.llc/instagram/" and "SECRET" not in h.calls[0]["url"]
+    bad = FakeHttp([("POST", "oauth/access_token", jresp({"error_message": "code SECRET used"}, status=400))])
+    tok, err = st.ig_exchange_code(bad, "123", "SECRET", "AQBabc")
+    assert tok is None and "SECRET" not in err and "400" in err
