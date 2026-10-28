@@ -59,11 +59,14 @@ const DEFAULT_ORIGIN = "https://purplelink.llc";
 const IDEMPOTENCY_WINDOW_MS = 5 * 60 * 1000;
 
 // "How did you first hear about us?" answers. Values are stored, labels shown.
-// Stripe allows only letters and digits in a dropdown value.
+// Stripe allows only letters and digits in a dropdown value. Answers are counted by value, so never rename or
+// reuse one; add new ones (YouTube and MacUpdate came 2026-10-27: MacUpdate mirrors the DMG, so analytics miss it).
 const HEARD_OPTIONS = [
   ["Search engine", "search"],
   ["AI assistant (ChatGPT and others)", "ai"],
   ["Reddit", "reddit"],
+  ["YouTube", "youtube"],
+  ["MacUpdate", "macupdate"],
   ["A directory or app list", "directory"],
   ["An email from Purplelink", "email"],
   ["A friend or colleague", "friend"],

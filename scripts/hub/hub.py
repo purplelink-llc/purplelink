@@ -471,7 +471,8 @@ CHANNEL_KEYS = {
     "hn": ("news.ycombinator.com", "hn"), "press": ("press",),
 }
 # "How did you first hear about us?" codes (netlify/functions/checkout.mjs HEARD_OPTIONS) -> channel, where one fits.
-HEARD_CHANNEL = {"reddit": "reddit", "directory": "directory", "email": "email", "library": "libguide"}
+HEARD_CHANNEL = {"reddit": "reddit", "youtube": "youtube", "macupdate": "macupdate", "directory": "directory",
+                 "email": "email", "library": "libguide"}
 
 
 def stats_token(p: dict) -> str:
@@ -589,7 +590,8 @@ def orders_from_ledger(p: dict) -> list:
     led = (load_json(p["traffic"], {}) or {}).get("ledger") or {}
     out = []
     for o in led.values():
-        if o.get("kind") != "order" or o.get("refunded") or o.get("disputed"):
+        # Stripe checkouts are "purchase" (sales.mjs), marketplace sales "order"; renewals are not new buyers
+        if o.get("kind") not in ("purchase", "order") or o.get("refunded") or o.get("disputed"):
             continue
         ft = (o.get("attr") or {}).get("first") or {}
         day = dt.datetime.fromtimestamp(float(o.get("ts") or 0), dt.timezone.utc).date().isoformat()

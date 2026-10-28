@@ -114,6 +114,9 @@ test("ModernTex checkout has heard, role and field: three optional dropdowns wit
     assert.equal(new Set(x.opts.map((o) => o.value)).size, x.opts.length);
   }
   const by = Object.fromEntries(f.map((x) => [x.key, x]));
+  // answer values are counted over time: the original eight stay, YouTube and MacUpdate were added 2026-10-27
+  assert.deepEqual(by.heard.opts.map((o) => o.value),
+    ["search", "ai", "reddit", "youtube", "macupdate", "directory", "email", "friend", "library", "other"]);
   assert.equal(by.role.label, "Which best describes you?");
   assert.deepEqual(by.role.opts.map((o) => o.label), ["Graduate student", "Faculty or researcher", "Industry researcher", "Other"]);
   assert.equal(by.field.label, "Your main field?");
