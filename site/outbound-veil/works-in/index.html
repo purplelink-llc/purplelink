@@ -45,7 +45,7 @@
             "@id": "https://purplelink.llc/#organization"
           },
           "datePublished": "2026-10-08",
-          "dateModified": "2026-10-08",
+          "dateModified": "2026-10-28",
           "inLanguage": "en",
           "image": "https://purplelink.llc/assets/og/outbound-veil.png",
           "mainEntityOfPage": "https://purplelink.llc/outbound-veil/works-in/",
@@ -104,12 +104,12 @@
     <div class="post-hero">
       <p class="post-kicker"><img src="/assets/purplelink-mark.svg" alt="" width="18" height="18"><span>Outbound Veil compatibility</span></p>
       <h1 class="post-title">Where Outbound Veil works: apps and fields tested</h1>
-      <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-08">October 8, 2026</time> · results recorded October 3, 2026 on macOS 26</p>
+      <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-08">October 8, 2026</time> · results recorded October 3, 2026 on macOS 26; Apple Mail row retested October 28, 2026</p>
       <p class="post-lede">Outbound Veil can only check text that an app hands to macOS. This page lists each app and field it has been tried in, what happened, and which ones have not been tried at all.</p>
     </div>
 
     <article class="post-body">
-      <p>Outbound Veil has been tested and works in TextEdit, Notes, Messages, Microsoft Word, and in Chrome text areas, including the ChatGPT and claude.ai prompt boxes. It cannot read the body of a new message in Apple Mail, and it is switched off in Terminal by default. Safari, Slack, VS Code, Pages, Google Docs and most other apps have not been tested.</p>
+      <p>Outbound Veil has been tested and works in TextEdit, Notes, Messages, Microsoft Word, and in Chrome text areas, including the ChatGPT and claude.ai prompt boxes. Since version 1.3.0 it also reads the body of a new message in Apple Mail, where it highlights details for you to edit by hand. It is switched off in Terminal by default. Safari, Slack, VS Code, Pages, Google Docs and most other apps have not been tested.</p>
 
       <h2 id="status">What the three statuses mean</h2>
       <ul>
@@ -118,7 +118,7 @@
         <li><strong>Not tested.</strong> No result is recorded. It may work or it may not, and this page does not guess. Every app or field not named below belongs in this group.</li>
       </ul>
       <p>Every status is written out in words. The same test text was used each time: <code>Maria Gonzalez, SSN 472-81-0094, born on March 3, 1990</code>. All of it is invented.</p>
-      <p>The only recorded test run was on one Mac running macOS 26 on October 3, 2026, with builds made before release 1.0.0. Releases 1.0.1, 1.0.2, 1.1.0 and 1.2.0 changed power use, the update key, licensing and how highlights are redrawn. The tests have not been recorded again since.</p>
+      <p>The full test run was on one Mac running macOS 26 on October 3, 2026, with builds made before release 1.0.0. Releases 1.0.1, 1.0.2, 1.1.0 and 1.2.0 changed power use, the update key, licensing and how highlights are redrawn. Since then one row has been retested: the body of a new Apple Mail message, with release 1.3.0, on October 28, 2026.</p>
 
       <h2 id="check">Checking and Redact all</h2>
       <table class="compare-table">
@@ -134,7 +134,7 @@
           <tr><th scope="row">Chrome, plain text area on a web form</th><td><strong>Tested and works</strong></td><td>Four findings. Redact all replaced them with placeholders. macOS reports where each word sits, so findings are highlighted word by word.</td></tr>
           <tr><th scope="row">Chrome, ChatGPT prompt box</th><td><strong>Tested and works</strong></td><td>Four findings. Redact all replaced them with placeholders. macOS does not report where each word sits in this box, so the whole box is outlined instead of each word being highlighted.</td></tr>
           <tr><th scope="row">Chrome, claude.ai prompt box</th><td><strong>Tested and works</strong></td><td>Four findings. Redact all replaced them with placeholders. The whole box is outlined, as in ChatGPT.</td></tr>
-          <tr><th scope="row">Apple Mail, body of a new message</th><td><strong>Tested and does not work</strong></td><td>Mail hands macOS a web view with no text in it, so there is nothing to check. The menu says <q>Cannot read this field in Mail</q> instead of showing an empty badge. No fix is currently planned.</td></tr>
+          <tr><th scope="row">Apple Mail, body of a new message</th><td><strong>Tested and works</strong> (1.3.0)</td><td>Mail gives macOS a web view rather than a text field, so 1.3.0 reads it a different way. Details are flagged and highlighted as you type. Redact all is not offered here, because rewriting the message would lose its formatting, quoted text and attachments; edit the highlighted details by hand. Tested October 2026.</td></tr>
           <tr><th scope="row">Terminal, prompt</th><td><strong>Tested and does not work</strong></td><td>Terminal exposes its whole screen history as one block of text, not the line you are typing, and the text cannot be edited. Outbound Veil is switched off in Terminal by default. iTerm2, Warp and Ghostty start switched off too, and were not tested one by one.</td></tr>
           <tr><th scope="row">Safari, plain text area, ChatGPT prompt box and claude.ai prompt box</th><td><strong>Not tested</strong></td><td>The tool used for testing cannot type into Safari, so the three Safari rows were never run.</td></tr>
           <tr><th scope="row">Firefox, Edge, Brave, Arc and other browsers</th><td><strong>Not tested</strong></td><td>No result recorded for any field.</td></tr>
@@ -160,7 +160,7 @@
         <tbody>
           <tr><th scope="row">Messages</th><td><strong>Tested and works</strong></td><td>In a new message with no recipient, a made-up number followed by Return was held. A panel offered Redact all, Send anyway and Cancel.</td></tr>
           <tr><th scope="row">TextEdit</th><td><strong>Not tested</strong></td><td>One trial, on a Mac under extreme load, did not hold Return. Outbound Veil is designed to let the key through when a check runs late. The trial has not been repeated on an idle Mac.</td></tr>
-          <tr><th scope="row">Apple Mail</th><td><strong>Not tested</strong></td><td>The body of a new message cannot be read, so there is nothing to hold. The welcome guide does not offer Mail for send hold.</td></tr>
+          <tr><th scope="row">Apple Mail</th><td><strong>Not tested</strong></td><td>Send hold has not been tested in Mail. The welcome guide does not offer Mail for send hold.</td></tr>
           <tr><th scope="row">Slack</th><td><strong>Not tested</strong></td><td>Slack was not installed on the test Mac.</td></tr>
           <tr><th scope="row">ChatGPT and claude.ai in Chrome</th><td><strong>Not tested</strong></td><td>The prompt boxes can be read and rewritten, but holding the send key on those pages has not been recorded.</td></tr>
           <tr><th scope="row">ChatGPT and claude.ai in Safari</th><td><strong>Not tested</strong></td><td>No result recorded.</td></tr>
@@ -170,7 +170,7 @@
       <h2 id="reads">What decides whether a field can be read</h2>
       <p>Outbound Veil reads a field only when macOS describes it as a text field, text area, combo box or search field and hands over its text. Three things follow.</p>
       <ul>
-        <li>An app that draws its own text, or puts a web view where a text field would be, may give macOS nothing to read. Apple Mail is the case that was tested.</li>
+        <li>An app that draws its own text, or puts a web view where a text field would be, may give macOS nothing to read. Apple Mail was the tested case until version 1.3.0 added a way to read it.</li>
         <li>Password fields, password managers and Outbound Veil&rsquo;s own windows are skipped. Fields longer than 200,000 characters are skipped.</li>
         <li>A field that can be read may still refuse a direct edit. Redact all then pastes the replacement text. If that fails too, it puts the redacted text on the clipboard and says so.</li>
       </ul>
