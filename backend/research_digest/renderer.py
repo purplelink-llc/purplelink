@@ -27,7 +27,7 @@ DISCLAIMER = (
 def _nav() -> str:
     return """<header class="nav">
   <div class="wrap nav-inner">
-    <a class="brand" href="/"><img class="brand-logo" src="/assets/logo.png" alt="" width="32" height="32"> MuscleOnGLP</a>
+    <a class="brand" href="/"><img class="brand-logo" src="/assets/logo-64.png" alt="" width="32" height="32"> MuscleOnGLP</a>
     <nav class="nav-links" aria-label="Primary">
       <a href="/research/">Research</a>
       <a href="/learn/">Learn</a>
@@ -152,11 +152,20 @@ def render_post_html(d: WeeklyDigest) -> str:
       <div class="article rr-list">
 {chr(10).join(items_html)}
       </div>
+      <nav class="related-reading" aria-label="Put the research to use">
+        <h2>Put the research to use</h2>
+        <ul>
+          <li><a href="/protein-calculator/">GLP-1 calorie, protein and macro calculator: your daily protein target</a></li>
+          <li><a href="/muscle-strength-check/">Muscle strength check: grip and a timed chair stand</a></li>
+          <li><a href="/muscle-loss-calculator/">GLP-1 muscle loss calculator: how much of the loss may be lean mass</a></li>
+          <li><a href="/learn/glp1-muscle-loss-statistics/">GLP-1 muscle loss by the numbers, every figure cited</a></li>
+        </ul>
+      </nav>
       <div class="article-cta">
         <p class="k">Turn the evidence into a plan</p>
         <h3>The MuscleOnGLP handbook</h3>
         <p>These studies point the same direction our guides already put into practice: resistance training and enough protein preserve muscle while you lose weight. The 33-page handbook is the full, cited protocol.</p>
-        <a class="btn btn-primary btn-lg" href="/#pricing">See the handbook &mdash; $5 &rarr;</a>
+        <a class="btn btn-primary btn-lg" href="/#pricing">See the handbook &mdash; $19 &rarr;</a>
       </div>
     </div>
   </section>

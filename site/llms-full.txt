@@ -371,7 +371,7 @@ Title: ModernTex - Native LaTeX Editor for Mac | Purplelink LLC
 ← All products
 
 macOS
-Free 7-day trial · $19.99 to keep · v2.0.0
+Free 7-day trial · $19.99 to keep · v2.0.1
 
 # ModernTex
 
@@ -405,7 +405,7 @@ Michael
 Biologist at Wake Forest University
 On the double-blind review checks and the TODO panel.
 
-It makes organizing and managing my writing projects easy, from first draft through to final copy.
+ModernTex makes organizing and managing my writing projects easy, from first draft through to final copy.
 
 Mark
 Retired
@@ -573,9 +573,11 @@ AI featuresOptional. Fix with AI proposes a repair for a build error and shows i
 
 UpdatesChecks once a day and installs in place, or choose Check for Updates.
 
-Current version2.0.0, released October 24, 2026. Every update since launch is listed below.
+Current version2.0.1, released October 27, 2026. Every update since launch is listed below.
 
-### Thirty-two updates since launch on September 4
+### Thirty-three updates since launch on September 4
+
+- Oct 272.0.1HTML and EPUB export with the TeX4ht engine keeps footnotes in the same page as the text, with a setting to put them on separate pages.
 
 - Oct 242.0.0A split editor, multiple cursors, project-wide find, Vim mode and a visual equation editor, plus HTML and EPUB export, knitr and PythonTeX, Zotero, a terminal, remote projects, macros, plugins, custom themes and a German interface (beta).
 
@@ -830,7 +832,7 @@ Try it free for 7 days
 
 Refunded if you email within 14 days of purchase. Updates are included forever.
 
-The trial is the full app for seven days from first launch, with no account. After that the app asks for a license key. Buying is a single $29.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.1.0 · 38 MB disk image · macOS 14 or later, Apple silicon and Intel. First ten minutes: install, Accessibility and your first check.
+The trial is the full app for seven days from first launch, with no account. After that the app asks for a license key. Buying is a single $29.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.4.0 · 34 MB disk image · macOS 14 or later, Apple silicon and Intel. First ten minutes: install, Accessibility and your first check.
 
 If you installed version 1.0.0 or 1.0.1, the app cannot update itself. Download the current version once from this page; updates work from then on.
 
@@ -950,7 +952,7 @@ macOS 14 (Sonoma) or later, on Apple silicon or Intel.
 
 Which apps does it work in?
 
-Tested and working: TextEdit, Notes, Messages, Microsoft Word, and text areas in Chrome, including the ChatGPT and claude.ai prompt boxes. Not readable: the body of a new message in Apple Mail. Terminal is switched off by default. Safari, Slack, VS Code, Pages, Google Docs and most other apps have not been tested. The table lists each app and field, and you can check your own app during the free trial.
+Tested and working: TextEdit, Notes, Messages, Microsoft Word, and text areas in Chrome, including the ChatGPT and claude.ai prompt boxes. Since version 1.3.0 it also reads the body of a new message in Apple Mail: it highlights the details there, and you edit them by hand, because it never rewrites a Mail message. Terminal is switched off by default. Safari, Slack, VS Code, Pages, Google Docs and most other apps have not been tested. The table lists each app and field, and you can check your own app during the free trial.
 
 Does it send what I type anywhere?
 
@@ -1013,7 +1015,7 @@ Try it free for 7 days
 
 Refunded if you email within 14 days of purchase.
 
-The trial runs for seven days from the first time you open it, with no account. After it ends, the menu-bar readout and the low-space alerts keep working, and the app asks for a license key to unlock the rest. Buying is a single $9.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.8.0 · 8.5 MB disk image · macOS 14 or later, Apple silicon and Intel · signed and notarized.
+The trial runs for seven days from the first time you open it, with no account. After it ends, the menu-bar readout and the low-space alerts keep working, and the app asks for a license key to unlock the rest. Buying is a single $9.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.8.1 · 8.5 MB disk image · macOS 14 or later, Apple silicon and Intel · signed and notarized.
 
 If you installed version 1.0.0, the app cannot update itself. Download the current version once from this page; updates work from then on.
 
@@ -1296,7 +1298,7 @@ Keyfeel plays real recorded keyboard-switch sounds when you press a key on your 
 
 Try it free for 7 days
 
-The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays unlocked, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.5.3, released October 13, 2026. 8 MB disk image. Needs macOS 13 or later, Apple silicon and Intel, and the Input Monitoring permission.
+The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays unlocked, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.7.0, released October 28, 2026. 8 MB disk image. Needs macOS 13 or later, Apple silicon and Intel, and the Input Monitoring permission.
 
 Comparing options? See the keyboard sound apps for Mac compared. Have Mechvibes packs? See how to use them on a Mac.
 
@@ -1349,6 +1351,8 @@ Per appPick a different sound for each app. Add the app you are in, choose its s
 FavoritesStar the sounds you like. With two or more, Keyfeel can move to the next favorite each time it starts, every hour or every day, and never repeats the one that is playing. A button moves on at once.
 
 ControlKeyfeel runs from the menu bar, where you control it, including a volume slider. Settings has separate levels for keys, the space bar, modifier keys, mouse clicks and scrolling, and headphones and speakers keep their own volumes. Keyboard shortcuts turn it on and off and switch sounds, and you can record your own. A keyfeel:// link works from Shortcuts and scripts, and you can hide the menu bar icon. To import a pack from a link, choose Import sound pack from a link in the menu, or open a keyfeel://pack/ link. Keyfeel shows you the address and downloads nothing until you say so.
+
+AutomationSince 1.7.0: Shortcuts actions named Turn Keyfeel On, Turn Keyfeel Off, Toggle Keyfeel, Mute Keyfeel for a While, Unmute Keyfeel, Set Keyfeel Volume and Set Keyfeel Sound. In System Settings, Focus, you can add a Keyfeel Focus filter that keeps Keyfeel silent while that Focus is on, such as one for meetings. The sounds come back when it ends. Launchers and scripts can open links such as keyfeel://mute?minutes=30 and keyfeel://volume?level=50.
 
 DelaySettings, General shows how long Keyfeel took to hand your recent key presses to the audio system. It gives a median, a 95th percentile and the slowest, timed from the moment macOS stamped each key, next to the output delay the device reports. It is a measurement made on your own Mac while you type. It is not a recording of the sound reaching your ear, and Bluetooth output adds its own delay on top.
 
@@ -1529,7 +1533,7 @@ Tapefolio transcribes interview and meeting recordings on your Mac, labels the s
 
 Try it free for 7 days
 
-The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $29.99 payment, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays valid, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.1.1, released October 24, 2026. 44 MB disk image. Needs macOS 26 or later on a Mac with Apple silicon.
+The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $29.99 payment, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays valid, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.2.0, released October 28, 2026. 44 MB disk image. Needs macOS 26 or later on a Mac with Apple silicon.
 
 Comparing options? See Mac apps for transcription, text to speech and OCR compared.
 
@@ -1816,7 +1820,7 @@ Title: Vitae: Academic CV & Research Management for macOS | Purplelink LLC
 ← All products
 
 macOS
-Free app · optional Plus from $2.99 a month · v1.9.3 Beta
+Free app · optional Plus from $2.99 a month · v1.10.0 Beta
 
 # Vitae
 
@@ -1837,7 +1841,7 @@ Your research record on one screen: projects, papers under review, open revision
 
 Vitae is a free Mac app for academics that keeps your submissions, grants, projects, co-authors, teaching, service and CV in one record on your own Mac, with no account. It needs macOS 15 or later. An optional subscription, Vitae Plus, costs $2.99 a month or $23.99 a year and adds reports and Word export. Vitae does not fill in your university's reporting system for you, and it has no iPhone, web or Windows version.
 
-Facts as of version 1.9.3, October 2026.
+Facts as of version 1.10.0, October 2026.
 
 QuestionAnswer
 
@@ -2054,7 +2058,7 @@ Download Vitae, free
 
 Vitae Plus is an optional subscription for the free Vitae Mac app: $2.99 a month or $23.99 a year, with a 7-day free trial, or included for life in the Mac Suite. You do not need it to keep your record, build a CV, run Annual Review for any period or export publications as RIS and BibTeX. Those stay free. Plus adds Word (.docx) export with your own templates, the annual report Word file and missing details check, reports, the revision workspace, Shareables, the collaboration map and research timeline, the extra For You nudges, ORCID sync and batch DOI lookup, calendar sync, and iCloud sync between your Macs.
 
-Free and Plus features as of Vitae 1.9.3, October 2026.
+Free and Plus features as of Vitae 1.10.0, October 2026.
 
 FeatureFreePlus
 
@@ -3329,7 +3333,7 @@ ABDC, the Financial Times 50 (FT50), the UT Dallas 24 (UTD24) and SCImago Journa
 
 Which browsers does it support?
 
-Google Chrome, from the Chrome Web Store.
+Google Chrome, from the Chrome Web Store, and Firefox 140 or later, from Firefox Add-ons, where it is listed as Google Scholar Utility Belt.
 
 
 ---
@@ -4590,21 +4594,21 @@ The latest version of each product as the changelog and the product page list it
 
 ProductLatest versionReleased
 
-ModernTex2.0.0October 2026
+ModernTex2.0.1October 2026
 
-Vitae1.9.3October 2026
+Vitae1.10.0October 2026
 
-Legroom1.8.0October 2026
+Legroom1.8.1October 2026
 
-Keyfeel1.6.1October 2026
+Keyfeel1.7.0October 2026
 
-Tapefolio1.0.1October 2026
+Tapefolio1.2.0October 2026
 
 Panely1.0.4October 2026
 
 Summonly1.0October 2026
 
-Outbound Veil1.3.0October 2026
+Outbound Veil1.4.0October 2026
 
 BatteryMeter1.4.0October 2026
 
@@ -7087,7 +7091,7 @@ What it's good at: sitting where the mistake happens, in any Mac app it can read
 
 What it lacks: Mac only, and names in Latin script only. It flags the names of public figures too, which you can ignore, and it will miss some things and flag some things that are not personal information. It checks text in fields, not files, so a PDF or an image needs another tool from this list.
 
-Some apps do not expose their text fields to macOS. In my testing the Apple Mail compose window could not be read. Safari, Slack, VS Code and the ChatGPT and Claude desktop apps are not on the tested list (the full table). It needs the Accessibility permission, plus Input Monitoring if you turn on send hold.
+Some apps do not expose their text fields to macOS. The Apple Mail compose window was the hard case: since version 1.3.0 Outbound Veil reads it and highlights details there, but you edit them by hand. Safari, Slack, VS Code and the ChatGPT and Claude desktop apps are not on the tested list (the full table). It needs the Accessibility permission, plus Input Monitoring if you turn on send hold.
 
 After Redact all it does not put the original values back into the AI's answer. You swap them back yourself. By default it does not report a bare city, state or ZIP code. It is new, with no track record, and it is not a compliance product.
 
@@ -10100,7 +10104,7 @@ Google Drive can also convert a photo or PDF to text. However, it uploads the fi
 
 ## Where Tapefolio fits
 
-Tapefolio is a Mac app for transcribing interviews and meetings and reading scans, made for people whose recordings cannot be uploaded. It costs $29.99 once after a 7-day trial. There is one download: after the trial it asks for a license key, and one key works on two Macs. It is also part of the $59.99 Mac Suite. It needs macOS 26 or later and a Mac with Apple silicon, with no Intel version. The current version is 1.1.1, released October 24, 2026. It is the newest and least proven app here. As of that version it does the following:
+Tapefolio is a Mac app for transcribing interviews and meetings and reading scans, made for people whose recordings cannot be uploaded. It costs $29.99 once after a 7-day trial. There is one download: after the trial it asks for a license key, and one key works on two Macs. It is also part of the $59.99 Mac Suite. It needs macOS 26 or later and a Mac with Apple silicon, with no Intel version. The current version is 1.2.0, released October 28, 2026. It is the newest and least proven app here. As of that version it does the following:
 
 - Transcribes on your Mac with the time of every word, from audio files or from the microphone inside the app.
 

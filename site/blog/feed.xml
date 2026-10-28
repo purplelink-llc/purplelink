@@ -5,8 +5,24 @@
   <link href="https://purplelink.llc/blog/feed.xml" rel="self"/>
   <link href="https://purplelink.llc/blog/"/>
   <id>https://purplelink.llc/blog/</id>
-  <updated>2026-10-14T12:00:00Z</updated>
+  <updated>2026-10-28T12:00:00Z</updated>
   <author><name>Benjamin Ampel</name></author>
+  <entry>
+    <title>The citations you don't know you're missing</title>
+    <link href="https://purplelink.llc/blog/the-citations-you-dont-know-youre-missing/"/>
+    <id>https://purplelink.llc/blog/the-citations-you-dont-know-youre-missing/</id>
+    <published>2026-10-28T12:00:00Z</published>
+    <updated>2026-10-28T12:00:00Z</updated>
+    <summary>A reviewer's note that you missed a paper costs a full resubmission cycle. Why citation gaps happen, and how Citation Gap Analysis flags the related work your bibliography is missing before a reviewer does.</summary>
+  </entry>
+  <entry>
+    <title>Escaping text isn't escaping attributes</title>
+    <link href="https://purplelink.llc/blog/escaping-text-isnt-escaping-attributes/"/>
+    <id>https://purplelink.llc/blog/escaping-text-isnt-escaping-attributes/</id>
+    <published>2026-10-21T12:00:00Z</published>
+    <updated>2026-10-21T12:00:00Z</updated>
+    <summary>GitHub's code scanning caught a cross-site scripting hole in my free BibTeX validator: an escaping function safe for visible text wasn't safe inside an HTML attribute. What the bug was, and why the real fix wasn't a better escaping function.</summary>
+  </entry>
   <entry>
     <title>Checking a replication package before the data editor does</title>
     <link href="https://purplelink.llc/blog/checking-replication-package-before-data-editor/"/>
@@ -188,7 +204,7 @@
     <link href="https://purplelink.llc/blog/why-haea-is-on-device/"/>
     <id>https://purplelink.llc/blog/why-haea-is-on-device/</id>
     <published>2026-05-27T12:00:00Z</published>
-    <updated>2026-05-31T12:00:00Z</updated>
+    <updated>2026-10-25T12:00:00Z</updated>
     <summary>Why haea keeps all your health data on your iPhone - and why that decision shapes everything about how the app works.</summary>
   </entry>
   <entry>

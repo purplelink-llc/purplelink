@@ -63,6 +63,13 @@ def cfg_all_on():
     return cfg
 
 
+
+@pytest.fixture(autouse=True)
+def _approval_clock_at_noon(monkeypatch):
+    """items.approve() checks scheduled_at against items.now(); pin it to the test day so a fixed NOON does not turn
+    every approval stale once the real clock is 48 hours past it (these tests broke on 2026-10-22)."""
+    monkeypatch.setattr(items, "now", lambda: NOON)
+
 def approved(env, platforms=("linkedin", "bluesky"), at=None, cfg=None):
     it = items.create("t", list(platforms), "https://purplelink.llc/vitae/", "vitae-140")
     it.sections["default"] = "Post text {link}"

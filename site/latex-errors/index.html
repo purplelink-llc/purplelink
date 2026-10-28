@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>LaTeX Error Messages: What They Mean and How to Fix Them | Purplelink</title>
-    <meta name="description" content="Twelve common LaTeX error and warning messages explained: a real log excerpt for each, the causes in order of likelihood with before and after examples, and how to find the line.">
+    <meta name="description" content="Fifteen common LaTeX error and warning messages explained: a real log excerpt for each, the causes in order of likelihood with before and after examples, and how to find the line.">
     <link rel="canonical" href="https://purplelink.llc/latex-errors/">
     <meta property="og:title" content="LaTeX error messages: what they mean and how to fix them">
-    <meta property="og:description" content="Twelve common LaTeX error and warning messages explained: a real log excerpt for each, the causes in order of likelihood with before and after examples, and how to find the line.">
+    <meta property="og:description" content="Fifteen common LaTeX error and warning messages explained: a real log excerpt for each, the causes in order of likelihood with before and after examples, and how to find the line.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://purplelink.llc/latex-errors/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/latex-errors.png">
@@ -16,7 +16,7 @@
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="LaTeX error messages: what they mean and how to fix them">
-    <meta name="twitter:description" content="Twelve common LaTeX error and warning messages explained: a real log excerpt for each, the causes in order of likelihood with before and after examples, and how to find the line.">
+    <meta name="twitter:description" content="Fifteen common LaTeX error and warning messages explained: a real log excerpt for each, the causes in order of likelihood with before and after examples, and how to find the line.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/latex-errors.png">
     <meta name="twitter:image:alt" content="LaTeX error messages: what they mean and how to fix them">
     <script type="application/ld+json">
@@ -26,7 +26,7 @@
     {
       "@type": "TechArticle",
       "headline": "LaTeX error messages: what they mean and how to fix them",
-      "description": "Twelve common LaTeX error and warning messages explained: a real log excerpt for each, the causes in order of likelihood with before and after examples, and how to find the line.",
+      "description": "Fifteen common LaTeX error and warning messages explained: a real log excerpt for each, the causes in order of likelihood with before and after examples, and how to find the line.",
       "url": "https://purplelink.llc/latex-errors/",
       "mainEntityOfPage": "https://purplelink.llc/latex-errors/",
       "inLanguage": "en",
@@ -120,6 +120,24 @@
           "position": 12,
           "name": "Too many }'s / Missing } inserted",
           "url": "https://purplelink.llc/latex-errors/too-many-closing-braces/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 13,
+          "name": "Font not loadable: Metric (TFM) file not found",
+          "url": "https://purplelink.llc/latex-errors/tfm-file-not-found/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 14,
+          "name": "TeX capacity exceeded, sorry",
+          "url": "https://purplelink.llc/latex-errors/tex-capacity-exceeded/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 15,
+          "name": "Infinite glue shrinkage found",
+          "url": "https://purplelink.llc/latex-errors/infinite-glue-shrinkage/"
         }
       ]
     },
@@ -204,7 +222,7 @@
         <p class="post-date">Reference</p>
         <h1 class="post-title">LaTeX error messages, explained</h1>
         <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-01">October 1, 2026</time></p>
-        <p class="post-lede">Twelve messages that LaTeX prints when a document does not compile cleanly. Each page shows the real log output, what it means, the causes in order of likelihood and the fix for each.</p>
+        <p class="post-lede">Fifteen messages that LaTeX prints when a document does not compile cleanly. Each page shows the real log output, what it means, the causes in order of likelihood and the fix for each.</p>
       </div>
 
       <article class="post-body">
@@ -242,6 +260,9 @@ and I'll forget about whatever was undefined.</code></pre>
           <li><a href="/latex-errors/too-many-closing-braces/">Too many }'s / Missing } inserted</a>: Two messages for one problem: braces that do not pair up. One reports a closing brace too many, the other a group that was never closed.</li>
           <li><a href="/latex-errors/extra-alignment-tab/">Extra alignment tab has been changed to \cr</a>: A table or matrix row has more &amp; separators than the column specification allows.</li>
           <li><a href="/latex-errors/misplaced-alignment-tab/">Misplaced alignment tab character &amp;</a>: TeX found an &amp; outside a table or alignment. For an ampersand in text, type \&amp;.</li>
+          <li><a href="/latex-errors/tfm-file-not-found/">Font not loadable: Metric (TFM) file not found</a>: TeX tried to load a font and could not find its metric file. Usually the font package is not installed or the font name is misspelled.</li>
+          <li><a href="/latex-errors/tex-capacity-exceeded/">TeX capacity exceeded, sorry</a>: TeX filled one of its internal tables and stopped. Usually a command calls itself without end; sometimes a figure is too large.</li>
+          <li><a href="/latex-errors/infinite-glue-shrinkage/">Infinite glue shrinkage found</a>: A space that can shrink without limit, such as minus 1fil, reached a line or page break. TeX makes it finite and keeps going.</li>
         </ul>
 
         <h2>Warnings that change the PDF</h2>

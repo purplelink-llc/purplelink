@@ -87,5 +87,16 @@
   "started": "2026-10-27",
   "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
   "checked": "2026-10-27"
+ },
+ {
+  "video": "6yBaTePGk5I",
+  "variants": {
+   "A": "video/out/howto/bibtex-from-doi-no-acceptable-resource/bibtex-from-doi-no-acceptable-resource-thumb-A.jpg",
+   "B": "video/out/howto/bibtex-from-doi-no-acceptable-resource/bibtex-from-doi-no-acceptable-resource-thumb-B.jpg",
+   "C": "video/out/howto/bibtex-from-doi-no-acceptable-resource/bibtex-from-doi-no-acceptable-resource-thumb-C.jpg"
+  },
+  "started": "2026-10-28",
+  "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
+  "checked": "2026-10-28"
  }
 ]

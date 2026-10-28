@@ -34,7 +34,7 @@
         "@id": "https://purplelink.llc/#organization"
       },
       "datePublished": "2026-10-14",
-      "dateModified": "2026-10-14",
+      "dateModified": "2026-10-28",
       "image": "https://purplelink.llc/assets/og/outbound-veil.png",
       "mainEntityOfPage": "https://purplelink.llc/guides/stop-sending-email-to-the-wrong-person-mac/"
     },
@@ -94,7 +94,7 @@
       "name": "Does Outbound Veil check the recipient or the attachment?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No. It checks the text of the field you are typing in for personal details. Its pages describe nothing that checks recipients or attachments. It also cannot read the body of a new message in Apple Mail."
+        "text": "No. It checks the text of the field you are typing in for personal details. Its pages describe nothing that checks recipients or attachments. Since version 1.3.0 it does read the body of a new message in Apple Mail."
       }
     },
     {
@@ -102,7 +102,7 @@
       "name": "Does Outbound Veil work in Apple Mail?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Not for the body of a new message. Mail hands macOS a web view with no text in it, so there is nothing to check. It was tested and works in TextEdit, Notes, Messages, Microsoft Word and Chrome text areas."
+        "text": "Yes, since version 1.3.0, for the body of a new message. It highlights personal details as you type; you edit them by hand, because it never rewrites a Mail message. It also works in TextEdit, Notes, Messages, Microsoft Word and Chrome text areas."
       }
     },
     {
@@ -151,7 +151,7 @@
         <p><strong>Disclosure:</strong> Purplelink, which publishes this site, makes <a href="/outbound-veil/">Outbound Veil</a>, a Mac menu-bar app that checks typed text for personal details. It is mentioned near the end, after the part that does not depend on it, and I say plainly what it cannot do with email. I read the pages cited below on October 14, 2026. I did not test Apple Mail's settings for this guide, so the Apple settings are described as the pages describe them.</p>
 
         <h2>The short answer</h2>
-        <p>Turn on a longer Undo Send delay in Mail, read the To line before the body, and check the attachment name before you press Send. Apple Mail has no built-in check on the recipient. Outbound Veil does not check recipients or attachments either, and it cannot read the body of a new message in Mail.</p>
+        <p>Turn on a longer Undo Send delay in Mail, read the To line before the body, and check the attachment name before you press Send. Apple Mail has no built-in check on the recipient. Outbound Veil does not check recipients or attachments either; it checks only the text you type.</p>
 
         <h2 id="mistakes">Three ways it goes wrong</h2>
         <p>A legal technology site, Legal IT Insider, described email sent to the wrong recipient as "a really common problem" and a particular challenge for organisations that routinely deal with highly sensitive information, law firms among them (<a href="https://legaltechnology.com/cybersecurity-in-law-firms-preventing-legal-professionals-from-sending-emails-to-the-wrong-people/" rel="noopener">Legal IT Insider, February 16, 2018</a>). That page is a short promotion for a vendor webinar. It gives no figures, and it does not discuss attachments, Bcc or address suggestions, so I do not rely on it for how often any of this happens.</p>
@@ -188,7 +188,7 @@
 
         <h2 id="veil">Where Outbound Veil fits</h2>
         <p>Outbound Veil checks typed text for personal details such as names, phone numbers, card numbers and Social Security numbers. Its pages describe nothing that checks recipients or attachments, so do not count on it for either. Its page says names are recognized in Latin script only, that it will miss some things, and that it can flag things that are not personal information.</p>
-        <p>It cannot read the body of a new message in Apple Mail. Mail hands macOS a web view with no text in it, so there is nothing to check, and the menu says it cannot read the field. No fix is currently planned, according to the <a href="/outbound-veil/works-in/">table of tested apps and fields</a>. That table, tested on one Mac on October 3, 2026, lists what it can read: TextEdit, Notes, Messages, Microsoft Word and Chrome text areas, including the ChatGPT and claude.ai prompt boxes. Safari, Slack and most other apps have not been tested.</p>
+        <p>Since version 1.3.0 (October 24, 2026) it reads the body of a new message in Apple Mail and highlights personal details as you type. It does not offer Redact all there, because rewriting the message would lose its formatting and attachments, so you edit the highlighted details by hand. The <a href="/outbound-veil/works-in/">table of tested apps and fields</a> also lists TextEdit, Notes, Messages, Microsoft Word and Chrome text areas, including the ChatGPT and claude.ai prompt boxes. Safari, Slack and most other apps have not been tested.</p>
         <p>The honest use for email is narrow. You could draft a note in one of those apps, check it there, and paste it into Mail. That adds a step, and it does nothing about the To line or the attachment. The app is on its <a href="/outbound-veil/">own page</a>, with a free 7-day trial, and its page says it is not a compliance product.</p>
 
         <h2 id="provider">What the rest of the job needs</h2>
@@ -200,9 +200,9 @@
         <h3>Does Apple Mail warn me if the address looks wrong?</h3>
         <p>Nothing I read on Apple's Mail pages describes a warning about who a message is addressed to. Undo Send and Send Later change when a message goes, not who it goes to.</p>
         <h3>Does Outbound Veil check the recipient or the attachment?</h3>
-        <p>No. It checks the text of the field you are typing in for personal details. Its pages describe nothing that checks recipients or attachments. It also cannot read the body of a new message in Apple Mail.</p>
+        <p>No. It checks the text of the field you are typing in for personal details. Its pages describe nothing that checks recipients or attachments. Since version 1.3.0 it does read the body of a new message in Apple Mail.</p>
         <h3>Does Outbound Veil work in Apple Mail?</h3>
-        <p>Not for the body of a new message. Mail hands macOS a web view with no text in it, so there is nothing to check. It was tested and works in TextEdit, Notes, Messages, Microsoft Word and Chrome text areas.</p>
+        <p>Yes, since version 1.3.0, for the body of a new message. It highlights personal details as you type; you edit them by hand, because it never rewrites a Mail message. It also works in TextEdit, Notes, Messages, Microsoft Word and Chrome text areas.</p>
         <h3>Is this compliance advice?</h3>
         <p>No. It is a description of what two tools do. A practice with legal duties around client email needs advice about those duties and a written policy.</p>
 
