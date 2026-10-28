@@ -62,7 +62,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/blog/</loc>
-    <lastmod>2026-10-27</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -92,7 +92,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/blog/running-your-manuscript-through-paper-review/</loc>
-    <lastmod>2026-10-24</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>never</changefreq>
     <priority>0.7</priority>
   </url>
@@ -716,7 +716,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/guides/citation-gap-scan-before-submitting/</loc>
-    <lastmod>2026-10-24</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -987,6 +987,12 @@
   <url>
     <loc>https://purplelink.llc/guides/pre-submission-checklist-before-submitting/</loc>
     <lastmod>2026-10-24</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://purplelink.llc/guides/remove-metadata-word-document-mac/</loc>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
