@@ -5,8 +5,16 @@
   <link href="https://purplelink.llc/blog/feed.xml" rel="self"/>
   <link href="https://purplelink.llc/blog/"/>
   <id>https://purplelink.llc/blog/</id>
-  <updated>2026-10-25T12:00:00Z</updated>
+  <updated>2026-10-28T12:00:00Z</updated>
   <author><name>Benjamin Ampel</name></author>
+  <entry>
+    <title>The citations you don't know you're missing</title>
+    <link href="https://purplelink.llc/blog/the-citations-you-dont-know-youre-missing/"/>
+    <id>https://purplelink.llc/blog/the-citations-you-dont-know-youre-missing/</id>
+    <published>2026-10-28T12:00:00Z</published>
+    <updated>2026-10-28T12:00:00Z</updated>
+    <summary>A reviewer's note that you missed a paper costs a full resubmission cycle. Why citation gaps happen, and how Citation Gap Analysis flags the related work your bibliography is missing before a reviewer does.</summary>
+  </entry>
   <entry>
     <title>Escaping text isn't escaping attributes</title>
     <link href="https://purplelink.llc/blog/escaping-text-isnt-escaping-attributes/"/>
