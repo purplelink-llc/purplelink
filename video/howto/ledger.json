@@ -205,5 +205,33 @@
   "instagram": {
    "ok": true
   }
+ },
+ {
+  "slug": "howto-bibtex-from-doi-no-acceptable-resource",
+  "app": "vitae",
+  "date": "2026-10-28",
+  "title": "No acceptable resource available on Mac (get BibTeX from a DOI with curl)",
+  "long_id": "6yBaTePGk5I",
+  "short_id": "oBrAhnmhQoA",
+  "link_arm": "A",
+  "link_utm_content": "howto-bibtex-from-doi-no-acceptable-resource",
+  "sources": [
+   "https://community.crossref.org/t/request-header-required-to-retrieve-items-in-bibtex-format/11988",
+   "https://daeron.fr/ramblings/doi2bibtex",
+   "https://scipython.com/blog/doi-to-bibtex/"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "6yBaTePGk5I",
+    "caption_id": "AUieDaZUwa8cbGLCkDq9dUh1CCxPs2qBu35V84avRZ02C7mX4N75IiCs"
+   },
+   "short": {
+    "video_id": "oBrAhnmhQoA",
+    "caption_id": "AUieDabLz1BUgmrqbI0INc86EN8L8kPMdVjFkE6eyJ776stjvM2jElWF"
+   }
+  },
+  "instagram": {
+   "ok": true
+  }
  }
 ]

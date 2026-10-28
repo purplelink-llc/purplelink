@@ -1,0 +1,51 @@
+{
+ "id": "howto-bibtex-from-doi-no-acceptable-resource",
+ "app": "vitae",
+ "title": "No acceptable resource available on Mac (get BibTeX from a DOI with curl)",
+ "short_title": "Want BibTeX from a DOI? Ask doi.org, not the Crossref API",
+ "url": "purplelink.llc/vitae",
+ "page": "https://purplelink.llc/vitae/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://community.crossref.org/t/request-header-required-to-retrieve-items-in-bibtex-format/11988",
+  "https://daeron.fr/ramblings/doi2bibtex",
+  "https://scipython.com/blog/doi-to-bibtex/"
+ ],
+ "verify": {
+  "runs": [
+   {"cmd": "curl -s -H \"Accept: application/x-bibtex\" https://api.crossref.org/works/10.1093/comjnl/27.2.97", "output": "No acceptable resource available."},
+   {"cmd": "curl -sLH \"Accept: application/x-bibtex\" https://doi.org/10.1093/comjnl/27.2.97", "output": " @article{Knuth_1984, title={Literate Programming}, volume={27}, ISSN={1460-2067}, url={http://dx.doi.org/10.1093/comjnl/27.2.97}, DOI={10.1093/comjnl/27.2.97}, number={2}, journal={The Computer Journal}, publisher={Oxford University Press (OUP)}, author={Knuth, D. E.}, year={1984}, month=Feb, pages={97–111} }"},
+   {"cmd": "curl -s https://api.crossref.org/works/10.1093/comjnl/27.2.97/transform/application/x-bibtex", "output": "@article{Knuth_1984, title={Literate Programming}, volume={27}"}
+  ],
+  "docs": [
+   "https://citation.crosscite.org/docs.html",
+   "https://www.crossref.org/documentation/retrieve-metadata/content-negotiation/"
+  ],
+  "notes": "Run 2026-10-28 on the Mac mini with /usr/bin/curl and PATH=/usr/bin:/bin. The Crossref works endpoint answers HTTP 406 with 'No acceptable resource available.' to an Accept: application/x-bibtex header, the error in the Crossref Community thread; content negotiation through doi.org (documented by DOI Content Negotiation at citation.crosscite.org and Crossref's content negotiation page) and the /transform/application/x-bibtex path both return the BibTeX entry. The check scene splits the single output line into three lines for reading; each piece is copied verbatim. Plain curl of the DOI without the header lands on the publisher's page (a Cloudflare challenge for OUP), not shown because it varies by publisher. Vitae's page states it brings in publications from DOIs, pasted BibTeX or Zotero, shows each for review before saving, and exports publications as RIS and BibTeX for free."
+ },
+ "scenes": [
+  {"type": "hook", "short": true, "kicker": "BibTeX from a DOI", "title": "No acceptable resource available", "sub": "Crossref refused the BibTeX request.",
+   "narration": "If you asked Crossref for a BibTeX entry from a D O I and got back No acceptable resource available, the request went to the wrong address. Here is the one that works."},
+  {"type": "symptom", "short": true, "label": "Terminal",
+   "lines": ["$ curl -H \"Accept: application/x-bibtex\" https://api.crossref.org/works/10.1093/comjnl/27.2.97", "No acceptable resource available."],
+   "narration": "This is the request many people try first. The Crossref works address, with a BibTeX accept header. It answers with an error instead of a citation."},
+  {"type": "cause", "text": "The works address only returns JSON. BibTeX comes from doi.org, or from the transform address.",
+   "narration": "That works address only speaks JSON. BibTeX is offered through doi.org itself, which reads the accept header and asks the registry for the record, or through Crossref's separate transform address."},
+  {"type": "steps", "short": true, "label": "Terminal",
+   "lines": ["$ curl -LH \"Accept: application/x-bibtex\" https://doi.org/10.1093/comjnl/27.2.97"],
+   "ui": "Use your own DOI after doi.org/. The L follows the redirect.",
+   "narration": "Open Terminal and send the same header to doi.org, followed by your D O I. The capital L tells curl to follow the redirect to the record."},
+  {"type": "check", "short": true, "label": "Terminal", "ok": "A BibTeX entry",
+   "lines": ["$ curl -LH \"Accept: application/x-bibtex\" https://doi.org/10.1093/comjnl/27.2.97", "@article{Knuth_1984, title={Literate Programming},", "journal={The Computer Journal},", "author={Knuth, D. E.}, year={1984},"],
+   "narration": "Back comes a complete BibTeX entry, ready to paste into your bibliography file. Check the key and the journal name before you use it."},
+  {"type": "app", "name": "Vitae", "line": "Brings in publications from DOIs, pasted BibTeX or Zotero, shows each one for review, and exports them as BibTeX.",
+   "url": "purplelink.llc/vitae", "img": "site/assets/vitae-screens/cv-1440.webp", "icon": "site/assets/vitae-icon.webp",
+   "narration": "If you keep an academic record on a Mac, Vitae is a free app that brings in publications from D O Is, pasted BibTeX or Zotero. It shows each one for review before saving, and exports your publications as BibTeX or R I S."}
+ ],
+ "thumbs": {
+  "A": {"kind": "error", "pill": "Crossref", "msg": "No acceptable resource available"},
+  "B": {"kind": "long", "pill": "BibTeX from a DOI", "msg": "Ask doi.org instead", "n": 1, "unit": "command", "sub": "and the entry comes back"},
+  "C": {"kind": "product", "name": "Vitae", "line": "DOIs in, BibTeX out", "img": "site/assets/vitae-screens/cv-1440.webp", "icon": "site/assets/vitae-icon.webp", "zoom": 1.4, "pos": "30% 70%"}
+ }
+}
