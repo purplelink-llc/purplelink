@@ -3329,7 +3329,7 @@ ABDC, the Financial Times 50 (FT50), the UT Dallas 24 (UTD24) and SCImago Journa
 
 Which browsers does it support?
 
-Google Chrome, from the Chrome Web Store.
+Google Chrome, from the Chrome Web Store, and Firefox 140 or later, from Firefox Add-ons, where it is listed as Google Scholar Utility Belt.
 
 
 ---
