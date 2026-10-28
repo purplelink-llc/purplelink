@@ -14,7 +14,7 @@ from typing import Optional
 
 import httpx
 
-from digest.affiliates import DISCLOSURE, LABEL_HTML, rewrite_url
+from digest.affiliates import DISCLOSURE, LABEL_HTML, REL, rewrite_url
 from digest.curator import DigestData, DigestItem, _SECTION_LABELS
 
 logger = logging.getLogger(__name__)
@@ -95,7 +95,7 @@ def _fmt_date(d: datetime.date) -> str:
 def _item_link(item: DigestItem) -> tuple:
     """(href, rel) for an item. Links to an approved affiliate program get the tracked URL and rel=sponsored."""
     href, program = rewrite_url(item.url)
-    return href, ("sponsored noopener" if program else "noopener")
+    return href, (REL if program else "noopener")
 
 
 def _item_label(item: DigestItem) -> str:
