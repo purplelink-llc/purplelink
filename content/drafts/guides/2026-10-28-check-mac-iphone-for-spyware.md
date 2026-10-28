@@ -129,7 +129,7 @@ The README is candid about limits: it checks published indicators only, a clean 
 ## If you may be targeted right now
 
 
-Contact a helpline before you wipe, reset or update the device, because doing so can destroy the evidence they would look for.
+Contact a helpline before you wipe or reset the device, because doing so can destroy the evidence they would look for.
 
 
 - **Access Now Digital Security Helpline.** It describes itself as free, as working for civil society, journalists, activists and human rights defenders, as staffed around the clock in 10 languages, and as replying to every request within two hours. It first checks that supporting you falls within its mandate, so an individual outside those groups may not qualify ([Access Now](https://www.accessnow.org/help/)).
