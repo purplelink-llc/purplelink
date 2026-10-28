@@ -459,3 +459,19 @@ def test_business_login_link_code_and_exchange():
     bad = FakeHttp([("POST", "oauth/access_token", jresp({"error_message": "code SECRET used"}, status=400))])
     tok, err = st.ig_exchange_code(bad, "123", "SECRET", "AQBabc")
     assert tok is None and "SECRET" not in err and "400" in err
+
+
+def test_setup_stores_nothing_for_a_rejected_or_wrong_token(env, monkeypatch, capsys):
+    from socialpost import setup as st, sysutil
+    stored = []
+    monkeypatch.setattr(sysutil, "keychain_set", lambda *a: stored.append(a))
+    answers = iter(["not-a-token"])
+    monkeypatch.setattr(st, "_ask_secret", lambda label, required=True: next(answers))
+    assert st._setup_instagram(cfgmod.load()) == 1 and not stored
+    assert "start with IG" in capsys.readouterr().out
+    answers = iter(["IGAAbad", ""])
+    monkeypatch.setattr(st, "_ask_secret", lambda label, required=True: next(answers))
+    monkeypatch.setattr(st, "build_adapter", lambda cfg, p, secret=None: adapter(
+        dict(cfg, platforms={"instagram": {"expected": {}}}), FakeHttp([("GET", "/me?", Resp(401, b"{}"))])))
+    assert st._setup_instagram(cfgmod.load()) == 1 and not stored
+    assert "Nothing stored" in capsys.readouterr().out

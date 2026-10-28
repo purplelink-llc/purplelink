@@ -203,6 +203,10 @@ def _setup_instagram(cfg: dict) -> int:
     tok = _ask_secret("Instagram access token from the dashboard's Generate token, or Enter to sign in through "
                       "Instagram instead", required=False)
     if tok:
+        if not tok.startswith("IG"):
+            print(f"That is not an Instagram Login token (those start with IG; this has {len(tok)} characters). "
+                  "Run setup again and press only Enter at the first prompt to sign in through Instagram.")
+            return 1
         app_secret = _ask_secret("Instagram app secret, or Enter if the token is already long-lived", required=False)
     else:
         tok, app_secret = _instagram_login()
@@ -219,13 +223,19 @@ def _setup_instagram(cfg: dict) -> int:
             print(f"The exchange failed (HTTP {r.status}). Nothing stored. {_scrub(msg, tok, app_secret)}".rstrip())
             return 1
         tok = new
+    # Check the token with Instagram before anything is stored: a rejected or wrong-account token never reaches
+    # the keychain.
+    a = build_adapter(cfg, "instagram", secret=lambda platform, field: tok)
+    try:
+        got = a.whoami()
+    except SocialError as e:
+        print(f"Instagram did not accept that token ({e}). Nothing stored.")
+        return 1
+    if "rubblefront" in str(got.get("username") or "").lower():
+        print("That token belongs to RubbleFront's account. Purplelink never posts there. Nothing stored.")
+        return 1
     sysutil.keychain_set("instagram", "access_token", tok)
     note_token_time("instagram")
-    a = build_adapter(cfg, "instagram")
-    got = a.whoami()
-    if "rubblefront" in str(got.get("username") or "").lower():
-        print("That token belongs to RubbleFront's account. Purplelink never posts there. Nothing pinned.")
-        return 1
     ok = _confirm_identity("instagram", a, {"user_id": "user_id", "username": "username"})
     if ok:
         print("Next: social.py instagram preview --dry-run  (renders a Reel and an image post, posts nothing)")
