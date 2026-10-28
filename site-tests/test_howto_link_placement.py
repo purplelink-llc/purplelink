@@ -64,3 +64,39 @@ def test_short_link_tagged_and_same_in_both_arms(monkeypatch):
     b = _desc("B", monkeypatch)[1]
     assert a == b
     assert "utm_content=howto-demo-slug-short" in a and "utm_medium=short" in a
+
+
+def _hub_in(tmp_path, monkeypatch, ledger=None):
+    """The real marketing hub, with every source redirected into tmp_path (no real queue or ledger)."""
+    repo = tmp_path / "repo"
+    (repo / "video" / "howto").mkdir(parents=True)
+    (repo / "video" / "howto" / "ledger.json").write_text(__import__("json").dumps(ledger or []))
+    for k, sub in (("PURPLELINK_REPO", "repo"), ("PURPLELINK_HUB", "hub"), ("PURPLELINK_QUEUE", "queue"),
+                   ("PURPLELINK_SOCIAL_QUEUE", "social")):
+        monkeypatch.setenv(k, str(tmp_path / sub))
+    spec = importlib.util.spec_from_file_location("hub_t", ROOT / "scripts" / "hub" / "hub.py")
+    hub = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(hub)
+    return hub
+
+
+def test_long_short_and_reel_get_their_own_tags(tmp_path, monkeypatch):
+    """Fails if the long video and its Short (or the Instagram Reel) come out with the same utm_content."""
+    links = H.hub_links(SB, _hub_in(tmp_path, monkeypatch))
+    tags = [links["long_tag"], links["short_tag"], links["reel_tag"]]
+    assert len(set(tags)) == 3, tags
+    assert tags == ["howto-demo-slug", "howto-demo-slug-short", "howto-demo-slug-reel"]   # the link test's names
+    lq, sq = parse_qs(urlparse(links["long"]).query), parse_qs(urlparse(links["short"]).query)
+    assert lq["utm_medium"] == ["video"] and sq["utm_medium"] == ["short"]
+    assert lq["utm_campaign"] == sq["utm_campaign"] == ["howto-link-test"] and lq["utm_source"] == ["youtube"]
+    monkeypatch.setattr(H, "trend_tags", lambda sb, short: "#macos")
+    long_d, short_d = H.descriptions(SB, "https://youtu.be/abcdefghijk", "A", links)
+    assert links["long"] in long_d and links["short"] in short_d and links["long"] not in short_d
+
+
+def test_a_taken_tag_is_not_reused(tmp_path, monkeypatch):
+    hub = _hub_in(tmp_path, monkeypatch, [{"slug": "howto-demo-slug", "long_id": "a" * 11, "short_id": "b" * 11,
+                                           "link_utm_content": "howto-demo-slug",
+                                           "short_utm_content": "howto-demo-slug-short"}])
+    links = H.hub_links(SB, hub)
+    assert links["long_tag"] == "howto-demo-slug-2" and links["short_tag"] == "howto-demo-slug-2-short"

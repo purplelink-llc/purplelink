@@ -47,6 +47,32 @@ def tagged(page: str, medium: str, slug: str) -> str:
             f"&utm_content={slug}")
 
 
+def hub_links(sb: dict, hub=None) -> dict:
+    """Each cut gets its own utm_content from the marketing hub (scripts/hub/hub.py make_utm), checked against every
+    tag already in use: the long video <slug>, the Short <slug>-short (the link test's names, kept until it ends on
+    2026-11-17) and the Instagram Reel <slug>-reel. A taken name gets -2, -3 ... Returns {"long", "short"} (links) and
+    {"long_tag", "short_tag", "reel_tag"}."""
+    if hub is None:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("hub", REPO / "scripts" / "hub" / "hub.py")
+        hub = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(hub)
+    p = hub.paths()
+    page, app = sb["page"], str(sb.get("app") or "")
+    common = {"source": "youtube", "campaign": "howto-link-test"}
+    long_url = hub.make_utm(p, page, app, "youtube", medium="video", content=sb["id"], **common)
+    long_tag = re.search(r"utm_content=([\w.\-]+)", long_url).group(1)
+    short_url = hub.make_utm(p, page, app, "youtube-short", medium="short", content=f"{long_tag}-short", **common)
+    short_tag = re.search(r"utm_content=([\w.\-]+)", short_url).group(1)
+    reel = hub.make_utm(p, page, app, "instagram", source="instagram", medium="social", campaign="ig-reel",
+                        content=f"{long_tag}-reel")
+    reel_tag = re.search(r"utm_content=([\w.\-]+)", reel).group(1)
+    tags = {long_tag, short_tag, reel_tag}
+    if len(tags) != 3:
+        raise SystemExit(f"tracking tags collide ({long_tag}, {short_tag}, {reel_tag}); not publishing")
+    return {"long": long_url, "short": short_url, "long_tag": long_tag, "short_tag": short_tag, "reel_tag": reel_tag}
+
+
 TRENDS_ROOT = Path(os.environ.get("TRENDS_ROOT", "/Volumes/Extreme SSD/TikTokPipeline"))
 FALLBACK_TAGS = ["macos", "mactips", "techtips"]
 
@@ -99,7 +125,10 @@ def yt_safe(cmd: str) -> str:
     return cmd.replace("<", "").replace(">", "")
 
 
-def descriptions(sb: dict, long_url: str | None, arm: str = "A") -> tuple[str, str]:
+def descriptions(sb: dict, long_url: str | None, arm: str = "A", links: dict | None = None) -> tuple[str, str]:
+    """links: hub_links(sb) (the publish path); without it the link test's default tags are used (dry runs, tests)."""
+    links = links or {"long": tagged(sb["page"], "video", sb["id"]),
+                      "short": tagged(sb["page"], "short", sb["id"] + "-short")}
     scenes = sb["scenes"]
     hook = next(s for s in scenes if s["type"] == "hook")
     cause = next((s for s in scenes if s["type"] == "cause"), None)
@@ -112,7 +141,7 @@ def descriptions(sb: dict, long_url: str | None, arm: str = "A") -> tuple[str, s
         parts.append(cause["text"])
     if cmds:
         parts.append("The fix, in Terminal:\n" + "\n".join(cmds))
-    link = tagged(sb["page"], "video", sb["id"])
+    link = links["long"]
     if arm == "B":
         parts.append(f"{app['name']}: {app['line']}")
     else:
@@ -128,7 +157,7 @@ def descriptions(sb: dict, long_url: str | None, arm: str = "A") -> tuple[str, s
         short_parts.append("\n".join(cmds))
     if long_url:
         short_parts.append(f"Full walkthrough: {long_url}")
-    short_parts.append(f"{app['name']}: {tagged(sb['page'], 'short', sb['id'] + '-short')}")
+    short_parts.append(f"{app['name']}: {links['short']}")
     short_parts.append(trend_tags(sb, short=True))
     return long_d, "\n\n".join(short_parts)
 
@@ -163,7 +192,7 @@ def add_captions(video_id: str, srt: Path) -> dict:
     return res
 
 
-def add_reel(short_file: Path, short_id: str, title: str, desc: str, page: str, long_id: str) -> dict:
+def add_reel(short_file: Path, short_id: str, title: str, desc: str, page: str, long_id: str, utm_content: str = "") -> dict:
     """Hand the Short to the Instagram Reel inbox (backend/socialpost/instagram, Ben's 2026-10-23 request): the 9:16
     cut becomes the Purplelink Instagram Reel, queued and vetted by the social pipeline. Never fails the publish."""
     import tempfile
@@ -172,7 +201,8 @@ def add_reel(short_file: Path, short_id: str, title: str, desc: str, page: str, 
         fh.write(desc)
     try:
         r = subprocess.run([PY, str(social), "instagram", "reel-add", "--video", str(short_file), "--youtube-id", short_id,
-                            "--title", title, "--description-file", fh.name, "--link", page, "--also", long_id],
+                            "--title", title, "--description-file", fh.name, "--link", page, "--also", long_id,
+                            *(["--utm-content", utm_content] if utm_content else [])],
                            capture_output=True, text=True, timeout=1800)
     except Exception as e:
         print(f"instagram: Reel not added ({type(e).__name__}); the channel scan will flag it")
@@ -181,7 +211,7 @@ def add_reel(short_file: Path, short_id: str, title: str, desc: str, page: str, 
         Path(fh.name).unlink(missing_ok=True)
     out = (r.stdout or r.stderr).strip()[-300:]
     print(f"instagram: {out}")
-    return {"ok": r.returncode == 0}
+    return {"ok": r.returncode == 0, "utm_content": utm_content}
 
 
 def main() -> int:
@@ -203,7 +233,8 @@ def main() -> int:
     if missing:
         raise SystemExit(f"missing build output: {missing}")
     arm = link_arm(eastern_today())
-    long_d, _ = descriptions(sb, None, arm)
+    links = hub_links(sb)
+    long_d, _ = descriptions(sb, None, arm, links)
     if not dry:   # the rendered-video check (pops, freezes, contrast) must pass for both cuts before anything uploads
         vq = [PY, str(REPO / "scripts" / "howto_gate.py"), str(sbp)]
         for k in ("16x9.mp4", "9x16.mp4"):
@@ -213,20 +244,22 @@ def main() -> int:
     if dry:
         print(f"--- link placement arm {arm} (Eastern date {eastern_today()})")
         print("--- long title\n" + sb["title"] + "\n--- long description\n" + long_d)
-        print("--- short title\n" + sb["short_title"] + "\n--- short description\n" + descriptions(sb, "https://youtu.be/XXXXXXXXXXX")[1])
+        print("--- short title\n" + sb["short_title"] + "\n--- short description\n"
+              + descriptions(sb, "https://youtu.be/XXXXXXXXXXX", arm, links)[1])
+        print(f"--- tags: long {links['long_tag']}, Short {links['short_tag']}, Reel {links['reel_tag']}")
         return 0
     long_id = upload(files["16x9.mp4"], sb["title"], long_d,
                      ["--ab-thumbnails", str(files["thumb-A.jpg"]), str(files["thumb-B.jpg"]), str(files["thumb-C.jpg"])])
-    _, short_d = descriptions(sb, f"https://youtu.be/{long_id}", arm)
+    _, short_d = descriptions(sb, f"https://youtu.be/{long_id}", arm, links)
     short_id = upload(files["9x16.mp4"], sb["short_title"], short_d, ["--thumbnail", str(files["thumb-A.jpg"])])
     captions = {"long": add_captions(long_id, out / f"{slug}-16x9.srt"),
                 "short": add_captions(short_id, out / f"{slug}-9x16.srt")}
-    instagram = add_reel(files["9x16.mp4"], short_id, sb["short_title"], short_d, sb["page"], long_id)
+    instagram = add_reel(files["9x16.mp4"], short_id, sb["short_title"], short_d, sb["page"], long_id, links["reel_tag"])
     today = eastern_today().isoformat()
     ledger = json.loads(LEDGER.read_text()) if LEDGER.exists() else []
     ledger.append({"slug": sb["id"], "app": sb["app"], "date": today, "title": sb["title"],
                    "long_id": long_id, "short_id": short_id, "link_arm": arm,
-                   "link_utm_content": sb["id"], "sources": sb.get("sources", []), "captions": captions,
+                   "link_utm_content": links["long_tag"], "short_utm_content": links["short_tag"], "sources": sb.get("sources", []), "captions": captions,
                    "instagram": instagram})
     LEDGER.write_text(json.dumps(ledger, indent=1) + "\n")
     rot = json.loads(ROTATION.read_text())

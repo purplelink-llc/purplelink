@@ -47,7 +47,8 @@
    "https://email.esm.psu.edu/pipermail/macosx-tex/2025-December/059165.html",
    "https://email.esm.psu.edu/pipermail/macosx-tex/2019-December/056853.html",
    "https://snorriheim.atlassian.net/wiki/spaces/TechnicalNotes/pages/528121857/Xelatex"
-  ]
+  ],
+  "short_utm_content": "howto-fontspec-requires-xetex-or-luatex-short"
  },
  {
   "slug": "howto-gaps-between-tiled-windows",
@@ -71,7 +72,8 @@
     "video_id": "2ptmnUyf-nk",
     "caption_id": "AUieDaYNnFt0_DZt8WqsnWJpxJFvWmk5wOdxE_BXOhU6F9au0-3IZuiv"
    }
-  }
+  },
+  "short_utm_content": "howto-gaps-between-tiled-windows-short"
  },
  {
   "slug": "howto-spotlight-not-finding-files-external-drive",
@@ -95,7 +97,8 @@
     "video_id": "NAN6uPThskU",
     "caption_id": "AUieDaYk3QqC8vW7UO1msSqKCmcdaGIblzmTFTjxQdEJNdt_x_TKccMS"
    }
-  }
+  },
+  "short_utm_content": "howto-spotlight-not-finding-files-external-drive-short"
  },
  {
   "slug": "howto-scanned-pdf-not-searchable",
@@ -123,7 +126,8 @@
   "instagram": {
    "ok": true
   },
-  "note": "Long video uploaded public by howto-publish.py. Thumbnail A was set and the A/B/C Test & Compare was started on 2026-10-24 after a rebuild. The Short was uploaded separately after the run stopped; its custom thumbnail had not reached the public image at last check."
+  "note": "Long video uploaded public by howto-publish.py. Thumbnail A was set and the A/B/C Test & Compare was started on 2026-10-24 after a rebuild. The Short was uploaded separately after the run stopped; its custom thumbnail had not reached the public image at last check.",
+  "short_utm_content": "howto-scanned-pdf-not-searchable-short"
  },
  {
   "slug": "howto-pdflatex-command-not-found-after-mactex",
@@ -149,7 +153,8 @@
   },
   "instagram": {
    "ok": true
-  }
+  },
+  "short_utm_content": "howto-pdflatex-command-not-found-after-mactex-short"
  },
  {
   "slug": "howto-mac-keyboard-no-click-sound",
@@ -176,7 +181,8 @@
   "instagram": {
    "ok": true
   },
-  "note": "Long video uploaded public by howto-publish.py; thumbnail A was set afterwards with yt-thumbnail.py (live); the A/B/C Test & Compare was not started. Short, captions, ledger and rotation done by hand."
+  "note": "Long video uploaded public by howto-publish.py; thumbnail A was set afterwards with yt-thumbnail.py (live); the A/B/C Test & Compare was not started. Short, captions, ledger and rotation done by hand.",
+  "short_utm_content": "howto-mac-keyboard-no-click-sound-short"
  },
  {
   "slug": "howto-battery-percentage-not-showing-menu-bar",
@@ -204,7 +210,8 @@
   },
   "instagram": {
    "ok": true
-  }
+  },
+  "short_utm_content": "howto-battery-percentage-not-showing-menu-bar-short"
  },
  {
   "slug": "howto-bibtex-from-doi-no-acceptable-resource",
@@ -232,6 +239,7 @@
   },
   "instagram": {
    "ok": true
-  }
+  },
+  "short_utm_content": "howto-bibtex-from-doi-no-acceptable-resource-short"
  }
 ]

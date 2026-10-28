@@ -53,11 +53,14 @@ def text_limit_errors(platform: str, text: str) -> list[str]:
     return []
 
 
-def utm_link(link: str, platform: str, campaign: str) -> str:
-    """Add utm_source=<platform>&utm_medium=social&utm_campaign=<campaign>, keeping other query parameters."""
+def utm_link(link: str, platform: str, campaign: str, content: str = "") -> str:
+    """Add utm_source=<platform>&utm_medium=social&utm_campaign=<campaign> (and utm_content when given), keeping
+    other query parameters."""
     parts = urlsplit(link)
     q = [(k, v) for k, v in parse_qsl(parts.query, keep_blank_values=True) if not k.startswith("utm_")]
     q += [("utm_source", platform), ("utm_medium", "social"), ("utm_campaign", campaign)]
+    if content:
+        q.append(("utm_content", content))
     return urlunsplit((parts.scheme, parts.netloc, parts.path, urlencode(q), parts.fragment))
 
 

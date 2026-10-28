@@ -90,8 +90,30 @@ def inbox() -> list[dict]:
     return out
 
 
+def hub_tag(link: str, asset: str, hub=None) -> str:
+    """A utm_content no other placement uses, from the marketing hub (scripts/hub/hub.py make_utm), for a Reel's
+    link-in-bio entry. "" when the link is not on purplelink.llc (a YouTube fallback is not tagged) or the hub is
+    unavailable."""
+    try:
+        if hub is None:
+            import importlib.util
+            spec = importlib.util.spec_from_file_location("hub", paths.repo_root() / "scripts" / "hub" / "hub.py")
+            hub = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(hub)
+        if not hub.site_path(link):
+            return ""
+        url = hub.make_utm(hub.paths(), link, asset, "instagram", source="instagram", medium="social",
+                           campaign="ig-reel", content=f"{asset}-reel")
+        m = re.search(r"utm_content=([\w.\-]+)", url)
+        return m.group(1) if m else ""
+    except (Exception, SystemExit) as e:
+        sysutil.log(f"instagram: no hub tag for {link} ({type(e).__name__})")
+        return ""
+
+
 def reel_add(video: Path, youtube_id: str, title: str, description: str = "", link: str = "",
-             also: list[str] | None = None, run=subprocess.run, when: dt.datetime | None = None) -> dict:
+             also: list[str] | None = None, run=subprocess.run, when: dt.datetime | None = None,
+             utm_content: str = "", hub=None) -> dict:
     """Make the Reel for one Purplelink YouTube video and put it in the inbox. Idempotent per YouTube id."""
     if not re.fullmatch(r"[\w-]{11}", youtube_id or ""):
         raise ValueError("--youtube-id must be an 11-character YouTube video id")
@@ -107,7 +129,8 @@ def reel_add(video: Path, youtube_id: str, title: str, description: str = "", li
                        run=run)
     entry = {"youtube_id": youtube_id, "also": [a for a in (also or []) if a], "title": cap.clean_title(title),
              "description": description, "link": link, "source": str(video),
-             "added": iso(when or dt.datetime.now(dt.timezone.utc)), **meta}
+             "added": iso(when or dt.datetime.now(dt.timezone.utc)),
+             "utm_content": utm_content or (hub_tag(link, youtube_id, hub) if link else ""), **meta}
     ent.write_text(json.dumps(entry, indent=1), encoding="utf-8")
     sysutil.log(f"instagram: Reel ready for {youtube_id} ({meta['duration']} s, framed={meta['framed']}, "
                 f"trimmed={meta['trimmed']})")
@@ -137,6 +160,7 @@ def reel_item(entry: dict, when_iso: str) -> Item:
         "experiment_note": "Instagram Reel of a Purplelink YouTube video; compared with the same video's YouTube views",
         "results": {}, "source": SOURCE_REEL,
         "instagram": {"kind": "reel", "youtube_id": ytid, "title": entry["title"]},
+        **({"utm_content": entry["utm_content"]} if entry.get("utm_content") else {}),
     }
     return Item(_item_path(iid), meta, {"instagram": text},
                 f"Built by socialpost.instagram from YouTube {ytid}; Reel {entry['duration']} s.")
@@ -332,7 +356,8 @@ def links(cfg: dict, n: int) -> list[dict]:
             continue
         ig = it.meta.get("instagram") or {}
         rows.append({"title": str(ig.get("title") or it.id)[:140], "kind": ig.get("kind", ""),
-                     "url": utm_link(it.link, "instagram", it.campaign), "date": str(r.get("posted_at", ""))[:10],
+                     "url": utm_link(it.link, "instagram", it.campaign, str(it.meta.get("utm_content") or "")),
+                     "date": str(r.get("posted_at", ""))[:10],
                      "at": str(r.get("posted_at", ""))})
     rows.sort(key=lambda x: x["at"], reverse=True)
     return [{k: v for k, v in r.items() if k != "at"} for r in rows[:n]]

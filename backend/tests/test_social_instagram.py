@@ -405,3 +405,40 @@ def test_reel_caption_adds_the_app_tag_and_skips_title_repeats():
     assert c.count("free battery meter") == 1 and "It shows charge and the rate per hour." in c
     assert c.endswith("#macbattery #mac #macos")
     assert cap.app_tags_for_link("https://www.youtube.com/watch?v=x") == []
+
+
+class FakeHub:
+    """The two calls hub_tag makes, with a taken-tag set like the real hub's used_contents."""
+
+    def __init__(self, taken=()):
+        self.taken = set(taken)
+
+    @staticmethod
+    def site_path(url):
+        return "/x/" if url.startswith("https://purplelink.llc/") else None
+
+    @staticmethod
+    def paths():
+        return {}
+
+    def make_utm(self, p, url, asset, channel, source="", campaign="", medium="", content=""):
+        tag, n = content, 2
+        while tag in self.taken:
+            tag, n = f"{content}-{n}", n + 1
+        self.taken.add(tag)
+        return f"{url}?utm_source={source}&utm_medium={medium}&utm_campaign={campaign}&utm_content={tag}"
+
+
+def test_each_reel_gets_its_own_tag_in_the_bio_link(env, cfg):
+    hub = FakeHub(taken={"AAAAAAAAAA1-reel"})
+    assert igp.hub_tag("https://purplelink.llc/guides/x/", "AAAAAAAAAA1", hub) == "AAAAAAAAAA1-reel-2"
+    assert igp.hub_tag("https://www.youtube.com/watch?v=AAAAAAAAAA1", "AAAAAAAAAA1", hub) == ""
+    entry = {"youtube_id": "AAAAAAAAAA2", "title": "Spotlight fix", "description": HOWTO_DESC, "duration": 50.0,
+             "width": 1080, "height": 1920, "link": "https://purplelink.llc/guides/x/", "utm_content": "howto-x-reel"}
+    it = igp.reel_item(entry, items.iso(NOW))
+    assert it.meta["utm_content"] == "howto-x-reel"
+    it.meta["results"] = {"instagram": {"status": "posted", "posted_at": items.iso(NOW)}}
+    it.path.parent.mkdir(parents=True, exist_ok=True)
+    it.save()
+    url = igp.links(cfg, 12)[0]["url"]
+    assert url.endswith("utm_campaign=ig-reel&utm_content=howto-x-reel")
