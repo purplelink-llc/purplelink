@@ -149,7 +149,8 @@ with the same identity check, PAUSE switch, retries, results and OUTREACH-LOG ro
 
 **Link in bio.** `https://purplelink.llc/instagram/` (`netlify/functions/instagram-links.mjs`) lists the latest 12
 posted Instagram items, newest first, each link tagged `utm_source=instagram&utm_medium=social&utm_campaign=<campaign>`
-(companions keep the LinkedIn post's campaign; Reels use `ig-reel`). `instagram run` writes the list to the
+(companions keep the LinkedIn post's campaign; Reels use `ig-reel` plus their own `utm_content` from the marketing hub,
+`<slug>-reel` for a how-to Short, so the hub can tell each Reel's visits apart). `instagram run` writes the list to the
 `instagram-links` Blobs store (`latest.json`) when it changes. With an empty store the page lists products, guides and
 tools. The profile's link is set once, in the Instagram app (the API cannot set it):
 `https://purplelink.llc/instagram/?utm_source=instagram&utm_medium=social&utm_campaign=bio`.

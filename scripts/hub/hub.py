@@ -19,7 +19,8 @@ Phase 1 (results):
   hub.py export DIR             aggregate JSON arrays for the dashboard's Marketing tab (no contacts, no email targets)
 
 Phase 2 (the hub as the gate):
-  hub.py utm URL --asset A --channel C [--source S] [--campaign X]   the link with a utm_content no placement uses yet
+  hub.py utm URL --asset A --channel C [--source S] [--campaign X] [--medium M] [--content PREFERRED]
+                                the link with a utm_content no placement uses yet (PREFERRED, or -2, -3 ... when taken)
   hub.py kits [--write ASSET|all]   submission kits from site/llms.txt; says which stored kit is out of date
   hub.py rules [--checked CHANNEL]  platform rules per company channel, due for a re-check after 90 days
   hub.py week pick|measure [--write]   Monday: up to 5 assets to draft for; Sunday: what the week's placements did
@@ -358,11 +359,15 @@ def from_social(p: dict) -> list:
                 status = "approved" if approval else "drafted"
             when = str(r.get("posted_at") or fm.get("scheduled_at") or fm.get("created") or "")[:10]
             campaign = str(fm.get("campaign") or "")
+            utm = f"utm_source={plat}&utm_medium=social&utm_campaign={campaign}" if campaign else ""
+            if utm and fm.get("utm_content"):
+                utm += f"&utm_content={fm['utm_content']}"
+            std = re.search(r"standing, (\d{4}-\d{2}-\d{2})", approval)
             out.append({
                 "id": f"social:{iid}:{plat}", "source": "social-queue", "channel": plat, "kind": "post",
                 "target": f"Purplelink {plat}", "status": status, "date": when, "url": r.get("url") or "",
-                "landing_url": link, "utm": f"utm_source={plat}&utm_medium=social&utm_campaign={campaign}" if campaign else "",
-                "approval": "standing:2026-10-18" if "standing" in approval else approval, "contact_ref": "",
+                "landing_url": link, "utm": utm,
+                "approval": f"standing:{std.group(1)}" if std else approval, "contact_ref": "",
                 "notes": (r.get("error") or r.get("detail") or "")[:200], "_text": link + " " + body,
                 "_assets": candidate_assets(str((fm.get("daily") or {}).get("candidate") or ""), video_apps)
                 if isinstance(fm.get("daily"), dict) else [],
@@ -414,6 +419,16 @@ def from_outreach(p: dict) -> list:
     return out
 
 
+def video_tag(v: dict, fld: str) -> str:
+    """The utm_content a ledger entry's long video or Short links with. The Short has its own tag: short_utm_content
+    since 2026-10-28; before that howto-publish.py gave it <long tag>-short (the published descriptions say so)."""
+    if fld == "long_id":
+        return v.get("link_utm_content") or ""
+    if v.get("short_utm_content"):
+        return v["short_utm_content"]
+    return f"{v['link_utm_content']}-short" if v.get("link_utm_content") else ""
+
+
 def from_videos(p: dict) -> list:
     out = []
     if not p["videos"].exists():
@@ -423,14 +438,15 @@ def from_videos(p: dict) -> list:
             vid = v.get(fld)
             if not vid:
                 continue
+            tag = video_tag(v, fld)
             out.append({
                 "id": f"video:{vid}", "source": "video-ledger", "channel": "youtube", "kind": "video",
                 "target": f"Purplelink YouTube ({label})", "status": "live", "date": v.get("date", ""),
                 "url": f"https://www.youtube.com/watch?v={vid}" if fld == "long_id" else f"https://www.youtube.com/shorts/{vid}",
-                "landing_url": "", "utm": f"utm_content={v.get('link_utm_content', '')}" if v.get("link_utm_content") else "",
+                "landing_url": "", "utm": f"utm_content={tag}" if tag else "",
                 "approval": "standing:daily-howto", "contact_ref": "", "notes": v.get("title", "")[:200],
                 "_text": str(v.get("app", "")), "_assets": [str(v.get("app", ""))],
-                "_contents": [v["link_utm_content"]] if v.get("link_utm_content") else [],
+                "_contents": [tag] if tag else [],
             })
     return out
 
@@ -883,25 +899,29 @@ def used_contents(p: dict) -> set:
         texts += [f.read_text(errors="replace") for f in p["social"].glob("*.md")]
     for t in texts:
         seen.update(re.findall(r"utm_content=([\w.\-]+)", t))
-        seen.update(re.findall(r'"link_utm_content":\s*"([\w.\-]+)"', t))
+        # the video ledger (long, Short and Reel tags) and the social queue's front matter record bare tags
+        seen.update(re.findall(r'"(?:link_|short_|reel_)?utm_content":\s*"([\w.\-]+)"', t))
+        seen.update(re.findall(r'^utm_content:\s*"([\w.\-]+)"', t, re.M))
     return seen
 
 
 def make_utm(p: dict, url: str, asset: str, channel: str, source: str = "", campaign: str = "",
-             today: dt.date | None = None) -> str:
+             today: dt.date | None = None, medium: str = "", content: str = "") -> str:
     """The link with utm_source, utm_medium, utm_campaign and a utm_content no other placement uses:
-    <asset>-<channel>-<yymmdd>, with -2, -3 ... when that is taken."""
+    <asset>-<channel>-<yymmdd> (or `content` when the caller has a naming scheme, such as the how-to link test's
+    <slug> and <slug>-short), with -2, -3 ... when that is taken."""
     if not site_path(url):
         raise SystemExit("only links to purplelink.llc are tagged")
     today = today or dt.date.today()
-    base = f"{slug(asset.split(':')[-1], 28)}-{slug(channel, 16)}-{today.strftime('%y%m%d')}"
+    base = slug(content, 80) if content else f"{slug(asset.split(':')[-1], 28)}-{slug(channel, 16)}-{today.strftime('%y%m%d')}"
     taken = used_contents(p)
     content, n = base, 2
     while content in taken:
         content, n = f"{base}-{n}", n + 1
-    medium = {"email": "email", "newsletter": "email", "press": "email", "libguide": "referral", "directory": "referral",
+    medium = slug(medium, 20) or {"email": "email", "newsletter": "email", "press": "email", "libguide": "referral", "directory": "referral",
               "alternativeto": "referral", "macupdate": "referral", "marketplace": "referral", "github": "referral",
-              "texse": "community", "reddit": "community", "hn": "community", "youtube": "video"}.get(channel, "social")
+              "texse": "community", "reddit": "community", "hn": "community", "youtube": "video",
+              "youtube-short": "short"}.get(channel, "social")
     url = re.sub(r"[?&]utm_[a-z]+=[^&#]*", "", url).rstrip("?&")
     q = {"utm_source": slug(source or channel, 30), "utm_medium": medium, "utm_campaign": slug(campaign or f"hub-{asset.split(':')[-1]}", 40),
          "utm_content": content}
@@ -1352,10 +1372,8 @@ def doctor(con, p: dict, today: dt.date | None = None) -> dict:
         ids = sorted(set(ids))
         if len(ids) < 2:
             continue
-        pair = all(i.startswith("video:") for i in ids) and len(ids) == 2
         dups.append({"utm_content": t, "placements": ids,
-                     "note": "a how-to video and its Short share one tag by design: their counts cannot be split" if pair
-                     else "counts for this tag are shared; give the next placement its own tag (hub.py utm)"})
+                     "note": "counts for this tag are shared; give the next placement its own tag (hub.py utm)"})
     links = load_json(p["links"], {}) or {}
     bad = []
     for r in con.execute("SELECT id, url, landing_url FROM placements WHERE status IN ('live','replied','no-response')"):
@@ -1712,7 +1730,8 @@ def cmd_export(a, p):
 
 
 def cmd_utm(a, p):
-    print(make_utm(p, a.url, a.asset, a.channel, a.source or "", a.campaign or ""))
+    print(make_utm(p, a.url, a.asset, a.channel, a.source or "", a.campaign or "", medium=a.medium or "",
+                   content=a.content or ""))
 
 
 def cmd_kits(a, p):
@@ -1828,6 +1847,7 @@ def main(argv=None) -> int:
     ex = sub.add_parser("export"); ex.add_argument("dir")
     ut = sub.add_parser("utm"); ut.add_argument("url"); ut.add_argument("--asset", required=True)
     ut.add_argument("--channel", required=True); ut.add_argument("--source"); ut.add_argument("--campaign")
+    ut.add_argument("--medium"); ut.add_argument("--content")
     kt = sub.add_parser("kits"); kt.add_argument("--write")
     ru = sub.add_parser("rules"); ru.add_argument("--checked")
     wk = sub.add_parser("week"); wk.add_argument("step", choices=["pick", "measure"]); wk.add_argument("--write", action="store_true")

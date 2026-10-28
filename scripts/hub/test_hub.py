@@ -541,9 +541,9 @@ def test_doctor():
     d = hub.doctor(con, P, dt.date(2026, 10, 28))
     bad = [(b["url"], b["status"]) for b in d["bad_links"]]
     assert ("https://dir.example/widget", 404) in bad and all(s != 200 for _, s in bad), bad
-    # a tag used by two placements is reported; a video and its Short sharing one is explained, not blamed
+    # a how-to video and its Short each have their own tag (the Short's is recorded or <tag>-short): no duplicate
     dups = {x["utm_content"]: x for x in d["duplicates"]}
-    assert "howto-x" in dups and "by design" in dups["howto-x"]["note"], dups
+    assert "howto-x" not in dups and "howto-x-short" not in dups, dups
     # every live placement without a result says why
     assert all(m["why"] for m in d["missing"])
     out = run("doctor")
@@ -573,3 +573,34 @@ if __name__ == "__main__":
     test_campaigns()
     test_doctor()
     print("ok")
+
+
+def test_long_video_and_its_short_never_share_a_tag():
+    """Fails if any ledger entry's long video and Short come out of the hub with the same utm_content."""
+    P = hub.paths()
+    vids = hub.from_videos(P)
+    by_tag = {}
+    for v in vids:
+        for t in v["_contents"]:
+            by_tag.setdefault(t, []).append(v["id"])
+    assert all(len(ids) == 1 for ids in by_tag.values()), by_tag
+    # a recorded Short tag wins over the derived one
+    assert hub.video_tag({"link_utm_content": "a", "short_utm_content": "a-short-2"}, "short_id") == "a-short-2"
+    assert hub.video_tag({"link_utm_content": "a"}, "short_id") == "a-short"
+    # and the real ledger in this repo holds no pair that shares a tag
+    import json as _json
+    real = _json.loads((Path(hub.__file__).resolve().parents[2] / "video" / "howto" / "ledger.json").read_text())
+    for v in real:
+        if v.get("long_id") and v.get("short_id"):
+            assert hub.video_tag(v, "long_id") != hub.video_tag(v, "short_id") or not hub.video_tag(v, "long_id"), v["slug"]
+
+
+def test_utm_takes_a_preferred_content_and_medium():
+    P = hub.paths()
+    u = hub.make_utm(P, "https://purplelink.llc/widget/", "widget", "youtube-short", source="youtube",
+                     campaign="howto-link-test", content="howto-new-short")
+    assert u.endswith("?utm_source=youtube&utm_medium=short&utm_campaign=howto-link-test&utm_content=howto-new-short")
+    # a preferred tag that is taken gets -2 ("howto-x" is in the ledger)
+    assert hub.make_utm(P, "https://purplelink.llc/widget/", "widget", "youtube", content="howto-x").endswith(
+        "utm_content=howto-x-2")
+    assert "utm_medium=email" in hub.make_utm(P, "https://purplelink.llc/widget/", "widget", "youtube", medium="email")

@@ -207,6 +207,10 @@ research and writing; everything else is scripted. Ben chose fully automatic pub
    `utm_source=youtube&utm_medium=video|short&utm_campaign=howto-link-test&utm_content=<slug>`; from 2026-10-20 odd
    US Eastern days put the tracked link on the description's first line (arm B), even days keep it after the app
    paragraph (arm A); the arm is recorded in the ledger (`link_arm`). See the `howto-link-placement` experiment. `--dry-run` prints the titles and descriptions.
+   Each cut has its own `utm_content`, issued by the marketing hub (`scripts/hub/hub.py make_utm`, checked against every
+   tag in use): the long video `<slug>`, the Short `<slug>-short` (`utm_medium=short`) and the Instagram Reel
+   `<slug>-reel`, with `-2`, `-3` ... if a name is taken. The ledger records `link_utm_content` (long),
+   `short_utm_content` and `instagram.utm_content`; `site-tests/test_howto_link_placement.py` fails if two of them match.
 
 Kill switch: create `~/.purplelink/howto/PAUSE` and nothing publishes. Gate rules: no prices, emoji, em dashes or
 hype words; no destructive commands; `sudo` only for `tlmgr` with tug.org/ctan.org docs. Tests:

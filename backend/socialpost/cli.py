@@ -236,6 +236,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--title", help="reel-add: the YouTube title")
     p.add_argument("--description-file", help="reel-add: a file holding the YouTube description")
     p.add_argument("--link", help="reel-add: the purplelink.llc page the video is about (bare, no UTM)")
+    p.add_argument("--utm-content", default="", help="reel-add: this Reel's own tag (howto-publish.py passes the "
+                   "one the marketing hub gave it); without it the hub makes one")
     p.add_argument("--also", default="", help="reel-add: other YouTube ids this Reel covers (the long cut of a Short)")
     p.add_argument("--dry-run", action="store_true", help="run/preview: build and show, queue nothing")
     p.add_argument("--out", help="preview: folder for the rendered Reel and image")
