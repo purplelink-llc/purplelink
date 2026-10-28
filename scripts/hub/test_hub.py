@@ -95,10 +95,12 @@ put("history.json", json.dumps({
                              "snapshots": {"2026-10-18": {"downloads": 5, "price": 9.99, "version": "1.0"},
                                            "2026-10-19": {"downloads": 7, "price": 9.99, "version": "1.1"}}}},
     "ledger": {
-        "a": {"kind": "order", "product": "widget", "ts": 1792700000, "attr": {"first": {"s": "bluesky"}}, "heard": "reddit"},
+        # "a" is a Stripe checkout ("purchase", as sales.mjs writes it); "e" is a renewal, never a new buyer
+        "a": {"kind": "purchase", "product": "widget", "ts": 1792700000, "attr": {"first": {"s": "bluesky"}}, "heard": "reddit"},
         "b": {"kind": "order", "product": "widget", "ts": 1792700000, "attr": {"first": {"s": "bluesky"}}, "refunded": 1},
         "c": {"kind": "order", "product": "widget", "ts": 1700000000, "attr": {"first": {"s": "bluesky"}}},
         "d": {"kind": "order", "product": "widget", "ts": 1793050000, "attr": {"first": {"s": "otherdir", "t": "widget-directory-261025"}}},
+        "e": {"kind": "renewal", "product": "widget", "ts": 1792700000, "attr": {"first": {"s": "bluesky"}}, "heard": "youtube"},
     }}))
 put("social-metrics.json", json.dumps({"posts": {"20261021-daily-release-widget-1-2": {"platforms": {"bluesky": {
     "snapshots": {"2026-10-21": {"likes": 1, "views": None}, "2026-10-22": {"likes": 3, "views": None}}}}}}}))

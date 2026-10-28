@@ -473,6 +473,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     licenseTextBlock +
     `Keep this email: the link keeps working and always hands you the newest version.\n\n` +
     `Questions or trouble downloading: reply to this email.\n\n` +
+    `One question, if you have a moment: where did you first hear about ${entry.name}? A one-word reply is plenty.\n\n` +
     reviewTextBlock +
     prOffer.text +
     `Purplelink LLC, Atlanta, Georgia`;
@@ -489,6 +490,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     licenseHtmlBlock +
     `<p>Keep this email: the link keeps working and always hands you the newest version.</p>` +
     `<p>Questions or trouble downloading: reply to this email.</p>` +
+    `<p>One question, if you have a moment: where did you first hear about ${entry.name}? A one-word reply is plenty.</p>` +
     reviewHtmlBlock +
     prOffer.html +
     `<p>Purplelink LLC, Atlanta, Georgia</p>`;
