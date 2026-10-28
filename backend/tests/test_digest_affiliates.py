@@ -39,7 +39,7 @@ def test_affiliate_link_is_tracked_sponsored_and_disclosed(monkeypatch):
     d = _digest("https://setapp.com/apps/foo")
     html = publisher.render_html(d)
     assert 'href="https://setapp.sjv.io/abc123"' in html
-    assert 'rel="sponsored noopener"' in html
+    assert 'rel="sponsored nofollow noopener"' in html
     assert html.count('class="aff-disclosure"') == 1
     assert html.count('A tool</a><span class="aff-label">(paid link)</span>') == 1
     assert "affiliate links" in publisher.render_email_html(d)

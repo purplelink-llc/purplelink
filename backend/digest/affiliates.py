@@ -19,7 +19,7 @@ from datetime import date
 from typing import Optional
 from urllib.parse import quote, urlparse
 
-REL = "sponsored noopener"
+REL = "sponsored nofollow noopener"  # Google asks for sponsored; nofollow kept for crawlers that ignore it
 DISCLOSURE = (
     "Some links on this page are affiliate links. If you buy through one, Purplelink may earn a commission "
     "at no extra cost to you. It does not change which products we mention or what we say about them."
@@ -83,7 +83,8 @@ REGISTRY: tuple = (
         prefix="https://setapp.sjv.io/c/7961034/",
         notes="Approved on Impact (program 5114, partner id 7961034); links sent by MacPaw 2026-10-26. Each app has its own "
               "link (https://setapp.sjv.io/c/7961034/<id>/5114), so links are written by hand and recognised by prefix; "
-              "plain setapp.com links are left alone. Ids: CleanMyMac 344326, Gemini 344369, iStat Menus 344394, Swish 855412. "
+              "plain setapp.com links are left alone. Ids (each resolved to its setapp.com/apps page 2026-10-28): CleanMyMac 344326, "
+              "Gemini 344369, iStat Menus 344394, iBoysoft Data Recovery 4018039, Swish 855412, Lasso 3811648, Mosaic 354736. "
               "Used in the disk-space and window-manager guides.",
         topics=("mac-apps", "window-managers", "disk-space", "latex-editors"),
     ),
@@ -353,7 +354,7 @@ def _uses(url: str, registry=None) -> Optional[Program]:
 def rewrite_html(page: str, registry=None) -> tuple:
     """Rewrite links to live programs in one page. Returns (new_page, number_changed).
 
-    Idempotent. Every link to a live program gets rel="sponsored noopener" and data-aff="<program id>". When any non-Amazon program is used,
+    Idempotent. Every link to a live program gets rel="sponsored nofollow noopener" and data-aff="<program id>". When any non-Amazon program is used,
     the generic disclosure is inserted once, right after the page's </h1>, and every such link is followed by a
     small "(paid link)" label, because a notice at the top alone is not close enough to the link. Amazon links keep
     their existing markup and sentence, which scripts/check_content.py already enforces.
@@ -422,6 +423,8 @@ def lint_html(page: str, registry=None) -> list:
         rel = re.search(r'\brel="([^"]*)"', m.group(1) + m.group(3))
         if not rel or "sponsored" not in rel.group(1).split():
             problems.append(f"{p.id} link without rel=sponsored: {href[:80]}")
+        elif "nofollow" not in rel.group(1).split():
+            problems.append(f"{p.id} link without rel=nofollow: {href[:80]}")
         amazon |= p.id == "amazon"
         generic |= p.id != "amazon"
         if p.id != "amazon":

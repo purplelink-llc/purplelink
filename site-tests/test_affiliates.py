@@ -30,7 +30,7 @@ class Rewrite(unittest.TestCase):
         self.assertIn('href="https://setapp.sjv.io/abc123"', new)
         self.assertIn('class="x"', new)
         self.assertIn('target="_blank"', new)
-        self.assertIn('rel="sponsored noopener"', new)
+        self.assertIn('rel="sponsored nofollow noopener"', new)
         self.assertIn('data-aff="setapp"', new)
 
     def test_every_rewritten_link_gets_one_label_after_the_anchor(self):
@@ -123,7 +123,7 @@ class Rewrite(unittest.TestCase):
         self.assertEqual(aff.rewrite_url("https://www.amazon.com/dp/0199760241?tag=purplelinkpl-20")[1], None)
 
     def test_amazon_links_need_amazon_sentence_not_generic_disclosure(self):
-        page = '<h1>T</h1><a href="https://www.amazon.com/dp/1?tag=purplelinkpl-20" rel="sponsored noopener">b</a>'
+        page = '<h1>T</h1><a href="https://www.amazon.com/dp/1?tag=purplelinkpl-20" rel="sponsored nofollow noopener">b</a>'
         self.assertEqual(aff.lint_html(page), ["Amazon links but no Amazon Associate statement"])
         self.assertEqual(aff.lint_html(page + aff.AMAZON_DISCLOSURE), [])
 
@@ -136,7 +136,7 @@ class WordviceLink(unittest.TestCase):
 
     def test_guide_page_carries_label_disclosure_and_rel(self):
         page = read_site("guides/get-feedback-on-a-paper-before-submitting/index.html")
-        self.assertIn('href="https://wordvice.com/?aff=benjamin" rel="sponsored noopener"', page)
+        self.assertIn('href="https://wordvice.com/?aff=benjamin" rel="sponsored noopener nofollow"', page)
         self.assertIn(aff.DISCLOSURE_MARK, page)
         self.assertEqual(aff.lint_html(page), [])
 
