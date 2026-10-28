@@ -303,7 +303,7 @@ def test_export_has_no_contacts():
     out = tmp / "export"
     run("export", str(out))
     names = sorted(f.name for f in out.glob("*.json"))
-    assert names == sorted(f"marketing_{n}.json" for n in ("summary", "grid", "channels", "placements", "followups", "listings", "heard"))
+    assert names == sorted(f"marketing_{n}.json" for n in ("summary", "grid", "channels", "placements", "followups", "listings", "heard", "campaigns"))
     blob = "".join(f.read_text() for f in out.glob("*.json"))
     assert not hub.EMAIL_RE.search(blob.replace("@purplelink", ""))
     assert "OUTREACH-LOG" not in blob and "Pat" not in blob and "Reviewer" not in blob and "Example University" not in blob
@@ -418,6 +418,144 @@ def test_overrides():
     run("import")
 
 
+def test_utm_edges():
+    import datetime as dt
+    P = hub.paths()
+    d = dt.date(2026, 11, 2)
+    # channel picks the medium, source defaults to the channel, an old tag on the link is replaced, not doubled
+    u = hub.make_utm(P, "https://purplelink.llc/keyfeel/?utm_source=old&utm_content=old-tag&x=1", "keyfeel", "email", today=d)
+    assert "utm_source=email&utm_medium=email&utm_campaign=hub-keyfeel&utm_content=keyfeel-email-261102" in u and "old" not in u, u
+    assert "x=1" in u
+    assert "utm_medium=community" in hub.make_utm(P, "https://purplelink.llc/keyfeel/", "keyfeel", "texse", today=d)
+    assert "utm_medium=social" in hub.make_utm(P, "https://purplelink.llc/keyfeel/", "keyfeel", "bluesky", today=d)
+    # guide ids keep only the slug in the tag
+    assert "utm_content=fix-a-thing-directory-261102" in hub.make_utm(P, "https://purplelink.llc/guides/fix-a-thing/", "guide:fix-a-thing", "directory", today=d)
+    # the video ledger's tags count as used
+    assert "howto-x" in hub.used_contents(P)
+
+
+def test_candidate_assets_and_no_response_results():
+    import datetime as dt
+    apps = {"LONG1": "widget"}
+    assert hub.candidate_assets("release:widget:1.2.0", apps) == ["widget"]
+    assert hub.candidate_assets("video:LONG1", apps) == ["widget"]
+    assert hub.candidate_assets("video:UNKNOWN", apps) == []
+    assert hub.candidate_assets("guide:fix-a-thing", apps) == ["guide:fix-a-thing"]
+    assert hub.candidate_assets("", apps) == []
+    # a social post whose link is a YouTube video is tied to the video's app through its daily candidate
+    put("social/20261024-daily-video-long1.md", """---
+id: "20261024-daily-video-long1"
+status: "posted"
+approved_by: "ben (standing, 2026-10-18)"
+platforms: ["bluesky"]
+link: "https://www.youtube.com/watch?v=LONG1"
+daily: {"candidate": "video:LONG1", "kind": "video", "format": "link"}
+results: {"bluesky": {"status": "posted", "url": "https://bsky.app/y", "posted_at": "2026-10-24T10:30:00-04:00"}}
+---
+""")
+    run("import")
+    con = db()
+    assert [r[0] for r in con.execute("SELECT asset_id FROM placement_assets WHERE placement_id = 'social:20261024-daily-video-long1:bluesky'")] == ["widget"]
+    # an outreach email past 28 days becomes no-response and keeps its results
+    pls = [{"id": "e1", "channel": "email", "status": "no-response", "date": "2026-09-01", "url": "", "landing_url": "https://purplelink.llc/widget/", "utm": ""}]
+    fun = {"asOf": "2026-10-23", "windows": {str(w): {"email": {"pageviewsByPath": {"/widget/": 3}, "trial": {}, "checkout": {}}} for w in hub.FUNNEL_WINDOWS}}
+    rows = hub.placement_results(pls, {"e1": ["widget"]}, {"widget": {"kind": "product", "url": "https://purplelink.llc/widget/"}}, fun, [], {}, dt.date(2026, 10, 23))
+    assert ("e1", "2026-10-23", "first-touch-visits", 3) in [r[:4] for r in rows], rows
+    (tmp / "social/20261024-daily-video-long1.md").unlink()
+
+
+def test_campaigns():
+    import datetime as dt
+    P = hub.paths()
+    os.environ["PURPLELINK_MANUAL_ADS"] = str(tmp / "manual-ads.json")
+    P = hub.paths()
+    put("manual-ads.json", json.dumps({"appleSearchAds": {"asOf": "2026-10-05", "campaigns": [{"key": "other", "spend": 40.47}]}}))
+    put("hub/campaigns.json", json.dumps({"_note": "test", "widget-test-2026-11": {
+        "platformKey": "redditAds", "channel": "reddit-ads", "asset": "widget", "start": "2026-10-20", "end": "2026-11-12",
+        "budget": 80, "breakEven": 18, "approval": "ben test", "readings": ["2026-11-13", "2026-12-03"],
+        "ads": [{"id": "a", "label": "angle A", "url": "https://purplelink.llc/widget/?utm_source=reddit&utm_medium=cpc&utm_campaign=widget-test-2026-11&utm_content=widget-reddit-a"},
+                {"id": "b", "label": "angle B", "url": "https://purplelink.llc/widget/?utm_source=reddit&utm_medium=cpc&utm_campaign=widget-test-2026-11&utm_content=widget-reddit-b"}]}}))
+    pls = hub.from_campaigns(P, dt.date(2026, 10, 28))
+    assert [x["id"] for x in pls] == ["campaign:widget-test-2026-11:a", "campaign:widget-test-2026-11:b"]
+    assert pls[0]["status"] == "live" and pls[0]["_contents"] == ["widget-reddit-a"] and pls[0]["channel"] == "reddit-ads"
+    assert hub.from_campaigns(P, dt.date(2026, 10, 1))[0]["status"] == "scheduled"
+    # no reading yet: nothing reported, the report says so
+    run("import")
+    rows = hub.campaign_report(db(), P, dt.date(2026, 10, 28))
+    assert rows[0]["spend"] is None and "no spend recorded" in rows[0]["reading"] and rows[0]["nextReading"] == "2026-11-13"
+    # a campaign-wide reading lands on the first ad only, marked as a campaign total; other platforms are untouched
+    hub.record_campaign_spend(P, "widget-test-2026-11", 12.5, 900, 40, as_of="2026-10-30")
+    m = json.loads((tmp / "manual-ads.json").read_text())
+    assert m["appleSearchAds"]["campaigns"][0]["spend"] == 40.47
+    assert m["redditAds"]["campaigns"][0] == {"key": "widget-test-2026-11", "spend": 12.5, "impressions": 900, "clicks": 40}
+    run("import")
+    r = {x["metric"]: (x["value"], x["confidence"]) for x in db().execute("SELECT * FROM results WHERE placement_id = 'campaign:widget-test-2026-11:a'")}
+    assert r["spend"] == (12.5, "reported-campaign-total") and r["clicks"][0] == 40
+    assert not db().execute("SELECT 1 FROM results WHERE placement_id = 'campaign:widget-test-2026-11:b' AND metric = 'spend'").fetchone()
+    # per-ad readings replace it, and the campaign line is their sum
+    hub.record_campaign_spend(P, "widget-test-2026-11", 9.0, 600, 30, ad="a", as_of="2026-11-01")
+    hub.record_campaign_spend(P, "widget-test-2026-11", 7.0, 500, 20, ad="b", as_of="2026-11-01")
+    e = json.loads((tmp / "manual-ads.json").read_text())["redditAds"]["campaigns"][0]
+    assert (e["spend"], e["clicks"], e["impressions"]) == (16.0, 50, 1100)
+    # exact-link trials and an order whose first touch carried ad b's tag
+    saved = (tmp / "hub" / "funnel.json").read_text()
+    f = json.loads(saved)
+    f["content"] = {str(w): {"widget-reddit-a": {"channel": "paid:reddit", "pageviews": 20, "pageviewsByPath": {"/widget/": 20}, "trial": {"widget": 2}, "checkout": {}},
+                             "widget-reddit-b": {"channel": "paid:reddit", "pageviews": 10, "pageviewsByPath": {"/widget/": 10}, "trial": {"widget": 1}, "checkout": {}}}
+                    for w in hub.FUNNEL_WINDOWS}
+    put("hub/funnel.json", json.dumps(f))
+    hist = json.loads((tmp / "history.json").read_text())
+    hist["ledger"]["r1"] = {"kind": "purchase", "product": "widget", "ts": 1793050000, "attr": {"first": {"s": "paid:reddit", "t": "widget-reddit-b"}}}
+    put("history.json", json.dumps(hist))
+    run("import")
+    rep = hub.campaign_report(db(), P, dt.date(2026, 11, 2))[0]
+    assert (rep["spend"], rep["clicks"], rep["visits"], rep["trials"], rep["orders"]) == (16.0, 50, 30, 3, 1), rep
+    assert rep["costPerTrial"] == 5.33 and rep["costPerOrder"] == 16.0 and "under the $18 break-even" in rep["reading"]
+    assert "not a rate" in rep["reading"]
+    assert {a["ad"]: a["orders"] for a in rep["ads"]} == {"a": 0, "b": 1}
+    assert "widget-test-2026-11" in run("campaigns")
+    try:
+        hub.record_campaign_spend(P, "nope", 1.0, None, None); assert False
+    except SystemExit:
+        pass
+    # restore shared fixtures
+    put("hub/funnel.json", saved)
+    del hist["ledger"]["r1"]
+    put("history.json", json.dumps(hist))
+    (tmp / "hub" / "campaigns.json").unlink()
+    run("import")
+
+
+def test_doctor():
+    import datetime as dt
+    P = hub.paths()
+    run("import")
+    con = db()
+    # links: a 404, a redirect to 200, an unverifiable host, and a refusal; only the 404 is reported
+    urls = ["https://dir.example/widget", "https://bsky.app/x", "https://purplelink.llc/widget/", "https://www.reddit.com/r/x/"]
+
+    def fake(u):
+        return {"https://dir.example/widget": (404, u), "https://purplelink.llc/widget/": (200, u)}.get(u, (200, u))
+    store = hub.check_links(P, urls, get=fake)
+    assert store["https://www.reddit.com/r/x/"]["status"] is None and "refuses" in store["https://www.reddit.com/r/x/"]["note"]
+    d = hub.doctor(con, P, dt.date(2026, 10, 28))
+    bad = [(b["url"], b["status"]) for b in d["bad_links"]]
+    assert ("https://dir.example/widget", 404) in bad and all(s != 200 for _, s in bad), bad
+    # a tag used by two placements is reported; a video and its Short sharing one is explained, not blamed
+    dups = {x["utm_content"]: x for x in d["duplicates"]}
+    assert "howto-x" in dups and "by design" in dups["howto-x"]["note"], dups
+    # every live placement without a result says why
+    assert all(m["why"] for m in d["missing"])
+    out = run("doctor")
+    assert "links that did not answer 200" in out and "dir.example" in out
+    # Stack Exchange answers are checked through the API: a deleted answer is a 404, a live one a 200
+    se = hub.check_links(P, ["https://tex.stackexchange.com/a/1", "https://tex.stackexchange.com/a/2", "https://medium.com/@x"], get=fake,
+                         se_fetch=lambda u: {"items": [{"answer_id": 1}]} if "/answers/1?" in u else {"items": []})
+    assert se["https://tex.stackexchange.com/a/1"]["status"] == 200 and se["https://tex.stackexchange.com/a/2"]["status"] == 404
+    assert se["https://medium.com/@x"]["status"] is None
+    (tmp / "hub" / "links.json").unlink()
+
+
 if __name__ == "__main__":
     test_all()
     test_sources_untouched()
@@ -430,4 +568,8 @@ if __name__ == "__main__":
     test_phase2_tags_and_link_results()
     test_phase2_kits_rules_week_log()
     test_overrides()
+    test_utm_edges()
+    test_candidate_assets_and_no_response_results()
+    test_campaigns()
+    test_doctor()
     print("ok")

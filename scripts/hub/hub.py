@@ -25,6 +25,14 @@ Phase 2 (the hub as the gate):
   hub.py week pick|measure [--write]   Monday: up to 5 assets to draft for; Sunday: what the week's placements did
   hub.py log                    write Outreach/PLACEMENTS.md, a generated read-only view of every placement
 
+Paid campaigns and data quality:
+  hub.py campaigns              each paid test (campaigns.json): reported spend and clicks beside exact-link visits,
+                                trials and orders, cost per trial and order, and the next reading date
+  hub.py campaign-spend CAMPAIGN --spend X [--clicks N] [--impressions N] [--ad A] [--as-of DATE]
+                                record a reading from the platform's dashboard (cumulative to date) in manual-ads.json
+  hub.py doctor [--links]       placements missing a result, utm_content used twice, links not answering 200
+                                (--links re-checks every live placement and landing link first)
+
 Hand corrections go in ~/.purplelink/hub/overrides.json: {"<placement id>": {"url", "status", "date", "channel",
 "assets": [...], "exclude": true}}. They are applied on every import; the sources are never edited.
 
@@ -79,6 +87,9 @@ def paths() -> dict:
         "overrides": env_path("PURPLELINK_HUB", HOME / ".purplelink" / "hub") / "overrides.json",
         "social_metrics": env_path("PURPLELINK_SOCIAL_METRICS", HOME / ".purplelink" / "social" / "metrics.json"),
         "traffic_env": env_path("PURPLELINK_TRAFFIC_ENV", HOME / ".config" / "purplelink" / "traffic.env"),
+        "campaigns": env_path("PURPLELINK_HUB", HOME / ".purplelink" / "hub") / "campaigns.json",
+        "links": env_path("PURPLELINK_HUB", HOME / ".purplelink" / "hub") / "links.json",
+        "manual_ads": env_path("PURPLELINK_MANUAL_ADS", HOME / ".purplelink" / "traffic" / "manual-ads.json"),
     }
 
 
@@ -299,11 +310,35 @@ def from_queue(p: dict) -> list:
     return out
 
 
+def candidate_assets(cand: str, video_apps: dict) -> list:
+    """The daily pipeline's candidate id (release:<app>:<version>, video:<id>, guide:<slug>, tool:<slug>, blog:<slug>)
+    names what a post promotes, even when its link is a YouTube video rather than a page on the site."""
+    kind, _, rest = (cand or "").partition(":")
+    if kind == "release":
+        return [rest.split(":")[0]] if rest else []
+    if kind == "video":
+        return [video_apps[rest]] if video_apps.get(rest) else []
+    if kind in ("guide", "tool", "blog") and rest:
+        return [f"{kind}:{rest}"]
+    return []
+
+
+def video_apps_of(p: dict) -> dict:
+    """YouTube id (long or Short) -> the app its how-to video is about, from the video ledger."""
+    out = {}
+    for v in (load_json(p["videos"], []) if p["videos"].exists() else []):
+        for fld in ("long_id", "short_id"):
+            if v.get(fld) and v.get("app"):
+                out[v[fld]] = str(v["app"])
+    return out
+
+
 def from_social(p: dict) -> list:
     out = []
     d = p["social"]
     if not d.is_dir():
         return out
+    video_apps = video_apps_of(p)
     for f in sorted(d.glob("*.md")):
         fm, body = parse_front(f.read_text(errors="replace"))
         iid = str(fm.get("id") or f.stem)
@@ -329,6 +364,8 @@ def from_social(p: dict) -> list:
                 "landing_url": link, "utm": f"utm_source={plat}&utm_medium=social&utm_campaign={campaign}" if campaign else "",
                 "approval": "standing:2026-10-18" if "standing" in approval else approval, "contact_ref": "",
                 "notes": (r.get("error") or r.get("detail") or "")[:200], "_text": link + " " + body,
+                "_assets": candidate_assets(str((fm.get("daily") or {}).get("candidate") or ""), video_apps)
+                if isinstance(fm.get("daily"), dict) else [],
             })
     return out
 
@@ -608,7 +645,8 @@ def placement_results(pls: list, links: dict, assets: dict, funnel: dict, orders
     rows = []
     wins = funnel.get("windows") or {}
     asof = funnel.get("asOf") or today.isoformat()
-    live = [pl for pl in pls if pl["status"] in ("live", "replied") and pl.get("date")]
+    # no-response is still a live placement (an email nobody answered); its visits and orders count like any other
+    live = [pl for pl in pls if pl["status"] in ("live", "replied", "no-response") and pl.get("date")]
     shared: dict = {}
     plan = []
     for pl in live:
@@ -1059,6 +1097,279 @@ def placements_log(p: dict) -> str:
     return "\n".join(out)
 
 
+# --- paid campaigns ------------------------------------------------------------------------------------------------
+#
+# campaigns.json (private) lists each paid test with its ads; each ad is a placement whose link carries its own
+# utm_content, so visits, trials and orders come from the same exact-link results as any tagged placement. Spend,
+# impressions and clicks come from the platform's own dashboard, recorded by hand into manual-ads.json under the
+# platform's key (the file the traffic dashboard already reads for Apple Search Ads), with `hub.py campaign-spend`.
+#
+#   {"moderntex-latex-2026-11": {"platformKey": "redditAds", "channel": "reddit-ads", "asset": "moderntex",
+#     "start": "2026-10-28", "end": "2026-11-12", "budget": 80, "breakEven": 18, "approval": "ben 2026-10-27",
+#     "readings": ["2026-11-13", "2026-11-20", "2026-12-03"],
+#     "ads": [{"id": "a", "label": "Overleaf angle", "url": "https://purplelink.llc/moderntex/?...&utm_content=..."}]}}
+
+def utm_of(url: str, key: str) -> str:
+    m = re.search(rf"[?&]{key}=([^&#\s]+)", url or "")
+    return m.group(1) if m else ""
+
+
+def from_campaigns(p: dict, today: dt.date | None = None) -> list:
+    today = today or dt.date.today()
+    out = []
+    for cid, c in (load_json(p["campaigns"], {}) or {}).items():
+        if cid.startswith("_") or not isinstance(c, dict):
+            continue
+        for ad in c.get("ads") or []:
+            url = ad.get("url", "")
+            content = utm_of(url, "utm_content")
+            started = bool(c.get("start")) and c["start"] <= today.isoformat()
+            ended = bool(c.get("end")) and c["end"] < today.isoformat()
+            out.append({
+                "id": f"campaign:{cid}:{ad.get('id')}", "source": "campaigns", "channel": c.get("channel", "ads"),
+                "kind": "ad", "target": f"{cid} ad {ad.get('id')}: {ad.get('label', '')}".strip(),
+                "status": "live" if started else "scheduled", "date": c.get("start", ""),
+                "url": "", "landing_url": url, "utm": f"utm_campaign={cid}&utm_content={content}" if content else "",
+                "approval": c.get("approval", ""), "contact_ref": "",
+                "notes": f"paid; ran {c.get('start')} to {c.get('end')}" if ended else f"paid; runs {c.get('start')} to {c.get('end')}",
+                "_text": url, "_assets": [c["asset"]] if c.get("asset") else [], "_contents": [content] if content else [],
+                "_campaign": cid, "_ad": str(ad.get("id")),
+            })
+    return out
+
+
+def campaign_readings(p: dict) -> dict:
+    """cid -> {"asOf", "spend", "impressions", "clicks", "ads": {ad id: {...}}} from manual-ads.json, any platform key."""
+    data = load_json(p["manual_ads"], {}) or {}
+    out = {}
+    for block in data.values():
+        if not isinstance(block, dict):
+            continue
+        for c in block.get("campaigns") or []:
+            if isinstance(c, dict) and c.get("key"):
+                out[c["key"]] = {"asOf": block.get("asOf"), **c}
+    return out
+
+
+def campaign_spend_results(pls: list, p: dict) -> list:
+    """Reported spend, impressions and clicks as results on each ad placement (confidence reported: the platform's
+    own figures). A reading with no per-ad split is put on the campaign's first ad and marked campaign-total."""
+    rows = []
+    readings = campaign_readings(p)
+    first_ad: dict = {}
+    for pl in pls:
+        if pl.get("_campaign"):
+            first_ad.setdefault(pl["_campaign"], pl["id"])
+    for pl in pls:
+        cid = pl.get("_campaign")
+        r = readings.get(cid) if cid else None
+        if not r:
+            continue
+        asof = r.get("asOf") or ""
+        per_ad = {str(a.get("id")): a for a in r.get("ads") or [] if isinstance(a, dict)}
+        if per_ad:
+            src, conf = per_ad.get(pl["_ad"]), "reported"
+        elif pl["id"] == first_ad[cid]:
+            src, conf = r, "reported-campaign-total"
+        else:
+            continue
+        for metric in ("spend", "impressions", "clicks"):
+            if src and src.get(metric) is not None:
+                rows.append((pl["id"], asof, metric, float(src[metric]), "manual-ads", conf))
+    return rows
+
+
+def record_campaign_spend(p: dict, cid: str, spend: float, impressions: int | None, clicks: int | None,
+                          ad: str | None = None, as_of: str | None = None) -> dict:
+    """Write one dashboard reading into manual-ads.json under the campaign's platform key (cumulative to date)."""
+    camps = load_json(p["campaigns"], {}) or {}
+    if cid not in camps:
+        raise SystemExit(f"unknown campaign {cid!r}; known: {', '.join(k for k in camps if not k.startswith('_'))}")
+    key = camps[cid].get("platformKey") or "ads"
+    data = load_json(p["manual_ads"], {}) or {}
+    block = data.setdefault(key, {})
+    block["asOf"] = as_of or dt.date.today().isoformat()
+    block.setdefault("window", "Campaign to date")
+    lst = block.setdefault("campaigns", [])
+    entry = next((c for c in lst if c.get("key") == cid), None)
+    if entry is None:
+        entry = {"key": cid}
+        lst.append(entry)
+    target = entry
+    if ad:
+        ads = entry.setdefault("ads", [])
+        target = next((a for a in ads if str(a.get("id")) == ad), None)
+        if target is None:
+            target = {"id": ad}
+            ads.append(target)
+    target.update({k: v for k, v in (("spend", spend), ("impressions", impressions), ("clicks", clicks)) if v is not None})
+    if ad:  # keep the campaign line equal to the sum of its ads
+        for k in ("spend", "impressions", "clicks"):
+            vals = [a.get(k) for a in entry["ads"] if a.get(k) is not None]
+            if vals:
+                entry[k] = round(sum(vals), 2) if k == "spend" else int(sum(vals))
+    p["manual_ads"].parent.mkdir(parents=True, exist_ok=True)
+    tmp = p["manual_ads"].with_suffix(".tmp")
+    tmp.write_text(json.dumps(data, indent=2))
+    os.replace(tmp, p["manual_ads"])
+    return entry
+
+
+def campaign_report(con, p: dict, today: dt.date | None = None) -> list:
+    """One row per campaign and ad: reported spend and clicks next to the site's own exact-link counts."""
+    today = today or dt.date.today()
+    camps = load_json(p["campaigns"], {}) or {}
+    res: dict = {}
+    for r in con.execute("SELECT placement_id, metric, value FROM results WHERE placement_id LIKE 'campaign:%'"):
+        res.setdefault(r[0], {})[r[1]] = r[2]
+    rows = []
+    for cid, c in camps.items():
+        if cid.startswith("_") or not isinstance(c, dict):
+            continue
+        ads = [f"campaign:{cid}:{a.get('id')}" for a in c.get("ads") or []]
+        tot = {k: sum(res.get(a, {}).get(k, 0) or 0 for a in ads) for k in
+               ("spend", "impressions", "clicks", "link-visits", "link-trials", "link-checkout-clicks", "link-orders")}
+        nxt = next((d for d in c.get("readings") or [] if d >= today.isoformat()), None)
+        spend, orders, trials = tot["spend"], tot["link-orders"], tot["link-trials"]
+        row = {"campaign": cid, "asset": c.get("asset"), "channel": c.get("channel"), "start": c.get("start"),
+               "end": c.get("end"), "budget": c.get("budget"), "breakEven": c.get("breakEven"),
+               "spend": spend or None, "impressions": int(tot["impressions"]) or None, "clicks": int(tot["clicks"]) or None,
+               "visits": int(tot["link-visits"]), "trials": int(trials), "orders": int(orders),
+               "costPerTrial": round(spend / trials, 2) if spend and trials else None,
+               "costPerOrder": round(spend / orders, 2) if spend and orders else None,
+               "nextReading": nxt, "ads": []}
+        for a in c.get("ads") or []:
+            r = res.get(f"campaign:{cid}:{a.get('id')}", {})
+            row["ads"].append({"ad": a.get("id"), "label": a.get("label"), "spend": r.get("spend"),
+                               "clicks": int(r["clicks"]) if r.get("clicks") is not None else None,
+                               "visits": int(r.get("link-visits", 0) or 0), "trials": int(r.get("link-trials", 0) or 0),
+                               "orders": int(r.get("link-orders", 0) or 0)})
+        if not spend:
+            row["reading"] = "no spend recorded yet (hub.py campaign-spend)"
+        elif orders and c.get("breakEven"):
+            row["reading"] = (f"{orders} order{'s' if orders != 1 else ''} at ${row['costPerOrder']:.2f} each, "
+                              f"{'under' if row['costPerOrder'] < c['breakEven'] else 'over'} the ${c['breakEven']} break-even")
+        else:
+            row["reading"] = f"${spend:.2f} spent, {int(trials)} trial{'s' if trials != 1 else ''}, no orders yet"
+        if orders < 30:
+            row["reading"] += "; a signal, not a rate (fewer than 30 orders)"
+        rows.append(row)
+    return rows
+
+
+# --- doctor: data quality --------------------------------------------------------------------------------------------
+
+# Hosts that refuse automated requests, so a non-200 there says nothing about the page.
+LINK_UNVERIFIABLE = ("reddit.com", "linkedin.com", "x.com", "twitter.com", "threads.com", "threads.net", "instagram.com",
+                     "facebook.com", "alternativeto.net", "producthunt.com", "tiktok.com", "medium.com",
+                     "stackexchange.com", "stackoverflow.com")
+SE_ANSWER = re.compile(r"https?://([a-z]+)\.stackexchange\.com/a/(\d+)")
+
+
+def se_answer_exists(url: str, fetch_json=None) -> bool | None:
+    """Stack Exchange pages refuse scripts, but its public API says whether an answer still exists (None: no answer)."""
+    m = SE_ANSWER.match(url or "")
+    if not m:
+        return None
+    if fetch_json is None:
+        import urllib.request
+
+        def fetch_json(u):
+            import gzip
+            with urllib.request.urlopen(urllib.request.Request(u, headers={"Accept-Encoding": "gzip"}), timeout=15) as r:
+                raw = r.read()
+                return json.loads(gzip.decompress(raw) if raw[:2] == b"\x1f\x8b" else raw)
+    try:
+        d = fetch_json(f"https://api.stackexchange.com/2.3/answers/{m.group(2)}?site={m.group(1)}&filter=default")
+        return bool(d.get("items"))
+    except Exception:
+        return None
+
+
+def check_links(p: dict, urls: list, get=None, workers: int = 8, se_fetch=None) -> dict:
+    """GET each URL once (redirects followed) and keep {url: {status, final, checked}} in links.json."""
+    from concurrent.futures import ThreadPoolExecutor
+    if get is None:
+        import urllib.error
+        import urllib.request
+
+        def get(url):
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) "
+                                                       "AppleWebKit/605.1.15 (KHTML, like Gecko) Safari/605.1.15"})
+            try:
+                with urllib.request.urlopen(req, timeout=15) as r:
+                    return r.status, r.geturl()
+            except urllib.error.HTTPError as e:
+                return e.code, url
+    store = load_json(p["links"], {}) or {}
+    now = dt.datetime.now().astimezone().isoformat(timespec="minutes")
+
+    def one(u):
+        host = (re.match(r"https?://([^/?#]+)", u) or [None, ""])[1].lower()
+        if SE_ANSWER.match(u):
+            ok = se_answer_exists(u, se_fetch)
+            if ok is not None:
+                return u, {"status": 200 if ok else 404, "note": "checked through the Stack Exchange API", "checked": now}
+        if any(host == h or host.endswith("." + h) for h in LINK_UNVERIFIABLE):
+            return u, {"status": None, "note": "site refuses automated checks", "checked": now}
+        try:
+            status, final = get(u)
+            return u, {"status": status, "final": final if final != u else None, "checked": now}
+        except Exception as exc:
+            return u, {"status": None, "note": f"no answer: {str(exc)[:80]}", "checked": now}
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        for u, r in ex.map(one, sorted(set(urls))):
+            store[u] = r
+    p["links"].parent.mkdir(parents=True, exist_ok=True)
+    p["links"].write_text(json.dumps(store, indent=1))
+    return store
+
+
+def doctor(con, p: dict, today: dt.date | None = None) -> dict:
+    """Placements missing a result, utm_content used by more than one placement, and links that did not answer 200
+    at the last check (run `doctor --links` to re-check). Each finding says whether local data can fix it."""
+    today = today or dt.date.today()
+    oldest = (today - dt.timedelta(days=FUNNEL_WINDOWS[-1] - 1)).isoformat()
+    has_res = {r[0] for r in con.execute("SELECT DISTINCT placement_id FROM results")}
+    missing = []
+    for r in con.execute("SELECT * FROM placements WHERE status IN ('live','replied','no-response') ORDER BY date"):
+        if r["id"] in has_res:
+            continue
+        if not r["date"]:
+            why = "no date, so no funnel window applies (add one in overrides.json)"
+        elif r["date"] < oldest:
+            why = f"older than the stats function's {FUNNEL_WINDOWS[-1]}-day limit; cannot be measured now"
+        else:
+            why = "no funnel reading yet (run import --fetch)"
+        missing.append({"id": r["id"], "channel": r["channel"], "date": r["date"], "why": why})
+    tags: dict = {}
+    for r in con.execute("SELECT id, utm, landing_url, status FROM placements"):
+        for t in set(re.findall(r"utm_content=([\w.\-]+(?:,[\w.\-]+)*)", (r["utm"] or "") + " " + (r["landing_url"] or ""))):
+            for one in t.split(","):
+                tags.setdefault(one, []).append(r["id"])
+    dups = []
+    for t, ids in sorted(tags.items()):
+        ids = sorted(set(ids))
+        if len(ids) < 2:
+            continue
+        pair = all(i.startswith("video:") for i in ids) and len(ids) == 2
+        dups.append({"utm_content": t, "placements": ids,
+                     "note": "a how-to video and its Short share one tag by design: their counts cannot be split" if pair
+                     else "counts for this tag are shared; give the next placement its own tag (hub.py utm)"})
+    links = load_json(p["links"], {}) or {}
+    bad = []
+    for r in con.execute("SELECT id, url, landing_url FROM placements WHERE status IN ('live','replied','no-response')"):
+        for kind, u in (("placement", r["url"]), ("landing", r["landing_url"])):
+            if not u or not u.startswith("http"):
+                continue
+            c = links.get(u)
+            if c and c.get("status") not in (None, 200):
+                bad.append({"id": r["id"], "which": kind, "url": u, "status": c["status"], "final": c.get("final")})
+    unverified = sum(1 for c in links.values() if c.get("status") is None)
+    return {"missing": missing, "duplicates": dups, "bad_links": bad, "links_checked": len(links),
+            "links_unverifiable": unverified}
+
+
 # --- build --------------------------------------------------------------------------------------------------------
 
 def build(p: dict) -> dict:
@@ -1082,7 +1393,7 @@ def build(p: dict) -> dict:
         q["contact_ref"] = pl["contact_ref"]
         q["date"] = pl["date"] or q["date"]
         q["_text"] += " " + pl["_text"]
-    placements = queue + social + kept + from_videos(p) + from_app_releases(p) + mu
+    placements = queue + social + kept + from_videos(p) + from_app_releases(p) + mu + from_campaigns(p)
     # Hand corrections, kept apart from the sources (the outreach log stays as written): overrides.json maps a
     # placement id to any of url, status, date, channel, assets (ids; an unknown id becomes a "line" asset such as
     # paper-review) or exclude (a test or not a placement).
@@ -1121,6 +1432,7 @@ def build(p: dict) -> dict:
     funnel = load_json(p["funnel"], {})
     orders = orders_from_ledger(p)
     results += placement_results(uniq, links, assets, funnel, orders, load_json(p["social_metrics"], {}), today)
+    results += campaign_spend_results(uniq, p)
     chan = channel_stats(uniq, links, assets, funnel, orders, today)
     heard: dict = {}
     for o in orders:
@@ -1386,7 +1698,7 @@ def export_rows(p: dict) -> dict:
     }]
     return {"marketing_summary": summary, "marketing_grid": grid, "marketing_channels": channels,
             "marketing_placements": placements, "marketing_followups": followups, "marketing_listings": listings,
-            "marketing_heard": heard}
+            "marketing_heard": heard, "marketing_campaigns": [{k: v for k, v in r.items()} for r in campaign_report(con, p)]}
 
 
 def cmd_export(a, p):
@@ -1457,6 +1769,50 @@ def cmd_log(a, p):
     print(f"wrote {f}")
 
 
+def cmd_campaigns(a, p):
+    con = connect(p)
+    rows = campaign_report(con, p)
+    if not rows:
+        print(f"no campaigns in {p['campaigns']}")
+    for r in rows:
+        money = lambda v: "-" if v is None else f"${v:,.2f}"
+        print(f"{r['campaign']} ({r['asset']}, {r['channel']}, {r['start']} to {r['end']}, budget {money(r['budget'])})")
+        print(f"  spend {money(r['spend'])}  impressions {r['impressions'] or '-'}  clicks {r['clicks'] or '-'}  |  "
+              f"site: visits {r['visits']}  trials {r['trials']}  orders {r['orders']}  |  "
+              f"per trial {money(r['costPerTrial'])}  per order {money(r['costPerOrder'])}")
+        for ad in r["ads"]:
+            print(f"    ad {ad['ad']} ({ad['label']}): spend {money(ad['spend'])}, clicks {ad['clicks'] if ad['clicks'] is not None else '-'}, "
+                  f"visits {ad['visits']}, trials {ad['trials']}, orders {ad['orders']}")
+        print(f"  {r['reading']}. Next reading {r['nextReading'] or 'none left'}.")
+
+
+def cmd_campaign_spend(a, p):
+    e = record_campaign_spend(p, a.campaign, a.spend, a.impressions, a.clicks, a.ad, a.as_of)
+    print(f"recorded {a.campaign}{' ad ' + a.ad if a.ad else ''}: campaign now spend ${e.get('spend', 0):,.2f}, "
+          f"clicks {e.get('clicks', '-')}, impressions {e.get('impressions', '-')} (in {p['manual_ads']})")
+    build(p)
+
+
+def cmd_doctor(a, p):
+    if a.links:
+        con = connect(p)
+        urls = [u for r in con.execute("SELECT url, landing_url FROM placements WHERE status IN ('live','replied','no-response')")
+                for u in r if u and u.startswith("http")]
+        con.close()
+        check_links(p, urls)
+    d = doctor(connect(p), p)
+    print(f"{len(d['missing'])} live placements without any result:")
+    for m in d["missing"]:
+        print(f"  {m['date'] or '----------'} {m['channel']:11} {m['id']:34} {m['why']}")
+    print(f"{len(d['duplicates'])} utm_content values used by more than one placement:")
+    for x in d["duplicates"]:
+        print(f"  {x['utm_content']}: {', '.join(x['placements'])}  ({x['note']})")
+    print(f"{len(d['bad_links'])} links that did not answer 200 at the last check "
+          f"({d['links_checked']} checked, {d['links_unverifiable']} on sites that refuse automated checks):")
+    for b in d["bad_links"]:
+        print(f"  {b['status']} {b['which']:9} {b['id']:34} {b['url']}" + (f" -> {b['final']}" if b.get("final") else ""))
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -1476,11 +1832,17 @@ def main(argv=None) -> int:
     ru = sub.add_parser("rules"); ru.add_argument("--checked")
     wk = sub.add_parser("week"); wk.add_argument("step", choices=["pick", "measure"]); wk.add_argument("--write", action="store_true")
     sub.add_parser("log")
+    sub.add_parser("campaigns")
+    cs = sub.add_parser("campaign-spend"); cs.add_argument("campaign"); cs.add_argument("--spend", type=float, required=True)
+    cs.add_argument("--clicks", type=int); cs.add_argument("--impressions", type=int); cs.add_argument("--ad")
+    cs.add_argument("--as-of", dest="as_of")
+    dr = sub.add_parser("doctor"); dr.add_argument("--links", action="store_true")
     a = ap.parse_args(argv)
     {"import": cmd_import, "where": cmd_where, "grid": cmd_grid, "gaps": cmd_gaps, "unmatched": cmd_unmatched,
      "status": cmd_status, "channels": cmd_channels, "followups": cmd_followups, "check-listings": cmd_check_listings,
      "export": cmd_export, "utm": cmd_utm, "kits": cmd_kits, "rules": cmd_rules, "week": cmd_week,
-     "log": cmd_log}[a.cmd](a, paths())
+     "log": cmd_log, "campaigns": cmd_campaigns, "campaign-spend": cmd_campaign_spend,
+     "doctor": cmd_doctor}[a.cmd](a, paths())
     return 0
 
 
