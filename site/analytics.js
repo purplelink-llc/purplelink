@@ -75,7 +75,12 @@
     if (a.first && !(a.first.d >= cutoff)) a.first = null;
     if (a.last && !(a.last.d >= cutoff)) a.last = null;
     var now = arrival();
-    if (now) { if (!a.first) a.first = now; a.last = now; }
+    // A first visit with no campaign tag, outside referrer or ad click is recorded too, as a placeholder (x: 1) holding
+    // only the landing page and date, so an order from a direct visitor shows where they landed instead of nothing
+    // (2026-10-28: 6 of 13 site orders since 09-28 had no record). A later tagged arrival still replaces it, so the
+    // first-touch channel means what it meant before; checkout.mjs keeps l and d and drops the marker.
+    if (now) { if (!a.first || a.first.x) a.first = now; a.last = now; }
+    else if (!a.first) a.first = { x: 1, l: clip(location.pathname, 120), d: new Date().toISOString().slice(0, 10) };
     try {
       if (a.first || a.last) localStorage.setItem(ATTR_KEY, JSON.stringify({ first: a.first || null, last: a.last || null }));
       else localStorage.removeItem(ATTR_KEY);

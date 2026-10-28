@@ -53,8 +53,10 @@ test("anything but a single digit 0 to 7 is ignored, and from:trial is still rec
   }
 });
 
-test("d without from=trial records nothing", () => {
-  assert.equal(arrive("?d=3"), null);
+test("d without from=trial records no source or campaign (only the direct-visit placeholder)", () => {
+  const plain = arrive("?d=3");
+  assert.equal(plain.first.x, 1);
+  assert.ok(!plain.first.s && !plain.first.c && !plain.last);
   const a = arrive("?from=other&d=3");
   assert.equal(a.first.s, "from:other");
   assert.ok(!a.first.c);

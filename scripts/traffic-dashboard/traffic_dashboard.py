@@ -4433,6 +4433,10 @@ def classify_touch(t: dict | None) -> str:
     if not t:
         return "Direct / no record"
     s, m, r = (t.get("s") or "").lower(), (t.get("m") or "").lower(), (t.get("r") or "").lower()
+    # Since 2026-10-28 analytics.js records a direct first visit as a touch with only the landing page and date (l, d),
+    # so a direct buyer is told apart from an order with no record at all (tracking off, or before 2026-09-28).
+    if not (s or r or t.get("g")):
+        return "Direct (landing page known)"
     if s in MARKETPLACE_LABELS:
         return MARKETPLACE_LABELS[s]
     if t.get("g") or (s in ("google", "adwords") and m in ("cpc", "ppc", "paid")):
@@ -4457,7 +4461,10 @@ def classify_touch(t: dict | None) -> str:
 
 
 def channel_revenue(history: dict) -> dict | None:
-    ledger = sorted((history.get("ledger") or {}).values(), key=lambda r: r["ts"])
+    # MuscleOnGLP sells through the same Stripe account with its own checkout, which never carries this site's
+    # attribution; its orders only diluted the share with a record (2026-10-28).
+    ledger = sorted((r for r in (history.get("ledger") or {}).values() if r.get("site") != "muscleonglp"),
+                    key=lambda r: r["ts"])
     tagged = [r for r in ledger if r.get("attr")]
     if not ledger:
         return None
@@ -4971,6 +4978,10 @@ def tiktok_api_daily(path: Path | None = None) -> dict[str, dict[str, float]]:
                 try:
                     val = float(r.get("est_income") or 0)
                 except ValueError:
+                    continue
+                # TikTok lists the snapshot's own day as 0.00 until it has the figure (2026-10-27 read 0.00 at 21:36 and
+                # 0.48 the next afternoon), so a zero for that day is "not reported yet", not a zero day.
+                if val == 0 and r["day"] >= (r.get("snapshot_date") or (r.get("snapshot_at") or "")[:10] or "9999"):
                     continue
                 key = (r.get("pipeline") or "", r["day"])
                 at = r.get("snapshot_at") or ""
