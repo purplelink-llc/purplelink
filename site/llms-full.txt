@@ -832,7 +832,7 @@ Try it free for 7 days
 
 Refunded if you email within 14 days of purchase. Updates are included forever.
 
-The trial is the full app for seven days from first launch, with no account. After that the app asks for a license key. Buying is a single $29.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.3.0 · 34 MB disk image · macOS 14 or later, Apple silicon and Intel. First ten minutes: install, Accessibility and your first check.
+The trial is the full app for seven days from first launch, with no account. After that the app asks for a license key. Buying is a single $29.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.4.0 · 34 MB disk image · macOS 14 or later, Apple silicon and Intel. First ten minutes: install, Accessibility and your first check.
 
 If you installed version 1.0.0 or 1.0.1, the app cannot update itself. Download the current version once from this page; updates work from then on.
 
@@ -1298,7 +1298,7 @@ Keyfeel plays real recorded keyboard-switch sounds when you press a key on your 
 
 Try it free for 7 days
 
-The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays unlocked, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.5.3, released October 13, 2026. 8 MB disk image. Needs macOS 13 or later, Apple silicon and Intel, and the Input Monitoring permission.
+The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays unlocked, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.7.0, released October 28, 2026. 8 MB disk image. Needs macOS 13 or later, Apple silicon and Intel, and the Input Monitoring permission.
 
 Comparing options? See the keyboard sound apps for Mac compared. Have Mechvibes packs? See how to use them on a Mac.
 
@@ -1352,7 +1352,7 @@ FavoritesStar the sounds you like. With two or more, Keyfeel can move to the nex
 
 ControlKeyfeel runs from the menu bar, where you control it, including a volume slider. Settings has separate levels for keys, the space bar, modifier keys, mouse clicks and scrolling, and headphones and speakers keep their own volumes. Keyboard shortcuts turn it on and off and switch sounds, and you can record your own. A keyfeel:// link works from Shortcuts and scripts, and you can hide the menu bar icon. To import a pack from a link, choose Import sound pack from a link in the menu, or open a keyfeel://pack/ link. Keyfeel shows you the address and downloads nothing until you say so.
 
-AutomationComing in the next update: Shortcuts actions named Turn Keyfeel On, Turn Keyfeel Off, Toggle Keyfeel, Mute Keyfeel for a While, Unmute Keyfeel, Set Keyfeel Volume and Set Keyfeel Sound. In System Settings, Focus, you can add a Keyfeel Focus filter that keeps Keyfeel silent while that Focus is on, such as one for meetings. The sounds come back when it ends. Launchers and scripts can open links such as keyfeel://mute?minutes=30 and keyfeel://volume?level=50.
+AutomationSince 1.7.0: Shortcuts actions named Turn Keyfeel On, Turn Keyfeel Off, Toggle Keyfeel, Mute Keyfeel for a While, Unmute Keyfeel, Set Keyfeel Volume and Set Keyfeel Sound. In System Settings, Focus, you can add a Keyfeel Focus filter that keeps Keyfeel silent while that Focus is on, such as one for meetings. The sounds come back when it ends. Launchers and scripts can open links such as keyfeel://mute?minutes=30 and keyfeel://volume?level=50.
 
 DelaySettings, General shows how long Keyfeel took to hand your recent key presses to the audio system. It gives a median, a 95th percentile and the slowest, timed from the moment macOS stamped each key, next to the output delay the device reports. It is a measurement made on your own Mac while you type. It is not a recording of the sound reaching your ear, and Bluetooth output adds its own delay on top.
 
@@ -1533,7 +1533,7 @@ Tapefolio transcribes interview and meeting recordings on your Mac, labels the s
 
 Try it free for 7 days
 
-The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $29.99 payment, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays valid, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.1.1, released October 24, 2026. 44 MB disk image. Needs macOS 26 or later on a Mac with Apple silicon.
+The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $29.99 payment, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays valid, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.2.0, released October 28, 2026. 44 MB disk image. Needs macOS 26 or later on a Mac with Apple silicon.
 
 Comparing options? See Mac apps for transcription, text to speech and OCR compared.
 
@@ -4596,15 +4596,15 @@ Vitae1.9.3October 2026
 
 Legroom1.8.1October 2026
 
-Keyfeel1.6.1October 2026
+Keyfeel1.7.0October 2026
 
-Tapefolio1.0.1October 2026
+Tapefolio1.2.0October 2026
 
 Panely1.0.4October 2026
 
 Summonly1.0October 2026
 
-Outbound Veil1.3.0October 2026
+Outbound Veil1.4.0October 2026
 
 BatteryMeter1.4.0October 2026
 
@@ -10100,7 +10100,7 @@ Google Drive can also convert a photo or PDF to text. However, it uploads the fi
 
 ## Where Tapefolio fits
 
-Tapefolio is a Mac app for transcribing interviews and meetings and reading scans, made for people whose recordings cannot be uploaded. It costs $29.99 once after a 7-day trial. There is one download: after the trial it asks for a license key, and one key works on two Macs. It is also part of the $59.99 Mac Suite. It needs macOS 26 or later and a Mac with Apple silicon, with no Intel version. The current version is 1.1.1, released October 24, 2026. It is the newest and least proven app here. As of that version it does the following:
+Tapefolio is a Mac app for transcribing interviews and meetings and reading scans, made for people whose recordings cannot be uploaded. It costs $29.99 once after a 7-day trial. There is one download: after the trial it asks for a license key, and one key works on two Macs. It is also part of the $59.99 Mac Suite. It needs macOS 26 or later and a Mac with Apple silicon, with no Intel version. The current version is 1.2.0, released October 28, 2026. It is the newest and least proven app here. As of that version it does the following:
 
 - Transcribes on your Mac with the time of every word, from audio files or from the microphone inside the app.
 
