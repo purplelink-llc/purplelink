@@ -320,6 +320,11 @@ def tracked_owner(url: str, registry=None) -> Optional[Program]:
     return None
 
 
+def links_to(url: str, p: Program) -> bool:
+    """True when this URL points at program p, as a plain link to its domain or as its network-tracked link."""
+    return program_for(url, [p]) is not None or tracked_owner(url, [p]) is not None
+
+
 def is_tracked(url: str, registry=None) -> bool:
     return tracked_owner(url, registry) is not None
 
