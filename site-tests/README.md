@@ -10,7 +10,7 @@ pytest collects them too.
 One module per item: `test_m1_*` (latex-errors and templates link the editors guide), `test_m2_*` (ModernTex seats),
 `test_m5_*` (noindex and the sitemap), `test_m6_*` (Outbound Veil proof line), `test_guides_m6_m8` (the two new guides),
 `test_w8_*`, `test_social_cards`, `test_digest_links`, `test_photography_text`, `test_asset_fingerprints`,
-`test_facts_consistency`, `test_intl_moderntex` (hreflang across the four ModernTex pages, no Google on /zh-cn/, sitemap alternates).
+`test_facts_consistency`, `test_intl_moderntex` (hreflang across the six ModernTex pages, no Google on /zh-cn/, sitemap alternates).
 
 `scripts/verify_roadmap_live.py` is the live counterpart (needs the network and Ben's Mac); it is not run in CI.
 The Node tests run with `node --experimental-test-module-mocks --test netlify/tests/*.test.mjs`.
