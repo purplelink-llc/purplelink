@@ -8,7 +8,7 @@ of the English search index.
 import re
 import unittest
 from html.parser import HTMLParser
-from common import ORIGIN, SITE, EMOJI, canonical, jsonld_blocks, main_text, meta, read_site, walk
+from common import ORIGIN, SITE, EMOJI, canonical, jsonld_blocks, main_text, meta, read_site, shipped_interface_languages, walk
 
 # url path -> (html lang, how the page names itself in hreflang)
 PRODUCT_PAGES = {
@@ -115,9 +115,12 @@ class ProductPages(unittest.TestCase):
             self.assertEqual(len(apps), 1, url)
             offer = apps[0]["offers"]
             self.assertEqual((offer["price"], offer["priceCurrency"]), ("19.99", "USD"), url)
-            # inLanguage on the app lists the languages of its interface (English and German, since 2.0); the
+            # inLanguage on the app lists the languages of its interface, in this order, and only those the
+            # changelog says a release has (English, German since 2.0, then Japanese and Simplified Chinese); the
             # language of the page is on the WebPage and the FAQPage.
-            self.assertEqual(apps[0]["inLanguage"], ["en", "de"], url)
+            order = ["en", "de", "ja", "zh-Hans"]
+            shipped = shipped_interface_languages()
+            self.assertEqual(apps[0]["inLanguage"], [c for c in order if c in shipped], url)
             pages = [d for b in blocks for d in walk(b) if d.get("@type") == "WebPage"]
             self.assertEqual([p["inLanguage"] for p in pages], [lang], url)
             if lang != "en":

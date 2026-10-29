@@ -1,7 +1,7 @@
 # Purplelink LLC: full text of the main pages
 > The readable text of Purplelink's product, tool, app and guide pages, generated from the site. The short index is at https://purplelink.llc/llms.txt.
 
-Languages and currency. The pages below are in English. ModernTex also has product pages in German (https://purplelink.llc/de/moderntex/), French (https://purplelink.llc/fr/moderntex/), Brazilian Portuguese (https://purplelink.llc/pt-br/moderntex/), Japanese (https://purplelink.llc/ja/moderntex/) and Simplified Chinese (https://purplelink.llc/zh-cn/moderntex/), each with a how-to guide in the same language. The ModernTex app interface is in English and German (German is a beta, available since ModernTex 2.0); Japanese and Chinese documents compile with XeLaTeX and LuaLaTeX when the user's TeX installation has the ctex, luatexja and jlreq packages. Prices are in US dollars (ModernTex is USD 19.99 once). Checkout for the Mac apps shows the price in the buyer's local currency where Stripe supports it, and the buyer can switch back to US dollars; Stripe's exchange rate includes a conversion fee of 2 to 4 percent, paid by the buyer. Payment is by card (including Apple Pay and Google Pay) or Link.
+Languages and currency. The pages below are in English. ModernTex also has product pages in German (https://purplelink.llc/de/moderntex/), French (https://purplelink.llc/fr/moderntex/), Brazilian Portuguese (https://purplelink.llc/pt-br/moderntex/), Japanese (https://purplelink.llc/ja/moderntex/) and Simplified Chinese (https://purplelink.llc/zh-cn/moderntex/), each with a how-to guide in the same language. The ModernTex app interface is in English, German, Japanese and Chinese (German, Japanese and Simplified Chinese are betas; German since ModernTex 2.0); Japanese and Chinese documents compile with XeLaTeX and LuaLaTeX when the user's TeX installation has the ctex, luatexja and jlreq packages. Prices are in US dollars (ModernTex is USD 19.99 once). Checkout for the Mac apps shows the price in the buyer's local currency where Stripe supports it, and the buyer can switch back to US dollars; Stripe's exchange rate includes a conversion fee of 2 to 4 percent, paid by the buyer. Payment is by card (including Apple Pay and Google Pay) or Link.
 
 
 ---
@@ -731,9 +731,9 @@ Trying it firstThe same download runs the complete app free for seven days, with
 
 This pageAlso in Deutsch, Français, Português, 日本語 and 简体中文. The terms, privacy policy and changelog are in English only.
 
-App interfaceEnglish and German (beta). German has been available since ModernTex 2.0, and some wording may still be rough.
+App interfaceEnglish, German, Japanese and Chinese (beta). German has been available since ModernTex 2.0, Japanese and Simplified Chinese since a later 2.x release. Some wording in the translations may still be imprecise.
 
-Chinese and Japanese documentsModernTex compiles them with XeLaTeX (ctex) or LuaLaTeX (luatexja, jlreq), as long as your TeX installation has those packages. The app's own menus stay in English.
+Chinese and Japanese documentsModernTex compiles them with XeLaTeX (ctex) or LuaLaTeX (luatexja, jlreq), as long as your TeX installation has those packages.
 
 CurrencyThe price is USD 19.99. Checkout shows it in your local currency where Stripe supports that, and you can switch back to US dollars. Stripe's exchange rate includes a conversion fee of 2 to 4 percent, paid by the buyer. You pay by card or Link.
 
@@ -807,7 +807,7 @@ Any class you can compile with LaTeX works: put the class file in the project fo
 
 Does ModernTex work in German, French, Portuguese, Japanese or Chinese?
 
-The app's interface is in English and German (German is a beta, available since ModernTex 2.0). Chinese and Japanese documents compile with XeLaTeX (ctex) or LuaLaTeX (luatexja, jlreq) when your TeX installation has those packages. This product page is also in German, French, Brazilian Portuguese, Japanese and Simplified Chinese. French and Brazilian Portuguese documents compile with babel or polyglossia, T1 and csquotes; the app's interface is not available in French or Portuguese.
+The app's interface is in English, German, Japanese and Chinese (German, Japanese and Simplified Chinese are betas). Chinese and Japanese documents compile with XeLaTeX (ctex) or LuaLaTeX (luatexja, jlreq) when your TeX installation has those packages. This product page is also in German, French, Brazilian Portuguese, Japanese and Simplified Chinese. French and Brazilian Portuguese documents compile with babel or polyglossia, T1 and csquotes; the app's interface is not available in French or Portuguese.
 
 Can I pay in my own currency?
 
