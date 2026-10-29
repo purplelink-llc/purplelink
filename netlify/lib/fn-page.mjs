@@ -25,7 +25,7 @@ export function page(title, heading, bodyHtml, status = 200) {
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="topbar">
       <a class="brand" href="/" aria-label="Purplelink home">
-        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
         <span>Purplelink</span>
       </a>
       <nav aria-label="Primary navigation">
@@ -44,7 +44,7 @@ export function page(title, heading, bodyHtml, status = 200) {
     <footer class="footer">
       <div class="footer-top">
         <div class="footer-brand">
-          <img src="/assets/purplelink-logo.png" alt="" width="26" height="26">
+          <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
           <span>Purplelink LLC</span>
         </div>
         <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>

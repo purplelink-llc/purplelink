@@ -52,7 +52,7 @@ fs.rmSync(pub, { recursive: true, force: true });
 for (const d of ["fonts", "brand", "media", "audio"]) fs.mkdirSync(path.join(pub, d), { recursive: true });
 for (const f of Object.values(brand.fonts)) fs.copyFileSync(path.resolve(ROOT, f.file), path.join(pub, "fonts", path.basename(f.file)));
 for (const n of ["vitae", "globepin", "haea", "moderntex", "outbound-veil"]) fs.copyFileSync(path.resolve(ROOT, `../site/assets/${n}-icon.png`), path.join(pub, "brand", `${n}-icon.png`));
-for (const n of ["sub-icon.png", "purplelink-tile.png"]) { const f = path.join(ROOT, ".cache/captures", n); if (fs.existsSync(f)) fs.copyFileSync(f, path.join(pub, "brand", n)); }
+for (const n of ["sub-icon.png"]) { const f = path.join(ROOT, ".cache/captures", n); if (fs.existsSync(f)) fs.copyFileSync(f, path.join(pub, "brand", n)); }
 for (const [name, src] of Object.entries(product.media)) {
   const abs = path.resolve(ROOT, src);
   if (!fs.existsSync(abs)) throw new Error(`missing media ${src}`);

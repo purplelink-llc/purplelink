@@ -81,7 +81,7 @@ export function build(timing) {
   return finish(
     {
       id: "paper-review-promo", frame: "browser", url: "purplelink.llc/tools/paper-review",
-      title: { name: "Paper Review", sub: "Four AI reviewers read your manuscript before a journal does.", icon: "brand/purplelink-tile.png", iconRadius: 0.26 },
+      title: { name: "Paper Review", sub: "Four AI reviewers read your manuscript before a journal does.", icon: "brand/purplelink-logo.png", iconRadius: 0 },
       end: { pill: "From $9 per review", url: "purplelink.llc/tools/paper-review" },
       stills, keys, rings, lower, cursors, hero,
       poster: b1.cue("deep") + 0.4,

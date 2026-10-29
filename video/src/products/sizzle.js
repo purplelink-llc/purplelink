@@ -63,7 +63,7 @@ export function build(timing) {
   return finish(
     {
       id: "purplelink-sizzle", frame: "browser", url: "purplelink.llc/products",
-      title: { name: "Purplelink", sub: "Tools for the paper, from first draft to accepted.", icon: "brand/purplelink-tile.png", iconRadius: 0.26 },
+      title: { name: "Purplelink", sub: "Tools for the paper, from first draft to accepted.", icon: "brand/purplelink-lockup-light.png", iconRadius: 0 },
       end: { pill: "No account needed", url: "purplelink.llc/products" },
       stills, keys, rings, lower, cursors: [], hero,
       poster: b1.cue("vitae") + 0.9,

@@ -29,7 +29,7 @@ export function stageNarration(srcDir, dstDir, { target = -16, ceiling = -1.5 } 
 }
 
 export function stageBrandAudio(assetsDir, brandDir) {
-  for (const f of ["sting-intro.wav", "sting-outro.wav", "purplelink-logo.png"]) fs.copyFileSync(path.join(assetsDir, f), path.join(brandDir, f));
+  for (const f of ["sting-intro.wav", "sting-outro.wav", "purplelink-logo.png", "purplelink-lockup-light.png", "purplelink-wordmark-light.png", "purplelink-wordmark-dark.png"]) fs.copyFileSync(path.join(assetsDir, f), path.join(brandDir, f));
 }
 
 // Trend-style music bed under a rendered video's audio (video stays stream-copied).
