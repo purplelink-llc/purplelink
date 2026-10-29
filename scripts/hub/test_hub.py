@@ -876,8 +876,50 @@ def test_doctor_notices_missing_reddit_attribution_fields():
         put("history.json", saved_h)
 
 
+def test_doctor_flags_campaigns_with_no_spend_or_no_trials():
+    """A running campaign whose spend was never recorded has no cost figures at all, and one whose ad traffic brings
+    no trials for a week has either a broken trial link or an ad that does not convert: the doctor names both."""
+    import datetime as dt
+    P = hub.paths()
+    put("hub/campaigns.json", json.dumps({"widget-test-2026-11": {
+        "platformKey": "redditAds", "channel": "reddit-ads", "asset": "widget", "start": "2026-10-20", "end": "2026-11-12",
+        "budget": 80, "breakEven": 18, "approval": "ben test", "readings": ["2026-11-13"],
+        "ads": [{"id": "a", "label": "angle A", "url": "https://purplelink.llc/widget/?utm_source=reddit&utm_medium=cpc&utm_campaign=widget-test-2026-11&utm_content=widget-reddit-a"}]}}))
+    saved_f = (tmp / "hub" / "funnel.json").read_text()
+    ads = P["manual_ads"]
+    saved_ads = ads.read_text() if ads.exists() else None
+    f = json.loads(saved_f)
+    f["windows"]["7"] = dict(f["windows"]["7"], **{"paid:reddit": {
+        "pageviews": 120, "pageviewsByPath": {"/widget/": 120}, "trial": {}, "checkout": {}}})
+    put("hub/funnel.json", json.dumps(f))
+    ads.write_text("{}")  # no spend reading, whatever earlier tests recorded
+    try:
+        run("import")
+        found = {x["problem"] for x in hub.campaign_gaps(db(), P, dt.date(2026, 11, 2))}
+        assert found == {"no spend recorded", "no trials"}, found
+        # one day in, a missing spend reading is not news yet
+        assert "no spend recorded" not in {x["problem"] for x in hub.campaign_gaps(db(), P, dt.date(2026, 10, 21))}
+        # long after the campaign, neither applies
+        assert hub.campaign_gaps(db(), P, dt.date(2026, 12, 30)) == []
+        hub.record_campaign_spend(P, "widget-test-2026-11", 30.0, 4000, 110, as_of="2026-11-01")
+        f["windows"]["7"]["paid:reddit"]["trial"] = {"widget": 1}
+        put("hub/funnel.json", json.dumps(f))
+        run("import")
+        assert hub.campaign_gaps(db(), P, dt.date(2026, 11, 2)) == []
+        assert "0 campaign problems" in run("doctor")
+    finally:
+        put("hub/funnel.json", saved_f)
+        if saved_ads is None:
+            ads.unlink(missing_ok=True)
+        else:
+            ads.write_text(saved_ads)
+        (tmp / "hub" / "campaigns.json").unlink()
+        run("import")
+
+
 if __name__ == "__main__":
     test_all()
+    test_doctor_flags_campaigns_with_no_spend_or_no_trials()
     test_doctor_notices_missing_reddit_attribution_fields()
     test_sources_untouched()
     test_results_and_followups()

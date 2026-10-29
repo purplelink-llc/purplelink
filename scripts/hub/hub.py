@@ -1572,7 +1572,8 @@ def doctor(con, p: dict, today: dt.date | None = None) -> dict:
                 bad.append({"id": r["id"], "which": kind, "url": u, "status": c["status"], "final": c.get("final")})
     unverified = sum(1 for c in links.values() if c.get("status") is None)
     return {"missing": missing, "duplicates": dups, "bad_links": bad, "links_checked": len(links),
-            "links_unverifiable": unverified, "pins": override_pins(p), "attribution": attribution_gaps(p)}
+            "links_unverifiable": unverified, "pins": override_pins(p), "attribution": attribution_gaps(p),
+            "campaigns": campaign_gaps(con, p, today)}
 
 
 # sales.mjs writes `reddit` on every Stripe purchase, and the pl_attr cookie keeps the ad's tag, from the 2026-10-29
@@ -1606,6 +1607,38 @@ def attribution_gaps(p: dict, since: str = ATTR_FIELDS_SINCE) -> list:
             continue
         out.append({"id": k, "date": day, "product": o.get("product") or "", "problem": problem})
     return sorted(out, key=lambda x: (x["date"], x["id"]))
+
+
+# A campaign's spend reading is due two days after it starts; checks stop a week after it ends. 100 first-touch
+# pageviews with no trial would happen about 1 time in 20 even if ad visitors tried the app at a quarter of the site rate.
+SPEND_DUE_DAYS, CAMPAIGN_TAIL_DAYS, NO_TRIAL_PAGEVIEWS = 2, 7, 100
+
+
+def campaign_gaps(con, p: dict, today: dt.date | None = None) -> list:
+    """Running campaigns with no spend recorded (no cost per trial or order can be computed), and campaigns whose
+    channel brought NO_TRIAL_PAGEVIEWS first-touch pageviews in 7 days and no trial (a trial link that lost its
+    channel, or an ad that does not convert; the funnel cannot tell which)."""
+    today = today or dt.date.today()
+    week = ((load_json(p["funnel"], {}) or {}).get("windows") or {}).get("7") or {}
+    out = []
+    for r in campaign_report(con, p, today):
+        try:
+            start, end = dt.date.fromisoformat(r["start"]), dt.date.fromisoformat(r["end"])
+        except (TypeError, ValueError):
+            continue
+        if not start <= today <= end + dt.timedelta(days=CAMPAIGN_TAIL_DAYS):
+            continue
+        if r["spend"] is None and today >= start + dt.timedelta(days=SPEND_DUE_DAYS):
+            out.append({"campaign": r["campaign"], "problem": "no spend recorded",
+                        "detail": f"{(today - start).days} days after the start; record it with hub.py campaign-spend"})
+        rows = [week.get(k) or {} for k in CHANNEL_KEYS.get(r["channel"], (r["channel"],))]
+        views = sum(x.get("pageviews") or 0 for x in rows)
+        trials = sum((x.get("trial") or {}).get(r["asset"], 0) for x in rows)
+        if views >= NO_TRIAL_PAGEVIEWS and not trials:
+            out.append({"campaign": r["campaign"], "problem": "no trials",
+                        "detail": f"{views} first-touch pageviews in 7 days and 0 {r['asset']} trials; check that the "
+                                  "trial link keeps its channel before reading it as an ad that does not convert"})
+    return out
 
 
 def override_pins(p: dict) -> list:
@@ -2144,6 +2177,10 @@ def cmd_doctor(a, p):
     for x in d["pins"]:
         where = f"; pinned row now at {', '.join(x['now'])}" if x["now"] else ""
         print(f"  {x['id']:16} {x['problem']}{where}" + (f"  (pin: {x['pin']})" if x["pin"] else ""))
+    c = d["campaigns"]
+    print(f"{len(c)} campaign problem{'s' if len(c) != 1 else ''}:")
+    for x in c:
+        print(f"  {x['campaign']:28} {x['problem']}: {x['detail']}")
     g = d["attribution"]
     print(f"{len(g)} purchase{'s' if len(g) != 1 else ''} since {ATTR_FIELDS_SINCE} missing an attribution field:")
     for x in g:
