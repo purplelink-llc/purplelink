@@ -56,7 +56,7 @@ def preview(http, cfg, out: Path, say=print) -> int:
     for item in res["would_queue"]:
         files = pipeline.copy_preview(item, out)
         say(f"\n=== {item.id}  ({item.meta['instagram']['kind']}, would go out {item.meta['scheduled_at']})")
-        say(item.render("instagram"))
+        say(item.render(item.platforms[0]))
         v = item.video()
         if v:
             say(f"  [reel] {v['duration']} s {v['width']}x{v['height']}  description: {v['alt']}")

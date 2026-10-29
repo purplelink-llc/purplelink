@@ -72,7 +72,7 @@ class Facebook(Adapter):
         else:
             form = {"message": text}
             if item.link:
-                form["link"] = utm_link(item.link, "facebook", item.campaign)
+                form["link"] = utm_link(item.link, "facebook", item.campaign, item.utm_content("facebook"))
             r = self.http.request("POST", f"{API}/{pid}/feed", self._auth(), form=form)
         if r.status == 0 or r.status >= 500:
             raise Ambiguous(f"facebook: publish answered {r.status}; the post may be live, check the Page")

@@ -298,12 +298,27 @@ def test_fetch_funnel_keeps_token_out_of_url():
     put("hub/funnel.json", saved)
 
 
+def test_funnel_stale_until_fetched_on_the_day():
+    # The export used to skip the fetch when funnel.json was under 20 hours old. A daytime fetch (10-28 17:34) then
+    # left the next morning's dashboard without the previous evening, the first day of the Reddit test (2026-10-29).
+    f = tmp / "stale-check" / "funnel.json"
+    day = hub.dt.date(2026, 10, 29)
+    assert hub.funnel_stale(f, day)                                   # never fetched
+    f.parent.mkdir(parents=True, exist_ok=True)
+    f.write_text("not json")
+    assert hub.funnel_stale(f, day)                                   # unreadable
+    f.write_text(json.dumps({"asOf": "2026-10-28", "windows": {}}))
+    assert hub.funnel_stale(f, day)                                   # yesterday's fetch misses yesterday's evening
+    f.write_text(json.dumps({"asOf": "2026-10-29", "windows": {}}))
+    assert not hub.funnel_stale(f, day)                               # fetched today: at most one fetch a day
+
+
 def test_export_has_no_contacts():
     run("import")
     out = tmp / "export"
     run("export", str(out))
     names = sorted(f.name for f in out.glob("*.json"))
-    assert names == sorted(f"marketing_{n}.json" for n in ("summary", "grid", "channels", "placements", "followups", "listings", "heard", "campaigns"))
+    assert names == sorted(f"marketing_{n}.json" for n in ("summary", "grid", "channels", "placements", "followups", "listings", "heard", "campaigns", "rechecks"))
     blob = "".join(f.read_text() for f in out.glob("*.json"))
     assert not hub.EMAIL_RE.search(blob.replace("@purplelink", ""))
     assert "OUTREACH-LOG" not in blob and "Pat" not in blob and "Reviewer" not in blob and "Example University" not in blob
@@ -556,6 +571,181 @@ def test_doctor():
     (tmp / "hub" / "links.json").unlink()
 
 
+def test_campaign_decisions_and_ad_check():
+    import datetime as dt
+    c = {"readings": ["2026-11-13", "2026-11-20", "2026-12-03"], "breakEven": 18,
+         "rules": {"2026-11-13": "stop-if-no-trials", "2026-11-20": "look", "2026-12-03": "verdict"}}
+    ads = [{"ad": "a", "orders": 0, "trials": 1, "visits": 9}, {"ad": "b", "orders": 2, "trials": 3, "visits": 7}]
+
+    def row(trials, orders, spend):
+        return {"trials": trials, "orders": orders, "spend": spend, "ads": ads,
+                "costPerTrial": round(spend / trials, 2) if trials else None,
+                "costPerOrder": round(spend / orders, 2) if orders else None}
+    d = hub.campaign_decision(c, row(0, 0, 30.0), dt.date(2026, 11, 12))
+    assert d["stage"] is None and "first reading (2026-11-13)" in d["text"]
+    assert hub.campaign_decision(c, row(0, 0, 80.0), dt.date(2026, 11, 13))["text"].startswith("stop: 0 trial downloads from $80.00")
+    d = hub.campaign_decision(c, row(4, 0, 80.0), dt.date(2026, 11, 14))
+    assert d["text"].startswith("keep reading: 4 trials at $20.00 each") and d["due"] == "2026-11-20"
+    assert hub.campaign_decision(c, row(4, 1, 80.0), dt.date(2026, 11, 20))["text"].startswith("look only")
+    assert hub.campaign_decision(c, row(4, 1, 80.0), dt.date(2026, 12, 3))["text"] == "no second round: 1 order by 2026-12-03"
+    d = hub.campaign_decision(c, row(5, 5, 80.0), dt.date(2026, 12, 3))
+    assert d["text"].startswith("one more 10-day round with ad b: 5 orders at $16.00") and d["due"] is None
+    assert "over the $18 break-even" in hub.campaign_decision(c, row(5, 2, 80.0), dt.date(2026, 12, 4))["text"]
+    # ad check: missing data, too few impressions, about even, clearly trails
+    today = dt.date(2026, 11, 3)
+    assert "no per-ad" in hub.ad_ctr_check([{"ad": "a", "clicks": 5, "impressions": None}], "2026-11-03", today)["verdict"]
+    r = hub.ad_ctr_check([{"ad": "a", "clicks": 2, "impressions": 300}, {"ad": "b", "clicks": 9, "impressions": 300}], "2026-11-03", today)
+    assert r["isDue"] and "too few impressions" in r["verdict"] and r["trailing"] is None
+    r = hub.ad_ctr_check([{"ad": "a", "clicks": 10, "impressions": 2000}, {"ad": "b", "clicks": 12, "impressions": 2000}], None, today)
+    assert "about even" in r["verdict"] and r["p"] > 0.5 and r["ctr"] == {"a": 0.005, "b": 0.006}
+    r = hub.ad_ctr_check([{"ad": "a", "clicks": 40, "impressions": 4000}, {"ad": "b", "clicks": 10, "impressions": 4000}], "2026-11-03", today)
+    assert r["trailing"] == "b" and r["p"] < 0.001 and "ad b clearly trails" in r["verdict"]
+
+
+def test_rechecks():
+    import datetime as dt
+    P = hub.paths()
+    run("import")
+    con = db()
+    con.execute("DELETE FROM channel_stats")
+    con.executemany("INSERT INTO channel_stats VALUES (?,?,?,?,?,?,?,?,?,?,?)", [
+        ("widget", "email", 60, 5, 1, 0, 0, None, None, "unmeasured", ""),
+        ("gadget", "email", 3, 4, 0, 0, 0, None, None, "building", ""),
+        ("widget", "directory", 2, 1, 0, 0, 0, None, None, "building", "")])
+    con.execute("INSERT INTO placements VALUES ('t1', 'test', 'directory', 'listing', 'On My Menubar: resubmit Widget', "
+                "'queued', '2026-10-28', '', '', '', '', '', '', '', '', '')")
+    con.commit()
+    put("hub/rechecks.json", json.dumps({"_note": "test", "widget-email": {
+        "question": "keep or pause widget email", "due": "2026-11-08", "product": "widget", "channel": "email",
+        "baseline": {"date": "2026-10-25", "placements": 52, "visits": 2, "trials": 0, "orders": 0}, "rule": "pause if 0 trials"},
+        "dirs": {"question": "did directories bring visits", "due": "2026-11-25", "product": "*", "channel": "directory",
+                 "baseline": {"date": "2026-10-28", "visits": 0}, "targets": ["On My Menubar", "Nowhere"]}}))
+    rows = hub.recheck_report(con, P, dt.date(2026, 11, 8))
+    assert [r["id"] for r in rows] == ["widget-email", "dirs"]
+    e = rows[0]
+    assert e["isDue"] and e["daysLeft"] == 0 and e["current"] == {"placements": 60, "visits": 5, "trials": 1, "orders": 0}
+    assert e["change"] == {"placements": 8, "visits": 3, "trials": 1, "orders": 0}
+    assert "+3 first-touch visits, +1 trials" in e["reading"] and "window has moved" not in e["reading"]
+    d = rows[1]
+    assert not d["isDue"] and d["daysLeft"] == 17 and d["current"]["visits"] == 1
+    assert [(t["target"], t["status"]) for t in d["targets"]] == [("On My Menubar", "queued"), ("Nowhere", "none")]
+    assert "0 of 2 submissions live" in d["reading"]
+    assert "window has moved" in hub.recheck_report(con, P, dt.date(2026, 12, 20))[0]["reading"]
+    out = run("rechecks")
+    assert "widget-email" in out and "rule: pause if 0 trials" in out
+    # the export carries the reading but not the target list
+    ex = hub.export_rows(P)["marketing_rechecks"]
+    assert {r["id"] for r in ex} == {"widget-email", "dirs"} and all("targets" not in r for r in ex)
+    (tmp / "hub" / "rechecks.json").unlink()
+    run("import")
+
+
+def test_one_listing_is_one_placement():
+    """A listing URL logged several times (the submission, a later update, the MacUpdate tracker) is one placement:
+    otherwise each row gets the listing's full visits and the channel's visits per placement are divided by N."""
+    log = tmp / "repo/Outreach/OUTREACH-LOG.md"
+    orig = log.read_text()
+    log.write_text(orig + """
+## MacUpdate submissions
+
+| Date | Where | App | Status | Note |
+|---|---|---|---|---|
+| 2026-10-10 | MacUpdate | Gadget | submitted | https://gadget.macupdate.com/ |
+| 2026-10-18 | MacUpdate | Gadget | update submitted | https://gadget.macupdate.com/ |
+""")
+    try:
+        run("import")
+        con = db()
+        rows = list(con.execute("SELECT * FROM placements WHERE url LIKE '%gadget.macupdate.com%'"))
+        assert [r["id"] for r in rows] == ["macupdate:gadget"], [tuple(r) for r in rows]
+        g = rows[0]
+        assert g["date"] == "2026-10-10" and g["contact_ref"].startswith("OUTREACH-LOG.md:"), tuple(g)
+        # its MacUpdate download readings stay attached to it
+        assert con.execute("SELECT count(*) FROM results WHERE placement_id = 'macupdate:gadget' AND metric = 'downloads-total'").fetchone()[0] == 2
+    finally:
+        log.write_text(orig)
+def test_social_engine_rows_under_a_headerless_table():
+    """The social engine appends one row per post at the end of the outreach log, under whatever heading is last, with
+    no table header of its own. Every such row is a mirror of a social queue item (Instagram and Facebook included),
+    and a row that is not keeps its own date and platform rather than the heading's."""
+    log = tmp / "repo/Outreach/OUTREACH-LOG.md"
+    orig = log.read_text()
+    put("social/20261029-ig-reel-abc.md", """---
+id: "20261029-ig-reel-abc"
+status: "posted"
+approved_by: "ben (standing, 2026-10-23)"
+platforms: ["instagram"]
+campaign: "ig-reel"
+link: "https://purplelink.llc/widget/"
+results: {"instagram": {"status": "posted", "url": "https://www.instagram.com/reel/X/", "posted_at": "2026-10-29T07:16:39-04:00"}}
+---
+
+## instagram
+A Reel.
+""")
+    log.write_text(orig + """
+### AlternativeTo: Gadget linked to Widget (2026-10-20, q-20261020-alto, approved by Ben)
+Done in Chrome.
+| 2026-10-21 | linkedin: 20261021-daily-release-widget-1-2 | https://www.linkedin.com/company/1/admin/ | posted | queue item 20261021-daily-release-widget-1-2 |
+| 2026-10-29 | instagram: 20261029-ig-reel-abc | https://www.instagram.com/reel/X/ | posted | queue item 20261029-ig-reel-abc |
+| 2026-10-29 | facebook: 20261029-fb-reel-gone | https://www.facebook.com/reel/1/ | posted | queue item 20261029-fb-reel-gone |
+""")
+    try:
+        run("import")
+        rows = list(db().execute("SELECT * FROM placements WHERE source = 'outreach-log'"))
+        assert not [r for r in rows if r["target"].startswith(("instagram:", "linkedin:"))], [tuple(r) for r in rows]
+        assert not [r for r in rows if r["channel"] == "alternativeto"], [tuple(r) for r in rows]
+        fb = next(r for r in rows if r["target"].startswith("facebook:"))
+        assert fb["channel"] == "facebook" and fb["date"] == "2026-10-29" and fb["status"] == "live", tuple(fb)
+    finally:
+        log.write_text(orig)
+        (tmp / "social/20261029-ig-reel-abc.md").unlink()
+        run("import")
+
+
+def test_pull_request_on_someone_elses_repo_is_a_placement():
+    """A queue "pr" item that opened a pull request on another owner's GitHub repo (an awesome list) is an outward
+    placement; a PR on our own repos is not."""
+    put("queue/done/2026-10-09-pr-awesome.md", """---
+id: q-20261009-aw1
+created: 2026-10-09T08:00:00-04:00
+kind: pr
+target: "GitHub PR: someone/awesome-things, Widget under Tools"
+status: done
+---
+
+## Ask
+Open a PR adding Widget, https://purplelink.llc/widget/
+
+## Result
+PR opened from Ben's account 2026-10-11: https://github.com/someone/awesome-things/pull/55 (2026-10-11T17:56-04:00)
+""")
+    put("queue/done/2026-10-12-pr-site.md", """---
+id: q-20261012-own
+created: 2026-10-12T08:00:00-04:00
+kind: pr
+target: "site/guides: a new guide about Widget"
+status: done
+---
+
+## Result
+https://github.com/purplelink-llc/purplelink/pull/9 merged (2026-10-12T10:00-04:00)
+""")
+    try:
+        run("import")
+        con = db()
+        row = con.execute("SELECT * FROM placements WHERE id = 'queue:q-20261009-aw1'").fetchone()
+        assert row is not None
+        assert row["channel"] == "github" and row["status"] == "live" and row["date"] == "2026-10-11", tuple(row)
+        assert row["url"] == "https://github.com/someone/awesome-things/pull/55"
+        assert assets_of(con, "queue:q-20261009-aw1") == ["widget"]
+        assert con.execute("SELECT count(*) FROM placements WHERE id = 'queue:q-20261012-own'").fetchone()[0] == 0
+    finally:
+        (tmp / "queue/done/2026-10-09-pr-awesome.md").unlink()
+        (tmp / "queue/done/2026-10-12-pr-site.md").unlink()
+        run("import")
+
+
 if __name__ == "__main__":
     test_all()
     test_sources_untouched()
@@ -564,6 +754,7 @@ if __name__ == "__main__":
     test_stop_rule_and_interval()
     test_listing_checks()
     test_fetch_funnel_keeps_token_out_of_url()
+    test_funnel_stale_until_fetched_on_the_day()
     test_export_has_no_contacts()
     test_phase2_tags_and_link_results()
     test_phase2_kits_rules_week_log()
@@ -571,7 +762,12 @@ if __name__ == "__main__":
     test_utm_edges()
     test_candidate_assets_and_no_response_results()
     test_campaigns()
+    test_campaign_decisions_and_ad_check()
+    test_rechecks()
     test_doctor()
+    test_one_listing_is_one_placement()
+    test_social_engine_rows_under_a_headerless_table()
+    test_pull_request_on_someone_elses_repo_is_a_placement()
     print("ok")
 
 

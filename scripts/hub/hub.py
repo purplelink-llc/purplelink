@@ -13,6 +13,7 @@ it can be deleted at any time with nothing lost. Nothing here posts, sends or ed
 
 Phase 1 (results):
   hub.py import --fetch         also read the first-touch funnel from the stats function (7 windows, one GET each)
+  hub.py import --fetch-if-stale   the same, only when funnel.json was not fetched today (the morning export uses it)
   hub.py channels [PRODUCT]     product x channel over 45 days: placements, visits, trials, orders, verdict
   hub.py followups              outreach emails due a follow-up (day 4) and those past 28 days (no-response)
   hub.py check-listings [--if-older DAYS]   fetch live listing pages; record price and version seen (facts.json)
@@ -31,6 +32,7 @@ Paid campaigns and data quality:
                                 trials and orders, cost per trial and order, and the next reading date
   hub.py campaign-spend CAMPAIGN --spend X [--clicks N] [--impressions N] [--ad A] [--as-of DATE]
                                 record a reading from the platform's dashboard (cumulative to date) in manual-ads.json
+  hub.py rechecks               deferred decisions (rechecks.json) read against the baseline they were made on
   hub.py doctor [--links]       placements missing a result, utm_content used twice, links not answering 200
                                 (--links re-checks every live placement and landing link first)
 
@@ -89,6 +91,7 @@ def paths() -> dict:
         "social_metrics": env_path("PURPLELINK_SOCIAL_METRICS", HOME / ".purplelink" / "social" / "metrics.json"),
         "traffic_env": env_path("PURPLELINK_TRAFFIC_ENV", HOME / ".config" / "purplelink" / "traffic.env"),
         "campaigns": env_path("PURPLELINK_HUB", HOME / ".purplelink" / "hub") / "campaigns.json",
+        "rechecks": env_path("PURPLELINK_HUB", HOME / ".purplelink" / "hub") / "rechecks.json",
         "links": env_path("PURPLELINK_HUB", HOME / ".purplelink" / "hub") / "links.json",
         "manual_ads": env_path("PURPLELINK_MANUAL_ADS", HOME / ".purplelink" / "traffic" / "manual-ads.json"),
     }
@@ -124,6 +127,8 @@ CHANNELS = [
     ("batch", "email"), ("outreach", "email"), ("pitch", "email"), ("customer note", "email"),
 ]
 OUTWARD = {"post", "email", "listing", "submission", "spend"}
+GITHUB_PR_RE = re.compile(r"https://github\.com/([\w.-]+)/[\w.-]+/pull/\d+")
+OWN_GITHUB = {"purplelink-llc", "benampel"}
 QUEUE_STATUS = {"pending": "queued", "approved": "approved", "done": "live"}
 LOG_STATUS = {"sent": "live", "posted": "live", "replied": "replied", "included": "live", "listed": "live",
               "live": "live", "declined": "rejected-by-target", "rejected": "rejected-by-target",
@@ -287,10 +292,12 @@ def from_queue(p: dict) -> list:
             continue
         for f in sorted(d.glob("*.md")):
             fm, body = parse_front(f.read_text(errors="replace"))
-            if fm.get("kind") not in OUTWARD:
+            result = section(body, "Result")
+            # A "pr" item is site work, unless it opened a pull request on someone else's repo (an awesome list).
+            pr = fm.get("kind") == "pr" and any(m.lower() not in OWN_GITHUB for m in GITHUB_PR_RE.findall(result))
+            if fm.get("kind") not in OUTWARD and not pr:
                 continue
             target = str(fm.get("target", ""))
-            result = section(body, "Result")
             draft = section(body, "Draft")
             res_urls = [u for u in URL_RE.findall(result) if not site_path(u)]
             date = (DATE_RE.findall(result) or [str(fm.get("decided") or fm.get("created") or "")[:10]])[-1]
@@ -298,7 +305,7 @@ def from_queue(p: dict) -> list:
             contents = list(dict.fromkeys(re.findall(r"utm_content=([\w.\-]+)", draft)))
             out.append({
                 "id": f"queue:{fm.get('id', f.stem)}", "source": "approval-queue",
-                "channel": str(fm.get("channel") or "") or channel_of(target + " " + str(fm.get("kind")), "email" if fm.get("kind") == "email" else "other"),
+                "channel": str(fm.get("channel") or "") or ("github" if pr else "") or channel_of(target + " " + str(fm.get("kind")), "email" if fm.get("kind") == "email" else "other"),
                 "kind": fm.get("kind"), "target": mask(target)[:200], "status": status,
                 "date": str(fm.get("live") or date)[:10],
                 "url": str(fm.get("placement_url") or "") or (res_urls[0] if res_urls else ""), "landing_url": "",
@@ -360,8 +367,10 @@ def from_social(p: dict) -> list:
             when = str(r.get("posted_at") or fm.get("scheduled_at") or fm.get("created") or "")[:10]
             campaign = str(fm.get("campaign") or "")
             utm = f"utm_source={plat}&utm_medium=social&utm_campaign={campaign}" if campaign else ""
-            if utm and fm.get("utm_content"):
-                utm += f"&utm_content={fm['utm_content']}"
+            tags = fm.get("utm_contents") if isinstance(fm.get("utm_contents"), dict) else {}
+            own = tags.get(plat) or (fm.get("utm_content") if plat == "instagram" or not tags else "")
+            if utm and own:
+                utm += f"&utm_content={own}"
             std = re.search(r"standing, (\d{4}-\d{2}-\d{2})", approval)
             out.append({
                 "id": f"social:{iid}:{plat}", "source": "social-queue", "channel": plat, "kind": "post",
@@ -373,6 +382,11 @@ def from_social(p: dict) -> list:
                 if isinstance(fm.get("daily"), dict) else [],
             })
     return out
+
+
+# A row the social engine writes: "| date | <platform>: <social queue id> | url | status | notes |".
+SOCIAL_LOG_HEADER = ["date", "where", "link", "status", "notes"]
+SOCIAL_ROW_RE = re.compile(r"^([a-z]+): (\d{8}-[\w-]+)$")
 
 
 def from_outreach(p: dict) -> list:
@@ -390,8 +404,11 @@ def from_outreach(p: dict) -> list:
             continue
         cells = [c.strip() for c in line.strip().strip("|").split("|")]
         if header is None:
-            header = [c.lower() for c in cells]
-            continue
+            # The social engine appends its rows under whatever heading is last, with no table header of its own.
+            if not DATE_RE.fullmatch(cells[0]):
+                header = [c.lower() for c in cells]
+                continue
+            header = SOCIAL_LOG_HEADER
         if all(set(c) <= set("-: ") for c in cells):
             continue
         row = dict(zip(header, cells))
@@ -407,13 +424,15 @@ def from_outreach(p: dict) -> list:
         urls = URL_RE.findall(joined)
         ext = [u for u in urls if not site_path(u)]
         landing = next((u for u in urls if site_path(u)), "")
+        mirror = SOCIAL_ROW_RE.match(row.get(target_key, ""))
         out.append({
-            "id": f"outreach:{n}", "source": "outreach-log", "channel": channel_of(heading + " " + row.get(target_key, ""), "other"),
+            "id": f"outreach:{n}", "source": "outreach-log",
+            "channel": mirror.group(1) if mirror else channel_of(heading + " " + row.get(target_key, ""), "other"),
             "kind": "reply" if "stackexchange" in heading.lower() else "", "target": mask(row.get(target_key, ""))[:200],
             "status": status, "date": date, "url": ext[0] if ext else "", "landing_url": landing, "utm": "",
             "approval": (re.findall(r"q-\d{8}-[\w-]+", joined) or [""])[0], "contact_ref": f"OUTREACH-LOG.md:{n}",
             "notes": mask(row.get("notes", ""))[:300], "_text": heading + " " + joined,
-            "_social": (re.findall(r"^(?:linkedin|bluesky|threads|mastodon|x): (\S+)$", row.get(target_key, "")) or [""])[0],
+            "_social": mirror.group(2) if mirror else "",
             "_assets": ["photo-licensing"] if channel_of(heading, "") == "photo-pitch" else [],
         })
     return out
@@ -557,6 +576,15 @@ def fetch_funnel(p: dict, get=None) -> dict:
     p["funnel"].parent.mkdir(parents=True, exist_ok=True)
     p["funnel"].write_text(json.dumps(out, indent=1))
     return out
+
+
+def funnel_stale(path: Path, today: dt.date | None = None) -> bool:
+    """True unless funnel.json was fetched today. Its asOf is the fetch date, and a fetch made yesterday afternoon
+    misses yesterday's evening; an age rule (under 20 hours) let such a fetch stand in for the next morning's."""
+    try:
+        return json.loads(path.read_text()).get("asOf", "") < (today or dt.date.today()).isoformat()
+    except (OSError, ValueError, AttributeError):
+        return True
 
 
 def load_json(path: Path, default):
@@ -902,6 +930,11 @@ def used_contents(p: dict) -> set:
         # the video ledger (long, Short and Reel tags) and the social queue's front matter record bare tags
         seen.update(re.findall(r'"(?:link_|short_|reel_)?utm_content":\s*"([\w.\-]+)"', t))
         seen.update(re.findall(r'^utm_content:\s*"([\w.\-]+)"', t, re.M))
+        for blob in re.findall(r"^utm_contents:\s*(\{.*\})\s*$", t, re.M):   # social queue: one tag per platform
+            try:
+                seen.update(str(v) for v in json.loads(blob).values() if v)
+            except ValueError:
+                pass
     return seen
 
 
@@ -1262,6 +1295,7 @@ def campaign_report(con, p: dict, today: dt.date | None = None) -> list:
             r = res.get(f"campaign:{cid}:{a.get('id')}", {})
             row["ads"].append({"ad": a.get("id"), "label": a.get("label"), "spend": r.get("spend"),
                                "clicks": int(r["clicks"]) if r.get("clicks") is not None else None,
+                               "impressions": int(r["impressions"]) if r.get("impressions") is not None else None,
                                "visits": int(r.get("link-visits", 0) or 0), "trials": int(r.get("link-trials", 0) or 0),
                                "orders": int(r.get("link-orders", 0) or 0)})
         if not spend:
@@ -1273,7 +1307,125 @@ def campaign_report(con, p: dict, today: dt.date | None = None) -> list:
             row["reading"] = f"${spend:.2f} spent, {int(trials)} trial{'s' if trials != 1 else ''}, no orders yet"
         if orders < 30:
             row["reading"] += "; a signal, not a rate (fewer than 30 orders)"
+        row["adCheck"] = ad_ctr_check(row["ads"], c.get("adCheck"), today)
+        row["decision"] = campaign_decision(c, row, today)
         rows.append(row)
+    return rows
+
+
+AD_CHECK_MIN_IMPRESSIONS = 500  # per ad, before a CTR gap can count as "clearly trails"
+
+
+def ad_ctr_check(ads: list, due: str | None, today: dt.date) -> dict:
+    """The setup sheet's swap check: does one ad's click-through rate clearly trail the other's? Two-sided pooled
+    two-proportion z test on the platform's per-ad clicks and impressions; "clearly" means p < 0.05 with at least
+    AD_CHECK_MIN_IMPRESSIONS impressions on each ad. Anything less is "about even", so the swap-in ad waits."""
+    out = {"due": due, "isDue": bool(due) and due <= today.isoformat(), "ctr": {}, "p": None, "trailing": None}
+    rated = [a for a in ads if a.get("impressions") and a.get("clicks") is not None]
+    for a in rated:
+        out["ctr"][str(a["ad"])] = round(a["clicks"] / a["impressions"], 4)
+    if len(rated) < 2:
+        out["verdict"] = "no per-ad clicks and impressions recorded yet (hub.py campaign-spend --ad)"
+        return out
+    x = min(rated, key=lambda a: a["clicks"] / a["impressions"])
+    y = max(rated, key=lambda a: a["clicks"] / a["impressions"])
+    n1, n2, k1, k2 = x["impressions"], y["impressions"], x["clicks"], y["clicks"]
+    pool = (k1 + k2) / (n1 + n2)
+    se = math.sqrt(pool * (1 - pool) * (1 / n1 + 1 / n2)) if 0 < pool < 1 else 0
+    p = math.erfc(abs(k2 / n2 - k1 / n1) / se / math.sqrt(2)) if se else 1.0
+    out["p"] = round(p, 4)
+    if min(n1, n2) < AD_CHECK_MIN_IMPRESSIONS:
+        out["verdict"] = f"too few impressions to compare (need {AD_CHECK_MIN_IMPRESSIONS} per ad)"
+    elif p < 0.05:
+        out["trailing"] = str(x["ad"])
+        out["verdict"] = (f"ad {x['ad']} clearly trails ({k1 / n1:.2%} vs {k2 / n2:.2%} CTR, p = {p:.3f}): "
+                          f"pause it and add the swap-in ad")
+    else:
+        out["verdict"] = f"about even ({k1 / n1:.2%} vs {k2 / n2:.2%} CTR, p = {p:.2f}): the swap-in ad waits"
+    return out
+
+
+def campaign_decision(c: dict, row: dict, today: dt.date) -> dict:
+    """Apply the campaign's pre-registered rule for the latest reading date that has arrived (campaigns.json "rules":
+    {date: "stop-if-no-trials" | "look" | "verdict"}; a reading with no rule is "look"). Before the first reading
+    there is no decision, by design: the 7-day trial delays orders."""
+    readings = sorted(c.get("readings") or [])
+    done = [d for d in readings if d <= today.isoformat()]
+    nxt = next((d for d in readings if d > today.isoformat()), None)
+    trials, orders, spend = row["trials"], row["orders"], row["spend"] or 0
+    if not done:
+        return {"stage": None, "rule": None, "due": readings[0] if readings else None,
+                "text": f"no decision before the first reading ({readings[0] if readings else 'none set'})"}
+    stage = done[-1]
+    rule = (c.get("rules") or {}).get(stage, "look")
+    then = f"; next reading {nxt}" if nxt else ""
+    if rule == "stop-if-no-trials":
+        text = (f"stop: 0 trial downloads from ${spend:.2f}, nothing to wait for" if not trials else
+                f"keep reading: {trials} trial{'s' if trials != 1 else ''}"
+                + (f" at ${row['costPerTrial']:.2f} each" if row.get("costPerTrial") else "") + ", orders decide" + then)
+    elif rule == "verdict":
+        be = c.get("breakEven")
+        if orders <= 1:
+            text = f"no second round: {orders} order{'s' if orders != 1 else ''} by {stage}"
+        elif be and row.get("costPerOrder") is not None and row["costPerOrder"] < be:
+            best = max(row["ads"], key=lambda a: (a["orders"], a["trials"], a["visits"]))
+            text = (f"one more 10-day round with ad {best['ad']}: {orders} orders at ${row['costPerOrder']:.2f} each, "
+                    f"under the ${be} break-even")
+        else:
+            cpo = row.get("costPerOrder")
+            text = f"no second round: {orders} orders" + (f" at ${cpo:.2f} each, over the ${be} break-even" if cpo and be else "")
+    else:
+        text = f"look only: {trials} trials, {orders} orders so far" + then
+    return {"stage": stage, "rule": rule, "due": nxt, "text": text}
+
+
+# --- rechecks: a decision Ben deferred, read against the numbers he decided on -------------------------------------
+#
+# rechecks.json (private): {"<id>": {"question": "...", "due": "2026-11-08", "product": "outbound-veil" | "*",
+#   "channel": "email", "baseline": {"date": "2026-10-25", "placements": 52, "visits": 2, "trials": 0, "orders": 0},
+#   "rule": "what decides", "targets": ["On My Menubar", ...]}}
+# Current numbers are the channel_stats row(s) (45-day first-touch window); "targets" are substrings of placement
+# targets on that channel whose current status is listed (for submissions that have to go live first).
+
+def recheck_report(con, p: dict, today: dt.date | None = None) -> list:
+    today = today or dt.date.today()
+    rows = []
+    for rid, r in sorted((load_json(p["rechecks"], {}) or {}).items(), key=lambda kv: (kv[1] or {}).get("due", "") if isinstance(kv[1], dict) else ""):
+        if rid.startswith("_") or not isinstance(r, dict):
+            continue
+        prod, chan, base = r.get("product", "*"), r.get("channel", ""), r.get("baseline") or {}
+        q = "SELECT * FROM channel_stats WHERE channel = ?" + ("" if prod == "*" else " AND product = ?")
+        stats = [dict(x) for x in con.execute(q, (chan,) if prod == "*" else (chan, prod))]
+        cur = {k: sum(int(x[k] or 0) for x in stats) for k in ("placements", "visits", "trials", "orders")}
+        delta = {k: cur[k] - int(base.get(k) or 0) for k in cur}
+        since = base.get("date") or ""
+        jq = ("SELECT DISTINCT p.id FROM placements p JOIN placement_assets x ON x.placement_id = p.id "
+              "WHERE p.channel = ? AND p.status IN ('live', 'replied', 'no-response') AND p.date > ?")
+        args: tuple = (chan, since)
+        if prod != "*":
+            jq += " AND x.asset_id = ?"
+            args += (prod,)
+        new_live = len(con.execute(jq, args).fetchall())
+        targets = []
+        for t in r.get("targets") or []:
+            hits = con.execute("SELECT status, date FROM placements WHERE channel = ? AND target LIKE ? ORDER BY date DESC",
+                               (chan, f"%{t}%")).fetchall()
+            targets.append({"target": t, "status": hits[0]["status"] if hits else "none", "date": hits[0]["date"] if hits else None})
+        due = r.get("due")
+        window_start = (today - dt.timedelta(days=45)).isoformat()
+        parts = [f"since {since}: {new_live} new live placement{'s' if new_live != 1 else ''}, "
+                 f"{delta['visits']:+d} first-touch visits, {delta['trials']:+d} trials, {delta['orders']:+d} orders"]
+        parts.append(f"now {cur['visits']} visits and {cur['trials']} trials from {cur['placements']} placements (45 days)")
+        if since and since < window_start:
+            parts.append("the 45-day window has moved past the baseline date, so a negative change can be the window")
+        if targets:
+            live_t = sum(1 for t in targets if t["status"] in ("live", "replied"))
+            parts.append(f"{live_t} of {len(targets)} submissions live")
+        rows.append({"id": rid, "question": r.get("question"), "rule": r.get("rule"), "due": due,
+                     "isDue": bool(due) and due <= today.isoformat(),
+                     "daysLeft": (dt.date.fromisoformat(due) - today).days if due else None,
+                     "product": prod, "channel": chan, "baseline": base, "current": cur, "change": delta,
+                     "newLive": new_live, "targets": targets, "reading": "; ".join(parts)})
     return rows
 
 
@@ -1390,6 +1542,32 @@ def doctor(con, p: dict, today: dt.date | None = None) -> dict:
 
 # --- build --------------------------------------------------------------------------------------------------------
 
+def merge_listings(placements: list) -> list:
+    """One live listing URL is one placement. The submission, a later update submission and the MacUpdate tracker can
+    all name the same page; counted apart, each got the listing's full visits. The tracker row is kept (its download
+    readings are keyed to it), else the earliest; it takes the earliest date and the others' references."""
+    groups: dict = {}
+    for pl in placements:
+        if pl["channel"] in LISTING_CHANNELS and pl["status"] in ("live", "replied") and pl.get("url", "").startswith("http"):
+            key = re.sub(r"[?#].*$", "", pl["url"]).rstrip("/").lower()
+            groups.setdefault(key, []).append(pl)
+    drop = set()
+    for rows in groups.values():
+        if len(rows) < 2:
+            continue
+        rows.sort(key=lambda pl: (pl["source"] != "traffic-history", pl.get("date") or "9999"))
+        keep, rest = rows[0], rows[1:]
+        keep["date"] = min(pl["date"] for pl in rows if pl.get("date")) if any(pl.get("date") for pl in rows) else ""
+        for pl in rest:
+            for k in ("approval", "contact_ref"):
+                keep[k] = keep.get(k) or pl.get(k, "")
+            keep["_text"] += " " + pl["_text"]
+            keep["_assets"] = list(dict.fromkeys(keep.get("_assets", []) + pl.get("_assets", [])))
+            drop.add(id(pl))
+        keep["notes"] = (keep.get("notes", "") + "; same listing as " + ", ".join(pl["id"] for pl in rest)).lstrip("; ")[:300]
+    return [pl for pl in placements if id(pl) not in drop]
+
+
 def build(p: dict) -> dict:
     assets = load_assets(p)
     mu, results = from_macupdate(p)
@@ -1425,7 +1603,7 @@ def build(p: dict) -> dict:
             pl["_assets"] = list(o["assets"])
             for a in o["assets"]:
                 assets.setdefault(a, {"kind": "line", "name": a, "product": None, "url": "", "names": []})
-    placements = [pl for pl in placements if not (overrides.get(pl["id"]) or {}).get("exclude")]
+    placements = merge_listings([pl for pl in placements if not (overrides.get(pl["id"]) or {}).get("exclude")])
     for pl in placements:
         add_linked_assets(pl["_text"] + " " + pl["landing_url"], assets)
     today = dt.date.today()
@@ -1506,7 +1684,7 @@ def resolve_asset(con, q: str) -> list:
 # --- commands -----------------------------------------------------------------------------------------------------
 
 def cmd_import(a, p):
-    if a.fetch:
+    if a.fetch or (a.fetch_if_stale and funnel_stale(p["funnel"])):
         f = fetch_funnel(p)
         print(f"funnel: {len(f['windows'])} windows as of {f['asOf']}")
     s = build(p)
@@ -1585,7 +1763,14 @@ def cmd_status(a, p):
     since = (dt.date.today() - dt.timedelta(days=7)).isoformat()
     week = con.execute("SELECT count(*) FROM placements WHERE status IN ('live','replied') AND date >= ?", (since,)).fetchone()[0]
     meta = dict(con.execute("SELECT key, value FROM meta").fetchall())
-    print(f"hub: {n} placements, {live} live, {week} live in 7 days, {meta.get('unmatched')} unmatched (built {meta.get('built')})")
+    soon = (dt.date.today() + dt.timedelta(days=7)).isoformat()
+    due = [f"{r['id']} {r['due']}" for r in recheck_report(con, p) if r["due"] and r["due"] <= soon]
+    for c in campaign_report(con, p):
+        due += [f"{c['campaign']} reading {d}" for d in [c["nextReading"]] if d and d <= soon]
+        if c["adCheck"]["due"] and dt.date.today().isoformat() <= c["adCheck"]["due"] <= soon:
+            due.append(f"{c['campaign']} ad check {c['adCheck']['due']}")
+    print(f"hub: {n} placements, {live} live, {week} live in 7 days, {meta.get('unmatched')} unmatched (built {meta.get('built')})"
+          + (f"; due within 7 days: {', '.join(due)}" if due else ""))
 
 
 def cmd_channels(a, p):
@@ -1716,7 +1901,8 @@ def export_rows(p: dict) -> dict:
     }]
     return {"marketing_summary": summary, "marketing_grid": grid, "marketing_channels": channels,
             "marketing_placements": placements, "marketing_followups": followups, "marketing_listings": listings,
-            "marketing_heard": heard, "marketing_campaigns": [{k: v for k, v in r.items()} for r in campaign_report(con, p)]}
+            "marketing_heard": heard, "marketing_campaigns": [{k: v for k, v in r.items()} for r in campaign_report(con, p)],
+            "marketing_rechecks": [{k: v for k, v in r.items() if k != "targets"} for r in recheck_report(con, p)]}
 
 
 def cmd_export(a, p):
@@ -1803,6 +1989,23 @@ def cmd_campaigns(a, p):
             print(f"    ad {ad['ad']} ({ad['label']}): spend {money(ad['spend'])}, clicks {ad['clicks'] if ad['clicks'] is not None else '-'}, "
                   f"visits {ad['visits']}, trials {ad['trials']}, orders {ad['orders']}")
         print(f"  {r['reading']}. Next reading {r['nextReading'] or 'none left'}.")
+        ac = r["adCheck"]
+        print(f"  ad check{' (due ' + ac['due'] + ')' if ac['due'] else ''}: {ac['verdict']}")
+        print(f"  decision{' at ' + r['decision']['stage'] if r['decision']['stage'] else ''}: {r['decision']['text']}")
+
+
+def cmd_rechecks(a, p):
+    rows = recheck_report(connect(p), p)
+    if not rows:
+        print(f"no rechecks in {p['rechecks']}")
+    for r in rows:
+        when = "DUE" if r["isDue"] else f"due {r['due']} ({r['daysLeft']} days)"
+        print(f"{r['id']} [{when}] {r['question']}")
+        print(f"  {r['reading']}")
+        if r["rule"]:
+            print(f"  rule: {r['rule']}")
+        for t in r["targets"]:
+            print(f"    {t['status']:14} {t['target']}" + (f" ({t['date']})" if t["date"] else ""))
 
 
 def cmd_campaign_spend(a, p):
@@ -1836,6 +2039,7 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
     im = sub.add_parser("import"); im.add_argument("--fetch", action="store_true")
+    im.add_argument("--fetch-if-stale", action="store_true")
     w = sub.add_parser("where"); w.add_argument("asset"); w.add_argument("--all", action="store_true")
     g = sub.add_parser("grid"); g.add_argument("--all", action="store_true")
     gp = sub.add_parser("gaps"); gp.add_argument("--days", type=int, default=30); gp.add_argument("--all", action="store_true")
@@ -1853,6 +2057,7 @@ def main(argv=None) -> int:
     wk = sub.add_parser("week"); wk.add_argument("step", choices=["pick", "measure"]); wk.add_argument("--write", action="store_true")
     sub.add_parser("log")
     sub.add_parser("campaigns")
+    sub.add_parser("rechecks")
     cs = sub.add_parser("campaign-spend"); cs.add_argument("campaign"); cs.add_argument("--spend", type=float, required=True)
     cs.add_argument("--clicks", type=int); cs.add_argument("--impressions", type=int); cs.add_argument("--ad")
     cs.add_argument("--as-of", dest="as_of")
@@ -1862,6 +2067,7 @@ def main(argv=None) -> int:
      "status": cmd_status, "channels": cmd_channels, "followups": cmd_followups, "check-listings": cmd_check_listings,
      "export": cmd_export, "utm": cmd_utm, "kits": cmd_kits, "rules": cmd_rules, "week": cmd_week,
      "log": cmd_log, "campaigns": cmd_campaigns, "campaign-spend": cmd_campaign_spend,
+     "rechecks": cmd_rechecks,
      "doctor": cmd_doctor}[a.cmd](a, paths())
     return 0
 

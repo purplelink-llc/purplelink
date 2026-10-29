@@ -109,5 +109,16 @@
   "started": "2026-10-28",
   "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
   "checked": "2026-10-28"
+ },
+ {
+  "video": "ticLxRICj90",
+  "variants": {
+   "A": "video/out/howto/unicode-character-not-set-up-for-latex/unicode-character-not-set-up-for-latex-thumb-A.jpg",
+   "B": "video/out/howto/unicode-character-not-set-up-for-latex/unicode-character-not-set-up-for-latex-thumb-B.jpg",
+   "C": "video/out/howto/unicode-character-not-set-up-for-latex/unicode-character-not-set-up-for-latex-thumb-C.jpg"
+  },
+  "started": "2026-10-29",
+  "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
+  "checked": "2026-10-29"
  }
 ]

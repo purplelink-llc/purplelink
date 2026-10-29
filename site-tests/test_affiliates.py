@@ -172,5 +172,22 @@ class RealSite(unittest.TestCase):
         self.assertIn("(paid link)", read_site("privacy/index.html"))
 
 
+class Report(unittest.TestCase):
+    def test_report_finds_network_tracked_links(self):
+        # CJ links point at kqzyfj.com / tkqlhce.com, not the brand's domain, so matching by destination alone listed
+        # NordVPN and Parallels on 0 pages while both were live (found 2026-10-29).
+        out = subprocess.run([sys.executable, str(ROOT / "scripts" / "affiliates.py"), "report"],
+                             capture_output=True, text=True, check=True).stdout
+        self.assertIn("    guides/do-researchers-need-a-vpn/index.html", out.split("live: nordvpn:")[1].split("live:")[0])
+        self.assertIn("    guides/run-windows-research-software-on-mac/index.html",
+                      out.split("live: parallels:")[1].split("live:")[0])
+
+    def test_links_to_matches_destination_or_tracked_link(self):
+        nord = next(p for p in aff.REGISTRY if p.id == "nordvpn")
+        self.assertTrue(aff.links_to("https://www.kqzyfj.com/click-101903253-15545954", nord))
+        self.assertTrue(aff.links_to("https://nordvpn.com/pricing/", nord))
+        self.assertFalse(aff.links_to("https://protonvpn.com/", nord))
+
+
 if __name__ == "__main__":
     unittest.main()

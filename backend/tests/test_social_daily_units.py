@@ -145,7 +145,8 @@ def build(texts, platforms=("linkedin", "bluesky", "threads"), images=None, tmp=
     it = items.Item(tmp or __import__("pathlib").Path("/nonexistent/x.md"),
                     {"id": "20261020-daily-test", "platforms": list(platforms), "campaign": campaign,
                      "link": GUIDE.url, "scheduled_at": "2026-10-20T10:30:00-04:00", "status": "draft",
-                     "images": images or [], "text_only": []}, dict(texts))
+                     "images": images or [], "text_only": [],
+                     "utm_contents": {p: f"new-guide-{p}-test" for p in platforms}}, dict(texts))
     return it
 
 

@@ -55,7 +55,7 @@ class CircledHoopsPage(unittest.TestCase):
         self.assertNotIn("apps.apple.com", self.text)
 
     def test_images_exist(self):
-        srcs = re.findall(r'(?:src|srcset)="(/assets/[^"\s,]+)', self.text)
+        srcs = re.findall(r'(?:src|srcset)="(/assets/[^"\s,?]+)', self.text)
         self.assertTrue(srcs)
         for src in srcs:
             self.assertTrue((SITE / src.lstrip("/")).is_file(), src)

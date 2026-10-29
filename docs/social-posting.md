@@ -203,6 +203,20 @@ purplelink.llc, no picture yet), and @purplelink.llc is connected to it.
 - The daily ranked pipeline now includes `facebook` (written like LinkedIn: headline, facts, link) under the
   2026-10-18 standing approval, which Ben extended to the Page with the words above.
 
+## Tracking tags (2026-10-29)
+
+Every post the engine builds carries its own `utm_content` from the marketing hub (`scripts/hub/hub.py make_utm`,
+through `backend/socialpost/hubtags.py`), one per platform, stored on the item as `utm_contents: {platform: tag}` before
+approval (so a changed tag voids the approval) and put on the link by `Item.render`. Daily posts are tagged
+`<asset>-<platform>-<yymmdd>` (for example `legroom-1-9-0-linkedin-261029`), Instagram Reels `<youtube id>-reel` (or the
+how-to Reel's `<slug>-reel`), Facebook Reels `<youtube id>-fb-reel`, companions `<asset>-instagram-<yymmdd>`. Both
+gates reject a purplelink.llc link without a tag, so nothing goes out unmeasured; a YouTube link is not tagged. The hub
+reads `utm_contents` back for its uniqueness check and records each platform's tag. Items queued before this change
+keep their approval and post untagged.
+
+LinkedIn results now record the post's public URL, `https://www.linkedin.com/feed/update/urn:li:activity:<id>/`, read
+from the published page, where each post carries `data-urn`; the admin page URL is kept only when it cannot be read.
+
 ## Files
 
 | What | Where |

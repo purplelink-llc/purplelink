@@ -11,6 +11,8 @@ Rendering: scripts/og-card.html in headless Chrome over a local server rooted at
   python3 scripts/gen_og_cards.py            # render and rewrite
   python3 scripts/gen_og_cards.py --dry-run  # list what would change
   python3 scripts/gen_og_cards.py --only blog/starting-purplelink
+  python3 scripts/gen_og_cards.py --refresh  # re-render every existing card too
+  python3 scripts/gen_og_cards.py --brand    # re-render the two generic brand cards (scripts/og-brand-card.html)
 """
 import argparse, html, http.server, re, socketserver, subprocess, sys, threading, urllib.parse
 from pathlib import Path
@@ -54,7 +56,7 @@ def title_of(t, section):
     return ti
 
 
-def plan(only=None):
+def plan(only=None, refresh=False):
     jobs = []
     for section in ("format", "guides", "blog"):
         for p in sorted((SITE / section).glob("*/index.html")):
@@ -63,7 +65,7 @@ def plan(only=None):
                 continue
             t = p.read_text(encoding="utf-8", errors="ignore")
             cur = (meta(t, "og:image") or "").rsplit("/", 1)[-1]
-            if cur not in GENERIC:
+            if cur not in GENERIC and not (refresh and cur == f"{section}-{slug}.jpg"):
                 continue
             title = title_of(t, section)
             sub, bg = "", "research"
@@ -115,13 +117,43 @@ def render(srv, job):
     png.unlink()
 
 
+# The two generic cards, built around the primary lockup (see docs/brand/logo-usage.md). Their text is fixed here.
+BRAND_CARDS = {
+    "brand.png": {"k": "Making software that lasts",
+                  "s": "Atlanta studio. Native macOS and iOS apps, plus free academic tools.",
+                  "f": "No sign-up \u00b7 Files deleted after use"},
+    "purplelink-card.png": {"k": "Purplelink LLC",
+                            "s": "macOS and iOS apps, applied AI, and free tools for academics.",
+                            "f": "No sign-up \u00b7 Files never stored"},
+}
+
+
+def render_brand(srv):
+    for name, q in BRAND_CARDS.items():
+        url = f"http://127.0.0.1:{srv.server_address[1]}/scripts/og-brand-card.html?{urllib.parse.urlencode(q)}"
+        out = SITE / "assets" / "og" / name
+        subprocess.run([CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars", "--window-size=1200,630",
+                        "--force-device-scale-factor=1", "--virtual-time-budget=6000", f"--screenshot={out}", url],
+                       check=True, capture_output=True, timeout=90)
+        Image.open(out).convert("RGB").save(out, optimize=True)
+        print(f"wrote {out.relative_to(ROOT)}")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--only")
     ap.add_argument("--no-rewrite", action="store_true", help="render the images only")
+    ap.add_argument("--refresh", action="store_true",
+                    help="also re-render pages that already use their own card (after a brand or template change)")
+    ap.add_argument("--brand", action="store_true", help="re-render only the two generic brand cards")
     a = ap.parse_args()
-    jobs = plan(a.only)
+    if a.brand:
+        srv = serve()
+        render_brand(srv)
+        srv.shutdown()
+        return
+    jobs = plan(a.only, a.refresh)
     print(f"{len(jobs)} pages")
     if a.dry_run:
         for j in jobs:

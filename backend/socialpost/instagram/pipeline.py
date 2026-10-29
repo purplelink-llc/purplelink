@@ -26,7 +26,7 @@ from zoneinfo import ZoneInfo
 
 from .. import config as cfgmod
 from .. import items as itemsmod
-from .. import paths, sysutil
+from .. import hubtags, paths, sysutil
 from ..daily import vet as vetmod
 from ..items import Item, iso
 from ..text import utm_link
@@ -90,22 +90,21 @@ def inbox() -> list[dict]:
     return out
 
 
-def hub_tag(link: str, asset: str, hub=None) -> str:
-    """A utm_content no other placement uses, from the marketing hub (scripts/hub/hub.py make_utm), for a Reel's
-    link-in-bio entry. "" when the link is not on purplelink.llc (a YouTube fallback is not tagged) or the hub is
-    unavailable."""
+def hub_tag(link: str, asset: str, hub=None, channel: str = "instagram", campaign: str = "ig-reel",
+            preferred: str | None = None) -> str:
+    """A utm_content no other placement uses, from the marketing hub, for one Reel or post on `channel`. "" when the
+    link is not on purplelink.llc (a YouTube fallback is not tagged) or the hub is unavailable (the gate then rejects a
+    site link without a tag). `hub` lets tests pass a fake hub module."""
+    pref = f"{asset}-reel" if preferred is None and channel == "instagram" else (preferred or "")
     try:
-        if hub is None:
-            import importlib.util
-            spec = importlib.util.spec_from_file_location("hub", paths.repo_root() / "scripts" / "hub" / "hub.py")
-            hub = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(hub)
-        if not hub.site_path(link):
-            return ""
-        url = hub.make_utm(hub.paths(), link, asset, "instagram", source="instagram", medium="social",
-                           campaign="ig-reel", content=f"{asset}-reel")
-        m = re.search(r"utm_content=([\w.\-]+)", url)
-        return m.group(1) if m else ""
+        if hub is not None:
+            if not hub.site_path(link):
+                return ""
+            url = hub.make_utm(hub.paths(), link, asset, channel, source=channel, medium="social",
+                               campaign=campaign, content=pref)
+            m = re.search(r"utm_content=([\w.\-]+)", url)
+            return m.group(1) if m else ""
+        return hubtags.tag(link, asset, channel, campaign, preferred=pref)
     except (Exception, SystemExit) as e:
         sysutil.log(f"instagram: no hub tag for {link} ({type(e).__name__})")
         return ""
@@ -164,6 +163,7 @@ def reel_item(entry: dict, when_iso: str) -> Item:
         "results": {}, "source": SOURCE_REEL,
         "instagram": {"kind": "reel", "youtube_id": ytid, "title": entry["title"]},
         **({"utm_content": entry["utm_content"]} if entry.get("utm_content") else {}),
+        "utm_contents": {"instagram": entry.get("utm_content") or hub_tag(entry.get("link", ""), ytid)},
     }
     return Item(_item_path(iid), meta, {"instagram": text},
                 f"Built by socialpost.instagram from YouTube {ytid}; Reel {entry['duration']} s.")
@@ -179,6 +179,8 @@ def fb_reel_item(entry: dict, when_iso: str) -> Item:
                 experiment_note="Facebook Reel of a Purplelink YouTube Short; compared with the same video's YouTube views")
     meta["instagram"] = dict(meta["instagram"], kind="fb-reel")
     meta.pop("utm_content", None)
+    meta["utm_contents"] = {"facebook": hub_tag(meta["link"], entry["youtube_id"], channel="facebook",
+                                                campaign="fb-reel", preferred=f"{entry['youtube_id']}-fb-reel")}
     return Item(_item_path(iid), meta, {"facebook": text}, f"Built by socialpost.instagram from YouTube "
                 f"{entry['youtube_id']}; Facebook Reel {entry['duration']} s.")
 
@@ -195,6 +197,9 @@ def companion_item(li: Item, card_path: Path, words: dict, when_iso: str) -> Ite
         "experiment_note": f"Instagram companion of LinkedIn post {li.id}",
         "results": {}, "source": SOURCE_COMPANION,
         "instagram": {"kind": "companion", "of": str(li.id), "title": words["title"]},
+        "utm_contents": {"instagram": hub_tag(li.link, str((li.meta.get("daily") or {}).get("candidate") or li.id)
+                                              .split(":", 1)[-1], channel="instagram",
+                                              campaign=li.campaign or "ig-companion", preferred="")},
     }
     return Item(_item_path(iid), meta, {"instagram": text}, f"Built by socialpost.instagram from {li.id}.")
 
@@ -216,6 +221,13 @@ def linkedin_posted(li: Item) -> dt.datetime | None:
 
 
 # ---------------------------------------------------------------- gate
+def tag_problems(item: Item) -> list[str]:
+    """Every post whose link is on purplelink.llc carries its own utm_content (the marketing hub's), so it can be
+    measured; the bio link for Instagram, the caption link for Facebook."""
+    return [f"utm: {p} has no utm_content for its purplelink.llc link (unmeasurable)" for p in item.platforms
+            if hubtags.on_site(item.link) and not item.utm_content(p)]
+
+
 def vet(item: Item, source: str, http, state: dict, today: dt.date, cfg: dict, s: dict,
         link_check: bool = True) -> list[str]:
     """Reasons the item may not go out; empty means it passes."""
@@ -235,6 +247,7 @@ def vet(item: Item, source: str, http, state: dict, today: dt.date, cfg: dict, s
         reasons.append(f"alt: {why}")
     errors, _ = itemsmod.validate(item, cfg)
     reasons += [f"limits: {e}" for e in errors]
+    reasons += tag_problems(item)
     h = vetmod.text_hash(body)
     for old in state["hashes"]:
         age = (today - dt.date.fromisoformat(old["date"])).days
@@ -386,7 +399,7 @@ def links(cfg: dict, n: int) -> list[dict]:
             continue
         ig = it.meta.get("instagram") or {}
         rows.append({"title": str(ig.get("title") or it.id)[:140], "kind": ig.get("kind", ""),
-                     "url": utm_link(it.link, "instagram", it.campaign, str(it.meta.get("utm_content") or "")),
+                     "url": utm_link(it.link, "instagram", it.campaign, it.utm_content("instagram")),
                      "date": str(r.get("posted_at", ""))[:10],
                      "at": str(r.get("posted_at", ""))})
     rows.sort(key=lambda x: x["at"], reverse=True)
@@ -491,5 +504,5 @@ def copy_preview(item: Item, out_dir: Path) -> list[Path]:
         shutil.copyfile(src, dst)
         got.append(dst)
     cap_file = out_dir / f"{item.id}-caption.txt"
-    cap_file.write_text(item.render("instagram") + "\n", encoding="utf-8")
+    cap_file.write_text(item.render(item.platforms[0]) + "\n", encoding="utf-8")
     return got + [cap_file]
