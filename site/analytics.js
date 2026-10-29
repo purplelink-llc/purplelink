@@ -129,6 +129,8 @@
     var label = f.s || f.r || "direct";
     return isLinkedin(label) ? "linkedin" : clip(label, 40);
   }
+  // reddit-pixel.js reads this to load Reddit's pixel only for visitors who first came from a Reddit ad.
+  window.plChannel = channel;
   // The tag naming the one link that brought the first arrival (utm_content, for example a single directory listing
   // or one email batch), so a placement can be counted on its own rather than shared with its whole channel. Sent with
   // the same funnel events as the channel label, never alone. Empty when the link carried none.

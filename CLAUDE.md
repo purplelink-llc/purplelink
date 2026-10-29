@@ -41,6 +41,13 @@ the site owner (Ben) explicitly re-authorized it and said this specific
 policy may be violated for AdSense. Do not silently revert this again — if a
 future audit flags it, surface this note rather than reverting.
 
+**Reddit pixel exception (owner decision, 2026-10-29):** Ben chose Reddit's own pixel over a server-side
+Conversions API for the ModernTex Reddit ads. `site/reddit-pixel.js` loads `https://www.redditstatic.com/ads/pixel.js`
+only for visitors whose first arrival was a Reddit ad click (`rdt_cid`, or first-touch channel `paid:reddit`) and never
+under Do Not Track; the CSP allows `www.redditstatic.com` (script) and `alb.reddit.com` / `pixel-config.reddit.com`
+(connect, img), and the privacy policy says so under "Analytics, advertising and cookies". Do not revert it as a
+"third-party load"; surface this note instead.
+
 Invoke design work with the impeccable skill (e.g. `/impeccable critique
 /tools/word-counter/`, `/impeccable audit`, `/impeccable polish`).
 
