@@ -65,7 +65,7 @@ class BuddyPage(unittest.TestCase):
             self.assertIn(s, body)
 
     def test_images_exist(self):
-        srcs = re.findall(r'(?:src|srcset)="(/(?:buddy/img|assets)/[^"\s,]+)', self.text)
+        srcs = re.findall(r'(?:src|srcset)="(/(?:buddy/img|assets)/[^"\s,?]+)', self.text)
         self.assertTrue(srcs)
         for src in srcs:
             self.assertTrue((SITE / src.lstrip("/")).is_file(), src)

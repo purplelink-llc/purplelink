@@ -260,7 +260,7 @@ test("every image on the page exists, has a size and alt text, and none is an in
     const html = read(p);
     for (const [tag, src] of [...html.matchAll(/<img\b[^>]*src="([^"]+)"[^>]*>/g)].map((m) => [m[0], m[1]])) {
       assert.ok(src.startsWith("/"), `${src} is not a local path`);
-      assert.ok(existsSync(join(SITE, src)), `${src} is missing`);
+      assert.ok(existsSync(join(SITE, src.split("?")[0])), `${src} is missing`);
       assert.match(tag, /\swidth="\d+"/);
       assert.match(tag, /\sheight="\d+"/);
       assert.match(tag, /\salt="[^"]*"/);
