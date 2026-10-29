@@ -18,5 +18,14 @@ log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] wrapper: $*" >> "$LOG"; }
 [ -f "$SCRIPT" ] || { log "social.py not in the checkout yet (main not synced); skipped"; exit 0; }
 [ -x "$PYTHON" ] || { log "python not found at $PYTHON"; exit 1; }
 
+# Code runs from the read-only jobs-ro worktree, which repo-ro.sh keeps at origin/main (as the other scheduled jobs
+# have since 2026-10-23): the shared checkout's main can sit behind for days (2026-10-28: 79 commits, so merged social
+# code never ran). Data paths are absolute and still point at the shared checkout. Without jobs-ro, the shared
+# checkout's code runs as before.
+RO="$HOME/.purplelink/bin/repo-ro.sh"
+if [ -x "$RO" ]; then
+  WT=$("$RO" update 2>>"$LOG") && [ -f "$WT/backend/scripts/social.py" ] && SCRIPT="$WT/backend/scripts/social.py"
+fi
+
 "$PYTHON" "$SCRIPT" run-due
 exit $?
