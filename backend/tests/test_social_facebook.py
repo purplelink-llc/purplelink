@@ -121,3 +121,78 @@ def test_setup_facebook_pins_the_page_and_switches_instagram_to_it(env, monkeypa
 def test_daily_text_for_facebook_is_written_like_linkedin():
     from socialpost.daily import compose
     assert compose.SOFT_LIMIT["facebook"] == 600 and "facebook" in items.STANDING_PLATFORMS
+
+
+MP4 = b"\x00\x00\x00\x20ftypisom" + b"\0" * 64
+
+
+class FakeS3:
+    def __init__(self):
+        self.up, self.deleted = [], []
+
+    def upload_file(self, path, bucket, key, ExtraArgs=None):
+        self.up.append(key)
+
+    def delete_object(self, Bucket, Key):
+        self.deleted.append(Key)
+
+
+def reel_env(env, cfg):
+    (env.tmp / "r2.env").write_text('export MEDIA_BUCKET="b"\nexport MEDIA_S3_ENDPOINT="https://s3.example"\n'
+                                    'export MEDIA_PUBLIC_BASE="https://pub.example"\nexport MEDIA_S3_KEY="k"\n'
+                                    'export MEDIA_S3_SECRET="s"\n')
+    cfg["media"]["video"] = {"env_file": str(env.tmp / "r2.env"), "prefix": "purplelink-social/"}
+    v = env.tmp / "reel.mp4"
+    v.write_bytes(MP4)
+    return v
+
+
+def test_facebook_reel_start_upload_finish_and_cleanup(env, cfg):
+    v = reel_env(env, cfg)
+    it = item(env, ["facebook"], video={"path": str(v), "duration": 44.0, "width": 1080, "height": 1920,
+                                        "alt": "Video: x."})
+    s3 = FakeS3()
+    h = FakeHttp([("GET", "fields=id,name", jresp({"id": PAGE["page_id"], "name": PAGE["name"]})),
+                  ("POST", "/video_reels", [jresp({"video_id": "V1"}), jresp({"success": True})]),
+                  ("HEAD", "pub.example", Resp(200, b"", {"Content-Length": str(len(MP4))})),
+                  ("POST", "rupload.facebook.com/video-upload/v23.0/V1", jresp({"success": True})),
+                  ("GET", "/V1?fields=status", jresp({"status": {"video_status": "ready"}}))])
+    a = Facebook(dict(cfg["platforms"]["facebook"], _root=cfg), http=h,
+                 secret=lambda p, f: "PAGETOKEN", sleep=lambda s: None, video_client=lambda e: s3)
+    r = a.post(it)
+    assert r.url == "https://www.facebook.com/reel/V1"
+    starts = h.posts_to("/video_reels")
+    assert starts[0]["form"] == {"upload_phase": "start"}
+    fin = starts[1]["form"]
+    assert fin["upload_phase"] == "finish" and fin["video_state"] == "PUBLISHED" and "New guide: X" in fin["description"]
+    up = h.posts_to("rupload.facebook.com")[0]
+    assert up["headers"]["Authorization"] == "OAuth PAGETOKEN" and up["headers"]["file_url"].startswith("https://pub.example/")
+    assert s3.deleted == s3.up and len(s3.up) == 1
+
+
+def test_facebook_reel_limits_and_both_platforms_get_reels(env, cfg):
+    import json
+    import datetime as dt
+    from socialpost.instagram import pipeline as igp
+    v = reel_env(env, cfg)
+    long = item(env, ["facebook"], video={"path": str(v), "duration": 120.0, "width": 1080, "height": 1920, "alt": "x"})
+    errs, _ = items.validate(long, cfg)
+    assert any("3 to 90 s" in e for e in errs)
+    now = dt.datetime(2026, 10, 28, 15, 0, tzinfo=dt.timezone.utc)
+    d = igp.reels_dir() / "AAAAAAAAAA1"
+    d.mkdir(parents=True)
+    (d / "reel.mp4").write_bytes(MP4)
+    (d / "entry.json").write_text(json.dumps({
+        "youtube_id": "AAAAAAAAAA1", "also": [], "title": "Spotlight fix on Mac", "link": "https://purplelink.llc/guides/x/",
+        "description": "Spotlight keeps a separate index for each volume on a Mac.\n\n#mac #macos #spotlight",
+        "added": items.iso(now), "duration": 44.0, "width": 1080, "height": 1920, "trimmed": False, "framed": False}))
+    res = igp.run(FakeHttp([("GET", "purplelink.llc/guides/", Resp(200, b"ok"))]), cfg, when=now, say=lambda s: None,
+                  render_card=lambda *a: None)
+    kinds = sorted(items.find(i).platforms[0] for i in res["queued"])
+    assert kinds == ["facebook", "instagram"]
+    fb_item = next(items.find(i) for i in res["queued"] if items.find(i).platforms == ["facebook"])
+    assert fb_item.approval_valid()[0] and fb_item.meta["source"] == "instagram-reel"
+    text = fb_item.render("facebook")
+    assert "Link in bio." not in text and "utm_source=facebook" in text and "utm_campaign=fb-reel" in text
+    assert igp.run(FakeHttp([("GET", "purplelink.llc/guides/", Resp(200, b"ok"))]), cfg, when=now,
+                   say=lambda s: None, render_card=lambda *a: None)["queued"] == []

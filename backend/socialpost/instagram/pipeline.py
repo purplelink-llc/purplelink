@@ -54,7 +54,7 @@ def read_state() -> dict:
         s = json.loads(state_file().read_text(encoding="utf-8"))
     except (OSError, ValueError):
         s = {}
-    for k, v in (("reels", {}), ("companions", {}), ("hashes", []), ("warned", []), ("log", [])):
+    for k, v in (("reels", {}), ("fb_reels", {}), ("companions", {}), ("hashes", []), ("warned", []), ("log", [])):
         s.setdefault(k, v)
     return s
 
@@ -166,6 +166,20 @@ def reel_item(entry: dict, when_iso: str) -> Item:
                 f"Built by socialpost.instagram from YouTube {ytid}; Reel {entry['duration']} s.")
 
 
+def fb_reel_item(entry: dict, when_iso: str) -> Item:
+    """The same Reel for the Purplelink LLC Facebook Page: the Instagram caption with the tagged link where Instagram
+    says "Link in bio." (Ben, 2026-10-28: "back fill my instagram and facebook reels with our youtube shorts")."""
+    ig = reel_item(entry, when_iso)
+    text = ig.sections["instagram"].replace(cap.BIO, "{link}")
+    iid = ig.id.replace("-ig-reel-", "-fb-reel-")
+    meta = dict(ig.meta, id=iid, platforms=["facebook"], campaign="fb-reel",
+                experiment_note="Facebook Reel of a Purplelink YouTube Short; compared with the same video's YouTube views")
+    meta["instagram"] = dict(meta["instagram"], kind="fb-reel")
+    meta.pop("utm_content", None)
+    return Item(_item_path(iid), meta, {"facebook": text}, f"Built by socialpost.instagram from YouTube "
+                f"{entry['youtube_id']}; Facebook Reel {entry['duration']} s.")
+
+
 def companion_item(li: Item, card_path: Path, words: dict, when_iso: str) -> Item:
     text = cap.companion_caption(li.raw_text("linkedin"), _app_tags(li))
     alt = (f"Purplelink card on a dark purple background. {words['kicker']}: {words['title']}."
@@ -203,7 +217,8 @@ def vet(item: Item, source: str, http, state: dict, today: dt.date, cfg: dict, s
         link_check: bool = True) -> list[str]:
     """Reasons the item may not go out; empty means it passes."""
     reasons: list[str] = []
-    text = item.render("instagram")
+    plat = item.platforms[0]
+    text = item.render(plat)
     body = itemsmod.HASHTAG_RE.sub(" ", text)
     for why in vetmod.voice_problems(text):
         reasons.append(f"voice: {why}")
@@ -220,7 +235,7 @@ def vet(item: Item, source: str, http, state: dict, today: dt.date, cfg: dict, s
     h = vetmod.text_hash(body)
     for old in state["hashes"]:
         age = (today - dt.date.fromisoformat(old["date"])).days
-        if old["hash"] == h and age < s["dup_days"]:
+        if old["hash"] == h and old.get("platform", "instagram") == plat and age < s["dup_days"]:
             reasons.append(f"duplicate: the same caption went out {age} days ago")
     if link_check and item.link:
         reasons += [f"link: {why}" for why in vetmod.link_problems(http, item.link)]
@@ -228,11 +243,11 @@ def vet(item: Item, source: str, http, state: dict, today: dt.date, cfg: dict, s
 
 
 # ---------------------------------------------------------------- scheduling
-def ig_items_on(day: dt.date, cfg: dict) -> list[Item]:
+def ig_items_on(day: dt.date, cfg: dict, platform: str = "instagram") -> list[Item]:
     tz = ZoneInfo(cfg.get("timezone", "America/New_York"))
     out = []
     for it in itemsmod.list_items():
-        if "instagram" not in it.platforms or it.status not in ("approved", "posted"):
+        if platform not in it.platforms or it.status not in ("approved", "posted"):
             continue
         try:
             t = it.scheduled()
@@ -243,10 +258,12 @@ def ig_items_on(day: dt.date, cfg: dict) -> list[Item]:
     return out
 
 
-def next_slot(cfg: dict, s: dict, when: dt.datetime) -> dt.datetime | None:
-    """When the next Instagram post may go out today, or None when today's quota is used."""
+def next_slot(cfg: dict, s: dict, when: dt.datetime, platform: str = "instagram") -> dt.datetime | None:
+    """When the next post on `platform` may go out today, or None when today's quota is used. Facebook Reels count
+    against the Page's own quota; the daily ranked text post there is not counted."""
     today = local(cfg, when).date()
-    taken = ig_items_on(today, cfg)
+    taken = [it for it in ig_items_on(today, cfg, platform)
+             if platform == "instagram" or str(it.meta.get("source", "")).startswith("instagram")]
     if len(taken) >= s["max_per_day"]:
         return None
     t = when + dt.timedelta(minutes=2)
@@ -266,22 +283,26 @@ def pending(cfg: dict, when: dt.datetime, state: dict, s: dict) -> list[tuple[st
         if str(li.id) in state["companions"] or (when - t).days >= s["companion_days"]:
             continue
         work.append(("companion", li))
+    fb_on = cfgmod.platform_cfg(cfg, "facebook").get("enabled")
     for e in inbox():
-        if e["youtube_id"] in state["reels"]:
-            continue
         try:
             age = (when - itemsmod.parse_time(e["added"])).days
         except (KeyError, ValueError):
             continue
-        if age < s["reel_days"]:
+        if age >= s["reel_days"]:
+            continue
+        if e["youtube_id"] not in state["reels"]:
             work.append(("reel", e))
+        if fb_on and e["youtube_id"] not in state["fb_reels"] and e.get("duration", 0) <= itemsmod.FB_REEL_MAX_S:
+            work.append(("fb_reel", e))
     return work
 
 
 def build(kind: str, obj, slot: dt.datetime, render_card=render.card) -> tuple[Item, str, str]:
     """(item, source text for the facts check, state key) for one piece of work."""
-    if kind == "reel":
-        return reel_item(obj, iso(slot)), f"{obj['title']} {obj.get('description', '')}", obj["youtube_id"]
+    if kind in ("reel", "fb_reel"):
+        make = reel_item if kind == "reel" else fb_reel_item
+        return make(obj, iso(slot)), f"{obj['title']} {obj.get('description', '')}", obj["youtube_id"]
     words = cap.card_words(obj.raw_text("linkedin"))
     card_path = ig_dir() / "cards" / f"{obj.id}.jpg"
     render_card(card_path, words["title"], words["kicker"], words["sub"], "", words["bg"])
@@ -304,11 +325,15 @@ def run(http, cfg: dict | None = None, when: dt.datetime | None = None, dry_run:
     state = read_state()
     today = local(cfg, when).date()
 
+    full: set[str] = set()
     for kind, obj in pending(cfg, when, state, s):
-        slot = next_slot(cfg, s, when) if not dry_run else when + dt.timedelta(minutes=2)
+        plat = "facebook" if kind == "fb_reel" else "instagram"
+        slot = next_slot(cfg, s, when, plat) if not dry_run else when + dt.timedelta(minutes=2)
         if slot is None:
-            say(f"instagram: today's {s['max_per_day']} posts are queued; the rest wait for tomorrow")
-            break
+            if plat not in full:
+                say(f"{plat}: today's {s['max_per_day']} posts are queued; the rest wait for tomorrow")
+                full.add(plat)
+            continue
         try:
             item, source, key = build(kind, obj, slot, render_card)
         except Exception as e:
@@ -334,8 +359,8 @@ def run(http, cfg: dict | None = None, when: dt.datetime | None = None, dry_run:
         item.save()
         itemsmod.approve_instagram_standing(item, cfg)
         state[f"{kind}s"][key] = item.id
-        state["hashes"].append({"date": today.isoformat(), "hash": vetmod.text_hash(
-            itemsmod.HASHTAG_RE.sub(" ", item.render("instagram")))})
+        state["hashes"].append({"date": today.isoformat(), "platform": plat, "hash": vetmod.text_hash(
+            itemsmod.HASHTAG_RE.sub(" ", item.render(plat)))})
         state["log"].append({"at": iso(when), "item": item.id, "queued_for": item.meta["scheduled_at"]})
         out["queued"].append(item.id)
         sysutil.log(f"instagram: queued {item.id} for {item.meta['scheduled_at']}; approved by standing approval "

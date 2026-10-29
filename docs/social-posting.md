@@ -192,6 +192,14 @@ purplelink.llc, no picture yet), and @purplelink.llc is connected to it.
 - The social jobs (`run_social.sh`, `run_social_daily.sh`) run their code from the read-only `jobs-ro` worktree at
   origin/main through `~/.purplelink/bin/repo-ro.sh` since 2026-10-28, like the other scheduled jobs; the shared
   checkout's main had sat 79 commits behind, so merged social code had not run.
+- Facebook Reels (2026-10-28, Ben: "back fill my instagram and facebook reels with our youtube shorts"): every Reel in
+  the inbox also gets a Facebook item (`<date>-fb-reel-<id>`, campaign `fb-reel`, the Instagram caption with the tagged
+  link instead of "Link in bio.") under the Instagram standing approval, which now covers `facebook` for these items.
+  The Page adapter posts it through `/{page}/video_reels` (start, rupload with the public bucket URL, finish as
+  PUBLISHED). Facebook Reels are 3 to 90 s. Each platform has its own `max_per_day` (Facebook counts only these
+  items, not the daily ranked text post). A Short whose build files are gone is added back with
+  `social.py instagram reel-add --video F --youtube-id ID --title T --description-file D --link URL`; it then goes
+  out on both platforms through the normal queue.
 - The daily ranked pipeline now includes `facebook` (written like LinkedIn: headline, facts, link) under the
   2026-10-18 standing approval, which Ben extended to the Page with the words above.
 
