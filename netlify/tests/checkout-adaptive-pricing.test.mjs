@@ -48,7 +48,8 @@ async function session(product, extra) {
   let captured = null;
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (url, opts) => {
-    if (String(url).includes("api.stripe.com")) {
+    const u = new URL(String(url));
+    if (u.hostname === "api.stripe.com" && u.pathname === "/v1/checkout/sessions") {
       captured = opts.body;
       return new Response(JSON.stringify({ id: "cs_test_ap", url: "https://checkout.stripe.com/pay/cs_test_ap" }), { status: 200 });
     }
