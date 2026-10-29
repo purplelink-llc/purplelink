@@ -4181,7 +4181,7 @@ Requires iOS 17 or later. Privacy Policy
 
 Is GlobePin available yet?
 
-Yes. GlobePin 1.0 was released on the App Store on 3 September 2026, and the current version is 1.2. It is free to download and needs iOS 17 or later. Download it here.
+Yes. GlobePin 1.0 was released on the App Store on 3 September 2026, and the current version is 1.5. It is free to download and needs iOS 17 or later. Download it here.
 
 How do I log a flight?
 
