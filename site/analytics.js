@@ -234,6 +234,29 @@
     }
   } catch (e) { /* the page works the same without it */ }
 
+  // Affiliate links (rel="sponsored", stamped data-aff="<program>" by scripts/affiliates.py): which program, from
+  // which page. Counted like any other event; the destination URL is never sent.
+  // Links that already carry data-track (the /desk/ book cards send affiliate_click with an ISBN) are counted by the
+  // data-track handler instead.
+  function countAffiliate(ev) {
+    var s = ev.target && ev.target.closest && ev.target.closest('a[rel~="sponsored"]');
+    if (!s || s.hasAttribute("data-track")) return;
+    var prog = s.getAttribute("data-aff") || "";
+    if (!prog) { try { prog = new URL(s.href).hostname.replace(/^www\./, ""); } catch (e) { prog = "unknown"; } }
+    var slug = location.pathname.replace(/\/+$/, "").split("/").pop() || "home";
+    window.plTrack("affiliate_click", (prog + " " + slug).slice(0, 110));
+  }
+  // A middle click opens the link in a new tab and fires auxclick, never click. Count it for paid links only; the
+  // data-track book cards on /desk/ are counted the same way so both kinds of paid link agree.
+  document.addEventListener("auxclick", function (ev) {
+    try {
+      if (ev.button !== 1) return;
+      countAffiliate(ev);
+      var t = ev.target && ev.target.closest && ev.target.closest('a[rel~="sponsored"][data-track]');
+      if (t) window.plTrack(t.getAttribute("data-track"), t.getAttribute("data-track-meta") || "");
+    } catch (e) { /* never interfere with the link */ }
+  }, true);
+
   // The ModernTex trial is a plain download link, not a fetch, so the wrapper
   // above never sees it. Count the click: trial downloads against later
   // checkout_click/sales is the whole funnel the trial exists to measure.
@@ -262,16 +285,7 @@
       if (a && /summonly-download\?(download|trial)=1/.test(a.getAttribute("href"))) {
         window.plTrack("sm_trial_download", "summonly");
       }
-      // Affiliate links (rel="sponsored", stamped data-aff="<program>" by scripts/affiliates.py): which program, from
-      // which page. Counted like any other event; the destination URL is never sent.
-      // Links that already carry data-track (the /desk/ book cards send affiliate_click with an ISBN) are counted below.
-      var s = ev.target && ev.target.closest && ev.target.closest('a[rel~="sponsored"]');
-      if (s && !s.hasAttribute("data-track")) {
-        var prog = s.getAttribute("data-aff") || "";
-        if (!prog) { try { prog = new URL(s.href).hostname.replace(/^www\./, ""); } catch (e) { prog = "unknown"; } }
-        var slug = location.pathname.replace(/\/+$/, "").split("/").pop() || "home";
-        window.plTrack("affiliate_click", (prog + " " + slug).slice(0, 110));
-      }
+      countAffiliate(ev);
       // Anything else marked data-track="<event>" (optional data-track-meta):
       // template downloads, the phone sticky bar.
       var t = ev.target && ev.target.closest && ev.target.closest("[data-track]");

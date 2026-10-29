@@ -18,6 +18,15 @@ class AffiliateClickTracking(unittest.TestCase):
         self.assertIn('closest(\'a[rel~="sponsored"]\')', js)
         self.assertIn('plTrack("affiliate_click"', js)
 
+    def test_middle_click_on_a_paid_link_is_counted(self):
+        # A middle click opens the link in a new tab and fires auxclick, never click, so a click listener alone
+        # misses it (found 2026-10-29: a live middle click on the VPN guide sent no beacon).
+        js = (SITE / "analytics.js").read_text(encoding="utf-8")
+        self.assertRegex(js, r'addEventListener\("auxclick"')
+        aux = js[js.index('addEventListener("auxclick"'):]
+        self.assertRegex(aux[:400], r"ev\.button [!=]== 1")
+        self.assertIn("countAffiliate(ev)", aux[:400])
+
     def test_every_sponsored_link_is_attributable(self):
         missing = []
         for top in ("guides", "blog", "tools", "desk"):
