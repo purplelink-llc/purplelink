@@ -306,7 +306,7 @@
       <h2 id="does-h">What it does</h2>
       <table class="compare-table specs-table" data-motion="rows">
         <tbody>
-          <tr><th scope="row">Transcription</th><td>Transcribes audio on your Mac, with word timing. Until you download a speech model it uses Apple's on-device speech recognition, and macOS may fetch Apple's own model once the first time. Better models are optional downloads in Settings, from Hugging Face, each once: NVIDIA Parakeet for English, Whisper base for English and Whisper large-v3 turbo for many languages. Settings can delete any of them.</td></tr>
+          <tr><th scope="row">Transcription</th><td>Transcribes audio on your Mac, with word timing. Until you download a speech model it uses Apple's on-device speech recognition, and macOS may fetch Apple's own model once the first time. Better models are optional downloads in Settings, from Hugging Face, each once: NVIDIA Parakeet, Whisper base and Whisper large-v3 turbo. Settings can delete any of them. Tapefolio transcribes English only for now, with every model.</td></tr>
           <tr><th scope="row">Speakers</th><td>Labels who is speaking, using the standard speaker-separation models that come with the app. In the review screen you name each speaker once and merge labels that belong to one person. NVIDIA Nemotron 3 Diarization is recommended instead. It was far better on the real two-person recordings measured below, Tapefolio uses it automatically once it is installed, and it is a 190 MB download.</td></tr>
           <tr><th scope="row">Speaker memory</th><td>Optional, and opt-in for each project. Tapefolio requires a recorded consent note before it saves a voice. Voices are stored encrypted on your Mac, the app only suggests matches for you to confirm, and you can delete them.</td></tr>
           <tr><th scope="row">Identifier removal</th><td>Finds names, places, organizations, emails, phone numbers, addresses, links, ID numbers and dates of birth, and replaces them with consistent codes. You review case by case: replace or keep each one, or replace all that remain. The key file that maps the codes back is kept separately. It misses some, so you read the result.</td></tr>
@@ -330,7 +330,7 @@
           <tr><th scope="row">Get every word right</th><td>It will mishear words and mislabel speakers. Overlapping voices, quiet speech and short replies such as okay and yep are where it loses the most. Check any text you plan to quote against the recording.</td></tr>
           <tr><th scope="row">Anonymize a transcript</th><td>Identifier removal finds many identifiers and misses some, and it cannot tell when a detail identifies someone only in context. It does not make a study compliant. That is for you and your ethics board. Read every transcript before you share it.</td></tr>
           <tr><th scope="row">Read handwriting or phone photos reliably</th><td>OCR has been measured only on generated test files. Real handwriting and real phone photos of pages have not been tested.</td></tr>
-          <tr><th scope="row">Promise results in other languages</th><td>What has been measured is English meeting audio. Other languages, accents and a quiet two-person interview have not been measured, and Whisper is the model to try for languages other than English.</td></tr>
+          <tr><th scope="row">Promise results in other languages</th><td>What has been measured is English meeting audio. Tapefolio transcribes English only for now, with every model, including Whisper large-v3 turbo. Accents and a quiet two-person interview have not been measured.</td></tr>
           <tr><th scope="row">Run on an Intel Mac or an older macOS</th><td>It needs macOS 26 or later and Apple silicon. There is no Windows, iPhone or iPad version.</td></tr>
           <tr><th scope="row">Send your files anywhere</th><td>There is no cloud transcription and there are no accounts. Nothing you open in Tapefolio is uploaded. The one exception is your choice: if you connect an AI app such as Claude Desktop, the text it reads goes to that app's servers.</td></tr>
         </tbody>
@@ -378,7 +378,7 @@
           <tr><th scope="row">Apple's speech recognition</th><td>Transcription, used until you download a model</td><td>None from Tapefolio. macOS may fetch Apple's model once</td></tr>
           <tr><th scope="row">NVIDIA Parakeet</th><td>English transcription</td><td class="tf-num">About 470 MB</td></tr>
           <tr><th scope="row">Whisper base</th><td>English transcription, a small download</td><td class="tf-num">About 150 MB</td></tr>
-          <tr><th scope="row">Whisper large-v3 turbo</th><td>Transcription in many languages</td><td class="tf-num">About 650 MB</td></tr>
+          <tr><th scope="row">Whisper large-v3 turbo</th><td>The largest model, and the slowest; English only in Tapefolio for now</td><td class="tf-num">About 650 MB</td></tr>
           <tr><th scope="row">NVIDIA Nemotron 3 Diarization</th><td>Separating speakers. Recommended, and used automatically once installed</td><td class="tf-num">About 190 MB</td></tr>
         </tbody>
       </table>
@@ -475,7 +475,7 @@
         </details>
         <details class="faq-item">
           <summary>Which speech model should I use?</summary>
-          <div class="faq-body">Start with the default, Apple's on-device speech recognition, which needs no download from Tapefolio. On the two meetings measured, Apple's engine, Parakeet and Whisper large-v3 turbo were within about two points of each other, so none is proven better. Whisper base made more errors in the same tests. Parakeet was the fastest and is English only. Whisper large-v3 turbo covers many languages but was the slowest.</div>
+          <div class="faq-body">Start with the default, Apple's on-device speech recognition, which needs no download from Tapefolio. On the two meetings measured, Apple's engine, Parakeet and Whisper large-v3 turbo were within about two points of each other, so none is proven better. Whisper base made more errors in the same tests. Parakeet was the fastest and is English only. Whisper large-v3 turbo was the slowest. All of them transcribe English only in Tapefolio for now.</div>
         </details>
         <details class="faq-item">
           <summary>Why is the first run slow?</summary>
