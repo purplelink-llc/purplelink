@@ -31,6 +31,7 @@ const { default: webhook } = await import("../functions/stripe-webhook.mjs");
 const { sendRedditPurchase, buildEvent } = await import("../lib/reddit-capi.mjs");
 
 let calls, redditImpl, logs;
+const hostOf = (u) => { try { return new URL(String(u)).hostname; } catch { return ""; } };
 const realLog = { warn: console.warn, debug: console.debug, log: console.log };
 beforeEach(() => {
   store.clear(); calls = []; logs = [];
@@ -39,7 +40,7 @@ beforeEach(() => {
   for (const k of ["warn", "debug", "log"]) console[k] = (...a) => logs.push(a.map(String).join(" "));
   globalThis.fetch = async (url, opts = {}) => {
     calls.push({ url: String(url), opts });
-    if (String(url).includes("ads-api.reddit.com")) return redditImpl(url, opts);
+    if (hostOf(url) === "ads-api.reddit.com") return redditImpl(url, opts);
     if (String(url).includes("api.stripe.com/v1/checkout/sessions")) return new Response(JSON.stringify({ id: "cs_test_1", url: "https://checkout.stripe.com/x" }), { status: 200 });
     return new Response("{}", { status: 200 });
   };
@@ -51,7 +52,7 @@ const post = (body, ip = "203.0.113.9") => checkout(new Request("https://purplel
   method: "POST", headers: { "Content-Type": "application/json", "x-nf-client-connection-ip": ip }, body: JSON.stringify(body),
 }));
 const stripeParams = () => new URLSearchParams(calls.find((c) => c.url.includes("/checkout/sessions")).opts.body);
-const reddit = () => calls.filter((c) => c.url.includes("ads-api.reddit.com"));
+const reddit = () => calls.filter((c) => hostOf(c.url) === "ads-api.reddit.com");
 const flush = () => new Promise((r) => setTimeout(r, 20));
 
 // ---- checkout: the signal reaches the session metadata ----
@@ -184,7 +185,7 @@ test("webhook: a rejected, failing or hanging Reddit call changes neither the an
     assert.equal(res.status, 200);
     assert.equal((await res.json()).status, "delivered_by_blobs");
     assert.ok(Date.now() - t0 < 1500, "the webhook must not wait for Reddit");
-    assert.ok(calls.some((c) => c.url.includes("api.resend.com")), "the license email still goes out");
+    assert.ok(calls.some((c) => hostOf(c.url) === "api.resend.com"), "the license email still goes out");
   }
 });
 
