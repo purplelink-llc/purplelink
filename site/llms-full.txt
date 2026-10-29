@@ -1318,6 +1318,8 @@ Keyfeel plays real recorded keyboard-switch sounds when you press a key on your 
 
 Try it free for 7 days
 
+Checkout shows the price in your local currency, and you can switch back to US dollars.
+
 The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays unlocked, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.7.0, released October 28, 2026. 8 MB disk image. Needs macOS 13 or later, Apple silicon and Intel, and the Input Monitoring permission.
 
 Comparing options? See the keyboard sound apps for Mac compared. Have Mechvibes packs? See how to use them on a Mac.
@@ -1552,6 +1554,8 @@ Free 7-day trial · $29.99 to keep
 Tapefolio transcribes interview and meeting recordings on your Mac, labels the speakers, helps you replace names and other identifiers, and reads scanned pages and photos into searchable text. Your files are not uploaded.
 
 Try it free for 7 days
+
+Checkout shows the price in your local currency, and you can switch back to US dollars.
 
 The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $29.99 payment, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays valid, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.2.0, released October 28, 2026. 44 MB disk image. Needs macOS 26 or later on a Mac with Apple silicon.
 

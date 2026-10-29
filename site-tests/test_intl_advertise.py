@@ -27,7 +27,7 @@ CURRENCY_PHRASE = {
     "zh-Hans": r"所在地区的货币",
 }
 # Pages that sell through netlify/functions/checkout.mjs and must carry the English currency line near the buy button.
-ENGLISH_BUY_PAGES = ["/moderntex/", "/suite/", "/outbound-veil/", "/legroom/"]
+ENGLISH_BUY_PAGES = ["/moderntex/", "/suite/", "/outbound-veil/", "/legroom/", "/keyfeel/", "/tapefolio/", "/panely/", "/summonly/"]
 
 
 def catalog():
@@ -122,6 +122,21 @@ class CurrencyNote(unittest.TestCase):
         self.assertNotIn("Der Preis gilt in US-Dollar", visible("/de/moderntex/"))
         self.assertNotIn("価格は米ドルで表示しています", visible("/ja/moderntex/"))
         self.assertNotIn("价格以美元标示", visible("/zh-cn/moderntex/"))
+
+    def test_every_english_page_with_a_checkout_mjs_mac_app_button_carries_the_currency_line(self):
+        # Vitae Plus is a subscription, which Adaptive Pricing does not cover; it is deliberately not listed.
+        mac = "moderntex|keyfeel|tapefolio|panely|summonly|outbound-veil|legroom|app-suite"
+        found = set()
+        for f in sorted(SITE.rglob("index.html")):
+            rel = f.relative_to(SITE).as_posix()
+            if rel.startswith(("de/", "ja/", "zh-cn/")):
+                continue
+            t = f.read_text(encoding="utf-8")
+            if re.search(r'class="[^"]*pr-checkout-btn[^"]*"[^>]*data-product="(?:%s)"' % mac, t):
+                found.add("/" + rel[: -len("index.html")])
+                m = re.search(r'<p class="buy-assurance">(.*?)</p>', t, re.S)
+                self.assertTrue(m and "local currency" in m.group(1), rel)
+        self.assertTrue(set(ENGLISH_BUY_PAGES) <= found, found)
 
     def test_english_buy_pages_carry_the_currency_line_by_the_buy_button(self):
         for url in ENGLISH_BUY_PAGES:
