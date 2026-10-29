@@ -201,6 +201,22 @@ select { max-width: 100%; }
   object-fit: cover;
 }
 
+/* The header name is the traced "purplelink / softwares" wordmark (docs/brand/logo-usage.md), not typeset text.
+   It is painted through a mask in the current ink colour, so it follows the theme; the text stays in the markup
+   for screen readers and search, hidden from view. */
+.brand > span {
+  display: inline-block;
+  flex: none;
+  width: 101px;
+  height: 30px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-indent: 110%;
+  background-color: currentColor;
+  -webkit-mask: url("/assets/purplelink-wordmark-light.svg") left center / contain no-repeat;
+  mask: url("/assets/purplelink-wordmark-light.svg") left center / contain no-repeat;
+}
+
 .topbar nav {
   display: flex;
   align-items: center;
