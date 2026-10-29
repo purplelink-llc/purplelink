@@ -21,6 +21,7 @@ Skipped:
 """
 from __future__ import annotations
 
+import hashlib
 import re
 import sys
 from pathlib import Path
@@ -122,6 +123,13 @@ def nav_html(rel: str, inline: bool, indent: str) -> str:
     return "\n" + "".join(f"{indent}  {i}\n" for i in items) + indent
 
 
+def mark_src() -> str:
+    """The mark with the same ?v stamp fingerprint_assets.py gives it, so the two scripts agree and a new mark
+    reaches returning visitors instead of hiding behind the 30-day /assets/* cache."""
+    digest = hashlib.sha256((SITE / "assets" / "purplelink-mark.svg").read_bytes()).hexdigest()[:10]
+    return f"/assets/purplelink-mark.svg?v={digest}"
+
+
 def footer_html(indent: str) -> str:
     i = indent
     cols = []
@@ -139,7 +147,7 @@ def footer_html(indent: str) -> str:
         f'{i}  <div class="footer-grid">\n'
         f'{i}    <div class="footer-about">\n'
         f'{i}      <a class="footer-brand" href="/">\n'
-        f'{i}        <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">\n'
+        f'{i}        <img src="{mark_src()}" alt="" width="26" height="26">\n'
         f'{i}        <span>Purplelink LLC</span>\n'
         f'{i}      </a>\n'
         f'{i}      <p class="footer-blurb">Apps and tools made by a one-person studio '

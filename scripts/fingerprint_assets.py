@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Stamp a content hash onto every local CSS/JS reference in site/*.html.
+"""Stamp a content hash onto every local CSS/JS and Purplelink logo reference in site/*.html.
 
 Root CSS and JS are served from stable paths, so a browser holding an old copy
 kept it until the cache expired: a fix could sit live and unseen for a day. Each
@@ -32,8 +32,10 @@ HASH_LEN = 10
 # those four paths on a refreshable cache instead of making them immutable.
 SKIP_DIRS = {SITE / "blog" / "digest"}
 
-# href/src pointing at a .css or .js, with an optional existing query string.
-REF = re.compile(r'((?:href|src)=")([^"?\s]+\.(?:css|js))(\?[^"]*)?(")')
+# href/src pointing at a .css or .js, or at the Purplelink mark, logo or lockup, with an optional existing query string.
+# The mark and logo sit under /assets/*, which netlify.toml caches for 30 days; without a stamp the new mark
+# (2026-10-29) stayed hidden behind every returning visitor's cached copy.
+REF = re.compile(r'((?:href|src)=")([^"?\s]+\.(?:css|js)|[^"?\s]*purplelink-(?:mark|logo|lockup)[^"?\s/]*\.(?:svg|png))(\?[^"]*)?(")')
 EXTERNAL = ("http://", "https://", "//", "data:", "blob:")
 
 _hashes: dict[Path, str] = {}
