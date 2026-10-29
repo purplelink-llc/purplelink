@@ -1,4 +1,7 @@
 #!/bin/bash
+# RETIRED 2026-10-28: the daily digest it measured was retired on 2026-10-17 (1 subscriber), and committing
+# straight to main breaks the PR rule. launchd job com.purplelink.subscriber-tracking is unloaded; its plist is kept as
+# ~/Library/LaunchAgents/com.purplelink.subscriber-tracking.plist.retired-2026-10-28 (rename it back and bootstrap to restore).
 # Weekly digest subscriber tracker. Run by launchd every Monday morning.
 # Records the current subscriber count to analytics/subscriber-growth.csv
 # and commits it, so growth is visible in git history over time.
