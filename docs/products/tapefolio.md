@@ -291,3 +291,8 @@ percentage on the page that is not in its allowed list, so a new figure needs a 
   `scripts/gen_llms_full.py` now includes `tapefolio/`.
 - Only English meeting audio and generated OCR files have been measured; the page says so. Real handwriting, phone photos,
   other languages and different microphones for speaker memory are untested.
+
+## Mac App Store
+
+Listing copy, in-app purchases, privacy answers, review notes and the screenshot plan for the App Store edition:
+`mac-app-store-listings-2026-10.md`.
