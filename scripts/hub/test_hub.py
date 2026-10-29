@@ -799,6 +799,44 @@ def test_reddit_ads_traffic_and_orders_reach_the_campaign():
         run("import")
 
 
+def test_doctor_catches_overrides_that_no_longer_point_at_their_row():
+    """Outreach placement ids are line numbers. A pinned override records its row's text; an edit above the row moves
+    the line, and the doctor must say which override lost its row and where that row went."""
+    P = hub.paths()
+    log = tmp / "repo/Outreach/OUTREACH-LOG.md"
+    saved_log = log.read_text()
+    ov = tmp / "hub" / "overrides.json"
+    saved_ov = ov.read_text() if ov.exists() else None
+    n = next(i for i, l in enumerate(saved_log.splitlines(), 1) if l.startswith("| 2026-10-01 | Example University"))
+    try:
+        put("hub/overrides.json", json.dumps({"_note": "t", f"outreach:{n}": {"status": "replied"},
+                                              "outreach:1": {"status": "live"}}))
+        d = hub.doctor(db(), P)
+        pins = {x["id"]: x for x in d["pins"]}
+        assert pins[f"outreach:{n}"]["problem"] == "unpinned", pins
+        assert pins["outreach:1"]["problem"] == "not a log row", pins
+        # --pin records the row text for every unpinned override that points at a row, and nothing else
+        assert hub.pin_overrides(P) == [f"outreach:{n}"]
+        o = json.loads(ov.read_text())
+        assert o[f"outreach:{n}"]["_row"].startswith("2026-10-01 | Example University"), o
+        assert "_row" not in o["outreach:1"]
+        assert f"outreach:{n}" not in {x["id"] for x in hub.doctor(db(), P)["pins"]}
+        # a line inserted above the row: the override now points at another line, and the doctor says where it went
+        lines = saved_log.splitlines()
+        lines.insert(n - 3, "Inserted paragraph above the table.")
+        log.write_text("\n".join(lines) + "\n")
+        pins = {x["id"]: x for x in hub.doctor(db(), P)["pins"]}
+        assert pins[f"outreach:{n}"]["problem"] == "row moved", pins
+        assert pins[f"outreach:{n}"]["now"] == [f"outreach:{n + 1}"], pins
+        assert "row moved" in run("doctor")
+    finally:
+        log.write_text(saved_log)
+        if saved_ov is None:
+            ov.unlink()
+        else:
+            ov.write_text(saved_ov)
+
+
 if __name__ == "__main__":
     test_all()
     test_sources_untouched()
@@ -822,6 +860,7 @@ if __name__ == "__main__":
     test_social_engine_rows_under_a_headerless_table()
     test_pull_request_on_someone_elses_repo_is_a_placement()
     test_reddit_ads_traffic_and_orders_reach_the_campaign()
+    test_doctor_catches_overrides_that_no_longer_point_at_their_row()
     print("ok")
 
 
