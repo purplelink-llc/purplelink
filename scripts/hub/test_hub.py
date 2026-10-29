@@ -829,6 +829,9 @@ def test_doctor_catches_overrides_that_no_longer_point_at_their_row():
         assert pins[f"outreach:{n}"]["problem"] == "row moved", pins
         assert pins[f"outreach:{n}"]["now"] == [f"outreach:{n + 1}"], pins
         assert "row moved" in run("doctor")
+        # a checkout without the git-ignored log: one finding, not a false "not a log row" per override
+        pins = hub.override_pins(dict(P, outreach=tmp / "nowhere" / "OUTREACH-LOG.md"))
+        assert [x["id"] for x in pins] == ["OUTREACH-LOG.md"], pins
     finally:
         log.write_text(saved_log)
         if saved_ov is None:
@@ -837,8 +840,45 @@ def test_doctor_catches_overrides_that_no_longer_point_at_their_row():
             ov.write_text(saved_ov)
 
 
+def test_doctor_notices_missing_reddit_attribution_fields():
+    """From the 2026-10-29 evening build every Stripe purchase carries sales.mjs's `reddit` field, an ad buyer's
+    order carries both the checkout flag and a paid:reddit first touch, and that first touch keeps the ad's tag
+    (pl_attr v2). A purchase missing any of them is a broken link in the chain, and the doctor must name it."""
+    P = hub.paths()
+    saved_h = (tmp / "history.json").read_text()
+    h = json.loads(saved_h)
+    h["ledger"].update({
+        # before the fields existed: never flagged
+        "old": {"kind": "purchase", "product": "widget", "ts": 1793050000},
+        # complete: flag, paid first touch, ad tag
+        "ok": {"kind": "purchase", "product": "widget", "ts": 1793577600, "reddit": {"ad": True, "click": True},
+               "attr": {"first": {"s": "reddit", "m": "cpc", "t": "widget-reddit-a"}}},
+        "plain": {"kind": "purchase", "product": "widget", "ts": 1793577600, "reddit": None,
+                  "attr": {"first": {"s": "www.google.com"}}},
+        "nofield": {"kind": "purchase", "product": "widget", "ts": 1793577600},
+        "noflag": {"kind": "purchase", "product": "widget", "ts": 1793577600, "reddit": None,
+                   "attr": {"first": {"s": "reddit", "m": "cpc", "t": "widget-reddit-b"}}},
+        "notouch": {"kind": "purchase", "product": "widget", "ts": 1793577600, "reddit": {"ad": True, "click": False}},
+        "notag": {"kind": "purchase", "product": "widget", "ts": 1793577600, "reddit": {"ad": True, "click": True},
+                  "attr": {"first": {"s": "reddit", "m": "cpc", "c": "attr-cookie"}}},
+        # marketplace sales never pass through sales.mjs
+        "mkt": {"kind": "order", "product": "widget", "ts": 1793577600},
+    })
+    put("history.json", json.dumps(h))
+    try:
+        gaps = {x["id"]: x["problem"] for x in hub.attribution_gaps(P)}
+        assert gaps == {"nofield": "no reddit field", "noflag": "paid:reddit first touch, no reddit_ad flag",
+                        "notouch": "reddit_ad flag, no first touch", "notag": "paid:reddit first touch, no ad tag"}, gaps
+        out = run("doctor")
+        assert "4 purchases since 2026-10-30 missing an attribution field" in out, out
+        assert "nofield" in out and "no ad tag" in out
+    finally:
+        put("history.json", saved_h)
+
+
 if __name__ == "__main__":
     test_all()
+    test_doctor_notices_missing_reddit_attribution_fields()
     test_sources_untouched()
     test_results_and_followups()
     test_follow_up_rules()

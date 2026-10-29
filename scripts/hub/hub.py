@@ -1572,7 +1572,40 @@ def doctor(con, p: dict, today: dt.date | None = None) -> dict:
                 bad.append({"id": r["id"], "which": kind, "url": u, "status": c["status"], "final": c.get("final")})
     unverified = sum(1 for c in links.values() if c.get("status") is None)
     return {"missing": missing, "duplicates": dups, "bad_links": bad, "links_checked": len(links),
-            "links_unverifiable": unverified, "pins": override_pins(p)}
+            "links_unverifiable": unverified, "pins": override_pins(p), "attribution": attribution_gaps(p)}
+
+
+# sales.mjs writes `reddit` on every Stripe purchase, and the pl_attr cookie keeps the ad's tag, from the 2026-10-29
+# 17:05 Eastern build (PRs 445, 448); purchases from this UTC day on are checked.
+ATTR_FIELDS_SINCE = "2026-10-30"
+
+
+def attribution_gaps(p: dict, since: str = ATTR_FIELDS_SINCE) -> list:
+    """Stripe purchases that lost a link of the Reddit attribution chain: no `reddit` field (sales.mjs older than the
+    field, or it was dropped), a paid:reddit first touch the checkout did not flag (metadata missing), a flag with no
+    first touch (cookie restore failed), or a paid:reddit first touch without the ad's tag (pl_attr v1 or tag lost)."""
+    out = []
+    for k, o in ((load_json(p["traffic"], {}) or {}).get("ledger") or {}).items():
+        if o.get("kind") != "purchase":
+            continue
+        day = dt.datetime.fromtimestamp(float(o.get("ts") or 0), dt.timezone.utc).date().isoformat()
+        if day < since:
+            continue
+        ft = (o.get("attr") or {}).get("first") or {}
+        paid = first_touch_key(ft) == "paid:reddit"
+        flag = bool((o.get("reddit") or {}).get("ad"))
+        if "reddit" not in o:
+            problem = "no reddit field"
+        elif paid and not flag:
+            problem = "paid:reddit first touch, no reddit_ad flag"
+        elif flag and not ft:
+            problem = "reddit_ad flag, no first touch"
+        elif paid and not ft.get("t"):
+            problem = "paid:reddit first touch, no ad tag"
+        else:
+            continue
+        out.append({"id": k, "date": day, "product": o.get("product") or "", "problem": problem})
+    return sorted(out, key=lambda x: (x["date"], x["id"]))
 
 
 def override_pins(p: dict) -> list:
@@ -1580,6 +1613,10 @@ def override_pins(p: dict) -> list:
     (not a log row), the override never recorded its row (unpinned: run doctor --pin), or the row text at that line
     differs from the pin: row moved when the pinned text is found on other lines (`now`), row changed when it was
     edited in place (check it, then update or remove "_row")."""
+    if not p["outreach"].exists():
+        # git-ignored, so absent in a worktree: one finding, not every override reported as "not a log row"
+        return [{"id": "OUTREACH-LOG.md", "problem": "log not found; run with PURPLELINK_REPO set to the shared checkout",
+                 "pin": "", "now": []}]
     rows = {pl["id"]: pl["_row"] for pl in from_outreach(p)}
     out = []
     for k, o in (load_json(p["overrides"], {}) or {}).items():
@@ -2107,6 +2144,10 @@ def cmd_doctor(a, p):
     for x in d["pins"]:
         where = f"; pinned row now at {', '.join(x['now'])}" if x["now"] else ""
         print(f"  {x['id']:16} {x['problem']}{where}" + (f"  (pin: {x['pin']})" if x["pin"] else ""))
+    g = d["attribution"]
+    print(f"{len(g)} purchase{'s' if len(g) != 1 else ''} since {ATTR_FIELDS_SINCE} missing an attribution field:")
+    for x in g:
+        print(f"  {x['date']} {x['product']:12} {x['id'][:24]:24} {x['problem']}")
     print(f"{len(d['missing'])} live placements without any result:")
     for m in d["missing"]:
         print(f"  {m['date'] or '----------'} {m['channel']:11} {m['id']:34} {m['why']}")
