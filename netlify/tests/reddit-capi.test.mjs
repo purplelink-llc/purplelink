@@ -22,7 +22,7 @@ const jwk = privateKey.export({ format: "jwk" });
 const TOKEN = "rdt-secret-token-123";
 const env = {
   STRIPE_SECRET_KEY: "sk_test_dummy", STRIPE_WEBHOOK_SECRET: "whsec_test", BACKEND_WEBHOOK_SECRET: "backend",
-  RESEND_API_KEY: "re_dummy", MODERNTEX_LICENSE_PRIVATE_KEY: Buffer.from(jwk.d, "base64url").toString("base64"),
+  RESEND_API_KEY: "re_dummy", STRIPE_PRICE_KIT_CLIP: "price_dummy", MODERNTEX_LICENSE_PRIVATE_KEY: Buffer.from(jwk.d, "base64url").toString("base64"),
 };
 globalThis.Netlify = { env: { get: (k) => env[k] } };
 
@@ -75,7 +75,7 @@ test("no rdt, other products: nothing new in the metadata", async () => {
   await post({ product: "moderntex" }, "198.51.100.4");
   assert.equal(stripeParams().get("metadata[reddit_ad]"), null);
   calls = [];
-  await post({ product: "legroom", rdt: { c: "abc" } }, "198.51.100.5");
+  await post({ product: "kit-clip", rdt: { c: "abc" } }, "198.51.100.5");
   assert.equal(stripeParams().get("metadata[reddit_ad]"), null);
 });
 
