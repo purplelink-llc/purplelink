@@ -282,8 +282,8 @@
     } catch (e) { /* never interfere with the link */ }
   }, true);
 
-  // At the moment of the click, add the first-touch channel label (ach), the Reddit click id (arc) and the day first
-  // seen (ad) to the ModernTex trial link. The server turns them into the first-party pl_attr cookie so a purchase after
+  // At the moment of the click, add the first-touch channel label (ach), the Reddit click id (arc), the first link's
+  // tag (atg, its utm_content, which names one ad) and the day first seen (ad) to the ModernTex trial link. The server turns them into the first-party pl_attr cookie so a purchase after
   // the 7-day trial can still be credited (Safari drops script-written storage after 7 days). Nothing is added for a
   // direct visitor with no ad click, and this file does nothing at all under Do Not Track.
   function tagTrialLink(a) {
@@ -294,9 +294,11 @@
       var f = attr.first || attr.last;
       var u = new URL(a.href, location.href);
       if (u.origin !== location.origin) return;
-      u.searchParams.delete("ach"); u.searchParams.delete("arc"); u.searchParams.delete("ad");
+      var tg = contentTag().replace(/[^\w.\-]/g, "");
+      u.searchParams.delete("ach"); u.searchParams.delete("arc"); u.searchParams.delete("atg"); u.searchParams.delete("ad");
       if (ch) u.searchParams.set("ach", ch);
       if (rc) u.searchParams.set("arc", rc);
+      if (tg) u.searchParams.set("atg", tg);
       if (f && f.d) u.searchParams.set("ad", String(f.d).slice(0, 10));
       a.setAttribute("href", u.pathname + u.search);
     } catch (e) { /* never interfere with the download */ }
