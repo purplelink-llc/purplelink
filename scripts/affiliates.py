@@ -45,7 +45,7 @@ def cmd_report() -> int:
         where = []
         for page in pages():
             text = page.read_text(encoding="utf-8", errors="replace")
-            if any(aff.program_for(h, [prog]) for h in _hrefs(text)):
+            if any(aff.links_to(h, prog) for h in _hrefs(text)):
                 where.append(page.relative_to(SITE).as_posix())
         print(f"live: {prog.id}: {len(where)} page(s)")
         for w in where:
