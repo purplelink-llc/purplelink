@@ -40,6 +40,7 @@ import { issueLicense, licensedSlugsFor, LICENSED_PRODUCTS } from "../lib/licens
 import { bundlePartsOf, entitledParts, isBundleProduct, partsSentence } from "../lib/bundles.mjs";
 import { recordRevocation, clearDispute, paymentIntentOf } from "../lib/refunds.mjs";
 import { handleExpired, markBought, STORE as RECOVERY_STORE } from "../lib/checkout-recovery.mjs";
+import { sendRedditPurchase } from "../lib/reddit-capi.mjs";
 
 const MODAL_REGISTER_URL =
   "https://ben-ampel--purplelink-latextools-web.modal.run/paper-review/register-token";
@@ -602,7 +603,7 @@ async function emailLiveSetupLink(to, sessionId, productKey) {
   return false;
 }
 
-export default async function handler(request) {
+export default async function handler(request, context) {
   if (request.method !== "POST") {
     return jsonResponse(405, { error: "method_not_allowed" });
   }
@@ -802,6 +803,12 @@ export default async function handler(request) {
         console.warn("stripe-webhook: lifecycle register unreachable", String(err));
       }
     }
+    // Reddit ad sale: tell Reddit's Conversions API. Runs after delivery, is not awaited, and never throws
+    // (netlify/lib/reddit-capi.mjs); waitUntil keeps it alive after the response when the runtime offers it.
+    try {
+      const capi = sendRedditPurchase(session, { env: (k) => Netlify.env.get(k) }).catch(() => {});
+      if (context && typeof context.waitUntil === "function") context.waitUntil(capi);
+    } catch (_) { /* never affects delivery */ }
     return jsonResponse(200, { status: "delivered_by_blobs", product: rawProduct, emailed });
   }
   if (!PURPLELINK_PRODUCTS.has(rawProduct)) {

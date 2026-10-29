@@ -353,6 +353,9 @@ export default async function handler(request) {
   // ModernTex Buy page opened from the app's expired-trial screen: trial day and utm_source, as metadata.
   const trialDay = product === "moderntex" ? cleanTrialDay(body?.td) : "";
   const appSource = product === "moderntex" ? cleanAppSource(body?.src) : "";
+  // Reddit ad signal: present only for ModernTex products; a click id is a short opaque token or dropped.
+  const redditAd = (product === "moderntex" || product === "moderntex-seats") && !!body?.rdt && typeof body.rdt === "object" && !Array.isArray(body.rdt);
+  const redditClick = redditAd && typeof body.rdt.c === "string" && /^[\w.\-:=]{1,128}$/.test(body.rdt.c) ? body.rdt.c : "";
   // Photograph licenses need the photo; anything else ignores it.
   const photo = entry.photo && typeof body?.photo === "string" && PHOTO_RE.test(body.photo) ? body.photo : "";
   if (entry.photo && !photo) {
@@ -414,7 +417,7 @@ export default async function handler(request) {
   const managed = managedPaymentsOn(product, Netlify.env.get("STRIPE_MANAGED_PAYMENTS"));
   const timeBucket = Math.floor(Date.now() / IDEMPOTENCY_WINDOW_MS);
   const idempotencyKey = createHash("sha256")
-    .update(`v6:${managed ? "mp:" : ""}${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${trialDay}:${appSource}:${photo}:${seats}:${bundleParts.join("+")}`)
+    .update(`v6:${managed ? "mp:" : ""}${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${trialDay}:${appSource}:${redditAd ? "r" + redditClick : ""}:${photo}:${seats}:${bundleParts.join("+")}`)
     .digest("hex");
 
   // Attach the product key as Stripe metadata so the webhook can route
@@ -498,6 +501,12 @@ export default async function handler(request) {
   if (appSource) params["metadata[app_source]"] = appSource;
   if (attrFirst) params["metadata[attr_first]"] = attrFirst;
   if (attrLast) params["metadata[attr_last]"] = attrLast;
+  // ModernTex sale from a Reddit ad (the browser sends `rdt` only for that visitor and never under Do Not Track):
+  // the webhook reads these two to send Reddit's server-side Purchase event. See netlify/lib/reddit-capi.mjs.
+  if (redditAd) {
+    params["metadata[reddit_ad]"] = "1";
+    if (redditClick) params["metadata[reddit_click_id]"] = redditClick;
+  }
   if (mode === "subscription") {
     // Copy the product key onto the Subscription too, so customer.subscription.*
     // events and the dashboard can tell a Vitae Plus subscription from a digest one.
