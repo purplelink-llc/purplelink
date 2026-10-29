@@ -37,6 +37,12 @@
 - **Status:** Shipping. Current version 2.0.1 (October 27, 2026). Every update since the 1.0 launch on September 4, 2026 is listed at https://purplelink.llc/moderntex/#changelog.
 - **Trial and purchase:** https://purplelink.llc/moderntex/
 - **Setup guide:** https://purplelink.llc/moderntex/start/ (first ten minutes: install, MacTeX or TinyTeX setup, first build, first error, venue templates, submission checks)
+- **German page (Deutsch):** https://purplelink.llc/de/moderntex/ (ModernTex product page in German; same price, USD 19.99 once, 7-day free trial)
+- **German how-to:** https://purplelink.llc/de/guides/latex-auf-dem-mac-einrichten/ (set up LaTeX on a Mac for German text: TinyTeX or MacTeX, umlauts, babel ngerman, hyphenation patterns, biber)
+- **Japanese page (日本語):** https://purplelink.llc/ja/moderntex/ (ModernTex product page in Japanese; same price, USD 19.99 once, 7-day free trial; the app interface is English)
+- **Japanese how-to:** https://purplelink.llc/ja/guides/mac-nihongo-latex/ (Japanese LaTeX on a Mac with LuaLaTeX and LuaTeX-ja, jlreq, or upLaTeX with dvipdfmx; copy-paste files)
+- **Simplified Chinese page (简体中文):** https://purplelink.llc/zh-cn/moderntex/ (ModernTex product page in Simplified Chinese; same price, USD 19.99 once, 7-day free trial; the app interface is English)
+- **Simplified Chinese how-to:** https://purplelink.llc/zh-cn/guides/mac-xelatex-ctex-zhongwen-lunwen/ (Chinese papers on a Mac with XeLaTeX and ctex, with a GB/T 7714 bibliography example)
 - **Requirements:** macOS 14 (Sonoma) or later, Apple silicon or Intel, and a TeX distribution such as MacTeX or TinyTeX (ModernTex offers a one-click TinyTeX install if none is found). Signed, notarized disk image.
 - **Updates:** The app checks once a day and installs in place; updates are included in the purchase.
 - **Key differentiators:** Plain-language LaTeX error explanations; submission-readiness checks for journal/conference requirements; native macOS (not Electron, not web); academic manuscript workflow as first-class feature

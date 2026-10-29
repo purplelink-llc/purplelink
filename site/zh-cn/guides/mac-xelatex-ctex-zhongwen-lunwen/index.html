@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>在 Mac 上用 XeLaTeX 和 ctex 写中文论文 | Purplelink</title>
+    <meta name="description" content="在 Mac 上安装 TeX，用 XeLaTeX 和 ctex 编译中文文档，按 GB/T 7714 排参考文献。附可复制的最小文档和 ref.bib，已用 TinyTeX 编译通过。">
+    <link rel="canonical" href="https://purplelink.llc/zh-cn/guides/mac-xelatex-ctex-zhongwen-lunwen/">
+    <meta property="og:title" content="在 Mac 上用 XeLaTeX 和 ctex 写中文论文">
+    <meta property="og:description" content="在 Mac 上安装 TeX，用 XeLaTeX 和 ctex 编译中文文档，按 GB/T 7714 排参考文献。附可复制的最小文档和 ref.bib，已用 TinyTeX 编译通过。">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/zh-cn/guides/mac-xelatex-ctex-zhongwen-lunwen/">
+    <meta property="og:locale" content="zh_CN">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/zh-cn-guides-mac-xelatex-ctex-zhongwen-lunwen.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="在 Mac 上用 XeLaTeX 和 ctex 写中文论文">
+    <meta name="twitter:description" content="在 Mac 上安装 TeX，用 XeLaTeX 和 ctex 编译中文文档，按 GB/T 7714 排参考文献。附可复制的最小文档和 ref.bib，已用 TinyTeX 编译通过。">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/zh-cn-guides-mac-xelatex-ctex-zhongwen-lunwen.jpg">
+    <meta name="twitter:image:alt" content="在 Mac 上用 XeLaTeX 和 ctex 写中文论文">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "TechArticle",
+          "headline": "在 Mac 上用 XeLaTeX 和 ctex 写中文论文",
+          "description": "在 Mac 上安装 TeX，用 XeLaTeX 和 ctex 编译中文文档，按 GB/T 7714 排参考文献。附可复制的最小文档和 ref.bib，已用 TinyTeX 编译通过。",
+          "inLanguage": "zh-Hans",
+          "author": {
+            "@id": "https://purplelink.llc/about/#person"
+          },
+          "publisher": {
+            "@id": "https://purplelink.llc/#organization"
+          },
+          "datePublished": "2026-10-29",
+          "dateModified": "2026-10-29",
+          "image": "https://purplelink.llc/assets/og/brand.png",
+          "mainEntityOfPage": "https://purplelink.llc/zh-cn/guides/mac-xelatex-ctex-zhongwen-lunwen/"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "首页",
+              "item": "https://purplelink.llc/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "ModernTex",
+              "item": "https://purplelink.llc/zh-cn/moderntex/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "在 Mac 上用 XeLaTeX 和 ctex 写中文论文",
+              "item": "https://purplelink.llc/zh-cn/guides/mac-xelatex-ctex-zhongwen-lunwen/"
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "inLanguage": "zh-Hans",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "中文显示成空白，编译日志里有 Missing character，怎么办？",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "多半是没有给中文设字体。用 XeLaTeX 或 LuaLaTeX 编译，文档类用 ctexart、ctexrep 或 ctexbook，让 ctex 自动选字体，或者写 fontset=mac、fontset=fandol。不要写 fontset=none。"
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "可以用 pdfLaTeX 写中文吗？",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "可以，但那是旧做法，要加载 CJK 并处理编码，设置比 XeLaTeX 加 ctex 麻烦。新写的论文建议直接用 XeLaTeX 或 LuaLaTeX。"
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "参考文献是空的，或者只显示编号，怎么办？",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "biblatex 需要 biber，而且要多编译几遍。用 latexmk -xelatex main.tex，或在 ModernTex 里选 biblatex（biber）后用 Full 编译。第一遍之后参考文献还是空的，这是正常的。"
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "tlmgr 下载很慢，怎么办？",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "换一个国内的镜像，比如 tlmgr option repository https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet。"
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "GB/T 7714 有 2015 和 2025 两个版本，用哪个？",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "以你的学校或期刊的要求为准。biblatex-gb7714-2015 对应 2015 版；gbt7714 宏包同时提供 2015 版和 2025 版的 BibTeX 样式。"
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png?v=21c86cc2a8" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=f0ab0f06a1"></script>
+    <link rel="stylesheet" href="/styles.css?v=f29b65c694">
+    <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
+    <link rel="stylesheet" href="/intl.css?v=f55f5c8484">
+    <script src="/intl.js?v=2883832265" defer></script>
+    <script src="/motion.js?v=d35f4b4ee4" defer></script>
+</head>
+    <body>
+    <a class="skip-link" href="#main-content">跳到正文</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink 首页">
+        <img src="/assets/purplelink-mark.svg?v=2f8bd49b19" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="主导航"><a href="/zh-cn/moderntex/">ModernTex</a><a href="/zh-cn/guides/mac-xelatex-ctex-zhongwen-lunwen/" aria-current="page">指南</a><a href="/" lang="en" hreflang="en">English</a></nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/zh-cn/moderntex/">← ModernTex</a>
+      <div class="post-hero">
+        <p class="post-date">指南</p>
+        <h1 class="post-title">在 Mac 上用 XeLaTeX 和 ctex 写中文论文</h1>
+        <p class="post-byline">作者： <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-29">2026 年 10 月 29 日</time></p>
+        <p class="post-lede">在 Mac 上用 XeLaTeX 和 ctex 写中文论文：安装 TeX，写一个能直接编译的最小文档，按 GB/T 7714 排参考文献。</p>
+      </div>
+
+      <article class="post-body">
+        <p>这篇指南说明怎样在 Mac 上用 XeLaTeX 和 ctex 写中文论文：安装 TeX、写一个能直接编译的最小文档、按 GB/T 7714 排参考文献，以及遇到中文空白或字体问题时怎么查。文中的文件都可以复制使用，并且编译过。</p>
+
+        <h2>第 1 步：安装 TeX</h2>
+        <p><a href="https://tug.org/mactex/" rel="noopener">MacTeX</a> 是完整的 TeX Live，已经包含 ctex、xeCJK 和中文参考文献样式，体积有几个 GB。<a href="https://yihui.org/tinytex/" rel="noopener">TinyTeX</a> 小得多，装在你的用户目录（<code>~/Library/TinyTeX</code>）里，缺什么用 <code>tlmgr</code> 补什么。ModernTex 在编译时找不到 TeX，会提供一键安装 TinyTeX。</p>
+        <p>用 TinyTeX 时，在终端里装下面这些包。如果找不到 <code>tlmgr</code>，用完整路径 <code>~/Library/TinyTeX/bin/universal-darwin/tlmgr</code>。</p>
+<pre><code>tlmgr install ctex xecjk fandol biblatex biber biblatex-gb7714-2015 gbt7714</code></pre>
+        <p>下载慢的话，可以先把仓库换成国内的镜像，例如清华的 TUNA 镜像：</p>
+<pre><code>tlmgr option repository https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet</code></pre>
+
+        <h2>第 2 步：最小的中文文档</h2>
+        <p>把下面的内容存成 <code>main.tex</code>（UTF-8 文本）：</p>
+<pre><code>% !TEX program = xelatex
+\documentclass[a4paper,zihao=-4]{ctexart}
+\usepackage{amsmath}
+\usepackage[backend=biber,style=gb7714-2015]{biblatex}
+\addbibresource{ref.bib}
+
+\title{在 Mac 上用 XeLaTeX 写中文论文}
+\author{张三}
+\date{\today}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+本文演示 ctex 与 GB/T 7714 参考文献。
+\end{abstract}
+
+\section{引言}
+中文排版使用 XeLaTeX 和 ctex。引用文献\cite{zhang2020,smith2021}。公式 $a^2+b^2=c^2$。
+
+\printbibliography
+\end{document}</code></pre>
+        <p>要点：</p>
+        <ul>
+          <li><p>第一行 <code>% !TEX program = xelatex</code> 告诉 ModernTex 这类编辑器用 XeLaTeX 编译。终端里的 <code>latexmk</code> 不读这一行，要写成 <code>latexmk -xelatex main.tex</code>。</p></li>
+          <li><p><code>ctexart</code> 是 ctex 的文章类。写学位论文用 <code>ctexrep</code> 或 <code>ctexbook</code>。它会设好中文的章节标题、日期（&ldquo;2026 年 10 月 29 日&rdquo;）和段落缩进。</p></li>
+          <li><p>用 XeLaTeX 或 LuaLaTeX 加 ctex，不要用 pdfLaTeX 加 CJK。后者是旧做法，设置更麻烦。</p></li>
+        </ul>
+
+        <h2>第 3 步：字体</h2>
+        <p>ctex 在 macOS 上会自动选系统自带的中文字体，上面的文档没有额外设置字体，也没有缺字警告。想明确指定，用 <code>fontset</code> 选项：</p>
+<pre><code>\documentclass[a4paper,zihao=-4,fontset=mac]{ctexart}</code></pre>
+        <p><code>fontset=mac</code> 用 macOS 的字体。<code>fontset=fandol</code> 用随 TeX Live 提供的 Fandol 字体，换一台电脑排出来的版式也一样，适合多人协作。写成 <code>fontset=none</code> 则不设字体，中文会变成空白，编译日志里出现 <code>Missing character</code>，我试的时候有 69 条。</p>
+
+        <h2>第 4 步：GB/T 7714 参考文献</h2>
+        <p>上面的 <code>main.tex</code> 用 <code>biblatex-gb7714-2015</code> 和 biber。文献库 <code>ref.bib</code> 放在同一个文件夹，中文和英文条目都写进去，用 <code>langid</code> 标明语言：</p>
+<pre><code>@article{zhang2020,
+  author = {张三 and 李四},
+  title = {深度学习在文本分类中的应用},
+  journal = {计算机学报},
+  date = {2020},
+  volume = {43},
+  number = {5},
+  pages = {1--20},
+  langid = {chinese},
+}
+@article{smith2021,
+  author = {Smith, John and Doe, Jane},
+  title = {Deep learning for text classification},
+  journal = {Journal of Examples},
+  date = {2021},
+  volume = {10},
+  number = {2},
+  pages = {100--120},
+  langid = {english},
+}</code></pre>
+        <p>编译后得到的是这样的顺序编码制列表：</p>
+<pre><code>[1] 张三, 李四. 深度学习在文本分类中的应用[J]. 计算机学报, 2020, 43(5): 1-20.
+[2] SMITH J, DOE J. Deep learning for text classification[J]. Journal of Examples, 2021, 10(2): 100-120.</code></pre>
+        <p>你更习惯 BibTeX 的话，用 <code>gbt7714</code> 宏包：</p>
+<pre><code>% !TEX program = xelatex
+\documentclass[a4paper]{ctexart}
+\usepackage{gbt7714}
+\bibliographystyle{gbt7714-numeric}
+
+\begin{document}
+\section{引言}
+引用文献\cite{zhang2020,smith2021}。
+
+\bibliography{ref}
+\end{document}</code></pre>
+        <p>这个文件的编译顺序是 xelatex、bibtex、xelatex、xelatex，<code>latexmk -xelatex</code> 会替你完成。<code>gbt7714</code> 带有 2015 版和 2025 版两套样式（比如 <code>gbt7714-2015-numeric</code> 和 <code>gbt7714-2025-numeric</code>），以你学校的要求为准。</p>
+
+        <h2>第 5 步：编译</h2>
+<pre><code>latexmk -xelatex main.tex</code></pre>
+        <p>在 ModernTex 里，打开这个文件夹，在编译配置里选 biblatex（biber），然后编译。Full 编译在 XeLaTeX 和 LuaLaTeX 下也会运行 biber。</p>
+
+        <h2>学校的论文模板</h2>
+        <p>清华的 thuthesis 这类学校模板，把整个模板文件夹作为项目打开，按模板自带的说明选引擎和编译顺序。类文件放在 Styles 文件夹里的模板，ModernTex 也能编译。我没有测试过具体某一所学校的模板，所以这里不替它们担保，只保证上面 <code>main.tex</code> 和 <code>ref.bib</code> 的写法。</p>
+
+        <h2>我测试了什么</h2>
+        <p>2026 年 10 月 29 日，在 macOS 上的 TinyTeX（TeX Live 2026）里，我装好上面的包，把 <code>main.tex</code> 和 <code>ref.bib</code> 用 <code>latexmk -xelatex</code> 编译成 PDF，参考文献按 GB/T 7714 排出，没有缺字。<code>fontset=mac</code> 和 <code>fontset=fandol</code> 也都能编译。<code>gbt7714</code> 的例子用 xelatex 和 bibtex 编译通过。我没有在 ModernTex 里运行这些文件。</p>
+
+
+        <h2>常见问题</h2>
+        <h3>中文显示成空白，编译日志里有 Missing character，怎么办？</h3>
+        <p>多半是没有给中文设字体。用 XeLaTeX 或 LuaLaTeX 编译，文档类用 <code>ctexart</code>、<code>ctexrep</code> 或 <code>ctexbook</code>，让 ctex 自动选字体，或者写 <code>fontset=mac</code>、<code>fontset=fandol</code>。不要写 <code>fontset=none</code>。</p>
+        <h3>可以用 pdfLaTeX 写中文吗？</h3>
+        <p>可以，但那是旧做法，要加载 CJK 并处理编码，设置比 XeLaTeX 加 ctex 麻烦。新写的论文建议直接用 XeLaTeX 或 LuaLaTeX。</p>
+        <h3>参考文献是空的，或者只显示编号，怎么办？</h3>
+        <p>biblatex 需要 biber，而且要多编译几遍。用 <code>latexmk -xelatex main.tex</code>，或在 ModernTex 里选 biblatex（biber）后用 Full 编译。第一遍之后参考文献还是空的，这是正常的。</p>
+        <h3>tlmgr 下载很慢，怎么办？</h3>
+        <p>换一个国内的镜像，比如 <code>tlmgr option repository https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet</code>。</p>
+        <h3>GB/T 7714 有 2015 和 2025 两个版本，用哪个？</h3>
+        <p>以你的学校或期刊的要求为准。<code>biblatex-gb7714-2015</code> 对应 2015 版；<code>gbt7714</code> 宏包同时提供 2015 版和 2025 版的 BibTeX 样式。</p>
+
+        <h2>用 ModernTex 编译</h2>
+        <p><a href="/zh-cn/moderntex/">ModernTex</a> 是 Mac 上的 LaTeX 编辑器，有跟随源码的 PDF 预览、用日常语言解释的编译错误和投稿前检查。它使用你本机的 TeX，所以上面的步骤在其中同样适用。免费试用 7 天，之后一次性 19.99 美元。应用界面目前是英文。</p>
+      </article>
+    </main>
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg?v=2f8bd49b19" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">美国佐治亚州亚特兰大的一人工作室，制作应用和工具。</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="ModernTex">
+          <p class="footer-head">ModernTex</p>
+          <ul>
+            <li><a href="/zh-cn/moderntex/">产品页面</a></li>
+            <li><a href="/zh-cn/guides/mac-xelatex-ctex-zhongwen-lunwen/">在 Mac 上用 XeLaTeX 和 ctex 写中文论文</a></li>
+            <li><a href="/changelog/">更新日志（英文）</a></li>
+            <li><a href="/recover/">找回购买记录（英文）</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="英文页面">
+          <p class="footer-head">英文页面</p>
+          <ul>
+            <li><a href="/products/">全部产品</a></li>
+            <li><a href="/tools/">免费工具</a></li>
+            <li><a href="/guides/">指南</a></li>
+            <li><a href="/blog/">博客</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="公司">
+          <p class="footer-head">公司</p>
+          <ul>
+            <li><a href="/about/">关于（英文）</a></li>
+            <li><a href="/support/">支持（英文）</a></li>
+            <li><a href="mailto:ben@purplelink.llc">联系</a></li>
+            <li><a href="/privacy/">隐私政策（英文）</a></li>
+            <li><a href="/terms/">服务条款（英文）</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">亚特兰大，佐治亚州 · 创立于 2026 年</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden data-label-light="切换为浅色主题" data-label-dark="切换为深色主题">切换为浅色主题</button>
+      </div>
+    </footer>
+
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=2e1b7fe5bd" defer></script>
+</body>
+</html>

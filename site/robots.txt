@@ -77,6 +77,13 @@ Allow: /
 User-agent: Bytespider
 Allow: /
 
+# Search crawlers for the German, Japanese and Simplified Chinese pages (/de/, /ja/, /zh-cn/)
+User-agent: Baiduspider
+Allow: /
+
+User-agent: Yeti
+Allow: /
+
 # Plain-text summary of the company and its products, for language models:
 # https://purplelink.llc/llms.txt
 # Full text of the main pages: https://purplelink.llc/llms-full.txt

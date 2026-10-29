@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>LaTeX auf dem Mac einrichten: Umlaute, babel und biber | Purplelink</title>
+    <meta name="description" content="TinyTeX oder MacTeX installieren, deutsche Trennmuster nachladen und ein Dokument mit Umlauten, ngerman und biber bauen. Mit kopierbarer Präambel, getestet mit TinyTeX unter macOS.">
+    <link rel="canonical" href="https://purplelink.llc/de/guides/latex-auf-dem-mac-einrichten/">
+    <meta property="og:title" content="LaTeX auf dem Mac einrichten: Umlaute, babel und biber">
+    <meta property="og:description" content="TinyTeX oder MacTeX installieren, deutsche Trennmuster nachladen und ein Dokument mit Umlauten, ngerman und biber bauen. Mit kopierbarer Präambel, getestet mit TinyTeX unter macOS.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/de/guides/latex-auf-dem-mac-einrichten/">
+    <meta property="og:locale" content="de_DE">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/de-guides-latex-auf-dem-mac-einrichten.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="LaTeX auf dem Mac einrichten: Umlaute, babel und biber">
+    <meta name="twitter:description" content="TinyTeX oder MacTeX installieren, deutsche Trennmuster nachladen und ein Dokument mit Umlauten, ngerman und biber bauen. Mit kopierbarer Präambel, getestet mit TinyTeX unter macOS.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/de-guides-latex-auf-dem-mac-einrichten.jpg">
+    <meta name="twitter:image:alt" content="LaTeX auf dem Mac einrichten: Umlaute, babel und biber">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "TechArticle",
+          "headline": "LaTeX auf dem Mac einrichten: Umlaute, babel und biber",
+          "description": "TinyTeX oder MacTeX installieren, deutsche Trennmuster nachladen und ein Dokument mit Umlauten, ngerman und biber bauen. Mit kopierbarer Präambel, getestet mit TinyTeX unter macOS.",
+          "inLanguage": "de",
+          "author": {
+            "@id": "https://purplelink.llc/about/#person"
+          },
+          "publisher": {
+            "@id": "https://purplelink.llc/#organization"
+          },
+          "datePublished": "2026-10-29",
+          "dateModified": "2026-10-29",
+          "image": "https://purplelink.llc/assets/og/brand.png",
+          "mainEntityOfPage": "https://purplelink.llc/de/guides/latex-auf-dem-mac-einrichten/"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Startseite",
+              "item": "https://purplelink.llc/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "ModernTex",
+              "item": "https://purplelink.llc/de/moderntex/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "LaTeX auf dem Mac einrichten: Umlaute, babel und biber",
+              "item": "https://purplelink.llc/de/guides/latex-auf-dem-mac-einrichten/"
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "inLanguage": "de",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Warum meldet babel, dass keine Trennmuster geladen sind?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Das Format Ihrer TeX-Installation wurde ohne die deutschen Muster gebaut. Installieren Sie bei TinyTeX hyphen-german und führen Sie danach fmtutil-sys --all aus. Mit MacTeX tritt das nicht auf."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Muss ich inputenc laden, damit Umlaute funktionieren?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Nein. Seit 2018 liest LaTeX Quelltext standardmäßig als UTF-8. Die Datei muss nur wirklich UTF-8 sein. Eine alte Datei in Latin-1 wandeln Sie mit iconv -f ISO-8859-1 -t UTF-8 alt.tex > neu.tex um."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Warum bricht microtype mit einem Schriftenfehler ab?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Bei T1-Kodierung ohne lmodern verwendet LaTeX Bitmap-Schriften, und microtype kann sie nicht strecken. Laden Sie \\usepackage{lmodern} direkt nach fontenc."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Das Literaturverzeichnis ist leer. Was ist falsch?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Wahrscheinlich lief biber nicht. Bauen Sie mit latexmk -pdf main.tex oder in ModernTex mit dem Profil biblatex mit biber. Nach dem ersten pdfLaTeX-Durchlauf ist das Verzeichnis immer noch leer, das ist normal."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Kann ich BibTeX statt biber benutzen?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Ja, mit \\bibliographystyle und \\bibliography statt biblatex. Für deutsche Sortierung und UTF-8 in den Namen ist biblatex mit biber bequemer, weil es die Spracheinstellung des Dokuments mitnimmt."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png?v=21c86cc2a8" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=f0ab0f06a1"></script>
+    <link rel="stylesheet" href="/styles.css?v=f29b65c694">
+    <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
+    <link rel="stylesheet" href="/intl.css?v=f55f5c8484">
+    <script src="/intl.js?v=2883832265" defer></script>
+    <script src="/motion.js?v=d35f4b4ee4" defer></script>
+</head>
+    <body>
+    <a class="skip-link" href="#main-content">Zum Inhalt springen</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink Startseite">
+        <img src="/assets/purplelink-mark.svg?v=2f8bd49b19" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Hauptnavigation"><a href="/de/moderntex/">ModernTex</a><a href="/de/guides/latex-auf-dem-mac-einrichten/" aria-current="page">Anleitung</a><a href="/" lang="en" hreflang="en">English</a></nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/de/moderntex/">← ModernTex</a>
+      <div class="post-hero">
+        <p class="post-date">Anleitung</p>
+        <h1 class="post-title">LaTeX auf dem Mac einrichten: Umlaute, babel und biber</h1>
+        <p class="post-byline">Von <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-29">29. Oktober 2026</time></p>
+        <p class="post-lede">So richten Sie LaTeX auf dem Mac für deutsche Texte ein: Distribution wählen, Pakete für Umlaute, babel und biber installieren, die deutschen Trennmuster nachladen und ein erstes Dokument bauen.</p>
+      </div>
+
+      <article class="post-body">
+        <p>Diese Anleitung richtet LaTeX auf dem Mac für deutsche Texte ein. Sie wählen eine TeX-Distribution, installieren die Pakete für Umlaute, babel und biber, laden die deutschen Trennmuster nach und bauen ein erstes Dokument. Die Präambel unten ist kopierbar und getestet.</p>
+
+        <h2>Kurzfassung</h2>
+        <ol>
+          <li><p>Installieren Sie MacTeX (alles enthalten) oder TinyTeX (klein, Pakete holen Sie bei Bedarf nach).</p></li>
+          <li><p>Nur mit TinyTeX: Holen Sie die Pakete für deutsche Dokumente mit <code>tlmgr install</code> (Schritt 2).</p></li>
+          <li><p>Nur mit TinyTeX: Bauen Sie danach die Formate neu, damit die deutschen Trennmuster greifen (Schritt 3).</p></li>
+          <li><p>Speichern Sie die Präambel aus Schritt 4 als <code>main.tex</code> und die Literaturdatei daneben.</p></li>
+          <li><p>Bauen Sie mit <code>latexmk -pdf main.tex</code> oder in einem Editor wie <a href="/de/moderntex/">ModernTex</a>.</p></li>
+        </ol>
+
+        <h2>Schritt 1: MacTeX oder TinyTeX</h2>
+        <p><a href="https://tug.org/mactex/" rel="noopener">MacTeX</a> ist die vollständige TeX-Live-Distribution für den Mac und belegt mehrere Gigabyte. Alles, was diese Anleitung braucht, ist schon darin, also können Sie Schritt 2 und 3 überspringen.</p>
+        <p><a href="https://yihui.org/tinytex/" rel="noopener">TinyTeX</a> ist deutlich kleiner und liegt in Ihrem Benutzerordner (<code>~/Library/TinyTeX</code>), eine Administrator-Abfrage gibt es nicht. Dafür fehlen Pakete, die Sie mit <code>tlmgr</code> nachinstallieren. Findet ModernTex beim Kompilieren keine Distribution, bietet es die Installation von TinyTeX mit einem Klick an.</p>
+
+        <h2>Schritt 2: Pakete für deutsche Dokumente (TinyTeX)</h2>
+        <p>Öffnen Sie das Terminal und führen Sie aus. Liegt <code>tlmgr</code> nicht im Suchpfad, rufen Sie es über <code>~/Library/TinyTeX/bin/universal-darwin/tlmgr</code> auf.</p>
+<pre><code>tlmgr install koma-script babel-german hyphen-german csquotes biblatex biber lm microtype siunitx</code></pre>
+        <p>Wofür die Pakete da sind:</p>
+        <ul>
+          <li><p><code>koma-script</code>: die Klassen <code>scrartcl</code>, <code>scrreprt</code> und <code>scrbook</code>, auf deutsche Typografie ausgelegt und in deutschen Abschlussarbeiten verbreitet.</p></li>
+          <li><p><code>babel-german</code> und <code>hyphen-german</code>: die Sprache <code>ngerman</code> und die Trennmuster dazu.</p></li>
+          <li><p><code>csquotes</code>: Anführungszeichen passend zur Sprache.</p></li>
+          <li><p><code>biblatex</code> und <code>biber</code>: das Literaturverzeichnis.</p></li>
+          <li><p><code>lm</code> und <code>microtype</code>: skalierbare Schriften und feinere Zeilenumbrüche.</p></li>
+          <li><p><code>siunitx</code>: Zahlen und Einheiten mit Dezimalkomma.</p></li>
+        </ul>
+        <p>Fehlt Ihnen später eine Datei, finden Sie das passende Paket mit <code>tlmgr search --global --file scrartcl.cls</code>.</p>
+
+        <h2>Schritt 3: Deutsche Trennmuster aktivieren</h2>
+        <p>TinyTeX baut seine Formate nur mit den Sprachen, die beim Bau installiert waren. Fehlen die deutschen Trennmuster, kompiliert das Dokument trotzdem, aber babel meldet:</p>
+<pre><code>Package babel Warning: No hyphenation patterns were preloaded for
+(babel)                the language 'German (current orthography)' into the format.</code></pre>
+        <p>Die Silbentrennung folgt dann englischen Mustern. Bauen Sie die Formate nach der Installation von <code>hyphen-german</code> neu:</p>
+<pre><code>fmtutil-sys --all</code></pre>
+        <p>Ich habe das an einer Kopie meiner TinyTeX-Installation geprüft: Nach <code>tlmgr install hyphen-german</code> blieb die Warnung stehen, nach <code>fmtutil-sys --all</code> war sie weg, und lange Wörter wurden deutsch getrennt. Mit MacTeX ist dieser Schritt nicht nötig.</p>
+
+        <h2>Schritt 4: Präambel und Literaturdatei</h2>
+        <p>Speichern Sie dies als <code>main.tex</code>, als UTF-8-Textdatei:</p>
+<pre><code>\documentclass[a4paper,12pt]{scrartcl}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[ngerman]{babel}
+\usepackage{microtype}
+\usepackage[autostyle]{csquotes}
+\usepackage[locale=DE]{siunitx}
+\usepackage[backend=biber,style=authoryear]{biblatex}
+\addbibresource{literatur.bib}
+
+\title{Größe, Äpfel und Übung}
+\author{Max Müller}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Einführung}
+Straße, Fußgängerübergang, schön: Umlaute und ß stehen direkt im Text.
+\enquote{Anführungszeichen} setzt csquotes passend zur Sprache.
+Messwert: \num{3,14} und \qty{12,5}{\percent}.
+Wie \textcite{mueller2024} zeigen, funktioniert das.
+
+\printbibliography
+\end{document}</code></pre>
+        <p>Und daneben die Datei <code>literatur.bib</code>:</p>
+<pre><code>@book{mueller2024,
+  author    = {Müller, Max and Schröder, Änne},
+  title     = {Wissenschaftliches Schreiben mit {LaTeX}},
+  date      = {2024},
+  publisher = {Beispielverlag},
+  location  = {Berlin},
+}</code></pre>
+        <p>Was die Zeilen tun:</p>
+        <ul>
+          <li><p><code>scrartcl</code> ist die KOMA-Script-Variante von <code>article</code>. Für eine Abschlussarbeit nehmen Sie <code>scrreprt</code> oder <code>scrbook</code>.</p></li>
+          <li><p><code>fontenc</code> mit <code>T1</code> sorgt dafür, dass Umlaute und ß als eigene Zeichen in der Schrift liegen und Wörter mit ihnen getrennt werden können. <code>lmodern</code> gibt dazu skalierbare Schriften. Ohne <code>lmodern</code> stoppt <code>microtype</code> bei mir mit <code>auto expansion is only possible with scalable fonts</code>.</p></li>
+          <li><p>Ein Paket <code>inputenc</code> brauchen Sie nicht: LaTeX liest Quelltext seit 2018 standardmäßig als UTF-8. Umlaute stehen direkt im Text, nicht als <code>\"a</code>.</p></li>
+          <li><p><code>ngerman</code> steht für die neue Rechtschreibung. Das Datum, die Überschrift &bdquo;Literatur&ldquo; und die Trennung folgen der Sprache. Ein Wort, das falsch getrennt wird, legen Sie fest mit <code>\hyphenation{Wis-sen-schafts-sprache}</code>.</p></li>
+          <li><p><code>csquotes</code> setzt mit <code>\enquote{&hellip;}</code> die Anführungszeichen &bdquo;so&ldquo;, wie die Sprache es verlangt.</p></li>
+          <li><p><code>siunitx</code> mit <code>locale=DE</code> schreibt <code>\num{3,14}</code> als 3,14.</p></li>
+          <li><p><code>biblatex</code> mit <code>backend=biber</code> und <code>style=authoryear</code>. <code>\textcite</code> setzt &bdquo;Müller und Schröder (2024)&ldquo;, <code>\parencite</code> setzt die Angabe in Klammern.</p></li>
+        </ul>
+
+        <h2>Schritt 5: Bauen</h2>
+        <p>Im Terminal, im Ordner mit <code>main.tex</code>:</p>
+<pre><code>latexmk -pdf main.tex</code></pre>
+        <p><code>latexmk</code> ruft pdfLaTeX, biber und wieder pdfLaTeX so oft auf, wie nötig. Ich habe die Präambel oben am 29. Oktober 2026 mit TinyTeX (TeX Live 2026) auf macOS so gebaut: Das PDF hat deutsche Silbentrennung, das Datum &bdquo;29. Oktober 2026&ldquo;, das Dezimalkomma und ein Literaturverzeichnis. Nach der ersten Runde meldet LaTeX, dass das Literaturverzeichnis noch leer ist. Das ist normal, biber füllt es in der zweiten.</p>
+        <p>In ModernTex öffnen Sie den Ordner, wählen im Kompilierprofil biblatex mit biber und bauen. Wollen Sie statt pdfLaTeX XeLaTeX oder LuaLaTeX, schreiben Sie in die erste Zeile zum Beispiel <code>% !TEX program = lualatex</code>.</p>
+
+        <h2>Wohin gehört die Vorlage meiner Hochschule?</h2>
+        <p>Legen Sie die Klassendatei (<code>.cls</code>) und die Stildateien (<code>.sty</code>) der Hochschule neben <code>main.tex</code>, in denselben Ordner. Dort findet sie der Build. Braucht die Vorlage weitere Pakete, installieren Sie sie mit <code>tlmgr install</code>, den Namen findet <code>tlmgr search --global --file</code>. Fragen zu LaTeX beantwortet auch die deutschsprachige TeX-Anwendervereinigung <a href="https://www.dante.de/" rel="noopener">DANTE e.&nbsp;V.</a></p>
+
+
+        <h2>Fragen und Antworten</h2>
+        <h3>Warum meldet babel, dass keine Trennmuster geladen sind?</h3>
+        <p>Das Format Ihrer TeX-Installation wurde ohne die deutschen Muster gebaut. Installieren Sie bei TinyTeX <code>hyphen-german</code> und führen Sie danach <code>fmtutil-sys --all</code> aus. Mit MacTeX tritt das nicht auf.</p>
+        <h3>Muss ich inputenc laden, damit Umlaute funktionieren?</h3>
+        <p>Nein. Seit 2018 liest LaTeX Quelltext standardmäßig als UTF-8. Die Datei muss nur wirklich UTF-8 sein. Eine alte Datei in Latin-1 wandeln Sie mit <code>iconv -f ISO-8859-1 -t UTF-8 alt.tex > neu.tex</code> um.</p>
+        <h3>Warum bricht microtype mit einem Schriftenfehler ab?</h3>
+        <p>Bei T1-Kodierung ohne <code>lmodern</code> verwendet LaTeX Bitmap-Schriften, und <code>microtype</code> kann sie nicht strecken. Laden Sie <code>\usepackage{lmodern}</code> direkt nach <code>fontenc</code>.</p>
+        <h3>Das Literaturverzeichnis ist leer. Was ist falsch?</h3>
+        <p>Wahrscheinlich lief biber nicht. Bauen Sie mit <code>latexmk -pdf main.tex</code> oder in ModernTex mit dem Profil biblatex mit biber. Nach dem ersten pdfLaTeX-Durchlauf ist das Verzeichnis immer noch leer, das ist normal.</p>
+        <h3>Kann ich BibTeX statt biber benutzen?</h3>
+        <p>Ja, mit <code>\bibliographystyle</code> und <code>\bibliography</code> statt biblatex. Für deutsche Sortierung und UTF-8 in den Namen ist biblatex mit biber bequemer, weil es die Spracheinstellung des Dokuments mitnimmt.</p>
+
+        <h2>Mit ModernTex bauen</h2>
+        <p><a href="/de/moderntex/">ModernTex</a> ist ein LaTeX-Editor für den Mac mit PDF-Vorschau, die dem Quelltext folgt, Fehlermeldungen in einfacher Sprache und Prüfungen vor der Einreichung. Er nutzt Ihre TeX-Installation, also gilt alles oben auch dort. Sieben Tage kostenlos, dann einmalig 19,99 US-Dollar.</p>
+      </article>
+    </main>
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg?v=2f8bd49b19" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps und Werkzeuge aus einem Ein-Personen-Studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="ModernTex">
+          <p class="footer-head">ModernTex</p>
+          <ul>
+            <li><a href="/de/moderntex/">Produktseite</a></li>
+            <li><a href="/de/guides/latex-auf-dem-mac-einrichten/">LaTeX auf dem Mac einrichten</a></li>
+            <li><a href="/changelog/">Änderungsprotokoll (Englisch)</a></li>
+            <li><a href="/recover/">Kauf wiederfinden (Englisch)</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Weitere Seiten (Englisch)">
+          <p class="footer-head">Weitere Seiten (Englisch)</p>
+          <ul>
+            <li><a href="/products/">Alle Produkte</a></li>
+            <li><a href="/tools/">Kostenlose Tools</a></li>
+            <li><a href="/guides/">Anleitungen</a></li>
+            <li><a href="/blog/">Blog</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Unternehmen">
+          <p class="footer-head">Unternehmen</p>
+          <ul>
+            <li><a href="/about/">Über uns (Englisch)</a></li>
+            <li><a href="/support/">Support (Englisch)</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Kontakt</a></li>
+            <li><a href="/privacy/">Datenschutz (Englisch)</a></li>
+            <li><a href="/terms/">Nutzungsbedingungen (Englisch)</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Seit 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden data-label-light="Helles Design verwenden" data-label-dark="Dunkles Design verwenden">Helles Design verwenden</button>
+      </div>
+    </footer>
+
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=2e1b7fe5bd" defer></script>
+</body>
+</html>
