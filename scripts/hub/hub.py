@@ -541,7 +541,10 @@ CHANNEL_KEYS = {
     "email": ("email",), "libguide": ("libguide",), "alternativeto": ("alternativeto", "alternativeto.net"),
     "producthunt": ("producthunt", "www.producthunt.com"), "newsletter": ("newsletter",), "x": ("x", "t.co"),
     "hn": ("news.ycombinator.com", "hn"), "press": ("press",),
+    # Ad clicks: analytics.js labels a first touch with utm_medium=cpc (or an ad click id) "paid:<source>".
+    "reddit-ads": ("paid:reddit",),
 }
+PAID_MEDIA = {"cpc", "ppc", "paid", "paidsocial"}
 # "How did you first hear about us?" codes (netlify/functions/checkout.mjs HEARD_OPTIONS) -> channel, where one fits.
 HEARD_CHANNEL = {"reddit": "reddit", "youtube": "youtube", "macupdate": "macupdate", "directory": "directory",
                  "email": "email", "library": "libguide"}
@@ -602,14 +605,31 @@ def host_key(url: str) -> list:
     return [h, h.removeprefix("www."), h.removeprefix("www.").split(".")[0]]
 
 
+def first_touch_key(ft: dict) -> str:
+    """The funnel's label for a stored first touch, folded the way analytics.js channel() folds it: an ad click
+    (click id g, or a paid utm_medium) reads "paid:<source>", so an ad buyer is never counted as organic."""
+    ft = ft or {}
+    if ft.get("g") or str(ft.get("m") or "").lower() in PAID_MEDIA:
+        return "paid:" + (ft.get("s") or "google")
+    return ft.get("s") or ""
+
+
 def source_keys(pl: dict) -> set:
     keys = set(CHANNEL_KEYS.get(pl["channel"], (pl["channel"],)))
     keys.update(host_key(pl.get("url", "")))
     for u in (pl.get("landing_url", ""), pl.get("utm", "")):
         m = re.search(r"utm_source=([\w.\-]+)", u or "")
         if m:
-            keys.add(m.group(1).lower())
+            med = re.search(r"utm_medium=([\w.\-]+)", u or "")
+            paid = bool(med) and med.group(1).lower() in PAID_MEDIA
+            keys.add(("paid:" if paid else "") + m.group(1).lower())
     return keys
+
+
+def order_matches(o: dict, keys: set) -> bool:
+    """An order counts for a placement's source keys by its folded first touch, or, for Reddit ads, by checkout's
+    reddit_ad flag (set from the page, or from the pl_attr cookie when the page had lost its first touch)."""
+    return (bool(o["first"]) and key_matches(o["first"], keys)) or (o.get("reddit_ad") and "paid:reddit" in keys)
 
 
 def key_matches(funnel_key: str, keys: set) -> bool:
@@ -677,8 +697,10 @@ def orders_from_ledger(p: dict) -> list:
         ft = (o.get("attr") or {}).get("first") or {}
         day = dt.datetime.fromtimestamp(float(o.get("ts") or 0), dt.timezone.utc).date().isoformat()
         # tag: the first-touch link's utm_content, stored by checkout.mjs from 2026-10-24
-        out.append({"product": o.get("product") or "", "first": ft.get("s") or "", "tag": ft.get("t") or "",
-                    "heard": o.get("heard") or "", "date": day})
+        out.append({"product": o.get("product") or "", "first": first_touch_key(ft), "tag": ft.get("t") or "",
+                    "heard": o.get("heard") or "", "date": day,
+                    # sales.mjs `reddit` (from checkout metadata reddit_ad / reddit_click_id), since 2026-10-29
+                    "reddit_ad": bool((o.get("reddit") or {}).get("ad"))})
     return out
 
 
@@ -723,8 +745,7 @@ def placement_results(pls: list, links: dict, assets: dict, funnel: dict, orders
                     continue
                 rows.append((pl["id"], asof, metric, val, f"funnel:{w}d", conf))
         if products:
-            n = sum(1 for o in orders if o["product"] in products and o["date"] >= pl["date"]
-                    and o["first"] and key_matches(o["first"], keys))
+            n = sum(1 for o in orders if o["product"] in products and o["date"] >= pl["date"] and order_matches(o, keys))
             rows.append((pl["id"], asof, "orders", n, "ledger", "first-touch"))
     # Per-link counts (utm_content, recorded since 2026-10-23): exact for this placement, not shared with its channel.
     cont = funnel.get("content") or {}
@@ -884,7 +905,7 @@ def channel_stats(pls: list, links: dict, assets: dict, funnel: dict, orders: li
                 if key_matches(fk, g["keys"]):
                     visits += sum(c for pth, c in (v.get("pageviewsByPath") or {}).items() if pth.startswith(path))
                     trials += (v.get("trial") or {}).get(prod, 0)
-        n_orders = sum(1 for o in orders if o["product"] == prod and o["date"] >= since and o["first"] and key_matches(o["first"], g["keys"]))
+        n_orders = sum(1 for o in orders if o["product"] == prod and o["date"] >= since and order_matches(o, g["keys"]))
         n_heard = sum(1 for o in orders if o["product"] == prod and o["date"] >= since and HEARD_CHANNEL.get(o["heard"]) == ch)
         # Trials start on guide pages too, while visits count the product's own pages only. Where trials outnumber
         # visits there is no honest per-visit rate, so none is given.
@@ -1272,6 +1293,7 @@ def campaign_report(con, p: dict, today: dt.date | None = None) -> list:
     """One row per campaign and ad: reported spend and clicks next to the site's own exact-link counts."""
     today = today or dt.date.today()
     camps = load_json(p["campaigns"], {}) or {}
+    flagged = [o for o in orders_from_ledger(p) if o["reddit_ad"]]
     res: dict = {}
     for r in con.execute("SELECT placement_id, metric, value FROM results WHERE placement_id LIKE 'campaign:%'"):
         res.setdefault(r[0], {})[r[1]] = r[2]
@@ -1283,11 +1305,18 @@ def campaign_report(con, p: dict, today: dt.date | None = None) -> list:
         tot = {k: sum(res.get(a, {}).get(k, 0) or 0 for a in ads) for k in
                ("spend", "impressions", "clicks", "link-visits", "link-trials", "link-checkout-clicks", "link-orders")}
         nxt = next((d for d in c.get("readings") or [] if d >= today.isoformat()), None)
-        spend, orders, trials = tot["spend"], tot["link-orders"], tot["link-trials"]
+        # Every ad row carries the campaign's whole first-touch order count (its source key is shared), so take it
+        # once; an order is credited to one ad only when the buyer's first touch kept that ad's utm_content.
+        camp_orders = max([res.get(a, {}).get("orders", 0) or 0 for a in ads] or [0])
+        spend, trials = tot["spend"], tot["link-trials"]
+        orders = max(camp_orders, tot["link-orders"])
         row = {"campaign": cid, "asset": c.get("asset"), "channel": c.get("channel"), "start": c.get("start"),
                "end": c.get("end"), "budget": c.get("budget"), "breakEven": c.get("breakEven"),
                "spend": spend or None, "impressions": int(tot["impressions"]) or None, "clicks": int(tot["clicks"]) or None,
                "visits": int(tot["link-visits"]), "trials": int(trials), "orders": int(orders),
+               "ordersNoAd": int(orders - tot["link-orders"]),
+               "redditFlagged": sum(1 for o in flagged if o["product"] == c.get("asset") and o["date"] >= (c.get("start") or ""))
+               if str(c.get("channel", "")).startswith("reddit") else None,
                "costPerTrial": round(spend / trials, 2) if spend and trials else None,
                "costPerOrder": round(spend / orders, 2) if spend and orders else None,
                "nextReading": nxt, "ads": []}
@@ -1988,6 +2017,11 @@ def cmd_campaigns(a, p):
         for ad in r["ads"]:
             print(f"    ad {ad['ad']} ({ad['label']}): spend {money(ad['spend'])}, clicks {ad['clicks'] if ad['clicks'] is not None else '-'}, "
                   f"visits {ad['visits']}, trials {ad['trials']}, orders {ad['orders']}")
+        if r["ordersNoAd"]:
+            print(f"    {r['ordersNoAd']} order{'s' if r['ordersNoAd'] != 1 else ''} from the campaign with no ad tag "
+                  "(first touch restored from the pl_attr cookie, or only checkout's reddit_ad flag)")
+        if r.get("redditFlagged") is not None:
+            print(f"  checkout reddit_ad flag on {r['redditFlagged']} order{'s' if r['redditFlagged'] != 1 else ''} since the start")
         print(f"  {r['reading']}. Next reading {r['nextReading'] or 'none left'}.")
         ac = r["adCheck"]
         print(f"  ad check{' (due ' + ac['due'] + ')' if ac['due'] else ''}: {ac['verdict']}")

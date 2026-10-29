@@ -746,6 +746,59 @@ https://github.com/purplelink-llc/purplelink/pull/9 merged (2026-10-12T10:00-04:
         run("import")
 
 
+def test_reddit_ads_traffic_and_orders_reach_the_campaign():
+    """The ads' first touch reads "paid:reddit" (analytics.js folds utm_medium=cpc), not "reddit": the campaign's
+    channel figure must count it, organic Reddit must not, and orders flagged reddit_ad by checkout count for the
+    campaign, and for an ad when the buyer's first touch kept that ad's tag."""
+    import datetime as dt
+    P = hub.paths()
+    put("hub/campaigns.json", json.dumps({"widget-test-2026-11": {
+        "platformKey": "redditAds", "channel": "reddit-ads", "asset": "widget", "start": "2026-10-20", "end": "2026-11-12",
+        "budget": 80, "breakEven": 18, "approval": "ben test", "readings": ["2026-11-13"],
+        "ads": [{"id": "a", "label": "angle A", "url": "https://purplelink.llc/widget/?utm_source=reddit&utm_medium=cpc&utm_campaign=widget-test-2026-11&utm_content=widget-reddit-a"},
+                {"id": "b", "label": "angle B", "url": "https://purplelink.llc/widget/?utm_source=reddit&utm_medium=cpc&utm_campaign=widget-test-2026-11&utm_content=widget-reddit-b"}]}}))
+    saved_f, saved_h = (tmp / "hub" / "funnel.json").read_text(), (tmp / "history.json").read_text()
+    f = json.loads(saved_f)
+    for w in hub.FUNNEL_WINDOWS:
+        f["windows"][str(w)] = dict(f["windows"][str(w)], **{
+            "paid:reddit": {"pageviews": 25, "pageviewsByPath": {"/widget/": 24, "/guides/x/": 1}, "trial": {"widget": 1}, "checkout": {}},
+            "reddit": {"pageviews": 7, "pageviewsByPath": {"/widget/": 7}, "trial": {}, "checkout": {}}})
+    put("hub/funnel.json", json.dumps(f))
+    h = json.loads(saved_h)
+    h["ledger"].update({
+        # as sales.mjs writes them: source and medium, not the folded label
+        "ra": {"kind": "purchase", "product": "widget", "ts": 1793050000, "reddit": {"ad": True, "click": True},
+               "attr": {"first": {"s": "reddit", "m": "cpc", "t": "widget-reddit-a"}}},
+        # restored from the pl_attr cookie: paid:reddit but no tag, so no ad
+        "rc": {"kind": "purchase", "product": "widget", "ts": 1793050000, "reddit": {"ad": True, "click": False},
+               "attr": {"first": {"s": "reddit", "m": "cpc", "c": "attr-cookie"}}},
+        # flagged by checkout with no first touch at all (storage blocked, no cookie channel)
+        "rf": {"kind": "purchase", "product": "widget", "ts": 1793050000, "reddit": {"ad": True, "click": True}},
+        # an organic Reddit buyer stays organic
+        "ro": {"kind": "purchase", "product": "widget", "ts": 1793050000, "attr": {"first": {"s": "reddit"}}},
+    })
+    put("history.json", json.dumps(h))
+    try:
+        assert hub.first_touch_key({"s": "reddit", "m": "cpc"}) == "paid:reddit"
+        assert hub.first_touch_key({"g": 1}) == "paid:google" and hub.first_touch_key({"s": "reddit"}) == "reddit"
+        run("import")
+        con = db()
+        ch = {r["channel"]: r for r in con.execute("SELECT * FROM channel_stats WHERE product = 'widget'")}
+        assert ch["reddit-ads"]["visits"] == 24 and ch["reddit-ads"]["trials"] == 1, dict(ch["reddit-ads"])
+        assert ch["reddit-ads"]["orders"] == 3, dict(ch["reddit-ads"])
+        res = {(r[0], r[1]): r[2] for r in con.execute("SELECT placement_id, metric, value FROM results WHERE placement_id LIKE 'campaign:%'")}
+        assert res[("campaign:widget-test-2026-11:a", "first-touch-visits")] == 24
+        rep = hub.campaign_report(con, P, dt.date(2026, 11, 2))[0]
+        assert rep["orders"] == 3 and rep["redditFlagged"] == 3, rep
+        assert {a["ad"]: a["orders"] for a in rep["ads"]} == {"a": 1, "b": 0}
+        assert rep["ordersNoAd"] == 2, rep
+    finally:
+        put("hub/funnel.json", saved_f)
+        put("history.json", saved_h)
+        (tmp / "hub" / "campaigns.json").unlink()
+        run("import")
+
+
 if __name__ == "__main__":
     test_all()
     test_sources_untouched()
@@ -768,6 +821,7 @@ if __name__ == "__main__":
     test_one_listing_is_one_placement()
     test_social_engine_rows_under_a_headerless_table()
     test_pull_request_on_someone_elses_repo_is_a_placement()
+    test_reddit_ads_traffic_and_orders_reach_the_campaign()
     print("ok")
 
 
