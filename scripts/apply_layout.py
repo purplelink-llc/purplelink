@@ -10,7 +10,7 @@ It replaces the contents of <nav aria-label="Primary navigation"> and the
 whole <footer class="footer"> element, and marks the current section with
 aria-current. It is idempotent: run it after adding or editing a page.
 
-Localized pages (site/de/, site/ja/, site/zh-cn/) get their own short nav and footer, in their
+Localized pages (site/de/, site/fr/, site/ja/, site/zh-cn/) get their own short nav and footer, in their
 language, from LOCALES below. Pages that exist only in English are labelled "(English)" in the
 footer so nobody follows a link expecting their language. Add a locale here, not on the page.
 
@@ -134,6 +134,21 @@ LOCALES = {
                              ("Kontakt", "mailto:ben@purplelink.llc"), ("Datenschutz (Englisch)", "/privacy/"),
                              ("Nutzungsbedingungen (Englisch)", "/terms/")]),
         ]),
+    "fr": _locale(
+        guide=("LaTeX en français sur Mac", "/fr/guides/latex-en-francais-sur-mac/"),
+        nav_label="Navigation principale", nav_guide="Guide", home="English",
+        blurb="Des apps et des outils conçus par un studio d’une seule personne, à Atlanta, en Géorgie.",
+        loc="Atlanta, Géorgie · Depuis 2026",
+        toggle=("Utiliser le thème clair", "Utiliser le thème sombre"),
+        cols=[
+            ("ModernTex", [("Page du produit", "/fr/moderntex/"), ("@guide",), ("Journal des modifications (en anglais)", "/changelog/"),
+                           ("Retrouver un achat (en anglais)", "/recover/")]),
+            ("Autres pages (en anglais)", [("Tous les produits", "/products/"), ("Outils gratuits", "/tools/"),
+                                           ("Guides", "/guides/"), ("Blog", "/blog/")]),
+            ("Entreprise", [("À propos (en anglais)", "/about/"), ("Assistance (en anglais)", "/support/"),
+                            ("Contact", "mailto:ben@purplelink.llc"), ("Confidentialité (en anglais)", "/privacy/"),
+                            ("Conditions d’utilisation (en anglais)", "/terms/")]),
+        ]),
     "ja": _locale(
         guide=("Mac で日本語 LaTeX を使う", "/ja/guides/mac-nihongo-latex/"),
         nav_label="メインナビゲーション", nav_guide="ガイド", home="English",
@@ -246,6 +261,7 @@ def footer_html(indent: str, code: str | None = None) -> str:
         f'{i}      <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>\n'
         + ("" if loc else
            f'{i}      <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> '
+           f'<a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> '
            f'<a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>\n') +
         f'{i}    </div>\n'
         + "\n".join(cols) + "\n"

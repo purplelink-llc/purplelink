@@ -8,6 +8,7 @@
     <meta name="description" content="A native LaTeX editor for Mac, built for researchers: multi-file projects, synced PDF preview, BibTeX autocomplete, submission checks. Try free, then $19.99.">
     <link rel="canonical" href="https://purplelink.llc/moderntex/">
     <link rel="alternate" hreflang="de" href="https://purplelink.llc/de/moderntex/">
+    <link rel="alternate" hreflang="fr" href="https://purplelink.llc/fr/moderntex/">
     <link rel="alternate" hreflang="ja" href="https://purplelink.llc/ja/moderntex/">
     <link rel="alternate" hreflang="zh-Hans" href="https://purplelink.llc/zh-cn/moderntex/">
     <link rel="alternate" hreflang="en" href="https://purplelink.llc/moderntex/">
@@ -36,7 +37,7 @@
     <link rel="stylesheet" href="/product-flair.css?v=6dc1d15444">
     <link rel="stylesheet" href="/moderntex/seats.css?v=47407c29c2">
     <link rel="stylesheet" href="/buy.css?v=cb10cb94d2">
-    <link rel="stylesheet" href="/intl.css?v=f55f5c8484">
+    <link rel="stylesheet" href="/intl.css?v=29b69d6533">
     <script src="/site.js?v=b053086227" defer></script>
     <script src="/support-box.js?v=119d97fc71" defer></script>
     <script src="/motion.js?v=d35f4b4ee4" defer></script>
@@ -186,8 +187,8 @@
             },
             {
               "@type": "Question",
-              "name": "Does ModernTex work in German, Japanese or Chinese?",
-              "acceptedAnswer": { "@type": "Answer", "text": "The app's interface is in English and German (German is a beta, available since ModernTex 2.0). Chinese and Japanese documents compile with XeLaTeX (ctex) or LuaLaTeX (luatexja, jlreq) when your TeX installation has those packages. This product page is also in German, Japanese and Simplified Chinese." }
+              "name": "Does ModernTex work in German, French, Japanese or Chinese?",
+              "acceptedAnswer": { "@type": "Answer", "text": "The app's interface is in English and German (German is a beta, available since ModernTex 2.0). Chinese and Japanese documents compile with XeLaTeX (ctex) or LuaLaTeX (luatexja, jlreq) when your TeX installation has those packages. This product page is also in German, French, Japanese and Simplified Chinese. French documents compile with babel or polyglossia, T1 and csquotes; the app's interface is not available in French." }
             },
             {
               "@type": "Question",
@@ -225,7 +226,7 @@
     </header>
     <main id="main-content" data-progress>
 
-    <nav class="lang-switch" aria-label="Language"><a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a> <a href="/moderntex/" lang="en" hreflang="en" aria-current="true">English</a></nav>
+    <nav class="lang-switch" aria-label="Language"><a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a> <a href="/moderntex/" lang="en" hreflang="en" aria-current="true">English</a></nav>
 
     <a class="back-link" href="/products/">← All products</a>
 
@@ -687,7 +688,7 @@ l.42 As shown by <span class="fix-bad">\citeauthr</span>
       <h2 id="languages-h">Languages and currency</h2>
       <table class="compare-table specs-table" data-motion="rows">
         <tbody>
-          <tr><th scope="row">This page</th><td>Also in <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a>, <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> and <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a>. The terms, privacy policy and changelog are in English only.</td></tr>
+          <tr><th scope="row">This page</th><td>Also in <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a>, <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a>, <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> and <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a>. The terms, privacy policy and changelog are in English only.</td></tr>
           <tr><th scope="row">App interface</th><td>English and German (beta). German has been available since ModernTex 2.0, and some wording may still be rough.</td></tr>
           <tr><th scope="row">Chinese and Japanese documents</th><td>ModernTex compiles them with XeLaTeX (ctex) or LuaLaTeX (luatexja, jlreq), as long as your TeX installation has those packages. The app's own menus stay in English.</td></tr>
           <tr><th scope="row">Currency</th><td>The price is USD 19.99. Checkout shows it in your local currency where Stripe supports that, and you can switch back to US dollars. Stripe's exchange rate includes a conversion fee of 2 to 4 percent, paid by the buyer. You pay by card or Link.</td></tr>
@@ -764,8 +765,8 @@ l.42 As shown by <span class="fix-bad">\citeauthr</span>
           <div class="faq-body">Any class you can compile with LaTeX works: put the class file in the project folder. ModernTex also bundles starter templates for several information systems journals, computer science conferences and a generic thesis. The free starters on this site for <a href="/templates/acm-acmart/">ACM</a>, <a href="/templates/ieee-conference/">IEEE</a>, <a href="/templates/elsevier-elsarticle/">Elsevier</a>, <a href="/templates/apa7/">APA 7</a> and the <a href="/templates/academic-cv/">academic CV</a> each compiled with TinyTeX and latexmk when I tested them on October 15, 2026, after the publisher class was installed with tlmgr. For a project with no required class there are two plain CC0 starters, a <a href="/templates/latex-thesis-template/">multi-file thesis</a> and a <a href="/templates/latex-article-template/">single-file article</a>, which compiled the same way on the same day. The <a href="/templates/neurips/">NeurIPS</a> starter needs the current year's style file from the conference, so I make no compile claim for it.</div>
         </details>
         <details class="faq-item">
-          <summary>Does ModernTex work in German, Japanese or Chinese?</summary>
-          <div class="faq-body">The app's interface is in English and German (German is a beta, available since ModernTex 2.0). Chinese and Japanese documents compile with XeLaTeX (ctex) or LuaLaTeX (luatexja, jlreq) when your TeX installation has those packages. This product page is also in German, Japanese and Simplified Chinese.</div>
+          <summary>Does ModernTex work in German, French, Japanese or Chinese?</summary>
+          <div class="faq-body">The app's interface is in English and German (German is a beta, available since ModernTex 2.0). Chinese and Japanese documents compile with XeLaTeX (ctex) or LuaLaTeX (luatexja, jlreq) when your TeX installation has those packages. This product page is also in German, French, Japanese and Simplified Chinese. French documents compile with babel or polyglossia, T1 and csquotes; the app's interface is not available in French.</div>
         </details>
         <details class="faq-item">
           <summary>Can I pay in my own currency?</summary>
@@ -850,7 +851,7 @@ l.42 As shown by <span class="fix-bad">\citeauthr</span>
           </a>
           <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
           <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
-          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
+          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
         </div>
         <nav class="footer-col" aria-label="Products">
           <p class="footer-head">Products</p>

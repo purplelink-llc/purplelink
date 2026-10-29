@@ -5,9 +5,9 @@ Public note on what purplelink.llc localizes for ModernTex, and the rules that k
 
 ## What is localized
 
-- Product pages: `/de/moderntex/`, `/ja/moderntex/`, `/zh-cn/moderntex/`, each with one how-to under `/de/guides/`,
-  `/ja/guides/`, `/zh-cn/guides/`. Hreflang in the page head and in `sitemap.xml`, a language switcher at the top of the four
-  product pages, and a "ModernTex in Deutsch, 日本語, 简体中文" line in the footer of every English page
+- Product pages: `/de/moderntex/`, `/fr/moderntex/`, `/ja/moderntex/`, `/zh-cn/moderntex/`, each with one how-to under
+  `/de/guides/`, `/fr/guides/`, `/ja/guides/`, `/zh-cn/guides/`. Hreflang in the page head and in `sitemap.xml`, a language switcher at the top of the five
+  product pages, and a "ModernTex in Deutsch, Français, 日本語, 简体中文" line in the footer of every English page
   (`scripts/apply_layout.py`, styled by `.footer-langs` in `site/styles.css`).
 - The English `/moderntex/` has a "Languages and currency" section and two FAQ entries. `/suite/`, `/outbound-veil/` and
   `/legroom/` carry the currency line by the buy button, and `/pricing/` has a FAQ entry.
@@ -21,8 +21,8 @@ Public note on what purplelink.llc localizes for ModernTex, and the rules that k
 A page may say the ModernTex interface is in a language only when a published release has it.
 
 - Shipped: English, and German (beta) since ModernTex 2.0.
-- Not shipped: Japanese and Simplified Chinese (open pull requests moderntex #117 and #118). The Japanese and Chinese pages
-  say the interface is English, and no page may claim otherwise.
+- Not shipped: French, Japanese and Simplified Chinese (the Japanese and Chinese ones are open pull requests moderntex #117
+  and #118). The French, Japanese and Chinese pages say the interface is English, and no page may claim otherwise.
 - What is true today regardless: ModernTex compiles Chinese and Japanese documents with XeLaTeX (ctex) and LuaLaTeX
   (luatexja, jlreq) when the user's TeX installation has those packages. upLaTeX support is not released.
 
@@ -56,5 +56,5 @@ price and the currency display, nothing else.
 ## Monitoring
 
 `scripts/uptime-checks.txt` (run every 15 minutes by `.github/workflows/uptime.yml`) probes `/moderntex/`,
-`/de/moderntex/`, `/ja/moderntex/` and `/zh-cn/moderntex/` for a 200. The daily indexing job reads every `<loc>` in the
+`/de/moderntex/`, `/fr/moderntex/`, `/ja/moderntex/` and `/zh-cn/moderntex/` for a 200. The daily indexing job reads every `<loc>` in the
 live sitemap, so the localized URLs are included; `site-tests/test_intl_advertise.py` checks that they are in it.

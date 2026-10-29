@@ -8,8 +8,9 @@ stripe-webhook-reachable|GET|https://purplelink.llc/.netlify/functions/stripe-we
 modal-latextools|GET|https://ben-ampel--purplelink-latextools-web.modal.run/paper-review/status|422
 modal-citation-mcp|GET|https://ben-ampel--purplelink-citation-mcp-web.modal.run/health|200
 # The localized ModernTex pages are static files that ship with the site, so a 200 here also proves the last build
-# published them (de, ja and zh-cn serve nothing different per visitor).
+# published them (de, fr, ja and zh-cn serve nothing different per visitor).
 site-moderntex|GET|https://purplelink.llc/moderntex/|200
 site-moderntex-de|GET|https://purplelink.llc/de/moderntex/|200
+site-moderntex-fr|GET|https://purplelink.llc/fr/moderntex/|200
 site-moderntex-ja|GET|https://purplelink.llc/ja/moderntex/|200
 site-moderntex-zh-cn|GET|https://purplelink.llc/zh-cn/moderntex/|200
