@@ -39,12 +39,12 @@ test("an ad visitor's trial download sets pl_attr with the right attributes", as
   assert.equal(await res.text(), "bytes:ModernTex-1.10.0.dmg");
   assert.match(res.headers.get("content-disposition"), /ModernTex-1\.10\.0\.dmg/);
   const c = res.headers.get("set-cookie");
-  assert.equal(c, `pl_attr=v1~paid:reddit~abc123_-.x~${today}; Path=/; Max-Age=7776000; HttpOnly; Secure; SameSite=Lax`);
+  assert.equal(c, `pl_attr=v2~paid:reddit~abc123_-.x~~${today}; Path=/; Max-Age=7776000; HttpOnly; Secure; SameSite=Lax`);
 });
 
 test("a campaign visitor without a click id gets a cookie; the first-seen date falls back to today when absent or bad", async () => {
   let c = (await trial("&ach=newsletter")).headers.get("set-cookie");
-  assert.match(c, new RegExp(`^pl_attr=v1~newsletter~~${today};`));
+  assert.match(c, new RegExp(`^pl_attr=v2~newsletter~~~${today};`));
   c = (await trial("&ach=newsletter&ad=2099-01-01")).headers.get("set-cookie");
   assert.match(c, new RegExp(`~${today};`));
   c = (await trial("&ach=newsletter&ad=2020-01-01")).headers.get("set-cookie");
@@ -75,7 +75,7 @@ test("the earliest cookie is kept: an existing valid pl_attr means no new Set-Co
   assert.equal(res.headers.get("set-cookie"), null);
   // an invalid existing cookie does not count as one
   const res2 = await trial("&ach=paid:google", { cookie: "pl_attr=garbage" });
-  assert.match(res2.headers.get("set-cookie"), /^pl_attr=v1~paid:google~~/);
+  assert.match(res2.headers.get("set-cookie"), /^pl_attr=v2~paid:google~~~/);
 });
 
 test("invalid params are ignored and the download still works", async () => {
@@ -87,16 +87,16 @@ test("invalid params are ignored and the download still works", async () => {
   }
   // a bad click id with a good channel keeps the channel only
   const res = await trial("&ach=paid:reddit&arc=" + encodeURIComponent("bad id;"));
-  assert.match(res.headers.get("set-cookie"), new RegExp(`^pl_attr=v1~paid:reddit~~${today};`));
+  assert.match(res.headers.get("set-cookie"), new RegExp(`^pl_attr=v2~paid:reddit~~~${today};`));
 });
 
 test("the cookie holds only channel, click id and a date (nothing personal)", async () => {
   const res = await trial("&ach=paid:reddit&arc=abc&ad=" + today, { "x-forwarded-for": "203.0.113.7", "user-agent": "UA-secret", referer: "https://example.com/me@x.com" });
   const c = res.headers.get("set-cookie");
   const value = c.split(";")[0].slice("pl_attr=".length);
-  assert.equal(value, `v1~paid:reddit~abc~${today}`);
+  assert.equal(value, `v2~paid:reddit~abc~~${today}`);
   assert.doesNotMatch(c, /203\.0\.113|198\.51\.100|UA-secret|@/);
-  assert.deepEqual(lib.decodeValue(value), { channel: "paid:reddit", rdt: "abc", date: today });
+  assert.deepEqual(lib.decodeValue(value), { channel: "paid:reddit", rdt: "abc", tag: "", date: today });
   assert.equal(lib.decodeValue("v1~a;b~~2026-01-01"), null);
   assert.equal(lib.decodeValue("v1~paid:reddit~abc~2026-13-45"), null);
 });
@@ -238,4 +238,31 @@ test("reddit-pixel.js: on the success page an order marked reddit_ad fires Purch
   assert.deepEqual(events(run("/moderntex/success/", { early: true })), ["a2_test", "PageVisit", "Purchase"]);
   assert.equal(run("/moderntex/").plRedditPurchase, undefined);
   assert.deepEqual(events(run("/moderntex/success/", { early: true, dnt: "1" })), []);
+});
+
+// ---- the ad tag (utm_content), 2026-10-29 ----
+test("the trial link carries the first touch's ad tag, and the cookie keeps it (v2)", async () => {
+  const href = page({ search: "?utm_source=reddit&utm_medium=cpc&utm_content=moderntex-reddit-261027-a&rdt_cid=abc" }).clickTrial();
+  assert.equal(new URL(href, "https://purplelink.llc").searchParams.get("atg"), "moderntex-reddit-261027-a");
+  // no tag on the link: no atg parameter
+  assert.equal(new URL(page({ search: "?utm_source=reddit&utm_medium=cpc&rdt_cid=abc" }).clickTrial(), "https://purplelink.llc").searchParams.get("atg"), null);
+  const c = (await trial(`&ach=paid:reddit&arc=abc&atg=moderntex-reddit-261027-a&ad=${today}`)).headers.get("set-cookie");
+  assert.equal(c.split(";")[0], `pl_attr=v2~paid:reddit~abc~moderntex-reddit-261027-a~${today}`);
+  assert.deepEqual(lib.decodeValue(`v2~paid:reddit~abc~moderntex-reddit-261027-a~${today}`),
+    { channel: "paid:reddit", rdt: "abc", tag: "moderntex-reddit-261027-a", date: today });
+  // a bad tag is dropped, the rest is kept
+  const bad = (await trial(`&ach=paid:reddit&atg=${encodeURIComponent("a b;c")}`)).headers.get("set-cookie");
+  assert.match(bad, new RegExp(`^pl_attr=v2~paid:reddit~~~${today};`));
+});
+
+test("cookies written before the tag (v1) still read, with no tag", () => {
+  assert.deepEqual(lib.decodeValue("v1~paid:reddit~abc~2026-10-20"), { channel: "paid:reddit", rdt: "abc", tag: "", date: "2026-10-20" });
+});
+
+test("checkout restores the ad tag from the cookie into the first touch", async () => {
+  stubStripe();
+  await buy({ product: "moderntex" }, "pl_attr=v2~paid:reddit~clickabc~moderntex-reddit-261027-b~2026-10-20");
+  assert.deepEqual(JSON.parse(sessions[0]["metadata[attr_first]"]),
+    { d: "2026-10-20", c: "attr-cookie", s: "reddit", m: "cpc", t: "moderntex-reddit-261027-b" });
+  assert.equal(sessions[0]["metadata[reddit_click_id]"], "clickabc");
 });
