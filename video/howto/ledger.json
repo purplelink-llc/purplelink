@@ -241,5 +241,34 @@
    "ok": true
   },
   "short_utm_content": "howto-bibtex-from-doi-no-acceptable-resource-short"
+ },
+ {
+  "slug": "howto-unicode-character-not-set-up-for-latex",
+  "app": "moderntex",
+  "date": "2026-10-29",
+  "title": "Unicode character (U+200B) not set up for use with LaTeX on Mac (remove the hidden character)",
+  "long_id": "ticLxRICj90",
+  "short_id": "Mk4dlSORdqU",
+  "link_arm": "B",
+  "link_utm_content": "howto-unicode-character-not-set-up-for-latex",
+  "short_utm_content": "howto-unicode-character-not-set-up-for-latex-short",
+  "sources": [
+   "https://forum.posit.co/t/r-markdown-r-latex-error-unicode-character-u-200b-not-set-up-for-use-with-latex/177596",
+   "https://www.texifier.com/docs/apps/typesetting/further-topics/bad-unicode-characters"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "ticLxRICj90",
+    "caption_id": "AUieDaZ9wd7Hz501tGClovKzhvDxSYB_uJfGBjdfCLzHN9tmlEAmESGl"
+   },
+   "short": {
+    "video_id": "Mk4dlSORdqU",
+    "caption_id": "AUieDab3Q-ctgkyPtFpfHH6cH10S4WtZfHgIqk7l1jxSmf4WbhWtMHbM"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-unicode-character-not-set-up-for-latex-reel"
+  }
  }
 ]
