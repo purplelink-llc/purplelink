@@ -664,6 +664,42 @@ def test_one_listing_is_one_placement():
         assert con.execute("SELECT count(*) FROM results WHERE placement_id = 'macupdate:gadget' AND metric = 'downloads-total'").fetchone()[0] == 2
     finally:
         log.write_text(orig)
+def test_social_engine_rows_under_a_headerless_table():
+    """The social engine appends one row per post at the end of the outreach log, under whatever heading is last, with
+    no table header of its own. Every such row is a mirror of a social queue item (Instagram and Facebook included),
+    and a row that is not keeps its own date and platform rather than the heading's."""
+    log = tmp / "repo/Outreach/OUTREACH-LOG.md"
+    orig = log.read_text()
+    put("social/20261029-ig-reel-abc.md", """---
+id: "20261029-ig-reel-abc"
+status: "posted"
+approved_by: "ben (standing, 2026-10-23)"
+platforms: ["instagram"]
+campaign: "ig-reel"
+link: "https://purplelink.llc/widget/"
+results: {"instagram": {"status": "posted", "url": "https://www.instagram.com/reel/X/", "posted_at": "2026-10-29T07:16:39-04:00"}}
+---
+
+## instagram
+A Reel.
+""")
+    log.write_text(orig + """
+### AlternativeTo: Gadget linked to Widget (2026-10-20, q-20261020-alto, approved by Ben)
+Done in Chrome.
+| 2026-10-21 | linkedin: 20261021-daily-release-widget-1-2 | https://www.linkedin.com/company/1/admin/ | posted | queue item 20261021-daily-release-widget-1-2 |
+| 2026-10-29 | instagram: 20261029-ig-reel-abc | https://www.instagram.com/reel/X/ | posted | queue item 20261029-ig-reel-abc |
+| 2026-10-29 | facebook: 20261029-fb-reel-gone | https://www.facebook.com/reel/1/ | posted | queue item 20261029-fb-reel-gone |
+""")
+    try:
+        run("import")
+        rows = list(db().execute("SELECT * FROM placements WHERE source = 'outreach-log'"))
+        assert not [r for r in rows if r["target"].startswith(("instagram:", "linkedin:"))], [tuple(r) for r in rows]
+        assert not [r for r in rows if r["channel"] == "alternativeto"], [tuple(r) for r in rows]
+        fb = next(r for r in rows if r["target"].startswith("facebook:"))
+        assert fb["channel"] == "facebook" and fb["date"] == "2026-10-29" and fb["status"] == "live", tuple(fb)
+    finally:
+        log.write_text(orig)
+        (tmp / "social/20261029-ig-reel-abc.md").unlink()
         run("import")
 
 
@@ -687,6 +723,7 @@ if __name__ == "__main__":
     test_rechecks()
     test_doctor()
     test_one_listing_is_one_placement()
+    test_social_engine_rows_under_a_headerless_table()
     print("ok")
 
 

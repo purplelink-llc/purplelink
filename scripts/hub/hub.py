@@ -378,6 +378,11 @@ def from_social(p: dict) -> list:
     return out
 
 
+# A row the social engine writes: "| date | <platform>: <social queue id> | url | status | notes |".
+SOCIAL_LOG_HEADER = ["date", "where", "link", "status", "notes"]
+SOCIAL_ROW_RE = re.compile(r"^([a-z]+): (\d{8}-[\w-]+)$")
+
+
 def from_outreach(p: dict) -> list:
     out = []
     f = p["outreach"]
@@ -393,8 +398,11 @@ def from_outreach(p: dict) -> list:
             continue
         cells = [c.strip() for c in line.strip().strip("|").split("|")]
         if header is None:
-            header = [c.lower() for c in cells]
-            continue
+            # The social engine appends its rows under whatever heading is last, with no table header of its own.
+            if not DATE_RE.fullmatch(cells[0]):
+                header = [c.lower() for c in cells]
+                continue
+            header = SOCIAL_LOG_HEADER
         if all(set(c) <= set("-: ") for c in cells):
             continue
         row = dict(zip(header, cells))
@@ -410,13 +418,15 @@ def from_outreach(p: dict) -> list:
         urls = URL_RE.findall(joined)
         ext = [u for u in urls if not site_path(u)]
         landing = next((u for u in urls if site_path(u)), "")
+        mirror = SOCIAL_ROW_RE.match(row.get(target_key, ""))
         out.append({
-            "id": f"outreach:{n}", "source": "outreach-log", "channel": channel_of(heading + " " + row.get(target_key, ""), "other"),
+            "id": f"outreach:{n}", "source": "outreach-log",
+            "channel": mirror.group(1) if mirror else channel_of(heading + " " + row.get(target_key, ""), "other"),
             "kind": "reply" if "stackexchange" in heading.lower() else "", "target": mask(row.get(target_key, ""))[:200],
             "status": status, "date": date, "url": ext[0] if ext else "", "landing_url": landing, "utm": "",
             "approval": (re.findall(r"q-\d{8}-[\w-]+", joined) or [""])[0], "contact_ref": f"OUTREACH-LOG.md:{n}",
             "notes": mask(row.get("notes", ""))[:300], "_text": heading + " " + joined,
-            "_social": (re.findall(r"^(?:linkedin|bluesky|threads|mastodon|x): (\S+)$", row.get(target_key, "")) or [""])[0],
+            "_social": mirror.group(2) if mirror else "",
             "_assets": ["photo-licensing"] if channel_of(heading, "") == "photo-pitch" else [],
         })
     return out
