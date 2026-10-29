@@ -244,6 +244,9 @@ def footer_html(indent: str, code: str | None = None) -> str:
         f'{i}      </a>\n'
         f'{i}      <p class="footer-blurb">{loc["blurb"] if loc else "Apps and tools made by a one-person studio in Atlanta, Georgia."}</p>\n'
         f'{i}      <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>\n'
+        + ("" if loc else
+           f'{i}      <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> '
+           f'<a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>\n') +
         f'{i}    </div>\n'
         + "\n".join(cols) + "\n"
         f'{i}  </div>\n'

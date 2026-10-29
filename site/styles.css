@@ -900,6 +900,24 @@ dd {
 
 .footer-mail:hover { text-decoration: underline; }
 
+.footer-langs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  font-size: 0.85rem;
+  color: oklch(99% 0.003 310 / 0.66);
+}
+
+.footer-langs a {
+  display: inline-block;
+  min-height: 24px;
+  padding-block: 3px;
+  color: oklch(99% 0.003 310 / 0.78);
+  text-decoration: none;
+}
+
+.footer-langs a:hover { color: oklch(99% 0.003 310); text-decoration: underline; }
+
 .footer-head {
   margin-bottom: 12px;
   font-size: 0.8125rem;

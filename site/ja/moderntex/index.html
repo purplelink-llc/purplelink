@@ -32,7 +32,7 @@
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/moderntex-icon.webp" as="image" fetchpriority="high">
     <script src="/theme.js?v=f0ab0f06a1"></script>
-    <link rel="stylesheet" href="/styles.css?v=a975ed784e">
+    <link rel="stylesheet" href="/styles.css?v=6388ed6bce">
     <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
     <link rel="stylesheet" href="/product-flair.css?v=6dc1d15444">
     <link rel="stylesheet" href="/buy.css?v=cb10cb94d2">
@@ -64,7 +64,7 @@
           "@type": "SoftwareApplication",
           "@id": "https://purplelink.llc/ja/moderntex/#app",
           "name": "ModernTex",
-          "inLanguage": "ja",
+          "inLanguage": ["en", "de"],
           "applicationCategory": "DeveloperApplication",
           "applicationSubCategory": "LaTeX editor",
           "operatingSystem": "macOS 14+",
@@ -220,6 +220,14 @@
                 "@type": "Answer",
                 "text": "ビルドエラーでボタンを押したときだけ動きます。標準では Mac 上の Apple Intelligence で動き、何も送りません。代わりに Claude か OpenAI のアカウントを選ぶと、アプリが先に同意を確認し、そのあとエラー周辺の行、前後の文脈、文書のプリアンブルをそのプロバイダーへ送ります。修正は diff で表示され、承認するまで何も変わりません。"
               }
+            },
+            {
+              "@type": "Question",
+              "name": "円で支払えますか。使えるカードは何ですか。",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "はい。決済画面に、19.99米ドルがお住まいの地域の通貨（円など）に換算されて表示されます。通貨は Stripe が所在地から選び、米ドルに切り替えることもできます。基本価格は19.99米ドルのままです。換算額には Stripe の為替レートが使われ、2〜4%の為替手数料が含まれていて、購入者が負担します。支払い方法は、クレジットカードまたはデビットカード（Apple Pay と Google Pay を含む）と Link です。コンビニ払い、銀行振込、PayPal には対応していません。"
+              }
             }
           ]
         },
@@ -272,11 +280,11 @@
           <a class="btn btn-primary" id="trial-download" href="/.netlify/functions/moderntex-download?trial=1">7日間の無料体験版をダウンロード</a>
           <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn" data-product="moderntex">ModernTex を購入（19.99ドル）</button>
         </div>
-        <p class="buy-assurance">購入から14日以内にメールをいただければ返金します。アップデートはずっと無料です。</p>
+        <p class="buy-assurance">購入から14日以内にメールをいただければ返金します。アップデートはずっと無料です。決済画面には、お住まいの地域の通貨で価格が表示されます。</p>
         <p class="buy-suite"><a href="/suite/">Mac Suite</a>（英語のページ）もあります。ModernTex、Outbound Veil、Legroom、Keyfeel、Tapefolio、Panely、Summonly と Vitae Plus（買い切り）がセットで 59.99ドル。</p>
         <p class="tool-status" id="checkout-status" aria-live="polite"></p>
         <p class="waitlist-fine-print">体験版は7日間、アカウント不要、入力なしで全機能を使えます。購入は 19.99ドル（USD 19.99）の1回払いで、今後のアップデートもすべて含まれます（<a href="/terms/">利用規約</a>は英語）。領収書のメールに永久ライセンスキーが載っており、7日が過ぎるとアプリがキーを求めます。合わなければ、購入から14日以内に <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> へメールをください。体験版を使用中の場合は、アプリで「Enter license key」を選んでキーを貼り付けると、再インストールなしですぐに使えます。macOS 14 以降、Apple シリコンと Intel に対応します。<a href="#kankyo">動作環境</a>。</p>
-        <p class="intl-note">このページは製品ページの日本語版です。アプリの画面表示は現在、英語です。価格は米ドルで表示しています。利用規約、プライバシーポリシー、変更履歴は英語のみです。</p>
+        <p class="intl-note">このページは製品ページの日本語版です。アプリの画面表示は現在、英語です。価格は19.99米ドルです。決済画面では、お住まいの地域の通貨（円など）に換算した金額が表示され、米ドルに切り替えることもできます。利用規約、プライバシーポリシー、変更履歴は英語のみです。</p>
       </div>
       <figure class="app-hero-window">
         <div class="frame-soft hero-media">
@@ -543,6 +551,10 @@ l.42 As shown by <span class="fix-bad">\citeauthr</span>
         <details class="faq-item">
           <summary>ModernTex はいくらですか。</summary>
           <div class="faq-body">7日間の無料体験のあと、19.99ドルの買い切りで、今後のアップデートもすべて含まれます。サブスクリプションもアカウントもありません。任意の AI 機能は Apple Intelligence か、ご自身の Claude または OpenAI のアカウントで動きます。</div>
+        </details>
+        <details class="faq-item">
+          <summary>円で支払えますか。使えるカードは何ですか。</summary>
+          <div class="faq-body">はい。決済画面に、19.99米ドルがお住まいの地域の通貨（円など）に換算されて表示されます。通貨は Stripe が所在地から選び、米ドルに切り替えることもできます。基本価格は19.99米ドルのままです。換算額には Stripe の為替レートが使われ、2〜4%の為替手数料が含まれていて、購入者が負担します。支払い方法は、クレジットカードまたはデビットカード（Apple Pay と Google Pay を含む）と Link です。コンビニ払い、銀行振込、PayPal には対応していません。</div>
         </details>
         <details class="faq-item">
           <summary>無料体験はありますか。</summary>
