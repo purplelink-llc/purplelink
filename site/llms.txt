@@ -167,7 +167,7 @@
 - **Category:** Travel
 - **Description:** A travel mapping app for tracking every place visited, every flight taken, and every destination on the list. Features interactive map visualization with 3D globe view, flight statistics dashboards, travel goal tracking, anniversary reminders for visits, and shareable travel postcards.
 - **Target users:** Frequent travelers who want a complete personal travel record
-- **Pricing:** Free to download, with small ads served by Google AdMob. A one-time Pro purchase of $14.99 removes the ads. No subscription.
+- **Pricing:** Free to download, with small ads served by Google AdMob. A one-time Pro purchase of $9.99 removes the ads. No subscription.
 - **Sync:** iCloud sync via CloudKit (no Purplelink account required)
 - **Status:** Shipping. Version 1.0 released on the App Store 2026-09-03; current version 1.5 (2026-10-29), with a smoother 3D globe and a Feedback section in Settings.
 - **Download:** https://apps.apple.com/us/app/globepin/id6762313540
@@ -267,7 +267,7 @@
   - Sports games hub: free daily NBA, NFL, MLB and NHL puzzles (Lockerlink, Gridlink, Under the Cap). https://purplelink.llc/games/sports/
   - Teammate chains between stars of different eras: https://purplelink.llc/games/sports/nba-teammate-chains/ , https://purplelink.llc/games/sports/nfl-teammate-chains/ , https://purplelink.llc/games/sports/mlb-teammate-chains/ , https://purplelink.llc/games/sports/nhl-teammate-chains/
 - Guides: https://purplelink.llc/guides/
-- GlobePin (iOS, free with ads, Pro $14.99 once, shipping): https://purplelink.llc/globepin/
+- GlobePin (iOS, free with ads, Pro $9.99 once, shipping): https://purplelink.llc/globepin/
 - Circled Hoops (free weekly fantasy basketball, web; iPhone app in App Store review): https://purplelink.llc/circled-hoops/
 - haea (iOS, in development): https://purplelink.llc/haea/
 - Kits (downloadable automation systems): https://purplelink.llc/kits/
@@ -286,7 +286,7 @@
 ## Frequently asked questions
 
 **When do Purplelink's apps ship?**
-ModernTex (macOS) came out on 2026-09-04, has a free 7-day trial, and sells for $19.99 at https://purplelink.llc/moderntex/. Vitae (macOS) is free at https://purplelink.llc/vitae/, with an optional Vitae Plus subscription at $2.99 a month or $23.99 a year. GlobePin (iOS) came out on 2026-09-03 and is free with ads at https://apps.apple.com/us/app/globepin/id6762313540, and a one-time $14.99 Pro purchase removes the ads. haea is still in development, with a waitlist on its product page.
+ModernTex (macOS) came out on 2026-09-04, has a free 7-day trial, and sells for $19.99 at https://purplelink.llc/moderntex/. Vitae (macOS) is free at https://purplelink.llc/vitae/, with an optional Vitae Plus subscription at $2.99 a month or $23.99 a year. GlobePin (iOS) came out on 2026-09-03 and is free with ads at https://apps.apple.com/us/app/globepin/id6762313540, and a one-time $9.99 Pro purchase removes the ads. haea is still in development, with a waitlist on its product page.
 
 **What platforms do the apps support?**
 ModernTex is a macOS app (macOS 14+). Vitae is a macOS app (macOS 15+). GlobePin and haea are iOS apps (iOS 17+).
