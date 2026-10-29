@@ -389,6 +389,12 @@ SOCIAL_LOG_HEADER = ["date", "where", "link", "status", "notes"]
 SOCIAL_ROW_RE = re.compile(r"^([a-z]+): (\d{8}-[\w-]+)$")
 
 
+def row_pin(cells: list) -> str:
+    """A log row's first three cells, as an override's "_row": outreach ids are line numbers, so an override records
+    which row it meant and the doctor can tell when an edit above has moved it."""
+    return mask(" ".join(" | ".join(cells[:3]).split()))[:100]
+
+
 def from_outreach(p: dict) -> list:
     out = []
     f = p["outreach"]
@@ -432,7 +438,7 @@ def from_outreach(p: dict) -> list:
             "status": status, "date": date, "url": ext[0] if ext else "", "landing_url": landing, "utm": "",
             "approval": (re.findall(r"q-\d{8}-[\w-]+", joined) or [""])[0], "contact_ref": f"OUTREACH-LOG.md:{n}",
             "notes": mask(row.get("notes", ""))[:300], "_text": heading + " " + joined,
-            "_social": mirror.group(2) if mirror else "",
+            "_social": mirror.group(2) if mirror else "", "_row": row_pin(cells),
             "_assets": ["photo-licensing"] if channel_of(heading, "") == "photo-pitch" else [],
         })
     return out
@@ -1566,7 +1572,44 @@ def doctor(con, p: dict, today: dt.date | None = None) -> dict:
                 bad.append({"id": r["id"], "which": kind, "url": u, "status": c["status"], "final": c.get("final")})
     unverified = sum(1 for c in links.values() if c.get("status") is None)
     return {"missing": missing, "duplicates": dups, "bad_links": bad, "links_checked": len(links),
-            "links_unverifiable": unverified}
+            "links_unverifiable": unverified, "pins": override_pins(p)}
+
+
+def override_pins(p: dict) -> list:
+    """Hand corrections keyed by an outreach-log line that no longer sit on their row: the line is not a table row
+    (not a log row), the override never recorded its row (unpinned: run doctor --pin), or the row text at that line
+    differs from the pin: row moved when the pinned text is found on other lines (`now`), row changed when it was
+    edited in place (check it, then update or remove "_row")."""
+    rows = {pl["id"]: pl["_row"] for pl in from_outreach(p)}
+    out = []
+    for k, o in (load_json(p["overrides"], {}) or {}).items():
+        if not k.startswith("outreach:") or not isinstance(o, dict):
+            continue
+        pin = o.get("_row") or ""
+        if not pin:
+            out.append({"id": k, "problem": "unpinned" if k in rows else "not a log row", "pin": "", "now": []})
+        elif rows.get(k) != pin:
+            now = [i for i, r in rows.items() if r == pin]
+            problem = "row moved" if now else ("row changed" if k in rows else "not a log row")
+            out.append({"id": k, "problem": problem, "pin": pin, "now": now})
+    return out
+
+
+def pin_overrides(p: dict) -> list:
+    """Record "_row" on every unpinned outreach override that points at a log row; returns the ids pinned.
+    A pin that no longer matches is left alone for a person to resolve."""
+    rows = {pl["id"]: pl["_row"] for pl in from_outreach(p)}
+    data = load_json(p["overrides"], {}) or {}
+    done = []
+    for k, o in data.items():
+        if k.startswith("outreach:") and isinstance(o, dict) and not o.get("_row") and k in rows:
+            o["_row"] = rows[k]
+            done.append(k)
+    if done:
+        tmp = p["overrides"].with_suffix(".tmp")
+        tmp.write_text(json.dumps(data, indent=1))
+        os.replace(tmp, p["overrides"])
+    return done
 
 
 # --- build --------------------------------------------------------------------------------------------------------
@@ -2056,7 +2099,14 @@ def cmd_doctor(a, p):
                 for u in r if u and u.startswith("http")]
         con.close()
         check_links(p, urls)
+    if a.pin:
+        ids = pin_overrides(p)
+        print(f"pinned {len(ids)} outreach override{'s' if len(ids) != 1 else ''} to their current rows")
     d = doctor(connect(p), p)
+    print(f"{len(d['pins'])} hand corrections in overrides.json that are not pinned to their outreach-log row:")
+    for x in d["pins"]:
+        where = f"; pinned row now at {', '.join(x['now'])}" if x["now"] else ""
+        print(f"  {x['id']:16} {x['problem']}{where}" + (f"  (pin: {x['pin']})" if x["pin"] else ""))
     print(f"{len(d['missing'])} live placements without any result:")
     for m in d["missing"]:
         print(f"  {m['date'] or '----------'} {m['channel']:11} {m['id']:34} {m['why']}")
@@ -2096,6 +2146,7 @@ def main(argv=None) -> int:
     cs.add_argument("--clicks", type=int); cs.add_argument("--impressions", type=int); cs.add_argument("--ad")
     cs.add_argument("--as-of", dest="as_of")
     dr = sub.add_parser("doctor"); dr.add_argument("--links", action="store_true")
+    dr.add_argument("--pin", action="store_true", help="record the row text on unpinned outreach overrides")
     a = ap.parse_args(argv)
     {"import": cmd_import, "where": cmd_where, "grid": cmd_grid, "gaps": cmd_gaps, "unmatched": cmd_unmatched,
      "status": cmd_status, "channels": cmd_channels, "followups": cmd_followups, "check-listings": cmd_check_listings,
