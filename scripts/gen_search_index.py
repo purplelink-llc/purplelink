@@ -21,9 +21,9 @@ ROOT = Path(__file__).resolve().parent.parent
 SITE = ROOT / "site"
 OUT = SITE / "search-index.json"
 
-# /de/, /fr/, /ja/ and /zh-cn/ are translations. /search/ is an English page with an English index, so a German
+# /de/, /fr/, /pt-br/, /ja/ and /zh-cn/ are translations. /search/ is an English page with an English index, so a German
 # title would match nothing a reader types there; the trailing slash keeps /desk/ in the index.
-EXCLUDE_PREFIXES = ("blog/digest", "assets", "search", "de/", "fr/", "ja/", "zh-cn/")
+EXCLUDE_PREFIXES = ("blog/digest", "assets", "search", "de/", "fr/", "pt-br/", "ja/", "zh-cn/")
 NOINDEX_RE = re.compile(r'<meta[^>]+name=["\']robots["\'][^>]*noindex', re.I)
 TITLE_RE = re.compile(r"<title>(.*?)</title>", re.S)
 DESC_RE = re.compile(r'<meta\s+name="description"\s+content="([^"]*)"', re.S)

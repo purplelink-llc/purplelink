@@ -1,4 +1,4 @@
-/* Localized pages (/de/, /fr/, /ja/, /zh-cn/).
+/* Localized pages (/de/, /fr/, /pt-br/, /ja/, /zh-cn/).
    1. The theme toggle: theme.js sets an English label on load and on every click. Its handlers run first, so
       this script rewrites the label afterwards, from data-label-light / data-label-dark on the button.
    2. Copy buttons on code blocks in the guides, in the page's language (site.js does the same job in English
@@ -21,6 +21,7 @@
   const TEXT = {
     de: { copy: 'Kopieren', copied: 'Kopiert', live: 'In die Zwischenablage kopiert', fail: 'Markieren und kopieren', failLive: 'Kopieren nicht möglich. Markieren Sie den Code und kopieren Sie ihn.' },
     fr: { copy: 'Copier', copied: 'Copié', live: 'Copié dans le presse-papiers', fail: 'Sélectionner et copier', failLive: 'Copie impossible. Sélectionnez le code et copiez-le.' },
+    'pt-BR': { copy: 'Copiar', copied: 'Copiado', live: 'Copiado para a área de transferência', fail: 'Selecionar e copiar', failLive: 'Não foi possível copiar. Selecione o código e copie.' },
     ja: { copy: 'コピー', copied: 'コピーしました', live: 'クリップボードにコピーしました', fail: '選択してコピー', failLive: 'コピーできませんでした。コードを選択してコピーしてください。' },
     'zh-Hans': { copy: '复制', copied: '已复制', live: '已复制到剪贴板', fail: '请选中后复制', failLive: '无法复制。请选中代码后手动复制。' },
   };

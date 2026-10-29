@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Escrever em português do Brasil com LaTeX no Mac: babel, acentos e ABNT | Purplelink</title>
+    <meta name="description" content="Como escrever um documento em português do Brasil com LaTeX no Mac: babel brazilian ou polyglossia, fontenc T1, acentos, aspas com csquotes, hifenização e a classe abntex2 com abntex2cite para a ABNT. Exemplos compilados com TinyTeX no macOS.">
+    <link rel="canonical" href="https://purplelink.llc/pt-br/guides/latex-em-portugues-do-brasil-no-mac/">
+    <meta property="og:title" content="Escrever em português do Brasil com LaTeX no Mac: babel, acentos e ABNT">
+    <meta property="og:description" content="Como escrever um documento em português do Brasil com LaTeX no Mac: babel brazilian ou polyglossia, fontenc T1, acentos, aspas com csquotes, hifenização e a classe abntex2 com abntex2cite para a ABNT. Exemplos compilados com TinyTeX no macOS.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/pt-br/guides/latex-em-portugues-do-brasil-no-mac/">
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/pt-br-guides-latex-em-portugues-do-brasil-no-mac.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Escrever em português do Brasil com LaTeX no Mac: babel, acentos e ABNT">
+    <meta name="twitter:description" content="Como escrever um documento em português do Brasil com LaTeX no Mac: babel brazilian ou polyglossia, fontenc T1, acentos, aspas com csquotes, hifenização e a classe abntex2 com abntex2cite para a ABNT. Exemplos compilados com TinyTeX no macOS.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/pt-br-guides-latex-em-portugues-do-brasil-no-mac.jpg">
+    <meta name="twitter:image:alt" content="Escrever em português do Brasil com LaTeX no Mac: babel, acentos e ABNT">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "TechArticle",
+          "headline": "Escrever em português do Brasil com LaTeX no Mac: babel, acentos e ABNT",
+          "description": "Como escrever um documento em português do Brasil com LaTeX no Mac: babel brazilian ou polyglossia, fontenc T1, acentos, aspas com csquotes, hifenização e a classe abntex2 com abntex2cite para a ABNT. Exemplos compilados com TinyTeX no macOS.",
+          "inLanguage": "pt-BR",
+          "author": {
+            "@id": "https://purplelink.llc/about/#person"
+          },
+          "publisher": {
+            "@id": "https://purplelink.llc/#organization"
+          },
+          "datePublished": "2026-10-29",
+          "dateModified": "2026-10-29",
+          "image": "https://purplelink.llc/assets/og/brand.png",
+          "mainEntityOfPage": "https://purplelink.llc/pt-br/guides/latex-em-portugues-do-brasil-no-mac/"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Início",
+              "item": "https://purplelink.llc/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "ModernTex",
+              "item": "https://purplelink.llc/pt-br/moderntex/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Escrever em português do Brasil com LaTeX no Mac: babel, acentos e ABNT",
+              "item": "https://purplelink.llc/pt-br/guides/latex-em-portugues-do-brasil-no-mac/"
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "inLanguage": "pt-BR",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Preciso carregar o inputenc para os acentos?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Não. Desde 2018, o LaTeX lê o código-fonte em UTF-8 por padrão. Basta que o arquivo esteja mesmo em UTF-8. Com o pdfLaTeX, carregue também \\usepackage[T1]{fontenc}, para que as letras acentuadas sejam caracteres reais da fonte e as palavras acentuadas possam ser hifenizadas."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "babel com brazilian ou com portuguese?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Para um texto do Brasil, use brazilian. A opção portuguese é a variante de Portugal, e alguns nomes automáticos diferem. No teste que fiz, \\contentsname sai “Sumário” com brazilian e “Índice” com portuguese."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "babel ou polyglossia para o português do Brasil?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O babel funciona com pdfLaTeX, XeLaTeX e LuaLaTeX. O polyglossia só funciona com XeLaTeX e LuaLaTeX e exige o fontspec. Se você compila com pdfLaTeX, ou se a sua instituição fornece uma classe que carrega o babel (como a abntex2), use o babel. Com XeLaTeX ou LuaLaTeX e fontes OpenType, os dois servem. Não carregue os dois juntos."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Por que o babel avisa que não há padrões de hifenização pré-carregados?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O formato do LaTeX da sua instalação foi montado sem os padrões do português. Instale hyphen-portuguese com tlmgr e reconstrua os formatos com fmtutil-sys --all. Com o MacTeX isso não acontece."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Por que o sobrenome aparece como CONCEIçãO nas referências da ABNT?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "O estilo abntex2-alf passa o sobrenome para maiúsculas com o BibTeX, e o BibTeX não entende acentos em UTF-8. Escreva os acentos no arquivo .bib como comandos do LaTeX, por exemplo Concei{\\c{c}}{\\~a}o, ou use biblatex com style=abnt e biber, que aceitam UTF-8."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Como cito uma citação longa no formato da ABNT?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Na classe abntex2, o ambiente citacao compõe a citação em bloco, com recuo, fonte menor e espaçamento simples. O guia mostra um exemplo no documento do passo 5."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png?v=21c86cc2a8" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=f0ab0f06a1"></script>
+    <link rel="stylesheet" href="/styles.css?v=6388ed6bce">
+    <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
+    <link rel="stylesheet" href="/intl.css?v=6a9d445162">
+    <script src="/intl.js?v=120471e60f" defer></script>
+    <script src="/motion.js?v=d35f4b4ee4" defer></script>
+</head>
+    <body>
+    <a class="skip-link" href="#main-content">Ir para o conteúdo</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Início da Purplelink">
+        <img src="/assets/purplelink-mark.svg?v=2f8bd49b19" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Navegação principal"><a href="/pt-br/moderntex/">ModernTex</a><a href="/pt-br/guides/latex-em-portugues-do-brasil-no-mac/" aria-current="page">Guia</a><a href="/" lang="en" hreflang="en">English</a></nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/pt-br/moderntex/">← ModernTex</a>
+      <div class="post-hero">
+        <p class="post-date">Guia</p>
+        <h1 class="post-title">Escrever em português do Brasil com LaTeX no Mac: babel, acentos e ABNT</h1>
+        <p class="post-byline">Por <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-29">29 de outubro de 2026</time></p>
+        <p class="post-lede">Como montar um documento LaTeX em português do Brasil no Mac: escolher entre babel e polyglossia, carregar o T1, digitar acentos e aspas, ajustar a hifenização e compilar uma tese com a classe abntex2 e as citações da ABNT.</p>
+      </div>
+
+      <article class="post-body">
+        <p>Este guia prepara um documento LaTeX em português do Brasil no Mac. Você escolhe uma distribuição TeX, instala os pacotes para o português, escreve um preâmbulo com babel, csquotes e biblatex e compila. Depois vêm uma variante com polyglossia e LuaLaTeX e a parte da ABNT, com a classe abntex2. Os exemplos são para copiar, e eu os compilei.</p>
+
+        <h2>Em resumo</h2>
+        <ol>
+          <li><p>Instale o MacTeX (tudo incluído) ou o TinyTeX (pequeno, os pacotes entram conforme a necessidade).</p></li>
+          <li><p>Só com o TinyTeX: instale os pacotes do português com <code>tlmgr install</code> (passo 2).</p></li>
+          <li><p>Carregue <code>[T1]{fontenc}</code>, <code>lmodern</code> e <code>[brazilian]{babel}</code> (passo 3).</p></li>
+          <li><p>Digite acentos e aspas normalmente: o csquotes escolhe as aspas do idioma e o babel cuida da hifenização.</p></li>
+          <li><p>Para uma tese na ABNT, use a classe <code>abntex2</code> e o pacote <code>abntex2cite</code> (passo 5).</p></li>
+          <li><p>Compile com <code>latexmk -pdf main.tex</code>, ou com <code>latexmk -lualatex</code> para o LuaLaTeX, ou em um editor como o <a href="/pt-br/moderntex/">ModernTex</a>.</p></li>
+        </ol>
+
+        <h2>Passo 1: MacTeX ou TinyTeX</h2>
+        <p>O <a href="https://tug.org/mactex/" rel="noopener">MacTeX</a> é a distribuição TeX Live completa para Mac e ocupa vários gigabytes. Tudo de que este guia precisa já está nele, inclusive a classe abntex2: você pode pular o passo 2.</p>
+        <p>O <a href="https://yihui.org/tinytex/" rel="noopener">TinyTeX</a> é bem menor e se instala na sua pasta pessoal (<code>~/Library/TinyTeX</code>), sem pedir senha de administrador. Em troca, faltam pacotes, que você adiciona com o <code>tlmgr</code>. Se o ModernTex não encontrar nenhuma distribuição na hora de compilar, ele oferece instalar o TinyTeX com um clique.</p>
+
+        <h2>Passo 2: pacotes para o português (TinyTeX)</h2>
+        <p>Abra o Terminal e execute o comando abaixo. Se o <code>tlmgr</code> não estiver no caminho de busca, chame-o por <code>~/Library/TinyTeX/bin/universal-darwin/tlmgr</code>.</p>
+<pre><code>tlmgr install babel-portuges hyphen-portuguese csquotes biblatex biber lm microtype polyglossia fontspec luavlna abntex2 biblatex-abnt</code></pre>
+        <p>Para que serve cada pacote:</p>
+        <ul>
+          <li><p><code>babel-portuges</code> (o nome do pacote é grafado assim, “portuges”) e <code>hyphen-portuguese</code>: o idioma <code>brazilian</code>, os nomes automáticos e os padrões de hifenização.</p></li>
+          <li><p><code>csquotes</code>: aspas adequadas ao idioma.</p></li>
+          <li><p><code>biblatex</code> e <code>biber</code>: a bibliografia.</p></li>
+          <li><p><code>lm</code> e <code>microtype</code>: fontes vetoriais e melhores quebras de linha.</p></li>
+          <li><p><code>polyglossia</code>, <code>fontspec</code> e <code>luavlna</code>: a alternativa ao babel para XeLaTeX e LuaLaTeX, descrita no passo 4. No LuaLaTeX, o polyglossia exige o <code>luavlna</code>.</p></li>
+          <li><p><code>abntex2</code>: a classe <code>abntex2</code>, o pacote <code>abntex2cite</code> e os estilos BibTeX <code>abntex2-alf</code> e <code>abntex2-num</code>, tudo em um só pacote do TeX Live. <code>biblatex-abnt</code> é a alternativa com biblatex e biber (passo 5).</p></li>
+        </ul>
+        <p>Se o babel avisar depois que nenhum padrão de hifenização foi pré-carregado para o português, o formato da sua instalação foi montado sem eles: depois de <code>tlmgr install hyphen-portuguese</code>, reconstrua os formatos com <code>fmtutil-sys --all</code>. Isso aconteceu comigo ao instalar os pacotes em um TinyTeX recém-criado, e o aviso sumiu depois do <code>fmtutil-sys --all</code>. Com o MacTeX, esse caso não ocorre. Se um arquivo faltar mais tarde, <code>tlmgr search --global --file nome.sty</code> encontra o pacote.</p>
+
+        <h2>Passo 3: o preâmbulo com babel</h2>
+        <p>Salve isto como <code>main.tex</code>, em arquivo de texto UTF-8:</p>
+<pre><code>\documentclass[a4paper,12pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[brazilian]{babel}
+\usepackage{microtype}
+\usepackage[autostyle]{csquotes}
+\usepackage[backend=biber,style=authoryear]{biblatex}
+\addbibresource{referencias.bib}
+
+\hyphenation{an-ti-cons-ti-tu-ci-o-nal-is-si-ma-men-te}
+
+\title{Escrevendo em português do Brasil com LaTeX}
+\author{João Antônio Conceição}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Introdução}
+Texto com acentos: ação, coração, órgão, você, também, avô, pêssego,
+Brasília, açúcar, linguiça.
+Ele disse: \enquote{isto é uma citação com \enquote{citação interna} dentro}.
+Pronuncie devagar: anticonstitucionalissimamente.
+Veja \textcite{silva2024} e \parencite{silva2024}.
+
+\printbibliography[title={Referências}]
+\end{document}</code></pre>
+        <p>E, ao lado, o arquivo <code>referencias.bib</code>:</p>
+<pre><code>@book{silva2024,
+  author    = {Silva, Maria Aparecida and Conceição, João Antônio},
+  title     = {Escrevendo uma tese com {LaTeX}},
+  date      = {2024},
+  publisher = {Editora Exemplo},
+  location  = {São Paulo},
+}</code></pre>
+        <p>O que cada linha faz:</p>
+        <ul>
+          <li><p><code>fontenc</code> com <code>T1</code> guarda ã, ç, é, ê e as demais letras acentuadas como caracteres da fonte, o que permite hifenizar as palavras que as contêm. A <code>lmodern</code> fornece as fontes vetoriais correspondentes. Sem a <code>lmodern</code>, o <code>microtype</code> pode parar com um erro de fontes bitmap.</p></li>
+          <li><p>O pacote <code>inputenc</code> é desnecessário: desde 2018, o LaTeX lê o código-fonte em UTF-8 por padrão. Os acentos são digitados direto no texto, não como <code>\~a</code> ou <code>\c{c}</code>. Um arquivo antigo em Latin-1 se converte com <code>iconv -f ISO-8859-1 -t UTF-8 antigo.tex &gt; novo.tex</code>.</p></li>
+          <li><p><code>brazilian</code> define o idioma do documento: a hifenização, a data (“29 de outubro de 2026”), os nomes das seções automáticas, como “Resumo” e “Referências”, e a tipografia. A opção <code>portuguese</code> é a de Portugal. No meu teste, <code>\contentsname</code> sai “Sumário” com <code>brazilian</code> e “Índice” com <code>portuguese</code>.</p></li>
+          <li><p><code>\hyphenation{...}</code> ensina ao LaTeX onde pode cortar uma palavra que ele hifeniza mal, com hifens nas posições permitidas. Para um corte pontual, use <code>\-</code> dentro da palavra, como em <code>anticons\-titucional</code>.</p></li>
+          <li><p><code>\enquote{...}</code>, do csquotes, usa as aspas do idioma declarado: com <code>brazilian</code>, a citação principal sai entre “ ” e a interna entre ‘ ’. A opção <code>autostyle</code> faz o csquotes seguir o idioma do babel.</p></li>
+          <li><p><code>biblatex</code> com <code>backend=biber</code> e <code>style=authoryear</code>. <code>\textcite</code> compõe “Silva e Conceição (2024)” e <code>\parencite</code> põe a referência entre parênteses.</p></li>
+        </ul>
+        <p>Para uma tese, troque <code>article</code> por <code>report</code> ou <code>book</code>, ou pela classe da sua instituição.</p>
+
+        <h2>Passo 4: pdfLaTeX ou LuaLaTeX, babel ou polyglossia</h2>
+        <p>No Terminal, na pasta que contém <code>main.tex</code>:</p>
+<pre><code>latexmk -pdf main.tex</code></pre>
+        <p>O <code>latexmk</code> roda o pdfLaTeX, o biber e o pdfLaTeX de novo quantas vezes for preciso. Compilei o preâmbulo acima em 29 de outubro de 2026 com o TinyTeX (TeX Live 2026) no macOS desta forma: o PDF sai com a data “29 de outubro de 2026”, as aspas “ ” com ‘ ’ dentro, os acentos corretos e a bibliografia com “Silva, Maria Aparecida e João Antônio Conceição (2024)”. Depois da primeira passada, o LaTeX avisa que a bibliografia ainda está vazia. Isso é normal, o biber a preenche na segunda.</p>
+        <p>Para o LuaLaTeX, há duas possibilidades. O <strong>babel</strong> também funciona com LuaLaTeX e XeLaTeX: basta carregar o <code>fontspec</code> no lugar de <code>fontenc</code> e <code>lmodern</code> e manter <code>\usepackage[brazilian]{babel}</code>. A outra solução é o <strong>polyglossia</strong>, que só funciona com XeLaTeX e LuaLaTeX. Para o português do Brasil, ele pede a variante:</p>
+<pre><code>\documentclass[a4paper,12pt]{article}
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setmainlanguage[variant=brazilian]{portuguese}
+\usepackage[autostyle]{csquotes}
+
+\title{Escrevendo em português do Brasil com LaTeX}
+\author{João Antônio Conceição}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Introdução}
+Texto com acentos: ação, coração, órgão, você, também, avô, pêssego,
+Brasília, açúcar.
+Ele disse: \enquote{isto é uma citação com \enquote{citação interna} dentro}.
+\end{document}</code></pre>
+        <p>Compile com:</p>
+<pre><code>latexmk -lualatex main.tex</code></pre>
+        <p>Compilei os dois (polyglossia e babel com fontspec) da mesma forma, e a data, os acentos e as aspas saem como no primeiro exemplo. Aqui não há <code>fontenc</code> nem <code>inputenc</code>: o fontspec lê fontes OpenType, que já têm todas as letras acentuadas. A fonte padrão continua sendo a Latin Modern, e <code>\setmainfont{...}</code> escolhe outra. No ModernTex, abra a pasta, escolha o perfil de compilação desejado e compile. Para usar LuaLaTeX ou XeLaTeX em vez do pdfLaTeX, escreva na primeira linha <code>% !TEX program = lualatex</code>.</p>
+        <p>Qual escolher? Fique com o <strong>babel</strong> e o pdfLaTeX se você parte de um modelo de revista ou de instituição, porque a maioria das classes pressupõe o babel. Escolha o <strong>polyglossia</strong>, ou o babel com fontspec, se quiser fontes OpenType ou um texto que misture o português com outras escritas. Não carregue os dois juntos.</p>
+
+        <h2>Passo 5: a ABNT e a classe abntex2</h2>
+        <p>Teses, dissertações e trabalhos acadêmicos brasileiros costumam seguir as normas da ABNT. O projeto abnTeX2 (<a href="https://www.abntex.net.br" rel="noopener">abntex.net.br</a>) fornece a classe <code>abntex2</code>, que implementa essas normas, e o pacote <code>abntex2cite</code>, para citações e referências no padrão. No TeX Live, tudo isso vem em um único pacote chamado <code>abntex2</code>: a classe (<code>abntex2.cls</code>), <code>abntex2cite.sty</code>, <code>abntex2abrev.sty</code> e os estilos BibTeX <code>abntex2-alf.bst</code> (autor-data) e <code>abntex2-num.bst</code> (numérico). O MacTeX o inclui. No TinyTeX, <code>tlmgr install abntex2</code>, como no passo 2.</p>
+        <p>Um documento mínimo, que compilei com <code>latexmk -pdf -bibtex main.tex</code>. A classe carrega o babel sozinha, com a opção <code>brazil</code>:</p>
+<pre><code>\documentclass[12pt,a4paper,oneside,brazil]{abntex2}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[alf]{abntex2cite}
+
+\titulo{Escrevendo uma monografia com abnTeX2}
+\autor{Maria Aparecida Silva}
+\data{2026}
+
+\begin{document}
+\imprimirtitulo
+
+\chapter{Introdução}
+Citação no texto, entre parênteses: \cite{silva2024}.
+Citação como parte da frase: \citeonline{silva2024}.
+
+\begin{citacao}
+Uma citação longa, com mais de três linhas, aparece em bloco, com recuo de 4~cm, fonte menor e espaçamento simples, como pede a ABNT NBR 10520.
+Este parágrafo repete o texto para passar de três linhas e mostrar o recuo.
+\end{citacao}
+
+\bibliography{referencias}
+\end{document}</code></pre>
+        <p>E o <code>referencias.bib</code>, com os acentos escritos como comandos do LaTeX:</p>
+<pre><code>@book{silva2024,
+  author    = {Silva, Maria Aparecida and Concei{\c{c}}{\~a}o, Jo{\~a}o Ant{\^o}nio},
+  title     = {Escrevendo uma tese com {LaTeX}},
+  year      = {2024},
+  publisher = {Editora Exemplo},
+  address   = {S{\~a}o Paulo},
+}</code></pre>
+        <p>O resultado, no PDF: <code>\cite</code> produz “(SILVA; CONCEIÇÃO, 2024)”, <code>\citeonline</code> produz “Silva e Conceição (2024)”, a citação longa fica em bloco com recuo, e a lista de “Referências” sai com os sobrenomes em maiúsculas, como pede a ABNT. Alguns detalhes:</p>
+        <ul>
+          <li><p>A classe é baseada na <code>memoir</code>, por isso existem <code>\chapter</code>, <code>\imprimirtitulo</code> e outros comandos da própria abnTeX2. O projeto publica modelos completos de trabalho acadêmico, com capa, folha de rosto e sumário no padrão. Eu não testei esses modelos aqui.</p></li>
+          <li><p>A opção <code>[alf]</code> do <code>abntex2cite</code> usa o sistema autor-data e escolhe sozinha o estilo <code>abntex2-alf</code>, por isso o exemplo não tem <code>\bibliographystyle</code>. Com <code>[num]</code>, o sistema é numérico e o estilo é o <code>abntex2-num</code>. Testei os dois: no numérico, as citações saem como “(1)”.</p></li>
+          <li><p>O babel avisa que o nome <code>brazil</code> está obsoleto, e a <code>memoir</code> avisa que <code>\settocpreprocessor</code> está obsoleto. Os avisos aparecem no log, e o PDF sai normal.</p></li>
+          <li><p><strong>Cuidado com acentos no arquivo .bib.</strong> Com UTF-8 no .bib, o BibTeX e o <code>abntex2-alf</code> estragaram o sobrenome ao passá-lo para maiúsculas: saiu “CONCEIçãO”, com as letras acentuadas em minúsculas. Escrever <code>Concei{\c{c}}{\~a}o</code> resolveu. Se você prefere manter UTF-8, use biblatex com biber.</p></li>
+        </ul>
+        <p>A alternativa com biblatex e biber é o pacote <code>biblatex-abnt</code>, que aceita UTF-8 no .bib. Troque a linha do biblatex do passo 3 por <code>\usepackage[backend=biber,style=abnt]{biblatex}</code>. Em um teste com a mesma entrada, <code>\cite</code> saiu “(Silva; Conceição, 2024)”, e a referência saiu com “SILVA, Maria Aparecida; CONCEIÇÃO, João Antônio.” no começo. Isso não substitui a leitura da norma: confira com o manual da sua instituição qual sistema de citação e qual estilo de referência ela exige.</p>
+
+        <h2>Onde coloco o modelo da minha instituição?</h2>
+        <p>Coloque o arquivo de classe (<code>.cls</code>) e os arquivos de estilo (<code>.sty</code>) da instituição ao lado de <code>main.tex</code>, na mesma pasta: a compilação os encontra ali. Se o modelo pedir outros pacotes, instale-os com <code>tlmgr install</code>, e <code>tlmgr search --global --file</code> informa o nome do pacote.</p>
+
+        <h2>Perguntas e respostas</h2>
+        <h3>Preciso carregar o inputenc para os acentos?</h3>
+        <p>Não. Desde 2018, o LaTeX lê o código-fonte em UTF-8 por padrão. Basta que o arquivo esteja mesmo em UTF-8. Com o pdfLaTeX, carregue também <code>\usepackage[T1]{fontenc}</code>, para que as letras acentuadas sejam caracteres reais da fonte e as palavras acentuadas possam ser hifenizadas.</p>
+        <h3>babel com brazilian ou com portuguese?</h3>
+        <p>Para um texto do Brasil, use <code>brazilian</code>. A opção <code>portuguese</code> é a variante de Portugal, e alguns nomes automáticos diferem. No teste que fiz, <code>\contentsname</code> sai “Sumário” com <code>brazilian</code> e “Índice” com <code>portuguese</code>.</p>
+        <h3>babel ou polyglossia para o português do Brasil?</h3>
+        <p>O babel funciona com pdfLaTeX, XeLaTeX e LuaLaTeX. O polyglossia só funciona com XeLaTeX e LuaLaTeX e exige o fontspec. Se você compila com pdfLaTeX, ou se a sua instituição fornece uma classe que carrega o babel (como a abntex2), use o babel. Com XeLaTeX ou LuaLaTeX e fontes OpenType, os dois servem. Não carregue os dois juntos.</p>
+        <h3>Por que o babel avisa que não há padrões de hifenização pré-carregados?</h3>
+        <p>O formato do LaTeX da sua instalação foi montado sem os padrões do português. Instale <code>hyphen-portuguese</code> com <code>tlmgr</code> e reconstrua os formatos com <code>fmtutil-sys --all</code>. Com o MacTeX isso não acontece.</p>
+        <h3>Por que o sobrenome aparece como CONCEIçãO nas referências da ABNT?</h3>
+        <p>O estilo <code>abntex2-alf</code> passa o sobrenome para maiúsculas com o BibTeX, e o BibTeX não entende acentos em UTF-8. Escreva os acentos no arquivo .bib como comandos do LaTeX, por exemplo <code>Concei{\c{c}}{\~a}o</code>, ou use biblatex com <code>style=abnt</code> e biber, que aceitam UTF-8.</p>
+        <h3>Como cito uma citação longa no formato da ABNT?</h3>
+        <p>Na classe abntex2, o ambiente <code>citacao</code> compõe a citação em bloco, com recuo, fonte menor e espaçamento simples. O guia mostra um exemplo no documento do passo 5.</p>
+
+        <h2>Compilar com o ModernTex</h2>
+        <p>O <a href="/pt-br/moderntex/">ModernTex</a> é um editor de LaTeX para Mac, com prévia do PDF sincronizada com o código-fonte, mensagens de erro em linguagem simples e verificações antes da submissão. Ele usa a sua instalação TeX, então tudo o que está acima vale também nele. A interface do app é em inglês. Sete dias grátis, depois US$ 19,99 uma única vez.</p>
+      </article>
+    </main>
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg?v=2f8bd49b19" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps e ferramentas feitos por um estúdio de uma pessoa só, em Atlanta, na Geórgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="ModernTex">
+          <p class="footer-head">ModernTex</p>
+          <ul>
+            <li><a href="/pt-br/moderntex/">Página do produto</a></li>
+            <li><a href="/pt-br/guides/latex-em-portugues-do-brasil-no-mac/">LaTeX em português do Brasil no Mac</a></li>
+            <li><a href="/changelog/">Histórico de alterações (em inglês)</a></li>
+            <li><a href="/recover/">Recuperar uma compra (em inglês)</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Outras páginas (em inglês)">
+          <p class="footer-head">Outras páginas (em inglês)</p>
+          <ul>
+            <li><a href="/products/">Todos os produtos</a></li>
+            <li><a href="/tools/">Ferramentas gratuitas</a></li>
+            <li><a href="/guides/">Guias</a></li>
+            <li><a href="/blog/">Blog</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Empresa">
+          <p class="footer-head">Empresa</p>
+          <ul>
+            <li><a href="/about/">Sobre (em inglês)</a></li>
+            <li><a href="/support/">Suporte (em inglês)</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contato</a></li>
+            <li><a href="/privacy/">Privacidade (em inglês)</a></li>
+            <li><a href="/terms/">Termos de uso (em inglês)</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Geórgia · Desde 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden data-label-light="Usar o tema claro" data-label-dark="Usar o tema escuro">Usar o tema claro</button>
+      </div>
+    </footer>
+
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=059b6eb933" defer></script>
+</body>
+</html>

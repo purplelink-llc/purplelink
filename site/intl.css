@@ -1,4 +1,4 @@
-/* Localized pages (/de/, /fr/, /ja/, /zh-cn/): fonts, line breaking and the language switcher.
+/* Localized pages (/de/, /fr/, /pt-br/, /ja/, /zh-cn/): fonts, line breaking and the language switcher.
    No web font is loaded for Japanese or Chinese. The Latin faces in styles.css cover Latin text, and CJK text
    falls through to the fonts the system already has, so the page costs no extra download. */
 
@@ -11,7 +11,7 @@
   --font-body: 'Plus Jakarta Sans', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Noto Sans SC', system-ui, sans-serif;
 }
 
-/* Hyphenation for German and French; CJK text breaks between characters and needs no tracking or italics. */
+/* Hyphenation for German, French and Brazilian Portuguese; CJK text breaks between characters and needs no tracking or italics. */
 :lang(de) .post-body p,
 :lang(de) .feature-item p,
 :lang(de) .faq-body,
@@ -19,10 +19,14 @@
 :lang(fr) .post-body p,
 :lang(fr) .feature-item p,
 :lang(fr) .faq-body,
-:lang(fr) .specs-table td {
+:lang(fr) .specs-table td,
+:lang(pt-BR) .post-body p,
+:lang(pt-BR) .feature-item p,
+:lang(pt-BR) .faq-body,
+:lang(pt-BR) .specs-table td {
   hyphens: auto;
 }
-:lang(de) code, :lang(de) pre, :lang(fr) code, :lang(fr) pre {
+:lang(de) code, :lang(de) pre, :lang(fr) code, :lang(fr) pre, :lang(pt-BR) code, :lang(pt-BR) pre {
   hyphens: none;
 }
 :lang(ja), :lang(zh-Hans) {

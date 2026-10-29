@@ -40,13 +40,14 @@ BLOG_BG = {
 FOOT = {"format": "Reference formats for journals and conferences", "guides": "Free guides for academic authors",
         "blog": "Notes from a one-person software studio",
         "de/guides": "Kostenlose Anleitungen für Forschende",
-        "fr/guides": "Guides gratuits pour les chercheurs", "ja/guides": "研究者のための無料ガイド",
+        "fr/guides": "Guides gratuits pour les chercheurs",
+        "pt-br/guides": "Guias gratuitos para pesquisadores", "ja/guides": "研究者のための無料ガイド",
         "zh-cn/guides": "为研究者准备的免费指南"}
 KICKER = {"format": "Reference format", "guides": "Guide", "blog": "Blog",
-          "de/guides": "Anleitung", "fr/guides": "Guide", "ja/guides": "ガイド", "zh-cn/guides": "指南"}
+          "de/guides": "Anleitung", "fr/guides": "Guide", "pt-br/guides": "Guia", "ja/guides": "ガイド", "zh-cn/guides": "指南"}
 # Localized guides (2026-10-29). Their cards are named de-guides-<slug>.jpg, and the template draws CJK text with
 # the system fonts, since Fraunces and Plus Jakarta Sans are Latin subsets.
-SECTIONS = ("format", "guides", "blog", "de/guides", "fr/guides", "ja/guides", "zh-cn/guides")
+SECTIONS = ("format", "guides", "blog", "de/guides", "fr/guides", "pt-br/guides", "ja/guides", "zh-cn/guides")
 
 
 def meta(t, prop):

@@ -5,9 +5,10 @@ Public note on what purplelink.llc localizes for ModernTex, and the rules that k
 
 ## What is localized
 
-- Product pages: `/de/moderntex/`, `/fr/moderntex/`, `/ja/moderntex/`, `/zh-cn/moderntex/`, each with one how-to under
-  `/de/guides/`, `/fr/guides/`, `/ja/guides/`, `/zh-cn/guides/`. Hreflang in the page head and in `sitemap.xml`, a language switcher at the top of the five
-  product pages, and a "ModernTex in Deutsch, Français, 日本語, 简体中文" line in the footer of every English page
+- Product pages: `/de/moderntex/`, `/fr/moderntex/`, `/pt-br/moderntex/`, `/ja/moderntex/`, `/zh-cn/moderntex/`, each with one
+  how-to under `/de/guides/`, `/fr/guides/`, `/pt-br/guides/`, `/ja/guides/`, `/zh-cn/guides/`. Hreflang (`pt-BR` for the
+  Brazilian page) in the page head and in `sitemap.xml`, a language switcher at the top of the six product pages, and a
+  "ModernTex in Deutsch, Français, Português, 日本語, 简体中文" line in the footer of every English page
   (`scripts/apply_layout.py`, styled by `.footer-langs` in `site/styles.css`).
 - The English `/moderntex/` has a "Languages and currency" section and two FAQ entries. `/suite/`, `/outbound-veil/` and
   `/legroom/` carry the currency line by the buy button, and `/pricing/` has a FAQ entry.
@@ -21,9 +22,13 @@ Public note on what purplelink.llc localizes for ModernTex, and the rules that k
 A page may say the ModernTex interface is in a language only when a published release has it.
 
 - Shipped: English, and German (beta) since ModernTex 2.0.
-- Not shipped: French, Japanese and Simplified Chinese (the Japanese and Chinese ones are open pull requests moderntex #117
-  and #118). The French, Japanese and Chinese pages say the interface is English, and no page may claim otherwise.
-- What is true today regardless: ModernTex compiles Chinese and Japanese documents with XeLaTeX (ctex) and LuaLaTeX
+- Not shipped: French, Brazilian Portuguese, Japanese and Simplified Chinese (the Japanese and Chinese ones are open pull
+  requests moderntex #117 and #118). The French, Portuguese, Japanese and Chinese pages say the interface is English, and no
+  page may claim otherwise.
+- What is true today regardless: ModernTex compiles Brazilian Portuguese documents (babel `brazilian` or polyglossia
+  `variant=brazilian`, T1, csquotes, and the abntex2 class with abntex2cite) when the user's TeX installation has those
+  packages; `abntex2` is one TeX Live package (class, abntex2cite and the abntex2-alf and abntex2-num BibTeX styles).
+- Also true: ModernTex compiles Chinese and Japanese documents with XeLaTeX (ctex) and LuaLaTeX
   (luatexja, jlreq) when the user's TeX installation has those packages. upLaTeX support is not released.
 
 When #117 or #118 ships: edit the page text (the "interface is English" notes and FAQ answers on `/ja/moderntex/` or
@@ -56,5 +61,5 @@ price and the currency display, nothing else.
 ## Monitoring
 
 `scripts/uptime-checks.txt` (run every 15 minutes by `.github/workflows/uptime.yml`) probes `/moderntex/`,
-`/de/moderntex/`, `/fr/moderntex/`, `/ja/moderntex/` and `/zh-cn/moderntex/` for a 200. The daily indexing job reads every `<loc>` in the
+`/de/moderntex/`, `/fr/moderntex/`, `/pt-br/moderntex/`, `/ja/moderntex/` and `/zh-cn/moderntex/` for a 200. The daily indexing job reads every `<loc>` in the
 live sitemap, so the localized URLs are included; `site-tests/test_intl_advertise.py` checks that they are in it.
