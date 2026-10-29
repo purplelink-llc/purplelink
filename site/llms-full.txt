@@ -2222,6 +2222,8 @@ Paper Review
 
 # Pre-submission manuscript review by four AI reviewers
 
+Some links on this page are affiliate links. If you buy through one, Purplelink may earn a commission at no extra cost to you. It does not change which products we mention or what we say about them.
+
 Four AI reviewers read your manuscript the way a journal panel would. They quote the passages they question, so you can fix what a reviewer would flag before you submit. A standard review is usually ready in 4 to 8 minutes. Deep Review takes 10 to 15. Three tiers, $9 to $15, one-time payment, no subscription.
 
 Who runs this. Built by Benjamin Ampel, assistant professor of computer information systems at Georgia State University, with publications in MIS Quarterly and JMIS.
@@ -2379,6 +2381,8 @@ rectification checklist, and an honest novelty estimate.
 - A Markdown report and an annotated PDF with comments on the pages they refer to.
 
 - Standard reviews are usually ready in 4-8 minutes, Deep Review in 10-15, on a status page that updates itself.
+
+- Not included: language editing. The reviewers comment on the argument, methods and citations, not on grammar or English. For that, your university's writing centre is often free, and Wordvice(paid link) is one academic editing service with published per-word pricing. We have not used it ourselves, so read its confidentiality terms before you upload a file.
 
 Reviewing a grant proposal instead of a paper? Grant Review is an idea for NSF and NIH proposals, and the waitlist measures interest.
 
