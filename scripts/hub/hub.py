@@ -367,8 +367,10 @@ def from_social(p: dict) -> list:
             when = str(r.get("posted_at") or fm.get("scheduled_at") or fm.get("created") or "")[:10]
             campaign = str(fm.get("campaign") or "")
             utm = f"utm_source={plat}&utm_medium=social&utm_campaign={campaign}" if campaign else ""
-            if utm and fm.get("utm_content"):
-                utm += f"&utm_content={fm['utm_content']}"
+            tags = fm.get("utm_contents") if isinstance(fm.get("utm_contents"), dict) else {}
+            own = tags.get(plat) or (fm.get("utm_content") if plat == "instagram" or not tags else "")
+            if utm and own:
+                utm += f"&utm_content={own}"
             std = re.search(r"standing, (\d{4}-\d{2}-\d{2})", approval)
             out.append({
                 "id": f"social:{iid}:{plat}", "source": "social-queue", "channel": plat, "kind": "post",
@@ -928,6 +930,11 @@ def used_contents(p: dict) -> set:
         # the video ledger (long, Short and Reel tags) and the social queue's front matter record bare tags
         seen.update(re.findall(r'"(?:link_|short_|reel_)?utm_content":\s*"([\w.\-]+)"', t))
         seen.update(re.findall(r'^utm_content:\s*"([\w.\-]+)"', t, re.M))
+        for blob in re.findall(r"^utm_contents:\s*(\{.*\})\s*$", t, re.M):   # social queue: one tag per platform
+            try:
+                seen.update(str(v) for v in json.loads(blob).values() if v)
+            except ValueError:
+                pass
     return seen
 
 

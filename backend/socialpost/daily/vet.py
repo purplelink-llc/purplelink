@@ -17,6 +17,7 @@ import hashlib
 import re
 from urllib.parse import parse_qs, urlsplit
 
+from .. import hubtags
 from .. import items as itemsmod
 from ..text import URL_RE
 from . import lib219 as L
@@ -158,6 +159,8 @@ def utm_problems(item, kind: str) -> list[str]:
             miss = [k for k, v in want.items() if q.get(k) != v]
             if miss:
                 out.append(f"{p}: link is missing or has wrong {', '.join(miss)}")
+            if hubtags.on_site(u) and not (q.get("utm_content") or [""])[0]:
+                out.append(f"{p}: the purplelink.llc link has no utm_content from the marketing hub (unmeasurable)")
     return out
 
 
