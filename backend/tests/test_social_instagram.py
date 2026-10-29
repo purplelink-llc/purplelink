@@ -171,7 +171,7 @@ def test_validate_reel_shape(env, cfg):
     assert any("no description" in e for e in errs)
     it.meta["platforms"] = ["instagram", "bluesky"]
     errs, _ = items.validate(it, cfg)
-    assert any("Instagram only" in e for e in errs)
+    assert any("only platform is instagram or facebook" in e for e in errs)
 
 
 def test_instagram_standing_approval_is_narrow(env, cfg):

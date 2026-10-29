@@ -30,10 +30,12 @@ STANDING_SOURCE = "social-daily"
 # feed post with a branded image. Only socialpost.instagram writes it, only for the items it built, only for Instagram.
 # Never RubbleFront's account (the adapter refuses it by name as well as by the pinned identity).
 IG_STANDING_BY = "ben (standing, 2026-10-23)"
-IG_STANDING_PLATFORMS = ("instagram",)
+# Facebook joined on 2026-10-28 for Reels: Ben, "back fill my instagram and facebook reels with our youtube shorts".
+IG_STANDING_PLATFORMS = ("instagram", "facebook")
 IG_STANDING_SOURCES = ("instagram-reel", "instagram-companion")
 STANDING = {STANDING_BY: (STANDING_PLATFORMS, (STANDING_SOURCE,)),
             IG_STANDING_BY: (IG_STANDING_PLATFORMS, IG_STANDING_SOURCES)}
+FB_REEL_MAX_S = 90.0   # Facebook Reels through the API: 3 to 90 seconds
 HASHTAG_RE = re.compile(r"(?<![\w&])#\w+")
 
 STATUSES = ("draft", "approved", "posted", "failed", "cancelled", "stale")
@@ -222,8 +224,12 @@ def validate(item: Item, cfg: dict) -> tuple[list[str], list[str]]:
             errors += _image_errors(p, im, item)
         if p == "instagram":
             errors += _instagram_errors(item, imgs)
-    if item.video() and item.platforms != ["instagram"]:
-        errors.append("video (a Reel) is Instagram only; put it in an item whose only platform is instagram")
+        if p == "facebook" and item.video():
+            errors += _video_errors(item, "facebook", FB_REEL_MAX_S)
+            if imgs:
+                errors.append("facebook: a post is either one image or one Reel, not both")
+    if item.video() and item.platforms not in (["instagram"], ["facebook"]):
+        errors.append("video (a Reel) needs an item whose only platform is instagram or facebook")
     d = item.document()
     if d:
         f = _resolve(d.get("path", ""), item.path.parent)
@@ -251,29 +257,40 @@ def _instagram_errors(item: Item, imgs: list[dict]) -> list[str]:
     if not v and not imgs:
         out.append("instagram: needs one image or a Reel (Instagram has no text-only post)")
     if v:
-        f = _resolve(v.get("path", ""), item.path.parent)
-        tag = f"instagram: video {v.get('path')!r}"
-        if f.suffix.lower() != ".mp4" or not f.is_file():
-            out.append(f"{tag} must be an existing .mp4")
-        else:
-            if f.stat().st_size > REEL["max_bytes"]:
-                out.append(f"{tag} is over {REEL['max_bytes'] // MB} MB")
-            if f.open("rb").read(12)[4:8] != b"ftyp":
-                out.append(f"{tag} is not really an MP4 file")
-        try:
-            dur = float(v.get("duration") or 0)
-        except (TypeError, ValueError):
-            dur = 0.0
-        if not REEL["min_s"] <= dur <= REEL["max_s"]:
-            out.append(f"{tag} is {dur:.1f} s; a Reel here is {REEL['min_s']:.0f} to {REEL['max_s']:.0f} s")
-        if (v.get("width"), v.get("height")) != (REEL["width"], REEL["height"]):
-            out.append(f"{tag} is {v.get('width')}x{v.get('height')}, not {REEL['width']}x{REEL['height']} (9:16)")
-        if not str(v.get("alt") or "").strip():
-            out.append(f"{tag} has no description (kept as the Reel's alt text record; the API takes none)")
-        if v.get("cover"):
-            c = _resolve(v["cover"], item.path.parent)
-            if c.suffix.lower() not in (".jpg", ".jpeg") or not c.is_file():
-                out.append(f"instagram: cover {v['cover']!r} must be an existing JPEG")
+        out += _video_errors(item, "instagram")
+    return out
+
+
+def _video_errors(item: Item, platform: str, max_s: float | None = None) -> list[str]:
+    """A Reel's file and shape: MP4, size, 3 s to the platform's maximum, 1080x1920, a description, an optional JPEG
+    cover."""
+    from .spec import REEL
+    max_s = max_s or REEL["max_s"]
+    v = item.video()
+    out: list[str] = []
+    f = _resolve(v.get("path", ""), item.path.parent)
+    tag = f"{platform}: video {v.get('path')!r}"
+    if f.suffix.lower() != ".mp4" or not f.is_file():
+        out.append(f"{tag} must be an existing .mp4")
+    else:
+        if f.stat().st_size > REEL["max_bytes"]:
+            out.append(f"{tag} is over {REEL['max_bytes'] // MB} MB")
+        if f.open("rb").read(12)[4:8] != b"ftyp":
+            out.append(f"{tag} is not really an MP4 file")
+    try:
+        dur = float(v.get("duration") or 0)
+    except (TypeError, ValueError):
+        dur = 0.0
+    if not REEL["min_s"] <= dur <= max_s:
+        out.append(f"{tag} is {dur:.1f} s; a Reel here is {REEL['min_s']:.0f} to {max_s:.0f} s")
+    if (v.get("width"), v.get("height")) != (REEL["width"], REEL["height"]):
+        out.append(f"{tag} is {v.get('width')}x{v.get('height')}, not {REEL['width']}x{REEL['height']} (9:16)")
+    if not str(v.get("alt") or "").strip():
+        out.append(f"{tag} has no description (kept as the Reel's alt text record; the API takes none)")
+    if v.get("cover"):
+        c = _resolve(v["cover"], item.path.parent)
+        if c.suffix.lower() not in (".jpg", ".jpeg") or not c.is_file():
+            out.append(f"{platform}: cover {v['cover']!r} must be an existing JPEG")
     return out
 
 
