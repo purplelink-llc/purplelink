@@ -293,7 +293,7 @@ no web view.
 
 ## Code changed for review
 
-- **Keyfeel, a zip picked in the import panel** (branch `mas-zip-copy` in purplelink-llc/keyfeel). The sandbox grants
+- **Keyfeel, a zip picked in the import panel** (purplelink-llc/keyfeel#17, branch `mas-zip-copy`). The sandbox grants
   a file picked in the open panel to Keyfeel, but not necessarily to `zipinfo` and `ditto`, which Keyfeel starts to
   check and unpack the archive. The App Store edition now copies the archive into its own container first and hands
   the tools the copy (`PackImporter.archiveForTools`); an archive larger than a pack may unpack to (300 MB) is refused
@@ -374,5 +374,5 @@ Vitae's set does.
      picked in the import panel (the new branch); trial, unlock and Restore Purchases.
 5. **Screenshots:** the new captures in the plan (Tapefolio 6 to 9 and its purchase screen; all of Keyfeel's), or a
    go-ahead for a session to stage them from test copies with invented data.
-6. **Merge** the Keyfeel `mas-zip-copy` pull request after reading it (no CI in that repo), or say to drop the camera
+6. **Merge** purplelink-llc/keyfeel#17 after reading it (no CI in that repo), or say to drop the camera
    entitlement and hide that option in the App Store edition instead.
