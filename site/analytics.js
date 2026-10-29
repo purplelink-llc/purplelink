@@ -88,6 +88,24 @@
     return a;
   })();
 
+  // Reddit ad click id (?rdt_cid=), kept like the first arrival (90 days, first one wins, "pl_" prefix so the privacy
+  // page's clear button removes it) and sent only with a ModernTex checkout, so the server can report that sale to
+  // Reddit. Never recorded under Do Not Track (this whole file stops above in that case).
+  var RDT_KEY = "pl_rdt";
+  var rdtClick = (function () {
+    var r = null;
+    try { r = JSON.parse(localStorage.getItem(RDT_KEY) || "null"); } catch (e) { r = null; }
+    var cutoff = new Date(Date.now() - ATTR_DAYS * 864e5).toISOString().slice(0, 10);
+    if (r && !(r.d >= cutoff)) r = null;
+    try {
+      var c = new URLSearchParams(location.search).get("rdt_cid");
+      c = c ? String(c).replace(/[^\w.\-:=]/g, "").slice(0, 128) : "";
+      if (c && !r) r = { c: c, d: new Date().toISOString().slice(0, 10) };
+    } catch (e) { /* ignore */ }
+    try { if (r) localStorage.setItem(RDT_KEY, JSON.stringify(r)); else localStorage.removeItem(RDT_KEY); } catch (e) { /* storage blocked */ }
+    return r ? r.c : "";
+  })();
+
   // LinkedIn reaches us under several names: www.linkedin.com and other linkedin.com hosts, the lnkd.in short
   // link, the Android app (android-app://com.linkedin.android, or com.linkedin.android as a bare host) and
   // utm_source=linkedin in any case. They are one channel, "linkedin". Only the host is looked at, so a page
@@ -187,6 +205,10 @@
               if (typeof body === "string") {
                 var parsed = JSON.parse(body) || {};
                 product = parsed.product || "";
+                if (!parsed.rdt && (rdtClick || channel() === "paid:reddit")) {
+                  parsed.rdt = rdtClick ? { c: rdtClick } : {};
+                  init = Object.assign({}, init, { body: JSON.stringify(parsed) });
+                }
                 if ((attr.first || attr.last) && !parsed.attr) {
                   parsed.attr = { first: attr.first || null, last: attr.last || null };
                   init = Object.assign({}, init, { body: JSON.stringify(parsed) });
