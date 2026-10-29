@@ -5304,7 +5304,7 @@ def admob_month_rows(admob: dict | None, today: dt.date | None = None) -> list[d
         end = (first.replace(day=28) + dt.timedelta(days=4)).replace(day=1) - dt.timedelta(days=1)
         out.append({"date": min(end, today).isoformat(), "source": SRC_ADS, "detail": "GlobePin (AdMob)",
                     "item": f"AdMob estimate, month total for {first.strftime('%B %Y')}", "gross": None,
-                    "net": cents, "estimate": True})
+                    "net": cents, "estimate": True, "monthTotal": True})
     return out
 
 
@@ -5399,7 +5399,11 @@ def archive_revenue_daily(history: dict, rows: list[dict]) -> dict:
 
     Each run replaces the (date, source) pairs it has rows for and keeps the rest. A source whose own file goes
     missing (TikTok's daily figures, a photo CSV) therefore keeps its past days here, so the series behind the
-    Overview chart and the causal tests (insights/experiments) does not lose history. Returns the archive."""
+    Overview chart and the causal tests (insights/experiments) does not lose history. Returns the archive.
+
+    A row marked monthTotal (AdMob, admob_month_rows) is the whole month to date, dated the day of the run while the
+    month is running. It replaces that source on every other day of its month, so the month is counted once; kept on
+    each day, October 2026's $1.36 added up to $7.73."""
     fresh: dict[str, dict[str, dict[str, int]]] = {}
     for r in rows:
         if not re.match(r"^\d{4}-\d\d-\d\d$", r.get("date") or ""):
@@ -5409,6 +5413,13 @@ def archive_revenue_daily(history: dict, rows: list[dict]) -> dict:
     archive = history.setdefault("revenueDaily", {})
     for day, by_src in fresh.items():
         archive.setdefault(day, {}).update(by_src)
+    for r in rows:
+        if not r.get("monthTotal") or r.get("date") not in archive:
+            continue
+        for day in [d for d in archive if d[:7] == r["date"][:7] and d != r["date"]]:
+            archive[day].pop(r["source"], None)
+            if not archive[day]:
+                del archive[day]
     return archive
 
 
