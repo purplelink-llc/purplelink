@@ -626,3 +626,33 @@ def test_page_furniture_headings_are_not_facts():
     units = compose.fact_units(facts, "linkedin")
     assert units and all("on this page" not in u.lower() and "$" not in u for u in units)
     assert any("overleaf" in u.lower() and "texshop" in u.lower() for u in units)
+
+
+# ---------------------------------------------------------------- dot-prefixed words (2026-10-29 Legroom post)
+from socialpost.daily import lib219 as L219  # noqa: E402
+
+
+@pytest.mark.parametrize("html, want", [
+    ("<p>Claude Code leaves them in a project's <code>.claude/worktrees</code> folder.</p>",
+     "Claude Code leaves them in a project's .claude/worktrees folder."),
+    ("<p>Edit the <code>.gitignore</code> file.</p>", "Edit the .gitignore file."),
+    ("<p>Then run <code>./script.sh</code> again.</p>", "Then run ./script.sh again."),
+    ("<p>Update to version <b>1.9.0</b>. Then restart.</p>", "Update to version 1.9.0. Then restart."),
+    ("<p>It ends with a <em>period</em> . Next one.</p>", "It ends with a period. Next one."),
+    ("<p>Lists <b>one</b> , <b>two</b> and three.</p>", "Lists one, two and three."),
+])
+def test_strip_tags_keeps_the_space_before_a_dot_prefixed_word(html, want):
+    assert L219.events.strip_tags(html) == want
+
+
+@pytest.mark.parametrize("text, bad", [
+    ("Claude Code leaves them in a project's.claude/worktrees folder.", True),
+    ("Edit the repo's.gitignore first.", True),
+    ("Look in the folder.claude/worktrees for them.", True),
+    ("Claude Code leaves them in a project's .claude/worktrees folder.", False),
+    ("Get BibTeX from doi.org/10.1000/x or purplelink.llc/legroom today.", False),
+    ("Version 1.9.0 is out. It needs macOS 14.", False),
+    ("Read more: https://purplelink.llc/legroom/?utm_source=x", False),
+])
+def test_gate_rejects_a_word_joined_to_a_dot_path(text, bad):
+    assert bool(vet.joined_word_problems(text)) is bad
