@@ -1,0 +1,33 @@
+{
+ "a": [
+  "His players got four games this week. Yours got two.",
+  "You didn't lose on skill. You lost to the schedule.",
+  "Circled Hoops counts one game per starter.",
+  "You circle which one, before the week locks.",
+  "Set it once a week. No checking in every night.",
+  "Then watch it play out live. If a player sits, the backup you named steps in.",
+  "Circled Hoops. Free on the App Store."
+ ],
+ "b": [
+  "Only one of these games counts. Which night do you pick?",
+  "Monday looks fine.",
+  "But Wednesday, Utah gives up the third-most points to guards. Circle it.",
+  "Eight starters, one game each, locked before the week.",
+  "Then your reads play out live, against your friends.",
+  "It rewards the manager who reads the week best, not the one who checks in most.",
+  "Circled Hoops. Weekly fantasy basketball, free on the App Store."
+ ],
+ "c": [
+  "In Circled Hoops, you set eight starters once a week.",
+  "Circle one game for each. Only that game counts.",
+  "The app posts a recap every Monday, so the chat always has something to talk about.",
+  "Each week, one matchup is the Game of the Week, and the whole league picks a side. (not used since round 3)",
+  "Drafts, trades and live scoring. Free, with no betting.",
+  "Circled Hoops. On the App Store."
+ ],
+ "voices": {
+  "a": "am_michael 1.08",
+  "b": "af_heart 1.05",
+  "c": "am_michael 1.08"
+ }
+}

@@ -1,0 +1,250 @@
+{
+ "id": "circledhoops-c-group-chat",
+ "title": "Circled Hoops ad C: the group chat",
+ "note": "Screens show a sample league. Not affiliated with the NBA.",
+ "bed": {
+  "style": {
+   "genre": "chill_acoustic_like",
+   "bpm": 96,
+   "mood": "bright",
+   "key": "G"
+  },
+  "seed": 2,
+  "gain_db": -14,
+  "duck_db": 7,
+  "dropScene": 1
+ },
+ "scenes": [
+  {
+   "min": 4.2,
+   "cap": false,
+   "shots": [
+    {
+     "kind": "chat",
+     "title": "Group chat",
+     "msgs": [
+      {
+       "from": "Jordan",
+       "text": "fantasy hoops again this year?",
+       "at": 0.0
+      },
+      {
+       "from": "Dana",
+       "text": "only if I don't have to set a lineup every night",
+       "at": 0.6
+      },
+      {
+       "from": "Marcus",
+       "text": "we were all checked out by december last year",
+       "at": 1.35
+      },
+      {
+       "me": true,
+       "text": "found one where you set it once a week",
+       "at": 2.25
+      },
+      {
+       "me": true,
+       "card": "Weekly fantasy basketball \u00b7 App Store",
+       "at": 2.85
+      }
+     ]
+    }
+   ],
+   "sfx": [
+    {
+     "name": "tap",
+     "at": 0.02,
+     "gain_db": 0
+    },
+    {
+     "name": "tap",
+     "at": 0.6,
+     "gain_db": 0
+    },
+    {
+     "name": "tap",
+     "at": 1.35,
+     "gain_db": 0
+    },
+    {
+     "name": "select",
+     "at": 2.25,
+     "gain_db": 0
+    },
+    {
+     "name": "select",
+     "at": 2.85,
+     "gain_db": 0
+    }
+   ]
+  },
+  {
+   "vo": "c1",
+   "hl": [
+    "once"
+   ],
+   "flash": true,
+   "tail": 0.3,
+   "shots": [
+    {
+     "kind": "screen",
+     "video": true,
+     "src": "clip-autoset.mp4",
+     "from": 0.4,
+     "focus": {
+      "x": 0.02,
+      "y": 0.26,
+      "w": 0.96,
+      "h": 0.4
+     },
+     "taps": [
+      {
+       "x": 0.17,
+       "y": 0.535,
+       "at": 0.6
+      }
+     ]
+    }
+   ],
+   "sfx": [
+    {
+     "name": "lineup-locked",
+     "at": 0.65,
+     "gain_db": -2
+    }
+   ]
+  },
+  {
+   "vo": "c2",
+   "hl": [
+    "circle",
+    "only"
+   ],
+   "tail": 0.3,
+   "shots": [
+    {
+     "kind": "screen",
+     "video": true,
+     "src": "clip-circle.mp4",
+     "from": 3.9,
+     "focus": {
+      "x": 0.02,
+      "y": 0.36,
+      "w": 0.96,
+      "h": 0.34
+     }
+    }
+   ],
+   "sfx": [
+    {
+     "name": "select",
+     "at": 1.55
+    }
+   ]
+  },
+  {
+   "vo": "c3",
+   "hl": [
+    "recap",
+    "talk"
+   ],
+   "tail": 0.3,
+   "shots": [
+    {
+     "kind": "screen",
+     "video": true,
+     "src": "clip-chat.mp4",
+     "from": 0.3,
+     "rate": 1.15,
+     "focus": {
+      "x": 0.03,
+      "y": 0.34,
+      "w": 0.94,
+      "h": 0.5
+     }
+    }
+   ]
+  },
+  {
+   "vo": "c5",
+   "hl": [
+    "free",
+    "betting"
+   ],
+   "tail": 0.3,
+   "shots": [
+    {
+     "kind": "screen",
+     "src": "still-draftroom.png",
+     "dur": 1.3,
+     "focus": {
+      "x": 0.03,
+      "y": 0.19,
+      "w": 0.94,
+      "h": 0.28
+     }
+    },
+    {
+     "kind": "screen",
+     "src": "still-trades.png",
+     "at": 1.3,
+     "dur": 1.25,
+     "noEnter": true,
+     "focus": {
+      "x": 0.02,
+      "y": 0.06,
+      "w": 0.96,
+      "h": 0.36
+     }
+    },
+    {
+     "kind": "screen",
+     "video": true,
+     "src": "clip-matchup.mp4",
+     "from": 4.0,
+     "at": 2.55,
+     "noEnter": true,
+     "focus": {
+      "x": 0.03,
+      "y": 0.48,
+      "w": 0.94,
+      "h": 0.24
+     }
+    }
+   ],
+   "sfx": [
+    {
+     "name": "tap",
+     "at": 0.05
+    },
+    {
+     "name": "tap",
+     "at": 1.3
+    },
+    {
+     "name": "score-tick",
+     "at": 2.6
+    }
+   ]
+  },
+  {
+   "vo": "c6",
+   "cap": false,
+   "min": 3.0,
+   "flash": true,
+   "shots": [
+    {
+     "kind": "end"
+    }
+   ],
+   "sfx": [
+    {
+     "name": "win",
+     "at": 0.1,
+     "gain_db": -2
+    }
+   ]
+  }
+ ]
+}

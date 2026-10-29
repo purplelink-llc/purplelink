@@ -1,0 +1,319 @@
+{
+ "id": "circledhoops-b-which-night",
+ "title": "Circled Hoops ad B: which night?",
+ "note": "Screens show a sample league. Not affiliated with the NBA.",
+ "bed": {
+  "style": {
+   "genre": "synthwave",
+   "bpm": 104,
+   "mood": "dark",
+   "key": "D"
+  },
+  "seed": 5,
+  "gain_db": -15,
+  "duck_db": 7,
+  "dropScene": 3
+ },
+ "scenes": [
+  {
+   "vo": "b1",
+   "hl": [
+    "one",
+    "night"
+   ],
+   "tail": 0.3,
+   "shots": [
+    {
+     "kind": "screen",
+     "src": "still-sheet.png",
+     "focus": {
+      "x": 0.02,
+      "y": 0.36,
+      "w": 0.83,
+      "h": 0.22
+     },
+     "chip": "Sample league",
+     "rings": [
+      {
+       "x": 0.025,
+       "y": 0.37,
+       "w": 0.12,
+       "h": 0.2,
+       "at": 0.55,
+       "dur": 0.3,
+       "color": "text",
+       "stroke": 5
+      },
+      {
+       "x": 0.29,
+       "y": 0.37,
+       "w": 0.115,
+       "h": 0.2,
+       "at": 0.75,
+       "dur": 0.3,
+       "color": "text",
+       "stroke": 5
+      },
+      {
+       "x": 0.665,
+       "y": 0.37,
+       "w": 0.115,
+       "h": 0.2,
+       "at": 0.95,
+       "dur": 0.3,
+       "color": "text",
+       "stroke": 5
+      }
+     ],
+     "boxes": {
+      "9x16": {
+       "x": 40,
+       "y": 600,
+       "w": 1000,
+       "h": 1000
+      }
+     }
+    }
+   ],
+   "sfx": [
+    {
+     "name": "tap",
+     "at": 0.55
+    },
+    {
+     "name": "tap",
+     "at": 0.75
+    },
+    {
+     "name": "tap",
+     "at": 0.95
+    }
+   ]
+  },
+  {
+   "vo": "b2",
+   "min": 1.9,
+   "tail": 0.25,
+   "shots": [
+    {
+     "kind": "screen",
+     "video": true,
+     "src": "clip-circle.mp4",
+     "from": 2.25,
+     "noEnter": true,
+     "focus": {
+      "x": 0.02,
+      "y": 0.36,
+      "w": 0.83,
+      "h": 0.22
+     },
+     "taps": [
+      {
+       "x": 0.085,
+       "y": 0.47,
+       "at": 0.12
+      }
+     ],
+     "focusTo": {
+      "x": 0.02,
+      "y": 0.36,
+      "w": 0.96,
+      "h": 0.34
+     },
+     "panAt": 0.25,
+     "panEnd": 0.9,
+     "boxes": {
+      "9x16": {
+       "x": 40,
+       "y": 600,
+       "w": 1000,
+       "h": 1000
+      }
+     }
+    }
+   ],
+   "sfx": [
+    {
+     "name": "select",
+     "at": 0.12
+    }
+   ]
+  },
+  {
+   "vo": "b3",
+   "hl": [
+    "wednesday",
+    "third-most",
+    "circle"
+   ],
+   "tail": 0.35,
+   "shots": [
+    {
+     "kind": "screen",
+     "video": true,
+     "src": "clip-circle.mp4",
+     "from": 4.15,
+     "noEnter": true,
+     "focus": {
+      "x": 0.02,
+      "y": 0.36,
+      "w": 0.96,
+      "h": 0.34
+     },
+     "focusTo": {
+      "x": 0.02,
+      "y": 0.5,
+      "w": 0.96,
+      "h": 0.2
+     },
+     "panAt": 1.4,
+     "panEnd": 2.0,
+     "rate": 0.85,
+     "boxes": {
+      "9x16": {
+       "x": 40,
+       "y": 600,
+       "w": 1000,
+       "h": 1000
+      }
+     }
+    }
+   ],
+   "sfx": [
+    {
+     "name": "select",
+     "at": 1.35
+    }
+   ]
+  },
+  {
+   "vo": "b4",
+   "hl": [
+    "one",
+    "locked"
+   ],
+   "flash": true,
+   "tail": 0.3,
+   "shots": [
+    {
+     "kind": "screen",
+     "src": "still-lineup-locked.png",
+     "focus": {
+      "x": 0.02,
+      "y": 0.28,
+      "w": 0.96,
+      "h": 0.5
+     }
+    }
+   ],
+   "sfx": [
+    {
+     "name": "lineup-locked",
+     "at": 0.05,
+     "gain_db": -2
+    }
+   ]
+  },
+  {
+   "vo": "b5",
+   "hl": [
+    "live"
+   ],
+   "tail": 0.3,
+   "shots": [
+    {
+     "kind": "screen",
+     "video": true,
+     "src": "clip-matchup.mp4",
+     "from": 0.6,
+     "focus": {
+      "x": 0.03,
+      "y": 0.26,
+      "w": 0.94,
+      "h": 0.44
+     }
+    }
+   ],
+   "sfx": [
+    {
+     "name": "score-tick",
+     "at": 1.4
+    }
+   ]
+  },
+  {
+   "vo": "b6",
+   "hl": [
+    "reads",
+    "best"
+   ],
+   "tail": 0.4,
+   "shots": [
+    {
+     "kind": "screen",
+     "src": "still-recap.png",
+     "focus": {
+      "x": 0.06,
+      "y": 0.385,
+      "w": 0.84,
+      "h": 0.17
+     },
+     "rings": [
+      {
+       "x": 0.06,
+       "y": 0.495,
+       "w": 0.84,
+       "h": 0.05,
+       "at": 1.5,
+       "dur": 0.5
+      }
+     ],
+     "boxes": {
+      "9x16": {
+       "x": 30,
+       "y": 640,
+       "w": 1020,
+       "h": 640
+      },
+      "4x5": {
+       "x": 40,
+       "y": 420,
+       "w": 1000,
+       "h": 640
+      },
+      "1x1": {
+       "x": 40,
+       "y": 330,
+       "w": 1000,
+       "h": 560
+      }
+     }
+    }
+   ],
+   "sfx": [
+    {
+     "name": "lock",
+     "at": 1.55
+    }
+   ]
+  },
+  {
+   "vo": "b7",
+   "cap": false,
+   "min": 4.4,
+   "flash": true,
+   "shots": [
+    {
+     "kind": "end"
+    }
+   ],
+   "sfx": [
+    {
+     "name": "win",
+     "at": 0.1,
+     "gain_db": -2
+    }
+   ]
+  }
+ ]
+}
