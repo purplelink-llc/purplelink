@@ -70,6 +70,7 @@ DEFAULTS: dict[str, tuple[str | None, str]] = {
     "format":  ("monthly", "0.5"),
     "":        ("monthly", "0.8"),
     "de":      ("monthly", "0.7"),
+    "fr":      ("monthly", "0.7"),
     "ja":      ("monthly", "0.7"),
     "zh-cn":   ("monthly", "0.7"),
 }

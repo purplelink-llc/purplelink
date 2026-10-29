@@ -17,12 +17,13 @@ import sys
 import unittest
 from common import ORIGIN, SITE, ROOT, jsonld_blocks, main_text, page_of, read, read_site, walk
 
-PAGES = {"/moderntex/": "en", "/de/moderntex/": "de", "/ja/moderntex/": "ja", "/zh-cn/moderntex/": "zh-Hans"}
+PAGES = {"/moderntex/": "en", "/de/moderntex/": "de", "/fr/moderntex/": "fr", "/ja/moderntex/": "ja", "/zh-cn/moderntex/": "zh-Hans"}
 LOCALIZED_PAGES = {u: l for u, l in PAGES.items() if l != "en"}
 # What the currency fact says on each page, in the page's own language.
 CURRENCY_PHRASE = {
     "en": r"local currency",
     "de": r"Landeswährung",
+    "fr": r"monnaie locale",
     "ja": r"お住まいの地域の通貨",
     "zh-Hans": r"所在地区的货币",
 }
@@ -77,22 +78,23 @@ class PricesAgreeWithTheCatalog(unittest.TestCase):
         known = known_prices()
         for url, lang in PAGES.items():
             text = visible(url)
-            found = re.findall(r"(\d+[.,]\d\d)\s*(?:US-Dollar|USD|ドル|美元|\$)|\$(\d+\.\d\d)", text)
+            found = re.findall(r"(\d+[.,]\d\d)\s*(?:US-Dollar|\$\s*US|USD|ドル|美元|\$)|\$(\d+\.\d\d)", text)
             vals = {(a or b).replace(",", ".") for a, b in found}
             self.assertIn("19.99", vals, url)
             self.assertEqual(vals - known, set(), url)
         self.assertIn("19,99 US-Dollar", visible("/de/moderntex/"))
+        self.assertRegex(visible("/fr/moderntex/"), r"19,99\s\$\sUS")
         self.assertIn("19.99ドル", visible("/ja/moderntex/"))
         self.assertIn("19.99 美元", visible("/zh-cn/moderntex/"))
 
-    def test_offer_is_usd_at_the_catalog_price_on_all_four(self):
+    def test_offer_is_usd_at_the_catalog_price_on_all_five(self):
         for url in PAGES:
             blocks = jsonld_blocks(page_of(url).read_text(encoding="utf-8"))
             offers = [d["offers"] for b in blocks for d in walk(b) if d.get("@type") == "SoftwareApplication"]
             self.assertEqual([(o["price"], o["priceCurrency"]) for o in offers], [("19.99", "USD")], url)
 
     def test_buy_button_carries_the_catalog_price(self):
-        for url, price in {"/moderntex/": "$19.99", "/de/moderntex/": "19,99 US-Dollar"}.items():
+        for url, price in {"/moderntex/": "$19.99", "/de/moderntex/": "19,99 US-Dollar", "/fr/moderntex/": "19,99\u00a0$\u00a0US"}.items():
             t = page_of(url).read_text(encoding="utf-8")
             self.assertRegex(t, r'id="checkout-btn"[^>]*>[^<]*%s' % re.escape(price), url)
 
@@ -120,6 +122,7 @@ class CurrencyNote(unittest.TestCase):
 
     def test_localized_pages_no_longer_just_say_the_price_is_in_dollars(self):
         self.assertNotIn("Der Preis gilt in US-Dollar", visible("/de/moderntex/"))
+        self.assertNotIn("Le prix est en dollars américains.", visible("/fr/moderntex/"))
         self.assertNotIn("価格は米ドルで表示しています", visible("/ja/moderntex/"))
         self.assertNotIn("价格以美元标示", visible("/zh-cn/moderntex/"))
 
@@ -129,7 +132,7 @@ class CurrencyNote(unittest.TestCase):
         found = set()
         for f in sorted(SITE.rglob("index.html")):
             rel = f.relative_to(SITE).as_posix()
-            if rel.startswith(("de/", "ja/", "zh-cn/")):
+            if rel.startswith(("de/", "fr/", "ja/", "zh-cn/")):
                 continue
             t = f.read_text(encoding="utf-8")
             if re.search(r'class="[^"]*pr-checkout-btn[^"]*"[^>]*data-product="(?:%s)"' % mac, t):
@@ -157,10 +160,11 @@ class InterfaceClaimsFollowReleases(unittest.TestCase):
     expectations (docs/products/moderntex-intl.md)."""
 
     FORBIDDEN = {
-        "ja": r"日本語(?:の)?(?:インターフェース|ユーザーインターフェース|UI)|日本語化|日本語版アプリ|画面は日本語(?:で表示|に対応|です。)|(?:インターフェース|画面表示|表示言語)(?:は|が)日本語(?:に対応|で表示|です)",
-        "zh-Hans": r"中文界面|简体中文界面|中文用户界面|汉化|界面(?:已|支持)(?:翻译|支持)?(?:简体)?中文|应用(?:界面)?(?:有|提供)中文",
-        "de": r"japanische[rn]? (?:Oberfläche|Benutzeroberfläche)|chinesische[rn]? (?:Oberfläche|Benutzeroberfläche)|Oberfläche (?:auf|in) (?:Japanisch|Chinesisch)",
-        "en": r"(?:Japanese|Chinese|Simplified Chinese) (?:interface|UI|translation of the app|localization)|interface (?:is |in |available in )?(?:Japanese|Chinese)|(?:Japanese|Chinese) (?:menus|language support in the app)",
+        "ja": r"日本語(?:の)?(?:インターフェース|ユーザーインターフェース|UI)|日本語化|フランス語(?:の)?(?:インターフェース|画面|UI)|日本語版アプリ|画面は日本語(?:で表示|に対応|です。)|(?:インターフェース|画面表示|表示言語)(?:は|が)日本語(?:に対応|で表示|です)",
+        "zh-Hans": r"法语界面|法文界面|中文界面|简体中文界面|中文用户界面|汉化|界面(?:已|支持)(?:翻译|支持)?(?:简体)?中文|应用(?:界面)?(?:有|提供)中文",
+        "de": r"(?:französische|japanische|chinesische)[rn]? (?:Oberfläche|Benutzeroberfläche)|Oberfläche (?:auf|in) (?:Französisch|Japanisch|Chinesisch)",
+        "fr": r"interface\s+(?:de\s+l.(?:app|application)\s+)?(?:est\s+|sera\s+)?(?:disponible\s+|traduite\s+)?(?:en\s+français|française)|(?:menus|app(?:lication)?)\s+en\s+français|interface\s+(?:en\s+)?(?:japonais|chinois)",
+        "en": r"(?:French|Japanese|Chinese|Simplified Chinese) (?:interface|UI|translation of the app|localization)|interface (?:is |in |available in )?(?:French|Japanese|Chinese)|(?:Japanese|Chinese) (?:menus|language support in the app)",
     }
 
     def texts(self):
@@ -170,7 +174,7 @@ class InterfaceClaimsFollowReleases(unittest.TestCase):
             if rel.startswith(("blog/digest/", "changelog/")):
                 continue
             first = rel.split("/")[0]
-            lang = {"de": "de", "ja": "ja", "zh-cn": "zh-Hans"}.get(first, "en")
+            lang = {"de": "de", "fr": "fr", "ja": "ja", "zh-cn": "zh-Hans"}.get(first, "en")
             out[rel] = (lang, f.read_text(encoding="utf-8"))
         for rel in ("llms.txt", "llms-full.txt"):
             out[rel] = ("en", read_site(rel))
@@ -185,15 +189,24 @@ class InterfaceClaimsFollowReleases(unittest.TestCase):
 
     def test_the_guard_matches_the_claims_it_is_meant_to_catch(self):
         for lang, sample in {"ja": "日本語インターフェースに対応", "zh-Hans": "ModernTex 提供中文界面", "de": "mit japanischer Oberfläche",
-                             "en": "the Japanese interface ships in 2.1"}.items():
+                             "en": "the Japanese interface ships in 2.1",
+                             "fr": "ModernTex propose une interface disponible en français"}.items():
             self.assertRegex(sample, self.FORBIDDEN[lang])
         for lang, ok in {"ja": "アプリの画面表示は現在、英語です。日本語の文書は XeLaTeX でコンパイルできます。",
-                         "zh-Hans": "应用界面目前是英文。可以编译中文文档。", "en": "Chinese and Japanese documents compile with XeLaTeX."}.items():
+                         "zh-Hans": "应用界面目前是英文。可以编译中文文档。", "en": "Chinese and Japanese documents compile with XeLaTeX.",
+                         "fr": "L’interface de l’application est en anglais. Le français n’est pas encore une langue d’interface. Les documents en français se compilent."}.items():
             self.assertNotRegex(ok, self.FORBIDDEN[lang])
 
     def test_japanese_and_chinese_pages_say_the_interface_is_english(self):
         self.assertRegex(visible("/ja/moderntex/"), r"アプリの画面表示は現在、英語です")
         self.assertRegex(visible("/zh-cn/moderntex/"), r"应用界面目前是英文")
+
+    def test_french_page_says_the_interface_is_english_with_german_beta_and_never_french(self):
+        t = visible("/fr/moderntex/")
+        self.assertRegex(t, r"L’interface de l’application est en anglais")
+        self.assertRegex(t, r"allemand depuis la version 2\.0 \(bêta\)")
+        self.assertRegex(t, r"le français n’est pas encore une langue d’interface")
+        self.assertRegex(t, r"babel ou polyglossia, encodage T1 et csquotes")
 
     def test_german_page_says_the_interface_can_be_german_and_is_a_beta(self):
         t = visible("/de/moderntex/")
@@ -217,7 +230,7 @@ class InterfaceClaimsFollowReleases(unittest.TestCase):
             self.assertRegex(t, r"English and German \(German is a beta", rel)
             self.assertIn("local currency", t, rel)
             self.assertIn("2 to 4 percent", t, rel)
-            for url in ("/de/moderntex/", "/ja/moderntex/", "/zh-cn/moderntex/"):
+            for url in ("/de/moderntex/", "/fr/moderntex/", "/ja/moderntex/", "/zh-cn/moderntex/"):
                 self.assertIn(ORIGIN + url, t, f"{rel} {url}")
 
 
@@ -238,14 +251,14 @@ class LanguageLinksResolve(unittest.TestCase):
         section = self.targets(en, r'<section class="specs-section" id="languages"(.*?)</section>')
         self.assertEqual(sorted(section), sorted(LOCALIZED_PAGES))
 
-    def test_every_footer_links_the_three_localized_pages_and_they_resolve(self):
+    def test_every_footer_links_the_four_localized_pages_and_they_resolve(self):
         for rel in ("index.html", "moderntex/index.html", "pricing/index.html", "guides/index.html"):
             t = (SITE / rel).read_text(encoding="utf-8")
             m = re.search(r'<p class="footer-langs">(.*?)</p>', t, re.S)
             self.assertIsNotNone(m, rel)
             hrefs = re.findall(r'href="([^"]+)"', m.group(1))
-            self.assertEqual(hrefs, ["/de/moderntex/", "/ja/moderntex/", "/zh-cn/moderntex/"], rel)
-            self.assertEqual(re.findall(r'hreflang="([^"]+)"', m.group(1)), ["de", "ja", "zh-Hans"], rel)
+            self.assertEqual(hrefs, ["/de/moderntex/", "/fr/moderntex/", "/ja/moderntex/", "/zh-cn/moderntex/"], rel)
+            self.assertEqual(re.findall(r'hreflang="([^"]+)"', m.group(1)), ["de", "fr", "ja", "zh-Hans"], rel)
             for h in hrefs:
                 self.assertTrue(page_of(h).is_file(), h)
 
@@ -281,7 +294,7 @@ class IndexingPicksUpTheLocalizedUrls(unittest.TestCase):
             sys.path.pop(0)
         urls = set(indexnow_ping.urls_from_sitemap(only_today=False))
         for url in list(LOCALIZED_PAGES) + [
-            "/de/guides/latex-auf-dem-mac-einrichten/", "/ja/guides/mac-nihongo-latex/",
+            "/de/guides/latex-auf-dem-mac-einrichten/", "/fr/guides/latex-en-francais-sur-mac/", "/ja/guides/mac-nihongo-latex/",
             "/zh-cn/guides/mac-xelatex-ctex-zhongwen-lunwen/",
         ]:
             self.assertIn(ORIGIN + url, urls, url)
@@ -289,11 +302,11 @@ class IndexingPicksUpTheLocalizedUrls(unittest.TestCase):
     def test_daily_job_filter_does_not_skip_language_prefixes(self):
         # ~/.purplelink/bin/daily-indexing.py takes every <loc> of the live sitemap; the repo has no path filter either.
         src = read("scripts/indexnow_ping.py")
-        self.assertNotRegex(src, r"/(de|ja|zh-cn)/")
+        self.assertNotRegex(src, r"/(de|fr|ja|zh-cn)/")
 
 
 class UptimeWatchesTheLocalizedPages(unittest.TestCase):
-    def test_checks_file_probes_the_four_moderntex_pages(self):
+    def test_checks_file_probes_the_five_moderntex_pages(self):
         checks = read("scripts/uptime-checks.txt")
         for url in PAGES:
             self.assertRegex(checks, r"(?m)^[a-z0-9-]+\|GET\|%s\|200$" % re.escape(ORIGIN + url))

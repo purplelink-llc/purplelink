@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Écrire en français avec LaTeX sur Mac : babel, guillemets et espaces | Purplelink</title>
+    <meta name="description" content="Rédiger un document en français avec LaTeX sur Mac : babel ou polyglossia, T1, guillemets avec csquotes, espaces avant ; : ! ? et compilation avec pdfLaTeX ou LuaLaTeX. Préambules à copier, compilés avec TinyTeX sous macOS.">
+    <link rel="canonical" href="https://purplelink.llc/fr/guides/latex-en-francais-sur-mac/">
+    <meta property="og:title" content="Écrire en français avec LaTeX sur Mac : babel, guillemets et espaces">
+    <meta property="og:description" content="Rédiger un document en français avec LaTeX sur Mac : babel ou polyglossia, T1, guillemets avec csquotes, espaces avant ; : ! ? et compilation avec pdfLaTeX ou LuaLaTeX. Préambules à copier, compilés avec TinyTeX sous macOS.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/fr/guides/latex-en-francais-sur-mac/">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/fr-guides-latex-en-francais-sur-mac.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Écrire en français avec LaTeX sur Mac : babel, guillemets et espaces">
+    <meta name="twitter:description" content="Rédiger un document en français avec LaTeX sur Mac : babel ou polyglossia, T1, guillemets avec csquotes, espaces avant ; : ! ? et compilation avec pdfLaTeX ou LuaLaTeX. Préambules à copier, compilés avec TinyTeX sous macOS.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/fr-guides-latex-en-francais-sur-mac.jpg">
+    <meta name="twitter:image:alt" content="Écrire en français avec LaTeX sur Mac : babel, guillemets et espaces">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "TechArticle",
+          "headline": "Écrire en français avec LaTeX sur Mac : babel, guillemets et espaces",
+          "description": "Rédiger un document en français avec LaTeX sur Mac : babel ou polyglossia, T1, guillemets avec csquotes, espaces avant ; : ! ? et compilation avec pdfLaTeX ou LuaLaTeX. Préambules à copier, compilés avec TinyTeX sous macOS.",
+          "inLanguage": "fr",
+          "author": {
+            "@id": "https://purplelink.llc/about/#person"
+          },
+          "publisher": {
+            "@id": "https://purplelink.llc/#organization"
+          },
+          "datePublished": "2026-10-29",
+          "dateModified": "2026-10-29",
+          "image": "https://purplelink.llc/assets/og/brand.png",
+          "mainEntityOfPage": "https://purplelink.llc/fr/guides/latex-en-francais-sur-mac/"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Accueil",
+              "item": "https://purplelink.llc/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "ModernTex",
+              "item": "https://purplelink.llc/fr/moderntex/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Écrire en français avec LaTeX sur Mac : babel, guillemets et espaces",
+              "item": "https://purplelink.llc/fr/guides/latex-en-francais-sur-mac/"
+            }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "inLanguage": "fr",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Faut-il taper une espace insécable avant les points-virgules, deux-points, points d’exclamation et d’interrogation ?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Non. Avec babel en français, une espace normale ou même aucune espace avant ces signes suffit : babel insère l’espace fine insécable avant ; ! ? et l’espace insécable avant : et à l’intérieur des guillemets. Il n’y a pas besoin de taper ~ ni de caractères spéciaux."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Dois-je charger inputenc pour les accents ?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Non. Depuis 2018, LaTeX lit les sources en UTF-8 par défaut. Il suffit que le fichier soit réellement en UTF-8. Avec pdfLaTeX, chargez en revanche \\usepackage[T1]{fontenc}, pour que les lettres accentuées soient de vrais caractères de la police et que les mots accentués puissent être coupés."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "babel ou polyglossia pour le français ?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "babel fonctionne avec pdfLaTeX, XeLaTeX et LuaLaTeX. polyglossia ne fonctionne qu’avec XeLaTeX et LuaLaTeX, et demande fontspec. Si vous compilez avec pdfLaTeX, ou si votre revue fournit une classe qui charge babel, prenez babel. Avec XeLaTeX ou LuaLaTeX et des polices OpenType, les deux conviennent."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Pourquoi les guillemets de csquotes ne sont-ils pas toujours « » ?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "csquotes choisit les guillemets d’après la langue du document. En français, la citation principale reçoit « » et la citation imbriquée “ ”. Si vous obtenez d’autres guillemets, vérifiez que la langue est déclarée avant csquotes ou chargez csquotes avec l’option autostyle."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Comment obtenir 1er et 2e ?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Avec babel en français, écrivez 1\\ier{} et 2\\ieme{}. Le résultat est « 1er » et « 2e » en exposant."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png?v=21c86cc2a8" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=f0ab0f06a1"></script>
+    <link rel="stylesheet" href="/styles.css?v=6388ed6bce">
+    <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
+    <link rel="stylesheet" href="/intl.css?v=29b69d6533">
+    <script src="/intl.js?v=4af9648904" defer></script>
+    <script src="/motion.js?v=d35f4b4ee4" defer></script>
+</head>
+    <body>
+    <a class="skip-link" href="#main-content">Aller au contenu</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Accueil Purplelink">
+        <img src="/assets/purplelink-mark.svg?v=2f8bd49b19" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Navigation principale"><a href="/fr/moderntex/">ModernTex</a><a href="/fr/guides/latex-en-francais-sur-mac/" aria-current="page">Guide</a><a href="/" lang="en" hreflang="en">English</a></nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/fr/moderntex/">← ModernTex</a>
+      <div class="post-hero">
+        <p class="post-date">Guide</p>
+        <h1 class="post-title">Écrire en français avec LaTeX sur Mac : babel, guillemets et espaces</h1>
+        <p class="post-byline">Par <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-29">29 octobre 2026</time></p>
+        <p class="post-lede">Comment composer un document en français avec LaTeX sur Mac : choisir entre babel et polyglossia, charger T1, mettre des guillemets avec csquotes, laisser babel gérer les espaces avant ; : ! ? et compiler avec pdfLaTeX ou LuaLaTeX.</p>
+      </div>
+
+      <article class="post-body">
+        <p>Ce guide met en place un document LaTeX en français sur Mac. Vous choisissez une distribution TeX, installez les paquets pour le français, écrivez un préambule avec babel, csquotes et biblatex, puis compilez. Une variante avec polyglossia et LuaLaTeX suit. Les préambules sont à copier, et je les ai compilés.</p>
+
+        <h2>En bref</h2>
+        <ol>
+          <li><p>Installez MacTeX (tout est inclus) ou TinyTeX (petit, les paquets s’ajoutent au besoin).</p></li>
+          <li><p>Avec TinyTeX seulement : ajoutez les paquets pour le français avec <code>tlmgr install</code> (étape 2).</p></li>
+          <li><p>Chargez <code>[T1]{fontenc}</code>, <code>lmodern</code> et <code>[french]{babel}</code> (étape 3).</p></li>
+          <li><p>Écrivez les accents, les guillemets <code>« »</code> et la ponctuation telle quelle : babel place les espaces.</p></li>
+          <li><p>Compilez avec <code>latexmk -pdf main.tex</code>, ou avec <code>latexmk -lualatex</code> pour LuaLaTeX, ou dans un éditeur comme <a href="/fr/moderntex/">ModernTex</a>.</p></li>
+        </ol>
+
+        <h2>Étape 1 : MacTeX ou TinyTeX</h2>
+        <p><a href="https://tug.org/mactex/" rel="noopener">MacTeX</a> est la distribution TeX Live complète pour Mac et occupe plusieurs gigaoctets. Tout ce dont ce guide a besoin s’y trouve déjà : vous pouvez sauter l’étape 2.</p>
+        <p><a href="https://yihui.org/tinytex/" rel="noopener">TinyTeX</a> est bien plus petite et s’installe dans votre dossier personnel (<code>~/Library/TinyTeX</code>), sans demande de mot de passe administrateur. En contrepartie, des paquets manquent, que vous ajoutez avec <code>tlmgr</code>. Si ModernTex ne trouve aucune distribution à la compilation, il propose d’installer TinyTeX en un clic.</p>
+
+        <h2>Étape 2 : paquets pour le français (TinyTeX)</h2>
+        <p>Ouvrez le Terminal et exécutez la commande suivante. Si <code>tlmgr</code> n’est pas dans le chemin de recherche, appelez-le par <code>~/Library/TinyTeX/bin/universal-darwin/tlmgr</code>.</p>
+<pre><code>tlmgr install babel-french hyphen-french csquotes biblatex biber lm microtype polyglossia fontspec</code></pre>
+        <p>À quoi servent les paquets :</p>
+        <ul>
+          <li><p><code>babel-french</code> et <code>hyphen-french</code> : la langue <code>french</code>, sa typographie et ses motifs de césure.</p></li>
+          <li><p><code>csquotes</code> : les guillemets adaptés à la langue.</p></li>
+          <li><p><code>biblatex</code> et <code>biber</code> : la bibliographie.</p></li>
+          <li><p><code>lm</code> et <code>microtype</code> : des polices vectorielles et de meilleures coupures de ligne.</p></li>
+          <li><p><code>polyglossia</code> et <code>fontspec</code> : l’alternative à babel pour XeLaTeX et LuaLaTeX, décrite à l’étape 5.</p></li>
+        </ul>
+        <p>Si babel signale plus tard qu’aucun motif de césure n’a été préchargé pour le français, le format de votre installation a été construit sans eux : après <code>tlmgr install hyphen-french</code>, reconstruisez les formats avec <code>fmtutil-sys --all</code>. Avec MacTeX, ce cas ne se présente pas. Si un fichier manque plus tard, <code>tlmgr search --global --file nom.sty</code> trouve le paquet.</p>
+
+        <h2>Étape 3 : le préambule avec babel</h2>
+        <p>Enregistrez ceci sous <code>main.tex</code>, en fichier texte UTF-8 :</p>
+<pre><code>\documentclass[a4paper,12pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[french]{babel}
+\usepackage{microtype}
+\usepackage[autostyle]{csquotes}
+\usepackage[backend=biber,style=authoryear]{biblatex}
+\addbibresource{biblio.bib}
+
+\title{Écrire en français avec LaTeX}
+\author{Élise Garçon}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+Voici un texte accentué : être, où, ça, œuvre, naïve, Noël.
+Quelle belle journée ! Venez-vous ? Oui ; sans hésiter.
+Les guillemets : \enquote{une citation}, et à l'intérieur
+\enquote{il a dit \enquote{bonjour} à tous}.
+Le 1\ier{} janvier, le 2\ieme{} étage.
+Comme l'ont montré \textcite{dupont2024}, cela fonctionne.
+
+\printbibliography
+\end{document}</code></pre>
+        <p>Et à côté, le fichier <code>biblio.bib</code> :</p>
+<pre><code>@book{dupont2024,
+  author    = {Dupont, Marie and Lefèvre, Étienne},
+  title     = {Écrire une thèse avec {LaTeX}},
+  date      = {2024},
+  publisher = {Éditions d'exemple},
+  location  = {Paris},
+}</code></pre>
+        <p>Ce que font les lignes :</p>
+        <ul>
+          <li><p><code>fontenc</code> avec <code>T1</code> range é, è, ç, œ et les autres lettres accentuées comme des caractères de la police, ce qui permet de couper les mots qui en contiennent. <code>lmodern</code> fournit les polices vectorielles correspondantes. Sans <code>lmodern</code>, <code>microtype</code> peut s’arrêter sur une erreur de polices bitmap.</p></li>
+          <li><p>Le paquet <code>inputenc</code> est inutile : depuis 2018, LaTeX lit les sources en UTF-8 par défaut. Les accents se tapent directement dans le texte, pas sous la forme <code>\'e</code>. Un ancien fichier en Latin-1 se convertit avec <code>iconv -f ISO-8859-1 -t UTF-8 ancien.tex &gt; nouveau.tex</code>.</p></li>
+          <li><p><code>french</code> règle la langue du document : la césure, la date (« 29 octobre 2026 »), les noms des sections automatiques, et la typographie française. Pour forcer une coupure sur un mot, utilisez <code>\hyphenation{in-cons-ti-tu-tion-nel-le-ment}</code>.</p></li>
+          <li><p><code>biblatex</code> avec <code>backend=biber</code> et <code>style=authoryear</code>. <code>\textcite</code> compose « Dupont et Lefèvre (2024) », <code>\parencite</code> met la référence entre parenthèses.</p></li>
+        </ul>
+        <p>Pour une thèse, remplacez <code>article</code> par <code>report</code> ou <code>book</code>, ou par une classe de votre établissement.</p>
+
+        <h2>Étape 4 : guillemets et espaces avant ; : ! ?</h2>
+        <p>La typographie française demande une espace avant le point-virgule, le point d’exclamation et le point d’interrogation, et avant les deux-points. Elle doit être insécable, pour qu’aucun signe ne se retrouve seul au début d’une ligne. Avec <code>babel</code> en français, vous n’avez rien à faire pour cela. Tapez la ponctuation comme vous la tapez d’habitude, avec une espace ou sans, et babel place l’espace correcte :</p>
+        <ul>
+          <li><p>avant <code>;</code>, <code>!</code> et <code>?</code> : une espace fine insécable ;</p></li>
+          <li><p>avant <code>:</code> : une espace insécable de taille normale ;</p></li>
+          <li><p>à l’intérieur des guillemets français : une espace insécable après « et avant ».</p></li>
+        </ul>
+        <p>Je l’ai vérifié sur le PDF de l’étape 5 : « journée ! », « Venez-vous ? » et « Oui ; » portent l’espace fine, et « accentué : » une espace plus large, sans que j’aie tapé un seul <code>~</code>.</p>
+        <p>Pour les guillemets, deux solutions fonctionnent :</p>
+        <ul>
+          <li><p><code>\enquote{...}</code> de <code>csquotes</code>. Avec la langue <code>french</code> déclarée, la citation principale reçoit « » et la citation imbriquée “ ”. C’est le choix le plus sûr, parce que le même source change de guillemets si vous passez un jour à une autre langue.</p></li>
+          <li><p>Les caractères <code>« »</code> tapés directement, avec des espaces normales à l’intérieur. Avec <code>T1</code> sous pdfLaTeX, comme sous LuaLaTeX, ils fonctionnent, et avec babel l’espace devient insécable. Les commandes <code>\og</code> et <code>\fg{}</code> font la même chose, mais elles n’existent qu’avec babel : polyglossia ne les définit pas.</p></li>
+        </ul>
+        <p>Pour les ordinaux, babel fournit <code>\ier{}</code> pour 1er et <code>\ieme{}</code> pour 2e. Écrivez <code>1\ier{} janvier</code>, et non <code>1er</code> en lettres ordinaires, qui ne produit pas l’exposant.</p>
+
+        <h2>Étape 5 : pdfLaTeX ou LuaLaTeX, babel ou polyglossia</h2>
+        <p>Dans le Terminal, dans le dossier qui contient <code>main.tex</code> :</p>
+<pre><code>latexmk -pdf main.tex</code></pre>
+        <p><code>latexmk</code> lance pdfLaTeX, biber, puis pdfLaTeX autant de fois qu’il le faut. J’ai compilé le préambule ci-dessus le 29 octobre 2026 avec TinyTeX (TeX Live 2026) sous macOS de cette façon : le PDF a la date « 29 octobre 2026 », les espaces fines avant ! ? et ;, les guillemets « » avec “ ” à l’intérieur, « 1er » et « 2e » en exposant, et une bibliographie qui dit « Dupont, Marie et Étienne Lefèvre (2024) ». Après le premier passage, LaTeX signale que la bibliographie est encore vide. C’est normal, biber la remplit au deuxième.</p>
+        <p>Pour LuaLaTeX, deux possibilités. <strong>babel</strong> fonctionne aussi avec LuaLaTeX et XeLaTeX : il suffit de charger <code>fontspec</code> à la place de <code>fontenc</code> et <code>lmodern</code>, et de garder <code>\usepackage[french]{babel}</code>. Il peut afficher un avertissement sur la forme « legacy » des listes, sans effet sur le document. L’autre solution est <strong>polyglossia</strong>, qui ne fonctionne qu’avec XeLaTeX et LuaLaTeX :</p>
+<pre><code>\documentclass[a4paper,12pt]{article}
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setmainlanguage{french}
+\usepackage[autostyle]{csquotes}
+
+\title{Écrire en français avec LaTeX}
+\author{Élise Garçon}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+Voici un texte accentué : être, où, ça, œuvre, naïve, Noël.
+Quelle belle journée ! Venez-vous ? Oui ; sans hésiter.
+Les guillemets : \enquote{une citation}, et à l'intérieur
+\enquote{il a dit \enquote{bonjour} à tous}.
+Le 1\ier{} janvier, le 2\ieme{} étage.
+\end{document}</code></pre>
+        <p>Compilez-le avec :</p>
+<pre><code>latexmk -lualatex main.tex</code></pre>
+        <p>Je l’ai compilé de la même façon, et les espaces avant ! ? ; et :, les guillemets et les ordinaux sont ceux du premier exemple. Il n’y a pas de <code>fontenc</code> ni de <code>inputenc</code> ici : fontspec lit les polices OpenType, qui contiennent déjà toutes les lettres accentuées. La police par défaut reste Latin Modern, et <code>\setmainfont{...}</code> en choisit une autre. Dans ModernTex, ouvrez le dossier, choisissez le profil de compilation voulu et compilez. Pour LuaLaTeX ou XeLaTeX au lieu de pdfLaTeX, écrivez en première ligne <code>% !TEX program = lualatex</code>.</p>
+        <p>Lequel choisir ? Prenez <strong>babel</strong> avec pdfLaTeX si vous partez d’un modèle de revue ou d’établissement, parce que la plupart des classes supposent babel. Prenez <strong>polyglossia</strong> ou babel avec fontspec si vous voulez des polices OpenType, ou un texte qui mêle le français à d’autres écritures. Ne chargez pas les deux ensemble.</p>
+
+        <h2>Où mettre le modèle de mon établissement ?</h2>
+        <p>Placez le fichier de classe (<code>.cls</code>) et les fichiers de style (<code>.sty</code>) de l’établissement à côté de <code>main.tex</code>, dans le même dossier : la compilation les y trouve. Si le modèle demande d’autres paquets, installez-les avec <code>tlmgr install</code>, et <code>tlmgr search --global --file</code> donne le nom du paquet.</p>
+
+        <h2>Questions et réponses</h2>
+        <h3>Faut-il taper une espace insécable avant les points-virgules, deux-points, points d’exclamation et d’interrogation ?</h3>
+        <p>Non. Avec babel en français, une espace normale ou même aucune espace avant ces signes suffit : babel insère l’espace fine insécable avant <code>;</code> <code>!</code> <code>?</code> et l’espace insécable avant <code>:</code> et à l’intérieur des guillemets. Il n’y a pas besoin de taper <code>~</code> ni de caractères spéciaux.</p>
+        <h3>Dois-je charger inputenc pour les accents ?</h3>
+        <p>Non. Depuis 2018, LaTeX lit les sources en UTF-8 par défaut. Il suffit que le fichier soit réellement en UTF-8. Avec pdfLaTeX, chargez en revanche <code>\usepackage[T1]{fontenc}</code>, pour que les lettres accentuées soient de vrais caractères de la police et que les mots accentués puissent être coupés.</p>
+        <h3>babel ou polyglossia pour le français ?</h3>
+        <p>babel fonctionne avec pdfLaTeX, XeLaTeX et LuaLaTeX. polyglossia ne fonctionne qu’avec XeLaTeX et LuaLaTeX, et demande fontspec. Si vous compilez avec pdfLaTeX, ou si votre revue fournit une classe qui charge babel, prenez babel. Avec XeLaTeX ou LuaLaTeX et des polices OpenType, les deux conviennent.</p>
+        <h3>Pourquoi les guillemets de csquotes ne sont-ils pas toujours « » ?</h3>
+        <p>csquotes choisit les guillemets d’après la langue du document. En français, la citation principale reçoit « » et la citation imbriquée “ ”. Si vous obtenez d’autres guillemets, vérifiez que la langue est déclarée avant csquotes ou chargez csquotes avec l’option <code>autostyle</code>.</p>
+        <h3>Comment obtenir 1er et 2e ?</h3>
+        <p>Avec babel en français, écrivez <code>1\ier{}</code> et <code>2\ieme{}</code>. Le résultat est « 1er » et « 2e » en exposant.</p>
+
+        <h2>Compiler avec ModernTex</h2>
+        <p><a href="/fr/moderntex/">ModernTex</a> est un éditeur LaTeX pour Mac, avec un aperçu PDF synchronisé avec la source, des messages d’erreur en langage clair et des contrôles avant soumission. Il utilise votre installation TeX : tout ce qui précède s’y applique donc aussi. L’interface de l’application est en anglais. Sept jours gratuits, puis 19,99 $ US en une fois.</p>
+      </article>
+    </main>
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg?v=2f8bd49b19" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Des apps et des outils conçus par un studio d’une seule personne, à Atlanta, en Géorgie.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="ModernTex">
+          <p class="footer-head">ModernTex</p>
+          <ul>
+            <li><a href="/fr/moderntex/">Page du produit</a></li>
+            <li><a href="/fr/guides/latex-en-francais-sur-mac/">LaTeX en français sur Mac</a></li>
+            <li><a href="/changelog/">Journal des modifications (en anglais)</a></li>
+            <li><a href="/recover/">Retrouver un achat (en anglais)</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Autres pages (en anglais)">
+          <p class="footer-head">Autres pages (en anglais)</p>
+          <ul>
+            <li><a href="/products/">Tous les produits</a></li>
+            <li><a href="/tools/">Outils gratuits</a></li>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/blog/">Blog</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Entreprise">
+          <p class="footer-head">Entreprise</p>
+          <ul>
+            <li><a href="/about/">À propos (en anglais)</a></li>
+            <li><a href="/support/">Assistance (en anglais)</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="/privacy/">Confidentialité (en anglais)</a></li>
+            <li><a href="/terms/">Conditions d’utilisation (en anglais)</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Géorgie · Depuis 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden data-label-light="Utiliser le thème clair" data-label-dark="Utiliser le thème sombre">Utiliser le thème clair</button>
+      </div>
+    </footer>
+
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=059b6eb933" defer></script>
+</body>
+</html>

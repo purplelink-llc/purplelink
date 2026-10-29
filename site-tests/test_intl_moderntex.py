@@ -1,6 +1,6 @@
-"""German, Japanese and Simplified Chinese ModernTex pages and how-tos (2026-10-29).
+"""German, French, Japanese and Simplified Chinese ModernTex pages and how-tos (2026-10-29).
 
-The four ModernTex pages (en, de, ja, zh-Hans) must point at each other with reciprocal hreflang, in the page
+The five ModernTex pages (en, de, fr, ja, zh-Hans) must point at each other with reciprocal hreflang, in the page
 head and in sitemap.xml. The Chinese pages must not load anything from Google, whose services are blocked in
 mainland China. Every localized page keeps the price in USD, carries its own lang and canonical, and stays out
 of the English search index.
@@ -14,11 +14,13 @@ from common import ORIGIN, SITE, EMOJI, canonical, jsonld_blocks, main_text, met
 PRODUCT_PAGES = {
     "/moderntex/": "en",
     "/de/moderntex/": "de",
+    "/fr/moderntex/": "fr",
     "/ja/moderntex/": "ja",
     "/zh-cn/moderntex/": "zh-Hans",
 }
 EXPECTED_ALTERNATES = {
     "de": ORIGIN + "/de/moderntex/",
+    "fr": ORIGIN + "/fr/moderntex/",
     "ja": ORIGIN + "/ja/moderntex/",
     "zh-Hans": ORIGIN + "/zh-cn/moderntex/",
     "en": ORIGIN + "/moderntex/",
@@ -26,6 +28,7 @@ EXPECTED_ALTERNATES = {
 }
 GUIDES = {
     "/de/guides/latex-auf-dem-mac-einrichten/": "de",
+    "/fr/guides/latex-en-francais-sur-mac/": "fr",
     "/ja/guides/mac-nihongo-latex/": "ja",
     "/zh-cn/guides/mac-xelatex-ctex-zhongwen-lunwen/": "zh-Hans",
 }
@@ -82,7 +85,7 @@ class ProductPages(unittest.TestCase):
             self.assertIn(f'<html lang="{lang}">', t, url)
             self.assertEqual(canonical(t), ORIGIN + url, url)
 
-    def test_hreflang_is_reciprocal_and_identical_on_all_four(self):
+    def test_hreflang_is_reciprocal_and_identical_on_all_five(self):
         for url in PRODUCT_PAGES:
             self.assertEqual(head_alternates(page(url)), EXPECTED_ALTERNATES, url)
 
@@ -226,7 +229,7 @@ class Guides(unittest.TestCase):
 
 
 class SitemapRobotsLlmsSearch(unittest.TestCase):
-    def test_sitemap_has_xhtml_alternates_for_all_four(self):
+    def test_sitemap_has_xhtml_alternates_for_all_five(self):
         xml = read_site("sitemap.xml")
         self.assertIn('xmlns:xhtml="http://www.w3.org/1999/xhtml"', xml)
         blocks = {m.group(1): m.group(2) for m in re.finditer(r"<url>\s*<loc>([^<]+)</loc>(.*?)</url>", xml, re.S)}
@@ -251,14 +254,14 @@ class SitemapRobotsLlmsSearch(unittest.TestCase):
     def test_translations_stay_out_of_the_english_search_index(self):
         import json
         urls = [r["u"] for r in json.loads(read_site("search-index.json"))]
-        self.assertEqual([u for u in urls if u.startswith(("/de/", "/ja/", "/zh-cn/"))], [])
+        self.assertEqual([u for u in urls if u.startswith(("/de/", "/fr/", "/ja/", "/zh-cn/"))], [])
         self.assertIn("/desk/", urls)  # the prefix rule must not swallow /desk/ (it starts with "de")
 
     def test_robots_txt_welcomes_chinese_and_ai_crawlers(self):
         robots = read_site("robots.txt")
         for agent in ("Baiduspider", "Bytespider", "GPTBot", "ClaudeBot", "PerplexityBot", "OAI-SearchBot"):
             self.assertRegex(robots, r"User-agent: %s\nAllow: /\n" % agent, agent)
-        self.assertNotRegex(robots, r"(?m)^Disallow:\s*/(de|ja|zh-cn)?/?\s*$")
+        self.assertNotRegex(robots, r"(?m)^Disallow:\s*/(de|fr|ja|zh-cn)?/?\s*$")
 
     def test_llms_txt_lists_every_localized_page_under_moderntex(self):
         llms = read_site("llms.txt")

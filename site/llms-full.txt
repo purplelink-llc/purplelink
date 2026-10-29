@@ -1,7 +1,7 @@
 # Purplelink LLC: full text of the main pages
 > The readable text of Purplelink's product, tool, app and guide pages, generated from the site. The short index is at https://purplelink.llc/llms.txt.
 
-Languages and currency. The pages below are in English. ModernTex also has product pages in German (https://purplelink.llc/de/moderntex/), Japanese (https://purplelink.llc/ja/moderntex/) and Simplified Chinese (https://purplelink.llc/zh-cn/moderntex/), each with a how-to guide in the same language. The ModernTex app interface is in English and German (German is a beta, available since ModernTex 2.0); Japanese and Chinese documents compile with XeLaTeX and LuaLaTeX when the user's TeX installation has the ctex, luatexja and jlreq packages. Prices are in US dollars (ModernTex is USD 19.99 once). Checkout for the Mac apps shows the price in the buyer's local currency where Stripe supports it, and the buyer can switch back to US dollars; Stripe's exchange rate includes a conversion fee of 2 to 4 percent, paid by the buyer. Payment is by card (including Apple Pay and Google Pay) or Link.
+Languages and currency. The pages below are in English. ModernTex also has product pages in German (https://purplelink.llc/de/moderntex/), French (https://purplelink.llc/fr/moderntex/), Japanese (https://purplelink.llc/ja/moderntex/) and Simplified Chinese (https://purplelink.llc/zh-cn/moderntex/), each with a how-to guide in the same language. The ModernTex app interface is in English and German (German is a beta, available since ModernTex 2.0); Japanese and Chinese documents compile with XeLaTeX and LuaLaTeX when the user's TeX installation has the ctex, luatexja and jlreq packages. Prices are in US dollars (ModernTex is USD 19.99 once). Checkout for the Mac apps shows the price in the buyer's local currency where Stripe supports it, and the buyer can switch back to US dollars; Stripe's exchange rate includes a conversion fee of 2 to 4 percent, paid by the buyer. Payment is by card (including Apple Pay and Google Pay) or Link.
 
 
 ---
@@ -729,7 +729,7 @@ Trying it firstThe same download runs the complete app free for seven days, with
 
 ## Languages and currency
 
-This pageAlso in Deutsch, 日本語 and 简体中文. The terms, privacy policy and changelog are in English only.
+This pageAlso in Deutsch, Français, 日本語 and 简体中文. The terms, privacy policy and changelog are in English only.
 
 App interfaceEnglish and German (beta). German has been available since ModernTex 2.0, and some wording may still be rough.
 
@@ -805,9 +805,9 @@ Does it work with my journal's or university's class file?
 
 Any class you can compile with LaTeX works: put the class file in the project folder. ModernTex also bundles starter templates for several information systems journals, computer science conferences and a generic thesis. The free starters on this site for ACM, IEEE, Elsevier, APA 7 and the academic CV each compiled with TinyTeX and latexmk when I tested them on October 15, 2026, after the publisher class was installed with tlmgr. For a project with no required class there are two plain CC0 starters, a multi-file thesis and a single-file article, which compiled the same way on the same day. The NeurIPS starter needs the current year's style file from the conference, so I make no compile claim for it.
 
-Does ModernTex work in German, Japanese or Chinese?
+Does ModernTex work in German, French, Japanese or Chinese?
 
-The app's interface is in English and German (German is a beta, available since ModernTex 2.0). Chinese and Japanese documents compile with XeLaTeX (ctex) or LuaLaTeX (luatexja, jlreq) when your TeX installation has those packages. This product page is also in German, Japanese and Simplified Chinese.
+The app's interface is in English and German (German is a beta, available since ModernTex 2.0). Chinese and Japanese documents compile with XeLaTeX (ctex) or LuaLaTeX (luatexja, jlreq) when your TeX installation has those packages. This product page is also in German, French, Japanese and Simplified Chinese. French documents compile with babel or polyglossia, T1 and csquotes; the app's interface is not available in French.
 
 Can I pay in my own currency?
 

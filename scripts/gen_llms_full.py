@@ -141,7 +141,7 @@ def main() -> None:
         "> The readable text of Purplelink's product, tool, app and guide pages, "
         "generated from the site. The short index is at https://purplelink.llc/llms.txt.\n",
         "\nLanguages and currency. The pages below are in English. ModernTex also has product pages in German "
-        "(https://purplelink.llc/de/moderntex/), Japanese (https://purplelink.llc/ja/moderntex/) and Simplified Chinese "
+        "(https://purplelink.llc/de/moderntex/), French (https://purplelink.llc/fr/moderntex/), Japanese (https://purplelink.llc/ja/moderntex/) and Simplified Chinese "
         "(https://purplelink.llc/zh-cn/moderntex/), each with a how-to guide in the same language. The ModernTex app "
         "interface is in English and German (German is a beta, available since ModernTex 2.0); Japanese and Chinese "
         "documents compile with XeLaTeX and LuaLaTeX when the user's TeX installation has the ctex, luatexja and jlreq "
