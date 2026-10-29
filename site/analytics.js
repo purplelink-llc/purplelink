@@ -1,9 +1,10 @@
-// First-party, cookieless analytics beacon (purplelink).
+// First-party analytics beacon (purplelink).
 // Sends a pageview on load, exposes window.plTrack(type, meta), and wraps fetch
 // so every call to the LaTeX-tools Modal backend is recorded as a "tool_use"
 // event (tagged by the tool page). This is what Cloudflare Web Analytics can't
-// tell you: which tools are actually run (tool_use, plus tool_outcome and offer_view/offer_click for the per-tool counts in track.mjs), and which affiliate links are clicked (affiliate_click: program and page, never the destination). No cookies, no fingerprinting. Honors
-// Do Not Track. Same-origin only (no CSP change, no third-party load).
+// tell you: which tools are actually run (tool_use, plus tool_outcome and offer_view/offer_click for the per-tool counts in track.mjs), and which affiliate links are clicked (affiliate_click: program and page, never the destination). No fingerprinting. The one cookie is pl_attr,
+// set by the server (not this script) when an ad or campaign visitor downloads the ModernTex trial; see the trial
+// link code at the bottom. Honors Do Not Track. Same-origin only (no CSP change, no third-party load).
 (function () {
   var dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
   if (dnt === "1" || dnt === "yes") return;
@@ -281,6 +282,26 @@
     } catch (e) { /* never interfere with the link */ }
   }, true);
 
+  // At the moment of the click, add the first-touch channel label (ach), the Reddit click id (arc) and the day first
+  // seen (ad) to the ModernTex trial link. The server turns them into the first-party pl_attr cookie so a purchase after
+  // the 7-day trial can still be credited (Safari drops script-written storage after 7 days). Nothing is added for a
+  // direct visitor with no ad click, and this file does nothing at all under Do Not Track.
+  function tagTrialLink(a) {
+    try {
+      var ch = channel().replace(/[^\w.\-:]/g, "").slice(0, 40);
+      var rc = rdtClick ? String(rdtClick).replace(/[^\w.\-:=]/g, "").slice(0, 128) : "";
+      if (!rc && (!ch || ch === "direct")) return;
+      var f = attr.first || attr.last;
+      var u = new URL(a.href, location.href);
+      if (u.origin !== location.origin) return;
+      u.searchParams.delete("ach"); u.searchParams.delete("arc"); u.searchParams.delete("ad");
+      if (ch) u.searchParams.set("ach", ch);
+      if (rc) u.searchParams.set("arc", rc);
+      if (f && f.d) u.searchParams.set("ad", String(f.d).slice(0, 10));
+      a.setAttribute("href", u.pathname + u.search);
+    } catch (e) { /* never interfere with the download */ }
+  }
+
   // The ModernTex trial is a plain download link, not a fetch, so the wrapper
   // above never sees it. Count the click: trial downloads against later
   // checkout_click/sales is the whole funnel the trial exists to measure.
@@ -289,6 +310,7 @@
       var a = ev.target && ev.target.closest && ev.target.closest("a[href]");
       if (a && a.getAttribute("href").indexOf("moderntex-download?trial=1") !== -1) {
         window.plTrack("trial_download", "moderntex");
+        tagTrialLink(a);
       }
       if (a && a.getAttribute("href").indexOf("outbound-veil-download?trial=1") !== -1) {
         window.plTrack("ov_trial_download", "outbound-veil");

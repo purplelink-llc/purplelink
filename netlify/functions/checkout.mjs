@@ -33,6 +33,7 @@
  *   STRIPE_SECRET_KEY (shared, sk_test_… or sk_live_…)
  */
 
+import { readAttrCookie, touchFromCookie } from "../lib/attr-cookie.mjs";
 import { MAX_SEATS, parseSeats, seatUnitCents } from "../lib/seats.mjs";
 import { BUNDLES, parseBundleParts, partsSentence } from "../lib/bundles.mjs";
 import { createHash } from "node:crypto";
@@ -296,6 +297,11 @@ const ATTR_FIELDS = { s: 60, m: 40, c: 80, r: 80, l: 120, d: 10, t: 60 };
 // the JSON would be a little over, so the landing path (the least useful field)
 // is shortened first, then the campaign, until it fits.
 const ATTR_MAX = 500;
+// True when a cleaned touch (JSON string from cleanTouch) names a real source: a campaign source, referrer or ad flag.
+function touchHasSource(json) {
+  if (!json) return false;
+  try { const t = JSON.parse(json); return !!(t.s || t.r || t.g); } catch { return false; }
+}
 function cleanTouch(t) {
   if (!t || typeof t !== "object") return null;
   const out = {};
@@ -348,14 +354,24 @@ export default async function handler(request) {
   // opaque string, validated server-side against referral_dict, not used
   // for anything here.
   const referralCode = typeof body?.ref === "string" ? body.ref.trim().slice(0, 32) : "";
-  const attrFirst = cleanTouch(body?.attr?.first);
+  let attrFirst = cleanTouch(body?.attr?.first);
   const attrLast = cleanTouch(body?.attr?.last);
+  // The pl_attr cookie (set by moderntex-download at trial download, see netlify/lib/attr-cookie.mjs) fills in what the
+  // page could not send: a browser that dropped its stored attribution before a buyer returned after the trial.
+  // Anything the page did send wins; the cookie only fills a first touch with no source, referrer or ad flag.
+  const cookieAttr = readAttrCookie(request);
+  if (cookieAttr && !touchHasSource(attrFirst)) attrFirst = cleanTouch(touchFromCookie(cookieAttr));
   // ModernTex Buy page opened from the app's expired-trial screen: trial day and utm_source, as metadata.
   const trialDay = product === "moderntex" ? cleanTrialDay(body?.td) : "";
   const appSource = product === "moderntex" ? cleanAppSource(body?.src) : "";
   // Reddit ad signal: present only for ModernTex products; a click id is a short opaque token or dropped.
-  const redditAd = (product === "moderntex" || product === "moderntex-seats") && !!body?.rdt && typeof body.rdt === "object" && !Array.isArray(body.rdt);
-  const redditClick = redditAd && typeof body.rdt.c === "string" && /^[\w.\-:=]{1,128}$/.test(body.rdt.c) ? body.rdt.c : "";
+  const isMtx = product === "moderntex" || product === "moderntex-seats";
+  const bodyRdt = !!body?.rdt && typeof body.rdt === "object" && !Array.isArray(body.rdt);
+  // No `rdt` in the body: fall back to the pl_attr cookie (a Reddit click id, or a first-touch channel of paid:reddit).
+  const cookieRdt = !bodyRdt && !!cookieAttr && (!!cookieAttr.rdt || cookieAttr.channel === "paid:reddit");
+  const redditAd = isMtx && (bodyRdt || cookieRdt);
+  const bodyClick = bodyRdt && typeof body.rdt.c === "string" && /^[\w.\-:=]{1,128}$/.test(body.rdt.c) ? body.rdt.c : "";
+  const redditClick = redditAd ? (bodyClick || (cookieAttr ? cookieAttr.rdt : "")) : "";
   // Photograph licenses need the photo; anything else ignores it.
   const photo = entry.photo && typeof body?.photo === "string" && PHOTO_RE.test(body.photo) ? body.photo : "";
   if (entry.photo && !photo) {
