@@ -8,7 +8,10 @@ import assert from "node:assert/strict";
 
 const analyticsSrc = readFileSync(new URL("../../site/analytics.js", import.meta.url), "utf8");
 const pixelFile = readFileSync(new URL("../../site/reddit-pixel.js", import.meta.url), "utf8");
-const withId = pixelFile.replace('var PIXEL_ID = "";', 'var PIXEL_ID = "a2_test";');
+const ID_LINE = /var PIXEL_ID = "[^"]*";/;
+assert.ok(ID_LINE.test(pixelFile), "reddit-pixel.js has no PIXEL_ID line");
+const withId = pixelFile.replace(ID_LINE, 'var PIXEL_ID = "a2_test";');
+const noId = pixelFile.replace(ID_LINE, 'var PIXEL_ID = "";');
 
 // The pixel's queued calls as plain data (objects made inside the vm sandbox never compare equal to ours).
 const queue = (sb) => (sb.rdt ? JSON.parse(JSON.stringify(sb.rdt.callQueue.map((a) => [...a]))) : []);
@@ -48,7 +51,7 @@ function browser({ dnt = "" } = {}) {
 const AD = "?utm_source=reddit&utm_medium=paid&utm_campaign=moderntex-latex-2026-11";
 
 test("with no pixel id the script does nothing, even for a Reddit ad click", () => {
-  const v = browser().visit("/moderntex/", AD + "&rdt_cid=abc", pixelFile);
+  const v = browser().visit("/moderntex/", AD + "&rdt_cid=abc", noId);
   assert.equal(v.appended.length, 0);
   assert.deepEqual(v.calls, []);
 });

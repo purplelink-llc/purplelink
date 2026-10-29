@@ -5,7 +5,7 @@
 // click, Purchase on /moderntex/success/ (the Stripe session id is the conversion id, so a reload counts once).
 // Load it after /analytics.js, which defines window.plChannel.
 (function () {
-  var PIXEL_ID = ""; // Reddit Ads > Events Manager > Pixel ID (a2_... or t2_...). Empty: the script does nothing.
+  var PIXEL_ID = "a2_jx9tsee4sm5h"; // Reddit Ads > Events Manager > Pixel ID (a2_... or t2_...). Empty: the script does nothing.
   if (!PIXEL_ID) return;
   var dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
   if (dnt === "1" || dnt === "yes") return;
