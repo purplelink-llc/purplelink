@@ -475,3 +475,8 @@ def test_setup_stores_nothing_for_a_rejected_or_wrong_token(env, monkeypatch, ca
         dict(cfg, platforms={"instagram": {"expected": {}}}), FakeHttp([("GET", "/me?", Resp(401, b"{}"))])))
     assert st._setup_instagram(cfgmod.load()) == 1 and not stored
     assert "Nothing stored" in capsys.readouterr().out
+
+
+def test_app_tags_cover_latex_errors_and_tools():
+    assert cap.app_tags_for_link("https://purplelink.llc/latex-errors/missing-dollar-inserted/") == ["latex"]
+    assert cap.app_tags_for_link("https://purplelink.llc/tools/paper-review/") == ["academicwriting"]
