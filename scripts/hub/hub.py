@@ -1531,6 +1531,32 @@ def doctor(con, p: dict, today: dt.date | None = None) -> dict:
 
 # --- build --------------------------------------------------------------------------------------------------------
 
+def merge_listings(placements: list) -> list:
+    """One live listing URL is one placement. The submission, a later update submission and the MacUpdate tracker can
+    all name the same page; counted apart, each got the listing's full visits. The tracker row is kept (its download
+    readings are keyed to it), else the earliest; it takes the earliest date and the others' references."""
+    groups: dict = {}
+    for pl in placements:
+        if pl["channel"] in LISTING_CHANNELS and pl["status"] in ("live", "replied") and pl.get("url", "").startswith("http"):
+            key = re.sub(r"[?#].*$", "", pl["url"]).rstrip("/").lower()
+            groups.setdefault(key, []).append(pl)
+    drop = set()
+    for rows in groups.values():
+        if len(rows) < 2:
+            continue
+        rows.sort(key=lambda pl: (pl["source"] != "traffic-history", pl.get("date") or "9999"))
+        keep, rest = rows[0], rows[1:]
+        keep["date"] = min(pl["date"] for pl in rows if pl.get("date")) if any(pl.get("date") for pl in rows) else ""
+        for pl in rest:
+            for k in ("approval", "contact_ref"):
+                keep[k] = keep.get(k) or pl.get(k, "")
+            keep["_text"] += " " + pl["_text"]
+            keep["_assets"] = list(dict.fromkeys(keep.get("_assets", []) + pl.get("_assets", [])))
+            drop.add(id(pl))
+        keep["notes"] = (keep.get("notes", "") + "; same listing as " + ", ".join(pl["id"] for pl in rest)).lstrip("; ")[:300]
+    return [pl for pl in placements if id(pl) not in drop]
+
+
 def build(p: dict) -> dict:
     assets = load_assets(p)
     mu, results = from_macupdate(p)
@@ -1566,7 +1592,7 @@ def build(p: dict) -> dict:
             pl["_assets"] = list(o["assets"])
             for a in o["assets"]:
                 assets.setdefault(a, {"kind": "line", "name": a, "product": None, "url": "", "names": []})
-    placements = [pl for pl in placements if not (overrides.get(pl["id"]) or {}).get("exclude")]
+    placements = merge_listings([pl for pl in placements if not (overrides.get(pl["id"]) or {}).get("exclude")])
     for pl in placements:
         add_linked_assets(pl["_text"] + " " + pl["landing_url"], assets)
     today = dt.date.today()
