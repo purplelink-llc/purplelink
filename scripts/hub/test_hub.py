@@ -640,6 +640,33 @@ def test_rechecks():
     run("import")
 
 
+def test_one_listing_is_one_placement():
+    """A listing URL logged several times (the submission, a later update, the MacUpdate tracker) is one placement:
+    otherwise each row gets the listing's full visits and the channel's visits per placement are divided by N."""
+    log = tmp / "repo/Outreach/OUTREACH-LOG.md"
+    orig = log.read_text()
+    log.write_text(orig + """
+## MacUpdate submissions
+
+| Date | Where | App | Status | Note |
+|---|---|---|---|---|
+| 2026-10-10 | MacUpdate | Gadget | submitted | https://gadget.macupdate.com/ |
+| 2026-10-18 | MacUpdate | Gadget | update submitted | https://gadget.macupdate.com/ |
+""")
+    try:
+        run("import")
+        con = db()
+        rows = list(con.execute("SELECT * FROM placements WHERE url LIKE '%gadget.macupdate.com%'"))
+        assert [r["id"] for r in rows] == ["macupdate:gadget"], [tuple(r) for r in rows]
+        g = rows[0]
+        assert g["date"] == "2026-10-10" and g["contact_ref"].startswith("OUTREACH-LOG.md:"), tuple(g)
+        # its MacUpdate download readings stay attached to it
+        assert con.execute("SELECT count(*) FROM results WHERE placement_id = 'macupdate:gadget' AND metric = 'downloads-total'").fetchone()[0] == 2
+    finally:
+        log.write_text(orig)
+        run("import")
+
+
 if __name__ == "__main__":
     test_all()
     test_sources_untouched()
@@ -659,6 +686,7 @@ if __name__ == "__main__":
     test_campaign_decisions_and_ad_check()
     test_rechecks()
     test_doctor()
+    test_one_listing_is_one_placement()
     print("ok")
 
 
