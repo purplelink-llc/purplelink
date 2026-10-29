@@ -111,7 +111,7 @@ class ProductPages(unittest.TestCase):
             self.assertNotIn("—", text, url)
             self.assertNotIn("―", text, url)
             self.assertFalse(EMOJI.search(text), url)
-            self.assertNotRegex(re.sub(r"<script\b.*?</script\s*>", "", t, flags=re.S | re.I), r"<[a-zA-Z][^>]*\sstyle\s*=", url)
+            self.assertNotRegex(re.sub(r"<script\b.*?</script[^>]*>", "", t, flags=re.S | re.I), r"<[a-zA-Z][^>]*\sstyle\s*=", url)
 
     def test_no_version_number_to_go_stale(self):
         for url in PRODUCT_PAGES:
