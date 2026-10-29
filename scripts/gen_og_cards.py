@@ -11,6 +11,7 @@ Rendering: scripts/og-card.html in headless Chrome over a local server rooted at
   python3 scripts/gen_og_cards.py            # render and rewrite
   python3 scripts/gen_og_cards.py --dry-run  # list what would change
   python3 scripts/gen_og_cards.py --only blog/starting-purplelink
+  python3 scripts/gen_og_cards.py --refresh  # re-render every existing card too
 """
 import argparse, html, http.server, re, socketserver, subprocess, sys, threading, urllib.parse
 from pathlib import Path
@@ -54,7 +55,7 @@ def title_of(t, section):
     return ti
 
 
-def plan(only=None):
+def plan(only=None, refresh=False):
     jobs = []
     for section in ("format", "guides", "blog"):
         for p in sorted((SITE / section).glob("*/index.html")):
@@ -63,7 +64,7 @@ def plan(only=None):
                 continue
             t = p.read_text(encoding="utf-8", errors="ignore")
             cur = (meta(t, "og:image") or "").rsplit("/", 1)[-1]
-            if cur not in GENERIC:
+            if cur not in GENERIC and not (refresh and cur == f"{section}-{slug}.jpg"):
                 continue
             title = title_of(t, section)
             sub, bg = "", "research"
@@ -120,8 +121,10 @@ def main():
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--only")
     ap.add_argument("--no-rewrite", action="store_true", help="render the images only")
+    ap.add_argument("--refresh", action="store_true",
+                    help="also re-render pages that already use their own card (after a brand or template change)")
     a = ap.parse_args()
-    jobs = plan(a.only)
+    jobs = plan(a.only, a.refresh)
     print(f"{len(jobs)} pages")
     if a.dry_run:
         for j in jobs:
