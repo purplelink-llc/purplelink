@@ -53,11 +53,12 @@ def reconcile_history(history: list[dict]) -> list[dict]:
 
 
 def platforms_used_today(local_date: dt.date, tzname: str) -> set[str]:
-    """Platforms that already have an approved or posted item scheduled for today (the daily pipeline's or Ben's)."""
+    """Platforms that already have an approved or posted item scheduled for today (the daily pipeline's or Ben's).
+    Reels and Instagram companions are their own stream with their own caps, so they never take the daily slot."""
     used: set[str] = set()
     tz = ZoneInfo(tzname)
     for it in itemsmod.list_items():
-        if it.status not in ("approved", "posted"):
+        if it.status not in ("approved", "posted") or it.meta.get("source") in itemsmod.IG_STANDING_SOURCES:
             continue
         try:
             t = it.scheduled()
