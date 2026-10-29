@@ -1,6 +1,6 @@
 {
- "id": "circledhoops-c-group-chat",
- "title": "Circled Hoops ad C: the group chat",
+ "id": "circledhoops-c-start-tonight",
+ "title": "Circled Hoops ad C: start a league tonight",
  "note": "Screens show a sample league. Not affiliated with the NBA.",
  "bed": {
   "style": {
@@ -25,27 +25,27 @@
      "msgs": [
       {
        "from": "Jordan",
-       "text": "fantasy hoops again this year?",
+       "text": "fantasy hoops this year?",
        "at": 0.0
       },
       {
        "from": "Dana",
-       "text": "only if I don't have to set a lineup every night",
+       "text": "only if it's one lineup a week, like football",
        "at": 0.6
       },
       {
        "from": "Marcus",
-       "text": "we were all checked out by december last year",
+       "text": "there's like 4 of us",
        "at": 1.35
       },
       {
        "me": true,
-       "text": "found one where you set it once a week",
+       "text": "found one where bots take the empty teams",
        "at": 2.25
       },
       {
        "me": true,
-       "card": "Weekly fantasy basketball \u00b7 App Store",
+       "card": "Weekly fantasy basketball · App Store",
        "at": 2.85
       }
      ]
@@ -126,20 +126,131 @@
     {
      "kind": "screen",
      "video": true,
-     "src": "clip-circle.mp4",
-     "from": 3.9,
+     "src": "clip-ring.mp4",
+     "from": 3.85,
      "focus": {
       "x": 0.02,
-      "y": 0.36,
+      "y": 0.37,
       "w": 0.96,
-      "h": 0.34
+      "h": 0.31
+     },
+     "taps": [
+      {
+       "x": 0.36,
+       "y": 0.46,
+       "at": 0.13
+      }
+     ]
+    }
+   ],
+   "sfx": [
+    {
+     "name": "select",
+     "at": 0.15
+    }
+   ]
+  },
+  {
+   "vo": "c7",
+   "hl": [
+    "bots",
+    "friend"
+   ],
+   "tail": 0.3,
+   "shots": [
+    {
+     "kind": "screen",
+     "src": "r4-teams-0.png",
+     "dur": 1.5,
+     "focus": {
+      "x": 0.03,
+      "y": 0.615,
+      "w": 0.94,
+      "h": 0.25
+     },
+     "taps": [
+      {
+       "x": 0.766,
+       "y": 0.792,
+       "at": 1.32
+      }
+     ],
+     "boxes": {
+      "9x16": {
+       "x": 30,
+       "y": 640,
+       "w": 1020,
+       "h": 640
+      },
+      "4x5": {
+       "x": 40,
+       "y": 420,
+       "w": 1000,
+       "h": 640
+      },
+      "1x1": {
+       "x": 40,
+       "y": 330,
+       "w": 1000,
+       "h": 560
+      }
+     }
+    },
+    {
+     "kind": "screen",
+     "src": "r4-teams-1.png",
+     "at": 1.5,
+     "dur": 1.35,
+     "noEnter": true,
+     "focus": {
+      "x": 0.03,
+      "y": 0.615,
+      "w": 0.94,
+      "h": 0.29
+     },
+     "boxes": {
+      "9x16": {
+       "x": 30,
+       "y": 640,
+       "w": 1020,
+       "h": 640
+      },
+      "4x5": {
+       "x": 40,
+       "y": 420,
+       "w": 1000,
+       "h": 640
+      },
+      "1x1": {
+       "x": 40,
+       "y": 330,
+       "w": 1000,
+       "h": 560
+      }
+     }
+    },
+    {
+     "kind": "screen",
+     "src": "r4-teams-final.png",
+     "at": 2.85,
+     "noEnter": true,
+     "focus": {
+      "x": 0.03,
+      "y": 0.11,
+      "w": 0.94,
+      "h": 0.56
      }
     }
    ],
    "sfx": [
     {
      "name": "select",
-     "at": 1.55
+     "at": 1.35
+    },
+    {
+     "name": "select",
+     "at": 2.85,
+     "gain_db": -5
     }
    ]
   },
@@ -153,16 +264,49 @@
    "shots": [
     {
      "kind": "screen",
-     "video": true,
-     "src": "clip-chat.mp4",
-     "from": 0.3,
-     "rate": 1.15,
+     "src": "still-recap.png",
      "focus": {
-      "x": 0.03,
-      "y": 0.34,
-      "w": 0.94,
-      "h": 0.5
+      "x": 0.06,
+      "y": 0.385,
+      "w": 0.84,
+      "h": 0.17
+     },
+     "rings": [
+      {
+       "x": 0.06,
+       "y": 0.495,
+       "w": 0.84,
+       "h": 0.05,
+       "at": 1.5,
+       "dur": 0.5
+      }
+     ],
+     "boxes": {
+      "9x16": {
+       "x": 30,
+       "y": 640,
+       "w": 1020,
+       "h": 640
+      },
+      "4x5": {
+       "x": 40,
+       "y": 420,
+       "w": 1000,
+       "h": 640
+      },
+      "1x1": {
+       "x": 40,
+       "y": 330,
+       "w": 1000,
+       "h": 560
+      }
      }
+    }
+   ],
+   "sfx": [
+    {
+     "name": "lock",
+     "at": 1.55
     }
    ]
   },
