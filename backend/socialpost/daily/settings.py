@@ -16,7 +16,7 @@ DEFAULT = {
     "pick_after": "09:30",
     "last_pick": "20:30",
     # Unattended platforms (a subset of items.STANDING_PLATFORMS). Mastodon text is written in Ben's voice.
-    "platforms": ["linkedin", "bluesky", "threads", "mastodon"],
+    "platforms": ["linkedin", "bluesky", "threads", "mastodon", "facebook"],
     "recent_days": 7,
     "max_items_per_day": 2,           # a second item only serves platforms the first was blocked on (see pipeline)
     "dup_days": 21,

@@ -222,7 +222,7 @@ def build_parser() -> argparse.ArgumentParser:
     p = add("whoami", cmd_whoami, "check the identity of every configured account; posts nothing")
     p.add_argument("platform", nargs="?", choices=PLATFORMS)
     p = add("setup", cmd_setup, "guided setup for one platform (Ben runs this in his own terminal)")
-    p.add_argument("platform", choices=("threads", "mastodon", "x", "bluesky", "instagram"))
+    p.add_argument("platform", choices=("threads", "mastodon", "x", "bluesky", "instagram", "facebook"))
     p = add("refresh", cmd_refresh, "renew a token (threads, x, instagram)")
     p.add_argument("platform", choices=("threads", "x", "instagram"))
     p = add("daily", cmd_daily, "daily ranked pipeline: run (pick, vet, queue), metrics, weekly")

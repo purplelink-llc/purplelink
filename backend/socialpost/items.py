@@ -20,7 +20,9 @@ from .text import link_errors, text_limit_errors, utm_link
 # daily/vet.py. X is not covered. Only socialpost.daily writes the approval, and only for an item it built with
 # `source: social-daily`.
 STANDING_BY = "ben (standing, 2026-10-18)"
-STANDING_PLATFORMS = ("linkedin", "bluesky", "threads", "mastodon")
+# The Purplelink LLC Facebook Page joined on 2026-10-28, when Ben had the Page created: "you can have a facebook page
+# for the company, drive it so it can also get out posts".
+STANDING_PLATFORMS = ("linkedin", "bluesky", "threads", "mastodon", "facebook")
 STANDING_SOURCE = "social-daily"
 
 # Ben's second standing approval (2026-10-23): every video on the Purplelink YouTube channel also goes to the Purplelink

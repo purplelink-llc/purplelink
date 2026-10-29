@@ -74,7 +74,7 @@ def headline(c, facts: dict, fmt: str, platform: str = "") -> str:
 
 
 # Longest a post may be, a little under each platform's limit (LinkedIn is read as a short note).
-SOFT_LIMIT = {"linkedin": 600, "bluesky": 300, "threads": 500, "mastodon": 500}
+SOFT_LIMIT = {"linkedin": 600, "bluesky": 300, "threads": 500, "mastodon": 500, "facebook": 600}
 # A sentence that leans on the one before it ("Until then ...", "This also ...") is useless on its own.
 DEPENDENT = re.compile(r"^(until|then|this|that|these|those|it|they|its|their|each|also|both|however|but|and|so|"
                        r"which|there|here|such|the same|in that|for that|after that)\b", re.I)
@@ -122,7 +122,7 @@ def clause(sentence: str) -> str | None:
 def _options(units: list[str], fmt: str, platform: str = "") -> list[list[str]]:
     """Fact lists to try, richest first. card and link carry one fact (two on LinkedIn, which has no image);
     question and statement carry up to two. When the last sentence is too long, its clause before a colon is tried."""
-    most = 2 if platform == "linkedin" or fmt not in ("card", "link") or \
+    most = 2 if platform in ("linkedin", "facebook") or fmt not in ("card", "link") or \
         (units and len(units[0].split()) < 8) else 1       # a very short first fact ("New: Where your space went.") needs a second
     opts = []
     for k in range(min(most, len(units)), 0, -1):
@@ -143,7 +143,7 @@ def _options(units: list[str], fmt: str, platform: str = "") -> list[list[str]]:
 def _body(c, facts: dict, fmt: str, platform: str, facts_used: list[str], with_closing: bool = True) -> str:
     head = headline(c, facts, fmt, platform)
     text = " ".join(facts_used)
-    if platform == "linkedin":
+    if platform in ("linkedin", "facebook"):
         return f"{head}\n\n{text}\n\n{{link}}"
     if platform == "mastodon":
         closing = MASTODON_CLOSING.format(requirement=facts["requirement"]) \

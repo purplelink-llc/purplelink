@@ -188,7 +188,10 @@ longer posts (detection library only). See `docs/social-posting.md`.
 goes to the Purplelink Instagram (@purplelink.llc) as a Reel, and every LinkedIn company-page post also gets an Instagram
 post with a branded image. `backend/socialpost/instagram` builds, vets and queues both under
 `approved_by: "ben (standing, 2026-10-23)"` (Instagram only, its own items only; run by the social-daily wrapper,
-posted by `run-due`). Never RubbleFront's Instagram (same Meta account; the adapter refuses it by name). Nothing else
+posted by `run-due`). Never RubbleFront's Instagram (same Meta account; the adapter refuses it by name). Since 2026-10-28 Instagram publishes through the new
+**Purplelink LLC Facebook Page** (id 61595915854939; `social.py setup facebook`), because Instagram's web login loops for
+this account; Ben approved the Page the same day ("drive it so it can also get out posts"), so the daily ranked post
+also goes to the Page. Nothing else
 changes: no posts as Ben, Reddit stays manual. Needs Ben's Meta app and token first (`social.py setup instagram`).
 See `docs/social-posting.md`, "Instagram".
 

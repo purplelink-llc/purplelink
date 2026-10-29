@@ -169,6 +169,27 @@ URI in the app's business login settings) and exchanges the code for a long-live
 and secret. The pipeline queues nothing until setup has pinned the account and
 enabled the platform.
 
+## Facebook Page and Instagram through it (2026-10-28)
+
+Instagram's own web login loops for @purplelink.llc (its "save your login info" page crashes after the password, in
+Safari, Chrome, the app's browser and on the phone), so neither the dashboard's Generate token nor Business Login could
+finish. On 2026-10-28 Ben had a Facebook Page made instead: "you can have a facebook page for the company, drive it so it
+can also get out posts". The Page is **Purplelink LLC** (id 61595915854939, category Software Company, website
+purplelink.llc, no picture yet), and @purplelink.llc is connected to it.
+
+- `social.py setup facebook` takes a user token from the Graph API Explorer (app Ball Bouncer Poster, which got
+  `instagram_basic` and `instagram_content_publish` the same day), the App ID and App secret, makes the token
+  long-lived, takes the Purplelink LLC Page's own token from `/me/accounts` (it does not expire), stores it in the
+  keychain (`purplelink-social-facebook` / `page_token`), pins the Page, and switches Instagram to `api: "facebook"` with
+  @purplelink.llc's account id pinned. Nothing is stored unless you type yes.
+- `adapters/facebook.py` posts to the Page: text with its tagged link to `/{page}/feed` (Facebook draws the preview),
+  or one image with the text as caption to `/{page}/photos`. It refuses RubbleFront, Ball Bouncer and Bald Streamer
+  Pages by name before the pinned identity check.
+- `adapters/instagram.py` in `facebook` mode makes the same container calls on `graph.facebook.com` with the Page
+  token; there is nothing to refresh.
+- The daily ranked pipeline now includes `facebook` (written like LinkedIn: headline, facts, link) under the
+  2026-10-18 standing approval, which Ben extended to the Page with the words above.
+
 ## Files
 
 | What | Where |
