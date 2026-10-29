@@ -26,3 +26,13 @@ Session id as the conversion id, so Reddit counts the sale once.
 3. Env changes need the next build to apply. Check Events Manager, Test Events, after a real Reddit-ad purchase.
 
 Never commit the token. Logs carry only status codes.
+
+## Attribution that survives the 7-day trial (2026-10-29)
+
+Safari clears script-written storage after 7 days, which is the length of the ModernTex trial. So at the trial download
+`analytics.js` adds `ach` (first-touch channel label), `arc` (Reddit click id) and `ad` (first-seen day) to the link, and
+`moderntex-download` sets the first-party cookie `pl_attr` (`v1~<channel>~<click id>~<date>`, HttpOnly, Secure,
+SameSite=Lax, 90 days; `netlify/lib/attr-cookie.mjs`). Not set under Do Not Track, for direct visitors, or when one
+already exists (first touch wins). `checkout.mjs` falls back to it for `metadata[attr_first]`, `reddit_ad` and
+`reddit_click_id` when the page body lacks them; body data wins. The success page reads `reddit_ad` from the
+`moderntex-download?session_id=` response and calls `window.plRedditPurchase()` so the pixel can fire Purchase.
