@@ -31,6 +31,7 @@ Paid campaigns and data quality:
                                 trials and orders, cost per trial and order, and the next reading date
   hub.py campaign-spend CAMPAIGN --spend X [--clicks N] [--impressions N] [--ad A] [--as-of DATE]
                                 record a reading from the platform's dashboard (cumulative to date) in manual-ads.json
+  hub.py rechecks               deferred decisions (rechecks.json) read against the baseline they were made on
   hub.py doctor [--links]       placements missing a result, utm_content used twice, links not answering 200
                                 (--links re-checks every live placement and landing link first)
 
@@ -89,6 +90,7 @@ def paths() -> dict:
         "social_metrics": env_path("PURPLELINK_SOCIAL_METRICS", HOME / ".purplelink" / "social" / "metrics.json"),
         "traffic_env": env_path("PURPLELINK_TRAFFIC_ENV", HOME / ".config" / "purplelink" / "traffic.env"),
         "campaigns": env_path("PURPLELINK_HUB", HOME / ".purplelink" / "hub") / "campaigns.json",
+        "rechecks": env_path("PURPLELINK_HUB", HOME / ".purplelink" / "hub") / "rechecks.json",
         "links": env_path("PURPLELINK_HUB", HOME / ".purplelink" / "hub") / "links.json",
         "manual_ads": env_path("PURPLELINK_MANUAL_ADS", HOME / ".purplelink" / "traffic" / "manual-ads.json"),
     }
@@ -1262,6 +1264,7 @@ def campaign_report(con, p: dict, today: dt.date | None = None) -> list:
             r = res.get(f"campaign:{cid}:{a.get('id')}", {})
             row["ads"].append({"ad": a.get("id"), "label": a.get("label"), "spend": r.get("spend"),
                                "clicks": int(r["clicks"]) if r.get("clicks") is not None else None,
+                               "impressions": int(r["impressions"]) if r.get("impressions") is not None else None,
                                "visits": int(r.get("link-visits", 0) or 0), "trials": int(r.get("link-trials", 0) or 0),
                                "orders": int(r.get("link-orders", 0) or 0)})
         if not spend:
@@ -1273,7 +1276,125 @@ def campaign_report(con, p: dict, today: dt.date | None = None) -> list:
             row["reading"] = f"${spend:.2f} spent, {int(trials)} trial{'s' if trials != 1 else ''}, no orders yet"
         if orders < 30:
             row["reading"] += "; a signal, not a rate (fewer than 30 orders)"
+        row["adCheck"] = ad_ctr_check(row["ads"], c.get("adCheck"), today)
+        row["decision"] = campaign_decision(c, row, today)
         rows.append(row)
+    return rows
+
+
+AD_CHECK_MIN_IMPRESSIONS = 500  # per ad, before a CTR gap can count as "clearly trails"
+
+
+def ad_ctr_check(ads: list, due: str | None, today: dt.date) -> dict:
+    """The setup sheet's swap check: does one ad's click-through rate clearly trail the other's? Two-sided pooled
+    two-proportion z test on the platform's per-ad clicks and impressions; "clearly" means p < 0.05 with at least
+    AD_CHECK_MIN_IMPRESSIONS impressions on each ad. Anything less is "about even", so the swap-in ad waits."""
+    out = {"due": due, "isDue": bool(due) and due <= today.isoformat(), "ctr": {}, "p": None, "trailing": None}
+    rated = [a for a in ads if a.get("impressions") and a.get("clicks") is not None]
+    for a in rated:
+        out["ctr"][str(a["ad"])] = round(a["clicks"] / a["impressions"], 4)
+    if len(rated) < 2:
+        out["verdict"] = "no per-ad clicks and impressions recorded yet (hub.py campaign-spend --ad)"
+        return out
+    x = min(rated, key=lambda a: a["clicks"] / a["impressions"])
+    y = max(rated, key=lambda a: a["clicks"] / a["impressions"])
+    n1, n2, k1, k2 = x["impressions"], y["impressions"], x["clicks"], y["clicks"]
+    pool = (k1 + k2) / (n1 + n2)
+    se = math.sqrt(pool * (1 - pool) * (1 / n1 + 1 / n2)) if 0 < pool < 1 else 0
+    p = math.erfc(abs(k2 / n2 - k1 / n1) / se / math.sqrt(2)) if se else 1.0
+    out["p"] = round(p, 4)
+    if min(n1, n2) < AD_CHECK_MIN_IMPRESSIONS:
+        out["verdict"] = f"too few impressions to compare (need {AD_CHECK_MIN_IMPRESSIONS} per ad)"
+    elif p < 0.05:
+        out["trailing"] = str(x["ad"])
+        out["verdict"] = (f"ad {x['ad']} clearly trails ({k1 / n1:.2%} vs {k2 / n2:.2%} CTR, p = {p:.3f}): "
+                          f"pause it and add the swap-in ad")
+    else:
+        out["verdict"] = f"about even ({k1 / n1:.2%} vs {k2 / n2:.2%} CTR, p = {p:.2f}): the swap-in ad waits"
+    return out
+
+
+def campaign_decision(c: dict, row: dict, today: dt.date) -> dict:
+    """Apply the campaign's pre-registered rule for the latest reading date that has arrived (campaigns.json "rules":
+    {date: "stop-if-no-trials" | "look" | "verdict"}; a reading with no rule is "look"). Before the first reading
+    there is no decision, by design: the 7-day trial delays orders."""
+    readings = sorted(c.get("readings") or [])
+    done = [d for d in readings if d <= today.isoformat()]
+    nxt = next((d for d in readings if d > today.isoformat()), None)
+    trials, orders, spend = row["trials"], row["orders"], row["spend"] or 0
+    if not done:
+        return {"stage": None, "rule": None, "due": readings[0] if readings else None,
+                "text": f"no decision before the first reading ({readings[0] if readings else 'none set'})"}
+    stage = done[-1]
+    rule = (c.get("rules") or {}).get(stage, "look")
+    then = f"; next reading {nxt}" if nxt else ""
+    if rule == "stop-if-no-trials":
+        text = (f"stop: 0 trial downloads from ${spend:.2f}, nothing to wait for" if not trials else
+                f"keep reading: {trials} trial{'s' if trials != 1 else ''}"
+                + (f" at ${row['costPerTrial']:.2f} each" if row.get("costPerTrial") else "") + ", orders decide" + then)
+    elif rule == "verdict":
+        be = c.get("breakEven")
+        if orders <= 1:
+            text = f"no second round: {orders} order{'s' if orders != 1 else ''} by {stage}"
+        elif be and row.get("costPerOrder") is not None and row["costPerOrder"] < be:
+            best = max(row["ads"], key=lambda a: (a["orders"], a["trials"], a["visits"]))
+            text = (f"one more 10-day round with ad {best['ad']}: {orders} orders at ${row['costPerOrder']:.2f} each, "
+                    f"under the ${be} break-even")
+        else:
+            cpo = row.get("costPerOrder")
+            text = f"no second round: {orders} orders" + (f" at ${cpo:.2f} each, over the ${be} break-even" if cpo and be else "")
+    else:
+        text = f"look only: {trials} trials, {orders} orders so far" + then
+    return {"stage": stage, "rule": rule, "due": nxt, "text": text}
+
+
+# --- rechecks: a decision Ben deferred, read against the numbers he decided on -------------------------------------
+#
+# rechecks.json (private): {"<id>": {"question": "...", "due": "2026-11-08", "product": "outbound-veil" | "*",
+#   "channel": "email", "baseline": {"date": "2026-10-25", "placements": 52, "visits": 2, "trials": 0, "orders": 0},
+#   "rule": "what decides", "targets": ["On My Menubar", ...]}}
+# Current numbers are the channel_stats row(s) (45-day first-touch window); "targets" are substrings of placement
+# targets on that channel whose current status is listed (for submissions that have to go live first).
+
+def recheck_report(con, p: dict, today: dt.date | None = None) -> list:
+    today = today or dt.date.today()
+    rows = []
+    for rid, r in sorted((load_json(p["rechecks"], {}) or {}).items(), key=lambda kv: (kv[1] or {}).get("due", "") if isinstance(kv[1], dict) else ""):
+        if rid.startswith("_") or not isinstance(r, dict):
+            continue
+        prod, chan, base = r.get("product", "*"), r.get("channel", ""), r.get("baseline") or {}
+        q = "SELECT * FROM channel_stats WHERE channel = ?" + ("" if prod == "*" else " AND product = ?")
+        stats = [dict(x) for x in con.execute(q, (chan,) if prod == "*" else (chan, prod))]
+        cur = {k: sum(int(x[k] or 0) for x in stats) for k in ("placements", "visits", "trials", "orders")}
+        delta = {k: cur[k] - int(base.get(k) or 0) for k in cur}
+        since = base.get("date") or ""
+        jq = ("SELECT DISTINCT p.id FROM placements p JOIN placement_assets x ON x.placement_id = p.id "
+              "WHERE p.channel = ? AND p.status IN ('live', 'replied', 'no-response') AND p.date > ?")
+        args: tuple = (chan, since)
+        if prod != "*":
+            jq += " AND x.asset_id = ?"
+            args += (prod,)
+        new_live = len(con.execute(jq, args).fetchall())
+        targets = []
+        for t in r.get("targets") or []:
+            hits = con.execute("SELECT status, date FROM placements WHERE channel = ? AND target LIKE ? ORDER BY date DESC",
+                               (chan, f"%{t}%")).fetchall()
+            targets.append({"target": t, "status": hits[0]["status"] if hits else "none", "date": hits[0]["date"] if hits else None})
+        due = r.get("due")
+        window_start = (today - dt.timedelta(days=45)).isoformat()
+        parts = [f"since {since}: {new_live} new live placement{'s' if new_live != 1 else ''}, "
+                 f"{delta['visits']:+d} first-touch visits, {delta['trials']:+d} trials, {delta['orders']:+d} orders"]
+        parts.append(f"now {cur['visits']} visits and {cur['trials']} trials from {cur['placements']} placements (45 days)")
+        if since and since < window_start:
+            parts.append("the 45-day window has moved past the baseline date, so a negative change can be the window")
+        if targets:
+            live_t = sum(1 for t in targets if t["status"] in ("live", "replied"))
+            parts.append(f"{live_t} of {len(targets)} submissions live")
+        rows.append({"id": rid, "question": r.get("question"), "rule": r.get("rule"), "due": due,
+                     "isDue": bool(due) and due <= today.isoformat(),
+                     "daysLeft": (dt.date.fromisoformat(due) - today).days if due else None,
+                     "product": prod, "channel": chan, "baseline": base, "current": cur, "change": delta,
+                     "newLive": new_live, "targets": targets, "reading": "; ".join(parts)})
     return rows
 
 
@@ -1585,7 +1706,14 @@ def cmd_status(a, p):
     since = (dt.date.today() - dt.timedelta(days=7)).isoformat()
     week = con.execute("SELECT count(*) FROM placements WHERE status IN ('live','replied') AND date >= ?", (since,)).fetchone()[0]
     meta = dict(con.execute("SELECT key, value FROM meta").fetchall())
-    print(f"hub: {n} placements, {live} live, {week} live in 7 days, {meta.get('unmatched')} unmatched (built {meta.get('built')})")
+    soon = (dt.date.today() + dt.timedelta(days=7)).isoformat()
+    due = [f"{r['id']} {r['due']}" for r in recheck_report(con, p) if r["due"] and r["due"] <= soon]
+    for c in campaign_report(con, p):
+        due += [f"{c['campaign']} reading {d}" for d in [c["nextReading"]] if d and d <= soon]
+        if c["adCheck"]["due"] and dt.date.today().isoformat() <= c["adCheck"]["due"] <= soon:
+            due.append(f"{c['campaign']} ad check {c['adCheck']['due']}")
+    print(f"hub: {n} placements, {live} live, {week} live in 7 days, {meta.get('unmatched')} unmatched (built {meta.get('built')})"
+          + (f"; due within 7 days: {', '.join(due)}" if due else ""))
 
 
 def cmd_channels(a, p):
@@ -1716,7 +1844,8 @@ def export_rows(p: dict) -> dict:
     }]
     return {"marketing_summary": summary, "marketing_grid": grid, "marketing_channels": channels,
             "marketing_placements": placements, "marketing_followups": followups, "marketing_listings": listings,
-            "marketing_heard": heard, "marketing_campaigns": [{k: v for k, v in r.items()} for r in campaign_report(con, p)]}
+            "marketing_heard": heard, "marketing_campaigns": [{k: v for k, v in r.items()} for r in campaign_report(con, p)],
+            "marketing_rechecks": [{k: v for k, v in r.items() if k != "targets"} for r in recheck_report(con, p)]}
 
 
 def cmd_export(a, p):
@@ -1803,6 +1932,23 @@ def cmd_campaigns(a, p):
             print(f"    ad {ad['ad']} ({ad['label']}): spend {money(ad['spend'])}, clicks {ad['clicks'] if ad['clicks'] is not None else '-'}, "
                   f"visits {ad['visits']}, trials {ad['trials']}, orders {ad['orders']}")
         print(f"  {r['reading']}. Next reading {r['nextReading'] or 'none left'}.")
+        ac = r["adCheck"]
+        print(f"  ad check{' (due ' + ac['due'] + ')' if ac['due'] else ''}: {ac['verdict']}")
+        print(f"  decision{' at ' + r['decision']['stage'] if r['decision']['stage'] else ''}: {r['decision']['text']}")
+
+
+def cmd_rechecks(a, p):
+    rows = recheck_report(connect(p), p)
+    if not rows:
+        print(f"no rechecks in {p['rechecks']}")
+    for r in rows:
+        when = "DUE" if r["isDue"] else f"due {r['due']} ({r['daysLeft']} days)"
+        print(f"{r['id']} [{when}] {r['question']}")
+        print(f"  {r['reading']}")
+        if r["rule"]:
+            print(f"  rule: {r['rule']}")
+        for t in r["targets"]:
+            print(f"    {t['status']:14} {t['target']}" + (f" ({t['date']})" if t["date"] else ""))
 
 
 def cmd_campaign_spend(a, p):
@@ -1853,6 +1999,7 @@ def main(argv=None) -> int:
     wk = sub.add_parser("week"); wk.add_argument("step", choices=["pick", "measure"]); wk.add_argument("--write", action="store_true")
     sub.add_parser("log")
     sub.add_parser("campaigns")
+    sub.add_parser("rechecks")
     cs = sub.add_parser("campaign-spend"); cs.add_argument("campaign"); cs.add_argument("--spend", type=float, required=True)
     cs.add_argument("--clicks", type=int); cs.add_argument("--impressions", type=int); cs.add_argument("--ad")
     cs.add_argument("--as-of", dest="as_of")
@@ -1862,6 +2009,7 @@ def main(argv=None) -> int:
      "status": cmd_status, "channels": cmd_channels, "followups": cmd_followups, "check-listings": cmd_check_listings,
      "export": cmd_export, "utm": cmd_utm, "kits": cmd_kits, "rules": cmd_rules, "week": cmd_week,
      "log": cmd_log, "campaigns": cmd_campaigns, "campaign-spend": cmd_campaign_spend,
+     "rechecks": cmd_rechecks,
      "doctor": cmd_doctor}[a.cmd](a, paths())
     return 0
 
