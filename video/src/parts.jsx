@@ -24,23 +24,11 @@ export function Words({ text, frame, start = 0, size, color, weight = 500, stagg
   );
 }
 
-// The logo is purple on transparent, so it sits on a light tile to stay legible on purple and dark frames.
-export function LogoTile({ size }) {
-  return (
-    <div style={{ width: size, height: size, borderRadius: size * 0.26, background: C.purpleXLight, display: "flex", alignItems: "center", justifyContent: "center", flex: "none" }}>
-      <Img src={staticFile("brand/logo.png")} style={{ width: size * 0.78, height: size * 0.78 }} />
-    </div>
-  );
-}
-
-export function Mark({ frame, color, x, y, size = 34 }) {
+// Product promos sign with the wordmark only (docs/brand/logo-usage.md): the light-ink file, because the frames
+// are purple or dark. Small, placed by the caller at the bottom of the content box. Never retype it in a font.
+export function Mark({ frame, x, y, width = 250 }) {
   const p = reveal(frame, 4, 24);
-  return (
-    <div style={{ position: "absolute", left: x, top: y, display: "flex", alignItems: "center", gap: size * 0.4, opacity: p, fontFamily: FONT_BODY, fontWeight: 600, fontSize: size, color }}>
-      <LogoTile size={size * 1.7} />
-      <span>{brand.wordmark}</span>
-    </div>
-  );
+  return <Img src={staticFile("brand/wordmark.png")} style={{ position: "absolute", left: x, top: y, width, height: "auto", opacity: p }} />;
 }
 
 // Displays image or video media at (Mw x Mh) px inside a camera transform.

@@ -214,6 +214,15 @@ export function LowerThird({ item, t, format }) {
   );
 }
 
+// Purplelink's own marks (mark or lockup) are transparent PNGs, not app-icon tiles: no rounded box, a drop shadow,
+// and the lockup keeps its aspect ratio and already carries the name (docs/brand/logo-usage.md).
+const isLogo = (icon) => icon.includes("purplelink-");
+const isLockup = (icon) => icon.includes("purplelink-lockup");
+function iconStyle(icon, ico, iconRadius) {
+  if (!isLogo(icon)) return { width: ico, height: ico, borderRadius: ico * iconRadius, boxShadow: "0 30px 70px oklch(35% 0.16 310 / 0.35)" };
+  return { width: isLockup(icon) ? ico * 1.5 : ico, height: "auto", filter: "drop-shadow(0 24px 40px oklch(45% 0.2 310 / 0.3))" };
+}
+
 // ---- title and end cards --------------------------------------------------------------------
 export function TitleCard({ format, t, t0 = 0, t1 = 1.6, sub = "A native LaTeX editor for Mac.", name = "ModernTex", icon = "brand/moderntex-icon.png", iconRadius = 0.22 }) {
   const f = FMT[format];
@@ -224,8 +233,8 @@ export function TitleCard({ format, t, t0 = 0, t1 = 1.6, sub = "A native LaTeX e
   return (
     <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", opacity: 1 - out, transform: `translateY(${-out * 40}px)` }}>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: f.v ? 30 : 26 }}>
-        <img src={staticFile(icon)} style={{ width: ico, height: ico, borderRadius: ico * iconRadius, boxShadow: "0 30px 70px oklch(35% 0.16 310 / 0.35)", opacity: rv(0), transform: `translateY(${(1 - rv(0)) * 30}px) scale(${0.92 + 0.08 * rv(0)})` }} />
-        <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: f.v ? (name.length > 10 ? 104 : 132) : name.length > 10 ? 120 : 144, letterSpacing: "-0.02em", color: INK, opacity: rv(0.12), transform: `translateY(${(1 - rv(0.12)) * 30}px)`, textAlign: "center", lineHeight: 1.05, maxWidth: f.v ? 960 : 1500 }}>{name}</div>
+        <img src={staticFile(icon)} style={{ ...iconStyle(icon, ico, iconRadius), opacity: rv(0), transform: `translateY(${(1 - rv(0)) * 30}px) scale(${0.92 + 0.08 * rv(0)})` }} />
+        <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: f.v ? (name.length > 10 ? 104 : 132) : name.length > 10 ? 120 : 144, letterSpacing: "-0.02em", color: INK, opacity: rv(0.12), transform: `translateY(${(1 - rv(0.12)) * 30}px)`, textAlign: "center", lineHeight: 1.05, maxWidth: f.v ? 960 : 1500, display: isLockup(icon) ? "none" : undefined }}>{name}</div>
         <div style={{ fontFamily: FONT_BODY, fontWeight: 500, fontSize: f.v ? 44 : 42, color: C.muted, opacity: rv(0.26), transform: `translateY(${(1 - rv(0.26)) * 24}px)`, textAlign: "center", maxWidth: f.v ? 900 : 1400, lineHeight: 1.3 }}>{sub}</div>
       </div>
     </AbsoluteFill>
@@ -240,8 +249,8 @@ export function EndCard({ format, t, t0, name = "ModernTex", icon = "brand/moder
   return (
     <AbsoluteFill style={{ alignItems: "center", justifyContent: "center" }}>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: f.v ? 34 : 28 }}>
-        <img src={staticFile(icon)} style={{ width: ico, height: ico, borderRadius: ico * iconRadius, boxShadow: "0 30px 70px oklch(35% 0.16 310 / 0.35)", opacity: rv(0), transform: `translateY(${(1 - rv(0)) * 30}px)` }} />
-        <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: f.v ? (name.length > 10 ? 100 : 128) : name.length > 10 ? 116 : 136, letterSpacing: "-0.02em", color: INK, opacity: rv(0.1), transform: `translateY(${(1 - rv(0.1)) * 30}px)`, textAlign: "center", lineHeight: 1.05, maxWidth: f.v ? 960 : 1500 }}>{name}</div>
+        <img src={staticFile(icon)} style={{ ...iconStyle(icon, ico, iconRadius), opacity: rv(0), transform: `translateY(${(1 - rv(0)) * 30}px)` }} />
+        <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: f.v ? (name.length > 10 ? 100 : 128) : name.length > 10 ? 116 : 136, letterSpacing: "-0.02em", color: INK, opacity: rv(0.1), transform: `translateY(${(1 - rv(0.1)) * 30}px)`, textAlign: "center", lineHeight: 1.05, maxWidth: f.v ? 960 : 1500, display: isLockup(icon) ? "none" : undefined }}>{name}</div>
         <div style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: f.v ? (pill.length > 22 ? 46 : 56) : pill.length > 22 ? 46 : 52, color: "oklch(99% 0.01 310)", background: PURPLE, borderRadius: 999, padding: "16px 48px", opacity: rv(0.22), transform: `translateY(${(1 - rv(0.22)) * 26}px)`, boxShadow: "0 20px 50px oklch(45% 0.22 310 / 0.4)", textAlign: "center", maxWidth: f.v ? 940 : 1400 }}>{pill}</div>
         <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: f.v ? (url.length > 26 ? 38 : 46) : 44, color: INK, opacity: rv(0.36), transform: `translateY(${(1 - rv(0.36)) * 20}px)` }}>{url}</div>
         {note && <div style={{ fontFamily: FONT_BODY, fontWeight: 500, fontSize: f.v ? 36 : 34, color: C.muted, opacity: rv(0.5), transform: `translateY(${(1 - rv(0.5)) * 16}px)`, textAlign: "center", whiteSpace: "pre-line", maxWidth: f.v ? 900 : 1400, lineHeight: 1.3 }}>{note}</div>}
