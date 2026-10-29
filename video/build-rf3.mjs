@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // RubbleFront trailer v3 builder (v1 and v2 builders are untouched). --wishlist renders the end card with a "Wishlist on Steam" line (storyboard end.wishlist text).
 //   node build-rf2.mjs storyboards/rubblefront-v2.json [--format 16x9|9x16] [--stills 3,10] [--no-audio] [--poster-only]
-// Reads  $RF_FRONTLINK/build/trailer/v2/clips/<clip>.mp4 (+ .wav), falls back to build/trailer/clips/
-// Writes $RF_FRONTLINK/build/trailer/v2/<outputs[format]>. Nothing is uploaded.
+// Reads  $RF_RUBBLEFRONT/build/trailer/v2/clips/<clip>.mp4 (+ .wav), falls back to build/trailer/clips/
+// Writes $RF_RUBBLEFRONT/build/trailer/v2/<outputs[format]>. Nothing is uploaded.
 import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
@@ -12,7 +12,7 @@ import { renderMedia, renderStill, selectComposition } from "@remotion/renderer"
 import { buildPlan } from "./src/rubblefront3/plan3.js";
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
-const FL = process.env.RF_FRONTLINK || "/Volumes/Extreme SSD/Frontlink";
+const FL = process.env.RF_RUBBLEFRONT || process.env.RF_FRONTLINK || "/Volumes/Extreme SSD/RubbleFront";
 const OUT = path.join(FL, "build", "trailer", "v3");
 const CLIPS = [path.join(OUT, "clips"), path.join(FL, "build", "trailer", "v2", "clips")];
 const ART = path.join(FL, "art", "store", "rubblefront");

@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 // RubbleFront trailer builder. Reads a storyboard (storyboards/rubblefront-*.json), turns real gameplay clips captured with Godot's
-// movie writer (see the Frontlink repo, game/tools/trailer_runner.gd) into a finished video with Remotion.
+// movie writer (see the RubbleFront repo, game/tools/trailer_runner.gd) into a finished video with Remotion.
 //
 //   node build-rubblefront.mjs storyboards/rubblefront-trailer.json [--format 16x9|9x16] [--skip-narrate] [--stills 3,10,40] [--no-poster]
 //
-// Reads  $RF_FRONTLINK/build/trailer/clips/<clip>.mp4 (+ <clip>.wav, the game's own effects recorded with the clip)
-// Writes $RF_FRONTLINK/build/trailer/<outputs[format]> (never into this repository).
+// Reads  $RF_RUBBLEFRONT/build/trailer/clips/<clip>.mp4 (+ <clip>.wav, the game's own effects recorded with the clip)
+// Writes $RF_RUBBLEFRONT/build/trailer/<outputs[format]> (never into this repository).
 // Narration: narrate.py (edge-tts), normalised to -16 LUFS by audio.mjs, then mixed with the game's music by mixrf.py.
 // Nothing is uploaded or posted.
 import fs from "node:fs";
@@ -18,7 +18,7 @@ import { stageNarration } from "./audio.mjs";
 import { buildPlan, toSrt } from "./src/rubblefront/plan.js";
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
-const FL = process.env.RF_FRONTLINK || "/Volumes/Extreme SSD/Frontlink";
+const FL = process.env.RF_RUBBLEFRONT || process.env.RF_FRONTLINK || "/Volumes/Extreme SSD/RubbleFront";
 const OUT = path.join(FL, "build", "trailer");
 const CLIPS = path.join(OUT, "clips");
 const ART = path.join(FL, "art", "store", "rubblefront");

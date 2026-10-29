@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Capture one RubbleFront v2 trailer clip: cap-v2.sh <clip> [--seed=N]  -> $FL/build/trailer/v3/clips/<clip>.mp4 + .wav (+ raw avi)
 set -euo pipefail
-FL="${RF_FRONTLINK:-/Volumes/Extreme SSD/Frontlink}"
-WT="${RF_WORKTREE:-/Volumes/Extreme SSD/_worktrees/Frontlink/Frontlink-work-trailer}"
+FL="${RF_RUBBLEFRONT:-${RF_FRONTLINK:-/Volumes/Extreme SSD/RubbleFront}}"
+WT="${RF_WORKTREE:-/Volumes/Extreme SSD/_worktrees/RubbleFront/Frontlink-work-trailer}"
 GODOT="${GODOT:-/Applications/Godot.app/Contents/MacOS/Godot}"
 clip="$1"; shift || true
 O="$FL/build/trailer/v3"; mkdir -p "$O/raw" "$O/clips"
