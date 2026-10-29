@@ -1603,7 +1603,7 @@ Settings, Models. Speech to text is Apple’s recognition until you choose anoth
 
 ## What it does
 
-TranscriptionTranscribes audio on your Mac, with word timing. Until you download a speech model it uses Apple's on-device speech recognition, and macOS may fetch Apple's own model once the first time. Better models are optional downloads in Settings, from Hugging Face, each once: NVIDIA Parakeet for English, Whisper base for English and Whisper large-v3 turbo for many languages. Settings can delete any of them.
+TranscriptionTranscribes audio on your Mac, with word timing. Until you download a speech model it uses Apple's on-device speech recognition, and macOS may fetch Apple's own model once the first time. Better models are optional downloads in Settings, from Hugging Face, each once: NVIDIA Parakeet, Whisper base and Whisper large-v3 turbo. Settings can delete any of them. Tapefolio transcribes English only for now, with every model.
 
 SpeakersLabels who is speaking, using the standard speaker-separation models that come with the app. In the review screen you name each speaker once and merge labels that belong to one person. NVIDIA Nemotron 3 Diarization is recommended instead. It was far better on the real two-person recordings measured below, Tapefolio uses it automatically once it is installed, and it is a 190 MB download.
 
@@ -1637,7 +1637,7 @@ Anonymize a transcriptIdentifier removal finds many identifiers and misses some,
 
 Read handwriting or phone photos reliablyOCR has been measured only on generated test files. Real handwriting and real phone photos of pages have not been tested.
 
-Promise results in other languagesWhat has been measured is English meeting audio. Other languages, accents and a quiet two-person interview have not been measured, and Whisper is the model to try for languages other than English.
+Promise results in other languagesWhat has been measured is English meeting audio. Tapefolio transcribes English only for now, with every model, including Whisper large-v3 turbo. Accents and a quiet two-person interview have not been measured.
 
 Run on an Intel Mac or an older macOSIt needs macOS 26 or later and Apple silicon. There is no Windows, iPhone or iPad version.
 
@@ -1681,7 +1681,7 @@ NVIDIA ParakeetEnglish transcriptionAbout 470 MB
 
 Whisper baseEnglish transcription, a small downloadAbout 150 MB
 
-Whisper large-v3 turboTranscription in many languagesAbout 650 MB
+Whisper large-v3 turboThe largest model, and the slowest; English only in Tapefolio for nowAbout 650 MB
 
 NVIDIA Nemotron 3 DiarizationSeparating speakers. Recommended, and used automatically once installedAbout 190 MB
 
@@ -1771,7 +1771,7 @@ Only if you turn speaker memory on for a project, and the app asks for a recorde
 
 Which speech model should I use?
 
-Start with the default, Apple's on-device speech recognition, which needs no download from Tapefolio. On the two meetings measured, Apple's engine, Parakeet and Whisper large-v3 turbo were within about two points of each other, so none is proven better. Whisper base made more errors in the same tests. Parakeet was the fastest and is English only. Whisper large-v3 turbo covers many languages but was the slowest.
+Start with the default, Apple's on-device speech recognition, which needs no download from Tapefolio. On the two meetings measured, Apple's engine, Parakeet and Whisper large-v3 turbo were within about two points of each other, so none is proven better. Whisper base made more errors in the same tests. Parakeet was the fastest and is English only. Whisper large-v3 turbo was the slowest. All of them transcribe English only in Tapefolio for now.
 
 Why is the first run slow?
 
