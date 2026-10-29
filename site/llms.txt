@@ -31,13 +31,14 @@
 - **Category:** Productivity / academic writing
 - **Description:** A native macOS LaTeX manuscript studio for academic researchers. Combines multi-file manuscript editing, tightly synchronized PDF preview, intelligent compile modes (Fast/Live/Full), citation management and BibTeX autocomplete, revision snapshots, plain-language error diagnostics, and submission-readiness checks in one coherent interface.
 - **Target users:** PhD students, faculty, and technical coauthors writing serious LaTeX manuscripts
-- **Pricing:** Free 7-day trial (the complete app, no account), then $19.99 USD one-time to keep. No subscription. All updates are included, forever.
+- **Pricing:** Free 7-day trial (the complete app, no account), then $19.99 USD one-time to keep. No subscription. All updates are included, forever. Checkout shows the price in the buyer's local currency where Stripe supports it (the base price stays USD 19.99, the buyer can switch back to US dollars, Stripe's exchange rate includes a 2 to 4 percent conversion fee, paid by the buyer). Payment is by card or Link.
+- **Languages:** The product page is in English, German, Japanese and Simplified Chinese (links below). The app interface is in English and German (German is a beta, since ModernTex 2.0). Chinese and Japanese documents compile with XeLaTeX (ctex) and LuaLaTeX (luatexja, jlreq) when the user's TeX installation has those packages.
 - **Seats for labs and departments:** one license key per seat, bought on https://purplelink.llc/moderntex/#departments. 5 seats $69.95 ($13.99 each), 10 seats $124.90 ($12.49), 15 seats $172.35 ($11.49), 20 seats $209.80 ($10.49), 25 to 500 seats $9.99 each. Invoices and a W-9 on request.
 - **Privacy:** No cloud sync, no data collection
 - **Status:** Shipping. Current version 2.0.1 (October 27, 2026). Every update since the 1.0 launch on September 4, 2026 is listed at https://purplelink.llc/moderntex/#changelog.
 - **Trial and purchase:** https://purplelink.llc/moderntex/
 - **Setup guide:** https://purplelink.llc/moderntex/start/ (first ten minutes: install, MacTeX or TinyTeX setup, first build, first error, venue templates, submission checks)
-- **German page (Deutsch):** https://purplelink.llc/de/moderntex/ (ModernTex product page in German; same price, USD 19.99 once, 7-day free trial)
+- **German page (Deutsch):** https://purplelink.llc/de/moderntex/ (ModernTex product page in German; same price, USD 19.99 once, 7-day free trial; the app interface can be shown in German, beta)
 - **German how-to:** https://purplelink.llc/de/guides/latex-auf-dem-mac-einrichten/ (set up LaTeX on a Mac for German text: TinyTeX or MacTeX, umlauts, babel ngerman, hyphenation patterns, biber)
 - **Japanese page (日本語):** https://purplelink.llc/ja/moderntex/ (ModernTex product page in Japanese; same price, USD 19.99 once, 7-day free trial; the app interface is English)
 - **Japanese how-to:** https://purplelink.llc/ja/guides/mac-nihongo-latex/ (Japanese LaTeX on a Mac with LuaLaTeX and LuaTeX-ja, jlreq, or upLaTeX with dvipdfmx; copy-paste files)

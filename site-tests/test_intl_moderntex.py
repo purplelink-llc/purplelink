@@ -109,8 +109,12 @@ class ProductPages(unittest.TestCase):
             self.assertEqual(len(apps), 1, url)
             offer = apps[0]["offers"]
             self.assertEqual((offer["price"], offer["priceCurrency"]), ("19.99", "USD"), url)
+            # inLanguage on the app lists the languages of its interface (English and German, since 2.0); the
+            # language of the page is on the WebPage and the FAQPage.
+            self.assertEqual(apps[0]["inLanguage"], ["en", "de"], url)
+            pages = [d for b in blocks for d in walk(b) if d.get("@type") == "WebPage"]
+            self.assertEqual([p["inLanguage"] for p in pages], [lang], url)
             if lang != "en":
-                self.assertEqual(apps[0]["inLanguage"], lang, url)
                 faqs = [d for b in blocks for d in walk(b) if d.get("@type") == "FAQPage"]
                 self.assertTrue(faqs and len(faqs[0]["mainEntity"]) >= 10, url)
                 self.assertEqual(faqs[0]["inLanguage"], lang, url)

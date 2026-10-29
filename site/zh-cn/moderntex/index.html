@@ -32,7 +32,7 @@
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/moderntex-icon.webp" as="image" fetchpriority="high">
     <script src="/theme.js?v=f0ab0f06a1"></script>
-    <link rel="stylesheet" href="/styles.css?v=a975ed784e">
+    <link rel="stylesheet" href="/styles.css?v=6388ed6bce">
     <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
     <link rel="stylesheet" href="/product-flair.css?v=6dc1d15444">
     <link rel="stylesheet" href="/buy.css?v=cb10cb94d2">
@@ -64,7 +64,7 @@
           "@type": "SoftwareApplication",
           "@id": "https://purplelink.llc/zh-cn/moderntex/#app",
           "name": "ModernTex",
-          "inLanguage": "zh-Hans",
+          "inLanguage": ["en", "de"],
           "applicationCategory": "DeveloperApplication",
           "applicationSubCategory": "LaTeX editor",
           "operatingSystem": "macOS 14+",
@@ -220,6 +220,14 @@
                 "@type": "Answer",
                 "text": "只有当你在编译错误上点击它时才会运行。默认运行在你 Mac 上的 Apple Intelligence，不发送任何内容。如果你改选 Claude 或 OpenAI 账号，应用会先征得你的同意，然后把错误附近的行、一些上下文和文档导言区发送给该服务商。修改以 diff 显示，在你接受之前不会有任何改动。"
               }
+            },
+            {
+              "@type": "Question",
+              "name": "可以用人民币付款吗？支持哪些银行卡？",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "可以。结账页面会把 19.99 美元换算成你所在地区的货币（例如人民币）显示。货币由 Stripe 根据你的所在地选择，你也可以切换回美元。基础价格仍是 19.99 美元。换算金额使用 Stripe 的汇率，其中含 2% 到 4% 的货币转换费，由买家承担。付款方式为信用卡或借记卡（包括 Apple Pay）以及 Link，不支持支付宝和微信支付。发卡行是否允许境外支付，请向发卡行确认。"
+              }
             }
           ]
         },
@@ -272,11 +280,11 @@
           <a class="btn btn-primary" id="trial-download" href="/.netlify/functions/moderntex-download?trial=1">下载 7 天免费试用版</a>
           <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn" data-product="moderntex">购买 ModernTex，19.99 美元</button>
         </div>
-        <p class="buy-assurance">购买后 14 天内发邮件即可退款。所有更新永久包含。</p>
+        <p class="buy-assurance">购买后 14 天内发邮件即可退款。所有更新永久包含。结账页面会以你所在地区的货币显示价格。</p>
         <p class="buy-suite">也可以选 <a href="/suite/">Mac Suite</a>（英文页面）：ModernTex、Outbound Veil、Legroom、Keyfeel、Tapefolio、Panely、Summonly，加上终身 Vitae Plus，一次性 59.99 美元。</p>
         <p class="tool-status" id="checkout-status" aria-live="polite"></p>
         <p class="waitlist-fine-print">试用版是完整的应用，可用七天，无需账号，也不用填写任何内容。购买为一次性 19.99 美元（USD 19.99），包含所有更新，永久有效（<a href="/terms/">条款</a>为英文）。收据邮件里有一个永久许可证密钥，七天后应用会要求输入。不合适？购买后 14 天内写信到 <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>，即可退款。已经在试用？在应用里选择 “Enter license key”，粘贴密钥，当前这份应用立刻解锁，无需重装。需要 macOS 14 或更高版本，支持 Apple 芯片和 Intel。<a href="#xitong-yaoqiu">系统要求</a>。</p>
-        <p class="intl-note">这是产品页面的简体中文版。应用界面目前是英文。价格以美元标示。条款、隐私政策和更新日志只有英文版。</p>
+        <p class="intl-note">这是产品页面的简体中文版。应用界面目前是英文。价格为 19.99 美元。结账页面会换算成你所在地区的货币（例如人民币）显示，你也可以切换回美元。条款、隐私政策和更新日志只有英文版。</p>
       </div>
       <figure class="app-hero-window">
         <div class="frame-soft hero-media">
@@ -543,6 +551,10 @@ l.42 As shown by <span class="fix-bad">\citeauthr</span>
         <details class="faq-item">
           <summary>ModernTex 多少钱？</summary>
           <div class="faq-body">免费试用 7 天后，一次性 19.99 美元，包含所有更新，永久有效。没有订阅，也没有账号。可选的 AI 功能运行在 Apple Intelligence，或你自己的 Claude 或 OpenAI 账号上。</div>
+        </details>
+        <details class="faq-item">
+          <summary>可以用人民币付款吗？支持哪些银行卡？</summary>
+          <div class="faq-body">可以。结账页面会把 19.99 美元换算成你所在地区的货币（例如人民币）显示。货币由 Stripe 根据你的所在地选择，你也可以切换回美元。基础价格仍是 19.99 美元。换算金额使用 Stripe 的汇率，其中含 2% 到 4% 的货币转换费，由买家承担。付款方式为信用卡或借记卡（包括 Apple Pay）以及 Link，不支持支付宝和微信支付。发卡行是否允许境外支付，请向发卡行确认。</div>
         </details>
         <details class="faq-item">
           <summary>有免费试用吗？</summary>

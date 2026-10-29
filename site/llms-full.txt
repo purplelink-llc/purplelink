@@ -1,6 +1,8 @@
 # Purplelink LLC: full text of the main pages
 > The readable text of Purplelink's product, tool, app and guide pages, generated from the site. The short index is at https://purplelink.llc/llms.txt.
 
+Languages and currency. The pages below are in English. ModernTex also has product pages in German (https://purplelink.llc/de/moderntex/), Japanese (https://purplelink.llc/ja/moderntex/) and Simplified Chinese (https://purplelink.llc/zh-cn/moderntex/), each with a how-to guide in the same language. The ModernTex app interface is in English and German (German is a beta, available since ModernTex 2.0); Japanese and Chinese documents compile with XeLaTeX and LuaLaTeX when the user's TeX installation has the ctex, luatexja and jlreq packages. Prices are in US dollars (ModernTex is USD 19.99 once). Checkout for the Mac apps shows the price in the buyer's local currency where Stripe supports it, and the buyer can switch back to US dollars; Stripe's exchange rate includes a conversion fee of 2 to 4 percent, paid by the buyer. Payment is by card (including Apple Pay and Google Pay) or Link.
+
 
 ---
 
@@ -379,7 +381,7 @@ A native macOS LaTeX editor for researchers. It has multi-file editing, a synchr
 
 Download the free 7-day trial
 
-Refunded if you email within 14 days of purchase. Updates are included forever.
+Checkout shows the price in your local currency, and you can switch back to US dollars. Refunded if you email within 14 days of purchase. Updates are included forever.
 
 Or get the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life, $59.99 once.
 
@@ -725,6 +727,16 @@ InstallingOne signed, notarized disk image for macOS 14 or later, Apple silicon 
 
 Trying it firstThe same download runs the complete app free for seven days, with no account.
 
+## Languages and currency
+
+This pageAlso in Deutsch, 日本語 and 简体中文. The terms, privacy policy and changelog are in English only.
+
+App interfaceEnglish and German (beta). German has been available since ModernTex 2.0, and some wording may still be rough.
+
+Chinese and Japanese documentsModernTex compiles them with XeLaTeX (ctex) or LuaLaTeX (luatexja, jlreq), as long as your TeX installation has those packages. The app's own menus stay in English.
+
+CurrencyThe price is USD 19.99. Checkout shows it in your local currency where Stripe supports that, and you can switch back to US dollars. Stripe's exchange rate includes a conversion fee of 2 to 4 percent, paid by the buyer. You pay by card or Link.
+
 ## Frequently asked questions
 
 How do I get updates?
@@ -793,6 +805,14 @@ Does it work with my journal's or university's class file?
 
 Any class you can compile with LaTeX works: put the class file in the project folder. ModernTex also bundles starter templates for several information systems journals, computer science conferences and a generic thesis. The free starters on this site for ACM, IEEE, Elsevier, APA 7 and the academic CV each compiled with TinyTeX and latexmk when I tested them on October 15, 2026, after the publisher class was installed with tlmgr. For a project with no required class there are two plain CC0 starters, a multi-file thesis and a single-file article, which compiled the same way on the same day. The NeurIPS starter needs the current year's style file from the conference, so I make no compile claim for it.
 
+Does ModernTex work in German, Japanese or Chinese?
+
+The app's interface is in English and German (German is a beta, available since ModernTex 2.0). Chinese and Japanese documents compile with XeLaTeX (ctex) or LuaLaTeX (luatexja, jlreq) when your TeX installation has those packages. This product page is also in German, Japanese and Simplified Chinese.
+
+Can I pay in my own currency?
+
+Checkout shows the price converted into your local currency where Stripe supports it, chosen from your location, and you can switch back to US dollars. The base price stays USD 19.99. Stripe's exchange rate includes a conversion fee of 2 to 4 percent, which the buyer pays. You pay by card, including Apple Pay and Google Pay, or with Link.
+
 ## Write to Ben
 
 A question about ModernTex that this page does not answer? Write to Ben here.
@@ -830,7 +850,7 @@ Works in the ChatGPT and claude.ai prompt boxes in Chrome, so a client note is c
 
 Try it free for 7 days
 
-Refunded if you email within 14 days of purchase. Updates are included forever.
+Checkout shows the price in your local currency, and you can switch back to US dollars. Refunded if you email within 14 days of purchase. Updates are included forever.
 
 The trial is the full app for seven days from first launch, with no account. After that the app asks for a license key. Buying is a single $29.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.4.0 · 34 MB disk image · macOS 14 or later, Apple silicon and Intel. First ten minutes: install, Accessibility and your first check.
 
@@ -1013,7 +1033,7 @@ Legroom shows how much free space your Mac has, warns you before the disk fills,
 
 Try it free for 7 days
 
-Refunded if you email within 14 days of purchase.
+Checkout shows the price in your local currency, and you can switch back to US dollars. Refunded if you email within 14 days of purchase.
 
 The trial runs for seven days from the first time you open it, with no account. After it ends, the menu-bar readout and the low-space alerts keep working, and the app asks for a license key to unlock the rest. Buying is a single $9.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.9.0 · 8.6 MB disk image · macOS 14 or later, Apple silicon and Intel · signed and notarized.
 

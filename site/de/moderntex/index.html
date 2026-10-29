@@ -32,7 +32,7 @@
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/moderntex-icon.webp" as="image" fetchpriority="high">
     <script src="/theme.js?v=f0ab0f06a1"></script>
-    <link rel="stylesheet" href="/styles.css?v=a975ed784e">
+    <link rel="stylesheet" href="/styles.css?v=6388ed6bce">
     <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
     <link rel="stylesheet" href="/product-flair.css?v=6dc1d15444">
     <link rel="stylesheet" href="/buy.css?v=cb10cb94d2">
@@ -64,7 +64,7 @@
           "@type": "SoftwareApplication",
           "@id": "https://purplelink.llc/de/moderntex/#app",
           "name": "ModernTex",
-          "inLanguage": "de",
+          "inLanguage": ["en", "de"],
           "applicationCategory": "DeveloperApplication",
           "applicationSubCategory": "LaTeX editor",
           "operatingSystem": "macOS 14+",
@@ -228,6 +228,14 @@
                 "@type": "Answer",
                 "text": "Jede Klasse, die sich mit LaTeX kompilieren lässt, funktioniert: Legen Sie die Klassendatei in den Projektordner. ModernTex bringt außerdem Startvorlagen für mehrere Zeitschriften der Wirtschaftsinformatik, Informatik-Konferenzen und eine allgemeine Abschlussarbeit mit. Die kostenlosen Vorlagen (englisch) für ACM, IEEE, Elsevier, APA 7 und den akademischen Lebenslauf finden Sie unter LaTeX templates."
               }
+            },
+            {
+              "@type": "Question",
+              "name": "Kann ich in Euro bezahlen? Welche Karten funktionieren?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Ja. Die Kasse zeigt die 19,99 US-Dollar in Ihrer Landeswährung an, zum Beispiel in Euro. Stripe wählt die Währung nach Ihrem Standort, und Sie können jederzeit auf US-Dollar zurückschalten. Der Grundpreis bleibt 19,99 US-Dollar. Der umgerechnete Betrag beruht auf dem Wechselkurs von Stripe, der einen Aufschlag von 2 bis 4 Prozent enthält, den die Käuferin oder der Käufer trägt. Bezahlt wird mit Kredit- oder Debitkarte, auch über Apple Pay und Google Pay, oder mit Link. Weitere Zahlungsarten wie PayPal oder Überweisung gibt es nicht."
+              }
             }
           ]
         },
@@ -280,11 +288,11 @@
           <a class="btn btn-primary" id="trial-download" href="/.netlify/functions/moderntex-download?trial=1">Kostenlose 7-Tage-Testversion laden</a>
           <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn" data-product="moderntex">ModernTex kaufen, 19,99 US-Dollar</button>
         </div>
-        <p class="buy-assurance">Rückerstattung, wenn Sie innerhalb von 14 Tagen nach dem Kauf eine E-Mail schreiben. Alle Updates sind dauerhaft enthalten.</p>
+        <p class="buy-assurance">Rückerstattung, wenn Sie innerhalb von 14 Tagen nach dem Kauf eine E-Mail schreiben. Alle Updates sind dauerhaft enthalten. Die Kasse zeigt den Preis in Ihrer Landeswährung an.</p>
         <p class="buy-suite">Oder das <a href="/suite/">Mac Suite</a> (englische Seite): ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly und Vitae Plus auf Lebenszeit, 59,99 US-Dollar einmalig.</p>
         <p class="tool-status" id="checkout-status" aria-live="polite"></p>
         <p class="waitlist-fine-print">Die Testversion ist die ganze App, sieben Tage lang, ohne Konto und ohne Eingaben. Der Kauf kostet einmalig 19,99 US-Dollar (USD 19.99) und enthält alle Updates, dauerhaft (<a href="/terms/">Bedingungen</a>, englisch). Die Quittung per E-Mail enthält einen dauerhaften Lizenzschlüssel, nach den sieben Tagen fragt die App danach. Nicht überzeugt? Schreiben Sie innerhalb von 14 Tagen nach dem Kauf an <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>, der Betrag wird erstattet. Läuft die Testversion schon? Wählen Sie in der App „Enter license key“, fügen Sie den Schlüssel ein, und Ihre Kopie ist sofort freigeschaltet, ohne Neuinstallation. macOS 14 oder neuer, Apple Silicon und Intel. <a href="#voraussetzungen">Voraussetzungen</a>.</p>
-        <p class="intl-note">Dies ist die deutsche Fassung der Produktseite. Der Preis gilt in US-Dollar. Die Bedingungen, die Datenschutzerklärung und das Änderungsprotokoll gibt es nur auf Englisch. Die Oberfläche der App lässt sich seit Version 2.0 auf Deutsch anzeigen (Beta: einzelne Formulierungen können noch ungenau sein).</p>
+        <p class="intl-note">Dies ist die deutsche Fassung der Produktseite. Der Preis beträgt 19,99 US-Dollar. An der Kasse zeigt Stripe ihn in Ihrer Landeswährung an, zum Beispiel in Euro, und Sie können auf US-Dollar zurückschalten. Die Bedingungen, die Datenschutzerklärung und das Änderungsprotokoll gibt es nur auf Englisch. Die Oberfläche der App lässt sich seit Version 2.0 auf Deutsch anzeigen (Beta: einzelne Formulierungen können noch ungenau sein).</p>
       </div>
       <figure class="app-hero-window">
         <div class="frame-soft hero-media">
@@ -551,6 +559,10 @@ l.42 As shown by <span class="fix-bad">\citeauthr</span>
         <details class="faq-item">
           <summary>Was kostet ModernTex?</summary>
           <div class="faq-body">19,99 US-Dollar einmalig, nach einer kostenlosen Testversion von 7 Tagen. Das gilt für alle Updates, dauerhaft. Es gibt kein Abo und kein Konto. Die optionalen KI-Funktionen laufen auf Apple Intelligence oder Ihrem eigenen Claude- oder OpenAI-Konto.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Kann ich in Euro bezahlen? Welche Karten funktionieren?</summary>
+          <div class="faq-body">Ja. Die Kasse zeigt die 19,99 US-Dollar in Ihrer Landeswährung an, zum Beispiel in Euro. Stripe wählt die Währung nach Ihrem Standort, und Sie können jederzeit auf US-Dollar zurückschalten. Der Grundpreis bleibt 19,99 US-Dollar. Der umgerechnete Betrag beruht auf dem Wechselkurs von Stripe, der einen Aufschlag von 2 bis 4 Prozent enthält, den die Käuferin oder der Käufer trägt. Bezahlt wird mit Kredit- oder Debitkarte, auch über Apple Pay und Google Pay, oder mit Link. Weitere Zahlungsarten wie PayPal oder Überweisung gibt es nicht.</div>
         </details>
         <details class="faq-item">
           <summary>Gibt es eine kostenlose Testversion?</summary>
