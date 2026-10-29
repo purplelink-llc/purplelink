@@ -202,6 +202,9 @@ export default async function handler(request) {
       // ModernTex in-app Buy links (checkout.mjs metadata) and checkout recovery (Stripe's recovered_from).
       app: (s.metadata && s.metadata.app_source) || null,
       td: (s.metadata && s.metadata.trial_day) || null,
+      // A Reddit-ad ModernTex sale (checkout.mjs metadata, from the page or the pl_attr cookie). Whether a click id
+      // was present, never the id itself: the marketing hub needs the flag, and the id stays in Stripe.
+      reddit: s.metadata && s.metadata.reddit_ad === "1" ? { ad: true, click: !!s.metadata.reddit_click_id } : null,
       recovered: !!s.recovered_from,
       ...chargeFacts(pi && pi.latest_charge),
     });
@@ -361,7 +364,7 @@ export default async function handler(request) {
       id: p.id, kind: p.kind, ts: p.created, product: p.product, site: p.site,
       gross: p.amount, fee: p.fee, net: p.net, refunded: p.refunded, disputed: p.disputed,
       cust: custKey(p.email), attr: p.attr, heard: p.heard,
-      app: p.app || null, td: p.td || null, recovered: !!p.recovered,
+      app: p.app || null, td: p.td || null, recovered: !!p.recovered, reddit: p.reddit || null,
     })),
     comps: { orders: comps.length, note: "Free copies given with a 100%-off code, excluded from every figure above." },
     refunds,
