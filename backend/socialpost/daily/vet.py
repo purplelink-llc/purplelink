@@ -164,6 +164,22 @@ def utm_problems(item, kind: str) -> list[str]:
     return out
 
 
+# A word run into a dot-prefixed path or dotfile: "project's.claude/worktrees", "repo's.gitignore", "folder.claude/".
+# Domains in prose ("doi.org/10...", "purplelink.llc/legroom") are left alone by their suffix.
+JOINED_POSSESSIVE = re.compile(r"[A-Za-z]['\u2019]s\.[A-Za-z]")
+JOINED_PATH = re.compile(r"\b[a-z]{2,}\.([a-z][\w-]*)/")
+DOMAIN_SUFFIXES = {"com", "org", "net", "llc", "io", "app", "dev", "edu", "gov", "co", "ai", "me", "so", "uk", "de",
+                   "us", "ca", "info", "social", "page", "site", "xyz"}
+
+
+def joined_word_problems(text: str) -> list[str]:
+    """Text where a word and a dot-prefixed path lost the space between them (the 2026-10-29 Legroom post)."""
+    body = strip_urls(text)
+    hits = [m.group(0) for m in JOINED_POSSESSIVE.finditer(body)]
+    hits += [m.group(0) for m in JOINED_PATH.finditer(body) if m.group(1).lower() not in DOMAIN_SUFFIXES]
+    return [f"word joined to a dot path: {h!r}" for h in hits]
+
+
 def alt_problems(item) -> list[str]:
     return [f"image {im.get('path')!r} has no alt text" for im in item.meta.get("images") or []
             if not str(im.get("alt") or "").strip()]
@@ -214,7 +230,7 @@ def vet(item, c, facts: dict, texts: dict[str, str], http, history: list[dict], 
     source = source_text(facts)
     for p in item.platforms:
         rendered = item.render(p)
-        for why in voice_problems(rendered):
+        for why in voice_problems(rendered) + joined_word_problems(rendered):
             v.fail("voice", f"{p}: {why}")
         if p == "mastodon":
             for why in ben_voice_problems(rendered) + filler_problems(rendered, source):

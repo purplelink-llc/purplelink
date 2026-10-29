@@ -64,7 +64,10 @@ def meta(page: str, key: str) -> str:
 def strip_tags(s: str) -> str:
     s = re.sub(r"<(script|style)[^>]*>.*?</\1>", " ", s, flags=re.S | re.I)
     s = html_lib.unescape(re.sub(r"<[^>]+>", " ", s))
-    return plain(s).replace(" ,", ",").replace(" .", ".").replace("( ", "(").replace(" )", ")")
+    # Removing a tag leaves a space before the punctuation that followed it ("<b>1.9.0</b> ."). Close that gap only
+    # when the mark ends a phrase, so a dot-prefixed word keeps its space ("a project's .claude/worktrees folder").
+    s = re.sub(r" ([.,])(?=\s|$|[)\"'])", r"\1", plain(s))
+    return s.replace("( ", "(").replace(" )", ")")
 
 
 def jsonld_objects(page: str) -> list:
