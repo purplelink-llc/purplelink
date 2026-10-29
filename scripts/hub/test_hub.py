@@ -703,6 +703,49 @@ Done in Chrome.
         run("import")
 
 
+def test_pull_request_on_someone_elses_repo_is_a_placement():
+    """A queue "pr" item that opened a pull request on another owner's GitHub repo (an awesome list) is an outward
+    placement; a PR on our own repos is not."""
+    put("queue/done/2026-10-09-pr-awesome.md", """---
+id: q-20261009-aw1
+created: 2026-10-09T08:00:00-04:00
+kind: pr
+target: "GitHub PR: someone/awesome-things, Widget under Tools"
+status: done
+---
+
+## Ask
+Open a PR adding Widget, https://purplelink.llc/widget/
+
+## Result
+PR opened from Ben's account 2026-10-11: https://github.com/someone/awesome-things/pull/55 (2026-10-11T17:56-04:00)
+""")
+    put("queue/done/2026-10-12-pr-site.md", """---
+id: q-20261012-own
+created: 2026-10-12T08:00:00-04:00
+kind: pr
+target: "site/guides: a new guide about Widget"
+status: done
+---
+
+## Result
+https://github.com/purplelink-llc/purplelink/pull/9 merged (2026-10-12T10:00-04:00)
+""")
+    try:
+        run("import")
+        con = db()
+        row = con.execute("SELECT * FROM placements WHERE id = 'queue:q-20261009-aw1'").fetchone()
+        assert row is not None
+        assert row["channel"] == "github" and row["status"] == "live" and row["date"] == "2026-10-11", tuple(row)
+        assert row["url"] == "https://github.com/someone/awesome-things/pull/55"
+        assert assets_of(con, "queue:q-20261009-aw1") == ["widget"]
+        assert con.execute("SELECT count(*) FROM placements WHERE id = 'queue:q-20261012-own'").fetchone()[0] == 0
+    finally:
+        (tmp / "queue/done/2026-10-09-pr-awesome.md").unlink()
+        (tmp / "queue/done/2026-10-12-pr-site.md").unlink()
+        run("import")
+
+
 if __name__ == "__main__":
     test_all()
     test_sources_untouched()
@@ -724,6 +767,7 @@ if __name__ == "__main__":
     test_doctor()
     test_one_listing_is_one_placement()
     test_social_engine_rows_under_a_headerless_table()
+    test_pull_request_on_someone_elses_repo_is_a_placement()
     print("ok")
 
 
