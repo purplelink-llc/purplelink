@@ -13,6 +13,7 @@ it can be deleted at any time with nothing lost. Nothing here posts, sends or ed
 
 Phase 1 (results):
   hub.py import --fetch         also read the first-touch funnel from the stats function (7 windows, one GET each)
+  hub.py import --fetch-if-stale   the same, only when funnel.json was not fetched today (the morning export uses it)
   hub.py channels [PRODUCT]     product x channel over 45 days: placements, visits, trials, orders, verdict
   hub.py followups              outreach emails due a follow-up (day 4) and those past 28 days (no-response)
   hub.py check-listings [--if-older DAYS]   fetch live listing pages; record price and version seen (facts.json)
@@ -559,6 +560,15 @@ def fetch_funnel(p: dict, get=None) -> dict:
     p["funnel"].parent.mkdir(parents=True, exist_ok=True)
     p["funnel"].write_text(json.dumps(out, indent=1))
     return out
+
+
+def funnel_stale(path: Path, today: dt.date | None = None) -> bool:
+    """True unless funnel.json was fetched today. Its asOf is the fetch date, and a fetch made yesterday afternoon
+    misses yesterday's evening; an age rule (under 20 hours) let such a fetch stand in for the next morning's."""
+    try:
+        return json.loads(path.read_text()).get("asOf", "") < (today or dt.date.today()).isoformat()
+    except (OSError, ValueError, AttributeError):
+        return True
 
 
 def load_json(path: Path, default):
@@ -1627,7 +1637,7 @@ def resolve_asset(con, q: str) -> list:
 # --- commands -----------------------------------------------------------------------------------------------------
 
 def cmd_import(a, p):
-    if a.fetch:
+    if a.fetch or (a.fetch_if_stale and funnel_stale(p["funnel"])):
         f = fetch_funnel(p)
         print(f"funnel: {len(f['windows'])} windows as of {f['asOf']}")
     s = build(p)
@@ -1982,6 +1992,7 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
     im = sub.add_parser("import"); im.add_argument("--fetch", action="store_true")
+    im.add_argument("--fetch-if-stale", action="store_true")
     w = sub.add_parser("where"); w.add_argument("asset"); w.add_argument("--all", action="store_true")
     g = sub.add_parser("grid"); g.add_argument("--all", action="store_true")
     gp = sub.add_parser("gaps"); gp.add_argument("--days", type=int, default=30); gp.add_argument("--all", action="store_true")

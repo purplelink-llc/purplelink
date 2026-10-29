@@ -298,6 +298,21 @@ def test_fetch_funnel_keeps_token_out_of_url():
     put("hub/funnel.json", saved)
 
 
+def test_funnel_stale_until_fetched_on_the_day():
+    # The export used to skip the fetch when funnel.json was under 20 hours old. A daytime fetch (10-28 17:34) then
+    # left the next morning's dashboard without the previous evening, the first day of the Reddit test (2026-10-29).
+    f = tmp / "stale-check" / "funnel.json"
+    day = hub.dt.date(2026, 10, 29)
+    assert hub.funnel_stale(f, day)                                   # never fetched
+    f.parent.mkdir(parents=True, exist_ok=True)
+    f.write_text("not json")
+    assert hub.funnel_stale(f, day)                                   # unreadable
+    f.write_text(json.dumps({"asOf": "2026-10-28", "windows": {}}))
+    assert hub.funnel_stale(f, day)                                   # yesterday's fetch misses yesterday's evening
+    f.write_text(json.dumps({"asOf": "2026-10-29", "windows": {}}))
+    assert not hub.funnel_stale(f, day)                               # fetched today: at most one fetch a day
+
+
 def test_export_has_no_contacts():
     run("import")
     out = tmp / "export"
@@ -633,6 +648,7 @@ if __name__ == "__main__":
     test_stop_rule_and_interval()
     test_listing_checks()
     test_fetch_funnel_keeps_token_out_of_url()
+    test_funnel_stale_until_fetched_on_the_day()
     test_export_has_no_contacts()
     test_phase2_tags_and_link_results()
     test_phase2_kits_rules_week_log()
