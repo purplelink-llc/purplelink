@@ -14,7 +14,7 @@ from zoneinfo import ZoneInfo
 
 from .. import config as cfgmod
 from .. import items as itemsmod
-from .. import paths, sysutil
+from .. import hubtags, paths, sysutil
 from ..items import Item, iso
 from . import candidates as cand
 from . import external
@@ -129,8 +129,27 @@ def build_item(c, facts, fmt, texts, platforms, when_iso, day, image_path, image
         alt = facts.get("image_alt") or f"Preview image for the page: {facts['title']}"
         meta["images"] = [{"path": str(image_path), "alt": alt[:900], "platforms": list(image_platforms)}]
         meta["text_only"] = [p for p in platforms if p not in image_platforms]
+    # release:legroom:1.9.0 -> legroom-1.9.0 (the hub keeps only what follows the last ":" of an asset id)
+    tags = post_tags(c.url, c.id.split(":", 1)[-1].replace(":", "-"), platforms, campaign)
+    if tags:
+        meta["utm_contents"] = tags
     path = paths.queue_dir() / f"{meta['id']}.md"
     return Item(path, meta, dict(texts), notes_line)
+
+
+def post_tags(link: str, asset: str, platforms, campaign: str) -> dict:
+    """{platform: utm_content} from the marketing hub, one tag per platform. An empty result for a site link (the hub
+    failed) leaves the item untagged, and the gate rejects it: nothing goes out unmeasured."""
+    out = {}
+    for p in platforms:
+        try:
+            t = hubtags.tag(link, asset, p, campaign)
+        except hubtags.TagError as e:
+            sysutil.log(f"daily: {e}")
+            return {}
+        if t:
+            out[p] = t
+    return out
 
 
 # ---------------------------------------------------------------- the run

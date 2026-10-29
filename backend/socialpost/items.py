@@ -115,10 +115,16 @@ class Item:
             return text.replace("{link}", "").strip()
         if not self.link:
             return text
-        url = utm_link(self.link, platform, self.campaign)
+        url = utm_link(self.link, platform, self.campaign, self.utm_content(platform))
         if "{link}" in text:
             return text.replace("{link}", url)
         return f"{text}\n\n{url}" if text else url
+
+    def utm_content(self, platform: str) -> str:
+        """This post's own tag on `platform` (utm_contents, made by the marketing hub before approval); a Reel's older
+        single `utm_content` field still counts for Instagram."""
+        tags = self.meta.get("utm_contents") or {}
+        return str(tags.get(platform) or (self.meta.get("utm_content") if platform == "instagram" else "") or "")
 
     # -- approval
     def content_hash(self) -> str:
@@ -140,6 +146,8 @@ class Item:
             h.update(json.dumps(d, sort_keys=True).encode())
             h.update(hashlib.sha256(f.read_bytes()).digest() if f.is_file() else b"missing")
         h.update(str(self.meta.get("scheduled_at")).encode())
+        if self.meta.get("utm_contents"):   # only when set, so items approved before tags existed stay valid
+            h.update(json.dumps(self.meta["utm_contents"], sort_keys=True).encode())
         return h.hexdigest()
 
     def approval_valid(self) -> tuple[bool, str]:
