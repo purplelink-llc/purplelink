@@ -81,4 +81,17 @@ Images are served from https://purplelink.llc/social-media/ (JPEG). Reels are pu
 media.video.env_file in ~/.config/purplelink/social.json for the minutes Meta needs to fetch them, then deleted.
 """
 
-GUIDES = {"instagram": INSTAGRAM, "threads": THREADS, "mastodon": MASTODON, "x": X, "bluesky": BLUESKY}
+FACEBOOK = """\
+Facebook Page "Purplelink LLC" (created 2026-10-28), through the Pages API. Its Page token also publishes to Instagram
+@purplelink.llc, which is connected to the Page (Instagram's own web login loops for this account).
+
+1. https://developers.facebook.com/tools/explorer/  ->  Meta App: the app with "Manage everything on your Page" and the
+   Instagram use case (Ball Bouncer Poster; instagram_basic and instagram_content_publish were added 2026-10-28).
+2. User or Page: User Token. Permissions: pages_show_list, pages_read_engagement, pages_manage_posts,
+   business_management, instagram_basic, instagram_content_publish.
+3. Generate Access Token, approve as yourself, include the Purplelink LLC Page and @purplelink.llc, copy the token.
+4. Paste it below with the App ID, and the App secret (App settings -> Basic) so the token is made long-lived; the
+   Page token taken from it then does not expire. Type yes when it shows Purplelink LLC and @purplelink.llc.
+"""
+
+GUIDES = {"facebook": FACEBOOK, "instagram": INSTAGRAM, "threads": THREADS, "mastodon": MASTODON, "x": X, "bluesky": BLUESKY}

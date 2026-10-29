@@ -25,7 +25,10 @@ DEFAULT = {
         "threads": {"enabled": False, "expected": {"user_id": "", "username": ""}},
         "mastodon": {"enabled": False, "instance": "", "expected": {"acct": ""}},
         "x": {"enabled": False, "paid_posting_ok": False, "expected": {"user_id": "", "username": ""}},
-        "instagram": {"enabled": False, "expected": {"user_id": "", "username": ""}},
+        # api: "instagram" (Instagram Login token) or "facebook" (published through the Purplelink LLC Page's token,
+        # used since 2026-10-28 because Instagram's web login loops for this account)
+        "instagram": {"enabled": False, "api": "instagram", "expected": {"user_id": "", "username": ""}},
+        "facebook": {"enabled": False, "expected": {"page_id": "", "name": ""}},
     },
 }
 

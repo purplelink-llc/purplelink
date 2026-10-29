@@ -99,6 +99,8 @@ def setup(platform: str) -> int:
         return _setup_x(cfg)
     if platform == "instagram":
         return _setup_instagram(cfg)
+    if platform == "facebook":
+        return _setup_facebook(cfg)
     raise SystemExit(f"unknown platform {platform}")
 
 
@@ -240,6 +242,76 @@ def _setup_instagram(cfg: dict) -> int:
     if ok:
         print("Next: social.py instagram preview --dry-run  (renders a Reel and an image post, posts nothing)")
     return 0 if ok else 1
+
+
+FB_GRAPH = "https://graph.facebook.com/v23.0"
+FB_PAGE_NAME = "Purplelink LLC"
+
+
+def fb_long_user_token(http, app_id: str, app_secret: str, short: str) -> tuple[str | None, str]:
+    """Exchange a short-lived user token for a long-lived one (about 60 days)."""
+    q = urlencode({"grant_type": "fb_exchange_token", "client_id": app_id, "client_secret": app_secret,
+                   "fb_exchange_token": short})
+    r = http.request("GET", f"{FB_GRAPH}/oauth/access_token?{q}")
+    tok = (r.json() or {}).get("access_token")
+    if r.status == 200 and tok:
+        return tok, ""
+    err = (r.json() or {}).get("error") or {}
+    return None, f"HTTP {r.status} {_scrub(str(err.get('message', '') if isinstance(err, dict) else ''), app_secret, short)}"
+
+
+def fb_pick_page(http, user_token: str, page_name: str = FB_PAGE_NAME) -> tuple[dict | None, str]:
+    """The Page named page_name among the user's Pages, with its token and connected Instagram account."""
+    r = http.request("GET", f"{FB_GRAPH}/me/accounts?fields=id,name,access_token,"
+                            "instagram_business_account%7Bid,username%7D&limit=100",
+                     {"Authorization": f"Bearer {user_token}"})
+    if r.status != 200:
+        return None, f"listing Pages answered {r.status} (does the token have pages_show_list?)"
+    pages = (r.json() or {}).get("data") or []
+    hits = [pg for pg in pages if str(pg.get("name", "")).strip().lower() == page_name.lower()]
+    if len(hits) != 1:
+        names = ", ".join(pg.get("name", "?") for pg in pages) or "none"
+        return None, f"expected exactly one Page named {page_name!r}; the token sees: {names}"
+    return hits[0], ""
+
+
+def _setup_facebook(cfg: dict, http=None) -> int:
+    http = http or Http()
+    tok = _ask_secret("User token from the Graph API Explorer")
+    app_id = input("App ID (the app the token was made in): ").strip()
+    app_secret = _ask_secret("App secret (to make the token long-lived), or Enter if you already extended it in "
+                             "the Access Token Debugger", required=False)
+    if app_secret:
+        if not app_id.isdigit():
+            print("The App ID is a number. Nothing stored.")
+            return 1
+        tok, err = fb_long_user_token(http, app_id, app_secret, tok)
+        if not tok:
+            print(f"The exchange failed ({err}). Nothing stored.")
+            return 1
+    page, err = fb_pick_page(http, tok)
+    if not page:
+        print(f"{err}. Nothing stored.")
+        return 1
+    ig = page.get("instagram_business_account") or {}
+    print(f"\nPage: {page['name']} (id {page['id']})")
+    print(f"Connected Instagram: @{ig.get('username')} (id {ig.get('id')})" if ig else
+          "Connected Instagram: none (connect @purplelink.llc to the Page first for Instagram posts)")
+    if "rubblefront" in str(ig.get("username") or "").lower():
+        print("That Page is connected to RubbleFront's Instagram. Purplelink never posts there. Nothing stored.")
+        return 1
+    if input("Is this the Purplelink company Page? Type yes to store its token and pin it: ").strip().lower() != "yes":
+        print("Not stored.")
+        return 1
+    sysutil.keychain_set("facebook", "page_token", page["access_token"])
+    cfgmod.update_platform("facebook", enabled=True, expected={"page_id": str(page["id"]), "name": page["name"]})
+    print(f"Facebook Page pinned in {paths.config_file()} and enabled.")
+    if ig.get("id") and str(ig.get("username") or "").lower() == "purplelink.llc":
+        cfgmod.update_platform("instagram", enabled=True, api="facebook",
+                               expected={"user_id": str(ig["id"]), "username": ig["username"]})
+        print("Instagram @purplelink.llc now publishes through the Page (api: facebook), pinned and enabled.")
+    print("Next: social.py whoami, then social.py instagram preview (the dry run, posts nothing)")
+    return 0
 
 
 def _setup_mastodon(cfg: dict) -> int:
