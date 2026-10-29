@@ -1,0 +1,35 @@
+name: No Claude attribution
+
+# Ben, 2026-10-29: Claude must not appear as a contributor or co-author. Local commits are cleaned by
+# .githooks/commit-msg; this catches commits made anywhere else (cloud sessions, scheduled jobs) before they merge.
+# A squash merge copies every branch commit's author and Co-authored-by line into the final commit, so the PR's
+# commits are what must be clean.
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+      - name: No commit authored by or co-authored with Claude
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -u
+          bad="$(git log --format='%h%x09%ae%x09%ce%x09%b' "$BASE..$HEAD" \
+            | grep -iE 'noreply@anthropic\.com|co-authored-by:[[:space:]]*claude' || true)"
+          if [ -n "$bad" ]; then
+            echo "These commits credit Claude. Re-author them to Ben and drop the Co-Authored-By line:"
+            echo "$bad"
+            echo "Fix: git rebase $BASE --exec 'git commit --amend --no-edit --reset-author', then remove the trailers."
+            exit 1
+          fi
+          echo "No Claude attribution in $(git rev-list --count "$BASE..$HEAD") commit(s)."

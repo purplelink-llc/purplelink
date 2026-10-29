@@ -1,0 +1,26 @@
+#!/bin/bash
+# Keep Claude off the contributor list (Ben, 2026-10-29). git config core.hooksPath points every repo on this Mac
+# here, so this runs for all of them.
+#  - Drops "Co-Authored-By: Claude ..." trailers and the "Generated with Claude Code" line from the message.
+#  - Refuses a commit whose author or committer is Claude (noreply@anthropic.com), which is what put "claude" in the
+#    GitHub contributor list of the purplelink repo (219 commits from cloud jobs, last 2026-10-15).
+# The same rule runs server-side in .github/workflows/no-claude-attribution.yml for commits made elsewhere.
+set -u
+msg="$1"
+
+for who in GIT_AUTHOR_IDENT GIT_COMMITTER_IDENT; do
+    if git var "$who" 2>/dev/null | grep -qiE 'noreply@anthropic\.com|^claude <'; then
+        echo "commit-msg: refusing a commit attributed to Claude ($who)." >&2
+        echo "  Set the author to Ben: git -c user.name='Benjamin Ampel' -c user.email='31357746+BenAmpel@users.noreply.github.com' commit ..." >&2
+        exit 1
+    fi
+done
+
+tmp="$(mktemp)" || exit 1
+grep -viE '^[[:space:]]*co-authored-by:[[:space:]]*claude|noreply@anthropic\.com|generated with \[?claude code' "$msg" > "$tmp" || true
+# grep -v leaves an empty file when every line matched; keep the original message in that case.
+if [ -s "$tmp" ]; then
+    cat "$tmp" > "$msg"
+fi
+rm -f "$tmp"
+exit 0
