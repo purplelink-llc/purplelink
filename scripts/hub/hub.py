@@ -127,6 +127,8 @@ CHANNELS = [
     ("batch", "email"), ("outreach", "email"), ("pitch", "email"), ("customer note", "email"),
 ]
 OUTWARD = {"post", "email", "listing", "submission", "spend"}
+GITHUB_PR_RE = re.compile(r"https://github\.com/([\w.-]+)/[\w.-]+/pull/\d+")
+OWN_GITHUB = {"purplelink-llc", "benampel"}
 QUEUE_STATUS = {"pending": "queued", "approved": "approved", "done": "live"}
 LOG_STATUS = {"sent": "live", "posted": "live", "replied": "replied", "included": "live", "listed": "live",
               "live": "live", "declined": "rejected-by-target", "rejected": "rejected-by-target",
@@ -290,10 +292,12 @@ def from_queue(p: dict) -> list:
             continue
         for f in sorted(d.glob("*.md")):
             fm, body = parse_front(f.read_text(errors="replace"))
-            if fm.get("kind") not in OUTWARD:
+            result = section(body, "Result")
+            # A "pr" item is site work, unless it opened a pull request on someone else's repo (an awesome list).
+            pr = fm.get("kind") == "pr" and any(m.lower() not in OWN_GITHUB for m in GITHUB_PR_RE.findall(result))
+            if fm.get("kind") not in OUTWARD and not pr:
                 continue
             target = str(fm.get("target", ""))
-            result = section(body, "Result")
             draft = section(body, "Draft")
             res_urls = [u for u in URL_RE.findall(result) if not site_path(u)]
             date = (DATE_RE.findall(result) or [str(fm.get("decided") or fm.get("created") or "")[:10]])[-1]
@@ -301,7 +305,7 @@ def from_queue(p: dict) -> list:
             contents = list(dict.fromkeys(re.findall(r"utm_content=([\w.\-]+)", draft)))
             out.append({
                 "id": f"queue:{fm.get('id', f.stem)}", "source": "approval-queue",
-                "channel": str(fm.get("channel") or "") or channel_of(target + " " + str(fm.get("kind")), "email" if fm.get("kind") == "email" else "other"),
+                "channel": str(fm.get("channel") or "") or ("github" if pr else "") or channel_of(target + " " + str(fm.get("kind")), "email" if fm.get("kind") == "email" else "other"),
                 "kind": fm.get("kind"), "target": mask(target)[:200], "status": status,
                 "date": str(fm.get("live") or date)[:10],
                 "url": str(fm.get("placement_url") or "") or (res_urls[0] if res_urls else ""), "landing_url": "",
