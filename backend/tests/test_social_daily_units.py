@@ -616,3 +616,12 @@ def test_context_dependent_sentences_are_not_used_alone_and_colon_clauses_fit_sh
     rel = cand.Candidate(id="release:legroom:1.4.0", kind="release", url="https://purplelink.llc/legroom/")
     t = comp.compose(rel, f, "statement", ["bluesky"], "daily-release")["bluesky"]
     assert "as parts that add up to its size." in t and "Until then" not in t and "swap" not in t
+
+
+def test_page_furniture_headings_are_not_facts():
+    from socialpost.daily import compose
+    facts = {"title": "LaTeX editors", "description": "", "notes": "",
+             "headings": ["On this page", "ModernTex: $19.99 once, free for 7 days", "Overleaf", "TeXShop"]}
+    units = compose.fact_units(facts, "linkedin")
+    assert units and all("on this page" not in u.lower() and "$" not in u for u in units)
+    assert any("overleaf" in u.lower() and "texshop" in u.lower() for u in units)

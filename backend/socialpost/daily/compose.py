@@ -92,6 +92,12 @@ def lower_first(h: str) -> str:
     return h if len(first) > 1 and any(ch.isupper() for ch in first[1:]) else h[:1].lower() + h[1:]
 
 
+# Headings that are page furniture, not what the page covers: navigation boxes and price or download call-outs
+# (2026-10-26 a guide went out as "It covers on this page and ModernTex: $19.99 once, free for 7 days.").
+NOT_CONTENT_HEADING = re.compile(r"^\s*(on this page|contents|table of contents|in this (guide|article|post)|"
+                                 r"related( guides| reading)?|see also|further reading)\s*$|\$\d", re.I)
+
+
 def fact_units(facts: dict, platform: str) -> list[str]:
     """Verified fact sentences for a post, best first: the page's own description (or, for a release, its changelog
     entry), then a line built from its section headings and one from a step count it states. Boilerplate such as
@@ -99,7 +105,7 @@ def fact_units(facts: dict, platform: str) -> list[str]:
     base = sentences(facts.get("description") or "") or sentences(facts.get("notes") or "")
     base = [s for s in base if not any(b in s.lower() for b in BOILERPLATE) and not DEPENDENT.match(s)][:6]
     units = base[:3]
-    heads = facts.get("headings") or []
+    heads = [h for h in facts.get("headings") or [] if not NOT_CONTENT_HEADING.search(h)]
     if len(heads) >= 2:
         units.append(FACT_TEMPLATES[0].format(a=lower_first(heads[0]), b=lower_first(heads[1])))
     if facts.get("steps"):

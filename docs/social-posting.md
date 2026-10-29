@@ -187,6 +187,11 @@ purplelink.llc, no picture yet), and @purplelink.llc is connected to it.
   Pages by name before the pinned identity check.
 - `adapters/instagram.py` in `facebook` mode makes the same container calls on `graph.facebook.com` with the Page
   token; there is nothing to refresh.
+- The Page token does not expire, but Meta limits its data access to 90 days (until 2027-01-26 for the token made on
+  2026-10-28): before then, generate and extend a new token in the Explorer and run `social.py setup facebook` again.
+- The social jobs (`run_social.sh`, `run_social_daily.sh`) run their code from the read-only `jobs-ro` worktree at
+  origin/main through `~/.purplelink/bin/repo-ro.sh` since 2026-10-28, like the other scheduled jobs; the shared
+  checkout's main had sat 79 commits behind, so merged social code had not run.
 - The daily ranked pipeline now includes `facebook` (written like LinkedIn: headline, facts, link) under the
   2026-10-18 standing approval, which Ben extended to the Page with the words above.
 
