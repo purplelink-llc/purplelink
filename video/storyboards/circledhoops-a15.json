@@ -1,0 +1,129 @@
+{
+ "id": "circledhoops-a15-schedule",
+ "title": "Circled Hoops ad A, 15 s cutdown",
+ "note": "Screens show a sample league. Not affiliated with the NBA.",
+ "bed": {
+  "style": {
+   "genre": "house",
+   "bpm": 118,
+   "mood": "bright",
+   "key": "A"
+  },
+  "seed": 3,
+  "gain_db": -15,
+  "duck_db": 7,
+  "dropScene": 1
+ },
+ "scenes": [
+  {
+   "vo": "a1",
+   "hl": [
+    "four",
+    "two"
+   ],
+   "shots": [
+    {
+     "kind": "games",
+     "delays": [
+      0.05,
+      1.2
+     ]
+    }
+   ],
+   "sfx": [
+    {
+     "name": "select",
+     "at": 0.05
+    },
+    {
+     "name": "select",
+     "at": 0.33
+    },
+    {
+     "name": "select",
+     "at": 0.61
+    },
+    {
+     "name": "select",
+     "at": 0.89
+    },
+    {
+     "name": "tap",
+     "at": 1.2,
+     "gain_db": 0
+    },
+    {
+     "name": "tap",
+     "at": 1.48,
+     "gain_db": 0
+    }
+   ]
+  },
+  {
+   "vo": "a3",
+   "hl": [
+    "one"
+   ],
+   "flash": true,
+   "tail": 0.25,
+   "shots": [
+    {
+     "kind": "title"
+    }
+   ],
+   "sfx": [
+    {
+     "name": "lineup-locked",
+     "at": 0.02,
+     "gain_db": -2
+    }
+   ]
+  },
+  {
+   "vo": "a4",
+   "hl": [
+    "circle"
+   ],
+   "tail": 0.45,
+   "shots": [
+    {
+     "kind": "screen",
+     "video": true,
+     "src": "clip-circle.mp4",
+     "from": 3.7,
+     "focus": {
+      "x": 0.02,
+      "y": 0.36,
+      "w": 0.96,
+      "h": 0.34
+     },
+     "chip": "Sample league"
+    }
+   ],
+   "sfx": [
+    {
+     "name": "select",
+     "at": 1.75
+    }
+   ]
+  },
+  {
+   "vo": "a7",
+   "cap": false,
+   "min": 3.4,
+   "flash": true,
+   "shots": [
+    {
+     "kind": "end"
+    }
+   ],
+   "sfx": [
+    {
+     "name": "win",
+     "at": 0.1,
+     "gain_db": -2
+    }
+   ]
+  }
+ ]
+}
