@@ -38,6 +38,11 @@ SKIP_DIRS = {SITE / "blog" / "digest"}
 REF = re.compile(r'((?:href|src)=")([^"?\s]+\.(?:css|js)|[^"?\s]*purplelink-(?:mark|logo|lockup)[^"?\s/]*\.(?:svg|png))(\?[^"]*)?(")')
 EXTERNAL = ("http://", "https://", "//", "data:", "blob:")
 
+# url() references to the logo files inside root stylesheets. The header wordmark is a CSS mask
+# (styles.css .brand > span); stamping the stylesheet alone does not refresh a file it links to by a fixed path.
+# The CSS pass runs before the HTML pass, so each stylesheet's own hash covers the stamps written into it.
+CSS_REF = re.compile(r'(url\(")(/assets/purplelink-(?:mark|logo|lockup|wordmark)[^"?\s/]*\.(?:svg|png))(\?[^"]*)?("\))')
+
 _hashes: dict[Path, str] = {}
 
 
@@ -84,6 +89,25 @@ def process(html_file: Path, write: bool) -> int:
     return 1
 
 
+def process_css(css_file: Path, write: bool) -> int:
+    original = css_file.read_text()
+
+    def sub(m: re.Match) -> str:
+        open_, url, _old_query, close = m.groups()
+        target = SITE / url.lstrip("/")
+        if not target.is_file():
+            print(f"  warn: {css_file.relative_to(ROOT)} -> {url} (no such file, left alone)", file=sys.stderr)
+            return m.group(0)
+        return f"{open_}{url}?v={asset_hash(target)}{close}"
+
+    updated = CSS_REF.sub(sub, original)
+    if updated == original:
+        return 0
+    if write:
+        css_file.write_text(updated)
+    return 1
+
+
 def main() -> int:
     check = "--check" in sys.argv
     # One-time escape hatch for the backfill that first stamped the pages the
@@ -93,9 +117,11 @@ def main() -> int:
         SKIP_DIRS.clear()
     files = [f for f in sorted(SITE.rglob("*.html"))
              if not any(d in f.parents for d in SKIP_DIRS)]
-    changed = sum(process(f, write=not check) for f in files)
+    css_changed = sum(process_css(f, write=not check) for f in sorted(SITE.glob("*.css")))
+    _hashes.clear()  # stylesheets may have just changed; hash them afresh for the HTML pass
+    changed = css_changed + sum(process(f, write=not check) for f in files)
     verb = "stale" if check else "updated"
-    print(f"fingerprint: {changed} of {len(files)} html files {verb}; "
+    print(f"fingerprint: {changed} of {len(files)} files {verb}; "
           f"{len(_hashes)} distinct assets hashed")
     return 1 if (check and changed) else 0
 
