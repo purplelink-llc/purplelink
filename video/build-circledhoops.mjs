@@ -76,6 +76,8 @@ for (const d of ["fonts", "brand", "media"]) fs.mkdirSync(path.join(pub, d), { r
 const fontDir = path.join(ROOT, "assets", "fonts-circledhoops");
 for (const f of fs.readdirSync(fontDir).filter((f) => f.endsWith(".ttf"))) fs.copyFileSync(path.join(fontDir, f), path.join(pub, "fonts", f));
 fs.copyFileSync(path.join(LOCKIN, "packages", "brand", "logo", "circled-hoops-icon-1024.png"), path.join(pub, "brand", "icon.png"));
+// Purplelink signs its products with the wordmark alone (light ink, for the dark ground): docs/brand/logo-usage.md.
+fs.copyFileSync(path.join(ROOT, "..", "site", "assets", "purplelink-wordmark-dark.png"), path.join(pub, "brand", "wordmark.png"));
 for (const s of plan.shots) if (s.src) fs.copyFileSync(path.join(CAP, s.src), path.join(pub, "media", s.src));
 
 fs.mkdirSync(OUT, { recursive: true });

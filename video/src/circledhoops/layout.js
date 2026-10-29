@@ -18,11 +18,12 @@ export const C = {
 
 export const FPS = 30;
 
-// cap: the caption headline strip; media: the box the app screen is cropped into; note: the small disclosure line.
+// cap: the caption headline strip; media: the box the app screen is cropped into; mark: the "purplelink softwares"
+// wordmark (the maker's signature, docs/brand/logo-usage.md); note: the small disclosure line.
 export const FORMATS = {
-  "9x16": { W: 1080, H: 1920, cap: { y: 150, h: 380, size: 86 }, media: { x: 90, y: 560, w: 900, h: 1150 }, note: { y: 1760 } },
-  "4x5": { W: 1080, H: 1350, cap: { y: 56, h: 270, size: 68 }, media: { x: 80, y: 340, w: 920, h: 910 }, note: { y: 1272 } },
-  "1x1": { W: 1080, H: 1080, cap: { y: 40, h: 230, size: 60 }, media: { x: 100, y: 285, w: 880, h: 720 }, note: { y: 1022 } },
+  "9x16": { W: 1080, H: 1920, cap: { y: 150, h: 380, size: 86 }, media: { x: 90, y: 560, w: 900, h: 1150 }, mark: { y: 1732, w: 260 }, note: { y: 1834 } },
+  "4x5": { W: 1080, H: 1350, cap: { y: 56, h: 270, size: 68 }, media: { x: 80, y: 340, w: 920, h: 860 }, mark: { y: 1212, w: 240 }, note: { y: 1300 } },
+  "1x1": { W: 1080, H: 1080, cap: { y: 40, h: 230, size: 60 }, media: { x: 100, y: 285, w: 880, h: 670 }, mark: { y: 964, w: 240 }, note: { y: 1048 } },
 };
 
 export const SRC = { w: 1170, h: 2532 };
