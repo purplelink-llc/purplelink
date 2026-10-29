@@ -113,8 +113,10 @@ def hub_tag(link: str, asset: str, hub=None) -> str:
 
 def reel_add(video: Path, youtube_id: str, title: str, description: str = "", link: str = "",
              also: list[str] | None = None, run=subprocess.run, when: dt.datetime | None = None,
-             utm_content: str = "", hub=None) -> dict:
-    """Make the Reel for one Purplelink YouTube video and put it in the inbox. Idempotent per YouTube id."""
+             utm_content: str = "", hub=None, backfill: str = "") -> dict:
+    """Make the Reel for one Purplelink YouTube video and put it in the inbox. Idempotent per YouTube id.
+    backfill: the video's YouTube publish date (YYYY-MM-DD) for an older video added later; such an entry never
+    expires from the queue and backfill entries go out oldest first, after any new video."""
     if not re.fullmatch(r"[\w-]{11}", youtube_id or ""):
         raise ValueError("--youtube-id must be an 11-character YouTube video id")
     d = reels_dir() / youtube_id
@@ -130,7 +132,8 @@ def reel_add(video: Path, youtube_id: str, title: str, description: str = "", li
     entry = {"youtube_id": youtube_id, "also": [a for a in (also or []) if a], "title": cap.clean_title(title),
              "description": description, "link": link, "source": str(video),
              "added": iso(when or dt.datetime.now(dt.timezone.utc)),
-             "utm_content": utm_content or (hub_tag(link, youtube_id, hub) if link else ""), **meta}
+             "utm_content": utm_content or (hub_tag(link, youtube_id, hub) if link else ""),
+             **({"backfill": backfill} if backfill else {}), **meta}
     ent.write_text(json.dumps(entry, indent=1), encoding="utf-8")
     sysutil.log(f"instagram: Reel ready for {youtube_id} ({meta['duration']} s, framed={meta['framed']}, "
                 f"trimmed={meta['trimmed']})")
@@ -284,12 +287,14 @@ def pending(cfg: dict, when: dt.datetime, state: dict, s: dict) -> list[tuple[st
             continue
         work.append(("companion", li))
     fb_on = cfgmod.platform_cfg(cfg, "facebook").get("enabled")
-    for e in inbox():
+    # new videos first (in the order they were added), then backfilled older ones (oldest YouTube date first)
+    for e in sorted(inbox(), key=lambda e: (bool(e.get("backfill")), e.get("backfill") or "",
+                                           "" if e.get("backfill") else e.get("added", ""))):
         try:
             age = (when - itemsmod.parse_time(e["added"])).days
         except (KeyError, ValueError):
             continue
-        if age >= s["reel_days"]:
+        if age >= s["reel_days"] and not e.get("backfill"):
             continue
         if e["youtube_id"] not in state["reels"]:
             work.append(("reel", e))

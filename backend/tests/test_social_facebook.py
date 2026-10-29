@@ -196,3 +196,20 @@ def test_facebook_reel_limits_and_both_platforms_get_reels(env, cfg):
     assert "Link in bio." not in text and "utm_source=facebook" in text and "utm_campaign=fb-reel" in text
     assert igp.run(FakeHttp([("GET", "purplelink.llc/guides/", Resp(200, b"ok"))]), cfg, when=now,
                    say=lambda s: None, render_card=lambda *a: None)["queued"] == []
+
+
+def test_backfill_entries_never_expire_and_go_oldest_first(env, cfg):
+    import json
+    import datetime as dt
+    from socialpost.instagram import pipeline as igp
+    reel_env(env, cfg)
+    now = dt.datetime(2026, 11, 20, 15, 0, tzinfo=dt.timezone.utc)
+    old_add = items.iso(now - dt.timedelta(days=20))
+    for vid, back in (("BBBBBBBBBB1", "2026-10-22"), ("BBBBBBBBBB2", "2026-10-01"), ("BBBBBBBBBB3", "")):
+        d = igp.reels_dir() / vid
+        d.mkdir(parents=True)
+        (d / "entry.json").write_text(json.dumps({"youtube_id": vid, "added": old_add, "duration": 30.0,
+                                                  **({"backfill": back} if back else {})}))
+    work = igp.pending(cfg, now, igp.read_state(), igp.settings(cfg))
+    ids = [e["youtube_id"] for k, e in work if k == "reel"]
+    assert ids == ["BBBBBBBBBB2", "BBBBBBBBBB1"]          # the expired non-backfill entry is gone; oldest first

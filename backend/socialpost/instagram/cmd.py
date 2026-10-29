@@ -26,7 +26,8 @@ def cmd_instagram(a, cfg) -> int:
             return EXIT_FAILED
         desc = Path(a.description_file).read_text(encoding="utf-8") if a.description_file else ""
         e = pipeline.reel_add(Path(a.video), a.youtube_id, a.title, desc, a.link or "",
-                              [x for x in a.also.split(",") if x.strip()], utm_content=a.utm_content)
+                              [x for x in a.also.split(",") if x.strip()], utm_content=a.utm_content,
+                              backfill=a.backfill)
         print(f"Reel ready: {pipeline.reels_dir() / e['youtube_id'] / 'reel.mp4'} ({e['duration']} s)")
         return EXIT_OK
     if a.what == "run":
