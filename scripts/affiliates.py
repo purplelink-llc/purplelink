@@ -93,7 +93,7 @@ def health_target(href: str):
     """(URL safe to fetch, what it is), or (None, why it is skipped)."""
     parts = urlsplit(href)
     host = parts.netloc.lower()
-    if host.endswith("amazon.com"):
+    if host == "amazon.com" or host.endswith(".amazon.com"):
         m = re.match(r"/dp/(\w{10})", parts.path)
         if not m:
             return None, "amazon search link, not a product"

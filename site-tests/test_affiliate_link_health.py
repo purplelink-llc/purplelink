@@ -19,6 +19,10 @@ class HealthTarget(unittest.TestCase):
         self.assertEqual(cli.health_target("https://www.amazon.com/dp/0226826678?tag=purplelinkpl-20"),
                          ("https://www.amazon.com/dp/0226826678", "amazon product"))
 
+    def test_lookalike_host_is_not_treated_as_amazon(self):
+        self.assertEqual(cli.health_target("https://evilamazon.com/dp/0226826678"),
+                         ("https://evilamazon.com/dp/0226826678", "referral link, query dropped"))
+
     def test_amazon_search_is_not_fetched(self):
         url, why = cli.health_target("https://www.amazon.com/s?k=laptop+stand&tag=purplelinkpl-20")
         self.assertIsNone(url)
