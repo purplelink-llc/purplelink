@@ -7,6 +7,7 @@ of the English search index.
 """
 import re
 import unittest
+from html.parser import HTMLParser
 from common import ORIGIN, SITE, EMOJI, canonical, jsonld_blocks, main_text, meta, read_site, walk
 
 # url path -> (html lang, how the page names itself in hreflang)
@@ -33,6 +34,36 @@ LOCALIZED = {**{u: l for u, l in PRODUCT_PAGES.items() if l != "en"}, **GUIDES}
 GOOGLE = re.compile(
     r"google|gstatic|googlesyndication|doubleclick|googletagmanager|googletagservices|adsbygoogle|youtube|youtu\.be|ytimg",
     re.I)
+
+
+class _NoScript(HTMLParser):
+    """Collects the markup of a page with the contents of <script> and <style> left out."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=False)
+        self.skip = 0
+        self.tags = []
+
+    def handle_starttag(self, tag, attrs):
+        if tag in ("script", "style"):
+            self.skip += 1
+        elif not self.skip:
+            self.tags.append((tag, dict(attrs)))
+
+    def handle_startendtag(self, tag, attrs):
+        if tag not in ("script", "style") and not self.skip:
+            self.tags.append((tag, dict(attrs)))
+
+    def handle_endtag(self, tag):
+        if tag in ("script", "style") and self.skip:
+            self.skip -= 1
+
+
+def tags_outside_scripts(text):
+    p = _NoScript()
+    p.feed(text)
+    p.close()
+    return p.tags
 
 
 def page(url):
@@ -111,7 +142,7 @@ class ProductPages(unittest.TestCase):
             self.assertNotIn("—", text, url)
             self.assertNotIn("―", text, url)
             self.assertFalse(EMOJI.search(text), url)
-            self.assertNotRegex(re.sub(r"<script\b.*?</script[^>]*>", "", t, flags=re.S | re.I), r"<[a-zA-Z][^>]*\sstyle\s*=", url)
+            self.assertEqual([tag for tag, attrs in tags_outside_scripts(t) if "style" in attrs], [], url)
 
     def test_no_version_number_to_go_stale(self):
         for url in PRODUCT_PAGES:
