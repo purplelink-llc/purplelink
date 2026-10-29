@@ -10,6 +10,10 @@ It replaces the contents of <nav aria-label="Primary navigation"> and the
 whole <footer class="footer"> element, and marks the current section with
 aria-current. It is idempotent: run it after adding or editing a page.
 
+Localized pages (site/de/, site/ja/, site/zh-cn/) get their own short nav and footer, in their
+language, from LOCALES below. Pages that exist only in English are labelled "(English)" in the
+footer so nobody follows a link expecting their language. Add a locale here, not on the page.
+
 Skipped:
   - site/blog/digest/  (generated and committed by the Modal cron; see
     .githooks/pre-commit. backend/digest/publisher.py emits the same markup)
@@ -104,7 +108,86 @@ FOOTER_COLUMNS = [
     ]),
 ]
 
-NAV_RE = re.compile(r'(<nav aria-label="Primary navigation">)(.*?)(</nav>)', re.S)
+
+# Localized sections. Each entry gives the nav and footer for pages under site/<code>/. A link may carry a third
+# item: extra attributes for the <a>. Destinations that exist only in English say so in their label.
+def _locale(guide, nav_label, nav_guide, home, blurb, loc, toggle, cols):
+    return {
+        "nav_aria": nav_label, "guide": guide, "nav_guide": nav_guide, "home": home, "blurb": blurb, "loc": loc,
+        "toggle": toggle, "cols": cols,
+    }
+
+
+LOCALES = {
+    "de": _locale(
+        guide=("LaTeX auf dem Mac einrichten", "/de/guides/latex-auf-dem-mac-einrichten/"),
+        nav_label="Hauptnavigation", nav_guide="Anleitung", home="English",
+        blurb="Apps und Werkzeuge aus einem Ein-Personen-Studio in Atlanta, Georgia.",
+        loc="Atlanta, Georgia · Seit 2026",
+        toggle=("Helles Design verwenden", "Dunkles Design verwenden"),
+        cols=[
+            ("ModernTex", [("Produktseite", "/de/moderntex/"), ("@guide",), ("Änderungsprotokoll (Englisch)", "/changelog/"),
+                           ("Kauf wiederfinden (Englisch)", "/recover/")]),
+            ("Weitere Seiten (Englisch)", [("Alle Produkte", "/products/"), ("Kostenlose Tools", "/tools/"),
+                                           ("Anleitungen", "/guides/"), ("Blog", "/blog/")]),
+            ("Unternehmen", [("Über uns (Englisch)", "/about/"), ("Support (Englisch)", "/support/"),
+                             ("Kontakt", "mailto:ben@purplelink.llc"), ("Datenschutz (Englisch)", "/privacy/"),
+                             ("Nutzungsbedingungen (Englisch)", "/terms/")]),
+        ]),
+    "ja": _locale(
+        guide=("Mac で日本語 LaTeX を使う", "/ja/guides/mac-nihongo-latex/"),
+        nav_label="メインナビゲーション", nav_guide="ガイド", home="English",
+        blurb="米国ジョージア州アトランタの一人運営スタジオが作るアプリとツール。",
+        loc="アトランタ（ジョージア州）· 2026年創業",
+        toggle=("ライトテーマにする", "ダークテーマにする"),
+        cols=[
+            ("ModernTex", [("製品ページ", "/ja/moderntex/"), ("@guide",), ("変更履歴（英語）", "/changelog/"),
+                           ("購入の再確認（英語）", "/recover/")]),
+            ("英語のページ", [("すべての製品", "/products/"), ("無料ツール", "/tools/"), ("ガイド", "/guides/"),
+                              ("ブログ", "/blog/")]),
+            ("会社情報", [("会社概要（英語）", "/about/"), ("サポート（英語）", "/support/"),
+                          ("お問い合わせ", "mailto:ben@purplelink.llc"), ("プライバシー（英語）", "/privacy/"),
+                          ("利用規約（英語）", "/terms/")]),
+        ]),
+    "zh-cn": _locale(
+        guide=("在 Mac 上用 XeLaTeX 和 ctex 写中文论文", "/zh-cn/guides/mac-xelatex-ctex-zhongwen-lunwen/"),
+        nav_label="主导航", nav_guide="指南", home="English",
+        blurb="美国佐治亚州亚特兰大的一人工作室，制作应用和工具。",
+        loc="亚特兰大，佐治亚州 · 创立于 2026 年",
+        toggle=("切换为浅色主题", "切换为深色主题"),
+        cols=[
+            ("ModernTex", [("产品页面", "/zh-cn/moderntex/"), ("@guide",), ("更新日志（英文）", "/changelog/"),
+                           ("找回购买记录（英文）", "/recover/")]),
+            ("英文页面", [("全部产品", "/products/"), ("免费工具", "/tools/"), ("指南", "/guides/"), ("博客", "/blog/")]),
+            ("公司", [("关于（英文）", "/about/"), ("支持（英文）", "/support/"), ("联系", "mailto:ben@purplelink.llc"),
+                      ("隐私政策（英文）", "/privacy/"), ("服务条款（英文）", "/terms/")]),
+        ]),
+}
+
+
+def locale_of(rel: str):
+    first = rel.split("/", 1)[0]
+    return LOCALES.get(first) and first
+
+
+def locale_nav(code: str):
+    loc = LOCALES[code]
+    return [
+        ("ModernTex", f"/{code}/moderntex/", (f"{code}/moderntex/",), ""),
+        (loc["nav_guide"], loc["guide"][1], (f"{code}/guides/",), ""),
+        (loc["home"], "/", (), ' lang="en" hreflang="en"'),
+    ]
+
+
+def locale_cols(code: str):
+    loc = LOCALES[code]
+    out = []
+    for head, links in loc["cols"]:
+        out.append((head, [loc["guide"] if l == ("@guide",) else l for l in links]))
+    return out
+
+NAV_LABELS = "|".join(re.escape(l) for l in ["Primary navigation"] + [v["nav_aria"] for v in LOCALES.values()])
+NAV_RE = re.compile(r'(<nav aria-label="(?:%s)">)(.*?)(</nav>)' % NAV_LABELS, re.S)
 FOOTER_RE = re.compile(r'([ \t]*)<footer class="footer">.*?</footer>', re.S)
 
 
@@ -114,10 +197,12 @@ def section_of(rel: str) -> str:
 
 def nav_html(rel: str, inline: bool, indent: str) -> str:
     items = []
-    for label, href, sections in NAV:
+    code = locale_of(rel)
+    nav = locale_nav(code) if code else [(a, b, c, "") for a, b, c in NAV]
+    for label, href, sections, extra in nav:
         current = any(rel.startswith(s) for s in sections)
         attr = ' aria-current="page"' if current else ""
-        items.append(f'<a href="{href}"{attr}>{label}</a>')
+        items.append(f'<a href="{href}"{attr}{extra}>{label}</a>')
     if inline:
         return "".join(items)
     return "\n" + "".join(f"{indent}  {i}\n" for i in items) + indent
@@ -130,10 +215,11 @@ def mark_src() -> str:
     return f"/assets/purplelink-mark.svg?v={digest}"
 
 
-def footer_html(indent: str) -> str:
+def footer_html(indent: str, code: str | None = None) -> str:
     i = indent
     cols = []
-    for head, links in FOOTER_COLUMNS:
+    loc = LOCALES[code] if code else None
+    for head, links in (locale_cols(code) if code else FOOTER_COLUMNS):
         # A link may carry a third item: extra attributes for the <a> (external links use rel="noopener").
         lis = "\n".join(f'{i}        <li><a href="{l[1]}"{l[2] if len(l) > 2 else ""}>{l[0]}</a></li>' for l in links)
         cols.append(
@@ -142,6 +228,12 @@ def footer_html(indent: str) -> str:
             f'{i}      <ul>\n{lis}\n{i}      </ul>\n'
             f'{i}    </nav>'
         )
+    if loc:
+        light, dark = loc["toggle"]
+        toggle = (f'<button type="button" class="theme-toggle" data-theme-toggle hidden '
+                  f'data-label-light="{light}" data-label-dark="{dark}">{light}</button>')
+    else:
+        toggle = '<button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>'
     return (
         f'{i}<footer class="footer">\n'
         f'{i}  <div class="footer-grid">\n'
@@ -150,16 +242,15 @@ def footer_html(indent: str) -> str:
         f'{i}        <img src="{mark_src()}" alt="" width="26" height="26">\n'
         f'{i}        <span>Purplelink LLC</span>\n'
         f'{i}      </a>\n'
-        f'{i}      <p class="footer-blurb">Apps and tools made by a one-person studio '
-        f'in Atlanta, Georgia.</p>\n'
+        f'{i}      <p class="footer-blurb">{loc["blurb"] if loc else "Apps and tools made by a one-person studio in Atlanta, Georgia."}</p>\n'
         f'{i}      <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>\n'
         f'{i}    </div>\n'
         + "\n".join(cols) + "\n"
         f'{i}  </div>\n'
         f'{i}  <div class="footer-bottom">\n'
         f'{i}    <span>&copy; 2026 Purplelink LLC</span>\n'
-        f'{i}    <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>\n'
-        f'{i}    <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>\n'
+        f'{i}    <span class="footer-loc">{loc["loc"] if loc else "Atlanta, Georgia · Est. 2026"}</span>\n'
+        f'{i}    {toggle}\n'
         f'{i}  </div>\n'
         f'{i}</footer>'
     )
@@ -206,7 +297,7 @@ def render(rel: str, html: str) -> str:
         return m.group(1) + nav_html(section_of(rel), inline, indent) + m.group(3)
 
     out = NAV_RE.sub(nav_sub, html, count=1)
-    out = FOOTER_RE.sub(lambda m: footer_html(m.group(1)), out, count=1)
+    out = FOOTER_RE.sub(lambda m: footer_html(m.group(1), locale_of(rel)), out, count=1)
     return with_theme(with_motion(out))
 
 

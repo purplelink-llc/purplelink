@@ -38,8 +38,14 @@ BLOG_BG = {
     "starting-purplelink": "general", "keeping-up-when-your-research-crosses-fields": "general",
 }
 FOOT = {"format": "Reference formats for journals and conferences", "guides": "Free guides for academic authors",
-        "blog": "Notes from a one-person software studio"}
-KICKER = {"format": "Reference format", "guides": "Guide", "blog": "Blog"}
+        "blog": "Notes from a one-person software studio",
+        "de/guides": "Kostenlose Anleitungen für Forschende", "ja/guides": "研究者のための無料ガイド",
+        "zh-cn/guides": "为研究者准备的免费指南"}
+KICKER = {"format": "Reference format", "guides": "Guide", "blog": "Blog",
+          "de/guides": "Anleitung", "ja/guides": "ガイド", "zh-cn/guides": "指南"}
+# Localized guides (2026-10-29). Their cards are named de-guides-<slug>.jpg, and the template draws CJK text with
+# the system fonts, since Fraunces and Plus Jakarta Sans are Latin subsets.
+SECTIONS = ("format", "guides", "blog", "de/guides", "ja/guides", "zh-cn/guides")
 
 
 def meta(t, prop):
@@ -58,26 +64,27 @@ def title_of(t, section):
 
 def plan(only=None, refresh=False):
     jobs = []
-    for section in ("format", "guides", "blog"):
+    for section in SECTIONS:
         for p in sorted((SITE / section).glob("*/index.html")):
             slug = p.parent.name
             if slug == "digest" or (only and f"{section}/{slug}" != only):
                 continue
             t = p.read_text(encoding="utf-8", errors="ignore")
             cur = (meta(t, "og:image") or "").rsplit("/", 1)[-1]
-            if cur not in GENERIC and not (refresh and cur == f"{section}-{slug}.jpg"):
+            card = f"{section.replace('/', '-')}-{slug}.jpg"
+            if cur not in GENERIC and not (refresh and cur == card):
                 continue
             title = title_of(t, section)
             sub, bg = "", "research"
             if section == "format":
                 venue = re.sub(r"\s+Reference Format.*$", "", title)
                 title, sub, bg = f"{venue} references", "BibTeX style, examples and a checker.", "latex"
-            elif section == "guides":
+            elif section.endswith("guides"):
                 bg = "latex" if any(w in slug for w in LATEX_WORDS) else "research"
             else:
                 bg = BLOG_BG.get(slug, "research")
             jobs.append({"page": p, "section": section, "slug": slug, "title": title, "sub": sub, "bg": bg,
-                         "out": OUT / f"{section}-{slug}.jpg", "url": f"{BASE}/assets/og/cards/{section}-{slug}.jpg"})
+                         "out": OUT / card, "url": f"{BASE}/assets/og/cards/{card}"})
     return jobs
 
 

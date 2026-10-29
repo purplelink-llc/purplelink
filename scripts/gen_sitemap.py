@@ -29,6 +29,11 @@ What it excludes:
     Including it here would also mean this file needed regenerating every
     time the cron ran.
 
+  * hreflang alternates. Any page that carries <link rel="alternate" hreflang="..." href="..."> tags gets the
+    same set as <xhtml:link> entries in its <url> block, so the sitemap and the page agree by construction
+    (the ModernTex page in English, German, Japanese and Simplified Chinese, 2026-10-29). Search engines
+    want the alternates in both places and want them reciprocal, which site-tests/test_intl_moderntex.py checks.
+
 lastmod comes from the file's last commit date, not today's date. deploy.sh
 pings IndexNow for URLs whose lastmod is today, so stamping every page with
 the current date would announce the whole site as changed on every deploy.
@@ -64,7 +69,11 @@ DEFAULTS: dict[str, tuple[str | None, str]] = {
     "blog":    ("never",   "0.7"),
     "format":  ("monthly", "0.5"),
     "":        ("monthly", "0.8"),
+    "de":      ("monthly", "0.7"),
+    "ja":      ("monthly", "0.7"),
+    "zh-cn":   ("monthly", "0.7"),
 }
+HREFLANG_RE = re.compile(r'<link\s+rel="alternate"\s+hreflang="([^"]+)"\s+href="([^"]+)"\s*/?>')
 
 
 # fingerprint_assets.py rewrites the ?v= stamp in every page whenever a shared
@@ -120,6 +129,11 @@ def discover() -> list[str]:
     return urls
 
 
+def alternates(page: Path) -> list[tuple[str, str]]:
+    head = page.read_text(encoding="utf-8", errors="ignore").split("</head>", 1)[0]
+    return HREFLANG_RE.findall(head)
+
+
 def parse_existing() -> dict[str, dict[str, str]]:
     if not SITEMAP.exists():
         return {}
@@ -145,7 +159,7 @@ def build() -> tuple[str, dict[str, list[str]]]:
     dropped = [u for u in existing if u not in urls]
 
     lines = ['<?xml version="1.0" encoding="UTF-8"?>',
-             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">']
     for url in urls:
         rel = url[len(BASE):].rstrip("/")
         section = rel.split("/")[0] if rel else ""
@@ -163,6 +177,8 @@ def build() -> tuple[str, dict[str, list[str]]]:
         if changefreq:
             lines.append(f"    <changefreq>{changefreq}</changefreq>")
         lines.append(f"    <priority>{priority}</priority>")
+        for hreflang, href in alternates(page):
+            lines.append(f'    <xhtml:link rel="alternate" hreflang="{hreflang}" href="{href}"/>')
         lines.append("  </url>")
     lines.append("</urlset>")
     return "\n".join(lines) + "\n", {"added": added, "dropped": dropped, "total": urls}

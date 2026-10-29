@@ -1,0 +1,83 @@
+/* Localized pages (/de/, /ja/, /zh-cn/): fonts, line breaking and the language switcher.
+   No web font is loaded for Japanese or Chinese. The Latin faces in styles.css cover Latin text, and CJK text
+   falls through to the fonts the system already has, so the page costs no extra download. */
+
+:lang(ja) {
+  --font-display: 'Fraunces', 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif CJK JP', 'Noto Serif JP', serif;
+  --font-body: 'Plus Jakarta Sans', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', 'Noto Sans CJK JP', 'Noto Sans JP', system-ui, sans-serif;
+}
+:lang(zh-Hans) {
+  --font-display: 'Fraunces', 'Songti SC', 'STSong', 'Noto Serif CJK SC', 'Noto Serif SC', 'SimSun', serif;
+  --font-body: 'Plus Jakarta Sans', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Noto Sans SC', system-ui, sans-serif;
+}
+
+/* Hyphenation for German; CJK text breaks between characters and needs no tracking or italics. */
+:lang(de) .post-body p,
+:lang(de) .feature-item p,
+:lang(de) .faq-body,
+:lang(de) .specs-table td {
+  hyphens: auto;
+}
+:lang(de) code, :lang(de) pre {
+  hyphens: none;
+}
+:lang(ja), :lang(zh-Hans) {
+  line-break: strict;
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+:lang(ja) *, :lang(zh-Hans) * {
+  letter-spacing: normal;
+}
+:lang(ja) em, :lang(ja) i, :lang(zh-Hans) em, :lang(zh-Hans) i {
+  font-style: normal;
+  font-weight: 600;
+}
+:lang(ja) body, :lang(zh-Hans) body {
+  line-height: 1.8;
+}
+:lang(ja) :is(h1, h2, h3), :lang(zh-Hans) :is(h1, h2, h3) {
+  line-height: 1.35;
+}
+/* Code keeps normal wrapping rules. */
+:lang(ja) pre, :lang(ja) code, :lang(zh-Hans) pre, :lang(zh-Hans) code {
+  line-break: auto;
+  overflow-wrap: normal;
+}
+
+/* Language switcher at the top of a page that has translations. */
+.lang-switch {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.9rem;
+  margin: 0 0 0.5rem;
+  padding: 0 clamp(24px, 6vw, 80px);
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.lang-switch a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--purple);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+.lang-switch a[aria-current="true"] {
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+.lang-switch a:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* A note under the price on a translated page. */
+.intl-note {
+  max-width: 60ch;
+  color: var(--muted);
+  font-size: 0.92rem;
+}

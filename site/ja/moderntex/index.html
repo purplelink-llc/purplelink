@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>ModernTex: Mac 用 LaTeX エディタ | Purplelink LLC</title>
+    <meta name="description" content="研究者向けに作られた Mac ネイティブの LaTeX エディタ。複数ファイルのプロジェクト、PDF との同期プレビュー、BibTeX 補完、投稿前チェック。7日間無料で試せて、気に入ったら 19.99 ドルの買い切り。">
+    <link rel="canonical" href="https://purplelink.llc/ja/moderntex/">
+    <link rel="alternate" hreflang="de" href="https://purplelink.llc/de/moderntex/">
+    <link rel="alternate" hreflang="ja" href="https://purplelink.llc/ja/moderntex/">
+    <link rel="alternate" hreflang="zh-Hans" href="https://purplelink.llc/zh-cn/moderntex/">
+    <link rel="alternate" hreflang="en" href="https://purplelink.llc/moderntex/">
+    <link rel="alternate" hreflang="x-default" href="https://purplelink.llc/moderntex/">
+    <meta property="og:title" content="ModernTex: Mac 用 LaTeX エディタ">
+    <meta property="og:description" content="論文執筆の流れに合わせた macOS ネイティブの LaTeX エディタ。複数ファイルのプロジェクト、同期プレビュー、平易な言葉のエラー説明。">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/moderntex.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/ja/moderntex/">
+    <meta property="og:locale" content="ja_JP">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ModernTex: Mac 用 LaTeX エディタ">
+    <meta name="twitter:description" content="論文執筆の流れに合わせた macOS ネイティブの LaTeX エディタ。複数ファイルのプロジェクト、同期プレビュー、平易な言葉のエラー説明。">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/moderntex.png">
+    <meta name="twitter:image:alt" content="ModernTex、Mac 用のネイティブ LaTeX エディタ">
+    <link rel="icon" href="/assets/purplelink-logo.png?v=21c86cc2a8" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/moderntex-icon.webp" as="image" fetchpriority="high">
+    <script src="/theme.js?v=f0ab0f06a1"></script>
+    <link rel="stylesheet" href="/styles.css?v=a975ed784e">
+    <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
+    <link rel="stylesheet" href="/product-flair.css?v=6dc1d15444">
+    <link rel="stylesheet" href="/buy.css?v=cb10cb94d2">
+    <link rel="stylesheet" href="/intl.css?v=f55f5c8484">
+    <script src="/site.js?v=b053086227" defer></script>
+    <script src="/intl.js?v=2883832265" defer></script>
+    <script src="/motion.js?v=d35f4b4ee4" defer></script>
+    <script src="/product-flair.js?v=7ecbf83f91" defer></script>
+    <script src="/tools/paper-review/paid-tool-landing.js?v=41be4deb54" defer></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://purplelink.llc/ja/moderntex/#webpage",
+          "url": "https://purplelink.llc/ja/moderntex/",
+          "name": "ModernTex: Mac 用 LaTeX エディタ | Purplelink LLC",
+          "inLanguage": "ja",
+          "description": "研究者向けに作られた Mac ネイティブの LaTeX エディタ。複数ファイルのプロジェクト、PDF との同期プレビュー、BibTeX 補完、投稿前チェック。7日間無料で試せて、気に入ったら 19.99 ドルの買い切り。",
+          "isPartOf": {
+            "@id": "https://purplelink.llc/#website"
+          },
+          "about": {
+            "@id": "https://purplelink.llc/ja/moderntex/#app"
+          }
+        },
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://purplelink.llc/ja/moderntex/#app",
+          "name": "ModernTex",
+          "inLanguage": "ja",
+          "applicationCategory": "DeveloperApplication",
+          "applicationSubCategory": "LaTeX editor",
+          "operatingSystem": "macOS 14+",
+          "url": "https://purplelink.llc/ja/moderntex/",
+          "image": "https://purplelink.llc/assets/og/moderntex.png",
+          "description": "ModernTex は論文執筆の流れに合わせた macOS ネイティブの LaTeX エディタです。複数ファイルのプロジェクト、PDF の同期プレビュー、平易な言葉のエラー説明、BibTeX 補完、投稿前のチェックを備えています。",
+          "downloadUrl": "https://purplelink.llc/ja/moderntex/",
+          "releaseNotes": "https://purplelink.llc/changelog/",
+          "softwareRequirements": "macOS 14 (Sonoma) 以降、Apple シリコンまたは Intel、および MacTeX や TinyTeX などの TeX ディストリビューション。",
+          "processorRequirements": "Apple silicon or Intel",
+          "screenshot": "https://purplelink.llc/assets/moderntex-screens/01-editor.webp",
+          "featureList": [
+            "ルートファイルを検出する複数ファイルのナビゲーション",
+            "PDF の同期プレビュー",
+            "3つのコンパイルモード",
+            "著者名やタイトルで探せる BibTeX 補完",
+            "平易な言葉のコンパイルエラー説明",
+            "投稿前チェックと査読用の匿名化エクスポート",
+            "バージョンのスナップショット",
+            "ドラッグで配置してコードを生成する TikZ エディタ",
+            "Excel や Google スプレッドシートから貼り付けられる表エディタ"
+          ],
+          "offers": {
+            "@type": "Offer",
+            "price": "19.99",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock",
+            "url": "https://purplelink.llc/ja/moderntex/",
+            "category": "買い切り、今後のアップデートはすべて込み",
+            "seller": {
+              "@id": "https://purplelink.llc/#organization"
+            },
+            "hasMerchantReturnPolicy": {
+              "@type": "MerchantReturnPolicy",
+              "applicableCountry": "US",
+              "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+              "merchantReturnDays": 14,
+              "returnFees": "https://schema.org/FreeReturn",
+              "refundType": "https://schema.org/FullRefund"
+            }
+          },
+          "publisher": {
+            "@id": "https://purplelink.llc/#organization"
+          },
+          "creator": {
+            "@id": "https://purplelink.llc/about/#person"
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "inLanguage": "ja",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "ModernTex で日本語の LaTeX 文書をビルドできますか。",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "はい。ビルドは手元の TeX で行うので、LuaLaTeX（LuaTeX-ja）と XeLaTeX の日本語文書はそのままビルドできます。upLaTeX と dvipdfmx は、プロジェクトの latexmkrc か独自のビルドコマンドで指定します。手順はMac で日本語 LaTeX を使うにあります。"
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "アプリの画面は日本語ですか。",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "いいえ、現在は英語表示です。メニューやボタンの名前は、このページでも英語の名称で書いています。"
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "ModernTex はいくらですか。",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "7日間の無料体験のあと、19.99ドルの買い切りで、今後のアップデートもすべて含まれます。サブスクリプションもアカウントもありません。任意の AI 機能は Apple Intelligence か、ご自身の Claude または OpenAI のアカウントで動きます。"
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "無料体験はありますか。",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "はい。体験版は初めて開いてから7日間の全機能版で、アカウントも入力も不要です。終わるとウィンドウに案内と購入ボタンが出ます。.tex ファイルはディスク上の普通のファイルで、触れません。購入すると領収書のメールにライセンスキーが届きます。アプリで Enter license key を選んで貼り付けると、同じコピーが再インストールなしで使えるようになります。"
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "ライセンスキーをなくしました。",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "購入時のメールアドレスを Find a purchase（英語）のページに入力してください。そのアドレスで ModernTex を購入していれば、新しいライセンスキーとダウンロードページがそのアドレスへ届きます。以前のキーも引き続き使えます。"
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "必要な macOS のバージョンは。",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "macOS 14 (Sonoma) 以降です。"
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Overleaf のプロジェクトを移せますか。",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "はい。プロジェクトを zip でダウンロードするか、Overleaf の Git 連携でクローンして（Git は有料の Overleaf プランが必要で、zip はどのプランでも使えます）、そのフォルダを ModernTex で開きます。ファイルは普通の .tex、.bib、画像のままなので、いつでも Overleaf に戻せます。"
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "TeXstudio のような無料のエディタではだめですか。",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "TeXstudio は無料でクロスプラットフォームで、コンパイルエラーを読みやすい一覧にしてくれます。Windows や Linux でも作業するなら有力な選択肢です。ModernTex は意図的に絞っていて、Mac 専用で、原稿の作業に合わせています。TeXstudio にない機能は3つです。.bib 全体を著者名やタイトルで探す BibTeX 補完、雑誌が実際にリジェクトする点への投稿前チェック、二重盲検査読向けの匿名化エクスポート。どれも要らなければ、TeXstudio は良い無料の選択肢です。"
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "学位論文に使えますか。",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "はい。学位論文も普通の複数ファイルのプロジェクトです。フォルダを開くと ModernTex がルートファイルを見つけ、章をサイドバーに並べます。文献は BibTeX でも biber を使う biblatex でも構いません（コンパイル設定で切り替え）。Zotero から書き出した .bib も読めます。大学指定のクラスファイルはプロジェクトフォルダに置くとビルドで使われ、投稿用の書き出しにも含まれます。汎用の学位論文テンプレート（英語）が付属します。"
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "新しいバージョンのたびに料金がかかりますか。",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "いいえ。アップデートはすべて 19.99ドルに含まれ、将来のメジャーバージョンも同じです。アップグレード料金はありません。"
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "オフラインで使えますか。",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "はい。ファイルは Mac 上にあり、コンパイルも Mac 上で行うので、サーバーも時間制限もありません。MacTeX か TinyTeX が必要で、ModernTex が TinyTeX を入れることもできます。ライセンスキーはアプリ内でサーバーなしに確認されます。任意の AI 機能は Mac 上の Apple Intelligence か、ご自身の Claude または OpenAI のアカウントで動き、後者は接続が必要です。"
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "使わなくなったらどうなりますか。",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "原稿は、ディスク上のフォルダにある普通の .tex、.bib、画像ファイルのままなので、TeXShop や TeXstudio など他のエディタでも開けます。閉じるアカウントも、解約するサブスクリプションもありません。"
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Fix with AI は何を送りますか。",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "ビルドエラーでボタンを押したときだけ動きます。標準では Mac 上の Apple Intelligence で動き、何も送りません。代わりに Claude か OpenAI のアカウントを選ぶと、アプリが先に同意を確認し、そのあとエラー周辺の行、前後の文脈、文書のプリアンブルをそのプロバイダーへ送ります。修正は diff で表示され、承認するまで何も変わりません。"
+              }
+            }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "ホーム",
+              "item": "https://purplelink.llc/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "ModernTex",
+              "item": "https://purplelink.llc/ja/moderntex/"
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+  <body>
+
+    <a class="skip-link" href="#main-content">本文へ移動</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink ホーム">
+        <img src="/assets/purplelink-mark.svg?v=2f8bd49b19" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="メインナビゲーション"><a href="/ja/moderntex/" aria-current="page">ModernTex</a><a href="/ja/guides/mac-nihongo-latex/">ガイド</a><a href="/" lang="en" hreflang="en">English</a></nav>
+    </header>
+    <main id="main-content" data-progress>
+
+    <nav class="lang-switch" aria-label="言語を選ぶ"><a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja" aria-current="true">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a> <a href="/moderntex/" lang="en" hreflang="en">English</a></nav>
+
+    <div class="app-hero">
+      <img class="app-hero-icon" src="/assets/moderntex-icon.webp" width="120" height="120" fetchpriority="high" alt="ModernTex アプリのアイコン">
+      <div class="app-hero-copy">
+        <div class="app-hero-meta">
+          <span class="platform-tag platform-macos">macOS</span>
+          <span class="product-status product-status-live">7日間無料 · 19.99ドルの買い切り</span>
+        </div>
+        <h1 class="app-hero-name">ModernTex</h1>
+        <p class="app-hero-tagline">研究者のための macOS ネイティブ LaTeX エディタ。複数ファイルの編集、PDF の同期プレビュー、論文執筆に必要な作業を1つのアプリにまとめました。</p>
+        <div class="app-hero-actions" id="buy">
+          <a class="btn btn-primary" id="trial-download" href="/.netlify/functions/moderntex-download?trial=1">7日間の無料体験版をダウンロード</a>
+          <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn" data-product="moderntex">ModernTex を購入（19.99ドル）</button>
+        </div>
+        <p class="buy-assurance">購入から14日以内にメールをいただければ返金します。アップデートはずっと無料です。</p>
+        <p class="buy-suite"><a href="/suite/">Mac Suite</a>（英語のページ）もあります。ModernTex、Outbound Veil、Legroom、Keyfeel、Tapefolio、Panely、Summonly と Vitae Plus（買い切り）がセットで 59.99ドル。</p>
+        <p class="tool-status" id="checkout-status" aria-live="polite"></p>
+        <p class="waitlist-fine-print">体験版は7日間、アカウント不要、入力なしで全機能を使えます。購入は 19.99ドル（USD 19.99）の1回払いで、今後のアップデートもすべて含まれます（<a href="/terms/">利用規約</a>は英語）。領収書のメールに永久ライセンスキーが載っており、7日が過ぎるとアプリがキーを求めます。合わなければ、購入から14日以内に <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> へメールをください。体験版を使用中の場合は、アプリで「Enter license key」を選んでキーを貼り付けると、再インストールなしですぐに使えます。macOS 14 以降、Apple シリコンと Intel に対応します。<a href="#kankyo">動作環境</a>。</p>
+        <p class="intl-note">このページは製品ページの日本語版です。アプリの画面表示は現在、英語です。価格は米ドルで表示しています。利用規約、プライバシーポリシー、変更履歴は英語のみです。</p>
+      </div>
+      <figure class="app-hero-window">
+        <div class="frame-soft hero-media">
+          <img src="/assets/moderntex-screens/01-editor-clean-1440.webp" alt="ModernTex のエディタ。文書のアウトライン、シンタックスハイライト付きの LaTeX ソース、PDF プレビューが並んでいる" width="1440" height="792" fetchpriority="high" decoding="async">
+        </div>
+        <figcaption>サンプル原稿を開いた ModernTex。左がソース、右がそこから作られる PDF です。画面は英語表示です。</figcaption>
+      </figure>
+    </div>
+
+    <section class="features-section" id="sync" aria-labelledby="sync-h">
+      <div class="features-header">
+        <h2 id="sync-h">ソースと PDF が、いつも同期</h2>
+      </div>
+      <p class="section-intro">1つのウィンドウに、プロジェクト、ソース、そこから作られる PDF がそろいます。</p>
+      <div class="features-grid" data-motion="stagger">
+        <div class="feature-item">
+          <h3>フォルダを開く</h3>
+          <p>ModernTex がルートファイルを見つけ、章、図、.bib ファイルをサイドバーに並べます。今いる場所を見失わずに行き来できます。</p>
+        </div>
+        <div class="feature-item">
+          <h3>書くと、ビルドされる</h3>
+          <p>Live モードでは入力に合わせて PDF が作り直されます。ウィンドウのサンプルは Mac 上で0.5秒でコンパイルされ、サーバーは使いません。</p>
+        </div>
+        <div class="feature-item">
+          <h3>クリックで両方向にジャンプ</h3>
+          <p>ソースの行をクリックすると PDF の該当箇所へ、PDF をクリックすると、それを作った行へ移動します。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="screenshots-section bg-purple-xlight flair-chapters">
+      <h2>手で書きたくない2つの作業</h2>
+      <p class="section-intro">TikZ の図や結果の表は、構文のリファレンスと空白の1行から始まるのが普通です。ModernTex は両方を画面上で作り、その下に本物のソースを挿入します。隠れた部分はなく、同じものを自分で書くこともできます。</p>
+      <div class="screenshot-block">
+        <div class="screenshot-callout">
+          <h3>TikZ エディタ</h3>
+          <p>箱や矢印をドラッグして置き、色を選び、角で大きさを変え、2つの図形の間をドラッグしてつなげます。フローチャート、パイプライン、状態遷移図、ツリーのひな形か、空のキャンバスから始められます。既存の図は Figures メニューから開き直して、描き直さずに編集を続けられます。</p>
+        </div>
+        <div class="screenshot-wide">
+          <img src="/assets/moderntex-screens/07-tikz-editor.webp" alt="ModernTex の TikZ エディタ。ドラッグできる箱をつないだフローチャートと、その下に生成された TikZ コード" width="2840" height="1812" decoding="async" loading="lazy">
+        </div>
+      </div>
+      <div class="screenshot-block">
+        <div class="screenshot-callout">
+          <h3>表エディタ</h3>
+          <p>Excel や Google スプレッドシートの範囲をそのまま貼り付けると、正しいセルに入ります。データが大きければ表が広がり、小さければ残りはそのままです。Return で下の行へ、⌥Return でセル内改行、列の境界をドラッグすると幅を変えられます。表計算ソフトと同じ操作です。裏では booktabs 形式の <code>tabular</code> が作られます。</p>
+        </div>
+        <div class="screenshot-wide">
+          <img src="/assets/moderntex-screens/08-table-editor.webp" alt="ModernTex の表エディタ。キャプション付きの3列の結果表と、その下に生成された booktabs の LaTeX" width="1488" height="974" decoding="async" loading="lazy">
+        </div>
+      </div>
+    </section>
+
+    <div class="flair-statement-wrap">
+      <p class="flair-statement"><span>原稿は、Mac 上の普通の .tex と .bib のフォルダのままです。</span> <span>ビルドも Mac 上で行うので、時間制限はありません。</span> <span>アカウントを作る必要も、解約するサブスクリプションもありません。</span></p>
+    </div>
+
+    <section class="features-section">
+      <div class="features-header">
+        <h2>原稿に必要なもの</h2>
+      </div>
+      <div class="features-grid" data-motion="stagger">
+        <div class="feature-item">
+          <h3>複数ファイルのナビゲーション</h3>
+          <p>ModernTex はルートファイルを検出し、構造化したサイドバーを表示します。章、節、文献ファイルの間を、場所を見失わずに移動できます。</p>
+        </div>
+        <div class="feature-item">
+          <h3>3つのコンパイルモード</h3>
+          <p>Fast、Live、Full は、速さと網羅性を引き換えにするモードです。Live は入力中に PDF を最新に保ちます。Full は提出前に全工程を実行します。</p>
+        </div>
+        <div class="feature-item">
+          <h3>同期する PDF プレビュー</h3>
+          <p>前方検索と逆方向検索に対応しています。ソースをクリックして PDF へ、PDF をクリックしてソースへ。並べて表示し、常に同期します。</p>
+        </div>
+        <div class="feature-item">
+          <h3>文献管理</h3>
+          <p>すでに引用したキーだけでなく、文献ファイル全体を著者名、タイトル、キーで探せる BibTeX 補完です。引用を入力するとき、.bib ファイルから候補が出ます。</p>
+        </div>
+        <div class="feature-item">
+          <h3>投稿前チェック</h3>
+          <p>匿名化、ページ数、必須セクション、投稿用パッケージを送る前に確認し、体裁の問題で論文が返される前に気づけます。</p>
+        </div>
+        <div class="feature-item">
+          <h3>バージョンのスナップショット</h3>
+          <p>大きな改訂の前、査読の後、再投稿の前など、好きな時点で保存できます。2つのスナップショットは diff で比べられます。</p>
+        </div>
+        <div class="feature-item">
+          <h3>バージョン 2 の新機能</h3>
+          <p>分割エディタ、複数カーソル、プロジェクト全体の検索、Vim モード、視覚的な数式エディタ。HTML と EPUB の書き出し、knitr と PythonTeX、Zotero、ターミナル、リモートプロジェクト、マクロ、プラグイン、カスタムテーマも加わりました。</p>
+        </div>
+        <div class="feature-item">
+          <h3>ネイティブな macOS アプリ</h3>
+          <p>macOS 14 以降で動き、ライトとダークの設定に従い、標準の Mac のショートカットを使います。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="specs-section fix-demo" data-motion="fix" aria-labelledby="fix-h">
+      <h2 id="fix-h">暗号のようなエラーから、修正まで</h2>
+      <p class="section-intro">LaTeX は間違いを自分の言葉で報告し、意味を読み解くのは利用者に任せます。ModernTex はエラーを平易な言葉に直し、修正案を示します。</p>
+      <div class="fix-stage">
+        <div class="fix-panel fix-raw">
+          <p class="fix-label">LaTeX の出力</p>
+<pre><code>! Undefined control sequence.
+l.42 As shown by <span class="fix-bad">\citeauthr</span>
+                           {smith2024}, the effect holds.</code></pre>
+        </div>
+        <div class="fix-link fix-step" aria-hidden="true"></div>
+        <div class="fix-panel fix-step fix-explain-panel">
+          <p class="fix-label">ModernTex の説明</p>
+          <p class="fix-explain">LaTeX は42行目のコマンド <code>\citeauthr</code> を認識していません。多くはコマンドのつづりの誤りか、そのコマンドを定義するパッケージが読み込まれていないことが原因です。</p>
+        </div>
+        <div class="fix-panel fix-step fix-fix-panel">
+          <p class="fix-label">修正案</p>
+          <div class="fix-diff">
+            <div class="fix-minus"><span aria-hidden="true">- </span><span class="visually-hidden">削除: </span>\citeauthr{smith2024}</div>
+            <div class="fix-plus"><span aria-hidden="true">+ </span><span class="visually-hidden">追加: </span>\citeauthor{smith2024}</div>
+          </div>
+        </div>
+      </div>
+      <p class="fix-note">これは説明用の例で、アプリの画面の取得ではありません。文言はエラーによって変わります。</p>
+      <button type="button" class="btn btn-ghost fix-replay" data-motion-replay hidden>例をもう一度見る</button>
+    </section>
+
+    <section class="features-section bg-purple-xlight" id="nihongo" aria-labelledby="local-h">
+      <div class="features-header">
+        <h2 id="local-h">日本語の文書で使う</h2>
+      </div>
+      <p class="section-intro">日本語で論文や報告書を書くときに気になる点と、ModernTex が今できることを、事実だけ書きます。</p>
+      <div class="features-grid">
+        <div class="feature-item">
+          <h3>XeLaTeX と LuaLaTeX</h3>
+          <p>ビルドは手元の TeX で行います。LuaLaTeX（LuaTeX-ja）と XeLaTeX の文書はそのままビルドできます。エンジンを固定したいときは、ファイルの先頭に <code>% !TEX program = lualatex</code> のように書きます。Full ビルドでは、LuaLaTeX と XeLaTeX でも biber が実行されます。</p>
+        </div>
+        <div class="feature-item">
+          <h3>upLaTeX と pLaTeX</h3>
+          <p>upLaTeX と dvipdfmx の組み合わせ専用のプリセットはありません。プロジェクトの latexmkrc（確認すると Full ビルドで実行されます）か、Full ビルド用の独自ビルドコマンドで指定できます。設定例は<a href="/ja/guides/mac-nihongo-latex/">ガイド</a>にありますが、ModernTex では動作を確かめていません。</p>
+        </div>
+        <div class="feature-item">
+          <h3>クラスファイルとテンプレート</h3>
+          <p>LaTeX でコンパイルできるクラスはそのまま使えます。学会や大学のクラスファイルはプロジェクトフォルダに置いてください。クラスを Styles フォルダに置くテンプレートもビルドできます。jlreq や BXjscls などは tlmgr で入れます。</p>
+        </div>
+        <div class="feature-item">
+          <h3>画面表示は英語、データは Mac の中</h3>
+          <p>アプリの画面は現在、英語です。原稿は Mac 上で編集とコンパイルを行い、クラウド同期もデータ収集もありません。任意の AI 機能は Mac 上の Apple Intelligence か、ご自身の Claude または OpenAI のアカウントで動き、同意を確認してから使います。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="features-section">
+      <div class="features-header">
+        <h2>論文を書く人のために</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <h3>大学院生</h3>
+          <p>学位論文の章や学会の投稿論文を複数のファイルにまたがって書き、締め切りと審査委員を前にしています。</p>
+        </div>
+        <div class="feature-item">
+          <h3>教員と研究者</h3>
+          <p>雑誌への投稿、共著者とのやり取り、複数の原稿の並行、再投稿のたびの作業を抱えています。</p>
+        </div>
+        <div class="feature-item">
+          <h3>技術担当の共著者</h3>
+          <p>他の人の LaTeX プロジェクトに加わり、構造を理解し、コンパイルの問題を直し、壊さずに貢献します。</p>
+        </div>
+      </div>
+      <p class="mt-not-for"><strong>向かない場合:</strong> 複数の共著者が同じ文書に同時に入力する必要がある（その原稿は Overleaf のまま）、Windows、Linux、iPad で作業する、Mac に TeX ディストリビューションを入れたくない、のいずれかに当てはまる場合です。ModernTex は2026年9月に公開されたため、TeXShop や Texifier に比べて実績は多くありません。他の選択肢は<a href="/guides/best-mac-latex-editors/">Mac 用 LaTeX エディタの比較</a>（英語）にあります。</p>
+    </section>
+
+    <section class="features-section bg-purple-xlight" id="switching" aria-labelledby="switching-h">
+      <div class="features-header">
+        <h2 id="switching-h">他のエディタから移る</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <h3>Overleaf から</h3>
+          <p>プロジェクトを zip で取り出すか、Overleaf のプランに Git があれば Git クローンで持ってきます。ビルドは Mac 上なので時間制限はありません。リアルタイムの共同編集はないため、共著者は Overleaf に残れます。</p>
+        </div>
+        <div class="feature-item">
+          <h3>TeXShop や TeXstudio から</h3>
+          <p>同じフォルダを開くだけで、変換するものはありません。変わるのは、平易な言葉のエラー説明、著者名やタイトルでの文献検索、投稿前チェックです。ModernTex は Mac 専用です。</p>
+        </div>
+        <div class="feature-item">
+          <h3>VS Code から</h3>
+          <p>LaTeX Workshop を入れた VS Code は無料で、とても自由に設定できます。ModernTex は、ビルド、PDF、文献、投稿前チェックを設定なしで使いたい人向けです。自分で環境を組むのが好きなら、そのままで構いません。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="specs-section" aria-labelledby="specs-h">
+      <h2 id="specs-h">ModernTex の仕様</h2>
+      <table class="compare-table specs-table" data-motion="rows">
+        <tbody>
+          <tr><th scope="row">価格</th><td>7日間の無料体験のあと、19.99ドル（USD 19.99）の買い切り。アップデートはずっと込み。サブスクリプションなし。</td></tr>
+          <tr><th scope="row">体験版</th><td>初回起動から7日間、全機能を使えます。アカウント不要、入力なし。</td></tr>
+          <tr><th scope="row">ライセンス</th><td>領収書のメールに載る永久キー。ダウンロードは1種類で、7日間は無料で動き、その後キーを求めます。貼り付けると同じコピーがそのまま使え、アップデートも受けられます。</td></tr>
+          <tr><th scope="row">動作環境</th><td>macOS 14 Sonoma 以降、Apple シリコンと Intel。署名と公証済みのディスクイメージ。</td></tr>
+          <tr><th scope="row">TeX ディストリビューション</th><td>MacTeX か TinyTeX を使います。どちらもなければ、ワンクリックで TinyTeX を入れられます。</td></tr>
+          <tr><th scope="row">ファイル</th><td>ディスク上のフォルダにある普通の .tex、.bib、画像ファイル。クラウドストレージもアカウントもありません。</td></tr>
+          <tr><th scope="row">共同作業</th><td>リアルタイムの共同編集はありません。Get Changes と Send Changes で、自分の Mac 同士や共著者と同期します。</td></tr>
+          <tr><th scope="row">AI 機能</th><td>任意です。Fix with AI はビルドエラーの修正案を diff で示し、承認するまで何も変わりません。Mac 上の Apple Intelligence か、ご自身の Claude または OpenAI のアカウントで動きます。Claude にサインインするか OpenAI のキーを入れない限り、何も Mac の外に出ず、どちらも最初のリクエストの前にアプリが同意を確認します。Purplelink は料金を取りません。</td></tr>
+          <tr><th scope="row">アップデート</th><td>1日1回確認し、その場でインストールします。Check for Updates から手動でも確認できます。</td></tr>
+          <tr><th scope="row">現在のバージョン</th><td>バージョンと公開以来のすべての変更は<a href="/changelog/">変更履歴</a>（英語）にあります。</td></tr>
+        </tbody>
+      </table>
+      <p class="specs-more">メニューやボタンの名前は、英語表示の画面での名称で書いています。</p>
+    </section>
+
+    <section class="specs-section" id="vs-overleaf" aria-labelledby="vs-overleaf-h">
+      <h2 id="vs-overleaf-h">ModernTex と Overleaf の比較</h2>
+      <table class="compare-table specs-table" data-motion="rows">
+        <caption>Overleaf の料金は<a href="https://www.overleaf.com/user/subscription/plans">プランのページ</a>より。2026年9月29日に確認しました。</caption>
+        <thead>
+          <tr><th scope="col"><span class="visually-hidden">項目</span></th><th scope="col">ModernTex</th><th scope="col">Overleaf</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">価格</th><td>7日間の無料体験のあと、19.99ドルの買い切り。サブスクリプションなし。</td><td>Standard プランは年額 199ドル。無料プランもあります。</td></tr>
+          <tr><th scope="row">コンパイル</th><td>Mac 上で行うので、サーバーの時間制限はありません。</td><td>Overleaf のサーバー上で行います。無料プランには時間制限があります。</td></tr>
+          <tr><th scope="row">アカウント</th><td>不要。</td><td>必要。</td></tr>
+          <tr><th scope="row">動く場所</th><td>macOS ネイティブアプリ。ファイルはディスク上のフォルダにある普通の .tex と .bib。</td><td>ブラウザ上。</td></tr>
+          <tr><th scope="row">共著者</th><td>リアルタイム共同編集はなし。Get Changes と Send Changes で共著者と同期。</td><td>ブラウザでのリアルタイム共同編集。</td></tr>
+          <tr><th scope="row">原稿向けの機能</th><td>複数ファイルのナビゲーション、同期する PDF プレビュー、平易な言葉のエラー説明、投稿前チェック、スナップショット、BibTeX 補完。</td><td>Overleaf 自身の機能一覧を参照してください。</td></tr>
+        </tbody>
+      </table>
+      <p class="specs-more"><strong>Overleaf が向くのは、</strong> 複数人が同時に同じ原稿を書くときと、Windows、Linux、iPad で作業するときです。<strong>ModernTex が向くのは、</strong> 主に Mac で一人で書き、サブスクリプションもアカウントも制限も要らないときです。移行は zip のダウンロードか Git クローンで行えます（<a href="#faq">よくある質問</a>を参照）。</p>
+    </section>
+
+    <section class="waitlist-section" id="kankyo">
+      <h2>ModernTex の動作環境</h2>
+      <p>macOS 14 以降の Mac と、TeX ディストリビューションが必要です。MacTeX と TinyTeX のどちらでも動き、先に用意する必要はありません。コンパイルのときに見つからなければ、エディタ内でワンクリックの TinyTeX インストールを案内します。購入後は署名済みのディスクイメージが届きます。開いて ModernTex を「アプリケーション」へドラッグしてください。</p>
+      <p><a href="/moderntex/start/">最初の10分: インストールと最初のビルド（英語）</a></p>
+    </section>
+
+    <section class="specs-section" id="departments" aria-labelledby="departments-h">
+      <h2 id="departments-h">複数人で使うとき</h2>
+      <p>研究室や学科向けに、人数に応じた価格があります。1席が1つのライセンスキーで、席が増えるほど1席あたりの価格が下がります。25席以上は1席 9.99ドルで、単品の約半額です。</p>
+      <table class="compare-table specs-table">
+        <thead>
+          <tr><th scope="col">席数</th><th scope="col">1席あたり</th><th scope="col">合計</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">5</th><td>13.99ドル</td><td>69.95ドル</td></tr>
+          <tr><th scope="row">10</th><td>12.49ドル</td><td>124.90ドル</td></tr>
+          <tr><th scope="row">15</th><td>11.49ドル</td><td>172.35ドル</td></tr>
+          <tr><th scope="row">20</th><td>10.49ドル</td><td>209.80ドル</td></tr>
+          <tr><th scope="row">25〜500</th><td>9.99ドル</td><td>249.75ドルから</td></tr>
+        </tbody>
+      </table>
+      <p>席の購入は<a href="/moderntex/#departments">英語のページ</a>で行えます。カード決済ではなく請求書や発注書が必要な場合は、席数と請求書の宛名を書いて <a href="mailto:ben@purplelink.llc?subject=ModernTex%20for%20a%20lab%20or%20department">ben@purplelink.llc</a> へご連絡ください。請求書を発行し、W-9 も求めに応じてお渡しします。</p>
+    </section>
+
+    <section class="faq-section" id="faq" aria-labelledby="faq-heading">
+      <h2 id="faq-heading">よくある質問</h2>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>ModernTex で日本語の LaTeX 文書をビルドできますか。</summary>
+          <div class="faq-body">はい。ビルドは手元の TeX で行うので、LuaLaTeX（LuaTeX-ja）と XeLaTeX の日本語文書はそのままビルドできます。upLaTeX と dvipdfmx は、プロジェクトの latexmkrc か独自のビルドコマンドで指定します。手順は<a href="/ja/guides/mac-nihongo-latex/">Mac で日本語 LaTeX を使う</a>にあります。</div>
+        </details>
+        <details class="faq-item">
+          <summary>アプリの画面は日本語ですか。</summary>
+          <div class="faq-body">いいえ、現在は英語表示です。メニューやボタンの名前は、このページでも英語の名称で書いています。</div>
+        </details>
+        <details class="faq-item">
+          <summary>ModernTex はいくらですか。</summary>
+          <div class="faq-body">7日間の無料体験のあと、19.99ドルの買い切りで、今後のアップデートもすべて含まれます。サブスクリプションもアカウントもありません。任意の AI 機能は Apple Intelligence か、ご自身の Claude または OpenAI のアカウントで動きます。</div>
+        </details>
+        <details class="faq-item">
+          <summary>無料体験はありますか。</summary>
+          <div class="faq-body">はい。体験版は初めて開いてから7日間の全機能版で、アカウントも入力も不要です。終わるとウィンドウに案内と購入ボタンが出ます。.tex ファイルはディスク上の普通のファイルで、触れません。購入すると領収書のメールにライセンスキーが届きます。アプリで Enter license key を選んで貼り付けると、同じコピーが再インストールなしで使えるようになります。</div>
+        </details>
+        <details class="faq-item">
+          <summary>ライセンスキーをなくしました。</summary>
+          <div class="faq-body">購入時のメールアドレスを <a href="/recover/">Find a purchase</a>（英語）のページに入力してください。そのアドレスで ModernTex を購入していれば、新しいライセンスキーとダウンロードページがそのアドレスへ届きます。以前のキーも引き続き使えます。</div>
+        </details>
+        <details class="faq-item">
+          <summary>必要な macOS のバージョンは。</summary>
+          <div class="faq-body">macOS 14 (Sonoma) 以降です。</div>
+        </details>
+        <details class="faq-item">
+          <summary>Overleaf のプロジェクトを移せますか。</summary>
+          <div class="faq-body">はい。プロジェクトを zip でダウンロードするか、Overleaf の Git 連携でクローンして（Git は有料の Overleaf プランが必要で、zip はどのプランでも使えます）、そのフォルダを ModernTex で開きます。ファイルは普通の .tex、.bib、画像のままなので、いつでも Overleaf に戻せます。</div>
+        </details>
+        <details class="faq-item">
+          <summary>TeXstudio のような無料のエディタではだめですか。</summary>
+          <div class="faq-body">TeXstudio は無料でクロスプラットフォームで、コンパイルエラーを読みやすい一覧にしてくれます。Windows や Linux でも作業するなら有力な選択肢です。ModernTex は意図的に絞っていて、Mac 専用で、原稿の作業に合わせています。TeXstudio にない機能は3つです。.bib 全体を著者名やタイトルで探す BibTeX 補完、雑誌が実際にリジェクトする点への投稿前チェック、二重盲検査読向けの匿名化エクスポート。どれも要らなければ、TeXstudio は良い無料の選択肢です。</div>
+        </details>
+        <details class="faq-item">
+          <summary>学位論文に使えますか。</summary>
+          <div class="faq-body">はい。学位論文も普通の複数ファイルのプロジェクトです。フォルダを開くと ModernTex がルートファイルを見つけ、章をサイドバーに並べます。文献は BibTeX でも biber を使う biblatex でも構いません（コンパイル設定で切り替え）。Zotero から書き出した .bib も読めます。大学指定のクラスファイルはプロジェクトフォルダに置くとビルドで使われ、投稿用の書き出しにも含まれます。汎用の学位論文テンプレート（英語）が付属します。</div>
+        </details>
+        <details class="faq-item">
+          <summary>新しいバージョンのたびに料金がかかりますか。</summary>
+          <div class="faq-body">いいえ。アップデートはすべて 19.99ドルに含まれ、将来のメジャーバージョンも同じです。アップグレード料金はありません。</div>
+        </details>
+        <details class="faq-item">
+          <summary>オフラインで使えますか。</summary>
+          <div class="faq-body">はい。ファイルは Mac 上にあり、コンパイルも Mac 上で行うので、サーバーも時間制限もありません。MacTeX か TinyTeX が必要で、ModernTex が TinyTeX を入れることもできます。ライセンスキーはアプリ内でサーバーなしに確認されます。任意の AI 機能は Mac 上の Apple Intelligence か、ご自身の Claude または OpenAI のアカウントで動き、後者は接続が必要です。</div>
+        </details>
+        <details class="faq-item">
+          <summary>使わなくなったらどうなりますか。</summary>
+          <div class="faq-body">原稿は、ディスク上のフォルダにある普通の .tex、.bib、画像ファイルのままなので、TeXShop や TeXstudio など他のエディタでも開けます。閉じるアカウントも、解約するサブスクリプションもありません。</div>
+        </details>
+        <details class="faq-item">
+          <summary>Fix with AI は何を送りますか。</summary>
+          <div class="faq-body">ビルドエラーでボタンを押したときだけ動きます。標準では Mac 上の Apple Intelligence で動き、何も送りません。代わりに Claude か OpenAI のアカウントを選ぶと、アプリが先に同意を確認し、そのあとエラー周辺の行、前後の文脈、文書のプリアンブルをそのプロバイダーへ送ります。修正は diff で表示され、承認するまで何も変わりません。</div>
+        </details>
+      </div>
+    </section>
+
+    <section class="closing-cta" data-motion="reveal" aria-labelledby="closing-cta-heading">
+      <img src="/assets/moderntex-icon.webp" alt="" width="88" height="88" loading="lazy">
+      <h2 id="closing-cta-heading">お手元の原稿で試してください</h2>
+      <p>7日間、全機能をアカウントなしで使えます。仕事に合えば、19.99ドルの買い切りです。</p>
+      <div class="closing-cta-actions">
+        <a class="btn btn-primary" href="/.netlify/functions/moderntex-download?trial=1">無料体験版をダウンロード</a>
+        <a class="btn btn-ghost" href="#buy">購入方法を見る</a>
+      </div>
+      <p class="closing-cta-fine">macOS 14 以降 · Apple シリコンと Intel · 署名・公証済み · ご質問は <a href="mailto:ben@purplelink.llc?subject=ModernTex">ben@purplelink.llc</a> へ</p>
+    </section>
+    </main>
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg?v=2f8bd49b19" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">米国ジョージア州アトランタの一人運営スタジオが作るアプリとツール。</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+        </div>
+        <nav class="footer-col" aria-label="ModernTex">
+          <p class="footer-head">ModernTex</p>
+          <ul>
+            <li><a href="/ja/moderntex/">製品ページ</a></li>
+            <li><a href="/ja/guides/mac-nihongo-latex/">Mac で日本語 LaTeX を使う</a></li>
+            <li><a href="/changelog/">変更履歴（英語）</a></li>
+            <li><a href="/recover/">購入の再確認（英語）</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="英語のページ">
+          <p class="footer-head">英語のページ</p>
+          <ul>
+            <li><a href="/products/">すべての製品</a></li>
+            <li><a href="/tools/">無料ツール</a></li>
+            <li><a href="/guides/">ガイド</a></li>
+            <li><a href="/blog/">ブログ</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="会社情報">
+          <p class="footer-head">会社情報</p>
+          <ul>
+            <li><a href="/about/">会社概要（英語）</a></li>
+            <li><a href="/support/">サポート（英語）</a></li>
+            <li><a href="mailto:ben@purplelink.llc">お問い合わせ</a></li>
+            <li><a href="/privacy/">プライバシー（英語）</a></li>
+            <li><a href="/terms/">利用規約（英語）</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">アトランタ（ジョージア州）· 2026年創業</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden data-label-light="ライトテーマにする" data-label-dark="ダークテーマにする">ライトテーマにする</button>
+      </div>
+    </footer>
+
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=2e1b7fe5bd" defer></script>
+</body>
+</html>
