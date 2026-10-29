@@ -4093,7 +4093,7 @@ Title: GlobePin - Track Every Place You've Been | Purplelink LLC
 ← All products
 
 iOS
-Free with ads · Pro $14.99 once · On the App Store
+Free with ads · Pro $9.99 once · On the App Store
 
 # GlobePin
 
@@ -4170,7 +4170,7 @@ Get notified on the anniversary of a visit to a place, as a nudge to return or a
 
 ## GlobePin is out.
 
-Free to download, with ads, for iPhone and iPad running iOS 17 or later. A one-time Pro purchase of $14.99 removes the ads. Your travel data syncs over your own iCloud account, so there is nothing to sign up for and nothing stored on our servers.
+Free to download, with ads, for iPhone and iPad running iOS 17 or later. A one-time Pro purchase of $9.99 removes the ads. Your travel data syncs over your own iCloud account, so there is nothing to sign up for and nothing stored on our servers.
 
 Download on the App Store
 Why we built it
@@ -4193,7 +4193,7 @@ Yes. GlobePin uses iCloud sync via CloudKit (Apple's own infrastructure), so you
 
 What does GlobePin cost?
 
-GlobePin is free to download, and every feature is in the free version. The free version shows ads served by Google AdMob: a small banner on some screens, a short ad before Year in Review and Map Collage and when you export a Travel Reel, and a small Made with GlobePin mark on shared cards and reels. GlobePin Pro, a one-time $14.99 purchase and not a subscription, removes all of that.
+GlobePin is free to download, and every feature is in the free version. The free version shows ads served by Google AdMob: a small banner on some screens, a short ad before Year in Review and Map Collage and when you export a Travel Reel, and a small Made with GlobePin mark on shared cards and reels. GlobePin Pro, a one-time $9.99 purchase and not a subscription, removes all of that.
 
 What's the difference between GlobePin and other travel trackers?
 
@@ -8030,7 +8030,7 @@ Two more questions matter as much as features. How does a place get on the map? 
 
 ## The shortlist
 
-- GlobePin: places, flights and a 3D globe, kept in your iCloud. Free, with Pro at $14.99 once.
+- GlobePin: places, flights and a 3D globe, kept in your iCloud. Free, with Pro at $9.99 once.
 
 - Visited: the big country checklist, with lists and goals. Free with add-ons.
 
@@ -8050,7 +8050,7 @@ Those eight cover most needs. Six more options and seven shorter entries follow,
 
 AppBest forCostPlaces get on the map byFlightsAccount
 
-GlobePinPlaces, flights and a globeFree, Pro $14.99 onceYour pins and boarding passesYesNone; iCloud
+GlobePinPlaces, flights and a globeFree, Pro $9.99 onceYour pins and boarding passesYesNone; iCloud
 
 VisitedCountry checklistFree, paid add-onsYour tapsNot describedFor sync
 
@@ -8068,7 +8068,7 @@ Apple Maps, PhotosAutomatic memory aidFreeYour location, photo GPSNoNone beyond 
 
 ## GlobePin
 
-Cost: Free to download. GlobePin Pro is a $14.99 one-time purchase, listed as a lifetime purchase and not a subscription, that removes the ads and the watermark. Platform: iPhone and iPad, iOS or iPadOS 17 or later. The listing's compatibility section also shows Macs with Apple silicon and Apple Vision. Status: version 1.2, first released September 3, 2026.
+Cost: Free to download. GlobePin Pro is a $9.99 one-time purchase, listed as a lifetime purchase and not a subscription, that removes the ads and the watermark. Platform: iPhone and iPad, iOS or iPadOS 17 or later. The listing's compatibility section also shows Macs with Apple silicon and Apple Vision. Status: version 1.2, first released September 3, 2026.
 
 GlobePin is a record you keep by hand. You pin places on a 3D globe or a flat world map. You log flights by scanning a boarding pass or entering airports, and you log road trips, cruises and train trips with animated routes. The stats cover countries, continents, nights abroad, furthest point and total miles. Each place can hold photo postcards and a private journal. Travel Goals cover every continent, every country or a list of your own. A trip planner handles destinations you have not visited, and "I Went!" turns a plan into a pin. The app also makes Travel Reel videos, a Year in Review, share cards and widgets, and it imports and exports CSV.
 
@@ -8078,7 +8078,7 @@ The ads. The free version shows ads, and the listing says so. There is a small b
 
 What it does well: a lifetime record of places, flights and goals in one app, with no account and no social feed. What it lacks: it is new. Version 1.0 shipped in September 2026 and the listing has two ratings, so it has none of the track record that Polarsteps, Visited or Flighty have. Nothing in the listing describes recording your route in the background, so you add places yourself. Purplelink's privacy page says location is used on the device to set a home point and calculate distances. The app has no social network and no Android version. It does not send delay alerts, so Flighty is better for the flight itself. It also has no deep checklist of 150 world lists like Visited.
 
-Pick GlobePin if you want one private record of places and flights, are fine with banner and short ads or $14.99 once, and will add the entries yourself. Pick something else if you want the route recorded for you (Polarsteps), flight alerts (Flighty), a fast country tick-list (Visited or been), or an Android app. See what GlobePin does and the three-way comparison with Polarsteps and Visited.
+Pick GlobePin if you want one private record of places and flights, are fine with banner and short ads or $9.99 once, and will add the entries yourself. Pick something else if you want the route recorded for you (Polarsteps), flight alerts (Flighty), a fast country tick-list (Visited or been), or an Android app. See what GlobePin does and the three-way comparison with Polarsteps and Visited.
 
 ## Visited
 
@@ -8264,7 +8264,7 @@ It depends on the job. For a country checklist, Visited or been. For a private r
 
 ### Is there a free app to track the countries I have visited?
 
-Yes. Visited, been, Pin Traveler, GlobePin, Skratch and Stippl are free to download, and each puts some features behind a purchase or subscription. Visited's free tier covers country maps and stats, with cities and regions as paid add-ons. GlobePin's free version shows ads, and a $14.99 one-time Pro removes them. A spreadsheet is free with no catch.
+Yes. Visited, been, Pin Traveler, GlobePin, Skratch and Stippl are free to download, and each puts some features behind a purchase or subscription. Visited's free tier covers country maps and stats, with cities and regions as paid add-ons. GlobePin's free version shows ads, and a $9.99 one-time Pro removes them. A spreadsheet is free with no catch.
 
 ### Which app logs flights on a map?
 
@@ -8280,7 +8280,7 @@ Polarsteps and FindPenguins record your route in the background, which needs loc
 
 ### Does GlobePin have ads or a paid version?
 
-Yes to both. The free version shows a small banner on some screens, a short ad before Year in Review and Map Collage and when you export a Travel Reel, and a small watermark on shared cards. GlobePin Pro costs $14.99 once, is not a subscription, and removes them. Its privacy label lists Identifiers and Usage Data under data used to track you. It is also new, with two App Store ratings so far.
+Yes to both. The free version shows a small banner on some screens, a short ad before Year in Review and Map Collage and when you export a Travel Reel, and a small watermark on shared cards. GlobePin Pro costs $9.99 once, is not a subscription, and removes them. Its privacy label lists Identifiers and Usage Data under data used to track you. It is also new, with two App Store ratings so far.
 
 ### Can I move my travel data between apps?
 
@@ -8300,7 +8300,7 @@ From the maker of these tools
 
 ## A map of where you have been, kept in your own iCloud
 
-GlobePin is an iPhone and iPad app for pinning places, logging flights and setting travel goals on a 3D globe, with stats, photo postcards and Travel Reels. It has no accounts and syncs through your iCloud. Free, with an optional $14.99 one-time Pro that removes the ads.
+GlobePin is an iPhone and iPad app for pinning places, logging flights and setting travel goals on a 3D globe, with stats, photo postcards and Travel Reels. It has no accounts and syncs through your iCloud. Free, with an optional $9.99 one-time Pro that removes the ads.
 
 Download on the App Store
 See what it does
