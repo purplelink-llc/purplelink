@@ -201,20 +201,42 @@ select { max-width: 100%; }
   object-fit: cover;
 }
 
-/* The header name is the traced "purplelink / softwares" wordmark (docs/brand/logo-usage.md), not typeset text.
-   It is painted through a mask in the current ink colour, so it follows the theme; the text stays in the markup
+/* The header name is the traced "purplelink / software company" wordmark B (docs/brand/logo-usage.md), not typeset text.
+   Two layers, both painted through masks of the same 1563x448 box: ::before is the ink text in the current colour, so it
+   follows the theme; ::after is the underline swoosh and star in the brand purple gradient (oklch, hex fallback).
+   The masks cannot sit on the span itself, since a mask would clip its pseudo-elements. The text stays in the markup
    for screen readers and search, hidden from view. */
 .brand > span {
+  position: relative;
   display: inline-block;
   flex: none;
-  width: 101px;
+  width: 105px;
   height: 30px;
   overflow: hidden;
   white-space: nowrap;
   text-indent: 110%;
+}
+
+.brand > span::before,
+.brand > span::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  text-indent: 0;
+}
+
+.brand > span::before {
   background-color: currentColor;
-  -webkit-mask: url("/assets/purplelink-wordmark-light.svg?v=310db73f44") left center / contain no-repeat;
-  mask: url("/assets/purplelink-wordmark-light.svg?v=310db73f44") left center / contain no-repeat;
+  -webkit-mask: url("/assets/purplelink-wordmark-text-mask.svg?v=5181b484f3") left center / contain no-repeat;
+  mask: url("/assets/purplelink-wordmark-text-mask.svg?v=5181b484f3") left center / contain no-repeat;
+}
+
+.brand > span::after {
+  background-color: #9222cc;
+  background-image: linear-gradient(90deg, #c07af1, #9222cc);
+  background-image: linear-gradient(90deg, oklch(70% 0.18 310), oklch(52% 0.24 310));
+  -webkit-mask: url("/assets/purplelink-wordmark-accent-mask.svg?v=95aaabad44") left center / contain no-repeat;
+  mask: url("/assets/purplelink-wordmark-accent-mask.svg?v=95aaabad44") left center / contain no-repeat;
 }
 
 .topbar nav {
