@@ -303,7 +303,7 @@ export function Ad({ format, plan }) {
         </Sequence>
       ))}
       {(plan.flashes || []).map((t, i) => <Flash key={`f${i}`} at={t} />)}
-      <Img src={staticFile("brand/wordmark.png")} style={{ position: "absolute", left: (fmt.W - fmt.mark.w) / 2, top: fmt.mark.y, width: fmt.mark.w, height: fmt.mark.w * 373 / 1216 }} />
+      <Img src={staticFile("brand/wordmark.png")} style={{ position: "absolute", left: (fmt.W - fmt.mark.w) / 2, top: fmt.mark.y, width: fmt.mark.w, height: fmt.mark.w * 448 / 1563 }} />
       {plan.note ? (
         <div style={{ position: "absolute", left: 0, right: 0, top: fmt.note.y, textAlign: "center", fontFamily: BODY, fontSize: fmt.H > 1500 ? 26 : 22, color: C.text3, opacity: 0.9 }}>{plan.note}</div>
       ) : null}
