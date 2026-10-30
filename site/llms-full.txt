@@ -4369,7 +4369,7 @@ Turn a metric into a clean card for your story or feed.
 
 haea reads sleep, heart rate, HRV, workouts and weight from Apple Health. It does not log food: it reads the nutrition that apps such as MacroFactor or Cronometer write to Apple Health.
 
-Premium: $1.99 / month, $14.99 / year, or $49.99 once
+Premium: $5.99 / month, $39.99 / year, or $99.99 once
 
 ## haea Premium
 
@@ -4413,7 +4413,7 @@ haea is expected to launch in 2026. Join the waitlist above to be notified when 
 
 Is there a free tier?
 
-Yes. haea is free to download, and the daily briefing, strength log, running and share cards work without a subscription. Premium ($1.99 a month, $14.99 a year, or a one-time $49.99 for lifetime access) adds the deeper analysis: energy balance, circadian rhythm, running analytics, advanced models, biological age and VO2 max, and widgets.
+Yes. haea is free to download, and the daily briefing, strength log, running and share cards work without a subscription. Premium ($5.99 a month, $39.99 a year, or a one-time $99.99 for lifetime access) adds the deeper analysis: energy balance, circadian rhythm, running analytics, advanced models, biological age and VO2 max, and widgets.
 
 Does haea sync to the cloud?
 
@@ -10971,7 +10971,7 @@ I searched the App Store on October 4, 2026 and found no listing named haea from
 
 - Free: a daily readiness briefing from Apple Health data, a strength training log, run tracking with route planning on iPhone or Apple Watch, and share cards. It does not log food; it reads nutrition that other apps write to Apple Health.
 
-- Premium, planned at $1.99 a month, $14.99 a year or $49.99 once: energy balance and TDEE (total daily energy expenditure), circadian analysis, running analytics, statistical models of which habits move sleep, pace, weight and mood, and biological age and VO₂ max estimates.
+- Premium, planned at $5.99 a month, $39.99 a year or $99.99 once: energy balance and TDEE (total daily energy expenditure), circadian analysis, running analytics, statistical models of which habits move sleep, pace, weight and mood, and biological age and VO₂ max estimates.
 
 - Privacy design: no cloud sync of its own, no analytics or advertising SDKs, no ads, and local storage in a GRDB.sqlite database. Planning a running route asks Apple Maps for the path, and the optional Oura connection fetches data from Oura. The coach uses Apple Intelligence on the device.
 
@@ -11073,7 +11073,7 @@ BearableTrackingFor backupPhone, EU serversFree, $6.99 a monthSymptoms, mood
 
 SpreadsheetNone to readNoYour fileFreeAnything
 
-haea (planned)No listingNot statedPlanned: phone onlyPlanned: free, $1.99 a monthPlanned: readiness, strength, running
+haea (planned)No listingNot statedPlanned: phone onlyPlanned: free, $5.99 a monthPlanned: readiness, strength, running
 
 ## How to read an App Store privacy label
 
