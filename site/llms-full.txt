@@ -399,7 +399,7 @@ Play the tour on YouTube
 
 ## What customers say
 
-1 of 5
+1 of 6
 
 Because you're an academic you know the game and it shows in your products.
 
@@ -430,6 +430,11 @@ This is exactly the integration I was hoping for.
 Leszek
 Independent LaTeX enthusiast working on his first technical book
 On the opt-in project .latexmkrc support added in ModernTex 1.10.
+
+I think this is a great LaTeX editor for the Mac! It's fast and responsive, and easy to use and operate even for complete beginners!
+
+Rex
+Uses ModernTex for his theses, research papers, course notes and Beamer slides.
 
 ## Source and PDF, always in sync
 
