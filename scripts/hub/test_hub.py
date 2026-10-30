@@ -7,6 +7,8 @@ tmp = Path(tempfile.mkdtemp())
 os.environ.update({
     "PURPLELINK_HUB": str(tmp / "hub"), "PURPLELINK_QUEUE": str(tmp / "queue"), "PURPLELINK_REPO": str(tmp / "repo"),
     "PURPLELINK_SOCIAL_QUEUE": str(tmp / "social"), "PURPLELINK_TRAFFIC_HISTORY": str(tmp / "history.json"),
+    # doctor's delivery check calls the live stats function; tests pass their own fetch instead
+    "PURPLELINK_STATS_OFFLINE": "1",
 })
 spec = importlib.util.spec_from_file_location("hub", Path(__file__).with_name("hub.py"))
 hub = importlib.util.module_from_spec(spec); spec.loader.exec_module(hub)
@@ -917,8 +919,60 @@ def test_doctor_flags_campaigns_with_no_spend_or_no_trials():
         run("import")
 
 
+def test_doctor_notices_a_campaign_that_stopped_serving():
+    """Reddit showed no impressions on 2026-10-29 and the ad manager cannot be opened from this Mac. A running campaign
+    that had first-touch visits and has none in the last day has most likely stopped serving; a stats fetch that
+    times out must say it could not check, never raise the alarm."""
+    import datetime as dt
+    P = hub.paths()
+    put("hub/campaigns.json", json.dumps({"widget-test-2026-11": {
+        "platformKey": "redditAds", "channel": "reddit-ads", "asset": "widget", "start": "2026-10-20", "end": "2026-11-12",
+        "budget": 80, "breakEven": 18, "approval": "ben test", "readings": ["2026-11-13"],
+        "ads": [{"id": "a", "label": "angle A", "url": "https://purplelink.llc/widget/?utm_source=reddit&utm_medium=cpc&utm_campaign=widget-test-2026-11&utm_content=widget-reddit-a"}]}}))
+    saved_f = (tmp / "hub" / "funnel.json").read_text()
+    f = json.loads(saved_f)
+    f["windows"]["7"] = dict(f["windows"]["7"], **{"paid:reddit": {
+        "pageviews": 39, "pageviewsByPath": {"/widget/": 39}, "trial": {}, "checkout": {}}})
+    put("hub/funnel.json", json.dumps(f))
+    day = dt.date(2026, 11, 2)
+    seen = []
+
+    def serving(days):
+        seen.append(days)
+        return {"paid:reddit": {"pageviews": 2}}
+
+    def stopped(days):
+        return {"www.google.com": {"pageviews": 30}}
+
+    def timed_out(days):
+        return None
+    try:
+        run("import")
+        probs = lambda get: {x["problem"]: x["detail"] for x in hub.campaign_gaps(db(), P, day, recent=get)}
+        assert "not serving" not in probs(serving) and seen == [1], seen
+        got = probs(stopped)
+        assert "ads may have stopped serving: check billing, ad review status and bid in the ad manager" in got["not serving"], got
+        got = probs(timed_out)
+        assert "not serving" not in got and "could not check" in got["delivery not checked"], got
+        # after the campaign ended, no delivery check (and no fetch)
+        seen.clear()
+        assert "not serving" not in {x["problem"] for x in hub.campaign_gaps(db(), P, dt.date(2026, 11, 15), recent=serving)}
+        assert seen == []
+        # never had visits: nothing to compare against
+        f["windows"]["7"]["paid:reddit"]["pageviews"] = 0
+        put("hub/funnel.json", json.dumps(f))
+        assert "not serving" not in probs(stopped)
+        # a fetch that raises is a failed check, not a crash
+        assert hub.fetch_recent(P, 1, get=lambda url, headers: (_ for _ in ()).throw(TimeoutError())) is None
+    finally:
+        put("hub/funnel.json", saved_f)
+        (tmp / "hub" / "campaigns.json").unlink()
+        run("import")
+
+
 if __name__ == "__main__":
     test_all()
+    test_doctor_notices_a_campaign_that_stopped_serving()
     test_doctor_flags_campaigns_with_no_spend_or_no_trials()
     test_doctor_notices_missing_reddit_attribution_fields()
     test_sources_untouched()
