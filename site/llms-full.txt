@@ -10035,7 +10035,7 @@ Aiko$24 onceOn deviceNo, the developer says it is not supported yet
 
 BuzzFree, MIT licenseOn device, offline, current builds are Apple silicon onlyListed as a feature
 
-OtterFree Basic (300 minutes a month), Pro $8.33 a month billed yearly ($16.99 monthly), Business $19.99 billed yearlyCloudYes
+OtterFree Basic (300 minutes a month, 30 minutes a conversation), Pro $16.99 a month, Business above that; Otter's page showed discounts on both on October 30, 2026CloudYes
 
 DescriptFree (1 hour), Hobbyist $16 a month billed yearly ($24 monthly)CloudYes
 
