@@ -587,6 +587,27 @@ def fetch_funnel(p: dict, get=None) -> dict:
     return out
 
 
+def fetch_recent(p: dict, days: int, get=None, tries: int = 2, timeout: int = 20):
+    """funnelByChannel for the last `days` days, or None when the stats function cannot be read (no token, timeouts,
+    errors: it timed out from this Mac twice on 2026-10-29). Never raises; the token goes in a header."""
+    tok = stats_token(p)
+    if not tok:
+        return None
+    if get is None:
+        import urllib.request
+
+        def get(url, headers):
+            with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=timeout) as r:
+                return json.loads(r.read().decode("utf-8"))
+    for _ in range(tries):
+        try:
+            return get(f"{STATS_URL}?days={days}", {"x-stats-token": tok, "User-Agent": "purplelink-marketing-hub"}
+                       ).get("funnelByChannel") or {}
+        except Exception:
+            continue
+    return None
+
+
 def funnel_stale(path: Path, today: dt.date | None = None) -> bool:
     """True unless funnel.json was fetched today. Its asOf is the fetch date, and a fetch made yesterday afternoon
     misses yesterday's evening; an age rule (under 20 hours) let such a fetch stand in for the next morning's."""
@@ -1614,12 +1635,17 @@ def attribution_gaps(p: dict, since: str = ATTR_FIELDS_SINCE) -> list:
 SPEND_DUE_DAYS, CAMPAIGN_TAIL_DAYS, NO_TRIAL_PAGEVIEWS = 2, 7, 100
 
 
-def campaign_gaps(con, p: dict, today: dt.date | None = None) -> list:
-    """Running campaigns with no spend recorded (no cost per trial or order can be computed), and campaigns whose
+def campaign_gaps(con, p: dict, today: dt.date | None = None, recent=None) -> list:
+    """Running campaigns with no spend recorded (no cost per trial or order can be computed), campaigns whose
     channel brought NO_TRIAL_PAGEVIEWS first-touch pageviews in 7 days and no trial (a trial link that lost its
-    channel, or an ad that does not convert; the funnel cannot tell which)."""
+    channel, or an ad that does not convert; the funnel cannot tell which), and running campaigns that had visits but
+    none in the last day (ads no longer serving). `recent(days)` returns the stats function's funnelByChannel or None;
+    by default fetch_recent, skipped when PURPLELINK_STATS_OFFLINE is set."""
     today = today or dt.date.today()
     week = ((load_json(p["funnel"], {}) or {}).get("windows") or {}).get("7") or {}
+    if recent is None:
+        recent = (lambda days: "offline") if os.environ.get("PURPLELINK_STATS_OFFLINE") else (lambda days: fetch_recent(p, days))
+    day: dict = {}  # fetched once, only when a running campaign needs it
     out = []
     for r in campaign_report(con, p, today):
         try:
@@ -1634,6 +1660,19 @@ def campaign_gaps(con, p: dict, today: dt.date | None = None) -> list:
         rows = [week.get(k) or {} for k in CHANNEL_KEYS.get(r["channel"], (r["channel"],))]
         views = sum(x.get("pageviews") or 0 for x in rows)
         trials = sum((x.get("trial") or {}).get(r["asset"], 0) for x in rows)
+        if views and start < today <= end:
+            if "f" not in day:
+                day["f"] = recent(1)
+            last = day["f"]
+            if last is None:
+                out.append({"campaign": r["campaign"], "problem": "delivery not checked",
+                            "detail": "could not check: the stats function did not answer (timeout or error)"})
+            elif last != "offline":
+                keys = CHANNEL_KEYS.get(r["channel"], (r["channel"],))
+                if not sum((last.get(k) or {}).get("pageviews") or 0 for k in keys):
+                    out.append({"campaign": r["campaign"], "problem": "not serving",
+                                "detail": f"0 first-touch pageviews in the last day after {views} in 7 days; ads may "
+                                          "have stopped serving: check billing, ad review status and bid in the ad manager"})
         if views >= NO_TRIAL_PAGEVIEWS and not trials:
             out.append({"campaign": r["campaign"], "problem": "no trials",
                         "detail": f"{views} first-touch pageviews in 7 days and 0 {r['asset']} trials; check that the "
