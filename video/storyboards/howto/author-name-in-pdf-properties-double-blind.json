@@ -1,0 +1,114 @@
+{
+ "id": "howto-author-name-in-pdf-properties-double-blind",
+ "app": "paper-review",
+ "title": "Your name in the PDF Author field on Mac (hide it for double-blind review in LaTeX)",
+ "short_title": "Blinded your paper? Your name may still be in the PDF properties",
+ "url": "purplelink.llc/tools/paper-review",
+ "page": "https://purplelink.llc/tools/paper-review/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://www.conftool.net/ctforum/index.php/topic,152.0.html",
+  "https://www.openlibhums.org/site/anonreview/",
+  "https://journals.ed.ac.uk/lithicstudies/about/submissions/blindreview"
+ ],
+ "verify": {
+  "runs": [
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf '%s\\n' '\\documentclass{article}' '\\usepackage[pdfusetitle]{hyperref}' '\\title{Trust in Phishing Warnings}' '\\author{Jane Smith}' '\\begin{document}' '\\maketitle' 'Text.' '\\end{document}' > paper.tex && pdflatex -interaction=nonstopmode paper.tex >/dev/null && /opt/homebrew/bin/exiftool -S -Author paper.pdf",
+    "output": "Author: Jane Smith"
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf '%s\\n' '\\documentclass{article}' '\\usepackage[pdfusetitle]{hyperref}' '\\title{Trust in Phishing Warnings}' '\\author{Jane Smith}' '\\hypersetup{pdfauthor={}}' '\\begin{document}' '\\maketitle' 'Text.' '\\end{document}' > paper.tex && pdflatex -interaction=nonstopmode paper.tex >/dev/null && /opt/homebrew/bin/exiftool -S -Author paper.pdf",
+    "output": "Author: Jane Smith"
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf '%s\\n' '\\documentclass{article}' '\\usepackage[pdfusetitle]{hyperref}' '\\title{Trust in Phishing Warnings}' '\\author{Jane Smith}' '\\hypersetup{pdfauthor={Anonymous}}' '\\begin{document}' '\\maketitle' 'Text.' '\\end{document}' > paper.tex && pdflatex -interaction=nonstopmode paper.tex >/dev/null && /opt/homebrew/bin/exiftool -S -Author paper.pdf",
+    "output": "Author: Anonymous"
+   }
+  ],
+  "docs": [
+   "https://ctan.org/pkg/hyperref",
+   "https://exiftool.org/"
+  ],
+  "notes": "Run 2026-10-30 on the Mac mini with TinyTeX pdflatex (TeX Live) and Homebrew exiftool 13.55, in a fresh mktemp folder. A minimal article with \\usepackage[pdfusetitle]{hyperref} and \\author{Jane Smith} writes Jane Smith into the PDF Author field. Setting \\hypersetup{pdfauthor={}} does not clear it (pdfusetitle refills an empty pdfauthor from \\author), so the video does not suggest it; \\hypersetup{pdfauthor={Anonymous}} before \\begin{document} does. Removing the pdfusetitle option also left Author empty in a separate run. The on-screen command drops the full /opt/homebrew/bin path. The hyperref manual on CTAN documents pdfusetitle and pdfauthor; exiftool.org documents exiftool. The Paper Review page states the free check looks for anonymity leftovers and every tier runs an anonymity scan for double-blind submission (author names, institutions, funders, protocol numbers and self-citations left in the text); the app scene claims only that."
+ },
+ "scenes": [
+  {
+   "type": "hook",
+   "short": true,
+   "kicker": "Double-blind review",
+   "title": "Your name is still in the PDF",
+   "sub": "Not on the page. In the file's properties.",
+   "narration": "You took your name off the title page for a double-blind review. But the PDF itself can still list you as the author, in its properties, where any reviewer can look."
+  },
+  {
+   "type": "symptom",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ exiftool -S -Author paper.pdf",
+    "Author: Jane Smith"
+   ],
+   "narration": "Here is a paper built with LaTeX. Exiftool reads the file's Author field, and it still says Jane Smith."
+  },
+  {
+   "type": "cause",
+   "text": "The hyperref option pdfusetitle copies your \\author line into the PDF Author field.",
+   "narration": "Many templates load hyperref with the option p d f use title. It copies your author line into the PDF's properties. Setting the author to an empty value does not help, because the option fills an empty field again."
+  },
+  {
+   "type": "steps",
+   "short": true,
+   "label": "In your .tex file",
+   "lines": [
+    "\\hypersetup{pdfauthor={Anonymous}}",
+    "\\begin{document}"
+   ],
+   "ui": "Add the first line just above \\begin{document}, then rebuild. Removing pdfusetitle also works.",
+   "narration": "In your main tex file, add hypersetup with p d f author set to Anonymous, before begin document. Then rebuild the PDF. Removing the p d f use title option works too."
+  },
+  {
+   "type": "check",
+   "short": true,
+   "label": "Terminal",
+   "ok": "Author field cleared",
+   "lines": [
+    "$ exiftool -S -Author paper.pdf",
+    "Author: Anonymous"
+   ],
+   "narration": "Run exiftool again. The Author field now says Anonymous. Check the file name too, before you upload."
+  },
+  {
+   "type": "app",
+   "name": "Paper Review",
+   "line": "A free check looks for anonymity leftovers. Every review scans for names, institutions and self-citations left in the text.",
+   "url": "purplelink.llc/tools/paper-review",
+   "img": "site/assets/tool-shots/paper-review-sample.webp",
+   "narration": "Before a double-blind submission, Paper Review's free check looks for anonymity leftovers in your manuscript. Every paid review also scans for author names, institutions, funders and self-citations left in the text."
+  }
+ ],
+ "thumbs": {
+  "A": {
+   "kind": "error",
+   "pill": "PDF properties",
+   "msg": "Author: Jane Smith"
+  },
+  "B": {
+   "kind": "long",
+   "pill": "Double-blind review",
+   "msg": "Hide your name in the PDF",
+   "n": 1,
+   "unit": "line",
+   "sub": "of LaTeX before you submit"
+  },
+  "C": {
+   "kind": "product",
+   "name": "Paper Review",
+   "line": "Check anonymity before you submit",
+   "img": "site/assets/tool-shots/paper-review-sample.webp",
+   "zoom": 1.2,
+   "pos": "30% 40%"
+  }
+ }
+}

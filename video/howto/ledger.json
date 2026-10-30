@@ -270,5 +270,35 @@
    "ok": true,
    "utm_content": "howto-unicode-character-not-set-up-for-latex-reel"
   }
+ },
+ {
+  "slug": "howto-author-name-in-pdf-properties-double-blind",
+  "app": "paper-review",
+  "date": "2026-10-30",
+  "title": "Your name in the PDF Author field on Mac (hide it for double-blind review in LaTeX)",
+  "long_id": "tVAoA_afgls",
+  "short_id": "1MiQNOcVxC4",
+  "link_arm": "A",
+  "link_utm_content": "howto-author-name-in-pdf-properties-double-blind",
+  "short_utm_content": "howto-author-name-in-pdf-properties-double-blind-short",
+  "sources": [
+   "https://www.conftool.net/ctforum/index.php/topic,152.0.html",
+   "https://www.openlibhums.org/site/anonreview/",
+   "https://journals.ed.ac.uk/lithicstudies/about/submissions/blindreview"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "tVAoA_afgls",
+    "caption_id": "AUieDaZPp_BM1JbrDkc1Syld62nZBgldcWGGAvao4glpq9JVABVryZkP"
+   },
+   "short": {
+    "video_id": "1MiQNOcVxC4",
+    "caption_id": "AUieDabGPqVh66AHTEHDr5oTr2zdj5H-600-6DD2d_G2mUu2Vy1ln6OU"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-author-name-in-pdf-properties-double-blind-reel"
+  }
  }
 ]
