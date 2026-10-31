@@ -772,6 +772,14 @@
   status = 200
   force = true
 
+# The free Mac wallpaper pack (/photography/wallpapers/): JPEGs and zips are served from the wallpaper-files Blobs store
+# through wallpaper-download, which also counts downloads in wallpaper-stats. scripts/photo_wallpapers.py uploads them.
+[[redirects]]
+  from = "/photography/wallpapers/files/*"
+  to = "/.netlify/functions/wallpaper-download?file=:splat"
+  status = 200
+  force = true
+
 # Public image host for the social poster (Threads fetches images from a public URL). Read-only, served from the
 # dedicated social-media Blobs store by social-media.mjs; only <40 hex>.png|jpg|jpeg keys resolve.
 [[redirects]]
