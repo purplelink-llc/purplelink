@@ -1,0 +1,208 @@
+/* /tools/ index: a reference index rather than a card wall.
+   Every tool is one row on the same three-column grid (name, what it does, price and where it runs), grouped
+   by task. A rail on the left lists the groups with counts and marks the one in view (tools-index.js). Every
+   rule is scoped to .tools-index because .tool-card and .tool-card-lg also style other pages. */
+
+.tools-index {
+  --tix-topbar: 64px;          /* the sticky .topbar; tools-index.js writes the measured height */
+  --tix-name: minmax(0, 15.5rem);
+  --tix-meta: 7.25rem;
+  --tix-gap: 28px;
+  --tix-hover: color-mix(in oklch, var(--purple) 8%, transparent);
+}
+
+.tix { max-width: 1160px; margin: 0 auto; padding: 0 24px 24px; }
+.tools-index .back-link { margin-top: 16px; padding-left: 0; padding-right: 0; }
+
+/* ─── Hero: left-aligned, on the same edge as the list ─────────────────── */
+
+.tix-hero { max-width: 760px; padding: clamp(28px, 5vw, 56px) 0 clamp(28px, 4vw, 44px); }
+.tix-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.3rem, 5vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1.03;
+  letter-spacing: -0.03em;
+  margin: 0 0 18px;
+  text-wrap: balance;
+}
+.tix-lede { font-size: clamp(1.05rem, 1.4vw, 1.2rem); line-height: 1.55; color: var(--ink); margin: 0 0 12px; max-width: 60ch; text-wrap: pretty; }
+.tix-note { font-size: 0.95rem; line-height: 1.6; color: var(--muted); margin: 0; max-width: 66ch; text-wrap: pretty; }
+
+/* ─── Layout: rail + list ──────────────────────────────────────────────── */
+
+.tix-layout { display: grid; grid-template-columns: 196px minmax(0, 1fr); gap: clamp(32px, 4vw, 64px); align-items: start; }
+.tix-main { min-width: 0; }
+
+.tix-rail { position: sticky; top: calc(var(--tix-topbar) + 20px); padding-top: 18px; }
+.tix-rail ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.tix-rail a {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding: 7px 10px; margin: 0 -10px; border-radius: 7px;
+  color: var(--muted); font-size: 0.93rem; font-weight: 500; text-decoration: none;
+  transition: background-color 0.16s ease-out, color 0.16s ease-out;
+}
+.tix-rail a:hover { color: var(--ink); background: var(--tix-hover); }
+.tix-rail a[aria-current="true"] { color: var(--ink); background: color-mix(in oklch, var(--purple) 14%, transparent); }
+.tix-count { font-variant-numeric: tabular-nums; font-size: 0.84rem; color: var(--muted); }
+.tix-rail a[aria-current="true"] .tix-count { color: var(--purple); }
+.tix-rail a[data-empty] { opacity: 0.45; }
+
+/* ─── Search: sticks under the topbar while the list scrolls ──────────── */
+
+.tools-index .tix-search {
+  position: sticky; top: var(--tix-topbar); z-index: 20;
+  max-width: none; margin: 0; padding: 18px 0 6px; text-align: left;
+  background: var(--bg);
+}
+.tools-index .tix-search input[type="search"] {
+  min-height: 52px; padding: 0 76px 0 46px;
+  border: 1px solid var(--field-line); border-radius: 7px;
+  background: var(--panel); font-size: 1rem;
+}
+.tools-index .tix-search input[type="search"]::placeholder { color: var(--muted); opacity: 1; }
+.tools-index .tix-search input[type="search"]:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-color: var(--purple); }
+.tix-search-icon { position: absolute; left: 16px; top: 35px; color: var(--muted); pointer-events: none; }
+.tix-key {
+  position: absolute; right: 14px; top: 31px;
+  padding: 2px 7px; border: 1px solid var(--line); border-radius: 5px;
+  font: 600 0.75rem/1.4 var(--font-body); color: var(--muted); background: var(--bg);
+  pointer-events: none;
+}
+.tix-search:focus-within .tix-key { visibility: hidden; }
+@media (hover: none) { .tix-key { display: none; } }
+.tools-index .list-filter-status { margin: 8px 0 0; min-height: 1.4em; font-size: 0.88rem; }
+
+/* Recently used (site.js fills it): one quiet line of text links, not a row of chips. */
+.tools-index .recent-tools { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 18px; max-width: none; margin: 2px 0 0; justify-content: flex-start; }
+.tools-index .recent-tools-label { font-size: 0.88rem; color: var(--muted); letter-spacing: 0; text-transform: none; font-weight: 500; }
+.tools-index .recent-tools .tool-chip {
+  min-height: 0; padding: 0; border: 0; border-radius: 0; background: none;
+  font-size: 0.9rem; font-weight: 600; color: var(--purple);
+  text-decoration: underline; text-decoration-color: color-mix(in oklch, var(--purple) 35%, transparent); text-underline-offset: 3px;
+}
+.tools-index .recent-tools .tool-chip:hover { text-decoration-color: currentColor; }
+
+/* ─── Groups ───────────────────────────────────────────────────────────── */
+
+.tools-index .tix-group { max-width: none; margin: clamp(40px, 5vw, 60px) 0 0; padding: 0; }
+.tools-index .tix-group:first-of-type { margin-top: 28px; }
+.tools-index .tix-group .tools-section-heading {
+  font-size: clamp(1.45rem, 2.3vw, 1.8rem); font-weight: 700; letter-spacing: -0.02em;
+  text-align: left; margin: 0 0 6px;
+  /* Lands just under the sticky search: topbar + search (about 104px), minus the html scroll-padding-top
+     that styles.css already applies (96px, 130px under 720px). */
+  scroll-margin-top: calc(var(--tix-topbar) + 116px - 96px);
+}
+@media (max-width: 720px) {
+  .tools-index .tix-group .tools-section-heading { scroll-margin-top: calc(var(--tix-topbar) + 116px - 130px); }
+}
+.tools-index .tix-group .tools-section-intro { text-align: left; margin: 0 0 18px; max-width: 64ch; }
+
+/* ─── Rows ─────────────────────────────────────────────────────────────── */
+
+.tix-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.tix-list > li { border-bottom: 1px solid var(--line); }
+.tix-list > li:has(> [hidden]) { display: none; }
+
+.tools-index a.tool-card {
+  display: grid;
+  grid-template-columns: var(--tix-name) minmax(0, 1fr) var(--tix-meta);
+  column-gap: var(--tix-gap);
+  align-items: baseline;
+  padding: 15px 12px; margin: 0 -12px;
+  border: 0; border-radius: 7px; background: transparent; box-shadow: none; transform: none;
+  color: var(--ink); text-decoration: none;
+  transition: background-color 0.16s ease-out;
+}
+.tools-index a.tool-card:hover { background: var(--tix-hover); transform: none; box-shadow: none; }
+.tools-index a.tool-card h3 {
+  font-family: var(--font-display); font-size: 1.06rem; font-weight: 600; line-height: 1.3;
+  margin: 0; letter-spacing: -0.005em; transition: color 0.16s ease-out;
+}
+.tools-index a.tool-card:hover h3 { color: var(--purple); }
+.tools-index a.tool-card p { margin: 0; font-size: 0.94rem; line-height: 1.5; color: var(--muted); text-wrap: pretty; }
+
+.tool-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; text-align: right; }
+.tools-index .tool-card-price { font-size: 0.88rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tix-paid .tool-card-price { color: var(--purple); }
+.tools-index .tool-where { font-size: 0.8rem; font-weight: 500; color: var(--muted); white-space: nowrap; }
+.tix-note .tool-where { font-size: inherit; color: var(--ink); font-weight: 600; white-space: normal; }
+
+/* ─── Paper Review: the one featured item, copy beside its sample report ─ */
+
+.tools-index .tix-feature {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: clamp(20px, 3vw, 40px); align-items: center;
+  padding: clamp(20px, 3vw, 32px); margin: 0 0 22px;
+  border: 1px solid color-mix(in oklch, var(--purple) 30%, var(--line)); border-radius: 16px;
+  background: color-mix(in oklch, var(--purple) 6%, var(--panel));
+  overflow: hidden;
+  transition: border-color 0.2s ease-out, transform 0.2s ease-out;
+}
+.tools-index .tix-feature:hover { transform: translateY(-1px); border-color: var(--purple-dim); box-shadow: var(--elev-2); }
+.tix-feature-copy { display: flex; flex-direction: column; gap: 10px; }
+.tools-index .tix-feature h3 { font-family: var(--font-display); font-size: clamp(1.5rem, 2.4vw, 1.9rem); margin: 0; letter-spacing: -0.02em; }
+.tix-feature-text { color: var(--muted); line-height: 1.55; text-wrap: pretty; }
+.tools-index .tix-feature .tool-card-lg-price { font-size: 1rem; }
+.tools-index .tix-feature .tool-card-lg-cta { margin-top: 4px; padding-top: 0; }
+.tix-feature-shot { margin: 0; box-shadow: var(--elev-2); }
+.tix-feature-shot img { display: block; width: 100%; height: auto; }
+
+/* ─── Mac apps: the two items that carry a picture ─────────────────────── */
+
+.tix-apps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.tools-index .tix-app {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 0 0 22px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
+  background: var(--panel);
+  transition: border-color 0.2s ease-out, transform 0.2s ease-out;
+}
+.tools-index .tix-app:hover { transform: translateY(-1px); border-color: var(--purple-dim); box-shadow: var(--elev-2); }
+.tools-index .tix-app > :not(.tix-app-shot) { margin-left: 22px; margin-right: 22px; }
+.tix-app-shot { margin: 0 0 10px; border-radius: 0; border-width: 0 0 1px; }
+.tix-app-shot img { display: block; width: 100%; height: auto; border-radius: 0; }
+.tools-index .tix-app h3 { font-family: var(--font-display); font-size: 1.35rem; margin: 0; }
+.tix-app-text { color: var(--muted); line-height: 1.5; }
+.tools-index .tix-app .tool-card-lg-price { margin-top: auto; padding-top: 6px; font-family: var(--font-body); font-size: 0.9rem; font-weight: 600; }
+
+/* ─── Prose, FAQ and tip line sit on the list's left edge ──────────────── */
+
+.tools-index .tix-prose, .tools-index .tix-faq { max-width: 68ch; margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0; }
+.tools-index .tix-prose { margin-top: clamp(48px, 6vw, 72px); }
+.tools-index .tix-support { text-align: left; margin-left: 0; padding-left: 0; }
+
+/* ─── Narrow screens ───────────────────────────────────────────────────── */
+
+@media (max-width: 1000px) {
+  .tools-index { --tix-name: minmax(0, 12rem); --tix-gap: 20px; }
+}
+
+@media (max-width: 900px) {
+  .tix-layout { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  /* The rail becomes an index of the groups: two aligned columns of name and count. */
+  .tix-rail { position: static; padding-top: 0; }
+  .tix-rail ol { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; row-gap: 0; border-top: 1px solid var(--line); }
+  .tix-rail li { border-bottom: 1px solid var(--line); }
+  .tix-rail a { margin: 0; padding: 11px 2px; border-radius: 0; min-height: 44px; align-items: center; }
+  /* Stacked above the list, the rail is a table of contents; "in view" means nothing here. */
+  .tix-rail a[aria-current="true"] { background: none; color: var(--muted); }
+  .tix-rail a[aria-current="true"] .tix-count { color: var(--muted); }
+  .tools-index .tix-feature { grid-template-columns: minmax(0, 1fr); }
+  .tix-feature-shot { order: -1; }
+}
+
+@media (max-width: 640px) {
+  .tix { padding-left: 16px; padding-right: 16px; }
+  .tools-index a.tool-card { grid-template-columns: minmax(0, 1fr) auto; row-gap: 3px; column-gap: 16px; padding: 14px 10px; margin: 0 -10px; }
+  .tools-index a.tool-card h3 { grid-column: 1; grid-row: 1; }
+  .tools-index a.tool-card p { grid-column: 1; grid-row: 2; }
+  .tools-index a.tool-card .tool-meta { grid-column: 2; grid-row: 1 / span 2; align-self: start; padding-top: 2px; }
+  .tix-apps { grid-template-columns: minmax(0, 1fr); }
+  .tools-index .tix-search input[type="search"] { padding-right: 16px; }
+  .tix-key { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tix-rail a, .tools-index a.tool-card, .tools-index a.tool-card h3, .tools-index .tix-feature, .tools-index .tix-app { transition: none; }
+  .tools-index .tix-feature:hover, .tools-index .tix-app:hover { transform: none; }
+}

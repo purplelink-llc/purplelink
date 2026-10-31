@@ -3539,235 +3539,350 @@ Title: LaTeX Tools and AI Paper Review for Academics | Purplelink
 
 ← Home
 
-Tools for academics
-
 # LaTeX tools and AI manuscript review
 
-Free in-browser tools for LaTeX, citations and document conversion, plus pay-per-use AI checks for a manuscript before it goes out. The free tools keep a file on our server only while the result is built, then delete it. Some run entirely in your browser. Each paid tool explains its data handling on its own page.
+Free tools for LaTeX, citations and document conversion, plus paid AI checks for a manuscript before it goes out. No account and nothing to install.
+
+The free tools keep a file on our server only while the result is built, then delete it. Tools marked In your browser never upload anything. Each paid tool explains its data handling on its own page.
 
 Filter tools
 
-## AI manuscript review · paid
+Ctrl K
 
-Pay-per-use AI checks for a manuscript before it goes out: $2 to $15 each, no account, deleted soon after delivery. Volume packs are available for labs. See every price on one page.
+## Write in LaTeX
 
-From $9
+Compile, compare and produce figures and tables from .tex sources.
 
-### Paper Review
-
-Four AI reviewers read your manuscript before a journal does: methods, statistics, data integrity and the editor's view, with every reference checked against CrossRef. Markdown report and annotated PDF.
-
-Start a review →
-
-$6
-
-### Response to Reviewers
-
-Red-team your reply letter before it goes back to the editor.
-
-Check my response →
-
-$3
-
-### Citation Gap Analysis
-
-Find the prior work your manuscript should cite and does not.
-
-Find the gaps →
-
-$2
-
-### Anonymity Check
-
-Catch double-blind leaks a desk reject would catch first.
-
-Scan my manuscript →
-
-$2
-
-### Cover Letter
-
-A calibrated draft built from your abstract and target journal.
-
-Draft my letter →
-
-$2
-
-### Revision Review
-
-Confirm your revisions actually addressed the original review.
-
-Check my revision →
-
-From $38
-
-### Volume Packs
-
-Discounted Paper Review tokens for labs and repeat use. Never expire.
-
-See pack pricing →
-
-$5
-
-### Resume Review
-
-Would your resume clear an ATS filter and a real screen?
-
-Start a review →
-
-## LaTeX manuscript tools
-
-Compile, compare, and produce publication-ready artifacts from .tex sources.
+- 
 
 ### LaTeX to PDF
 
-Upload a .tex file and get a compiled PDF. pdfLaTeX or XeLaTeX.
+Upload a .tex file or project zip and get a compiled PDF. pdfLaTeX or XeLaTeX.
+
+Free
+
+- 
 
 ### LaTeX Diff
 
 Upload two versions and get a tracked-changes comparison PDF.
 
+Free
+
+- 
+
 ### Equation Renderer
 
-Paste LaTeX math and download a high-resolution PNG image.
+Paste LaTeX math and download a high-resolution PNG.
+
+Free
+
+- 
 
 ### LaTeX Table Generator
 
-Paste CSV or TSV data and get a clean booktabs LaTeX table.
+Paste CSV or TSV data and get a booktabs LaTeX table.
+
+FreeIn your browser
 
 ## Convert between formats
 
-Move documents in and out of LaTeX, Markdown, and Word.
+Move documents in and out of LaTeX, Markdown and Word.
+
+- 
 
 ### LaTeX to Word
 
 Convert a .tex paper into a standard double-spaced Word manuscript.
 
+Free
+
+- 
+
 ### Word to LaTeX
 
-Upload a .docx and download a .tex starting point via Pandoc.
+Upload a .docx and download a .tex starting point, made with Pandoc.
+
+Free
+
+- 
 
 ### Markdown to PDF or Word
 
 Paste or upload Markdown and download a clean PDF or .docx.
 
+Free
+
+- 
+
 ### File to Markdown
 
-Convert PDF, Word, PowerPoint, Excel, HTML, CSV, or EPUB to clean Markdown.
+PDF, Word, PowerPoint, Excel, HTML, CSV or EPUB to clean Markdown.
+
+Free
+
+- 
 
 ### PDF to Structured Data
 
-Extraction-grade PDF parsing: reading-order Markdown and RAG-ready JSON, with tables, math as LaTeX, and figure captions.
+Reading-order Markdown and JSON from a PDF, with tables, math as LaTeX and figure captions.
 
-## Citations and bibliographies
+Free
 
-Build, verify, and convert reference lists across the major formats.
+## Citations and references
+
+Build, check and convert reference lists.
+
+- 
 
 ### BibTeX Validator
 
-Check citations for missing fields, dead DOIs, and AI hallucinations.
+Check a .bib for missing fields, dead DOIs and references that do not exist.
+
+Free
+
+- 
 
 ### Retraction Checker
 
 Paste references or DOIs and check each against Crossref for retractions.
 
+Free
+
+- 
+
 ### BibTeX Builder
 
 Paste DOIs or arXiv IDs and download a ready-to-use .bib file.
 
+Free
+
+- 
+
 ### Citation Generator
 
-Look up a DOI, ISBN, or arXiv ID and get APA, MLA, Chicago, or IEEE.
-
-### Reference Converter
-
-Convert citations between BibTeX, RIS, and EndNote formats.
-
-### Reference Formats by Venue
-
-What IEEE S&P, USENIX Security, ACM CCS, MISQ, and other venues expect, preset to convert.
-
-## Utilities
-
-A few odds and ends that pair well with the tools above.
-
-### Response Letter Template
-
-Paste the reviewer comments. Each one comes back numbered and quoted, with space for your reply. Markdown, LaTeX or plain text.
-
-### Submission Checklist
-
-Twelve checks before you submit, each with the tool that does it. Progress saved in your browser.
-
-### PDF Tools
-
-Merge, split, and compress PDFs. Merge and split run in your browser.
-
-### Metadata Cleaner
-
-Remove author names, GPS and edit history from photos, PDFs, Office files and video, or cover parts of a picture. Nothing is uploaded.
-
-### Transcript Cleaner
-
-Turn a Zoom or Teams .vtt, an .srt or a labelled .txt into readable text, with speaker names kept if you want them, or keep the timestamps for NVivo or MAXQDA. Nothing is uploaded.
-
-### PII Checker
-
-Paste text and see the email addresses, phone numbers, ID and card numbers it contains, marked in the text. It does not find names. Nothing is uploaded.
-
-### Stock Photo Keyword Cleaner
-
-Lowercase and de-duplicate stock photo keywords, then fit them to Adobe Stock, Shutterstock, Alamy, Vecteezy and Dreamstime. Nothing is uploaded.
-
-### Word Counter
-
-Live word, character, sentence, and reading-time stats in your browser.
-
-### Thesis Format Checker
-
-Margins, font size, embedded fonts, page numbers and line spacing of a thesis PDF, measured in your browser.
-
-### Replication Package Checker
-
-README sections, random seeds, absolute paths and missing data files in a replication package zip, checked in your browser.
-
-### Camera-Ready PDF Checker
-
-Embedded and Type 3 fonts, page size, margins, page numbers and metadata of an accepted paper's final PDF, checked in your browser.
-
-### Academic Email Signature Generator
-
-A signature with your ORCID iD (checked for typos), Google Scholar and lab site, for Apple Mail, Gmail and Outlook. Nothing is uploaded.
-
-### Abstract Checker
-
-Your abstract's word count against the limit of 25 journals and conferences.
-
-## Desktop apps from the same studio
-
-For the work these tools sit next to: writing the manuscript, and keeping track of where it went.
-
-7-day trial, then $19.99 once
-
-### ModernTex for Mac
-
-A native LaTeX editor with synced PDF preview, BibTeX completion by author or title, and a submission check.
-
-See ModernTex →
+Look up a DOI, ISBN or arXiv ID and get APA, MLA, Chicago or IEEE.
 
 Free
 
-### Vitae for Mac
+- 
 
-Submissions, grants, projects and your CV in one local-first app, with an optional Plus subscription.
+### Reference Converter
 
-See Vitae →
+Convert references between BibTeX, RIS and EndNote.
+
+FreeIn your browser
+
+- 
+
+### Reference Formats by Venue
+
+What IEEE S&P, USENIX Security, ACM CCS, MISQ and other venues expect, preset to convert.
+
+Free
+
+## Before you submit
+
+Checks for the week a manuscript, thesis or camera-ready copy goes out.
+
+- 
+
+### Submission Checklist
+
+Twelve checks before you submit, each with the tool that does it. Progress stays in this browser.
+
+FreeIn your browser
+
+- 
+
+### Abstract Checker
+
+Your abstract’s word count against the limits of 25 journals and conferences.
+
+FreeIn your browser
+
+- 
+
+### Thesis Format Checker
+
+Margins, font size, embedded fonts, page numbers and line spacing of a thesis PDF.
+
+FreeIn your browser
+
+- 
+
+### Camera-Ready PDF Checker
+
+Embedded and Type 3 fonts, page size, margins and metadata of an accepted paper’s final PDF.
+
+FreeIn your browser
+
+- 
+
+### Replication Package Checker
+
+README sections, random seeds, absolute paths and missing data files in a replication zip.
+
+FreeIn your browser
+
+- 
+
+### Response Letter Template
+
+Paste the reviewer comments and get each one numbered and quoted, with room for your reply.
+
+FreeIn your browser
+
+## AI manuscript review
+
+Paid, from $2 to $15 a check, with no account. Files are deleted soon after delivery. Volume packs suit labs, and every price is on one page.
+
+From $9
+
+### Paper Review
+
+Four AI reviewers read your manuscript before a journal does: methods, statistics, data integrity and the editor’s view. Every reference is checked against Crossref. You get a Markdown report and an annotated PDF.
+Start a review →
+
+- 
+
+### Response to Reviewers
+
+Red-team your reply letter before it goes back to the editor.
+
+$6
+
+- 
+
+### Citation Gap Analysis
+
+Find the prior work your manuscript should cite and does not.
+
+$3
+
+- 
+
+### Anonymity Check
+
+Find what would break double-blind review before a desk editor does.
+
+$2
+
+- 
+
+### Cover Letter
+
+A draft cover letter built from your abstract and target journal.
+
+$2
+
+- 
+
+### Revision Review
+
+Check that a revision answers each point of the original review.
+
+$2
+
+- 
+
+### Resume Review
+
+Would your resume get through an ATS filter and a real screen?
+
+$5
+
+- 
+
+### Volume Packs
+
+Discounted Paper Review tokens for labs and repeat use. They never expire.
+
+From $38
+
+## Files and privacy
+
+PDF housekeeping, and checks for what a file or a transcript gives away.
+
+- 
+
+### PDF Tools
+
+Merge, split and compress PDFs. Merge and split run in your browser.
+
+Free
+
+- 
+
+### Metadata Cleaner
+
+Remove author names, GPS and edit history from photos, PDFs, Office files and video.
+
+FreeIn your browser
+
+- 
+
+### PII Checker
+
+Mark the email addresses, phone numbers, ID and card numbers in a text. It does not find names.
+
+FreeIn your browser
+
+- 
+
+### Transcript Cleaner
+
+Turn a Zoom or Teams .vtt, an .srt or a labelled .txt into readable text, or keep timestamps for NVivo.
+
+FreeIn your browser
+
+## Everyday utilities
+
+Small jobs that come up around the writing.
+
+- 
+
+### Word Counter
+
+Live word, character, sentence and reading-time counts.
+
+FreeIn your browser
+
+- 
+
+### Academic Email Signature Generator
+
+A signature with your ORCID iD, Google Scholar and lab site, for Apple Mail, Gmail and Outlook.
+
+FreeIn your browser
+
+- 
+
+### Stock Photo Keyword Cleaner
+
+Lowercase and de-duplicate stock photo keywords, then fit them to each agency’s limits.
+
+FreeIn your browser
+
+## Mac apps from the same studio
+
+For the work these tools sit next to: writing the manuscript, and keeping track of where it went.
+
+### ModernTex
+
+A native LaTeX editor for Mac with synced PDF preview, BibTeX completion by author or title, and a submission check.
+7-day trial, then $19.99 once
+
+### Vitae
+
+Submissions, grants, projects and your CV in one local-first Mac app, with an optional Plus subscription.
+Free
 
 ## Privacy-respecting tools, free and paid
 
-The free tools are LaTeX, citation, and conversion utilities for academic authors. They compile to PDF, convert to and from Word, diff versions, validate BibTeX, render equations, and more. They run in your browser against a hosted backend. Your files sit in a temporary folder on our server only while the result is built, then they are deleted, so unpublished manuscripts are not kept.
+The free tools are LaTeX, citation and conversion utilities for academic authors. They compile to PDF, convert to and from Word, diff versions, validate BibTeX, render equations and more. Your files sit in a temporary folder on our server only while the result is built, then they are deleted, so unpublished manuscripts are not kept. Tools marked In your browser do their work on your computer and upload nothing.
 
-The paid Paper Review tool runs an AI red-team review of an uploaded manuscript. That review depends on a third-party language model (Anthropic's Claude API), so its data-handling guarantees differ from the in-house free tools. The Paper Review page lists the retention details before you upload.
+The paid Paper Review tool runs an AI red-team review of an uploaded manuscript. That review depends on a third-party language model (Anthropic’s Claude API), so its data-handling guarantees differ from the in-house free tools. The Paper Review page lists the retention details before you upload.
 
 ## Frequently asked questions
 
@@ -3777,11 +3892,11 @@ The LaTeX and citation utilities are free with no account and no install. The on
 
 Do you store my files?
 
-For the free tools: no. A file sits in a temporary folder on our server only while the result is built, then it is deleted. File contents are not logged. For the paid Paper Review tool, your manuscript is sent to Anthropic's Claude API, which retains inputs for 30 days for abuse monitoring (not for training). Purplelink itself does not retain the manuscript or the resulting review after delivery. See the Paper Review page for full details.
+For the free tools: no. A file sits in a temporary folder on our server only while the result is built, then it is deleted. File contents are not logged. For the paid Paper Review tool, your manuscript is sent to Anthropic’s Claude API, which retains inputs for 30 days for abuse monitoring (not for training). Purplelink itself does not retain the manuscript or the resulting review after delivery. See the Paper Review page for full details.
 
 Do I need to install anything?
 
-No. Every tool runs entirely in your browser against a hosted backend. No LaTeX installation, account, or sign-up is needed.
+No. Every tool runs in your browser, some against a hosted backend. No LaTeX installation, account or sign-up is needed.
 
 If these save you time, you can leave a tip. It helps keep them free and online.
 
