@@ -5458,6 +5458,10 @@ Texifier is the established paid native Mac editor, with an iOS app for writing 
 
 LatteX is a newer editor for macOS and Windows with typesetting built in, so there is no TeX distribution to install. The pages refresh as you pause, and each document is a .tex file on disk. It costs $29.99 once for one device after a 7-day trial, according to its developer's page (read October 17, 2026). The same page says it loads no LaTeX packages or custom class files and does not support \newcommand or TikZ. That rules it out for most Overleaf projects built on a journal template. Choose it if you write short papers, homework or letters and never want to install TeX. I have not tested it.
 
+### Underleaf
+
+Underleaf is a free Mac app, with source code on GitHub, that its developer introduced in May 2026. You point it at a folder of Overleaf projects cloned with Git. It shows each project as synced, ahead, behind or in conflict, and its editor looks like Overleaf's, with a source control panel for commits, pushes, pulls and merge conflicts. That makes it a companion to Overleaf for writing offline, not a replacement. It relies on Overleaf's Git access, a premium feature, and on a local TeX Live. The developer's post says the app was built with an AI model, is not signed (macOS warns about an unidentified developer the first time), and is not actively maintained. The last release on GitHub is 0.2.0, May 2026, and the repository states no license. Read October 31, 2026. I have not tested it. Consider it if you keep using Overleaf with co-authors and want to edit the same projects on a plane.
+
 ### VS Code with LaTeX Workshop
 
 If you already write code in VS Code, the LaTeX Workshop extension gives you a capable LaTeX setup with build recipes, an embedded PDF viewer with SyncTeX, citation completion and Git in the sidebar. Microsoft's Live Share extension lets a co-author join a live editing session. That is the closest a desktop editor gets to Overleaf. However, it is a session you host, not a shared document that is always there. Choose it if VS Code is already open all day.
@@ -5536,7 +5540,7 @@ For a longer look at fourteen Mac editors, including Octree, Texmaker, LyX and o
 
 Is there an offline version of Overleaf for Mac?
 
-No. Overleaf is a web app and there is no Overleaf desktop app for macOS. Overleaf does publish an open-source Community Edition that a lab or department can host on its own server, but that is still a website. Writing LaTeX offline on a Mac means installing a TeX distribution such as MacTeX or TinyTeX and using a local editor.
+No. Overleaf is a web app and there is no Overleaf desktop app for macOS. Overleaf does publish an open-source Community Edition that a lab or department can host on its own server, but that is still a website. Writing LaTeX offline on a Mac means installing a TeX distribution such as MacTeX or TinyTeX and using a local editor. One unofficial option: Underleaf, a free Mac app from an independent developer, opens a folder of Overleaf projects offline and syncs them with Git. It needs Overleaf's premium Git access and a local TeX Live.
 
 What is the best free Overleaf alternative for Mac?
 
@@ -6597,7 +6601,7 @@ EditorPriceRuns onWorks offlinePDF preview and SyncTeXNotable limit
 
 TeXShopFreemacOS onlyYes: compiles locally with MacTeX, no cloudSide-by-side PDF preview, SyncTeX click-to-sourceDated interface, no inline BibTeX autocomplete or plain-language errors
 
-Texifier$39.99 per seatmacOS and iOSYes: bundles its own TeX distributionPDF updates as you type, SyncTeX not statedTracked changes via latexdiff need external tools
+Texifier$39.99 per seat direct, $44.99 on the Mac App Store (US)macOS and iOSYes: bundles its own TeX distributionPDF updates as you type, SyncTeX not statedTracked changes via latexdiff need external tools. Last release 1.9.33, January 2026
 
 OctreeFree tier with limits, paid plan about $10/moWeb, with a Mac wrapperNot stated, the project lives on Octree's servers by defaultNot statedManuscript is on Octree's servers by default
 
@@ -6632,6 +6636,10 @@ OleaflyFree, open source (AGPL-3.0)macOS (Apple Silicon), Windows, LinuxNot stat
 JetBrains IDEs with TeXiFy-IDEA or LaTeX ProTeXiFy-IDEA: free, open source (MIT). LaTeX Pro: paid, 7-day trialPlugins for IntelliJ Platform IDEs, which run on macOS, Windows and LinuxNot statedNot statedNeeds a JetBrains IDE, and TeXiFy-IDEA needs a TeX distribution, not tested
 
 Sources for the added rows, read October 9, 2026. texspark: texspark.io. Oleafly: oleafly.com and its editor documentation. LatteX, read October 17, 2026: its page at getapps.cafe (version 2.1.0); AlternativeTo lists it as a monthly subscription, but the developer's page offers the one-off price. I did not install or test any of the three, and they are in the table only, not in the sections below. All other rows use the facts stated in this guide.
+
+## What about Typst?
+
+Typst is a separate typesetting language with its own compiler, not a LaTeX editor. A .tex file does not open in it, and LaTeX packages do not carry over. Version 0.15.1 came out in July 2026. Most journals still ask for LaTeX or Word source. A few accept Typst: IJIMAI keeps an official Typst template, for example. Check your target journal's author instructions before you switch. If you write in Typst on a Mac, the web app at typst.app and the Tinymist extension for VS Code are the usual starting points. ModernTex is a LaTeX editor and does not compile Typst. Read October 31, 2026.
 
 ## What each option costs per year
 
@@ -6705,7 +6713,7 @@ Pick TeXShop if you want the closest thing to a default and you don't mind the d
 
 ## Texifier (formerly Texpad)
 
-Cost: $39.99 per seat. Platform: macOS + iOS.
+Cost: $39.99 per seat from the developer's store, $44.99 on the Mac App Store (US). Platform: macOS + iOS. Last release: 1.9.33, January 23, 2026 (both read October 31, 2026).
 
 Texifier is the polished Mac-native option that most people who actually shop for a LaTeX editor end up with. It bundles its own TeX distribution (no MacTeX install required). It has incremental typesetting (the PDF updates as you type with no manual compile) and a structure sidebar that maps your manuscript by sections. It also has the best autocomplete-for-LaTeX experience available.
 

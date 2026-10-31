@@ -30,7 +30,7 @@
           "author": { "@id": "https://purplelink.llc/about/#person" },
           "publisher": { "@id": "https://purplelink.llc/#organization" },
           "datePublished": "2026-05-31",
-          "dateModified": "2026-10-22",
+          "dateModified": "2026-10-31",
           "image": "https://purplelink.llc/assets/og/moderntex.png",
           "mainEntityOfPage": "https://purplelink.llc/guides/best-mac-latex-editors/"
         },
@@ -161,6 +161,7 @@
             <li><a href="#short-answer">The short answer</a></li>
             <li><a href="#hands-on">Tested hands-on: TeXShop, TeXstudio, VS Code</a></li>
             <li><a href="#side-by-side">The editors side by side</a></li>
+            <li><a href="#typst">What about Typst?</a></li>
             <li><a href="#cost-per-year">What each option costs per year</a></li>
             <li><a href="#shortlist">The shortlist, one editor at a time</a></li>
             <li><a href="#more-editors">Nine more editors that run on a Mac</a></li>
@@ -216,7 +217,7 @@
             </thead>
             <tbody>
               <tr><td class="u-cell"><strong>TeXShop</strong></td><td class="u-cell">Free</td><td class="u-cell">macOS only</td><td class="u-cell">Yes: compiles locally with MacTeX, no cloud</td><td class="u-cell">Side-by-side PDF preview, SyncTeX click-to-source</td><td class="u-cell">Dated interface, no inline BibTeX autocomplete or plain-language errors</td></tr>
-              <tr><td class="u-cell"><strong>Texifier</strong></td><td class="u-cell">$39.99 per seat</td><td class="u-cell">macOS and iOS</td><td class="u-cell">Yes: bundles its own TeX distribution</td><td class="u-cell">PDF updates as you type, SyncTeX not stated</td><td class="u-cell">Tracked changes via latexdiff need external tools</td></tr>
+              <tr><td class="u-cell"><strong>Texifier</strong></td><td class="u-cell">$39.99 per seat direct, $44.99 on the Mac App Store (US)</td><td class="u-cell">macOS and iOS</td><td class="u-cell">Yes: bundles its own TeX distribution</td><td class="u-cell">PDF updates as you type, SyncTeX not stated</td><td class="u-cell">Tracked changes via latexdiff need external tools. Last release 1.9.33, January 2026</td></tr>
               <tr><td class="u-cell"><strong>Octree</strong></td><td class="u-cell">Free tier with limits, paid plan about $10/mo</td><td class="u-cell">Web, with a Mac wrapper</td><td class="u-cell">Not stated, the project lives on Octree's servers by default</td><td class="u-cell">Not stated</td><td class="u-cell">Manuscript is on Octree's servers by default</td></tr>
               <tr><td class="u-cell"><strong>VS Code + LaTeX Workshop</strong></td><td class="u-cell">Free</td><td class="u-cell">Cross-platform</td><td class="u-cell">Not stated</td><td class="u-cell">SyncTeX preview</td><td class="u-cell">Feels like a code file, not a paper</td></tr>
               <tr><td class="u-cell"><strong>Overleaf</strong></td><td class="u-cell">Free tier (limited compile time, no Git sync), paid plans $98 a year (Student) or $199 a year (Standard), or $25 a month billed monthly</td><td class="u-cell">Browser</td><td class="u-cell">No offline access on the free tier, paid tiers not stated</td><td class="u-cell">Not stated</td><td class="u-cell">Free tier has limited compile time and no Git sync</td></tr>
@@ -237,6 +238,9 @@
           </table>
         </div>
         <p><strong>Sources for the added rows, read October 9, 2026.</strong> texspark: <a href="https://texspark.io/" rel="noopener">texspark.io</a>. Oleafly: <a href="https://oleafly.com/" rel="noopener">oleafly.com</a> and its <a href="https://oleafly.com/docs/editor/" rel="noopener">editor documentation</a>. LatteX, read October 17, 2026: <a href="https://getapps.cafe/app/lattex" rel="noopener">its page at getapps.cafe</a> (version 2.1.0); AlternativeTo lists it as a monthly subscription, but the developer's page offers the one-off price. I did not install or test any of the three, and they are in the table only, not in the sections below. All other rows use the facts stated in this guide.</p>
+
+        <h2 id="typst">What about Typst?</h2>
+        <p><a href="https://typst.app/" rel="noopener">Typst</a> is a separate typesetting language with its own compiler, not a LaTeX editor. A <code>.tex</code> file does not open in it, and LaTeX packages do not carry over. Version 0.15.1 came out in July 2026. Most journals still ask for LaTeX or Word source. A few accept Typst: <a href="https://typst.app/blog/2025/typst-at-ijimai" rel="noopener">IJIMAI keeps an official Typst template</a>, for example. Check your target journal's author instructions before you switch. If you write in Typst on a Mac, the web app at typst.app and the Tinymist extension for VS Code are the usual starting points. ModernTex is a LaTeX editor and does not compile Typst. Read October 31, 2026.</p>
 
         <h2 id="cost-per-year">What each option costs per year</h2>
         <p>Overleaf Standard is $199 a year billed annually, or $25 a month if you pay monthly, which is $300 over twelve months. Overleaf's paid Student plan is $98 a year, or $13 a month billed monthly. Overleaf also lists a Professional plan at $399 a year and discounts for groups at degree-granting institutions. Check <a href="https://www.overleaf.com/user/subscription/plans" rel="noopener">its plans page</a> for your case. ModernTex is free for seven days, then $19.99 once, with updates included. TeXShop is free. Costs for the other editors are listed in the table above.</p>
@@ -295,7 +299,7 @@
         <p><strong>Pick TeXShop if</strong> you want the closest thing to a default and you don't mind the dated interface. Most senior researchers do, in fact, pick TeXShop.</p>
 
         <h2>Texifier (formerly Texpad)</h2>
-        <p><strong>Cost:</strong> $39.99 per seat. <strong>Platform:</strong> macOS + iOS.</p>
+        <p><strong>Cost:</strong> $39.99 per seat from <a href="https://www.texifier.com/osx/buy" rel="noopener">the developer's store</a>, $44.99 on the Mac App Store (US). <strong>Platform:</strong> macOS + iOS. <strong>Last release:</strong> 1.9.33, January 23, 2026 (both read October 31, 2026).</p>
         <p>Texifier is the polished Mac-native option that most people who actually shop for a LaTeX editor end up with. It bundles its own TeX distribution (no MacTeX install required). It has incremental typesetting (the PDF updates as you type with no manual compile) and a structure sidebar that maps your manuscript by sections. It also has the best autocomplete-for-LaTeX experience available.</p>
         <p><strong>What it's good at:</strong> the "it just works" experience. Outline sidebar makes navigating a long manuscript feel natural. The iPad app is usable. Active development.</p>
         <p><strong>What it lacks:</strong> deep bibliography tooling. The BibTeX autocomplete is good but not specifically built for academic writing workflows. Tracked-changes via latexdiff requires external tools.</p>
