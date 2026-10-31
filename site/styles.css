@@ -3773,8 +3773,9 @@ main h2 { font-family: var(--font-display); letter-spacing: -0.02em; }
 .founder-note {
   margin: 2rem 0 2.5rem;
   padding: clamp(22px, 3vw, 32px);
-  border-left: 3px solid var(--purple);
-  border-radius: 0 14px 14px 0;
+  /* A full hairline and a tinted fill set the note apart; no side stripe. */
+  border: 1px solid color-mix(in oklch, var(--purple) 28%, var(--line));
+  border-radius: 14px;
   background: var(--purple-xlight);
 }
 
@@ -4432,7 +4433,7 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 }
 
 /* One-line next step under a free tool's result (revealed by site.js). */
-.tool-next { max-width: 820px; margin: 16px auto 0; padding: 12px 16px; border-left: 3px solid var(--purple); border-radius: 0 10px 10px 0; background: var(--purple-xlight); color: var(--ink); font-size: 0.93rem; }
+.tool-next { max-width: 820px; margin: 16px auto 0; padding: 12px 16px; border: 1px solid color-mix(in oklch, var(--purple) 28%, var(--line)); border-radius: 10px; background: var(--purple-xlight); color: var(--ink); font-size: 0.93rem; }
 .tool-next[hidden] { display: none; }
 
 /* ─── Feedback page ───────────────────────────────────────────────────── */
@@ -5509,7 +5510,7 @@ dialog, [role="dialog"], [aria-modal="true"], .sales-scroll { overscroll-behavio
 .list-signup .list-signup-status:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
 
 /* Affiliate disclosure: one plain sentence under the title of any page, or digest issue, that carries a tracked link. */
-.aff-disclosure { margin: 0 0 20px; padding-left: 12px; border-left: 2px solid var(--line); font-size: 0.875rem; line-height: 1.5; color: var(--muted); }
+.aff-disclosure { margin: 0 0 20px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 0.875rem; line-height: 1.5; color: var(--muted); }
 
 /* Affiliate label: small marker right after each tracked link, so the notice sits next to the link it describes. */
 .aff-label { margin-left: 0.25em; font-size: 0.8125rem; font-weight: 400; font-style: normal; color: var(--muted); white-space: nowrap; }
