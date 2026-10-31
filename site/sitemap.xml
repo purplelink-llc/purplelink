@@ -14,7 +14,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/batterymeter/</loc>
-    <lastmod>2026-10-31</lastmod>
+    <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -664,7 +664,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/guides/best-keyboard-sound-apps-for-mac/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -676,7 +676,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/guides/best-mac-latex-editors/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -736,7 +736,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/guides/check-mac-battery-health-voltage-and-cycle-count/</loc>
-    <lastmod>2026-10-31</lastmod>
+    <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -1012,7 +1012,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/guides/move-overleaf-project-to-mac-with-git/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -1036,7 +1036,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/guides/overleaf-alternative-mac/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -1181,6 +1181,12 @@
   <url>
     <loc>https://purplelink.llc/guides/word-to-latex/</loc>
     <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://purplelink.llc/guides/zotero-latex-mac/</loc>
+    <lastmod>2026-10-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -1376,7 +1382,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/outbound-veil/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-10-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
