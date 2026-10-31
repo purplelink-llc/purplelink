@@ -1,10 +1,12 @@
 """Thin-page prune, 2026-10-12: photography place pages are noindex,follow (the kits stay indexable by decision)
-and out of sitemap.xml; the digest is crawlable so its noindex can be read."""
+and out of sitemap.xml; the digest is crawlable so its noindex can be read.
+Exception (Ben, 2026-10-31): the Atlanta page, 33 photographs and its own text, is indexable ("index": true)."""
 import re
 import unittest
 from common import SITE, ORIGIN, has_noindex, sitemap_paths
 
 HUB_DIRS = {"calendars", "license"}
+INDEXED_PLACES = {"/photography/united-states/atlanta/"}
 
 
 def place_pages():
@@ -30,8 +32,12 @@ class PhotographyPlaces(unittest.TestCase):
         paths = sitemap_paths()
         for f in place_pages():
             text = f.read_text(encoding="utf-8")
-            self.assertIn('<meta name="robots" content="noindex, follow">', text, f)
             url = "/" + f.parent.relative_to(SITE).as_posix() + "/"
+            if url in INDEXED_PLACES:
+                self.assertIn('<meta name="robots" content="index, follow">', text, f)
+                self.assertIn(url, paths, url)
+                continue
+            self.assertIn('<meta name="robots" content="noindex, follow">', text, f)
             self.assertNotIn(url, paths, url)
 
     def test_hubs_stay_indexable_and_listed(self):

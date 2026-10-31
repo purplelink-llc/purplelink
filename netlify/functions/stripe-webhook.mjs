@@ -316,6 +316,22 @@ export function paperReviewOffer(productKey, nowMs = Date.now()) {
   return { text: `${line}\n${url}\n\n`, html: `<p>${line} <a href="${url}">Open Paper Review</a>.</p>` };
 }
 
+// Holiday 2026: the app download emails carry one line about the printable 2027 photo calendars until January 15,
+// when a calendar stops being a sensible gift. Ben approved this exact text on 2026-10-31 (photo-arm plan, idea 3).
+// Stop rule: no calendar sale by December 10 means this line comes out early.
+export const CALENDAR_LINE_LAST_DAY_MS = Date.UTC(2027, 0, 15, 23, 59, 59);
+const CALENDAR_LINE_PRODUCTS = new Set(["moderntex", "moderntex-seats", "outbound-veil", "legroom", "keyfeel", "tapefolio",
+  "panely", "summonly", "app-suite", "bundle-2", "bundle-3"]);
+
+export function calendarOffer(productKey, nowMs = Date.now()) {
+  if (!CALENDAR_LINE_PRODUCTS.has(productKey) || nowMs > CALENDAR_LINE_LAST_DAY_MS) return { text: "", html: "" };
+  const url = `${SITE_ORIGIN}/photography/calendars/?utm_source=app-email&utm_medium=email&utm_campaign=holiday-2026&utm_content=app-email-calendars`;
+  const line =
+    "If you need a small gift this season: I also make printable 2027 wall calendars from my travel photographs " +
+    "(Iceland, Japan, Switzerland and four more), $7 each or all seven for $19.";
+  return { text: `${line}\n${url}\n\n`, html: `<p>${line} <a href="${url}">See the calendars</a>.</p>` };
+}
+
 /**
  * Email the buyer the link that reopens their download page. Stripe's own
  * receipt carries no such link, so a buyer who closed the success tab before
@@ -370,6 +386,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     : "";
   const reviewTextBlock = reviewApp ? `${reviewAsk}\n\n` : "";
   const prOffer = paperReviewOffer(productKey);
+  const calOffer = calendarOffer(productKey);
   const reviewHtmlBlock = reviewApp ? `<p>${reviewAsk}</p>` : "";
   // Mac Suite: say what is on the page, since one link carries six things.
   const suiteText = isSuite
@@ -477,6 +494,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     `One question, if you have a moment: where did you first hear about ${entry.name}? A one-word reply is plenty.\n\n` +
     reviewTextBlock +
     prOffer.text +
+    calOffer.text +
     `Purplelink LLC, Atlanta, Georgia`;
   const html =
     `<p>Thanks for buying ${entry.name}.</p>` +
@@ -494,6 +512,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     `<p>One question, if you have a moment: where did you first hear about ${entry.name}? A one-word reply is plenty.</p>` +
     reviewHtmlBlock +
     prOffer.html +
+    calOffer.html +
     `<p>Purplelink LLC, Atlanta, Georgia</p>`;
   try {
     const resp = await fetch(RESEND_API_URL, {
