@@ -138,7 +138,7 @@ test("CSP: no inline styles or scripts, own assets only", () => {
   assert.doesNotMatch(html, /\sstyle=/i);
   assert.doesNotMatch(html, /<style/i);
   assert.doesNotMatch(html, /\son[a-z]+=/i);
-  const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)];
+  const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script[^>]*>/gi)];
   scripts.forEach(([, attrs, body]) => {
     if (/application\/ld\+json/.test(attrs)) return;
     assert.equal(body.trim(), "", "inline script");
