@@ -472,6 +472,14 @@ Paste a range straight from Excel or Google Sheets and it lands in the right cel
 
 Read more about both on the blog →
 
+## New in 2.1: theorems, and a ZIP for the journal
+
+Two small jobs from the end of a paper, done from the app instead of by hand.
+
+Type ⇧⌘P, then theorem. Insert Theorem puts the environment with a label at the cursor, and adds \usepackage{amsthm} and the \newtheorem line to the preamble when they are missing. Lemma, proposition, corollary, definition, remark and proof work the same way, also from the Insert menu.
+
+File > Export > Project as ZIP collects the main file, every file it reads with \input or \include, the figures, the .bib and .bbl files, and your class and style files. For arXiv it can make one folder with the references rewritten. Nothing in the project is changed.
+
 Your manuscript stays a folder of ordinary .tex and .bib files on your Mac. It builds on your Mac, so there is no compile timeout. There is no account to make and no subscription to cancel.
 
 ## What the manuscript needs

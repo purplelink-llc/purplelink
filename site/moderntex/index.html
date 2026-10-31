@@ -33,7 +33,7 @@
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/moderntex-icon.webp" as="image" fetchpriority="high">
     <script src="/theme.js?v=f0ab0f06a1"></script>
-    <link rel="stylesheet" href="/styles.css?v=0236063989">
+    <link rel="stylesheet" href="/styles.css?v=2290b0cfe5">
     <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
     <link rel="stylesheet" href="/product-flair.css?v=6dc1d15444">
     <link rel="stylesheet" href="/moderntex/seats.css?v=47407c29c2">
@@ -428,6 +428,21 @@
         </div>
       </div>
       <p class="section-intro section-outro"><a href="/blog/tikz-and-tables-without-the-syntax/">Read more about both on the blog →</a></p>
+    </section>
+
+    <section class="screenshots-section mt-pair-section" aria-labelledby="new21-h">
+      <h2 id="new21-h">New in 2.1: theorems, and a ZIP for the journal</h2>
+      <p class="section-intro">Two small jobs from the end of a paper, done from the app instead of by hand.</p>
+      <div class="mt-pair">
+        <figure>
+          <img src="/assets/moderntex-screens/22-theorem-insert.webp" alt="ModernTex's command palette searched for theorem: Insert Theorem is selected, with Insert Proof, Insert Lemma and Insert Remark further down the list" width="562" height="450" decoding="async" loading="lazy">
+          <figcaption>Type <kbd>&#8679;&#8984;P</kbd>, then theorem. Insert Theorem puts the environment with a label at the cursor, and adds <code>\usepackage{amsthm}</code> and the <code>\newtheorem</code> line to the preamble when they are missing. Lemma, proposition, corollary, definition, remark and proof work the same way, also from the Insert menu.</figcaption>
+        </figure>
+        <figure>
+          <img src="/assets/moderntex-screens/23-export-zip.webp" alt="ModernTex's Export Project as ZIP sheet: options to include the compiled PDF and to make one folder for arXiv, and the list of files in the archive: main.tex, figures/ring.pdf, main.bbl, references.bib and sections/proof.tex" width="565" height="525" decoding="async" loading="lazy">
+          <figcaption>File &gt; Export &gt; Project as ZIP collects the main file, every file it reads with <code>\input</code> or <code>\include</code>, the figures, the .bib and .bbl files, and your class and style files. For arXiv it can make one folder with the references rewritten. Nothing in the project is changed.</figcaption>
+        </figure>
+      </div>
     </section>
 
     <div class="flair-statement-wrap">
