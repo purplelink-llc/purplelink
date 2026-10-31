@@ -300,5 +300,35 @@
    "ok": true,
    "utm_content": "howto-author-name-in-pdf-properties-double-blind-reel"
   }
+ },
+ {
+  "slug": "howto-check-if-paper-retracted-doi",
+  "app": "scholar-utility-belt",
+  "date": "2026-10-31",
+  "title": "Retracted paper not marked in Google Scholar on Mac (check the DOI in Terminal)",
+  "long_id": "_AMeBjgwf4w",
+  "short_id": "a9TkdGB9bog",
+  "link_arm": "B",
+  "link_utm_content": "howto-check-if-paper-retracted-doi",
+  "short_utm_content": "howto-check-if-paper-retracted-doi-short",
+  "sources": [
+   "https://libanswers.southernct.edu/faq/366082",
+   "https://community.crossref.org/t/deprecating-retraction-watch-annotations-in-the-labs-api/15884",
+   "https://mclibrary.duke.edu/news/identifying-retracted-journal-articles"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "_AMeBjgwf4w",
+    "caption_id": "AUieDaZ4jPmye3lfhm8KmO7kE-pWWmeo8Y5HQaPCgjKPg70Wh9m7OO4c"
+   },
+   "short": {
+    "video_id": "a9TkdGB9bog",
+    "caption_id": "AUieDaYLG-NfUS-feQQtZnZps6gdd4SVRgga2jyqU7kZTO7hVkWGgIU8"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-check-if-paper-retracted-doi-reel"
+  }
  }
 ]
