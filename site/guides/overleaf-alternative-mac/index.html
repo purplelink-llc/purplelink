@@ -30,7 +30,7 @@
           "author": { "@id": "https://purplelink.llc/about/#person" },
           "publisher": { "@id": "https://purplelink.llc/#organization" },
           "datePublished": "2026-09-24",
-          "dateModified": "2026-10-13",
+          "dateModified": "2026-10-31",
           "image": "https://purplelink.llc/assets/og/overleaf-alternative-mac.png",
           "mainEntityOfPage": "https://purplelink.llc/guides/overleaf-alternative-mac/"
         },
@@ -59,7 +59,7 @@
       "name": "Is there an offline version of Overleaf for Mac?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No. Overleaf is a web app and there is no Overleaf desktop app for macOS. Overleaf does publish an open-source Community Edition that a lab or department can host on its own server, but that is still a website. Writing LaTeX offline on a Mac means installing a TeX distribution such as MacTeX or TinyTeX and using a local editor."
+        "text": "No. Overleaf is a web app and there is no Overleaf desktop app for macOS. Overleaf does publish an open-source Community Edition that a lab or department can host on its own server, but that is still a website. Writing LaTeX offline on a Mac means installing a TeX distribution such as MacTeX or TinyTeX and using a local editor. One unofficial option: Underleaf, a free Mac app from an independent developer, opens a folder of Overleaf projects offline and syncs them with Git. It needs Overleaf's premium Git access and a local TeX Live."
       }
     },
     {
@@ -275,6 +275,9 @@
         <h3>LatteX</h3>
         <p>LatteX is a newer editor for macOS and Windows with typesetting built in, so there is no TeX distribution to install. The pages refresh as you pause, and each document is a .tex file on disk. It costs $29.99 once for one device after a 7-day trial, according to <a href="https://getapps.cafe/app/lattex" rel="noopener">its developer's page</a> (read October 17, 2026). The same page says it loads no LaTeX packages or custom class files and does not support <code>\newcommand</code> or TikZ. That rules it out for most Overleaf projects built on a journal template. <strong>Choose it if</strong> you write short papers, homework or letters and never want to install TeX. I have not tested it.</p>
 
+        <h3>Underleaf</h3>
+        <p><a href="https://github.com/jpughesanford/underleaf" rel="noopener">Underleaf</a> is a free Mac app, with source code on GitHub, that its developer <a href="https://jpughesanford.github.io/posts/2026/05/introducing-underleaf-an-offline-editor-for-overleaf-with-git-integration./" rel="noopener">introduced in May 2026</a>. You point it at a folder of Overleaf projects cloned with Git. It shows each project as synced, ahead, behind or in conflict, and its editor looks like Overleaf's, with a source control panel for commits, pushes, pulls and merge conflicts. That makes it a companion to Overleaf for writing offline, not a replacement. It relies on Overleaf's Git access, a premium feature, and on a local TeX Live. The developer's post says the app was built with an AI model, is not signed (macOS warns about an unidentified developer the first time), and is not actively maintained. The last release on GitHub is 0.2.0, May 2026, and the repository states no license. Read October 31, 2026. I have not tested it. <strong>Consider it if</strong> you keep using Overleaf with co-authors and want to edit the same projects on a plane.</p>
+
         <h3>VS Code with LaTeX Workshop</h3>
         <p>If you already write code in VS Code, the LaTeX Workshop extension gives you a capable LaTeX setup with build recipes, an embedded PDF viewer with SyncTeX, citation completion and Git in the sidebar. Microsoft's Live Share extension lets a co-author join a live editing session. That is the closest a desktop editor gets to Overleaf. However, it is a session you host, not a shared document that is always there. <strong>Choose it if</strong> VS Code is already open all day.</p>
 
@@ -327,7 +330,7 @@
 
       <section class="tool-faq">
         <h2>Frequently asked questions</h2>
-        <details><summary>Is there an offline version of Overleaf for Mac?</summary><div class="faq-body">No. Overleaf is a web app and there is no Overleaf desktop app for macOS. Overleaf does publish an open-source <a href="https://github.com/overleaf/overleaf" rel="noopener">Community Edition</a> that a lab or department can host on its own server, but that is still a website. Writing LaTeX offline on a Mac means installing a TeX distribution such as MacTeX or TinyTeX and using a local editor.</div></details>
+        <details><summary>Is there an offline version of Overleaf for Mac?</summary><div class="faq-body">No. Overleaf is a web app and there is no Overleaf desktop app for macOS. Overleaf does publish an open-source <a href="https://github.com/overleaf/overleaf" rel="noopener">Community Edition</a> that a lab or department can host on its own server, but that is still a website. Writing LaTeX offline on a Mac means installing a TeX distribution such as MacTeX or TinyTeX and using a local editor. One unofficial option: Underleaf, a free Mac app from an independent developer, opens a folder of Overleaf projects offline and syncs them with Git. It needs Overleaf's premium Git access and a local TeX Live.</div></details>
         <details><summary>What is the best free Overleaf alternative for Mac?</summary><div class="faq-body">TeXShop, for most people. It is free, it installs with MacTeX, and it has a synced PDF preview. TeXstudio is the free choice if you also work on Windows or Linux, and VS Code with the LaTeX Workshop extension is the free choice if you already write code in VS Code.</div></details>
         <details><summary>Can I keep using Overleaf with co-authors and edit on my Mac?</summary><div class="faq-body">Yes. The project is the same set of .tex, .bib and image files either way. Overleaf's Git integration and GitHub sync let you pull the project to your Mac, edit locally and push back. However, both are premium features, available on paid plans and through many institutional licences. On a free account you can download the source as a zip and upload changed files by hand.</div></details>
         <details><summary>Will my Overleaf project compile the same way on my Mac?</summary><div class="faq-body">Usually, once you match three settings. Use the same compiler Overleaf used (pdfLaTeX, XeLaTeX or LuaLaTeX), run Biber if the project uses biblatex, and enable shell escape if it uses packages such as minted. Fonts called by name under XeLaTeX or LuaLaTeX must also be installed on the Mac.</div></details>

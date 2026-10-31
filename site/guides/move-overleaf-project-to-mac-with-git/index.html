@@ -34,7 +34,7 @@
         "@id": "https://purplelink.llc/#organization"
       },
       "datePublished": "2026-10-15",
-      "dateModified": "2026-10-15",
+      "dateModified": "2026-10-31",
       "image": "https://purplelink.llc/assets/og/purplelink-card.png",
       "mainEntityOfPage": "https://purplelink.llc/guides/move-overleaf-project-to-mac-with-git/"
     },
@@ -195,6 +195,9 @@ git push</code></pre>
         <h2>Doing this in ModernTex</h2>
         <p>ModernTex has an Overleaf panel for this, opened with Command-Shift-E. It asks for three things: the Git URL from Step 1, a field labelled Email / Username, and a field labelled Password / Token. Following Overleaf's documentation, enter <code>git</code> and the token. Push stages all local changes and uploads them to Overleaf. Pull downloads the latest version, and local changes are committed first so they are not lost. The panel is labelled as an Overleaf Premium feature, matching the plan requirement above. I have not run it against a live Overleaf project for this guide.</p>
         <p>The panel also imports and exports a zip, which works on every plan. For two Macs, or a co-author who uses GitHub or GitLab, Get Changes (Command-Option-G) and Send Changes (Command-Control-S) work with a plain Git remote. Changes Since Last Sync (Command-Option-D) builds a PDF with your edits marked, using latexdiff, which the app can install. It marks the text of <code>.tex</code> files only. The <a href="/moderntex/#coauthors">ModernTex page</a> describes the co-author setup.</p>
+
+        <h2 id="underleaf">Another app built for this: Underleaf</h2>
+        <p><a href="https://github.com/jpughesanford/underleaf" rel="noopener">Underleaf</a> is a free, independent Mac app that wraps this same Git workflow. It lists every cloned Overleaf project in one folder as synced, ahead, behind or in conflict, and has a panel to commit, push, pull and resolve conflicts, next to an Overleaf-style editor. It still needs the paid-plan Git access and the token from Step 1, and a local TeX Live. Its developer's <a href="https://jpughesanford.github.io/posts/2026/05/introducing-underleaf-an-offline-editor-for-overleaf-with-git-integration./" rel="noopener">May 2026 post</a> says it is unsigned and not actively maintained. The latest release is 0.2.0 from May 2026, and no license is stated. Read October 31, 2026; I have not tested it.</p>
 
         <h2>If you are on the free plan</h2>
         <p>Download the source from Overleaf (Menu, Download, Source), work locally, and upload the changed files back, replacing the old versions. It is easy to overwrite a co-author's edit this way, so tell them first. <a href="/guides/overleaf-alternative-mac/">The Overleaf alternatives guide</a> covers the move and the hybrid workflow, and <a href="/guides/overleaf-compile-timeout/">the compile timeout guide</a> covers the free plan's compile limit.</p>
