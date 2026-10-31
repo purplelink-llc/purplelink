@@ -1861,12 +1861,16 @@ Free app · optional Plus from $2.99 a month · v1.10.0 Beta
 
 # Vitae
 
-Academic research management for macOS. Track submissions, grants, projects, collaborators, and your CV in one local-first app. The app is free, with no limits on your record. Vitae Plus is an optional subscription for reports, Word templates and more: $2.99 a month or $23.99 a year, with a 7-day trial, or included for life in the Mac Suite. Notarized, no App Store.
+Academic research management for macOS. Track submissions, grants, projects, collaborators, and your CV in one local-first app. The app is free, with no limits on your record. Vitae Plus is an optional subscription for reports, Word templates and more: $2.99 a month or $23.99 a year, with a 7-day trial, or included for life in the Mac Suite. Download it here or get it from the Mac App Store.
 
 Download for Mac
+
+Download on the
+Mac App Store
+
 Optional Vitae Plus, from $2.99 a month
 
-Requires macOS 15 Sequoia or later · Apple-notarized · Your data stays on your Mac
+Requires macOS 15 Sequoia or later · Apple-notarized download or the Mac App Store · Your data stays on your Mac
 
 Your research record on one screen: projects, papers under review, open revision tasks, your acceptance rate, funding, the next deadlines and the latest decisions. The screenshots on this page use sample data for a fictional researcher.
 
@@ -1880,7 +1884,7 @@ QuestionAnswer
 
 PriceFree. Vitae Plus is optional: $2.99 a month or $23.99 a year, with a 7-day trial. Included for life in the Mac Suite.
 
-PlatformmacOS 15 Sequoia or later. Direct download, Apple-notarized, not on the Mac App Store.
+PlatformmacOS 15 Sequoia or later. Apple-notarized download from this page, or the Mac App Store.
 
 Where the data livesOn your Mac. No account. Vitae Plus can sync the library between your Macs through your private iCloud; it is off until you turn it on.
 
@@ -2009,11 +2013,11 @@ Not from anyone else. The sidebar has one small card, labelled "From Purplelink"
 
 How does Vitae update?
 
-Vitae checks purplelink.llc once a day and asks before installing a new version. Updates are signed, and Vitae refuses any that fail the check. You can turn the daily check off, or check by hand, in Settings under About. Version 0.1, the first release, cannot update itself. If you still have it, download the current version once from this page and it will keep itself up to date after that.
+Vitae checks purplelink.llc once a day and asks before installing a new version. Updates are signed, and Vitae refuses any that fail the check. You can turn the daily check off, or check by hand, in Settings under About. Version 0.1, the first release, cannot update itself. If you still have it, download the current version once from this page and it will keep itself up to date after that. The Mac App Store copy has no update check of its own; the App Store updates it.
 
-Why isn't it on the Mac App Store?
+Is Vitae on the Mac App Store?
 
-Distributing outside the App Store lets me ship faster and avoid App Store restrictions. The DMG is Apple-notarized, so macOS Gatekeeper verifies it is safe to run. Just open the DMG, drag Vitae to Applications, and launch it.
+Yes, as Vitae: Academic CV Tracker. It is the same app with the same features. The App Store copy updates through the App Store and sells Vitae Plus as an App Store subscription, $2.99 a month or $23.99 a year in the US and the local price elsewhere. The download from this page updates itself and sells Plus with a license key, with a 7-day trial and the Mac Suite option. Plus bought one way does not unlock the other copy, because Apple does not allow license keys in App Store apps, so if you already pay for Plus here, keep this download. Both copies open the same library, so you can switch without losing your records. Keep only one copy on a Mac: delete the old one before you install the other.
 
 What macOS version is required?
 
@@ -2025,7 +2029,7 @@ All your records are stored locally on your Mac using SwiftData, with no account
 
 How do I install it?
 
-Download the DMG, open it, drag Vitae into your Applications folder, and launch it. Because it is notarized by Apple, you will not see a Gatekeeper warning.
+Download the DMG, open it, drag Vitae into your Applications folder, and launch it. Because it is notarized by Apple, you will not see a Gatekeeper warning. Or install it from the Mac App Store.
 
 Does Vitae import into Faculty180 or Faculty Success?
 
