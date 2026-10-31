@@ -387,7 +387,7 @@ Or get the Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Pan
 
 “Because you’re an academic you know the game and it shows in your products.” Michael, biologist at Wake Forest University. More from customers
 
-The trial is the full app for seven days, no account, nothing to enter. Buying is $19.99 once, with all updates included, forever (terms). The receipt email includes a permanent license key. After the seven days the app asks for it. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded. Already using the trial? Choose Enter license key in the app, paste the key, and the copy you have unlocks straight away, with no reinstall. Version 1.11.1 · 13 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements. Also in the Mac Suite with Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life, $59.99 once. First ten minutes: install and first build.
+The trial is the full app for seven days, no account, nothing to enter. Buying is $19.99 once, with all updates included, forever (terms). The receipt email includes a permanent license key. After the seven days the app asks for it. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded. Already using the trial? Choose Enter license key in the app, paste the key, and the copy you have unlocks straight away, with no reinstall. Version 2.0.3 · 34 MB disk image · macOS 14 or later · Apple silicon and Intel. Requirements. Also in the Mac Suite with Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Vitae Plus for life, $59.99 once. First ten minutes: install and first build.
 
 ModernTex on a sample manuscript: source on the left, the PDF it builds on the right.
 
@@ -450,7 +450,7 @@ ModernTex finds the root file and lists the project's chapters, figures and .bib
 
 ### Write, and it builds
 
-In Live mode the PDF rebuilds as you type. The sample in this window compiled in half a second, on the Mac, with no server involved.
+In Live mode the PDF rebuilds as you type. The sample in this window compiled in under a second, on the Mac, with no server involved.
 
 - 
 
@@ -529,6 +529,8 @@ Suggested fix
 + Add: \citeauthor{smith2024}
 
 This is an illustrative example, not a capture from the app. The wording varies with the error.
+
+The same kind of mistake in the app: a mistyped \lambda on a sample paper. The button makes the change and builds again.
 
 ## For academic authors
 
