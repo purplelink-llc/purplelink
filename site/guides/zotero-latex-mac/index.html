@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Zotero with LaTeX on a Mac: a .bib that stays current, and citing from Zotero | Purplelink</title>
+    <meta name="description" content="Set up Better BibTeX for stable citation keys, have Zotero keep the project .bib updated, and insert citations from Zotero in VS Code, TeXstudio, TeXShop or ModernTex.">
+    <link rel="canonical" href="https://purplelink.llc/guides/zotero-latex-mac/">
+    <meta property="og:title" content="Zotero with LaTeX on a Mac: a .bib that stays current, and citing from Zotero">
+    <meta property="og:description" content="Stable citation keys with Better BibTeX, a .bib file Zotero keeps current, and how to cite from Zotero in each Mac LaTeX editor.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/zotero-latex-mac/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/guides-zotero-latex-mac.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Zotero with LaTeX on a Mac: a .bib that stays current, and citing from Zotero">
+    <meta name="twitter:description" content="Stable citation keys with Better BibTeX, a .bib file Zotero keeps current, and how to cite from Zotero in each Mac LaTeX editor.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/guides-zotero-latex-mac.jpg">
+    <meta name="twitter:image:alt" content="Zotero with LaTeX on a Mac: a .bib that stays current, and citing from Zotero">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "Zotero with LaTeX on a Mac: a .bib that stays current, and citing from Zotero",
+      "description": "Set up Better BibTeX for stable citation keys, have Zotero keep the project .bib updated, and insert citations from Zotero in VS Code, TeXstudio, TeXShop or ModernTex.",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "datePublished": "2026-10-31",
+      "dateModified": "2026-10-31",
+      "image": "https://purplelink.llc/assets/og/purplelink-card.png",
+      "mainEntityOfPage": "https://purplelink.llc/guides/zotero-latex-mac/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://purplelink.llc/guides/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Zotero with LaTeX on a Mac",
+          "item": "https://purplelink.llc/guides/zotero-latex-mac/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png?v=21c86cc2a8" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Does Zotero have to be open?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, for both routes. Better BibTeX re-exports a kept-updated .bib only while Zotero is running, and every cite-from-Zotero tool, ModernTex included, talks to the running Zotero app on your Mac."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why did my citation keys change?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Zotero's own BibTeX export makes the keys at the moment of export, so correcting an author name or title can change a key and break a \\cite. Better BibTeX keeps keys stable and lets you pin a key to any value."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which export format should I pick, Better BibTeX or Better BibLaTeX?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Match the document. A file with \\bibliographystyle and \\bibliography uses BibTeX, so pick Better BibTeX. A file with \\addbibresource and \\printbibliography uses biblatex, usually with biber, so pick Better BibLaTeX."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can co-authors share one .bib file?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Commit the exported .bib with the project. With Better BibTeX the keys stay the same between exports, so a co-author's \\cite commands keep working. Only one person's Zotero needs to keep the file updated."
+      }
+    }
+  ]
+}
+</script>
+    <script src="/theme.js?v=f0ab0f06a1"></script>
+<link rel="stylesheet" href="/styles.css?v=aaac2137d1">
+    <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
+    <script src="/site.js?v=b053086227" defer></script>
+    <script src="/motion.js?v=d35f4b4ee4" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg?v=2f8bd49b19" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">How-to</p>
+        <h1 class="post-title">Zotero with LaTeX on a Mac: a .bib that stays current, and citing from Zotero</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-31">October 31, 2026</time></p>
+        <p class="post-lede">There are two connections worth making. Zotero keeps a <code>.bib</code> file in your project folder up to date, and you pick items in Zotero to insert a <code>\cite</code> while you write. Both work best with the free Better BibTeX add-on.</p>
+      </div>
+
+      <article class="post-body">
+        <p><strong>Disclosure up front:</strong> I make ModernTex, one of the editors listed below. The Better BibTeX steps work with any editor. They come from <a href="https://retorque.re/zotero-better-bibtex/" rel="noopener">Better BibTeX's documentation</a>, read October 31, 2026, when its latest release was 9.0.74. For the other editors I describe what their makers or users document, and I say where I have not tested something.</p>
+
+        <h2 id="short-answer">The short answer</h2>
+        <p>Install Better BibTeX in Zotero. Export the collection for your paper as Better BibTeX or Better BibLaTeX with Keep updated ticked, saved next to <code>main.tex</code>. Then cite from Zotero in whatever way your editor supports: a picker extension in VS Code, a macro in TeXstudio, drag and drop anywhere, or Cite from Zotero in ModernTex.</p>
+
+        <h2 id="better-bibtex">Step 1: install Better BibTeX for stable keys</h2>
+        <p>Zotero can export BibTeX on its own, but it makes the citation keys at the moment of export. Better BibTeX's documentation lists the problems that causes: fix a typo in an author's name or a title and the key changes, and you cannot see a key until you export. A changed key turns every <code>\cite</code> that used it into an undefined citation.</p>
+        <p>Better BibTeX (BBT) is a free add-on that gives each item a stable key, avoids clashes in a predictable way, and lets you pin a key to any value you choose. It also shows the keys in Zotero's item list. Install it from <a href="https://retorque.re/zotero-better-bibtex/installation/" rel="noopener">its installation page</a>, then restart Zotero.</p>
+
+        <h2 id="keep-updated">Step 2: let Zotero keep the .bib file current</h2>
+        <ol>
+          <li>Put the items for one paper in their own Zotero collection. Exporting a collection is faster than exporting the whole library, which BBT's documentation also recommends.</li>
+          <li>Right-click the collection and choose Export Collection.</li>
+          <li>Pick the format that matches your document (see Step 3) and tick <strong>Keep updated</strong>.</li>
+          <li>Save the file in the project folder, for example as <code>references.bib</code>.</li>
+        </ol>
+        <p>From then on, any change to an item in that collection re-exports the file. Per <a href="https://retorque.re/zotero-better-bibtex/exporting/auto/" rel="noopener">the auto-export documentation</a>, this happens on change or when Zotero goes idle, depending on a BBT setting, and you can review or remove kept-updated exports in BBT's preferences. It runs only while Zotero is open. If Zotero was closed while you edited items elsewhere, open it before you compile.</p>
+
+        <h2 id="format">Step 3: match the export format to the document</h2>
+        <ul>
+          <li><strong><code>\bibliographystyle</code> and <code>\bibliography</code></strong> in the document mean BibTeX (natbib included). Export as <strong>Better BibTeX</strong>.</li>
+          <li><strong><code>\addbibresource</code> and <code>\printbibliography</code></strong> mean biblatex, usually run with biber. Export as <strong>Better BibLaTeX</strong>.</li>
+        </ul>
+        <p>If the PDF shows question marks where the citations should be, the bibliography step did not run or the key is missing from the <code>.bib</code>. The <a href="/latex-errors/citation-undefined/">undefined citation page</a> walks through both causes.</p>
+
+        <h2 id="cite-while-writing">Step 4: cite from Zotero while you write</h2>
+        <p>BBT provides a "Cite as you Write" service that editors call to open Zotero's picker and get back a citation. <a href="https://retorque.re/zotero-better-bibtex/citing/cayw/" rel="noopener">Its page</a> includes a Vim example that calls it on <code>127.0.0.1:23119</code>, the address Zotero listens on, on your own Mac. Here is what I found for the common Mac editors.</p>
+        <div class="u-scroll-x">
+          <table class="u-table-wide">
+            <thead>
+              <tr><th class="u-th" scope="col">Editor</th><th class="u-th" scope="col">How you cite from Zotero</th><th class="u-th" scope="col">Needs Better BibTeX</th><th class="u-th" scope="col">Tested by me</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="u-cell"><strong>Any editor</strong></td><td class="u-cell">Drag items from Zotero into the editor to drop a <code>\cite{key}</code>, after a one-time setup described in <a href="https://retorque.re/zotero-better-bibtex/citing/" rel="noopener">BBT's citation key page</a></td><td class="u-cell">Yes</td><td class="u-cell">No</td></tr>
+              <tr><td class="u-cell"><strong>VS Code</strong></td><td class="u-cell">An extension such as <a href="https://marketplace.visualstudio.com/items?itemName=mblode.zotero" rel="noopener">Citation Picker for Zotero</a>, which calls BBT's picker (last updated September 2026)</td><td class="u-cell">Yes</td><td class="u-cell">No</td></tr>
+              <tr><td class="u-cell"><strong>TeXstudio</strong></td><td class="u-cell">A Zotero Picker macro, added from Macros, Edit Macros, Browse, as described in a <a href="https://forums.zotero.org/discussion/comment/429989" rel="noopener">June 2025 Zotero forum reply</a></td><td class="u-cell">Yes</td><td class="u-cell">No</td></tr>
+              <tr><td class="u-cell"><strong>Vim or Neovim</strong></td><td class="u-cell">The snippet on BBT's Cite as you Write page</td><td class="u-cell">Yes</td><td class="u-cell">No</td></tr>
+              <tr><td class="u-cell"><strong>TeXShop</strong></td><td class="u-cell">No built-in Zotero integration found. Drag and drop works</td><td class="u-cell">For drag and drop</td><td class="u-cell">No</td></tr>
+              <tr><td class="u-cell"><strong>ModernTex (mine)</strong></td><td class="u-cell">Cite from Zotero in the command palette (details below)</td><td class="u-cell">No, but keys are stable only with it</td><td class="u-cell">See below</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="moderntex">Citing from Zotero in ModernTex</h2>
+        <p>ModernTex 2.0 and later have three Zotero commands in the command palette: Cite from Zotero, Update from Zotero and Zotero Settings. Switch on <strong>Connect to Zotero on this Mac</strong> in Settings, under Citations, first. In Zotero, the setting "Allow other applications on this computer to communicate with Zotero" (Settings, Advanced) must be on. ModernTex tells you if it is off.</p>
+        <ul>
+          <li><strong>With Better BibTeX,</strong> Cite from Zotero opens Zotero's own picker. The items you choose are inserted at the cursor as a citation, and any of them missing from the project's <code>.bib</code> are added to it. Entries already in the file are never changed.</li>
+          <li><strong>Without Better BibTeX,</strong> a search window opens in ModernTex instead, and the keys are the ones Zotero's own export makes. Settings says those keys can change when an item is edited and links to Better BibTeX.</li>
+          <li><strong>Update from Zotero</strong> shows how the project's <code>.bib</code> differs from Zotero and applies the changes only after you review them.</li>
+          <li><strong>Group libraries:</strong> items from a group library are cited, but not yet added to the <code>.bib</code>.</li>
+        </ul>
+        <p>ModernTex talks only to Zotero on your own Mac (127.0.0.1), on port 23119, or 24119 for Juris-M, which you can change in Settings. It makes no request until you use a Zotero command or open its Settings section. It never writes to Zotero.</p>
+
+        <h2>If you share the project with co-authors</h2>
+        <p>Commit the exported <code>.bib</code> with the project, or upload it to Overleaf with the rest of the files. Only one person's Zotero needs to keep it updated. With Better BibTeX the keys stay the same between exports, so the <code>\cite</code> commands everyone else wrote keep working. Without it, one edited item can rename a key under a co-author's citation.</p>
+      </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>Does Zotero have to be open?</summary><div class="faq-body">Yes, for both routes. Better BibTeX re-exports a kept-updated .bib only while Zotero is running, and every cite-from-Zotero tool, ModernTex included, talks to the running Zotero app on your Mac.</div></details>
+        <details><summary>Why did my citation keys change?</summary><div class="faq-body">Zotero's own BibTeX export makes the keys at the moment of export, so correcting an author name or title can change a key and break a \cite. Better BibTeX keeps keys stable and lets you pin a key to any value.</div></details>
+        <details><summary>Which export format should I pick, Better BibTeX or Better BibLaTeX?</summary><div class="faq-body">Match the document. A file with \bibliographystyle and \bibliography uses BibTeX, so pick Better BibTeX. A file with \addbibresource and \printbibliography uses biblatex, usually with biber, so pick Better BibLaTeX.</div></details>
+        <details><summary>Can co-authors share one .bib file?</summary><div class="faq-body">Yes. Commit the exported .bib with the project. With Better BibTeX the keys stay the same between exports, so a co-author's \cite commands keep working. Only one person's Zotero needs to keep the file updated.</div></details>
+      </section>
+
+      <!-- moderntex-cta -->
+      <section class="waitlist-section mt-cta">
+        <p class="eyebrow">From the maker of these tools</p>
+        <h2>Writing LaTeX on a Mac?</h2>
+        <p>ModernTex can cite straight from Zotero, add the cited entries to your .bib, and show what changed in Zotero before it updates the file. $19.99 once, after a free trial.</p>
+        <div class="waitlist-actions">
+          <a class="btn btn-primary" href="/.netlify/functions/moderntex-download?src=guide&amp;trial=1" data-track="guide_mtx_trial" data-track-meta="zotero-latex-mac">Try free for 7 days</a>
+          <a class="btn btn-ghost" href="/moderntex/" data-track="guide_mtx_click" data-track-meta="zotero-latex-mac:page">See what it does</a>
+        </div>
+        <p class="waitlist-fine-print">I make ModernTex. $19.99 once after the trial, macOS 14 or later, no account.</p>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools and guides">
+        <h2>Related tools and guides</h2>
+        <ul>
+          <li><a href="/latex-errors/citation-undefined/">Fix an undefined citation</a></li>
+          <li><a href="/tools/bib-validator/">Check a .bib file</a></li>
+          <li><a href="/guides/best-mac-latex-editors/">The best LaTeX editors for Mac</a></li>
+          <li><a href="/guides/overleaf-alternative-mac/">Overleaf alternatives for Mac</a></li>
+          <li><a href="/guides/install-latex-on-mac/">How to install LaTeX on a Mac</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg?v=2f8bd49b19" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/suite/">Mac Suite</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=059b6eb933" defer></script>
+</body>
+</html>

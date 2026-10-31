@@ -29,7 +29,7 @@
 ### ModernTex (macOS)
 - **Platform:** macOS 14+
 - **Category:** Productivity / academic writing
-- **Description:** A native macOS LaTeX manuscript studio for academic researchers. Combines multi-file manuscript editing, tightly synchronized PDF preview, intelligent compile modes (Fast/Live/Full), citation management and BibTeX autocomplete, revision snapshots, plain-language error diagnostics, and submission-readiness checks in one coherent interface.
+- **Description:** A native macOS LaTeX manuscript studio for academic researchers. Combines multi-file manuscript editing, tightly synchronized PDF preview, intelligent compile modes (Fast/Live/Full), citation management and BibTeX autocomplete, citing straight from Zotero (with or without Better BibTeX), revision snapshots, plain-language error diagnostics, and submission-readiness checks in one coherent interface.
 - **Target users:** PhD students, faculty, and technical coauthors writing serious LaTeX manuscripts
 - **Pricing:** Free 7-day trial (the complete app, no account), then $19.99 USD one-time to keep. No subscription. All updates are included, forever. Checkout shows the price in the buyer's local currency where Stripe supports it (the base price stays USD 19.99, the buyer can switch back to US dollars, Stripe's exchange rate includes a 2 to 4 percent conversion fee, paid by the buyer). Payment is by card or Link.
 - **Languages:** The product page is in English, German, French, Brazilian Portuguese, Japanese and Simplified Chinese (links below). The app interface is in English and German (German is a beta, since ModernTex 2.0); it is not available in French or Portuguese. Chinese and Japanese documents compile with XeLaTeX (ctex) and LuaLaTeX (luatexja, jlreq) when the user's TeX installation has those packages.
@@ -482,6 +482,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - Best Chrome extensions for Google Scholar (2026): https://purplelink.llc/guides/best-chrome-extensions-for-google-scholar/ — journal rankings, citation and author metrics, retraction warnings and what each cannot do.
 - Overleaf alternatives for Mac: https://purplelink.llc/guides/overleaf-alternative-mac/ — offline LaTeX editors compared, and how to move a project off Overleaf.
 - Move an Overleaf project to a local Mac editor with Git: https://purplelink.llc/guides/move-overleaf-project-to-mac-with-git/ — clone with the Git address and a token, build with latexmk, push back; Git needs a paid Overleaf plan.
+- Zotero with LaTeX on a Mac: https://purplelink.llc/guides/zotero-latex-mac/ — Better BibTeX for stable keys, a kept-updated .bib export, matching BibTeX or biblatex, and citing from Zotero in VS Code, TeXstudio, TeXShop and ModernTex.
 - Move a Prism project to a Mac before it shuts down: https://purplelink.llc/guides/move-prism-project-to-mac/ — export from Prism as a zip, what the export drops, build with MacTeX or TinyTeX.
 - SyncTeX on Mac: https://purplelink.llc/guides/synctex-on-mac/ — forward and inverse search in TeXShop, Skim, VS Code and ModernTex, and what to check when the jump fails.
 - VS Code and LaTeX Workshop on a Mac: https://purplelink.llc/guides/vscode-latex-workshop-mac/ — install the extension, check latexmk in Terminal, quit with Command-Q, set a PATH in settings.json, and what spawn latexmk ENOENT means.
