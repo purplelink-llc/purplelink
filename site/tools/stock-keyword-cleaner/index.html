@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Stock Photo Keyword Cleaner: Adobe, Shutterstock, Alamy limits | Purplelink</title>
+    <meta name="description" content="Clean stock photo keywords: lowercase, de-duplicate, and fit them to Adobe Stock, Shutterstock, Alamy, Vecteezy and Dreamstime limits. Runs in your browser.">
+    <link rel="canonical" href="https://purplelink.llc/tools/stock-keyword-cleaner/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Stock Photo Keyword Cleaner">
+    <meta property="og:description" content="Clean stock photo keywords and fit them to Adobe Stock, Shutterstock, Alamy, Vecteezy and Dreamstime. Free, in your browser.">
+    <meta property="og:url" content="https://purplelink.llc/tools/stock-keyword-cleaner/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/stock-keyword-cleaner.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Stock Photo Keyword Cleaner">
+    <meta name="twitter:description" content="Clean stock photo keywords and fit them to Adobe Stock, Shutterstock, Alamy, Vecteezy and Dreamstime. Free, in your browser.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/stock-keyword-cleaner.png">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Stock Photo Keyword Cleaner",
+      "url": "https://purplelink.llc/tools/stock-keyword-cleaner/",
+      "description": "Clean stock photo keywords: lowercase, de-duplicate, and fit them to Adobe Stock, Shutterstock, Alamy, Vecteezy and Dreamstime limits. Runs in your browser.",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      }
+    },
+    {
+      "@type": "HowTo",
+      "name": "How to clean stock photo keywords for each agency",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "name": "Paste your keywords",
+          "text": "Paste them from Lightroom, a CSV cell or an agency form. Commas, semicolons and line breaks all work as separators."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Read what was removed",
+          "text": "The line under the box counts the duplicates and generic words that came out. Untick the generic-word box to keep those words."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Copy each agency's list",
+          "text": "Each card shows the list cut to that agency's limit, with what was cut or changed. Copy it into the agency's form or your CSV."
+        },
+        {
+          "@type": "HowToStep",
+          "name": "Build an editorial caption if you need one",
+          "text": "For an editorial photo, fill in the place and date to put the location and date line in front of your caption."
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is my text uploaded?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The keywords are cleaned by JavaScript in this page, and nothing you paste is sent anywhere. The only thing the page sends is an anonymous count that the tool was used, and the notify-me form if you fill it in."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which words count as generic?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Nine words: travel, tourism, nature, summer, outdoor, outdoors, lifestyle, landmark and wilderness. Each was used 98 to 301 times across my own stock portfolio, and none of them appeared in the 238 searches buyers made on my Alamy images in September 2026. That is one portfolio and one month, so the box is a choice, not a rule. Buyers searched for specific places and things instead, such as hyde park london."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Where do the limits come from?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "From each agency's own contributor pages, read on 31 October 2026 and linked on this page. Adobe Stock allows up to 49 keywords. Shutterstock needs 7 to 50. Alamy allows 50 tags, needs at least 5, and up to 10 of them can be supertags. Vecteezy needs 5 to 50 and allows no special characters. Agencies change these, so check the upload form if a number looks wrong."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why is the order kept?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Adobe Stock says the first 10 keywords have the most influence on search ranking, and Alamy asks you to pick supertags by how central they are to the picture. The cleaner keeps your order, so put the main subject first. When a list is too long, the cut comes off the end."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does it change for Vecteezy?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Vecteezy says titles and keywords cannot contain special characters. The cleaner folds accented letters to plain ones (café becomes cafe) and turns any other character into a space, so only letters, digits and spaces are left. Keywords that become the same after that are merged."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the editorial caption format?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Dreamstime says date and location are mandatory in editorial captions. The builder puts a line such as Atlanta, Georgia - October 2026: in front of your caption, which is the form my own editorial uploads use. The day is optional. Other agencies have their own editorial formats, so check theirs before you reuse the caption."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it suggest new keywords?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It only cleans and fits the keywords you give it. Suggesting keywords means looking at the photo, which is what the Mac app below is for."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "https://purplelink.llc/tools/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Stock Photo Keyword Cleaner",
+          "item": "https://purplelink.llc/tools/stock-keyword-cleaner/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png?v=21c86cc2a8" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=f0ab0f06a1"></script>
+    <link rel="stylesheet" href="/styles.css?v=0236063989">
+    <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
+    <script src="/site.js?v=b053086227" defer></script>
+    <script src="/motion.js?v=d35f4b4ee4" defer></script>
+    <link rel="stylesheet" href="/tools/stock-keyword-cleaner/stock-keyword-cleaner.css?v=9d546e2695">
+    <script src="/tools/stock-keyword-cleaner/stock-keyword-cleaner-core.js?v=4a014e9725" defer></script>
+    <script src="/tools/stock-keyword-cleaner/stock-keyword-cleaner.js?v=6ed105613a" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg?v=2f8bd49b19" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">← All tools</a>
+      <div class="tools-hero">
+        <p class="eyebrow">Free web tool</p>
+        <h1>Stock Photo Keyword Cleaner</h1>
+        <p>Paste the keywords for a stock photo. They come back lowercased, with duplicates and a short list of generic words removed, and then fitted to Adobe Stock, Shutterstock, Alamy, Vecteezy and Dreamstime: cut to each agency's limit, with the characters Vecteezy rejects folded out. <strong>Nothing you paste leaves your browser.</strong></p>
+      </div>
+
+      <div class="tool-app sk-app">
+        <div class="sk-box">
+          <label for="sk-input">Keywords</label>
+          <textarea id="sk-input" class="sk-input" spellcheck="false" placeholder="hyde park, london, serpentine lake, autumn, rowing boats"></textarea>
+          <label class="sk-check"><input type="checkbox" id="sk-generic" checked> <span>Remove generic words buyers did not search for (travel, tourism, nature, summer, outdoor, outdoors, lifestyle, landmark, wilderness)</span></label>
+          <div class="sk-row">
+            <button type="button" class="btn btn-ghost sk-small" id="sk-sample">Try a sample</button>
+            <button type="button" class="btn btn-ghost sk-small" id="sk-clear">Clear</button>
+          </div>
+          <p class="sk-status" id="sk-status" role="status" aria-live="polite"></p>
+        </div>
+
+        <section class="sk-results" id="sk-results" aria-labelledby="sk-results-h" hidden>
+          <h2 id="sk-results-h">Cleaned keywords</h2>
+          <div id="sk-summary"></div>
+          <label class="sr-only" for="sk-cleaned">Cleaned keywords, comma separated</label>
+          <textarea id="sk-cleaned" class="sk-out" readonly></textarea>
+          <div class="sk-actions" id="sk-copy-clean"></div>
+          <h2>For each agency</h2>
+          <div class="sk-cards" id="sk-cards"></div>
+        </section>
+
+        <section class="sk-box" aria-labelledby="sk-cap-h">
+          <h2 id="sk-cap-h">Editorial caption</h2>
+          <p class="sk-hint">Only for editorial photos. Dreamstime says date and location are mandatory in editorial captions. This puts them first, as in Atlanta, Georgia - October 2026: followed by your caption.</p>
+          <div class="sk-grid">
+            <div class="sk-field"><label for="sk-city">City or place</label><input id="sk-city" type="text" autocomplete="off" placeholder="Atlanta"></div>
+            <div class="sk-field"><label for="sk-country">State or country</label><input id="sk-country" type="text" autocomplete="off" placeholder="Georgia"></div>
+            <div class="sk-field"><label for="sk-day">Day <span class="sk-opt">(optional)</span></label><input id="sk-day" type="text" inputmode="numeric" maxlength="2" autocomplete="off"></div>
+            <div class="sk-field"><label for="sk-month">Month</label><select id="sk-month"></select></div>
+            <div class="sk-field"><label for="sk-year">Year</label><input id="sk-year" type="text" inputmode="numeric" maxlength="4" autocomplete="off"></div>
+          </div>
+          <div class="sk-field"><label for="sk-cap">Caption</label><textarea id="sk-cap" class="sk-out" placeholder="Fans walk past the stadium before a night game."></textarea></div>
+          <div class="sk-field"><label for="sk-cap-out">Caption with the place and date</label><textarea id="sk-cap-out" class="sk-out" readonly></textarea></div>
+          <p class="sk-note" id="sk-cap-note"></p>
+          <div class="sk-actions" id="sk-cap-copy"></div>
+        </section>
+
+        <form class="sk-notify" id="sk-notify" name="stockroom-notify" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="stockroom-notify">
+          <p hidden><label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+          <h2>A Mac app that writes the keywords too</h2>
+          <p>I am deciding whether to build a Mac app for stock contributors. It would write a caption and keywords for each photo on your Mac, with no upload to a keywording service, apply these agency rules, and export the CSV each agency takes. It does not exist yet. If you want it, leave an email and you will get one message when it ships.</p>
+          <div class="sk-field"><label for="sk-mail">Email</label><input id="sk-mail" name="email" type="email" required autocomplete="email"></div>
+          <fieldset>
+            <legend>Where do you upload? <span class="sk-opt">(optional)</span></legend>
+            <label class="sk-check"><input type="checkbox" name="agency" value="Adobe Stock"> <span>Adobe Stock</span></label>
+            <label class="sk-check"><input type="checkbox" name="agency" value="Shutterstock"> <span>Shutterstock</span></label>
+            <label class="sk-check"><input type="checkbox" name="agency" value="Alamy"> <span>Alamy</span></label>
+            <label class="sk-check"><input type="checkbox" name="agency" value="Getty or iStock"> <span>Getty or iStock</span></label>
+            <label class="sk-check"><input type="checkbox" name="agency" value="Vecteezy"> <span>Vecteezy</span></label>
+            <label class="sk-check"><input type="checkbox" name="agency" value="Dreamstime"> <span>Dreamstime</span></label>
+            <label class="sk-check"><input type="checkbox" name="agency" value="Other"> <span>Other</span></label>
+          </fieldset>
+          <div class="sk-actions"><button type="submit" class="btn btn-primary sk-small">Tell me when it ships</button></div>
+          <p class="sk-note sk-notify-status" id="sk-notify-status" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+
+      <section class="tool-howto">
+        <h2>How to clean stock photo keywords</h2>
+        <ol>
+          <li><strong>Paste your keywords.</strong> Paste them from Lightroom, a CSV cell or an agency form. Commas, semicolons and line breaks all work as separators.</li>
+          <li><strong>Read what was removed.</strong> The line under the box counts the duplicates and generic words that came out. Untick the generic-word box to keep those words.</li>
+          <li><strong>Copy each agency&#x27;s list.</strong> Each card shows the list cut to that agency&#x27;s limit, with what was cut or changed. Copy it into the agency&#x27;s form or your CSV.</li>
+          <li><strong>Build an editorial caption if you need one.</strong> For an editorial photo, fill in the place and date to put the location and date line in front of your caption.</li>
+        </ol>
+      </section>
+
+      <section class="sk-sections" aria-labelledby="sk-src-h">
+        <h2 id="sk-src-h">Where the agency rules come from</h2>
+        <ul class="sk-list-plain">
+          <li><strong>Adobe Stock.</strong> Up to 49 keywords per file. The first 10 have the most influence on search ranking. <span class="sk-src">Source: <a href="https://helpx.adobe.com/stock/contributor/content-policies-guidelines/metadata/tips-effective-titles-keywords.html" rel="noopener">Adobe, Titles and keywords for Adobe Stock</a>. Checked 31 October 2026.</span></li>
+          <li><strong>Shutterstock.</strong> At least 7 keywords and at most 50. <span class="sk-src">Source: <a href="https://submit.shutterstock.com/help/en/articles/10617427-content-publishing-standards-contextual-metadata" rel="noopener">Shutterstock, Content publishing standards: contextual metadata</a>. Checked 31 October 2026.</span></li>
+          <li><strong>Alamy.</strong> At most 50 tags on a new image, at least a caption and 5 tags to go on sale, and up to 10 tags marked as supertags. <span class="sk-src">Source: <a href="https://www.alamy.com/blog/introducing-the-new-alamy-image-manager" rel="noopener">Alamy, Introducing the new Alamy Image Manager</a>. <a href="https://www.alamy.com/blog/tagging-images-on-alamy" rel="noopener">Alamy, Tagging images on Alamy</a>. Checked 31 October 2026.</span></li>
+          <li><strong>Vecteezy.</strong> At least 5 keywords and at most 50, in English. Titles and keywords cannot contain special characters. <span class="sk-src">Source: <a href="https://www.vecteezy.com/blog/contributor/keywording-tips" rel="noopener">Vecteezy, Keywording tips</a>. <a href="https://eezycontributors.zendesk.com/hc/en-us/articles/360037454312-Content-Guidelines-Photo" rel="noopener">Eezy Contributors, Content Guidelines - Photo</a>. Checked 31 October 2026.</span></li>
+          <li><strong>Dreamstime.</strong> Date and location are mandatory in editorial captions. Its keyword limit is not on a page I could read, so this card does not cut the list. <span class="sk-src">Source: <a href="https://www.dreamstime.com/blog/tips-editorial-submissions-28980" rel="noopener">Dreamstime, Tips for editorial submissions</a>. Checked 31 October 2026.</span></li>
+        </ul>
+      </section>
+
+      <section class="tool-faq">
+        <h2>Questions</h2>
+        <details><summary>Is my text uploaded?</summary><div class="faq-body">No. The keywords are cleaned by JavaScript in this page, and nothing you paste is sent anywhere. The only thing the page sends is an anonymous count that the tool was used, and the notify-me form if you fill it in.</div></details>
+        <details><summary>Which words count as generic?</summary><div class="faq-body">Nine words: travel, tourism, nature, summer, outdoor, outdoors, lifestyle, landmark and wilderness. Each was used 98 to 301 times across my own stock portfolio, and none of them appeared in the 238 searches buyers made on my Alamy images in September 2026. That is one portfolio and one month, so the box is a choice, not a rule. Buyers searched for specific places and things instead, such as hyde park london.</div></details>
+        <details><summary>Where do the limits come from?</summary><div class="faq-body">From each agency&#x27;s own contributor pages, read on 31 October 2026 and linked on this page. Adobe Stock allows up to 49 keywords. Shutterstock needs 7 to 50. Alamy allows 50 tags, needs at least 5, and up to 10 of them can be supertags. Vecteezy needs 5 to 50 and allows no special characters. Agencies change these, so check the upload form if a number looks wrong.</div></details>
+        <details><summary>Why is the order kept?</summary><div class="faq-body">Adobe Stock says the first 10 keywords have the most influence on search ranking, and Alamy asks you to pick supertags by how central they are to the picture. The cleaner keeps your order, so put the main subject first. When a list is too long, the cut comes off the end.</div></details>
+        <details><summary>What does it change for Vecteezy?</summary><div class="faq-body">Vecteezy says titles and keywords cannot contain special characters. The cleaner folds accented letters to plain ones (café becomes cafe) and turns any other character into a space, so only letters, digits and spaces are left. Keywords that become the same after that are merged.</div></details>
+        <details><summary>What is the editorial caption format?</summary><div class="faq-body">Dreamstime says date and location are mandatory in editorial captions. The builder puts a line such as Atlanta, Georgia - October 2026: in front of your caption, which is the form my own editorial uploads use. The day is optional. Other agencies have their own editorial formats, so check theirs before you reuse the caption.</div></details>
+        <details><summary>Does it suggest new keywords?</summary><div class="faq-body">No. It only cleans and fits the keywords you give it. Suggesting keywords means looking at the photo, which is what the Mac app below is for.</div></details>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg?v=2f8bd49b19" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/suite/">Mac Suite</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+    <script src="/analytics.js?v=059b6eb933" defer></script>
+  </body>
+</html>
