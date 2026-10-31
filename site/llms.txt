@@ -35,7 +35,7 @@
 - **Languages:** The product page is in English, German, French, Brazilian Portuguese, Japanese and Simplified Chinese (links below). The app interface is in English and German (German is a beta, since ModernTex 2.0); it is not available in French or Portuguese. Chinese and Japanese documents compile with XeLaTeX (ctex) and LuaLaTeX (luatexja, jlreq) when the user's TeX installation has those packages.
 - **Seats for labs and departments:** one license key per seat, bought on https://purplelink.llc/moderntex/#departments. 5 seats $69.95 ($13.99 each), 10 seats $124.90 ($12.49), 15 seats $172.35 ($11.49), 20 seats $209.80 ($10.49), 25 to 500 seats $9.99 each. Invoices and a W-9 on request.
 - **Privacy:** No cloud sync, no data collection
-- **Status:** Shipping. Current version 2.0.2 (October 30, 2026). Every update since the 1.0 launch on September 4, 2026 is listed at https://purplelink.llc/moderntex/#changelog.
+- **Status:** Shipping. Current version 2.0.3 (October 30, 2026). Every update since the 1.0 launch on September 4, 2026 is listed at https://purplelink.llc/moderntex/#changelog.
 - **Trial and purchase:** https://purplelink.llc/moderntex/
 - **Setup guide:** https://purplelink.llc/moderntex/start/ (first ten minutes: install, MacTeX or TinyTeX setup, first build, first error, venue templates, submission checks)
 - **German page (Deutsch):** https://purplelink.llc/de/moderntex/ (ModernTex product page in German; same price, USD 19.99 once, 7-day free trial; the app interface can be shown in German, beta)
