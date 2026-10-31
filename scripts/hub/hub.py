@@ -1363,10 +1363,37 @@ def campaign_report(con, p: dict, today: dt.date | None = None) -> list:
             row["reading"] = f"${spend:.2f} spent, {int(trials)} trial{'s' if trials != 1 else ''}, no orders yet"
         if orders < 30:
             row["reading"] += "; a signal, not a rate (fewer than 30 orders)"
+        row["os"] = campaign_os(p, c, today)
         row["adCheck"] = ad_ctr_check(row["ads"], c.get("adCheck"), today)
         row["decision"] = campaign_decision(c, row, today)
         rows.append(row)
     return rows
+
+
+def campaign_os(p: dict, c: dict, today: dt.date) -> dict:
+    """Operating-system family of the campaign's ad-link pageviews (stats.mjs funnelByContent "os", recorded from
+    2026-10-31), from the smallest funnel window that covers the campaign so far: {family: pageviews}."""
+    try:
+        days = (today - dt.date.fromisoformat(c.get("start") or "")).days + 1
+    except ValueError:
+        return {}
+    win = next((w for w in FUNNEL_WINDOWS if w >= days), FUNNEL_WINDOWS[-1])
+    content = ((load_json(p["funnel"], {}) or {}).get("content") or {}).get(str(win)) or {}
+    out: dict = {}
+    for a in c.get("ads") or []:
+        for fam, n in ((content.get(utm_of(a.get("url", ""), "utm_content")) or {}).get("os") or {}).items():
+            out[fam] = out.get(fam, 0) + n
+    return out
+
+
+def os_line(os_counts: dict) -> str:
+    """'mac 12 of 30 (40%); windows 10, linux 5, ...', or '' when nothing was recorded."""
+    total = sum(os_counts.values())
+    if not total:
+        return ""
+    mac = os_counts.get("mac", 0)
+    rest = ", ".join(f"{k} {v}" for k, v in sorted(os_counts.items(), key=lambda kv: -kv[1]) if k != "mac")
+    return f"mac {mac} of {total} ({mac / total:.0%})" + (f"; {rest}" if rest else "")
 
 
 AD_CHECK_MIN_IMPRESSIONS = 500  # per ad, before a CTR gap can count as "clearly trails"
@@ -2174,6 +2201,8 @@ def cmd_campaigns(a, p):
                   "(first touch restored from the pl_attr cookie, or only checkout's reddit_ad flag)")
         if r.get("redditFlagged") is not None:
             print(f"  checkout reddit_ad flag on {r['redditFlagged']} order{'s' if r['redditFlagged'] != 1 else ''} since the start")
+        line = os_line(r.get("os") or {})
+        print(f"  visitor OS (ad-link pageviews, recorded since 2026-10-31): {line or 'none recorded yet'}")
         print(f"  {r['reading']}. Next reading {r['nextReading'] or 'none left'}.")
         ac = r["adCheck"]
         print(f"  ad check{' (due ' + ac['due'] + ')' if ac['due'] else ''}: {ac['verdict']}")
