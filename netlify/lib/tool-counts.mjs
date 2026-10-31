@@ -18,7 +18,7 @@ export const TOOL_SLUGS = [
   "citation-generator", "cover-letter", "equation-renderer", "file-to-markdown", "latex-diff", "latex-table-generator",
   "latex-to-pdf", "latex-to-word", "markdown-to-pdf", "metadata-cleaner", "paper-review", "pdf-structure", "pdf-tools", "pii-checker",
   "reference-converter", "reproducibility-checker", "response-letter-template", "response-review", "resume-review",
-  "retraction-check", "submission-checklist", "thesis-format-checker", "transcript-cleaner", "word-counter", "word-to-latex",
+  "retraction-check", "stock-keyword-cleaner", "submission-checklist", "thesis-format-checker", "transcript-cleaner", "word-counter", "word-to-latex",
 ];
 export const OUTCOMES = ["ok", "error", "limit"];
 export const OFFER_APPS = ["moderntex", "tapefolio", "outbound-veil", "vitae"];

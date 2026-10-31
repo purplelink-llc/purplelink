@@ -3715,6 +3715,10 @@ Turn a Zoom or Teams .vtt, an .srt or a labelled .txt into readable text, with s
 
 Paste text and see the email addresses, phone numbers, ID and card numbers it contains, marked in the text. It does not find names. Nothing is uploaded.
 
+### Stock Photo Keyword Cleaner
+
+Lowercase and de-duplicate stock photo keywords, then fit them to Adobe Stock, Shutterstock, Alamy, Vecteezy and Dreamstime. Nothing is uploaded.
+
 ### Word Counter
 
 Live word, character, sentence, and reading-time stats in your browser.

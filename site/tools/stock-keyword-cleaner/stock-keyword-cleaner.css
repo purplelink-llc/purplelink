@@ -1,0 +1,54 @@
+/* Stock Photo Keyword Cleaner. External file so the strict CSP permits it. Colors come from the shared tokens. */
+.sk-app { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
+.sk-app [hidden], .sk-sections [hidden] { display: none; }
+.btn.sk-small { padding: 8px 16px; font-size: 0.9rem; min-height: 40px; }
+
+.sk-box { border: 1px solid var(--line); border-radius: 14px; padding: 14px; background: var(--panel); display: grid; gap: 10px; }
+.sk-box label, .sk-field label { font-weight: 600; font-size: 0.95rem; }
+.sk-input, .sk-out, .sk-field input, .sk-field select {
+  width: 100%; box-sizing: border-box; font: inherit; font-size: 0.95rem; line-height: 1.55;
+  padding: 10px 12px; border: 1px solid var(--field-line); border-radius: 10px; background: var(--bg); color: var(--ink);
+}
+.sk-input { min-height: 9rem; resize: vertical; }
+.sk-out { min-height: 5rem; resize: vertical; }
+.sk-input:focus-visible, .sk-out:focus-visible, .sk-field input:focus-visible, .sk-field select:focus-visible { outline: 2px solid var(--purple); outline-offset: 1px; }
+.sk-row, .sk-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.sk-check { display: flex; gap: 8px; align-items: flex-start; font-size: 0.95rem; }
+.sk-check input { margin-top: 0.3em; accent-color: var(--purple); }
+.sk-hint, .sk-note { margin: 0; color: var(--muted); font-size: 0.9rem; overflow-wrap: anywhere; }
+.sk-status { margin: 0; min-height: 1.4em; font-weight: 600; }
+
+.sk-results { display: grid; gap: 14px; min-width: 0; }
+.sk-results h2 { margin: 0; font-family: var(--font-display); font-size: 1.25rem; }
+.sk-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 12px; }
+.sk-card { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; background: var(--panel); display: grid; gap: 10px; align-content: start; min-width: 0; }
+.sk-card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.sk-card h3 { margin: 0; font-size: 1.05rem; }
+.sk-count { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--muted); white-space: nowrap; }
+.sk-count.is-warn { color: var(--ink); border-bottom: 2px solid var(--purple); }
+.sk-kw { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.sk-kw li { padding: 2px 9px; border: 1px solid var(--line); border-radius: 999px; background: var(--bg); font-size: 0.88rem; overflow-wrap: anywhere; }
+.sk-kw li.is-first { font-weight: 600; border-color: var(--purple); background: color-mix(in oklch, var(--purple) 14%, var(--bg)); }
+
+.sk-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 10px; }
+.sk-field { display: grid; gap: 4px; }
+.sk-opt { font-weight: 400; color: var(--muted); }
+
+.sk-sections { max-width: 820px; margin: 32px auto; padding: 0 24px; }
+.sk-sections h2 { font-family: var(--font-display); margin-bottom: 8px; }
+.sk-list-plain { padding-left: 1.2em; display: grid; gap: 10px; margin: 0; }
+.sk-list-plain li { overflow-wrap: anywhere; }
+.sk-src { color: var(--muted); font-size: 0.9rem; }
+.tool-howto a, .tool-faq a, .sk-sections a { color: var(--purple); }
+
+.sk-notify { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; background: var(--panel); display: grid; gap: 12px; }
+.sk-notify h2 { margin: 0; }
+.sk-notify p { margin: 0; }
+.sk-notify fieldset { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.sk-notify legend { font-weight: 600; font-size: 0.95rem; margin-bottom: 6px; }
+.sk-notify-status { min-height: 1.4em; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .sk-kw li { transition: background-color 0.2s, border-color 0.2s; }
+}
+.sk-app .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
