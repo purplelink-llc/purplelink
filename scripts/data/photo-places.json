@@ -578,14 +578,21 @@
             "beltline",
             "truist park",
             "jackson street bridge",
-            "georgia tech"
+            "georgia tech",
+            "north georgia"
           ],
           "intro": "Atlanta is home. The Midtown skyline from Piedmont Park at golden hour, the same skyline in a snowfall, the downtown connector from above, Georgia Tech at dusk, the Botanical Garden in bloom, and, below, the week in July 2025 when the MLB All-Star Game came to Truist Park.",
           "fact": "Truist Park hosted the 2025 MLB All-Star Game on July 15, 2025, the first time Atlanta had the game since 2000.",
           "max": 40,
           "events": true,
           "events_title": "MLB All-Star Week, Truist Park, July 2025",
-          "events_note": "The Home Run Derby and the All-Star Game, from the ballpark. These are available as prints on Fine Art America. They are not licensed for commercial use."
+          "events_note": "The Home Run Derby and the All-Star Game, from the ballpark. These are available as prints on Fine Art America. They are not licensed for commercial use.",
+          "more": [
+            "North Georgia, from a trip in May 2026: a tiered waterfall over a mossy rock face and the layered ridges of the Appalachian foothills.",
+            "The skyline, the snow, the Botanical Garden and the North Georgia pictures are sold as framed and canvas prints in the Atlanta collection on Fine Art America. The All-Star photographs are prints only."
+          ],
+          "faa_collection": "https://fineartamerica.com/profiles/benjamin-ampel?tab=artworkgalleries&artworkgalleryid=1289049",
+          "index": true
         },
         {
           "slug": "san-francisco",
