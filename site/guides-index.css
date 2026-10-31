@@ -1,0 +1,154 @@
+/* /guides/ index: the same reference-index system as /tools/ (tools-index.css).
+   Guides are grouped by topic; each guide is one ruled row in an aligned two-column grid, so rows of different
+   title lengths still share one baseline per row. A rail lists the topics with counts and marks the one in view
+   (guides-index.js). Every rule is scoped to .guides-index because .catalog-card and .guide-grid appear elsewhere. */
+
+.guides-index {
+  --gix-topbar: 64px;          /* the sticky .topbar; guides-index.js writes the measured height */
+  --gix-hover: color-mix(in oklch, var(--purple) 8%, transparent);
+}
+
+.gix { max-width: 1160px; margin: 0 auto; padding: 0 24px 24px; }
+
+/* ─── Hero: left-aligned, on the same edge as the list ─────────────────── */
+
+.gix-hero { max-width: 760px; padding: clamp(36px, 6vw, 72px) 0 clamp(28px, 4vw, 44px); }
+.gix-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.3rem, 5vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1.03;
+  letter-spacing: -0.03em;
+  margin: 0 0 18px;
+  text-wrap: balance;
+}
+.gix-lede { font-size: clamp(1.05rem, 1.4vw, 1.2rem); line-height: 1.55; color: var(--ink); margin: 0; max-width: 62ch; text-wrap: pretty; }
+
+/* ─── Layout: rail + list ──────────────────────────────────────────────── */
+
+.gix-layout { display: grid; grid-template-columns: 196px minmax(0, 1fr); gap: clamp(32px, 4vw, 64px); align-items: start; }
+.gix-main { min-width: 0; }
+
+.gix-rail { position: sticky; top: calc(var(--gix-topbar) + 20px); padding-top: 18px; }
+.gix-rail ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.gix-rail a {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding: 7px 10px; margin: 0 -10px; border-radius: 7px;
+  color: var(--muted); font-size: 0.93rem; font-weight: 500; text-decoration: none;
+  transition: background-color 0.16s ease-out, color 0.16s ease-out;
+}
+.gix-rail a:hover { color: var(--ink); background: var(--gix-hover); }
+.gix-rail a[aria-current="true"] { color: var(--ink); background: color-mix(in oklch, var(--purple) 14%, transparent); }
+.gix-count { font-variant-numeric: tabular-nums; font-size: 0.84rem; color: var(--muted); }
+.gix-rail a[aria-current="true"] .gix-count { color: var(--purple); }
+.gix-rail a[data-empty] { opacity: 0.45; }
+
+/* ─── Search: sticks under the topbar while the list scrolls ──────────── */
+
+.guides-index .gix-search {
+  position: sticky; top: var(--gix-topbar); z-index: 20;
+  max-width: none; margin: 0; padding: 18px 0 6px; text-align: left;
+  background: var(--bg);
+}
+.guides-index .gix-search input[type="search"] {
+  width: 100%; min-height: 52px; padding: 0 76px 0 46px;
+  border: 1px solid var(--field-line); border-radius: 7px;
+  background: var(--panel); color: var(--ink); font: inherit; font-size: 1rem;
+}
+.guides-index .gix-search input[type="search"]::placeholder { color: var(--muted); opacity: 1; }
+.guides-index .gix-search input[type="search"]:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-color: var(--purple); }
+.gix-search-icon { position: absolute; left: 16px; top: 35px; color: var(--muted); pointer-events: none; }
+.gix-key {
+  position: absolute; right: 14px; top: 31px;
+  padding: 2px 7px; border: 1px solid var(--line); border-radius: 5px;
+  font: 600 0.75rem/1.4 var(--font-body); color: var(--muted); background: var(--bg);
+  pointer-events: none;
+}
+.gix-search:focus-within .gix-key { visibility: hidden; }
+@media (hover: none) { .gix-key { display: none; } }
+.guides-index .list-filter-status { margin: 8px 0 0; min-height: 1.4em; font-size: 0.88rem; }
+
+/* ─── Groups ───────────────────────────────────────────────────────────── */
+
+.guides-index .guides-start,
+.guides-index .guides-group { max-width: none; margin: clamp(40px, 5vw, 60px) 0 0; padding: 0; }
+.guides-index .guides-start { margin-top: 28px; }
+.guides-index .guides-group-h {
+  font-family: var(--font-display);
+  font-size: clamp(1.45rem, 2.3vw, 1.8rem); font-weight: 700; letter-spacing: -0.02em;
+  text-align: left; margin: 0 0 6px;
+  /* Lands just under the sticky search: topbar + search (about 104px), minus the html scroll-padding-top
+     that styles.css already applies (96px, 130px under 720px). */
+  scroll-margin-top: calc(var(--gix-topbar) + 116px - 96px);
+}
+.guides-index .guides-start .guides-group-h { margin-bottom: 18px; }
+.gix-intro { color: var(--muted); margin: 0 0 18px; max-width: 64ch; font-size: 0.95rem; }
+
+/* ─── Start here: six topic hubs, ruled cells instead of boxed cards ───── */
+
+.gix-hubs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 28px; border-top: 1px solid var(--line); }
+.guides-index .gix-hubs .catalog-card {
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 16px 0 18px; margin: 0;
+  border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; box-shadow: none; transform: none;
+  color: var(--ink); text-decoration: none;
+  transition: background-color 0.16s ease-out;
+}
+.guides-index .gix-hubs .catalog-card[hidden] { display: none; }
+.guides-index .gix-hubs .catalog-card:hover { background: transparent; border-color: var(--line); box-shadow: none; transform: none; }
+.guides-index .gix-hubs .catalog-card-price { font-size: 0.82rem; font-weight: 600; color: var(--purple); letter-spacing: 0; text-transform: none; }
+.guides-index .gix-hubs .catalog-card h3 { font-family: var(--font-display); font-size: 1.12rem; font-weight: 600; line-height: 1.3; margin: 0; transition: color 0.16s ease-out; }
+.guides-index .gix-hubs .catalog-card:hover h3 { color: var(--purple); }
+.guides-index .gix-hubs .catalog-card p { margin: 0; font-size: 0.92rem; line-height: 1.5; color: var(--muted); }
+
+/* ─── Guide rows ───────────────────────────────────────────────────────── */
+
+.guides-index .guide-grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px; row-gap: 0;
+  list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line);
+}
+.guides-index .guide-grid li { display: flex; border-bottom: 1px solid var(--line); }
+.guides-index .guide-grid li[hidden] { display: none; }
+.guides-index .guide-grid a {
+  flex: 1; display: block;
+  min-height: 0; padding: 13px 12px; margin: 0 -12px;
+  border: 0; border-radius: 7px; background: transparent;
+  color: var(--ink); font-size: 0.97rem; font-weight: 500; line-height: 1.45; text-decoration: none;
+  transition: background-color 0.16s ease-out, color 0.16s ease-out;
+}
+.guides-index .guide-grid a::after { content: none; }
+.guides-index .guide-grid a:hover { background: var(--gix-hover); color: var(--purple); border-color: transparent; }
+
+/* ─── Narrow screens ───────────────────────────────────────────────────── */
+
+@media (max-width: 1000px) {
+  .gix-hubs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 900px) {
+  .gix-layout { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  /* The rail becomes an index of the topics: two aligned columns of name and count. */
+  .gix-rail { position: static; padding-top: 0; }
+  .gix-rail ol { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; row-gap: 0; border-top: 1px solid var(--line); }
+  .gix-rail li { border-bottom: 1px solid var(--line); }
+  .gix-rail a { margin: 0; padding: 11px 2px; border-radius: 0; min-height: 44px; align-items: center; }
+  /* Stacked above the list, the rail is a table of contents; "in view" means nothing here. */
+  .gix-rail a[aria-current="true"] { background: none; color: var(--muted); }
+  .gix-rail a[aria-current="true"] .gix-count { color: var(--muted); }
+}
+
+@media (max-width: 720px) {
+  .guides-index .guides-group-h { scroll-margin-top: calc(var(--gix-topbar) + 116px - 130px); }
+  .guides-index .guide-grid, .gix-hubs { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .gix { padding-left: 16px; padding-right: 16px; }
+  .guides-index .gix-search input[type="search"] { padding-right: 16px; }
+  .gix-key { display: none; }
+  .guides-index .guide-grid a { padding: 12px 10px; margin: 0 -10px; min-height: 44px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gix-rail a, .guides-index .guide-grid a, .guides-index .gix-hubs .catalog-card, .guides-index .gix-hubs .catalog-card h3 { transition: none; }
+}

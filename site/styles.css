@@ -1830,7 +1830,7 @@ dd {
 }
   :where(:root:not([data-theme="light"])) .post-body p,
   :where(:root:not([data-theme="light"])) .post-body ul,
-  :where(:root:not([data-theme="light"])) .post-body ol { color: var(--muted); }
+  :where(:root:not([data-theme="light"])) .post-body ol { color: oklch(87% 0.015 310); }
 
 .post-body h2 {
   font-family: var(--font-display);
@@ -5725,3 +5725,54 @@ dialog, [role="dialog"], [aria-modal="true"], .sales-scroll { overscroll-behavio
   .topbar { background: var(--bg); backdrop-filter: none; -webkit-backdrop-filter: none; border-bottom-color: var(--ink); }
   .btn-ghost, .btn-secondary { border-color: var(--ink); }
 }
+
+/* ─── Long-form pages (guides, blog posts): one reading column, 2026-10-31 ──
+   Everything a post shows runs on the article's left edge: hero, body, the email box, the signature, the FAQ,
+   the related links, and the text of the ModernTex band. The hero drops its glow band for a hairline, and the
+   kicker is set in sentence case like the rest of the site. Same row treatment as the /tools/ and /guides/ indexes. */
+
+.post-hero::before { content: none; }
+/* The rule under the hero spans the text column, like the signature's, not the padded box. */
+.post-hero { border-bottom: 0; padding-bottom: 0; }
+.post-hero::after { content: ""; display: block; height: 1px; margin-top: clamp(28px, 4vw, 40px); background: var(--line); }
+.post-hero .post-title { font-size: clamp(2.3rem, 5.4vw, 4rem); line-height: 1.02; }
+.post-kicker,
+.post-date { font-size: 0.9rem; font-weight: 600; letter-spacing: 0; text-transform: none; }
+.post-kicker img { width: 16px; height: 16px; }
+
+.list-signup--post {
+  width: min(860px, calc(100% - 2 * clamp(24px, 6vw, 80px)));
+  margin: 48px auto 0;
+}
+.post-body ~ .tool-faq,
+.post-body ~ .tool-related {
+  box-sizing: border-box;
+  width: min(860px, calc(100% - 2 * clamp(24px, 6vw, 80px)));
+  max-width: none;
+  margin-inline: auto;
+  padding-inline: 0;
+}
+.post-body ~ .tool-faq { margin-top: 48px; }
+.post-body ~ .mt-cta { padding-left: max(clamp(24px, 6vw, 80px), calc((100% - 860px) / 2)); }
+@media (min-width: 1000px) {
+  .post-body ~ .mt-cta { padding-right: max(50%, calc((100% - 860px) / 2)); }
+}
+
+/* Related links: ruled rows in two aligned columns, not boxed buttons. */
+.tool-related ul { column-gap: 28px; row-gap: 0; border-top: 1px solid var(--line); }
+.tool-related li { border-bottom: 1px solid var(--line); }
+.tool-related li > a {
+  min-height: 44px; padding: 12px 10px; margin: 0 -10px;
+  border: 0; border-radius: 7px; background: transparent;
+  font-weight: 500; font-size: 0.95rem;
+  transition: background-color 0.16s ease-out, color 0.16s ease-out;
+}
+.tool-related li > a::after { content: none; }
+.tool-related li > a:hover { background: color-mix(in oklch, var(--purple) 8%, transparent); color: var(--purple); }
+.tool-related .rel-kind {
+  order: 2; margin-left: auto; padding: 0; border-radius: 0; background: none;
+  color: var(--muted); font-size: 0.8rem; font-weight: 500; letter-spacing: 0; text-transform: none;
+}
+@media (prefers-reduced-motion: reduce) { .tool-related li > a { transition: none; } }
+/* A post that names its own kind ("Comparison", "Topic hub") does not also need the generic kicker site.js adds. */
+.post-date + .post-kicker { display: none; }

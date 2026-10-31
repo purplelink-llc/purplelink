@@ -45,9 +45,11 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <script src="/theme.js?v=f0ab0f06a1"></script>
-    <link rel="stylesheet" href="/styles.css?v=0236063989">
+    <link rel="stylesheet" href="/styles.css?v=b85d4efa60">
+    <link rel="stylesheet" href="/guides-index.css?v=44dffb3424">
     <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
     <script src="/site.js?v=b053086227" defer></script>
+    <script src="/guides-index.js?v=27143624c4" defer></script>
     <script src="/motion.js?v=d35f4b4ee4" defer></script>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
 </head>
@@ -66,182 +68,232 @@
       </nav>
     </header>
 
-    <main id="main-content">
-      <div class="tools-hero">
-        <p class="eyebrow">Free guides</p>
-        <h1>Guides: LaTeX, academic writing and Mac utilities</h1>
-        <p>How-to guides for the things researchers get stuck on: converting LaTeX to Word, fixing BibTeX errors, citation styles, tracking changes, getting a paper ready to submit. Most pair with a free tool you can use right away. A separate set covers the Mac itself: disk space, windows, search and permissions.</p>
-      </div>
-
-      <div class="list-filter">
-        <label class="visually-hidden" for="list-filter-input">Filter guides</label>
-        <input type="search" id="list-filter-input" data-list-filter=".guide-grid li, .guides-start .catalog-card" placeholder="Filter guides, e.g. BibTeX or reviewer" autocomplete="off" spellcheck="false">
-        <p class="list-filter-status" aria-live="polite"></p>
-      </div>
-
-      <section class="guides-start" aria-labelledby="start-h">
-        <h2 id="start-h" class="guides-group-h">Start here</h2>
-        <div class="catalog-grid catalog-grid-2">
-          <a class="catalog-card" href="/guides/latex/">
-            <span class="catalog-card-price">Topic hub</span>
-            <h3>LaTeX for academic writing</h3>
-            <p>Compile, convert, diff, equations, tables and word counts, with the free tool for each step.</p>
-            <span class="catalog-card-cta">Open the LaTeX hub →</span>
-          </a>
-          <a class="catalog-card" href="/templates/">
-            <span class="catalog-card-price">Templates</span>
-            <h3>LaTeX templates by venue</h3>
-            <p>IEEE, ACM, NeurIPS, Elsevier and APA 7: a skeleton that compiles, the options that matter, and the submission pitfalls.</p>
-            <span class="catalog-card-cta">See the templates →</span>
-          </a>
-          <a class="catalog-card" href="/latex-errors/">
-            <span class="catalog-card-price">Reference</span>
-            <h3>LaTeX error messages</h3>
-            <p>Twelve common errors and warnings, each with the real log output, the causes in order of likelihood and the fix.</p>
-            <span class="catalog-card-cta">Open the error pages →</span>
-          </a>
-          <a class="catalog-card" href="/guides/bibtex/">
-            <span class="catalog-card-price">Topic hub</span>
-            <h3>BibTeX and citations</h3>
-            <p>Build entries from DOIs, validate a .bib file, catch fabricated references and switch citation styles.</p>
-            <span class="catalog-card-cta">Open the BibTeX hub →</span>
-          </a>
-          <a class="catalog-card" href="/guides/mac/">
-            <span class="catalog-card-price">Topic hub</span>
-            <h3>Mac utility guides</h3>
-            <p>Disk space and System Data, window snapping, finding files, launchers, keyboard sounds and app permissions.</p>
-            <span class="catalog-card-cta">Open the Mac hub →</span>
-          </a>
-          <a class="catalog-card" href="/guides/methodology-problems-peer-reviewers-flag/">
-            <span class="catalog-card-price">Research methods</span>
-            <h3>Methodology problems reviewers flag</h3>
-            <p>Fifteen problems that draw reviewer comments, from p-hacking to test-train contamination, and how to fix each.</p>
-            <span class="catalog-card-cta">Read the guide →</span>
-          </a>
+    <main id="main-content" class="guides-index">
+      <div class="gix">
+        <div class="gix-hero">
+          <h1>Guides: LaTeX, academic writing and Mac utilities</h1>
+          <p class="gix-lede">How-to guides for the jobs researchers get stuck on: LaTeX to Word, BibTeX errors, citation styles, word limits, reviewer responses. Most pair with a free tool you can use straight away. A separate set covers the Mac itself.</p>
         </div>
-      </section>
 
-      <section class="guides-group" aria-labelledby="g-how-to-guides">
-        <h2 id="g-how-to-guides" class="guides-group-h">How-to guides</h2>
-        <ul class="guide-grid">
-          <li><a href="/guides/install-latex-on-mac/">How to install LaTeX on a Mac: MacTeX, BasicTeX or TinyTeX</a></li>
-          <li><a href="/guides/latex-to-word/">Convert a LaTeX paper to Word (free)</a></li>
-          <li><a href="/guides/fix-bibtex-errors/">Fix common BibTeX errors</a></li>
-          <li><a href="/guides/catch-ai-hallucinated-citations/">Catch AI-hallucinated citations</a></li>
-          <li><a href="/guides/citation-styles-explained/">IEEE vs APA vs MLA vs Chicago citation styles</a></li>
-          <li><a href="/guides/latex-track-changes/">Show changes between two LaTeX versions</a></li>
-          <li><a href="/guides/latexdiff-online/">latexdiff online for a multi-file project</a></li>
-          <li><a href="/guides/latex-word-count/">Count words in a LaTeX document</a></li>
-          <li><a href="/guides/doi-to-bibtex/">Get BibTeX from a DOI or arXiv ID</a></li>
-          <li><a href="/guides/build-bibtex-from-dois/">Build a BibTeX file from a list of DOIs and arXiv IDs</a></li>
-          <li><a href="/guides/format-citation-from-doi-arxiv-id/">Format a citation from a DOI or arXiv ID</a></li>
-          <li><a href="/guides/word-to-latex/">Convert a Word manuscript to LaTeX</a></li>
-          <li><a href="/guides/compile-latex-project-to-pdf-online/">Compile a multi-file LaTeX project to PDF online</a></li>
-          <li><a href="/guides/overleaf-compile-timeout/">Fix an Overleaf compile timeout</a></li>
-          <li><a href="/guides/move-overleaf-project-to-mac-with-git/">Move an Overleaf project to a local Mac editor with Git</a></li>
-          <li><a href="/guides/zotero-latex-mac/">Zotero with LaTeX on a Mac: a .bib that stays current, and citing from Zotero</a></li>
-          <li><a href="/guides/move-prism-project-to-mac/">Move a Prism project to a Mac before it shuts down</a></li>
-          <li><a href="/guides/synctex-on-mac/">SyncTeX on Mac: jump between LaTeX source and PDF</a></li>
-          <li><a href="/guides/tagged-accessible-pdf-latex-mac/">Make a tagged, accessible PDF from LaTeX on a Mac</a></li>
-          <li><a href="/guides/vscode-latex-workshop-mac/">VS Code and LaTeX Workshop on a Mac: setup and the latexmk error</a></li>
-          <li><a href="/guides/submit-latex-source-to-journal-zip/">How to submit LaTeX source files to a journal as a ZIP</a></li>
-          <li><a href="/guides/latex-compile-time-benchmark-mac/">How long LaTeX takes to compile on a Mac: a reproducible benchmark</a></li>
-          <li><a href="/guides/csv-to-latex-table/">Turn CSV data into a LaTeX table</a></li>
-          <li><a href="/guides/convert-references-bibtex-ris-endnote/">Convert references between BibTeX, RIS and EndNote</a></li>
-          <li><a href="/guides/latex-equation-to-png/">Export a LaTeX equation as a PNG</a></li>
-          <li><a href="/guides/check-manuscript-word-limit/">Check a manuscript against a journal word limit</a></li>
-          <li><a href="/guides/check-abstract-word-limit-before-submitting/">Check your abstract against a journal's word limit</a></li>
-          <li><a href="/guides/track-thesis-word-count-and-readability/">Track thesis word count and readability while you write</a></li>
-          <li><a href="/guides/check-thesis-formatting-before-submission/">Check thesis formatting before you submit it</a></li>
-          <li><a href="/guides/research-paper-pdf-to-markdown/">Convert a research paper PDF to Markdown for an AI assistant</a></li>
-          <li><a href="/guides/mechvibes-sound-packs-on-mac/">Use Mechvibes sound packs on a Mac</a></li>
-          <li><a href="/guides/mac-privacy-permissions-explained/">Is it safe to allow Full Disk Access, Input Monitoring or Accessibility on a Mac?</a></li>
-        </ul>
-      </section>
+        <div class="gix-layout">
+          <nav class="gix-rail" aria-label="Guide topics">
+            <ol>
+              <li><a href="#start-h"><span>Start here</span><span class="gix-count">6</span></a></li>
+              <li><a href="#g-how-to-guides"><span>LaTeX</span><span class="gix-count">21</span></a></li>
+              <li><a href="#g-citations"><span>Citations</span><span class="gix-count">10</span></a></li>
+              <li><a href="#g-submission-readiness"><span>Submitting</span><span class="gix-count">16</span></a></li>
+              <li><a href="#g-peer-review"><span>Revisions</span><span class="gix-count">5</span></a></li>
+              <li><a href="#g-research-methods"><span>Research methods</span><span class="gix-count">2</span></a></li>
+              <li><a href="#g-academic-careers"><span>Careers</span><span class="gix-count">8</span></a></li>
+              <li><a href="#g-privacy"><span>Privacy</span><span class="gix-count">7</span></a></li>
+              <li><a href="#g-mac"><span>Mac how-tos</span><span class="gix-count">16</span></a></li>
+              <li><a href="#g-comparisons"><span>Comparisons</span><span class="gix-count">7</span></a></li>
+            </ol>
+          </nav>
 
-      <section class="guides-group" aria-labelledby="g-submission-readiness">
-        <h2 id="g-submission-readiness" class="guides-group-h">Submission readiness</h2>
-        <ul class="guide-grid">
-          <li><a href="/guides/pre-submission-checklist-before-submitting/">Run a pre-submission checklist before you submit a paper</a></li>
-          <li><a href="/guides/get-feedback-on-a-paper-before-submitting/">How to get feedback on a paper before submitting</a></li>
-          <li><a href="/guides/ai-policy-checking-your-own-manuscript/">Can you use AI to check your own manuscript? Publisher policies</a></li>
-          <li><a href="/guides/use-paper-review-before-submitting/">Use Paper Review before submitting a manuscript</a></li>
-          <li><a href="/guides/anonymity-check-double-blind-manuscript/">Check a manuscript for double-blind leaks</a></li>
-          <li><a href="/guides/remove-pdf-metadata-before-double-blind-review/">Remove PDF metadata before double-blind review</a></li>
-          <li><a href="/guides/remove-metadata-word-document-mac/">How to remove metadata from a Word document on a Mac</a></li>
-          <li><a href="/guides/check-mac-iphone-for-spyware/">How to check a Mac or iPhone for spyware</a></li>
-          <li><a href="/guides/citation-gap-scan-before-submitting/">Run a citation gap scan before submitting</a></li>
-          <li><a href="/guides/generate-journal-cover-letter/">Generate a journal cover letter from your abstract</a></li>
-          <li><a href="/guides/check-response-letter-before-resubmitting/">Check your response letter before resubmitting</a></li>
-          <li><a href="/guides/check-revisions-addressed-findings/">Check whether your revisions addressed the original findings</a></li>
-          <li><a href="/guides/how-to-respond-to-reviewer-2/">How to respond to Reviewer 2</a></li>
-          <li><a href="/guides/reviewer-says-novelty-is-limited/">When a reviewer says "novelty is limited"</a></li>
-          <li><a href="/guides/camera-ready-checklist/">Camera-ready manuscript checklist</a></li>
-          <li><a href="/guides/desk-reject-recovery/">Your paper got desk rejected: now what</a></li>
-        </ul>
-      </section>
+          <div class="gix-main">
+            <div class="list-filter gix-search">
+              <label class="visually-hidden" for="list-filter-input">Filter guides</label>
+              <svg class="gix-search-icon" aria-hidden="true" focusable="false" viewBox="0 0 20 20" width="18" height="18"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              <input type="search" id="list-filter-input" data-list-filter=".guide-grid li, .guides-start .catalog-card" placeholder="Filter guides, e.g. BibTeX, reviewer, disk space" autocomplete="off" spellcheck="false" aria-describedby="gix-search-hint">
+              <kbd class="gix-key" id="gix-search-hint" data-filter-key hidden>Ctrl K</kbd>
+              <p class="list-filter-status" aria-live="polite"></p>
+            </div>
 
-      <section class="guides-group" aria-labelledby="g-research-methods">
-        <h2 id="g-research-methods" class="guides-group-h">Research methods</h2>
-        <ul class="guide-grid">
-          <li><a href="/guides/simulate-likert-data-for-power-analysis/">Simulate Likert survey data to test your analysis before collecting any</a></li>
-        </ul>
-      </section>
+            <section class="guides-start" aria-labelledby="start-h">
+              <h2 id="start-h" class="guides-group-h">Start here</h2>
+              <div class="gix-hubs">
+                <a class="catalog-card" href="/guides/latex/">
+                  <span class="catalog-card-price">Topic hub</span>
+                  <h3>LaTeX for academic writing</h3>
+                  <p>Compile, convert, diff, equations, tables and word counts, with the free tool for each step.</p>
+                </a>
+                <a class="catalog-card" href="/templates/">
+                  <span class="catalog-card-price">Templates</span>
+                  <h3>LaTeX templates by venue</h3>
+                  <p>IEEE, ACM, NeurIPS, Elsevier and APA 7: a skeleton that compiles, the options that matter, and the submission pitfalls.</p>
+                </a>
+                <a class="catalog-card" href="/latex-errors/">
+                  <span class="catalog-card-price">Reference</span>
+                  <h3>LaTeX error messages</h3>
+                  <p>Twelve common errors and warnings, each with the real log output, the causes in order of likelihood and the fix.</p>
+                </a>
+                <a class="catalog-card" href="/guides/bibtex/">
+                  <span class="catalog-card-price">Topic hub</span>
+                  <h3>BibTeX and citations</h3>
+                  <p>Build entries from DOIs, validate a .bib file, catch fabricated references and switch citation styles.</p>
+                </a>
+                <a class="catalog-card" href="/guides/mac/">
+                  <span class="catalog-card-price">Topic hub</span>
+                  <h3>Mac utility guides</h3>
+                  <p>Disk space and System Data, window snapping, finding files, launchers, keyboard sounds and app permissions.</p>
+                </a>
+                <a class="catalog-card" href="/guides/methodology-problems-peer-reviewers-flag/">
+                  <span class="catalog-card-price">Research methods</span>
+                  <h3>Methodology problems reviewers flag</h3>
+                  <p>Fifteen problems that draw reviewer comments, from p-hacking to test-train contamination, and how to fix each.</p>
+                </a>
+              </div>
+            </section>
 
-      <section class="guides-group" aria-labelledby="g-academic-careers">
-        <h2 id="g-academic-careers" class="guides-group-h">Academic careers</h2>
-        <ul class="guide-grid">
-          <li><a href="/guides/review-resume-before-applying/">Review your resume before a research job application</a></li>
-        </ul>
-      </section>
+            <section class="guides-group" aria-labelledby="g-how-to-guides">
+              <h2 id="g-how-to-guides" class="guides-group-h">LaTeX and documents</h2>
+              <p class="gix-intro">Install, compile, convert and compare LaTeX, and the editors to do it in.</p>
+              <ul class="guide-grid">
+                <li><a href="/guides/install-latex-on-mac/">How to install LaTeX on a Mac: MacTeX, BasicTeX or TinyTeX</a></li>
+                <li><a href="/guides/latex-to-word/">Convert a LaTeX paper to Word (free)</a></li>
+                <li><a href="/guides/word-to-latex/">Convert a Word manuscript to LaTeX</a></li>
+                <li><a href="/guides/compile-latex-project-to-pdf-online/">Compile a multi-file LaTeX project to PDF online</a></li>
+                <li><a href="/guides/latex-track-changes/">Show changes between two LaTeX versions</a></li>
+                <li><a href="/guides/latexdiff-online/">latexdiff online for a multi-file project</a></li>
+                <li><a href="/guides/latex-word-count/">Count words in a LaTeX document</a></li>
+                <li><a href="/guides/csv-to-latex-table/">Turn CSV data into a LaTeX table</a></li>
+                <li><a href="/guides/latex-equation-to-png/">Export a LaTeX equation as a PNG</a></li>
+                <li><a href="/guides/overleaf-compile-timeout/">Fix an Overleaf compile timeout</a></li>
+                <li><a href="/guides/move-overleaf-project-to-mac-with-git/">Move an Overleaf project to a local Mac editor with Git</a></li>
+                <li><a href="/guides/move-prism-project-to-mac/">Move a Prism project to a Mac before it shuts down</a></li>
+                <li><a href="/guides/synctex-on-mac/">SyncTeX on Mac: jump between LaTeX source and PDF</a></li>
+                <li><a href="/guides/vscode-latex-workshop-mac/">VS Code and LaTeX Workshop on a Mac: setup and the latexmk error</a></li>
+                <li><a href="/guides/tagged-accessible-pdf-latex-mac/">Make a tagged, accessible PDF from LaTeX on a Mac</a></li>
+                <li><a href="/guides/submit-latex-source-to-journal-zip/">How to submit LaTeX source files to a journal as a ZIP</a></li>
+                <li><a href="/guides/latex-compile-time-benchmark-mac/">How long LaTeX takes to compile on a Mac: a reproducible benchmark</a></li>
+                <li><a href="/guides/research-paper-pdf-to-markdown/">Convert a research paper PDF to Markdown for an AI assistant</a></li>
+                <li><a href="/guides/best-mac-latex-editors/">Best LaTeX editor for Mac (2026)</a></li>
+                <li><a href="/guides/overleaf-alternative-mac/">Overleaf alternatives for Mac</a></li>
+                <li><a href="/guides/texshop-alternative-mac/">TeXShop alternative for Mac: ModernTex, TeXShop and TeXstudio compared</a></li>
+              </ul>
+            </section>
 
-      <section class="guides-group" aria-labelledby="g-comparisons">
-        <h2 id="g-comparisons" class="guides-group-h">Comparisons</h2>
-        <ul class="guide-grid">
-          <li><a href="/guides/best-mac-latex-editors/">Best LaTeX editor for Mac (2026)</a></li>
-          <li><a href="/guides/overleaf-alternative-mac/">Overleaf alternatives for Mac</a></li>
-          <li><a href="/guides/texshop-alternative-mac/">TeXShop alternative for Mac: ModernTex, TeXShop and TeXstudio compared</a></li>
-          <li><a href="/guides/ai-paper-review-tools-compared/">AI paper review tools compared</a></li>
-          <li><a href="/guides/retracted-papers-paper-review-test/">Paper Review on 23 retracted papers: what it caught and missed</a></li>
-          <li><a href="/guides/track-academic-cv-tenure-case/">How to track your academic CV and tenure case (2026)</a></li>
-          <li><a href="/guides/globepin-vs-polarsteps/">GlobePin vs Polarsteps vs Visited</a></li>
-          <li><a href="/guides/best-on-device-health-apps/">Best health tracking apps that keep your data on your phone (2026)</a></li>
-          <li><a href="/guides/best-pii-redaction-tools-for-chatgpt/">Best tools to redact personal information before using ChatGPT (2026)</a></li>
-          <li><a href="/guides/best-academic-record-tracking-software/">Best software for tracking your research record (2026)</a></li>
-          <li><a href="/guides/best-chrome-extensions-for-google-scholar/">Best Chrome extensions for Google Scholar (2026)</a></li>
-          <li><a href="/guides/best-travel-map-apps-for-iphone/">Best travel map and country-tracking apps for iPhone (2026)</a></li>
-          <li><a href="/guides/best-disk-space-analyzer-for-mac/">Best disk space analyzer and cleaner for Mac (2026): DaisyDisk alternatives compared</a></li>
-          <li><a href="/guides/best-keyboard-sound-apps-for-mac/">Best keyboard sound apps for Mac (2026): Klack alternatives compared</a></li>
-          <li><a href="/guides/best-alfred-alternatives-for-mac/">Best Alfred alternatives for Mac (2026)</a></li>
-          <li><a href="/guides/find-files-on-mac-when-spotlight-cant/">How to find files on a Mac when Spotlight cannot</a></li>
-          <li><a href="/guides/best-window-managers-for-mac/">Best window managers for Mac (2026): Rectangle, Magnet, Moom and Panely compared</a></li>
-          <li><a href="/guides/snap-windows-on-mac/">How to snap and tile windows on a Mac</a></li>
-          <li><a href="/guides/best-mac-apps-transcription-text-to-speech-ocr/">Best Mac apps for transcription, text to speech and OCR (2026)</a></li>
-          <li><a href="/guides/export-voice-memos-transcript-mac/">Export a Voice Memos transcript on a Mac (and what it leaves out)</a></li>
-          <li><a href="/guides/on-device-dictation-mac/">Dictation on a Mac that stays on the Mac (2026)</a></li>
-          <li><a href="/guides/free-audio-transcription-mac/">Free audio transcription on a Mac with no time limit (2026)</a></li>
-          <li><a href="/guides/ai-transcription-therapy-sessions-illinois/">AI transcription of therapy sessions: what Illinois requires (2026)</a></li>
-          <li><a href="/guides/otter-ai-research-interviews/">Can you use Otter.ai for research interviews? What universities say</a></li>
-          <li><a href="/guides/show-free-disk-space-mac-menu-bar/">Show free disk space in the Mac menu bar</a></li>
-          <li><a href="/guides/mac-system-data-huge/">Why is System Data so big on my Mac? What fills it and what is safe to remove</a></li>
-          <li><a href="/guides/mac-mail-storage-huge/">Why is Apple Mail taking up so much space on my Mac?</a></li>
-          <li><a href="/guides/find-electron-apps-on-mac/">Find the Electron apps on your Mac and how much space they take</a></li>
-          <li><a href="/guides/delete-mac-app-and-leftover-files/">How to delete a Mac app and the files it leaves behind</a></li>
-          <li><a href="/guides/do-researchers-need-a-vpn/">Do researchers need a VPN? University VPNs, public Wi-Fi and travel (2026)</a></li>
-          <li><a href="/guides/run-windows-research-software-on-mac/">How to run Windows-only research software on an Apple silicon Mac (2026)</a></li>
-          <li><a href="/guides/check-mac-battery-health-voltage-and-cycle-count/">Check your Mac battery health, cycle count, voltage and charger watts without installing anything</a></li>
-          <li><a href="/guides/which-app-is-draining-mac-battery/">Which app is draining your MacBook battery? Four ways to check (2026)</a></li>
-          <li><a href="/guides/what-ai-tools-leave-on-your-mac/">What AI tools leave on your Mac, and what is safe to delete</a></li>
-          <li><a href="/guides/stop-sending-email-to-the-wrong-person-mac/">Sent to the wrong person: what Apple Mail can and cannot catch</a></li>
-          <li><a href="/guides/before-you-paste-client-notes-into-chatgpt/">Before you paste client notes into ChatGPT or Claude: a checklist for Mac users</a></li>
-          <li><a href="/guides/faculty-annual-report-from-your-record/">Build your faculty annual report from your own record: a year-end checklist</a></li>
-          <li><a href="/guides/faculty-annual-report-import-faculty180-faculty-success/">Fill in your faculty annual report faster: what Faculty180, Faculty Success, Pure and Elements can import</a></li>
-          <li><a href="/guides/import-publications-into-faculty180/">How to import your publications into Faculty180 from Google Scholar, Zotero or a BibTeX file</a></li>
-          <li><a href="/guides/import-cv-and-publications-into-faculty-success/">How to import your CV and publications into Watermark Faculty Success (Digital Measures)</a></li>
-          <li><a href="/guides/list-manuscripts-under-review-on-academic-cv/">How to list manuscripts under review, R&amp;R and forthcoming papers on an academic CV</a></li>
-          <li><a href="/guides/export-orcid-works-to-bibtex-or-ris/">How to export your ORCID works to BibTeX or RIS, and what to fix before importing them elsewhere</a></li>
-        </ul>
-      </section>
+            <section class="guides-group" aria-labelledby="g-citations">
+              <h2 id="g-citations" class="guides-group-h">BibTeX and citations</h2>
+              <p class="gix-intro">Build, check and convert references, and keep a .bib file in step with your library.</p>
+              <ul class="guide-grid">
+                <li><a href="/guides/fix-bibtex-errors/">Fix common BibTeX errors</a></li>
+                <li><a href="/guides/catch-ai-hallucinated-citations/">Catch AI-hallucinated citations</a></li>
+                <li><a href="/guides/doi-to-bibtex/">Get BibTeX from a DOI or arXiv ID</a></li>
+                <li><a href="/guides/build-bibtex-from-dois/">Build a BibTeX file from a list of DOIs and arXiv IDs</a></li>
+                <li><a href="/guides/format-citation-from-doi-arxiv-id/">Format a citation from a DOI or arXiv ID</a></li>
+                <li><a href="/guides/convert-references-bibtex-ris-endnote/">Convert references between BibTeX, RIS and EndNote</a></li>
+                <li><a href="/guides/citation-styles-explained/">IEEE vs APA vs MLA vs Chicago citation styles</a></li>
+                <li><a href="/guides/zotero-latex-mac/">Zotero with LaTeX on a Mac: a .bib that stays current, and citing from Zotero</a></li>
+                <li><a href="/guides/export-orcid-works-to-bibtex-or-ris/">How to export your ORCID works to BibTeX or RIS, and what to fix before importing them elsewhere</a></li>
+                <li><a href="/guides/best-chrome-extensions-for-google-scholar/">Best Chrome extensions for Google Scholar (2026)</a></li>
+              </ul>
+            </section>
+
+            <section class="guides-group" aria-labelledby="g-submission-readiness">
+              <h2 id="g-submission-readiness" class="guides-group-h">Before you submit</h2>
+              <p class="gix-intro">Word limits, formatting, anonymity and a last read before a manuscript or thesis goes out.</p>
+              <ul class="guide-grid">
+                <li><a href="/guides/pre-submission-checklist-before-submitting/">Run a pre-submission checklist before you submit a paper</a></li>
+                <li><a href="/guides/check-manuscript-word-limit/">Check a manuscript against a journal word limit</a></li>
+                <li><a href="/guides/check-abstract-word-limit-before-submitting/">Check your abstract against a journal's word limit</a></li>
+                <li><a href="/guides/check-thesis-formatting-before-submission/">Check thesis formatting before you submit it</a></li>
+                <li><a href="/guides/track-thesis-word-count-and-readability/">Track thesis word count and readability while you write</a></li>
+                <li><a href="/guides/anonymity-check-double-blind-manuscript/">Check a manuscript for double-blind leaks</a></li>
+                <li><a href="/guides/remove-pdf-metadata-before-double-blind-review/">Remove PDF metadata before double-blind review</a></li>
+                <li><a href="/guides/remove-metadata-word-document-mac/">How to remove metadata from a Word document on a Mac</a></li>
+                <li><a href="/guides/citation-gap-scan-before-submitting/">Run a citation gap scan before submitting</a></li>
+                <li><a href="/guides/generate-journal-cover-letter/">Generate a journal cover letter from your abstract</a></li>
+                <li><a href="/guides/get-feedback-on-a-paper-before-submitting/">How to get feedback on a paper before submitting</a></li>
+                <li><a href="/guides/ai-policy-checking-your-own-manuscript/">Can you use AI to check your own manuscript? Publisher policies</a></li>
+                <li><a href="/guides/use-paper-review-before-submitting/">Use Paper Review before submitting a manuscript</a></li>
+                <li><a href="/guides/ai-paper-review-tools-compared/">AI paper review tools compared</a></li>
+                <li><a href="/guides/retracted-papers-paper-review-test/">Paper Review on 23 retracted papers: what it caught and missed</a></li>
+                <li><a href="/guides/camera-ready-checklist/">Camera-ready manuscript checklist</a></li>
+              </ul>
+            </section>
+
+            <section class="guides-group" aria-labelledby="g-peer-review">
+              <h2 id="g-peer-review" class="guides-group-h">Reviews and revisions</h2>
+              <p class="gix-intro">What to do with the reviews: responding, revising and starting again after a desk reject.</p>
+              <ul class="guide-grid">
+                <li><a href="/guides/how-to-respond-to-reviewer-2/">How to respond to Reviewer 2</a></li>
+                <li><a href="/guides/reviewer-says-novelty-is-limited/">When a reviewer says "novelty is limited"</a></li>
+                <li><a href="/guides/check-response-letter-before-resubmitting/">Check your response letter before resubmitting</a></li>
+                <li><a href="/guides/check-revisions-addressed-findings/">Check whether your revisions addressed the original findings</a></li>
+                <li><a href="/guides/desk-reject-recovery/">Your paper got desk rejected: now what</a></li>
+              </ul>
+            </section>
+
+            <section class="guides-group" aria-labelledby="g-research-methods">
+              <h2 id="g-research-methods" class="guides-group-h">Research methods</h2>
+              <p class="gix-intro">Study design and data collection.</p>
+              <ul class="guide-grid">
+                <li><a href="/guides/simulate-likert-data-for-power-analysis/">Simulate Likert survey data to test your analysis before collecting any</a></li>
+                <li><a href="/guides/otter-ai-research-interviews/">Can you use Otter.ai for research interviews? What universities say</a></li>
+              </ul>
+            </section>
+
+            <section class="guides-group" aria-labelledby="g-academic-careers">
+              <h2 id="g-academic-careers" class="guides-group-h">Academic record and careers</h2>
+              <p class="gix-intro">Your CV, annual report and job applications, kept from one record.</p>
+              <ul class="guide-grid">
+                <li><a href="/guides/track-academic-cv-tenure-case/">How to track your academic CV and tenure case (2026)</a></li>
+                <li><a href="/guides/best-academic-record-tracking-software/">Best software for tracking your research record (2026)</a></li>
+                <li><a href="/guides/list-manuscripts-under-review-on-academic-cv/">How to list manuscripts under review, R&amp;R and forthcoming papers on an academic CV</a></li>
+                <li><a href="/guides/faculty-annual-report-from-your-record/">Build your faculty annual report from your own record: a year-end checklist</a></li>
+                <li><a href="/guides/faculty-annual-report-import-faculty180-faculty-success/">Fill in your faculty annual report faster: what Faculty180, Faculty Success, Pure and Elements can import</a></li>
+                <li><a href="/guides/import-publications-into-faculty180/">How to import your publications into Faculty180 from Google Scholar, Zotero or a BibTeX file</a></li>
+                <li><a href="/guides/import-cv-and-publications-into-faculty-success/">How to import your CV and publications into Watermark Faculty Success (Digital Measures)</a></li>
+                <li><a href="/guides/review-resume-before-applying/">Review your resume before a research job application</a></li>
+              </ul>
+            </section>
+
+            <section class="guides-group" aria-labelledby="g-privacy">
+              <h2 id="g-privacy" class="guides-group-h">Privacy and security</h2>
+              <p class="gix-intro">What leaves your computer, and how to check.</p>
+              <ul class="guide-grid">
+                <li><a href="/guides/before-you-paste-client-notes-into-chatgpt/">Before you paste client notes into ChatGPT or Claude: a checklist for Mac users</a></li>
+                <li><a href="/guides/best-pii-redaction-tools-for-chatgpt/">Best tools to redact personal information before using ChatGPT (2026)</a></li>
+                <li><a href="/guides/ai-transcription-therapy-sessions-illinois/">AI transcription of therapy sessions: what Illinois requires (2026)</a></li>
+                <li><a href="/guides/check-mac-iphone-for-spyware/">How to check a Mac or iPhone for spyware</a></li>
+                <li><a href="/guides/do-researchers-need-a-vpn/">Do researchers need a VPN? University VPNs, public Wi-Fi and travel (2026)</a></li>
+                <li><a href="/guides/mac-privacy-permissions-explained/">Is it safe to allow Full Disk Access, Input Monitoring or Accessibility on a Mac?</a></li>
+                <li><a href="/guides/best-on-device-health-apps/">Best health tracking apps that keep your data on your phone (2026)</a></li>
+              </ul>
+            </section>
+
+            <section class="guides-group" aria-labelledby="g-mac">
+              <h2 id="g-mac" class="guides-group-h">Mac how-tos</h2>
+              <p class="gix-intro">Disk space, battery, windows, files, transcription and the rest of the Mac itself.</p>
+              <ul class="guide-grid">
+                <li><a href="/guides/mac-system-data-huge/">Why is System Data so big on my Mac? What fills it and what is safe to remove</a></li>
+                <li><a href="/guides/mac-mail-storage-huge/">Why is Apple Mail taking up so much space on my Mac?</a></li>
+                <li><a href="/guides/show-free-disk-space-mac-menu-bar/">Show free disk space in the Mac menu bar</a></li>
+                <li><a href="/guides/find-electron-apps-on-mac/">Find the Electron apps on your Mac and how much space they take</a></li>
+                <li><a href="/guides/delete-mac-app-and-leftover-files/">How to delete a Mac app and the files it leaves behind</a></li>
+                <li><a href="/guides/what-ai-tools-leave-on-your-mac/">What AI tools leave on your Mac, and what is safe to delete</a></li>
+                <li><a href="/guides/check-mac-battery-health-voltage-and-cycle-count/">Check your Mac battery health, cycle count, voltage and charger watts without installing anything</a></li>
+                <li><a href="/guides/which-app-is-draining-mac-battery/">Which app is draining your MacBook battery? Four ways to check (2026)</a></li>
+                <li><a href="/guides/snap-windows-on-mac/">How to snap and tile windows on a Mac</a></li>
+                <li><a href="/guides/find-files-on-mac-when-spotlight-cant/">How to find files on a Mac when Spotlight cannot</a></li>
+                <li><a href="/guides/free-audio-transcription-mac/">Free audio transcription on a Mac with no time limit (2026)</a></li>
+                <li><a href="/guides/on-device-dictation-mac/">Dictation on a Mac that stays on the Mac (2026)</a></li>
+                <li><a href="/guides/export-voice-memos-transcript-mac/">Export a Voice Memos transcript on a Mac (and what it leaves out)</a></li>
+                <li><a href="/guides/stop-sending-email-to-the-wrong-person-mac/">Sent to the wrong person: what Apple Mail can and cannot catch</a></li>
+                <li><a href="/guides/run-windows-research-software-on-mac/">How to run Windows-only research software on an Apple silicon Mac (2026)</a></li>
+                <li><a href="/guides/mechvibes-sound-packs-on-mac/">Use Mechvibes sound packs on a Mac</a></li>
+              </ul>
+            </section>
+
+            <section class="guides-group" aria-labelledby="g-comparisons">
+              <h2 id="g-comparisons" class="guides-group-h">App comparisons</h2>
+              <p class="gix-intro">Mac and iPhone apps side by side, including ours, with what each one costs.</p>
+              <ul class="guide-grid">
+                <li><a href="/guides/best-disk-space-analyzer-for-mac/">Best disk space analyzer and cleaner for Mac (2026): DaisyDisk alternatives compared</a></li>
+                <li><a href="/guides/best-window-managers-for-mac/">Best window managers for Mac (2026): Rectangle, Magnet, Moom and Panely compared</a></li>
+                <li><a href="/guides/best-alfred-alternatives-for-mac/">Best Alfred alternatives for Mac (2026)</a></li>
+                <li><a href="/guides/best-keyboard-sound-apps-for-mac/">Best keyboard sound apps for Mac (2026): Klack alternatives compared</a></li>
+                <li><a href="/guides/best-mac-apps-transcription-text-to-speech-ocr/">Best Mac apps for transcription, text to speech and OCR (2026)</a></li>
+                <li><a href="/guides/best-travel-map-apps-for-iphone/">Best travel map and country-tracking apps for iPhone (2026)</a></li>
+                <li><a href="/guides/globepin-vs-polarsteps/">GlobePin vs Polarsteps vs Visited</a></li>
+              </ul>
+            </section>
+
+          </div>
+        </div>
+      </div>
     </main>
 
     <footer class="footer">
