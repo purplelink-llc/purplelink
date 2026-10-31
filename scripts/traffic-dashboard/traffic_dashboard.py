@@ -66,7 +66,16 @@ METRIC_START_OVERRIDES = {
     # Vitae moved behind the counted vitae-download function on this day; before
     # it the DMG was a static file and no download was ever recorded.
     ("purplelink", "vitaeDownloads"): "2026-09-22",
+    # The free wallpaper pack (/photography/wallpapers/) and its optional email list went live with the
+    # 2026-10-31 evening build; wallpaper-download.mjs started counting then.
+    ("purplelink", "wallpaperDownloads"): "2026-10-31",
+    ("purplelink", "wallpaperSignups"): "2026-10-31",
 }
+
+# The wallpaper test's stop rule (log_change 03653cc186): fewer than WALLPAPER_STOP_MIN downloads in the
+# first WALLPAPER_STOP_DAYS days means the paid 30-pack is not built.
+WALLPAPER_STOP_MIN = 50
+WALLPAPER_STOP_DAYS = 30
 
 # Events we generated ourselves. The beacon cannot tell a verification click
 # from a customer's, so they are subtracted here rather than left to be read as
@@ -137,6 +146,8 @@ SITES = [
                         ("pnTrialDownloads", "Panely trial downloads"),
                         ("smTrialDownloads", "Summonly trial downloads"),
                         ("vitaeDownloads", "Vitae downloads"),
+                        ("wallpaperDownloads", "wallpaper downloads"),
+                        ("wallpaperSignups", "wallpaper-list signups"),
                         ("checkoutClicks", "checkout clicks")],
         # Paths that actually show a buy button. The useful denominator for a
         # checkout rate is "people who reached a page where buying was possible",
@@ -194,6 +205,7 @@ SITES = [
         "signup_forms": {
             "waitlist-haea": "haeaSignups",
             "moderntex-releases": "moderntexReleaseSignups",
+            "wallpaper-news": "wallpaperSignups",
         },
         # Search Console property id. Purplelink is a URL-prefix property, so
         # the trailing slash is part of the id; getmuscleonglp is a domain
@@ -458,6 +470,29 @@ def fetch_vitae_downloads_blobs() -> dict | None:
     except (OSError, http.client.HTTPException, ValueError) as exc:
         print(f"  ! Vitae downloads (Blobs) unavailable: {str(exc)[:80]}", file=sys.stderr)
         return None
+
+
+def fetch_wallpaper_downloads_blobs() -> dict | None:
+    """{"downloads": {file: lifetime}, "byDay": {date: n}} from the wallpaper-stats store, which
+    netlify/functions/wallpaper-download.mjs fills (non-crawler GETs only), or None on failure."""
+    try:
+        return {"downloads": blobs_read("wallpaper-stats", "downloads:"),
+                "byDay": blobs_read("wallpaper-stats", "day:")}
+    except (OSError, http.client.HTTPException, ValueError) as exc:
+        print(f"  ! Wallpaper downloads (Blobs) unavailable: {str(exc)[:80]}", file=sys.stderr)
+        return None
+
+
+def wallpaper_test(by_day: dict, today: dt.date) -> dict:
+    """Progress of the wallpaper stop rule: downloads over the test's first WALLPAPER_STOP_DAYS days,
+    counted through yesterday (complete days) or the window's end, whichever is first."""
+    start = dt.date.fromisoformat(METRIC_START_OVERRIDES[("purplelink", "wallpaperDownloads")])
+    end = start + dt.timedelta(days=WALLPAPER_STOP_DAYS - 1)
+    last = min(end, today - dt.timedelta(days=1))
+    days = [(start + dt.timedelta(days=i)).isoformat() for i in range((last - start).days + 1)]
+    n = sum(int((by_day.get(d) or {}).get("wallpaperDownloads", 0) or 0) for d in days)
+    return {"downloads": n, "daysIn": len(days), "start": start.isoformat(), "end": end.isoformat(),
+            "done": last == end}
 
 
 def fetch_sparkle_updates_blobs() -> dict | None:
@@ -1803,6 +1838,7 @@ def summarise(site: dict, site_hist: dict) -> dict:
         # checkout clicks only as a 30-day total, so the per-day click count here
         # is every product's buy button (at this volume nearly all ModernTex).
         "trial_days": trial_days,
+        "wallpaper_test": wallpaper_test(by_day, today) if site["key"] == "purplelink" else None,
         "trial30": int(total(trial_days, "trialDownloads") or 0),
         "trial_clicks30": int(total(trial_days, "checkoutClicks") or 0),
         "bounds": [b for b in (
@@ -1998,6 +2034,20 @@ def observations(summaries: list[dict], sales: dict | None = None) -> list[str]:
                 out.append(f"{s['label']}: {ck['clicks']} checkout click(s) from {ck['views']} "
                            f"product-page view(s) in 30 days — a {ck['pct']:.1f}% checkout rate.")
 
+        # The wallpaper test: one line against its stop rule, so the decision date is not missed.
+        wt = s.get("wallpaper_test")
+        if wt and wt["daysIn"] > 0:
+            if wt["done"]:
+                verdict = ("passed: the paid 30-pack can be built" if wt["downloads"] >= WALLPAPER_STOP_MIN
+                           else "missed: no paid pack")
+                out.append(f"{s['label']}: wallpaper test finished with {wt['downloads']} download(s) in "
+                           f"{WALLPAPER_STOP_DAYS} days ({wt['start']} to {wt['end']}); the stop rule "
+                           f"({WALLPAPER_STOP_MIN}) is {verdict}.")
+            else:
+                out.append(f"{s['label']}: wallpaper test at {wt['downloads']} download(s) after {wt['daysIn']} "
+                           f"of {WALLPAPER_STOP_DAYS} days; under {WALLPAPER_STOP_MIN} by {wt['end']} means "
+                           f"no paid pack.")
+
         # The ModernTex trial funnel: download -> buy click -> paid order. This is
         # the one number the trial was built to produce, so it gets its own line
         # rather than being read off three separate counters. Orders come from
@@ -2035,6 +2085,7 @@ def observations(summaries: list[dict], sales: dict | None = None) -> list[str]:
                            ("subscribes", "subscribes"),
                            ("calcRuns", "calculator runs"),
                            ("vitaeDownloads", "Vitae downloads"),
+                           ("wallpaperDownloads", "wallpaper downloads"),
                            ("trialDownloads", "trial downloads")) if k == adj["metric"]), adj["metric"])
             out.append(f"{s['label']}: {adj['removed']} of the {adj['raw']} {label} on "
                        f"{adj['day']} were ours and are excluded above ({adj['why']}). "
@@ -6544,6 +6595,12 @@ def main() -> int:
                                    if sk == "purplelink" and m == "vitaeDownloads")
                         lifetime = max(0, sum(vd["downloads"].values()) - ours)
                         forms_note += f", {lifetime} Vitae download(s) lifetime"
+                    wd = fetch_wallpaper_downloads_blobs()
+                    if wd is not None:
+                        payload.setdefault("byDay", {})
+                        for day, n in wd["byDay"].items():
+                            payload["byDay"].setdefault(day, {})["wallpaperDownloads"] = n
+                        forms_note += f", {sum(wd['downloads'].values())} wallpaper download(s) lifetime"
 
                 merge_history(history, site["key"], payload)
                 entry.pop("error", None)
