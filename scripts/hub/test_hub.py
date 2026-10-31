@@ -517,7 +517,7 @@ def test_campaigns():
     # exact-link trials and an order whose first touch carried ad b's tag
     saved = (tmp / "hub" / "funnel.json").read_text()
     f = json.loads(saved)
-    f["content"] = {str(w): {"widget-reddit-a": {"channel": "paid:reddit", "pageviews": 20, "pageviewsByPath": {"/widget/": 20}, "trial": {"widget": 2}, "checkout": {}},
+    f["content"] = {str(w): {"widget-reddit-a": {"channel": "paid:reddit", "pageviews": 20, "pageviewsByPath": {"/widget/": 20}, "trial": {"widget": 2}, "checkout": {}, "os": {"mac": 6, "windows": 4}},
                              "widget-reddit-b": {"channel": "paid:reddit", "pageviews": 10, "pageviewsByPath": {"/widget/": 10}, "trial": {"widget": 1}, "checkout": {}}}
                     for w in hub.FUNNEL_WINDOWS}
     put("hub/funnel.json", json.dumps(f))
@@ -530,6 +530,10 @@ def test_campaigns():
     assert rep["costPerTrial"] == 5.33 and rep["costPerOrder"] == 16.0 and "under the $18 break-even" in rep["reading"]
     assert "not a rate" in rep["reading"]
     assert {a["ad"]: a["orders"] for a in rep["ads"]} == {"a": 0, "b": 1}
+    # visitor OS summed over the ad links (ad b has no os field: older stats)
+    assert rep["os"] == {"mac": 6, "windows": 4}
+    assert hub.os_line(rep["os"]) == "mac 6 of 10 (60%); windows 4" and hub.os_line({}) == ""
+    assert "mac 6 of 10 (60%)" in run("campaigns")
     assert "widget-test-2026-11" in run("campaigns")
     try:
         hub.record_campaign_spend(P, "nope", 1.0, None, None); assert False
