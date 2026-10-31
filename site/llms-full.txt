@@ -2421,8 +2421,6 @@ rectification checklist, and an honest novelty estimate.
 
 - Not included: language editing. The reviewers comment on the argument, methods and citations, not on grammar or English. For that, your university's writing centre is often free, and Wordvice(paid link) is one academic editing service with published per-word pricing. We have not used it ourselves, so read its confidentiality terms before you upload a file.
 
-Reviewing a grant proposal instead of a paper? Grant Review is an idea for NSF and NIH proposals, and the waitlist measures interest.
-
 ## How your manuscript is handled
 
 - Analysis. A Word file is first converted to PDF on our server, and the PDF is read in memory. To check figures and tables, pages are rendered to images from a private temporary file that is deleted as soon as the rendering finishes.
