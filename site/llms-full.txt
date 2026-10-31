@@ -1570,7 +1570,7 @@ Try it free for 7 days
 
 Checkout shows the price in your local currency, and you can switch back to US dollars.
 
-The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $29.99 payment, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays valid, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.2.0, released October 28, 2026. 44 MB disk image. Needs macOS 26 or later on a Mac with Apple silicon.
+The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $29.99 payment, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays valid, with no second download. One key works on two of your Macs. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.2.1, released October 31, 2026. 44 MB disk image. Needs macOS 26 or later on a Mac with Apple silicon.
 
 Comparing options? See Mac apps for transcription, text to speech and OCR compared.
 
@@ -4756,7 +4756,7 @@ Legroom1.9.0October 2026
 
 Keyfeel1.7.0October 2026
 
-Tapefolio1.2.0October 2026
+Tapefolio1.2.1October 2026
 
 Panely1.0.4October 2026
 
@@ -10270,7 +10270,7 @@ Google Drive can also convert a photo or PDF to text. However, it uploads the fi
 
 ## Where Tapefolio fits
 
-Tapefolio is a Mac app for transcribing interviews and meetings and reading scans, made for people whose recordings cannot be uploaded. It costs $29.99 once after a 7-day trial. There is one download: after the trial it asks for a license key, and one key works on two Macs. It is also part of the $59.99 Mac Suite. It needs macOS 26 or later and a Mac with Apple silicon, with no Intel version. The current version is 1.2.0, released October 28, 2026. It is the newest and least proven app here. As of that version it does the following:
+Tapefolio is a Mac app for transcribing interviews and meetings and reading scans, made for people whose recordings cannot be uploaded. It costs $29.99 once after a 7-day trial. There is one download: after the trial it asks for a license key, and one key works on two Macs. It is also part of the $59.99 Mac Suite. It needs macOS 26 or later and a Mac with Apple silicon, with no Intel version. The current version is 1.2.1, released October 31, 2026. It is the newest and least proven app here. As of that version it does the following:
 
 - Transcribes on your Mac with the time of every word, from audio files or from the microphone inside the app.
 
