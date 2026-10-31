@@ -167,6 +167,12 @@
     Content-Type = "text/plain; charset=utf-8"
     Cache-Control = "public, max-age=86400"
 
+# Grant Review was a waitlist test (2026-10-01 to 2026-10-31) closed with no signups; old links go to Paper Review.
+[[redirects]]
+  from = "/grant-review/*"
+  to = "/tools/paper-review/"
+  status = 301
+
 # LinkedIn short links: a post can carry purplelink.llc/li/<slug>, which is easy to type on a Mac after reading on a
 # phone, and still lands tagged so analytics.js records the visit as channel "linkedin". 302, not 301, so a
 # destination can change later. One exact rule per page and no /li/* wildcard: a wildcard would redirect any
