@@ -5277,7 +5277,6 @@ main:has(> .post-hero) { overflow-x: clip; }
   }
 }
 
-.pr-grant-note { max-width: 64ch; margin: 24px clamp(24px, 6vw, 80px) 0; color: var(--muted); font-size: 0.95rem; }
 
 /* Link to this tool: appended by site.js after .tool-app on free tool pages. */
 .tool-link {
