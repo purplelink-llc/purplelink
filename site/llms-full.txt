@@ -8816,7 +8816,7 @@ Keyfeel has a No in a few rows on purpose. A table where one product ticks every
 
 Which of ten Mac keyboard sound apps state each feature, as read on October 13, 2026
 
-FeatureKeyfeel 1.5.0KlackTapWriter ProTacqueKeyBellFunKeyClickTikeySound TypingClyKey
+FeatureKeyfeel 1.7.0KlackTapWriter ProTacqueKeyBellFunKeyClickTikeySound TypingClyKey
 
 Mouse click soundsYesYes–Not stated–Not statedYesReported–Not stated–Not stated–Not stated–Not stated
 
@@ -8904,7 +8904,7 @@ Keyfeel is not on the shortlist because I make it. It has its own section below.
 
 Cost: $4.99 on the Mac App Store, which is the price on that listing. The Klack site sells it too, but I could not read a price there. Platform: the listing says macOS 15.0 or later. The developer is Henrik Ruscon.
 
-Klack is the one most people mean when they say "that Mac keyboard sound app". It lives in the menu bar and plays recorded switch sounds. The listing names Japanese Black, Cream, Oreo, Cardboard, Milky Yellow and Super Red, and the site lists switches from CherryMX, Gateron, Keychron, NovelKeys and Everglide. It randomizes pitch a little on each press, plays separate up and down sounds, supports spatial audio on AirPods, has a tone control, and has sleep automation.
+Klack is the one most people mean when they say "that Mac keyboard sound app". It lives in the menu bar and plays recorded switch sounds. The listing names Japanese Black, Cream, Oreo, Cardboard, Milky Yellow and Super Red, and the site lists switches from CherryMX, Gateron, Keychron, NovelKeys and Everglide. It randomizes pitch a little on each press, plays separate up and down sounds, supports spatial audio on AirPods, has a tone control, and has sleep automation. It can be controlled from AppleScript, including sleep and stats, according to its App Store version history.
 
 The listing's privacy label says no data is collected. The site says it is a native app.
 
@@ -8966,7 +8966,7 @@ Pick it if you want something you can feel on web pages. It is a companion to th
 
 ## Keyfeel (Purplelink's)
 
-Cost: Free for 7 days, then $9.99 once with a license key and no subscription. It is also part of the $59.99 Mac Suite. Platform: macOS 13 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.6.0, signed and notarized, released October 20, 2026. It is the newest and least proven app in this guide. I make it. I tested version 1.5.2 on macOS 27.2 on October 13, 2026, but I have not compared it with the others on a test Mac.
+Cost: Free for 7 days, then $9.99 once with a license key and no subscription. It is also part of the $59.99 Mac Suite. Platform: macOS 13 or later, Apple silicon and Intel, direct download from its page, no Mac App Store build. Status: version 1.7.0, signed and notarized, released October 28, 2026. It is the newest and least proven app in this guide. I make it. I tested version 1.5.2 on macOS 27.2 on October 13, 2026, but I have not compared it with the others on a test Mac.
 
 I built it because I wanted the keyboard sounds, the click sounds and the scroll feel from one place. It plays recorded switch sounds with a different recording on each press, per-key pitch and left-to-right stereo, separate press and release sounds, and sounds for the space bar and Return. It also has a synthesized typewriter sound with a bell on Return. Since 1.6.0 it can place sounds in 3D on headphones, with keys in front of and below you and clicks following the pointer; it is off unless you turn it on.
 
@@ -8974,17 +8974,17 @@ It adds mouse click sounds, and scroll ticks that follow how fast you scroll and
 
 It can play its own sound for shortcuts such as copy and paste, with a different sound if a copy did not take. It imports Mechvibes packs in the original format, including .ogg ones, and keeps the different sound each pack gives each key. Packs in the newer MechvibesDX format are not read (how to tell them apart).
 
-It goes quiet in the apps you choose and while the microphone or a camera is in use. If you want, it also goes quiet in full-screen apps. Version 1.5.0 added quiet hours by day and time, and silence while another app plays sound (macOS 14.2 or later). The menu says why it is quiet. Version 1.5.0 also had a Focus option, which I removed in 1.5.2 because macOS only reports a Focus the user has chosen to share. It also added favorites with optional rotation, shortcuts you record yourself, pack import from a link that asks before it downloads, and a Privacy tab that lists what Keyfeel looks at.
+It goes quiet in the apps you choose and while the microphone or a camera is in use. If you want, it also goes quiet in full-screen apps. Version 1.5.0 added quiet hours by day and time, and silence while another app plays sound (macOS 14.2 or later). The menu says why it is quiet. Version 1.5.0 also had a Focus option, which I removed in 1.5.2 because macOS only reports a Focus the user has chosen to share. Version 1.7.0 brings it back as a Focus filter that keeps it silent during a Focus you pick, and adds Shortcuts actions. It also added favorites with optional rotation, shortcuts you record yourself, pack import from a link that asks before it downloads, and a Privacy tab that lists what Keyfeel looks at.
 
 It reads which key was pressed and not the character, works offline, and its only network use is checking for updates. Settings shows how long Keyfeel took to hand your recent key presses to the audio system, next to the output delay the device reports. It warns when that output is Bluetooth. The measured part is the time inside the Mac, from the moment macOS stamped the key. It is not a recording of sound reaching your ear.
 
-What it lacks: it is Mac only, it is new, it has no Mac App Store build, and its source is not public, so you cannot read it the way you can read Thock, Mechvibes or Click. It does not have the spoken key names KeyOpera offers or the command line Thock has. It does not claim the community pack library Mechvibes has. It imports those packs instead.
+What it lacks: it is Mac only, it is new, it has no Mac App Store build, and its source is not public, so you cannot read it the way you can read Thock, Mechvibes or Click. It does not have the spoken key names KeyOpera offers or the scripting Klack (AppleScript) and Thock (command line) have. It does not claim the community pack library Mechvibes has. It imports those packs instead.
 
 Where others are better today: Klack for a keyboard-only app with years of polish, KeyOpera for the lowest price, Thock and Mechvibes for free, and Snick if scrolling is all you want. Pick Keyfeel if you want keys, clicks, scrolling and haptics in one app and would rather pay once than collect several.
 
 ## Also worth knowing
 
-I read only the AlternativeTo and launch-page descriptions of the first three, and nothing else about them. The last two I read on October 9, 2026 and did not test.
+I read only the AlternativeTo and launch-page descriptions of the first three, and nothing else about them. The last two I read on October 9, 2026 and did not test. Kachunk and JoyTap I read on October 31, 2026 and did not test.
 
 - Keeby says it uses sounds recorded from real switches, with 11 profiles including Gateron Red, Holy Panda, Alps Blue and Box Navy.
 
@@ -9005,6 +9005,10 @@ I read only the AlternativeTo and launch-page descriptions of the first three, a
 - Tikey, Sound Typing and ClyKey are small listings. Tikey offers more than 30 sounds and allow and block lists. Sound Typing is $1.99 with more than 10 novelty sounds. ClyKey is free with a $9.99 lifetime Pro purchase and has not been updated since August 2024.
 
 - Typemac, at typemac.app, adds mechanical switch sounds to keystrokes. The page says $7 once with no subscription, macOS 13.0 or later on Apple silicon and Intel, and Input Monitoring as its only permission. It mentions no mouse or scroll sounds, no trial and no Mac App Store build.
+
+- Kachunk plays recordings of two real typewriters, an Underwood and an Olivetti, and 24 mechanical switches. Two packs are free; $4.99 once unlocks the rest. It needs macOS 13 or later and Input Monitoring, and its site says it collects nothing and stays silent in password fields. Keyfeel's typewriter sound is synthesized, so for a recorded typewriter, Kachunk is the one to try.
+
+- JoyTap, on Setapp, offers more than 10 switch profiles with volume control on macOS 14 or later. Its page lists it from $5.00 a year for the app alone. It does not mention mouse sounds or per-app rules.
 
 ## Quick picks
 
