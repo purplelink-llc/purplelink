@@ -15,14 +15,16 @@ import vm from "node:vm";
 const SITE = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "site");
 const read = (p) => readFileSync(join(SITE, p), "utf8");
 const jsonLd = (html) =>
-  [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].flatMap((m) => {
+  [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script[^>]*>/gi)].flatMap((m) => {
     const d = JSON.parse(m[1]);
     return d["@graph"] || [d];
   });
+// Decoded in one pass, so "&amp;rsquo;" stays "&rsquo;" instead of being unescaped twice.
+const ENTITIES = { nbsp: " ", middot: " ", rsquo: "'", "#39": "'", amp: "&" };
 /** The text a reader sees: no scripts, styles, comments or tags. */
 const visibleText = (html) =>
   html.replace(/<script\b[\s\S]*?<\/script[^>]*>/gi, " ").replace(/<style\b[\s\S]*?<\/style[^>]*>/gi, " ").replace(/<!--[\s\S]*?-->/g, " ")
-    .replace(/<[^>]+>/g, " ").replace(/&nbsp;|&middot;/g, " ").replace(/&rsquo;|&#39;/g, "'").replace(/&amp;/g, "&").replace(/\s+/g, " ");
+    .replace(/<[^>]+>/g, " ").replace(/&(nbsp|middot|rsquo|#39|amp);/g, (_m, e) => ENTITIES[e]).replace(/\s+/g, " ");
 
 // ---- product page --------------------------------------------------------------------
 

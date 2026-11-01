@@ -33,6 +33,8 @@ window.LENSCRIB_LAUNCH = {
 
   function all(sel) { return Array.prototype.slice.call(document.querySelectorAll(sel)); }
 
+  var TRIAL_HREF = "/.netlify/functions/lenscrib-download?download=1";
+
   function apply() {
     if (!live) {
       if (cfg.live === true && window.console) console.warn("Lenscrib stays switched off: " + problems.join(", ") + ".");
@@ -45,9 +47,8 @@ window.LENSCRIB_LAUNCH = {
     all("[data-lcb-gated]").forEach(function (el) {
       var text = el.getAttribute("data-lcb-live-text");
       if (text) el.textContent = text;
-      var href = el.getAttribute("data-lcb-href");
-      // Only a site-relative path is ever used as the link.
-      if (href && /^\/[A-Za-z0-9._~\/?=&%-]*$/.test(href) && href.indexOf("//") !== 0) el.setAttribute("href", href);
+      // The only gated link is the trial door. The page names it, but the link written is this constant, never page text.
+      if (el.getAttribute("data-lcb-href") === TRIAL_HREF) el.setAttribute("href", TRIAL_HREF);
       el.removeAttribute("aria-disabled");
       el.removeAttribute("disabled");
       el.disabled = false;
