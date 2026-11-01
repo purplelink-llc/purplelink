@@ -1053,6 +1053,115 @@ def fetch_chrome_web_store(prior: dict | None) -> dict | None:
     return prior
 
 
+# --- Firefox (AMO) and Microsoft Edge Add-ons ------------------------------
+#
+# Both stores have a public JSON read endpoint that needs no key (their
+# publish APIs carry no stats). AMO gives exact average daily users; Edge gives
+# an active install count. The Edge listing id is NOT the Chrome id: it is the
+# 32-letter id in the Edge store URL (Partner Center > Extension overview), set
+# as EDGE_ADDON_CRX_ID in traffic.env. Until it is set, the block says so.
+
+AMO_SLUG = "google-scholar-utility-belt"
+EDGE_CRX_ID_KEY = "EDGE_ADDON_CRX_ID"
+
+
+def _get_store_json(url: str, what: str) -> dict | None:
+    """GET a public store JSON document with retries; None on a hard failure."""
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (purplelink-traffic-dashboard)",
+                                               "Accept": "application/json"})
+    last: Exception | None = None
+    for attempt in range(RETRIES):
+        if attempt:
+            time.sleep(RETRY_BACKOFF * (2 ** (attempt - 1)))
+        try:
+            with urllib.request.urlopen(req, timeout=TIMEOUT, context=_ssl_context()) as resp:
+                return json.loads(resp.read().decode("utf-8", errors="replace"))
+        except urllib.error.HTTPError as exc:
+            if exc.code < 500 and exc.code != 429:
+                print(f"  ! {what}: HTTP {exc.code}", file=sys.stderr)
+                return None
+            last = exc
+        except (OSError, http.client.HTTPException, ValueError) as exc:
+            last = exc
+    print(f"  ! {what} unavailable: {str(last)[:80]}", file=sys.stderr)
+    return None
+
+
+def fetch_amo(prior: dict | None) -> dict | None:
+    """Scholar Utility Belt on addons.mozilla.org, or the prior reading on failure."""
+    d = _get_store_json(f"https://addons.mozilla.org/api/v5/addons/addon/{AMO_SLUG}/", "firefox add-ons")
+    if not isinstance(d, dict) or "average_daily_users" not in d:
+        return prior
+    ratings = d.get("ratings") or {}
+    return {"label": CWS_LABEL,
+            "url": d.get("url") or f"https://addons.mozilla.org/firefox/addon/{AMO_SLUG}/",
+            "users": int(d.get("average_daily_users") or 0),
+            "weeklyDownloads": int(d.get("weekly_downloads") or 0),
+            "ratingCount": int(ratings.get("count") or 0),
+            "ratingAvg": float(ratings.get("average") or 0.0),
+            "version": (d.get("current_version") or {}).get("version"),
+            "lastUpdated": d.get("last_updated"),
+            "asOf": dt.date.today().isoformat()}
+
+
+def fetch_edge_addon(crx_id: str, prior: dict | None) -> dict | None:
+    """Scholar Utility Belt on Microsoft Edge Add-ons, or the prior reading on failure."""
+    if not crx_id:
+        return {"missing": "Edge listing id not set"}
+    d = _get_store_json(f"https://microsoftedge.microsoft.com/addons/getproductdetailsbycrxid/{crx_id}",
+                        "edge add-ons")
+    if not isinstance(d, dict) or "activeInstallCount" not in d:
+        return None if (prior or {}).get("missing") else prior
+    return {"label": CWS_LABEL,
+            "url": f"https://microsoftedge.microsoft.com/addons/detail/{crx_id}",
+            "users": int(d.get("activeInstallCount") or 0),
+            "ratingCount": int(d.get("ratingCount") or 0),
+            "ratingAvg": float(d.get("averageRating") or 0.0),
+            "version": d.get("version"),
+            "asOf": dt.date.today().isoformat()}
+
+
+def record_extension_stores(history: dict, readings: dict[str, dict | None]) -> None:
+    """Add each store's fresh reading to history["extensionStores"][store]["days"].
+
+    A fetcher that failed hands back the prior reading, dated its own day, so a
+    stale reading never lands on today and the series has a gap, not a repeat.
+    """
+    stores = history.setdefault("extensionStores", {})
+    for store, r in readings.items():
+        entry = stores.setdefault(store, {"days": {}})
+        if not r or r.get("missing"):
+            entry["missing"] = (r or {}).get("missing")
+            continue
+        entry.pop("missing", None)
+        entry["latest"] = r
+        users = r.get("users")
+        if isinstance(users, str):
+            users = int(users.replace(",", "")) if users.replace(",", "").isdigit() else None
+        entry["days"][r["asOf"]] = {k: v for k, v in {"users": users, "ratingCount": r.get("ratingCount"),
+                                                       "ratingAvg": r.get("ratingAvg"),
+                                                       "version": r.get("version")}.items() if v is not None}
+
+
+def extension_store_rows(history: dict) -> list[dict]:
+    """One row per store: latest users, ratings, version, and change since the previous recorded day."""
+    rows = []
+    for store, name in (("chrome", "Chrome Web Store"), ("firefox", "Firefox Add-ons"), ("edge", "Edge Add-ons")):
+        entry = (history.get("extensionStores") or {}).get(store) or {}
+        days = entry.get("days") or {}
+        keys = sorted(days)
+        last = days[keys[-1]] if keys else {}
+        prev = days[keys[-2]] if len(keys) > 1 else {}
+        change = (last["users"] - prev["users"]
+                  if isinstance(last.get("users"), int) and isinstance(prev.get("users"), int) else None)
+        rows.append({"store": store, "name": name, "missing": entry.get("missing"),
+                     "url": (entry.get("latest") or {}).get("url"), "asOf": keys[-1] if keys else None,
+                     "users": last.get("users"), "ratingCount": last.get("ratingCount"),
+                     "ratingAvg": last.get("ratingAvg"), "version": last.get("version"), "change": change,
+                     "prevDay": keys[-2] if len(keys) > 1 else None})
+    return rows
+
+
 # Search Console rows that are not readers. A new site with a handful of
 # real visitors gets most of its impressions from tools that run queries
 # (citation checkers, research agents): quoted phrases, site: filters, bare
@@ -2998,6 +3107,40 @@ def chrome_web_store_block(cws: dict | None) -> str:
   </div>
   <p class="sales-foot">Rounded by Google to the nearest bucket, from the public
     <a href="{html.escape(cws['url'])}">store listing</a> (as of {html.escape(cws['asOf'])}).</p>
+</section>"""
+
+
+def extension_stores_block(history: dict) -> str:
+    """Scholar Utility Belt across Chrome, Firefox and Edge, with the change since the previous reading."""
+    rows = extension_store_rows(history)
+    if not any(r["asOf"] or r["missing"] for r in rows):
+        return ""
+    body = []
+    for r in rows:
+        name = (f"<a href=\"{html.escape(r['url'])}\">{html.escape(r['name'])}</a>" if r["url"]
+                else html.escape(r["name"]))
+        if r["missing"] and not r["asOf"]:
+            body.append(f"<tr><td>{name}</td><td colspan='4'>{html.escape(r['missing'])}</td></tr>")
+            continue
+        if not r["asOf"]:
+            body.append(f"<tr><td>{name}</td><td colspan='4'>No reading yet</td></tr>")
+            continue
+        users = f"{r['users']:,}" if isinstance(r["users"], int) else "—"
+        change = ("—" if r["change"] is None else f"{r['change']:+,}")
+        ratings = (f"{r['ratingAvg']:.1f} ({r['ratingCount']:,})" if r.get("ratingCount")
+                   else ("none yet" if r.get("ratingCount") == 0 else "—"))
+        body.append(f"<tr><td>{name}</td><td>{users}</td><td>{change}</td><td>{ratings}</td>"
+                    f"<td>{html.escape(str(r['version'] or '—'))}</td></tr>")
+    return f"""
+<section class="sales appstore">
+  <h2>Browser extension stores · {html.escape(CWS_LABEL)}</h2>
+  <div class="sales-scroll"><table class="sales-list">
+    <thead><tr><th>Store</th><th>Users</th><th>Since last reading</th><th>Rating</th><th>Live version</th></tr></thead>
+    <tbody>{''.join(body)}</tbody>
+  </table></div>
+  <p class="sales-foot">Chrome: rounded installed users from the public listing. Firefox: average daily users from the
+    public AMO API. Edge: active installs from the public product endpoint. One reading a day; a failed fetch leaves
+    a gap rather than repeating the last value.</p>
 </section>"""
 
 
@@ -6417,7 +6560,8 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
            admob: dict | None = None, metrics: dict | None = None,
            profit: dict | None = None, channels: dict | None = None, tax: dict | None = None,
            marketplaces: dict | None = None, market_rows: list[dict] | None = None,
-           ledger_rows: list[dict] | None = None, revenue_daily: dict | None = None) -> str:
+           ledger_rows: list[dict] | None = None, revenue_daily: dict | None = None,
+           extension_history: dict | None = None) -> str:
     cards = "".join(site_card(s) for s in summaries)
     obs_html = "".join(f"<li>{html.escape(o)}</li>" for o in obs) or "<li>No data yet.</li>"
 
@@ -6469,7 +6613,8 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
                 f"{queue_block()}\n{general_html}")
     money = f"{all_sales_block(ledger_rows or [], appstore, admob)}\n{sales_block(sales)}\n{marketplaces_block(marketplaces)}"
     ads = manual_ads_block(manual_ads or {}, admob)
-    apps = f"{appstore_block(appstore)}\n{chrome_web_store_block(chrome_web_store)}"
+    apps = (f"{appstore_block(appstore)}\n{chrome_web_store_block(chrome_web_store)}\n"
+            f"{extension_stores_block(extension_history or {})}")
     panels = [("overview", "Overview", overview), ("money", "Money", money), ("ads", "Ads", ads), ("apps", "Apps", apps)]
     for s_ in summaries:
         key = "site-" + re.sub(r"[^a-z0-9]+", "-", s_["label"].lower()).strip("-")
@@ -6752,6 +6897,22 @@ def main() -> int:
             history["chromeWebStore"] = cws
             print(f"  ok Chrome Web Store ({cws['label']}): {cws['users']} installed users")
 
+        # Firefox (AMO) and Edge Add-ons: public JSON, no auth. One series per store, Chrome included.
+        try:
+            prior_stores = history.get("extensionStores") or {}
+            amo = fetch_amo((prior_stores.get("firefox") or {}).get("latest"))
+            edge = fetch_edge_addon(cfg.get(EDGE_CRX_ID_KEY, ""), (prior_stores.get("edge") or {}).get("latest"))
+            record_extension_stores(history, {"chrome": cws, "firefox": amo, "edge": edge})
+            if amo:
+                print(f"  ok Firefox Add-ons: {amo['users']} daily users, {amo['weeklyDownloads']} downloads/wk, "
+                      f"v{amo['version']}")
+            if edge and edge.get("missing"):
+                print(f"  - Edge Add-ons: {edge['missing']} ({EDGE_CRX_ID_KEY} in traffic.env)")
+            elif edge:
+                print(f"  ok Edge Add-ons: {edge['users']} active installs, v{edge['version']}")
+        except Exception as exc:  # noqa: BLE001 -- never let this sink the run
+            print(f"  ! extension stores unavailable: {str(exc)[:100]}", file=sys.stderr)
+
         stamp = dt.datetime.now(dt.timezone.utc).isoformat()
         month_ago = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=30)).isoformat()
         # Etsy, Gumroad, Payhip: after Stripe so merge_ledger's first-run logic is untouched.
@@ -6808,7 +6969,7 @@ def main() -> int:
         render(summaries, obs, generated, min(firsts) if firsts else None,
                sales, appstore, manual_ads, chrome_web_store, history.get("admob"), metrics,
                profit, channels, tax, marketplaces, market_rows,
-               list((history.get("ledger") or {}).values()), revenue_daily))
+               list((history.get("ledger") or {}).values()), revenue_daily, history))
 
     # Terminal summary, so a manual run is useful without opening a browser.
     print_metrics(metrics)
@@ -6843,6 +7004,14 @@ def main() -> int:
     if chrome_web_store:
         print(f"\n  Chrome Web Store — {chrome_web_store['label']}: "
               f"{chrome_web_store['users']} installed users (rounded, as of {chrome_web_store['asOf']})")
+    for r in extension_store_rows(history):
+        if r["store"] == "chrome" or not (r["asOf"] or r["missing"]):
+            continue
+        if not r["asOf"]:
+            print(f"  {r['name']} — {r['missing']}")
+            continue
+        chg = "" if r["change"] is None else f" ({r['change']:+d} since {r['prevDay']})"
+        print(f"  {r['name']} — {r['users']} users{chg}, v{r['version']} (as of {r['asOf']})")
 
     print(f"\n  Traffic — {generated}")
     for s in summaries:
