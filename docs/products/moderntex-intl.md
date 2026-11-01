@@ -19,22 +19,30 @@ Public note on what purplelink.llc localizes for ModernTex, and the rules that k
 
 ## Rule: interface-language claims follow shipped releases
 
-A page may say the ModernTex interface is in a language only when a published release has it.
+A page may say the ModernTex interface is in a language only when a published release has it, and the ModernTex
+changelog says so.
 
 - Shipped: English, and German (beta) since ModernTex 2.0.
-- Not shipped: French, Brazilian Portuguese, Japanese and Simplified Chinese (the Japanese and Chinese ones are open pull
-  requests moderntex #117 and #118). The French, Portuguese, Japanese and Chinese pages say the interface is English, and no
-  page may claim otherwise.
+- Release-day change (draft PR "Release-day: ModernTex Japanese and Simplified Chinese interface"): the interface can
+  also be shown in Japanese and Simplified Chinese (beta; moderntex PRs 116 to 118, release 2.x, planned 2026-11-10). The
+  PR edits `/ja/moderntex/` and `/zh-cn/moderntex/` (the page note, the feature card and the FAQ answer), the "App
+  interface" row and FAQ answer on `/moderntex/`, the interface sentence on the German, French and Portuguese pages, the
+  JSON-LD `inLanguage` of the app (`["en", "de", "ja", "zh-Hans"]` on all six pages), `llms.txt` and `gen_llms_full.py`.
+  Merge it on the day that release is published, after the changelog entry exists.
+- The guard reads the changelog (`shipped_interface_languages` in `site-tests/common.py`): a ModernTex entry whose
+  paragraph holds the sentence "the interface can be shown in Japanese and Simplified Chinese (beta)" (or "German,
+  Japanese and Simplified Chinese (beta)") makes `ja` and `zh-Hans` allowed. Until it exists,
+  `InterfaceClaimsFollowReleases` and the JSON-LD check in `test_intl_moderntex.py` fail on purpose.
+- Never claimed: a French or Portuguese interface. Those pages say the interface is English (German, Japanese and
+  Chinese beta) and that French or Portuguese is not an interface language. The guard does not relax for them.
 - What is true today regardless: ModernTex compiles Brazilian Portuguese documents (babel `brazilian` or polyglossia
   `variant=brazilian`, T1, csquotes, and the abntex2 class with abntex2cite) when the user's TeX installation has those
   packages; `abntex2` is one TeX Live package (class, abntex2cite and the abntex2-alf and abntex2-num BibTeX styles).
 - Also true: ModernTex compiles Chinese and Japanese documents with XeLaTeX (ctex) and LuaLaTeX
   (luatexja, jlreq) when the user's TeX installation has those packages. upLaTeX support is not released.
 
-When #117 or #118 ships: edit the page text (the "interface is English" notes and FAQ answers on `/ja/moderntex/` or
-`/zh-cn/moderntex/`, the English "Languages and currency" row, the JSON-LD `inLanguage` list on the app, `llms.txt`,
-`gen_llms_full.py`), then update `InterfaceClaimsFollowReleases` in `site-tests/test_intl_advertise.py`. The test fails on
-purpose until both agree.
+Another interface language later: add it to `_UI_CODES` in `site-tests/common.py`, to the `*_CLAIM` patterns in
+`InterfaceClaimsFollowReleases`, and to the pages, then add the changelog sentence with the release.
 
 ## Local-currency checkout (Stripe Adaptive Pricing)
 

@@ -3,8 +3,9 @@
 Stripe Adaptive Pricing is on for the Mac-app checkout: the buyer sees the USD price converted into their own
 currency. The pages say so, in every language, and keep the claims about languages to what has shipped:
 
-  - the app interface is English and German (beta), since ModernTex 2.0; Japanese and Chinese interface
-    translations are not released, so no page may claim them (update this test with the pages when they ship)
+  - the app interface is English, German (beta, since ModernTex 2.0), and Japanese and Simplified Chinese (beta).
+    A page may claim a language only when a ModernTex changelog entry says the interface can be shown in it
+    (common.shipped_interface_languages); French and Portuguese interfaces are never claimed
   - Chinese and Japanese documents compile with XeLaTeX and LuaLaTeX when the TeX installation has the packages
   - every ModernTex price on the site equals the checkout catalog (netlify/functions/checkout.mjs), in 19.99
     and 19,99 notation
@@ -15,7 +16,7 @@ See docs/products/moderntex-intl.md.
 import re
 import sys
 import unittest
-from common import ORIGIN, SITE, ROOT, jsonld_blocks, main_text, page_of, read, read_site, walk
+from common import ORIGIN, SITE, ROOT, jsonld_blocks, main_text, page_of, read, read_site, shipped_interface_languages, walk
 
 PAGES = {"/moderntex/": "en", "/de/moderntex/": "de", "/fr/moderntex/": "fr", "/pt-br/moderntex/": "pt-BR", "/ja/moderntex/": "ja", "/zh-cn/moderntex/": "zh-Hans"}
 LOCALIZED_PAGES = {u: l for u, l in PAGES.items() if l != "en"}
@@ -158,18 +159,44 @@ class CurrencyNote(unittest.TestCase):
 
 
 class InterfaceClaimsFollowReleases(unittest.TestCase):
-    """Interface languages shipped: English and German (beta). The Japanese and Chinese translations are in open
-    pull requests (moderntex #117 and #118) and unreleased. When they ship, update the pages and then these
-    expectations (docs/products/moderntex-intl.md)."""
+    """Interface languages: English, German (beta, since 2.0), and Japanese and Simplified Chinese (beta). A page may
+    claim an interface language only when a ModernTex changelog entry says so. Japanese and Chinese are claimed on
+    the pages from the release-day change on, so this class fails until the changelog has the entry
+    (docs/products/moderntex-intl.md). French and Portuguese interfaces are never allowed."""
 
-    FORBIDDEN = {
-        "ja": r"日本語(?:の)?(?:インターフェース|ユーザーインターフェース|UI)|日本語化|フランス語(?:の)?(?:インターフェース|画面|UI)|ポルトガル語(?:の)?(?:インターフェース|画面|UI)|日本語版アプリ|画面は日本語(?:で表示|に対応|です。)|(?:インターフェース|画面表示|表示言語)(?:は|が)日本語(?:に対応|で表示|です)",
-        "zh-Hans": r"法语界面|法文界面|葡萄牙语界面|中文界面|简体中文界面|中文用户界面|汉化|界面(?:已|支持)(?:翻译|支持)?(?:简体)?中文|应用(?:界面)?(?:有|提供)中文",
-        "de": r"(?:französische|portugiesische|japanische|chinesische)[rn]? (?:Oberfläche|Benutzeroberfläche)|Oberfläche (?:auf|in) (?:Französisch|Portugiesisch|Japanisch|Chinesisch)",
-        "fr": r"interface\s+(?:de\s+l.(?:app|application)\s+)?(?:est\s+|sera\s+)?(?:disponible\s+|traduite\s+)?(?:en\s+français|française)|(?:menus|app(?:lication)?)\s+en\s+français|interface\s+(?:en\s+)?(?:japonais|chinois)",
-        "pt-BR": r"interface\s+(?:do\s+app\s+)?(?:é\s+|será\s+)?(?:disponível\s+|traduzida\s+)?(?:em\s+português|portuguesa)|(?:menus|app)\s+em\s+português|interface\s+(?:em\s+)?(?:japonês|chinês|francês)",
-        "en": r"(?:French|Portuguese|Brazilian Portuguese|Japanese|Chinese|Simplified Chinese) (?:interface|UI|translation of the app|localization)|interface (?:is |in |available in )?(?:French|Portuguese|Japanese|Chinese)|(?:Japanese|Chinese) (?:menus|language support in the app)",
+    # Claims that are never allowed.
+    ALWAYS_FORBIDDEN = {
+        "ja": r"フランス語(?:の)?(?:インターフェース|画面|UI)|ポルトガル語(?:の)?(?:インターフェース|画面|UI)",
+        "zh-Hans": r"法语界面|法文界面|葡萄牙语界面",
+        "de": r"(?:französische|portugiesische)[rn]? (?:Oberfläche|Benutzeroberfläche)|Oberfläche (?:auf|in) (?:Französisch|Portugiesisch)",
+        "fr": r"interface\s+(?:de\s+l.(?:app|application)\s+)?(?:est\s+|sera\s+)?(?:disponible\s+|traduite\s+)?(?:en\s+français|française)|(?:menus|app(?:lication)?)\s+en\s+français",
+        "pt-BR": r"interface\s+(?:do\s+app\s+)?(?:é\s+|será\s+)?(?:disponível\s+|traduzida\s+)?(?:em\s+português|portuguesa)|(?:menus|app)\s+em\s+português|interface\s+(?:em\s+)?francês",
+        "en": r"(?:French|Portuguese|Brazilian Portuguese) (?:interface|UI|translation of the app|localization)|interface (?:is |in |available in )?(?:French|Portuguese)",
     }
+    # Japanese and Chinese interface claims: allowed only for a language the changelog says has shipped.
+    JA_CLAIM = {
+        "ja": r"日本語(?:の)?(?:インターフェース|ユーザーインターフェース|UI)|日本語化|日本語版アプリ|画面は日本語(?:で表示|に対応|です。)|(?:インターフェース|画面表示|表示言語)(?:は|が)日本語(?:に対応|で表示|です)",
+        "de": r"japanische[rn]? (?:Oberfläche|Benutzeroberfläche)|Oberfläche (?:auf|in) Japanisch",
+        "fr": r"interface\s+(?:en\s+)?japonais",
+        "pt-BR": r"interface\s+(?:em\s+)?japonês",
+        "en": r"Japanese (?:interface|UI|translation of the app|localization)|interface (?:is |in |available in )?Japanese|Japanese (?:menus|language support in the app)",
+    }
+    ZH_CLAIM = {
+        "zh-Hans": r"界面(?:可以|可)?(?:显示|切换)为(?:简体)?中文|中文界面|简体中文界面|中文用户界面|汉化|界面(?:已|支持)(?:翻译|支持)?(?:简体)?中文|应用(?:界面)?(?:有|提供)中文",
+        "de": r"chinesische[rn]? (?:Oberfläche|Benutzeroberfläche)|Oberfläche (?:auf|in) Chinesisch",
+        "fr": r"interface\s+(?:en\s+)?chinois",
+        "pt-BR": r"interface\s+(?:em\s+)?chinês",
+        "en": r"Chinese (?:interface|UI|translation of the app|localization)|interface (?:is |in |available in )?Chinese|Chinese (?:menus|language support in the app)",
+    }
+
+    @classmethod
+    def forbidden(cls, lang, shipped):
+        parts = [cls.ALWAYS_FORBIDDEN[lang]] if lang in cls.ALWAYS_FORBIDDEN else []
+        if "ja" not in shipped and lang in cls.JA_CLAIM:
+            parts.append(cls.JA_CLAIM[lang])
+        if "zh-Hans" not in shipped and lang in cls.ZH_CLAIM:
+            parts.append(cls.ZH_CLAIM[lang])
+        return "|".join(parts) or r"(?!x)x"
 
     def texts(self):
         out = {}
@@ -184,63 +211,104 @@ class InterfaceClaimsFollowReleases(unittest.TestCase):
             out[rel] = ("en", read_site(rel))
         return out
 
-    def test_no_page_claims_a_japanese_or_chinese_interface(self):
+    def test_changelog_says_the_japanese_and_chinese_interface_shipped(self):
+        # The release-day pages claim both. The ModernTex changelog entry for that release must say, in one
+        # sentence of its paragraph: "the interface can be shown in Japanese and Simplified Chinese (beta)"
+        # (or "German, Japanese and Simplified Chinese (beta)"). Add it with the release; this test then passes.
+        shipped = shipped_interface_languages()
+        self.assertEqual(sorted({"ja", "zh-Hans"} - shipped), [],
+                         "the pages claim a Japanese and Simplified Chinese interface, but no ModernTex changelog entry says "
+                         "'the interface can be shown in Japanese and Simplified Chinese (beta)'")
+
+    def test_no_page_claims_an_interface_language_the_changelog_does_not_list(self):
+        shipped = shipped_interface_languages()
         bad = []
         for rel, (lang, text) in self.texts().items():
-            for m in re.finditer(self.FORBIDDEN[lang], re.sub(r"<[^>]+>", " ", text)):
+            for m in re.finditer(self.forbidden(lang, shipped), re.sub(r"<[^>]+>", " ", text)):
                 bad.append((rel, m.group(0)))
         self.assertEqual(bad, [])
 
+    def test_pages_claim_japanese_and_chinese_only_when_the_changelog_lists_them(self):
+        # The release-day claims, as the guard sees them with nothing shipped: every one of them is caught.
+        shipped = {"en", "de"}
+        for rel in ("ja/moderntex/index.html", "zh-cn/moderntex/index.html"):
+            lang = "ja" if rel.startswith("ja/") else "zh-Hans"
+            text = re.sub(r"<[^>]+>", " ", read_site(rel))
+            self.assertRegex(text, self.forbidden(lang, shipped), rel)
+
     def test_the_guard_matches_the_claims_it_is_meant_to_catch(self):
+        none = {"en"}
         for lang, sample in {"ja": "日本語インターフェースに対応", "zh-Hans": "ModernTex 提供中文界面", "de": "mit japanischer Oberfläche",
                              "en": "the Japanese interface ships in 2.1",
                              "fr": "ModernTex propose une interface disponible en français",
                              "pt-BR": "O ModernTex tem interface disponível em português"}.items():
-            self.assertRegex(sample, self.FORBIDDEN[lang])
-        for lang, ok in {"ja": "アプリの画面表示は現在、英語です。日本語の文書は XeLaTeX でコンパイルできます。",
-                         "zh-Hans": "应用界面目前是英文。可以编译中文文档。", "en": "Chinese and Japanese documents compile with XeLaTeX.",
+            self.assertRegex(sample, self.forbidden(lang, none))
+        # French and Portuguese stay forbidden even when Japanese and Chinese have shipped.
+        everything = {"en", "de", "ja", "zh-Hans"}
+        for lang, sample in {"ja": "フランス語のインターフェース", "zh-Hans": "提供法语界面", "de": "mit französischer Oberfläche",
+                             "en": "the French interface", "fr": "interface en français",
+                             "pt-BR": "interface em português"}.items():
+            self.assertRegex(sample, self.forbidden(lang, everything))
+        # Shipped languages are allowed, the others are not.
+        self.assertNotRegex("the Japanese interface", self.forbidden("en", {"en", "ja"}))
+        self.assertRegex("the Chinese interface", self.forbidden("en", {"en", "ja"}))
+        self.assertNotRegex("提供中文界面", self.forbidden("zh-Hans", {"en", "zh-Hans"}))
+        for lang, ok in {"ja": "アプリの画面は日本語で表示できます。日本語の文書は XeLaTeX でコンパイルできます。",
+                         "zh-Hans": "应用界面可以显示为简体中文。可以编译中文文档。", "en": "Chinese and Japanese documents compile with XeLaTeX.",
                          "fr": "L’interface de l’application est en anglais. Le français n’est pas encore une langue d’interface. Les documents en français se compilent.",
                          "pt-BR": "A interface do app é em inglês. O português ainda não é um idioma de interface. Os documentos em português compilam."}.items():
-            self.assertNotRegex(ok, self.FORBIDDEN[lang])
+            self.assertNotRegex(ok, self.forbidden(lang, everything))
 
-    def test_japanese_and_chinese_pages_say_the_interface_is_english(self):
-        self.assertRegex(visible("/ja/moderntex/"), r"アプリの画面表示は現在、英語です")
-        self.assertRegex(visible("/zh-cn/moderntex/"), r"应用界面目前是英文")
+    def test_the_changelog_reader(self):
+        self.assertIn("de", shipped_interface_languages())  # ModernTex 2.0.0: German (beta)
+        self.assertNotIn("fr", shipped_interface_languages())
+        self.assertNotIn("pt-BR", shipped_interface_languages())
 
-    def test_french_page_says_the_interface_is_english_with_german_beta_and_never_french(self):
+    def test_japanese_page_says_the_interface_can_be_japanese_and_is_a_beta(self):
+        t = visible("/ja/moderntex/")
+        self.assertRegex(t, r"アプリの画面は日本語で表示できます（ベータ版: 一部の表現が不正確なことがあります）")
+
+    def test_chinese_page_says_the_interface_can_be_chinese_and_is_a_beta(self):
+        t = visible("/zh-cn/moderntex/")
+        self.assertRegex(t, r"应用界面可以显示为简体中文（测试版：个别措辞可能不够准确）")
+
+    def test_french_page_says_the_interface_is_english_with_german_japanese_chinese_beta_and_never_french(self):
         t = visible("/fr/moderntex/")
         self.assertRegex(t, r"L’interface de l’application est en anglais")
-        self.assertRegex(t, r"allemand depuis la version 2\.0 \(bêta\)")
+        self.assertRegex(t, r"allemand depuis la version 2\.0, ainsi qu’en japonais et en chinois \(bêta\)")
         self.assertRegex(t, r"le français n’est pas encore une langue d’interface")
         self.assertRegex(t, r"babel ou polyglossia, encodage T1 et csquotes")
 
-    def test_portuguese_page_says_the_interface_is_english_with_german_beta_and_never_portuguese(self):
+    def test_portuguese_page_says_the_interface_is_english_with_german_japanese_chinese_beta_and_never_portuguese(self):
         t = visible("/pt-br/moderntex/")
         self.assertRegex(t, r"A interface do app é em inglês")
-        self.assertRegex(t, r"alemão desde a versão 2\.0 \(beta\)")
+        self.assertRegex(t, r"alemão desde a versão 2\.0, e também em japonês e chinês \(beta\)")
         self.assertRegex(t, r"o português ainda não é um idioma de interface")
         self.assertRegex(t, r"babel ou polyglossia, codificação T1 e csquotes")
 
     def test_german_page_says_the_interface_can_be_german_and_is_a_beta(self):
         t = visible("/de/moderntex/")
         self.assertRegex(t, r"seit Version 2\.0 auf Deutsch anzeigen \(Beta")
+        self.assertRegex(t, r"außerdem auf Japanisch und Chinesisch \(ebenfalls Beta\)")
 
-    def test_english_page_says_english_and_german_beta(self):
+    def test_english_page_says_english_german_japanese_and_chinese_beta(self):
         t = visible("/moderntex/")
-        self.assertRegex(t, r"English and German \(beta\)")
+        self.assertRegex(t, r"English, German, Japanese and Chinese \(beta\)")
         self.assertRegex(t, r"XeLaTeX \(ctex\) or LuaLaTeX \(luatexja, jlreq\)")
         self.assertNotRegex(t, r"upLaTeX")  # not released
 
     def test_app_interface_languages_in_json_ld(self):
+        order = ["en", "de", "ja", "zh-Hans"]
+        expected = [c for c in order if c in shipped_interface_languages()]
         for url in PAGES:
             blocks = jsonld_blocks(page_of(url).read_text(encoding="utf-8"))
             apps = [d for b in blocks for d in walk(b) if d.get("@type") == "SoftwareApplication"]
-            self.assertEqual(apps[0]["inLanguage"], ["en", "de"], url)
+            self.assertEqual(apps[0]["inLanguage"], expected, url)
 
     def test_llms_files_state_languages_and_currency(self):
         for rel in ("llms.txt", "llms-full.txt"):
             t = read_site(rel)
-            self.assertRegex(t, r"English and German \(German is a beta", rel)
+            self.assertRegex(t, r"English, German, Japanese and Chinese \(German, Japanese and Simplified Chinese are betas", rel)
             self.assertIn("local currency", t, rel)
             self.assertIn("2 to 4 percent", t, rel)
             for url in ("/de/moderntex/", "/fr/moderntex/", "/pt-br/moderntex/", "/ja/moderntex/", "/zh-cn/moderntex/"):

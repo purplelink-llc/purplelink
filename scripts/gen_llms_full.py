@@ -143,7 +143,7 @@ def main() -> None:
         "\nLanguages and currency. The pages below are in English. ModernTex also has product pages in German "
         "(https://purplelink.llc/de/moderntex/), French (https://purplelink.llc/fr/moderntex/), Brazilian Portuguese (https://purplelink.llc/pt-br/moderntex/), Japanese (https://purplelink.llc/ja/moderntex/) and Simplified Chinese "
         "(https://purplelink.llc/zh-cn/moderntex/), each with a how-to guide in the same language. The ModernTex app "
-        "interface is in English and German (German is a beta, available since ModernTex 2.0); Japanese and Chinese "
+        "interface is in English, German, Japanese and Chinese (German, Japanese and Simplified Chinese are betas; German since ModernTex 2.0); Japanese and Chinese "
         "documents compile with XeLaTeX and LuaLaTeX when the user's TeX installation has the ctex, luatexja and jlreq "
         "packages. Prices are in US dollars (ModernTex is USD 19.99 once). Checkout for the Mac apps shows the price in the "
         "buyer's local currency where Stripe supports it, and the buyer can switch back to US dollars; Stripe's exchange rate "

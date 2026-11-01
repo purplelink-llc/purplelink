@@ -21,6 +21,24 @@ def read_site(rel):
     return (SITE / rel).read_text(encoding="utf-8")
 
 
+# Interface languages a published ModernTex release has, read from the changelog. Each ModernTex entry that adds
+# one says so in one sentence: "the interface can be shown in German (beta)", or, for several,
+# "the interface can be shown in German, Japanese and Simplified Chinese (beta)". English is always there.
+_UI_CODES = {"german": "de", "japanese": "ja", "simplified chinese": "zh-Hans"}
+
+
+def shipped_interface_languages():
+    """Language codes (always including "en") that a ModernTex changelog entry says the interface can be shown in."""
+    text = read_site("changelog/index.html")
+    found = {"en"}
+    for entry in re.findall(r"<h2>ModernTex \d+\.\d+\.\d+</h2>\s*<p>(.*?)</p>", text, re.S):
+        for m in re.finditer(r"the interface can be shown in ([A-Za-z, ]+?) \(beta\)", entry):
+            for name in re.split(r",\s*|\s+and\s+", m.group(1)):
+                if name.strip().lower() in _UI_CODES:
+                    found.add(_UI_CODES[name.strip().lower()])
+    return found
+
+
 def page_of(url_path):
     """/guides/x/ -> site/guides/x/index.html"""
     return SITE / url_path.strip("/") / "index.html"
