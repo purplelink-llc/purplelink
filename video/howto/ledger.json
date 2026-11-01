@@ -330,5 +330,34 @@
    "ok": true,
    "utm_content": "howto-check-if-paper-retracted-doi-reel"
   }
+ },
+ {
+  "slug": "howto-option-clash-for-package-hyperref",
+  "app": "moderntex",
+  "date": "2026-11-01",
+  "title": "Option clash for package hyperref on Mac (use \\hypersetup instead)",
+  "long_id": "48PnbsZGIcQ",
+  "short_id": "UelyAzVUPrk",
+  "link_arm": "B",
+  "link_utm_content": "howto-option-clash-for-package-hyperref",
+  "short_utm_content": "howto-option-clash-for-package-hyperref-short",
+  "sources": [
+   "https://github.com/jgm/pandoc/issues/6652",
+   "https://gist.github.com/csgordon/11ea047e60013b2a8afda50820b5623d"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "48PnbsZGIcQ",
+    "caption_id": "AUieDaYVrSkR24WkALuCYY1L6Ay6yY7VxOrL8yxkuV-HtSw7YgTuEJhY"
+   },
+   "short": {
+    "video_id": "UelyAzVUPrk",
+    "caption_id": "AUieDaZsz5fL-2S0qFb2HTtZF998Yy-3lSKyL1dJWesTvgR8a3nLGnHq"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-option-clash-for-package-hyperref-reel"
+  }
  }
 ]
