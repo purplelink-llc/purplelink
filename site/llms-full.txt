@@ -1058,7 +1058,7 @@ Try it free for 7 days
 
 Checkout shows the price in your local currency, and you can switch back to US dollars. Refunded if you email within 14 days of purchase.
 
-The trial runs for seven days from the first time you open it, with no account. After it ends, the menu-bar readout and the low-space alerts keep working, and the app asks for a license key to unlock the rest. Buying is a single $9.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.9.0 · 8.6 MB disk image · macOS 14 or later, Apple silicon and Intel · signed and notarized.
+The trial runs for seven days from the first time you open it, with no account. After it ends, the menu-bar readout and the low-space alerts keep working, and the app asks for a license key to unlock the rest. Buying is a single $9.99 payment, and the key goes into the copy you already have. Not useful? Email ben@purplelink.llc within 14 days of purchase (terms). Version 1.10.0 · 9.8 MB disk image · macOS 14 or later, Apple silicon and Intel · signed and notarized.
 
 If you installed version 1.0.0, the app cannot update itself. Download the current version once from this page; updates work from then on.
 
@@ -4762,7 +4762,7 @@ ModernTex2.0.3October 2026
 
 Vitae1.10.0October 2026
 
-Legroom1.9.0October 2026
+Legroom1.10.0October 2026
 
 Keyfeel1.7.0October 2026
 
