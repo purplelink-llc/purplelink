@@ -50,6 +50,7 @@
             { "@type": "Offer", "name": "Vitae Plus, annual (optional)", "price": "23.99", "priceCurrency": "USD", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "23.99", "priceCurrency": "USD", "billingDuration": "P1Y", "unitCode": "ANN" }, "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/vitae/plus/", "category": "Subscription" }
           ],
           "downloadUrl": "https://purplelink.llc/vitae/download",
+          "installUrl": "https://apps.apple.com/app/id6827646396",
           "softwareVersion": "1.10.0",
           "screenshot": "https://purplelink.llc/assets/vitae-screens/dashboard.webp",
           "publisher": { "@id": "https://purplelink.llc/#organization" },
@@ -71,12 +72,12 @@
             {
               "@type": "Question",
               "name": "How does Vitae update?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Vitae checks purplelink.llc once a day and asks before installing a new version. Updates are signed, and Vitae refuses any that fail the check. You can turn the daily check off, or check by hand, in Settings under About. Version 0.1, the first release, cannot update itself. If you still have it, download the current version once from this page and it will keep itself up to date after that." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Vitae checks purplelink.llc once a day and asks before installing a new version. Updates are signed, and Vitae refuses any that fail the check. You can turn the daily check off, or check by hand, in Settings under About. Version 0.1, the first release, cannot update itself. If you still have it, download the current version once from this page and it will keep itself up to date after that. The Mac App Store copy has no update check of its own; the App Store updates it." }
             },
             {
               "@type": "Question",
-              "name": "Why isn't it on the Mac App Store?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Distributing outside the App Store lets me ship faster and avoid App Store restrictions. The DMG is Apple-notarized, so macOS Gatekeeper verifies it is safe to run. Just open the DMG, drag Vitae to Applications, and launch it." }
+              "name": "Is Vitae on the Mac App Store?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes, as Vitae: Academic CV Tracker. It is the same app with the same features. The App Store copy updates through the App Store and sells Vitae Plus as an App Store subscription, $2.99 a month or $23.99 a year in the US and the local price elsewhere. The download from this page updates itself and sells Plus with a license key, with a 7-day trial and the Mac Suite option. Plus bought one way does not unlock the other copy, because Apple does not allow license keys in App Store apps, so if you already pay for Plus here, keep this download. Both copies open the same library, so you can switch without losing your records. Keep only one copy on a Mac: delete the old one before you install the other." }
             },
             {
               "@type": "Question",
@@ -91,7 +92,7 @@
             {
               "@type": "Question",
               "name": "How do I install it?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Download the DMG, open it, drag Vitae into your Applications folder, and launch it. Because it is notarized by Apple, you will not see a Gatekeeper warning." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Download the DMG, open it, drag Vitae into your Applications folder, and launch it. Because it is notarized by Apple, you will not see a Gatekeeper warning. Or install it from the Mac App Store." }
             },
             {
               "@type": "Question",
@@ -154,12 +155,19 @@
           <span class="product-status">Free app · optional Plus from $2.99 a month · v1.10.0 Beta</span>
         </div>
         <h1 class="app-hero-name">Vitae</h1>
-        <p class="app-hero-tagline">Academic research management for macOS. Track submissions, grants, projects, collaborators, and your CV in one local-first app. The app is free, with no limits on your record. Vitae Plus is an optional subscription for reports, Word templates and more: $2.99 a month or $23.99 a year, with a 7-day trial, or included for life in the Mac Suite. Notarized, no App Store.</p>
+        <p class="app-hero-tagline">Academic research management for macOS. Track submissions, grants, projects, collaborators, and your CV in one local-first app. The app is free, with no limits on your record. Vitae Plus is an optional subscription for reports, Word templates and more: $2.99 a month or $23.99 a year, with a 7-day trial, or included for life in the Mac Suite. Download it here or get it from the Mac App Store.</p>
         <div class="app-hero-actions">
           <a class="btn btn-primary" href="/vitae/download" data-mac-download="Vitae" data-mac-req="macOS 15 or later">Download for Mac</a>
+          <a class="store-badge" href="https://apps.apple.com/app/id6827646396" aria-label="Get Vitae on the Mac App Store" data-track="app_store" data-track-meta="vitae">
+          <svg viewBox="0 0 814 1000" aria-hidden="true"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-42.3-148.3-110.7c-44.3-70.3-65.3-142-65.3-209.8 0-197.1 127.4-301.5 252.7-301.5 33.5 0 96.8 16.7 138.3 16.7 39.9 0 113.9-21.5 163.9-21.5 11.5 0 108.2 1.3 171.7 65.2zm-170.6-271.2c31.4-37.9 53.5-90.5 53.5-143.1 0-7.7-.6-15.4-1.9-21.5-50.6 1.9-110.8 33.7-147.1 75.8-28.5 32.4-55.1 83.6-55.1 135.5 0 8.3 1.3 16.7 1.9 19.2 3.2.6 8.4 1.3 13.6 1.3 45.4 0 102.5-30.4 135.1-67.2z"/></svg>
+          <span class="store-badge-text">
+            <span class="store-badge-coming">Download on the</span>
+            <span class="store-badge-label">Mac App Store</span>
+          </span>
+        </a>
           <a class="btn btn-ghost" href="/vitae/plus/">Optional Vitae Plus, from $2.99 a month</a>
         </div>
-        <p class="app-hero-fine-print">Requires macOS 15 Sequoia or later · Apple-notarized · Your data stays on your Mac</p>
+        <p class="app-hero-fine-print">Requires macOS 15 Sequoia or later · Apple-notarized download or the Mac App Store · Your data stays on your Mac</p>
       </div>
       <figure class="app-hero-window">
         <div class="frame-soft">
@@ -178,7 +186,7 @@
         <thead><tr><th scope="col">Question</th><th scope="col">Answer</th></tr></thead>
         <tbody>
           <tr><th scope="row">Price</th><td data-label="Answer">Free. Vitae Plus is optional: $2.99 a month or $23.99 a year, with a 7-day trial. Included for life in the <a href="/suite/">Mac Suite</a>.</td></tr>
-          <tr><th scope="row">Platform</th><td data-label="Answer">macOS 15 Sequoia or later. Direct download, Apple-notarized, not on the Mac App Store.</td></tr>
+          <tr><th scope="row">Platform</th><td data-label="Answer">macOS 15 Sequoia or later. Apple-notarized download from this page, or the Mac App Store.</td></tr>
           <tr><th scope="row">Where the data lives</th><td data-label="Answer">On your Mac. No account. Vitae Plus can sync the library between your Macs through your private iCloud; it is off until you turn it on.</td></tr>
           <tr><th scope="row">Brings in</th><td data-label="Answer">A CV from Word, PDF, RTF, ODT or a web page; publications from DOIs, pasted BibTeX or Zotero; each is shown for review before saving.</td></tr>
           <tr><th scope="row">Free exports</th><td data-label="Answer">CV and packages as PDF, rich text (.rtf), HTML and Markdown; publications as RIS and BibTeX; CSV tables.</td></tr>
@@ -338,11 +346,11 @@
         </details>
         <details class="faq-item">
           <summary>How does Vitae update?</summary>
-          <div class="faq-body">Vitae checks purplelink.llc once a day and asks before installing a new version. Updates are signed, and Vitae refuses any that fail the check. You can turn the daily check off, or check by hand, in Settings under About. Version 0.1, the first release, cannot update itself. If you still have it, download the current version once from this page and it will keep itself up to date after that.</div>
+          <div class="faq-body">Vitae checks purplelink.llc once a day and asks before installing a new version. Updates are signed, and Vitae refuses any that fail the check. You can turn the daily check off, or check by hand, in Settings under About. Version 0.1, the first release, cannot update itself. If you still have it, download the current version once from this page and it will keep itself up to date after that. The Mac App Store copy has no update check of its own; the App Store updates it.</div>
         </details>
         <details class="faq-item">
-          <summary>Why isn't it on the Mac App Store?</summary>
-          <div class="faq-body">Distributing outside the App Store lets me ship faster and avoid App Store restrictions. The DMG is Apple-notarized, so macOS Gatekeeper verifies it is safe to run. Just open the DMG, drag Vitae to Applications, and launch it.</div>
+          <summary>Is Vitae on the Mac App Store?</summary>
+          <div class="faq-body">Yes, as Vitae: Academic CV Tracker. It is the same app with the same features. The App Store copy updates through the App Store and sells Vitae Plus as an App Store subscription, $2.99 a month or $23.99 a year in the US and the local price elsewhere. The download from this page updates itself and sells Plus with a license key, with a 7-day trial and the Mac Suite option. Plus bought one way does not unlock the other copy, because Apple does not allow license keys in App Store apps, so if you already pay for Plus here, keep this download. Both copies open the same library, so you can switch without losing your records. Keep only one copy on a Mac: delete the old one before you install the other.</div>
         </details>
         <details class="faq-item">
           <summary>What macOS version is required?</summary>
@@ -354,7 +362,7 @@
         </details>
         <details class="faq-item">
           <summary>How do I install it?</summary>
-          <div class="faq-body">Download the DMG, open it, drag Vitae into your Applications folder, and launch it. Because it is notarized by Apple, you will not see a Gatekeeper warning.</div>
+          <div class="faq-body">Download the DMG, open it, drag Vitae into your Applications folder, and launch it. Because it is notarized by Apple, you will not see a Gatekeeper warning. Or install it from the Mac App Store.</div>
         </details>
         <details class="faq-item">
           <summary>Does Vitae import into Faculty180 or Faculty Success?</summary>
