@@ -46,7 +46,8 @@ window.LENSCRIB_LAUNCH = {
       var text = el.getAttribute("data-lcb-live-text");
       if (text) el.textContent = text;
       var href = el.getAttribute("data-lcb-href");
-      if (href) el.setAttribute("href", href);
+      // Only a site-relative path is ever used as the link.
+      if (href && /^\/[A-Za-z0-9._~\/?=&%-]*$/.test(href) && href.indexOf("//") !== 0) el.setAttribute("href", href);
       el.removeAttribute("aria-disabled");
       el.removeAttribute("disabled");
       el.disabled = false;
