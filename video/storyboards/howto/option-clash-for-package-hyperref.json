@@ -1,0 +1,113 @@
+{
+ "id": "howto-option-clash-for-package-hyperref",
+ "app": "moderntex",
+ "title": "Option clash for package hyperref on Mac (use \\hypersetup instead)",
+ "short_title": "LaTeX Option clash for package hyperref? Change one line",
+ "url": "purplelink.llc/moderntex",
+ "page": "https://purplelink.llc/moderntex/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://github.com/jgm/pandoc/issues/6652",
+  "https://gist.github.com/csgordon/11ea047e60013b2a8afda50820b5623d"
+ ],
+ "verify": {
+  "runs": [
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf '%s\\n' '\\documentclass{beamer}' '\\usepackage[colorlinks]{hyperref}' '\\begin{document}' '\\begin{frame}See \\url{https://ctan.org}.\\end{frame}' '\\end{document}' > main.tex && pdflatex -interaction=nonstopmode -halt-on-error main.tex | grep '^! LaTeX'; grep -n hyperref main.tex",
+    "output": "! LaTeX Error: Option clash for package hyperref.\n2:\\usepackage[colorlinks]{hyperref}"
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf '%s\\n' '\\documentclass{beamer}' '\\hypersetup{colorlinks=true}' '\\begin{document}' '\\begin{frame}See \\url{https://ctan.org}.\\end{frame}' '\\end{document}' > main.tex && grep -n hypersetup main.tex; pdflatex -interaction=nonstopmode -halt-on-error main.tex | grep 'Output written'",
+    "output": "2:\\hypersetup{colorlinks=true}\nOutput written on main.pdf (1 page, 22378 bytes)."
+   }
+  ],
+  "docs": [
+   "https://ctan.org/pkg/hyperref",
+   "https://ctan.org/pkg/beamer"
+  ],
+  "notes": "Each run writes a small beamer file in a fresh temporary folder and builds it with pdfLaTeX from TeX Live 2026. beamer loads hyperref itself, so a second \\usepackage with options stops the build with the option clash; \\hypersetup after \\documentclass sets the same option and the PDF builds. The hyperref manual documents \\hypersetup for setting options after the package is loaded. A plain article that loads hyperref twice with different options gives the same error (checked the same way, not shown)."
+ },
+ "scenes": [
+  {
+   "type": "hook",
+   "short": true,
+   "kicker": "LaTeX on a Mac",
+   "title": "Option clash for package hyperref",
+   "sub": "Something loaded hyperref before your line did.",
+   "narration": "If your LaTeX build stops with Option clash for package hyperref, the fix is usually one line in your preamble."
+  },
+  {
+   "type": "symptom",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ pdflatex main.tex",
+    "! LaTeX Error: Option clash for package hyperref.",
+    "$ grep -n hyperref main.tex",
+    "2:\\usepackage[colorlinks]{hyperref}"
+   ],
+   "narration": "This is the message. Here the document is a beamer presentation, and line two loads hyperref with the colorlinks option."
+  },
+  {
+   "type": "cause",
+   "text": "hyperref is already loaded, by your class or an earlier package, without that option. LaTeX cannot load it a second time with different options.",
+   "narration": "The problem is that hyperref is already loaded. Beamer loads it, and so do many journal and thesis classes. LaTeX loads a package only once, so when your line asks for it again with a different option, the build stops."
+  },
+  {
+   "type": "steps",
+   "short": true,
+   "label": "main.tex",
+   "lines": [
+    "Remove:  \\usepackage[colorlinks]{hyperref}",
+    "Add:  \\hypersetup{colorlinks=true}"
+   ],
+   "ui": "Put it after \\documentclass. It sets the option on the hyperref that is already loaded.",
+   "narration": "Remove your use package line for hyperref. In its place, write backslash hypersetup, with the same option inside the braces. It sets the option on the copy of hyperref that is already loaded."
+  },
+  {
+   "type": "check",
+   "short": true,
+   "label": "Terminal",
+   "ok": "No clash, PDF built",
+   "lines": [
+    "$ grep -n hypersetup main.tex",
+    "2:\\hypersetup{colorlinks=true}",
+    "$ pdflatex main.tex",
+    "Output written on main.pdf (1 page, 22378 bytes)."
+   ],
+   "narration": "Build again. The clash is gone, pdflatex writes the PDF, and the links are coloured."
+  },
+  {
+   "type": "app",
+   "name": "ModernTex",
+   "line": "Translates LaTeX build errors into plain explanations with a suggested fix, and marks them in the editor.",
+   "url": "purplelink.llc/moderntex",
+   "img": "site/assets/moderntex-screens/01-editor-clean-1440.webp",
+   "icon": "site/assets/moderntex-icon.png",
+   "narration": "If you write LaTeX on a Mac, ModernTex translates build errors like this one into plain explanations with a suggested fix, and marks them in the editor."
+  }
+ ],
+ "thumbs": {
+  "A": {
+   "kind": "error",
+   "msg": "Option clash for package hyperref"
+  },
+  "B": {
+   "kind": "long",
+   "msg": "Option clash for package hyperref",
+   "n": 1,
+   "unit": "line",
+   "sub": "and the PDF builds"
+  },
+  "C": {
+   "kind": "product",
+   "name": "ModernTex",
+   "line": "hyperref option clash? Explained",
+   "img": "site/assets/moderntex-screens/01-editor-clean-1440.webp",
+   "icon": "site/assets/moderntex-icon.png",
+   "zoom": 1.7,
+   "pos": "28% 22%"
+  }
+ }
+}
