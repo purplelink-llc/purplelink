@@ -12,6 +12,7 @@ Checks, read-only:
   * traffic dashboard: last good run, how old its data is
   * marketplaces (Etsy, Payhip, Gumroad): per-site age and status
   * launchd jobs: loaded, and last exit code
+  * short-video pipeline tokens (Instagram, Facebook): dead, paused or not checked lately
   * the SSD itself
 The daily-update task reads collector-health.json, so a dead collector shows up in the
 morning report instead of as a quiet gap.
@@ -28,16 +29,18 @@ PHOTO_HISTORY = VOL / "photo-licensing-workspace" / "stats" / "history.json"
 TRAFFIC = HOME / ".purplelink" / "traffic"
 OUT = HOME / ".purplelink" / "collector-health.json"
 STATE = HOME / ".purplelink" / "collector-health-state.json"
+# Written by TikTokPipeline/posters/token_alert.py (every post outcome, and ops/token_health.py at 05:45 and 17:45).
+TOKENS = HOME / ".tiktok_pipeline" / "token_status.json"
 
 # label -> what it collects. Only jobs that produce data for the business.
 JOBS = {
     "llc.purplelink.photostats": "photo stats sweep",
     "com.benampel.purplelink-traffic.daily": "traffic dashboard",
-    "com.purplelink.subscriber-tracking": "subscriber tracking (Mondays)",
-    "com.purplelink.muscleonglp-tiktok": "MuscleOnGLP TikTok",
+    # "com.purplelink.subscriber-tracking" and "com.purplelink.muscleonglp-tiktok" unloaded on purpose (Ben, 2026-10-31).
     "com.tiktokpipeline.daily": "TikTok pipeline",
     # "com.socialgrowth.streamanalytics" retired 2026-10-19 (Ben): the 24/7 stream became uploaded ambient videos.
     "com.benampel.home-backup": "home backup",
+    "com.purplelink.token-health": "pipeline token check",
 }
 STALE_H = 36
 now = dt.datetime.now()
@@ -45,9 +48,9 @@ problems = []          # (key, message)
 rows = []              # (area, status, detail)
 
 
-def add(area, status, detail, key=None):
+def add(area, status, detail, key=None, problem=None):
     rows.append((area, status, detail))
-    if status != "ok":
+    if status != "ok" if problem is None else problem:
         problems.append((key or area, f"{area}: {detail}"))
 
 
@@ -153,6 +156,34 @@ try:
         add(f"marketplace {site}", "ok" if ok else "FAILING", f"{st}; last good read {a:.0f}h ago" if a < 9000 else f"{st}; never read")
 except Exception as e:
     add("marketplaces", "ERROR", f"{type(e).__name__}: {e}")
+
+# --- pipeline tokens (NL, BallSim, MuscleOnGLP). On 2026-10-28 Meta killed the NL and BallSim Instagram sessions and
+# 36 Reels missed Instagram over four days before anyone looked. A token whose posting job is paused is listed but is
+# not a problem; a status file not updated in STALE_H means the twice-daily check itself stopped.
+try:
+    toks = json.loads(TOKENS.read_text())
+    newest = None
+    for key, e in sorted(toks.items()):
+        plat, acct = key.split(":", 1)
+        checked = dt.datetime.fromisoformat(e["checked"]).astimezone().replace(tzinfo=None) if e.get("checked") else None
+        newest = max(newest, checked) if newest and checked else (checked or newest)
+        if e.get("ok", True):
+            add(f"token {plat} {acct}", "ok", "works")
+            continue
+        since = dt.datetime.fromisoformat(e["since"]).astimezone().replace(tzinfo=None) if e.get("since") else None
+        when = f"dead since {since:%b %d %H:%M}" if since else "dead"
+        if e.get("paused"):
+            add(f"token {plat} {acct}", "paused", f"{when}; its posting job is paused, so nothing is waiting", problem=False)
+        else:
+            add(f"token {plat} {acct}", "DEAD", f"{when}; posts are waiting. Fix: new Graph API Explorer token, then "
+                "python3 \"/Volumes/Extreme SSD/TikTokPipeline/ops/ig_fb_install.py\"", key=f"token:{key}")
+    if newest is None or age_h(newest) >= STALE_H:
+        add("token check", "STALE", "token_status.json not updated in 36 h; is com.purplelink.token-health loaded?",
+            key="token-check-stale")
+except FileNotFoundError:
+    add("token check", "MISSING", f"{TOKENS} not found; the token check has never run", key="token-check-missing")
+except Exception as e:
+    add("token check", "ERROR", f"{type(e).__name__}: {e}")
 
 # --- launchd
 uid = subprocess.run(["id", "-u"], capture_output=True, text=True).stdout.strip()
