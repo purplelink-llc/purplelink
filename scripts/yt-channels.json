@@ -1,5 +1,5 @@
 {
-  "_comment": "The only place a YouTube channel is defined. New channels are added here, never hard-coded in a script. A channel is used only while \"confirmed\" is true (Ben confirms the id). Tokens live outside the repo (the repo is public); see video/README.md, section YouTube API uploads.",
+  "_comment": "The only place a YouTube channel is defined. New channels are added here, never hard-coded in a script. A channel is used only while \"confirmed\" is true (Ben confirms the id). Tokens live outside the repo (the repo is public); see video/README.md, section YouTube API uploads. Entries with \"uploader\": \"TikTokPipeline\" (nl, ballsim; confirmed by Ben 2026-11-01) are uploaded by that repo's posters through posters/yt_channel_guard.py and keep their token in that repo's secrets folder.",
   "channels": {
     "purplelink": {
       "id": "UCUv28P5SUzT4RLQOmi3EK8w",
@@ -15,6 +15,24 @@
       "token": "~/.config/purplelink/yt_token_pixelhearth.json",
       "kinds": ["ambient", "photo-quiz"],
       "default_category": "10",
+      "confirmed": true
+    },
+    "nl": {
+      "id": "UCxWxCAUioXvzTwQcpqkG54A",
+      "title": "Bald Streamer Clips",
+      "token": "/Volumes/Extreme SSD/TikTokPipeline/secrets/yt_token_nl.json",
+      "kinds": ["nl-clip"],
+      "default_category": "20",
+      "uploader": "TikTokPipeline",
+      "confirmed": true
+    },
+    "ballsim": {
+      "id": "UClzn7EBhD66_JgsapoQWgtA",
+      "title": "Ball Bouncer Videos",
+      "token": "/Volumes/Extreme SSD/TikTokPipeline/BallSimPipeline/secrets/yt_token_ballsim.json",
+      "kinds": ["ballsim"],
+      "default_category": "20",
+      "uploader": "TikTokPipeline",
       "confirmed": true
     }
   }

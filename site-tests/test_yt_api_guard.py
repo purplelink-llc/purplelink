@@ -152,6 +152,15 @@ class GuardCase(unittest.TestCase):
 
 
 class Registry(GuardCase):
+    def test_registry_has_the_pipeline_channels(self):
+        r = self.real
+        self.assertEqual((r["nl"]["id"], r["nl"]["kinds"]), ("UCxWxCAUioXvzTwQcpqkG54A", ["nl-clip"]))
+        self.assertEqual((r["ballsim"]["id"], r["ballsim"]["kinds"]), ("UClzn7EBhD66_JgsapoQWgtA", ["ballsim"]))
+        self.assertTrue(r["nl"]["confirmed"] and r["ballsim"]["confirmed"])
+        # each pipeline channel takes only its own kind, never the Purplelink or Pixel Hearth ones
+        for key in ("nl", "ballsim"):
+            self.assertFalse(set(r[key]["kinds"]) & set(r["purplelink"]["kinds"] + r["pixelhearth"]["kinds"]))
+
     def test_registry_has_both_channels_and_kinds(self):
         r = self.real
         self.assertEqual(r["purplelink"]["id"], PL_REAL)
@@ -167,7 +176,10 @@ class Registry(GuardCase):
         for key, ch in self.real.items():
             tp = g.token_path(ch).resolve()
             self.assertFalse(str(tp).startswith(str(ROOT.resolve()) + os.sep), key)
-            self.assertEqual(tp.parent, (Path.home() / ".config" / "purplelink").resolve())
+            if ch.get("uploader") == "TikTokPipeline":   # its posters refresh the token in place in that repo
+                self.assertTrue(str(tp).startswith("/Volumes/Extreme SSD/TikTokPipeline/"), key)
+            else:
+                self.assertEqual(tp.parent, (Path.home() / ".config" / "purplelink").resolve())
 
     def test_a_token_path_inside_the_repo_is_refused(self):
         bad = self.dir / "reg.json"
