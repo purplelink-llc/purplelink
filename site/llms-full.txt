@@ -4768,7 +4768,7 @@ Outbound Veil1.4.0October 2026
 
 BatteryMeter1.4.0October 2026
 
-Buddy0.10.0October 2026
+Buddy0.10.1October 2026
 
 GlobePin (iOS)1.21.0 in September 2026
 
