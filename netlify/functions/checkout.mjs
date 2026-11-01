@@ -129,6 +129,7 @@ const REFUND_TEXT = {
   "legroom": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's license key is no longer licensed for use.`,
   "keyfeel": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "tapefolio": `${REFUND_EMAIL} the full $29.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
+  "lenscrib": `${REFUND_EMAIL} the full $19.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "panely": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "summonly": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "app-suite": `${REFUND_EMAIL} the full amount you paid to the original payment method. You don't need to give a reason. A refunded Suite's download links stop working, and its ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely and Summonly license keys and its Vitae Plus key are no longer licensed for use.`,
@@ -198,6 +199,10 @@ const PRODUCT_CATALOG = {
   // Delivery is the session-gated DMG from the tapefolio-files Blobs store; see tapefolio-download.mjs.
   // Product page and success page: /tapefolio/ and /tapefolio/success/. See docs/products/tapefolio.md.
   "tapefolio":               { amount: 2999, name: "Tapefolio for macOS", successPath: "/tapefolio/success/" },
+  // Lenscrib for macOS: $19.99 one-time, priced inline (no Stripe Price to create), like Tapefolio. Sold on its own:
+  // not in the Mac Suite or the custom bundles. Delivery is the session-gated DMG from the lenscrib-files Blobs store;
+  // see lenscrib-download.mjs. Product page and success page: /lenscrib/ and /lenscrib/success/. See docs/products/lenscrib.md.
+  "lenscrib":                { amount: 1999, name: "Lenscrib for macOS", successPath: "/lenscrib/success/" },
   // Panely (window manager) and Summonly (launcher and file search): $9.99 one-time each, priced inline like Keyfeel.
   // Delivery is the session-gated DMG from the panely-files / summonly-files Blobs stores. Pages: /panely/ and /summonly/.
   "panely":                { amount: 999, name: "Panely for macOS", successPath: "/panely/success/" },

@@ -1,0 +1,54 @@
+{
+  "note": "TEST key only. Never matches production. Scheme LenscribLicenseV1; see netlify/lib/lenscrib-license.mjs. Generated once from a throwaway Ed25519 key; its private half was discarded.",
+  "testPublicKeyBase64": "CL0pdAFX7DBf6VrZqgi4Pk9ilGU4LgK568bYYPXa5KI=",
+  "domain": "LenscribLicenseV1",
+  "signedMessage": "LenscribLicenseV1 + 4-byte nonce",
+  "nonceSeed": "sha256(\"lenscrib-license:\" + lower-cased, trimmed email), first 4 bytes",
+  "valid": [
+    {
+      "email": "buyer@example.org",
+      "key": "LCB1-GM8GD-KSTF3-RWCDV-VES57-X61CT-5Z6X3-A1G2H-9328E-DMXCR-MW5KA-B5PYH-MN9RG-HG1CS-QRTXM-45QK1-3BSQS-0HPAG-236DX-F9YHD-V3TVT-B96AX-XJGC"
+    },
+    {
+      "email": "a.researcher@example.edu",
+      "key": "LCB1-94TG2-PH2MB-BFR5Q-A3WN6-7171C-3KPMM-SB0KW-GTMKH-0FNVQ-68KXS-0Z34H-1XD7T-AYFVE-WNPFX-408V0-HF3PY-Z8GNR-79YEZ-2YJKW-JBT6V-MKPEQ-GEGY"
+    },
+    {
+      "email": "photographer@example.com",
+      "key": "LCB1-6P6SX-T1P1S-5CZ37-YM907-9EDQA-4PEF0-0YHM8-ZS7NE-4MARS-Q8E7K-60B8G-DH4QN-32JXP-V92E3-TRSBJ-YH024-SKZZQ-ZPTGA-ZMSYT-TMRX6-6FHV9-XMG6"
+    }
+  ],
+  "invalid": [
+    {
+      "key": "LCB1-GM8GD-KATF3-RWCDV-VES57-X61CT-5Z6X3-A1G2H-9328E-DMXCR-MW5KA-B5PYH-MN9RG-HG1CS-QRTXM-45QK1-3BSQS-0HPAG-236DX-F9YHD-V3TVT-B96AX-XJGC",
+      "why": "one character changed"
+    },
+    {
+      "key": "LCB1-GM8GD-KSNV3-TGBDH-2V2K9-AX6JF-JXDV6-617CB-2Y8R5-75CPG-SK13P-YRXNF-7XBCG-6ZS7Y-HFFTC-YWY96-17S0K-XTSVA-NQMA0-FM27K-BA3KK-0146E-E80Y",
+      "why": "right shape, signed under a different domain string (TapefolioLicenseV1)"
+    },
+    {
+      "key": "LCB1-GM8GD-KYNZ9-HTCX8-YWYZS-PS7TY-FNQGA-Q0ZFT-KW290-2JA3C-5RX3R-B494S-BM63E-HXW7G-QM4QC-P59WD-RXEFK-BZ0GV-RYFGH-7P0BA-MQB07-1PS61-QM06",
+      "why": "right shape, signed by a different key"
+    },
+    {
+      "key": "TFL1-GM8GD-KSTF3-RWCDV-VES57-X61CT-5Z6X3-A1G2H-9328E-DMXCR-MW5KA-B5PYH-MN9RG-HG1CS-QRTXM-45QK1-3BSQS-0HPAG-236DX-F9YHD-V3TVT-B96AX-XJGC",
+      "why": "the Tapefolio prefix on a Lenscrib key body is not a Lenscrib key"
+    },
+    {
+      "key": "LCB1-GM8GD-KSTF3-RWCDV-VES57-X61CT-5Z6X3",
+      "why": "too short"
+    },
+    {
+      "key": "",
+      "why": "empty"
+    }
+  ],
+  "spelling": [
+    "lcb1-gm8gd-kstf3-rwcdv-ves57-x61ct-5z6x3-a1g2h-9328e-dmxcr-mw5ka-b5pyh-mn9rg-hg1cs-qrtxm-45qk1-3bsqs-0hpag-236dx-f9yhd-v3tvt-b96ax-xjgc",
+    "LCB1GM8GDKSTF3RWCDVVES57X61CT5Z6X3A1G2H9328EDMXCRMW5KAB5PYHMN9RGHG1CSQRTXM45QK13BSQS0HPAG236DXF9YHDV3TVTB96AXXJGC",
+    "LCB1 GM8GD KSTF3 RWCDV VES57 X61CT 5Z6X3 A1G2H 9328E DMXCR MW5KA B5PYH MN9RG HG1CS QRTXM 45QK1 3BSQS 0HPAG 236DX F9YHD V3TVT B96AX XJGC",
+    "  LCB1-GM8GD-KSTF3-RWCDV-VES57-X61CT-5Z6X3-A1G2H-9328E-DMXCR-MW5KA-B5PYH-MN9RG-HG1CS-QRTXM-45QK1-3BSQS-0HPAG-236DX-F9YHD-V3TVT-B96AX-XJGC  "
+  ],
+  "lookalikes": "Crockford: O reads as 0, I and L read as 1, U is not in the alphabet"
+}
