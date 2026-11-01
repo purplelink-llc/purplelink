@@ -1,0 +1,44 @@
+/* /lenscrib/ page. External file so the strict CSP permits it. */
+
+/* Release gate: until launch.js switches Lenscrib on, the trial link and the Buy button
+   are present but dead. A link without an href is not focusable; the button carries the
+   disabled attribute. */
+.btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+/* Class rules such as .btn set display, which would otherwise beat the hidden attribute. */
+[data-lcb-live-only][hidden],
+[data-lcb-pre-only][hidden] { display: none !important; }
+.product-status-soon { color: var(--muted); }
+
+/* The hero is the app icon beside the copy, like the other app pages (.app-hero is two columns, and one on a phone).
+   A picture goes in a <figure class="app-hero-window lcb-hero-window"> after .app-hero-copy and takes a row of its own
+   (see docs/products/lenscrib.md). */
+.lcb-hero:has(.lcb-hero-window) .lcb-hero-window { grid-column: 1 / -1; }
+@media (min-width: 1100px) {
+  /* Wide enough for the icon, the copy and the picture side by side. */
+  .lcb-hero:has(.lcb-hero-window) { grid-template-columns: auto minmax(0, 5fr) minmax(0, 6fr); }
+  .lcb-hero:has(.lcb-hero-window) .lcb-hero-window { grid-column: auto; }
+}
+.lcb-hero-window { margin: 0; }
+.lcb-hero-window .frame-soft { max-width: 760px; margin-inline: auto; }
+.lcb-hero-window figcaption { margin-top: 10px; font-size: 0.85rem; color: var(--muted); }
+
+/* Screenshots, when there are some: <section class="screenshots-section"> with a .lcb-shots grid of
+   <figure class="lcb-shot"> holding an <img> with width, height and alt text, and a <figcaption>. */
+.lcb-shots { display: grid; gap: clamp(20px, 3vw, 32px); grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); }
+.lcb-shot { margin: 0; display: grid; gap: 10px; align-content: start; }
+.lcb-shot img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 12px; }
+.lcb-shot figcaption { color: var(--muted); font-size: 0.9rem; max-width: 56ch; }
+
+/* Measured results and download sizes: plain tables, numbers aligned. */
+.lcb-num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.lcb-note { max-width: 64ch; color: var(--muted); font-size: 0.9rem; }
+.lcb-list { margin: 10px 0 0; padding-left: 1.2em; color: var(--muted); max-width: 64ch; }
+.lcb-list li + li { margin-top: 6px; }
+
+/* Comparison table on the product page: even columns inside a scroll container. */
+.compare-table.u-table-wide tbody th { min-width: 7.5rem; }
+.compare-table.u-table-wide td { min-width: 10rem; }
