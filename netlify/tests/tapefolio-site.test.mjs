@@ -397,7 +397,7 @@ test("the Terms carry Tapefolio's own section: price, refund, two Macs, drafts, 
   assert.match(section, /does not anonymize a transcript/);
   assert.match(section, /Consent/);
   assert.match(section, /Liability cap for Tapefolio/);
-  assert.match(html, /the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely and Summonly Mac apps/);
+  assert.match(html, /the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Lenscrib, Panely and Summonly Mac apps/);
 });
 
 test("the Privacy page says what Tapefolio sends and does not send, and names its trial emails and recovery", () => {
@@ -405,7 +405,7 @@ test("the Privacy page says what Tapefolio sends and does not send, and names it
   assert.match(html, /<strong>Tapefolio<\/strong> has no account and no analytics/);
   assert.match(html, /does not upload your recordings, transcripts, images or key files/);
   assert.match(html, /Tapefolio trial emails<\/strong>/);
-  assert.match(html, /Keyfeel, Tapefolio, Panely, Summonly, Mac Suite and kit purchases/);
+  assert.match(html, /Keyfeel, Tapefolio, Lenscrib, Panely, Summonly, Mac Suite and kit purchases/);
 });
 
 // ---- the success page's script, against a fake DOM ---------------------------------------
