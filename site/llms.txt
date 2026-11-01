@@ -213,10 +213,10 @@
 ## Open source
 
 ### Scholar Utility Belt
-- **Type:** Browser extension (Google Chrome)
-- **Purpose:** Adds journal quality badges (ABDC, FT50, UTD24, SJR), citation velocity, author metrics (h-index, g-index), academic lineage trees and retraction alerts to Google Scholar. Rankings are bundled locally; no analytics, no account. Pro licensing goes through ExtensionPay.
+- **Type:** Browser extension (Google Chrome and Firefox)
+- **Purpose:** Shows journal rankings next to every Google Scholar result (SCImago quartiles, venue h5-index, FT50, UTD24, ABDC, VHB, ABS/AJG, FNEGE, CORE/ICORE, CCF, ERA, Norwegian register, or your own CSV list) and adds author metrics (g-index, m-index, L-index, authorship counts), citation velocity, academic lineage trees, retraction alerts and one-click BibTeX to Google Scholar. Rankings are bundled locally; no analytics, no account. Pro licensing goes through ExtensionPay.
 - **Pricing:** Free core (ISC license). Optional Pro: $40 once, $3 per month or $20 per year. Installs made before v0.6.0 keep all earlier features free.
-- **Adoption:** About 1,000 users, rated 4.5/5 from 16 ratings on the Chrome Web Store
+- **Adoption:** More than 1,400 weekly users, rated 4.5/5 from 16 ratings on the Chrome Web Store
 - **Chrome Web Store:** https://chromewebstore.google.com/detail/scholar-utility-belt/omcogfcgldfmihfogbffflbocdbjockn
 
 ## Pages
