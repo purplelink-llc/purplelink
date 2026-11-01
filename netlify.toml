@@ -168,6 +168,15 @@
     Cache-Control = "public, max-age=86400"
 
 # Grant Review was a waitlist test (2026-10-01 to 2026-10-31) closed with no signups; old links go to Paper Review.
+# Watchlight moved off purplelink.llc (2026-11-01, Ben: it goes to GSU's technology-transfer office instead).
+# Its privacy policy and terms answer 410 Gone, served with the 404 page's body: nothing on this site replaces them,
+# and a 301 to /privacy/ or /terms/ would wrongly suggest Purplelink's general policies cover the app.
+[[redirects]]
+  from = "/watchlight/*"
+  to = "/404.html"
+  status = 410
+  force = true
+
 [[redirects]]
   from = "/grant-review/*"
   to = "/tools/paper-review/"
