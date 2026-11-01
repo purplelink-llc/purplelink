@@ -158,7 +158,9 @@ class Registry(GuardCase):
         self.assertEqual((r["ballsim"]["id"], r["ballsim"]["kinds"]), ("UClzn7EBhD66_JgsapoQWgtA", ["ballsim"]))
         self.assertTrue(r["nl"]["confirmed"] and r["ballsim"]["confirmed"])
         # each pipeline channel takes only its own kind, never the Purplelink or Pixel Hearth ones
-        for key in ("nl", "ballsim"):
+        self.assertEqual((r["aita"]["id"], r["aita"]["kinds"]), ("UCC9eXFnO7paaR-hnvVnHevQ", ["aita"]))
+        self.assertTrue(r["aita"]["confirmed"])
+        for key in ("nl", "ballsim", "aita"):
             self.assertFalse(set(r[key]["kinds"]) & set(r["purplelink"]["kinds"] + r["pixelhearth"]["kinds"]))
 
     def test_registry_has_both_channels_and_kinds(self):
