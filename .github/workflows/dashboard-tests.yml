@@ -8,7 +8,8 @@ permissions:
   contents: read
 
 jobs:
-  pytest:
+  # A unique job name: it is the required check on main, and Backend tests already has a job called pytest.
+  dashboard:
     runs-on: ubuntu-latest
     defaults:
       run:
