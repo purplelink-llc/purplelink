@@ -120,5 +120,16 @@
   "started": "2026-10-29",
   "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
   "checked": "2026-10-29"
+ },
+ {
+  "video": "48PnbsZGIcQ",
+  "variants": {
+   "A": "video/out/howto/option-clash-for-package-hyperref/option-clash-for-package-hyperref-thumb-A.jpg",
+   "B": "video/out/howto/option-clash-for-package-hyperref/option-clash-for-package-hyperref-thumb-B.jpg",
+   "C": "video/out/howto/option-clash-for-package-hyperref/option-clash-for-package-hyperref-thumb-C.jpg"
+  },
+  "started": "2026-11-01",
+  "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
+  "checked": "2026-11-01"
  }
 ]
