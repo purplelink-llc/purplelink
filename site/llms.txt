@@ -170,7 +170,7 @@
 - **Target users:** Frequent travelers who want a complete personal travel record
 - **Pricing:** Free to download, with small ads served by Google AdMob. A one-time Pro purchase of $9.99 removes the ads. No subscription.
 - **Sync:** iCloud sync via CloudKit (no Purplelink account required)
-- **Status:** Shipping. Version 1.0 released on the App Store 2026-09-03; current version 1.5 (2026-10-29), with a smoother 3D globe and a Feedback section in Settings.
+- **Status:** Shipping. Version 1.0 released on the App Store 2026-09-03; current version 1.5.1 (2026-10-31), with iCloud sync that works when iCloud Drive is off.
 - **Download:** https://apps.apple.com/us/app/globepin/id6762313540
 - **Product page:** https://purplelink.llc/globepin/
 - **Requirements:** iPhone or iPad running iOS 17.0 or later
