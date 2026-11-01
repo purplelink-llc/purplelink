@@ -297,7 +297,7 @@ Free · Chrome extension
 
 ### Scholar Utility Belt
 
-Journal quality badges, citation velocity, h-index and g-index, lineage trees and retraction alerts, added to Google Scholar. About 1,000 researchers use it. It is rated 4.5 out of 5 on the Chrome Web Store.
+Journal quality badges, citation velocity, h-index and g-index, lineage trees and retraction alerts, added to Google Scholar. More than 1,400 researchers use it every week. It is rated 4.5 out of 5 on the Chrome Web Store.
 
 See the extension →
 
@@ -3260,12 +3260,12 @@ Chrome extension, free core
 
 # Scholar Utility Belt
 
-Scholar Utility Belt is a Chrome extension that adds journal quality badges, citation velocity, author metrics, lineage trees and retraction alerts to Google Scholar results. The core is free and open source. Since version 0.6.0 a few workflow tools are part of an optional Pro tier. The ranking lists ship inside the extension, so badges need no network request.
+Scholar Utility Belt is a free Chrome extension that shows journal rankings, quartiles and the venue h5-index next to every Google Scholar result, and adds the g-index, m-index and other author metrics to Scholar profiles, along with citation velocity, lineage trees and retraction alerts. The core is free and open source. Since version 0.6.0 a few workflow tools are part of an optional Pro tier. The ranking lists ship inside the extension, so badges need no network request.
 
 Add to Chrome
 Source on GitHub
 
-About 1,000 researchers use it. Rated 4.5 out of 5 from 16 ratings on the Chrome Web Store.
+More than 1,400 researchers use it every week. Rated 4.5 out of 5 from 16 ratings on the Chrome Web Store.
 
 The extension on a real, public Google Scholar author profile: journal quality badge counts, authorship breakdown, top collaborators and per-paper rankings. Screenshot, not a mock-up.
 
@@ -3356,6 +3356,14 @@ Paper Review, from $9
 
 ## Frequently asked questions
 
+How do I see journal rankings in Google Scholar?
+
+Google Scholar does not show journal rankings itself. With Scholar Utility Belt installed, each result gets badges for its venue, such as the SCImago quartile, the venue's h5-index and its place on lists like ABDC, FT50 or CORE, read from lists bundled with the extension. Install it from the Chrome Web Store, then search Google Scholar as usual.
+
+How do I see an author's h-index, g-index or m-index on Google Scholar?
+
+Google Scholar profiles show the h-index and i10-index. Scholar Utility Belt adds the g-index, m-index and L-index, first-author and solo-paper counts, a quality breakdown by ranking tier and a self-citation estimate, calculated from the papers on the profile page. A Load all button includes the rest of the profile.
+
 Is Scholar Utility Belt free?
 
 The core is free and open source under the ISC license. Since version 0.6.0 there is also an optional Pro tier for people who install for the first time: $40 once, or $3 a month, or $20 a year. Anyone who installed before 0.6.0 keeps every earlier feature free.
@@ -3374,7 +3382,7 @@ There is no account and no analytics, and nothing about your searches or reading
 
 Which journal lists does it show?
 
-ABDC, the Financial Times 50 (FT50), the UT Dallas 24 (UTD24) and SCImago Journal Rank (SJR).
+Business lists: the Financial Times 50 (FT50), the UT Dallas 24 (UTD24), ABDC (2025), VHB, ABS/AJG and FNEGE. Conferences: CORE/ICORE and CCF. Across fields: SCImago quartiles (Q1 to Q4), the Australian ERA list and the Norwegian register levels, plus Google Scholar's own h5-index for the venue. You can also upload your own list as a CSV.
 
 Which browsers does it support?
 

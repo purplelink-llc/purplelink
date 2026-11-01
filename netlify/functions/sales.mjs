@@ -41,7 +41,7 @@ const SITE_OF_PRODUCT = new Map(Object.entries({
   "revision-review": "purplelink", "response-review": "purplelink",
   "resume-review": "purplelink", "kit-faceless": "purplelink",
   "kit-monetization": "purplelink", "kit-bundle": "purplelink",
-  "kit-clip": "purplelink", "moderntex": "purplelink", "moderntex-seats": "purplelink", "outbound-veil": "purplelink", "legroom": "purplelink", "keyfeel": "purplelink", "tapefolio": "purplelink", "panely": "purplelink", "summonly": "purplelink", "freeboard": "purplelink", "app-suite": "purplelink", "bundle-2": "purplelink", "bundle-3": "purplelink",
+  "kit-clip": "purplelink", "moderntex": "purplelink", "moderntex-seats": "purplelink", "outbound-veil": "purplelink", "legroom": "purplelink", "keyfeel": "purplelink", "tapefolio": "purplelink", "lenscrib": "purplelink", "panely": "purplelink", "summonly": "purplelink", "freeboard": "purplelink", "app-suite": "purplelink", "bundle-2": "purplelink", "bundle-3": "purplelink",
   "vitae-plus-monthly": "purplelink", "vitae-plus-annual": "purplelink",
   "digest-monthly": "purplelink", "digest-annual": "purplelink",
   "sheet-submission": "purplelink", "sheet-tenure": "purplelink", "sheet-jobmarket": "purplelink", "sheet-grantpipeline": "purplelink", "sheet-reviewmatrix": "purplelink", "sheet-bundle": "purplelink",

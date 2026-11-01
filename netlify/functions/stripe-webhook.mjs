@@ -31,6 +31,7 @@
 
 import { issueKeyfeelLicense } from "../lib/keyfeel-license.mjs";
 import { issueTapefolioLicense } from "../lib/tapefolio-license.mjs";
+import { issueLenscribLicense } from "../lib/lenscrib-license.mjs";
 import { issuePanelyLicense } from "../lib/panely-license.mjs";
 import { issueSummonlyLicense } from "../lib/summonly-license.mjs";
 import { createHmac, timingSafeEqual, randomBytes, sign as edSign } from "node:crypto";
@@ -94,6 +95,7 @@ export const BLOB_DELIVERED_PRODUCTS = new Map([
   ["legroom",           { name: "Legroom for macOS",                 successPath: "/legroom/success/" }],
   ["keyfeel",           { name: "Keyfeel for macOS",                 successPath: "/keyfeel/success/" }],
   ["tapefolio",         { name: "Tapefolio for macOS",               successPath: "/tapefolio/success/" }],
+  ["lenscrib",          { name: "Lenscrib for macOS",                successPath: "/lenscrib/success/" }],
   ["panely",          { name: "Panely for macOS",                successPath: "/panely/success/" }],
   ["summonly",          { name: "Summonly for macOS",                successPath: "/summonly/success/" }],
   // Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Panely + Summonly + Vitae Plus for life. /suite/success/
@@ -320,7 +322,7 @@ export function paperReviewOffer(productKey, nowMs = Date.now()) {
 // when a calendar stops being a sensible gift. Ben approved this exact text on 2026-10-31 (photo-arm plan, idea 3).
 // Stop rule: no calendar sale by December 10 means this line comes out early.
 export const CALENDAR_LINE_LAST_DAY_MS = Date.UTC(2027, 0, 15, 23, 59, 59);
-const CALENDAR_LINE_PRODUCTS = new Set(["moderntex", "moderntex-seats", "outbound-veil", "legroom", "keyfeel", "tapefolio",
+const CALENDAR_LINE_PRODUCTS = new Set(["moderntex", "moderntex-seats", "outbound-veil", "legroom", "keyfeel", "tapefolio", "lenscrib",
   "panely", "summonly", "app-suite", "bundle-2", "bundle-3"]);
 
 export function calendarOffer(productKey, nowMs = Date.now()) {
@@ -478,6 +480,16 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
   const panelyHtml = (panelyLicense ? keyBlock("Panely", panelyLicense).html : "") + (parts.has("panely") ? `<p>${panelyNote.replace(/&/g, "&amp;")}</p>` : "");
   const summonlyText = (summonlyLicense ? keyBlock("Summonly", summonlyLicense).text : "") + (parts.has("summonly") ? summonlyNote + "\n\n" : "");
   const summonlyHtml = (summonlyLicense ? keyBlock("Summonly", summonlyLicense).html : "") + (parts.has("summonly") ? `<p>${summonlyNote}</p>` : "");
+  // Lenscrib is sold on its own (not in the Suite or a bundle), so it is keyed on the product, not on `parts`. Its key comes
+  // from the buyer's address (its own scheme, like Tapefolio's). The model download is the first thing new users meet.
+  const isLenscrib = productKey === "lenscrib";
+  const lenscribLicense = isLenscrib ? issueLenscribLicense(to) : null;
+  const lenscribKey = lenscribLicense ? keyBlock("Lenscrib", lenscribLicense) : { text: "", html: "" };
+  const lenscribNote = "Lenscrib needs macOS 14 or later on an Apple silicon Mac. The first time you use it, it downloads its vision model from Hugging Face, " +
+    "about 3 GB, so the first run waits for it; after that it runs on your Mac. Your photos stay on your Mac. The model can be wrong: it guesses species and places, " +
+    "so read every field before you save.";
+  const lenscribText = lenscribKey.text + (isLenscrib ? lenscribNote + "\n\n" : "");
+  const lenscribHtml = lenscribKey.html + (isLenscrib ? `<p>${lenscribNote}</p>` : "");
   const text =
     `Thanks for buying ${entry.name}.\n\n` +
     `Your download page:\n${link}\n\n` +
@@ -486,6 +498,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     bundleText +
     keyfeelText +
     tapefolioText +
+    lenscribText +
     panelyText +
     summonlyText +
     licenseTextBlock +
@@ -504,6 +517,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     bundleHtml +
     keyfeelHtml +
     tapefolioHtml +
+    lenscribHtml +
     panelyHtml +
     summonlyHtml +
     licenseHtmlBlock +

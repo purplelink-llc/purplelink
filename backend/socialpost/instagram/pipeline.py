@@ -382,7 +382,7 @@ def run(http, cfg: dict | None = None, when: dt.datetime | None = None, dry_run:
         state["log"].append({"at": iso(when), "item": item.id, "queued_for": item.meta["scheduled_at"]})
         out["queued"].append(item.id)
         sysutil.log(f"instagram: queued {item.id} for {item.meta['scheduled_at']}; approved by standing approval "
-                    f"{itemsmod.IG_STANDING_BY}")
+                    f"{item.meta['approved_by']}")
     if not dry_run:
         write_state(state)
         sync_links(cfg, say)
