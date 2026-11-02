@@ -146,6 +146,13 @@ usage_ledger_dict = DurableDict(
 # replies per conversation (1 hour), and the free-check claims, all under prefixed keys.
 buddy_dict = modal.Dict.from_name("buddy-chat", create_if_missing=True)
 
+
+def _buddy_claims() -> DurableDict:
+    """The `claim:` keys of buddy_dict ("one free check per inbox"), with a
+    durable copy so a claim outlives the Dict's 7-day expiry. Built per call
+    so it follows buddy_dict and durable_volume when tests swap them."""
+    return DurableDict(buddy_dict, durable_volume, "buddy-claims", key_prefix="claim:")
+
 # Lifecycle email automation — post-purchase tips/review-request/win-back
 # sequence, driven entirely by lifecycle_email_sweep() below.
 #   customer_lifecycle_dict[session_id] = {
@@ -4002,12 +4009,12 @@ def web():
             if not _buddy_ip_ok(request, "buddy-free", _buddy.FREE_PER_IP_DAY, _buddy.FREE_PER_IP_DAY):
                 return JSONResponse(sent)
             akey = _buddy.address_key(addr, secret)
-            if buddy_dict.get(f"claim:{akey}"):
+            if _buddy_claims().get(f"claim:{akey}"):
                 return JSONResponse(sent)
             if not _buddy.take_slot(buddy_dict, f"free:{day}", _buddy.FREE_GLOBAL_DAY):
                 return JSONResponse({"ok": False, "message": "Today's free checks are taken. Please try again "
                                                              "tomorrow."})
-            if not buddy_dict.put(f"claim:{akey}", {"at": _time_module.time(), "state": "sent"}, skip_if_exists=True):
+            if not _buddy_claims().put(f"claim:{akey}", {"at": _time_module.time(), "state": "sent"}, skip_if_exists=True):
                 return JSONResponse(sent)
         except Exception:
             logger.exception("buddy free-check caps failed")
@@ -4022,7 +4029,7 @@ def web():
                 html=_buddy.free_check_email_html(_buddy.free_link(link_token)),
                 tags=[{"name": "kind", "value": "buddy-free-check"}], from_name="Purplelink")
         if result.get("status") != "ok":
-            buddy_dict.pop(f"claim:{akey}", None)   # let them try again; the day slot stays used
+            _buddy_claims().pop(f"claim:{akey}", None)   # let them try again; the day slot stays used
             return JSONResponse({"ok": False, "message": "The email did not go out. Please try again later."})
         return JSONResponse(sent)
 
@@ -4058,8 +4065,9 @@ def web():
             "expires_at": now + PAPER_TOKEN_TTL_SECONDS,
         }
         paper_token_index_dict[token] = session_id
-        claim = buddy_dict.get(f"claim:{akey}") or {}
-        buddy_dict[f"claim:{akey}"] = {**claim, "state": "redeemed", "redeemed_at": now}
+        claims = _buddy_claims()
+        claim = claims.get(f"claim:{akey}") or {}
+        claims[f"claim:{akey}"] = {**claim, "state": "redeemed", "redeemed_at": now}
         return JSONResponse({"token": token, "product": "citation-gap", "category": "citation-gap"})
 
     @api.post("/revision-review/submit")
@@ -4778,7 +4786,7 @@ def lifecycle_email_sweep() -> dict:
     try:
         copied = sum(store.backfill() for store in (
             lifecycle_optout_dict, referral_dict, paper_tokens_dict,
-            customer_lifecycle_dict, usage_ledger_dict, feedback_dict,
+            customer_lifecycle_dict, usage_ledger_dict, feedback_dict, _buddy_claims(),
         ))
         if copied:
             logger.info("durable backfill: copied %s records to the volume", copied)

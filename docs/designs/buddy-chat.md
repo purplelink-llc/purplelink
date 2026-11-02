@@ -230,8 +230,10 @@ builds it only from site tokens, so it stays calm and works in both themes (deci
   At about 24,000 tokens and Haiku's $0.10 per million, an uncached turn costs about $0.0025.
 - **The "send me product news" box was dropped** from the free-check form until it is wired to the double opt-in.
 - **Free-check caps use atomic slots** (`take_slot`, put-if-absent on numbered keys) and an atomic per-address claim.
-  Modal Dict entries expire after 7 days with no reads or writes, so "one per inbox" holds for a week after the last
-  touch, not forever; the global 3-a-day cap is what bounds cost.
+  Modal Dict entries expire after 7 days with no reads or writes, so each `claim:` key also has a durable copy on the
+  `paper-review-durable` Volume (`_buddy_claims()`, `latextools/durable_dict.py`, PR 533 and its follow-up): "one per
+  inbox" holds for good. The Dict's put-if-absent still decides between racing requests. The global 3-a-day cap is
+  what bounds cost.
 - **Disposable mail:** a short list of the common services in `latextools/buddy_disposable.py`, not the full list.
 - **Kill switch:** `scripts/buddy_flag.py off|on|status`. At half the daily cap the server emails Ben once.
 - **Deploy order:** Ben creates the workspace, key and `buddy-secret`; then `bash scripts/deploy.sh --backend`; only

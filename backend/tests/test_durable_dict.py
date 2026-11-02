@@ -72,3 +72,29 @@ def test_items_reads_only_records_the_dict_lost():
     vol.read_file = lambda path: (reads.append(path), real_read(path))[1]
     assert dict(ledger.items()) == {"job_a": {"cost_usd": 0.4}, "job_b": {"cost_usd": 0.7}}
     assert len(reads) == 1  # job_a came from the Dict, only job_b from the Volume
+
+
+def test_put_if_absent_respects_an_evicted_claim_and_pop_clears_it():
+    cache, vol = {"spend:day": 1.5}, MemVolume()
+
+    class _Cache(dict):
+        def put(self, k, v, *, skip_if_exists=False):
+            if skip_if_exists and k in self:
+                return False
+            self[k] = v
+            return True
+
+    cache = _Cache(cache)
+    claims = DurableDict(cache, vol, "buddy-claims", key_prefix="claim:")
+    assert claims.put("claim:x", {"state": "sent"}, skip_if_exists=True)
+    assert not claims.put("claim:x", {"state": "sent"}, skip_if_exists=True)
+    _evict(cache, "claim:x")
+    assert not claims.put("claim:x", {"state": "sent"}, skip_if_exists=True)
+
+    assert dict(claims.items()) == {"claim:x": {"state": "sent"}}   # other keys are not this store's
+    claims["spend:day"] = 2.0
+    assert len(vol.files) == 1                                       # and get no durable copy
+
+    assert claims.pop("claim:x", None) == {"state": "sent"}
+    assert not vol.files
+    assert claims.put("claim:x", {"state": "sent"}, skip_if_exists=True)
