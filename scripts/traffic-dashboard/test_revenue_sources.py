@@ -24,6 +24,13 @@ import traffic_dashboard as td  # noqa: E402
 td.TIKTOK_DAILY_INCOME_CSV = Path(TMP) / "no-daily-income.csv"
 
 THIS = dt.date.today().strftime("%Y-%m")
+# Rewards count in the month of the snapshot that first saw them, so snapshot dates must sit in the current month.
+# Written as 2026-10-0x, these tests passed only in October 2026 and failed from 2026-11-01.
+
+
+def SNAP(day):
+    return f"{THIS}-{day:02d}"
+
 NOW = dt.datetime.now().timestamp()
 HEADER = "snapshot_date,snapshot_at,pipeline,platform,level,program,window,currency,caption,posted_at,est_rewards,qualified_views\n"
 
@@ -49,22 +56,22 @@ class TikTok(unittest.TestCase):
         return f
 
     def test_a_post_counts_once_at_its_best_estimate(self):
-        f = self.csv(post("2026-10-02", "a", f"{THIS}-02T10:00", 1.0) + post("2026-10-03", "a", f"{THIS}-02T10:00", 5.5)
-                     + post("2026-10-04", "a", f"{THIS}-02T10:00", 5.5) + post("2026-10-04", "b", f"{THIS}-03T10:00", 2.25))
+        f = self.csv(post(SNAP(2), "a", f"{THIS}-02T10:00", 1.0) + post(SNAP(3), "a", f"{THIS}-02T10:00", 5.5)
+                     + post(SNAP(4), "a", f"{THIS}-02T10:00", 5.5) + post(SNAP(4), "b", f"{THIS}-03T10:00", 2.25))
         self.assertEqual(td.tiktok_rewards_by_month([THIS], f), {THIS: 7.75})
 
     def test_account_windows_are_not_counted_and_months_follow_the_snapshot_day(self):
-        # Account 7-day totals are ignored. The August post's estimate was first seen in an October snapshot, so it counts
-        # in October: there is no earlier reading to place it.
-        f = self.csv("2026-10-03,2026-10-03T21:00:00,nl,tiktok,account,Total,Last 7 days,USD,,,7.86,\n"
-                     + post("2026-08-31", "old", "2026-08-30T10:00", 1.0) + post("2026-10-04", "old", "2026-08-30T10:00", 3.0)
-                     + post("2026-10-04", "new", f"{THIS}-01T10:00", 4.0))
+        # Account 7-day totals are ignored. The August post's estimate was first seen in this month's snapshot, so it counts
+        # in this month: there is no earlier reading to place it.
+        f = self.csv(f"{SNAP(3)},{SNAP(3)}T21:00:00,nl,tiktok,account,Total,Last 7 days,USD,,,7.86,\n"
+                     + post("2026-08-31", "old", "2026-08-30T10:00", 1.0) + post(SNAP(4), "old", "2026-08-30T10:00", 3.0)
+                     + post(SNAP(4), "new", f"{THIS}-01T10:00", 4.0))
         out = td.tiktok_rewards_by_month(["2026-08", THIS], f)
         self.assertEqual(out, {"2026-08": 1.0, THIS: 6.0})
 
     def test_missing_or_garbled_file_reads_zero(self):
         self.assertEqual(td.tiktok_rewards_by_month([THIS], Path(TMP) / "nope.csv"), {THIS: 0.0})
-        f = self.csv("garbage\n" + post("2026-10-04", "x", f"{THIS}-01T10:00", "n/a"))
+        f = self.csv("garbage\n" + post(SNAP(4), "x", f"{THIS}-01T10:00", "n/a"))
         self.assertEqual(td.tiktok_rewards_by_month([THIS], f), {THIS: 0.0})
 
 
@@ -102,7 +109,7 @@ class Sources(unittest.TestCase):
         admob = {"globepin": {"monthly": {THIS: 0.2}}}
         real = td.TIKTOK_REWARDS_CSV
         f = Path(TMP) / "r2.csv"
-        f.write_text(HEADER + post("2026-10-04", "a", f"{THIS}-01T10:00", 5.0))
+        f.write_text(HEADER + post(SNAP(4), "a", f"{THIS}-01T10:00", 5.0))
         td.TIKTOK_REWARDS_CSV = f
         try:
             html_out = td.revenue_block(None, None, market_rows=[ext_row()], admob=admob)
@@ -121,9 +128,6 @@ class Sources(unittest.TestCase):
         finally:
             td.TIKTOK_REWARDS_CSV = real
 
-
-if __name__ == "__main__":
-    unittest.main()
 
 
 class GettyEstimate(unittest.TestCase):
@@ -225,3 +229,7 @@ class FaaLedgerTest(unittest.TestCase):
         with mock.patch.object(td, "_read_photo_csv", lambda name: self.LEDGER if name == "faa-sales.csv" else []), \
              mock.patch.object(td, "_load_photo_dashboard_module", boom):
             self.assertEqual(td.photo_revenue_by_month(["2026-09", "2026-10"]), {"2026-09": 0.0, "2026-10": 46.0})
+
+
+if __name__ == "__main__":
+    unittest.main()

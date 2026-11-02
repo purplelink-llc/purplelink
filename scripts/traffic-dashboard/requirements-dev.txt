@@ -1,0 +1,5 @@
+# Test dependencies for the dashboard tests (CI: .github/workflows/dashboard-tests.yml).
+# traffic_dashboard.py imports its optional libraries inside the functions that use them, so the suite needs only
+# pytest. statsmodels lets the ARIMA forecast test in test_revenue_daily.py run instead of skipping.
+pytest==9.0.3
+statsmodels==0.15.0
