@@ -53,3 +53,8 @@ video/.cache/
 .claude/
 .vistest-ssd/
 yt.html
+
+# Build output, made by the Netlify build and by the test helpers (docs/designs/generated-files-at-build.md).
+site/search-index.json
+site/llms-full.txt
+site/.*.tmp
