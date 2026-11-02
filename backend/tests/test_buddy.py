@@ -351,6 +351,16 @@ def test_free_check_sends_once_per_inbox(app_client):
     assert "/tools/citation-gap/upload/?free=" in calls["email"][0]["html"]
 
 
+def test_free_check_claim_outlives_dict_expiry(app_client):
+    c, app, calls = app_client
+    assert _free(c, "jane@uni.edu").json()["ok"]
+    for k in [k for k in app.buddy_dict.data if k.startswith("claim:")]:
+        del app.buddy_dict.data[k]      # Modal drops an entry left idle for 7 days
+    assert _free(c, "jane@uni.edu").json()["ok"]   # same reply, still no second email
+    assert len(calls["email"]) == 1
+    assert any(k.startswith("claim:") for k in app.buddy_dict.data)   # put back from the Volume
+
+
 def test_free_check_honeypot_and_fast_form_send_nothing(app_client):
     c, _, calls = app_client
     assert _free(c, website="http://spam").json()["ok"]
