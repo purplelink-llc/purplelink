@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>HEIC to JPG Converter That Runs in Your Browser | Purplelink</title>
+    <meta name="description" content="Convert iPhone HEIC photos to JPG or PNG in your browser. The photos are decoded on your device and never uploaded. Free, no sign-up, batches as a zip.">
+    <link rel="canonical" href="https://purplelink.llc/tools/heic-to-jpg/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="HEIC to JPG, converted in your browser">
+    <meta property="og:description" content="Convert iPhone HEIC photos to JPG or PNG in your browser. The photos are decoded on your device and never uploaded. Free, no sign-up, batches as a zip.">
+    <meta property="og:url" content="https://purplelink.llc/tools/heic-to-jpg/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/tools-heic-to-jpg.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="HEIC to JPG, converted in your browser">
+    <meta name="twitter:description" content="Convert iPhone HEIC photos to JPG or PNG in your browser. The photos are decoded on your device and never uploaded. Free, no sign-up, batches as a zip.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/tools-heic-to-jpg.jpg">
+    <meta name="twitter:image:alt" content="HEIC to JPG, converted in your browser">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "HEIC to JPG Converter",
+      "url": "https://purplelink.llc/tools/heic-to-jpg/",
+      "description": "Convert iPhone HEIC photos to JPG or PNG in your browser. The photos are decoded on your device and never uploaded. Free, no sign-up, batches as a zip.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Any",
+      "browserRequirements": "Requires JavaScript and WebAssembly",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "featureList": [
+        "Convert HEIC and HEIF photos to JPG or PNG",
+        "Rotation stored in the photo is applied",
+        "Batches of up to 200 photos, downloadable as one zip",
+        "Decoded in the browser with libheif (WebAssembly); photos are never uploaded"
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "How to convert HEIC to JPG",
+      "tool": [
+        {
+          "@type": "HowToTool",
+          "name": "A current web browser"
+        }
+      ],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Pick the format",
+          "text": "Choose JPG for photos you will share or upload, or PNG if you need every pixel kept exactly."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Add the photos",
+          "text": "Drop the HEIC files on the box, or click it to choose them."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Wait for each row",
+          "text": "Each photo is converted in turn. The row shows its progress, then the new size."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "name": "Download",
+          "text": "Download each photo from its row, or use Download all as .zip for the whole batch."
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Are my files uploaded?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The page reads each photo with your browser and converts it in a background worker in this tab. There is no server step. The meter under the drop zone counts the bytes the page and its worker send while they work, so you can check this yourself. The only things the page downloads are its own scripts and the decoder."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Should I choose JPG or PNG?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "JPG for photos. It is the smaller file and opens everywhere, and at the default quality of 92 it looks the same as the original to most eyes. PNG keeps every pixel exactly, but a photo saved as PNG is several times larger."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it keep the date taken and the location?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The converted file is written fresh by the browser, so the EXIF block with the camera, date and GPS position is not carried over. That is useful when you share photos, and a loss if you sort a library by date. Preview on a Mac keeps the EXIF data when it exports."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why are my photos HEIC in the first place?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "iPhones save photos as HEIC when Settings, Camera, Formats is set to High Efficiency, which is the default. Most Compatible saves new photos as JPG instead. Settings, Photos, Transfer to Mac or PC, Automatic converts photos to JPG when you copy them to a computer over a cable."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why did a photo fail?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The page checks the first bytes of each file, so a JPG renamed to .heic is named for what it is. A HEIC that fails to decode is usually damaged or cut short in transfer. A photo larger than the browser can draw gets a message that says so."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use it on my iPhone?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, for photos up to about 16.7 megapixels, which is the most iOS lets a web page draw. Recent iPhones take 24 or 48 MP photos by default, and those need a computer."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. There is no account, no watermark and no limit beyond the file sizes above."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "https://purplelink.llc/tools/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "HEIC to JPG",
+          "item": "https://purplelink.llc/tools/heic-to-jpg/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png?v=21c86cc2a8" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=f0ab0f06a1"></script>
+    <link rel="stylesheet" href="/styles.css?v=48e72ff534">
+    <link rel="stylesheet" href="/motion.css?v=35524918f9">
+    <script src="/site.js?v=1ae55e2fde" defer></script>
+    <script src="/motion.js?v=d35f4b4ee4" defer></script>
+    <script src="/assets/vendor/jszip/jszip.min.js?v=7f839b2d46" defer></script>
+    <link rel="stylesheet" href="/tools/convert/convert.css?v=365335ab55">
+    <link rel="prefetch" as="script" data-convert-worker href="/tools/convert/convert-worker.js?v=0245fcceed">
+    <script src="/tools/convert/convert-core.js?v=a8698363e6" defer></script>
+    <script src="/tools/convert/convert-shell.js?v=6e2d48c51d" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg?v=2f8bd49b19" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">← All tools</a>
+      <div class="tools-hero">
+        <p class="eyebrow">Free web tool</p>
+        <h1>HEIC to JPG</h1>
+        <p>Convert HEIC photos from an iPhone or iPad to JPG, or to PNG. Each photo is decoded on your device, in this browser tab. Add one photo or a few hundred, then download them one by one or as a zip. <strong>Nothing is uploaded.</strong></p>
+      </div>
+
+      <div class="tool-app cv-app" data-convert="heic-to-jpg">
+        <input id="cv-file" class="sr-only cv-file" type="file" multiple accept=".heic,.heif,image/heic,image/heif">
+        <label class="cv-drop" id="cv-drop" for="cv-file">
+          <svg class="cv-drop-icon" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true" focusable="false"><rect x="6" y="9" width="36" height="30" rx="3" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M24 31V18m-6 6 6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="cv-drop-label"><strong>Drop HEIC photos here</strong></span>
+          <span class="btn btn-primary cv-small cv-drop-button">Choose files</span>
+          <span class="cv-hint">HEIC and HEIF, up to 100 MB each. You can also paste a photo with Ctrl or Cmd V.</span>
+        </label>
+        <fieldset class="cv-opts">
+          <legend>Options</legend>
+          <div class="cv-field"><span id="cv-output-label">Save as</span><span class="cv-choice" role="radiogroup" aria-labelledby="cv-output-label"><label><input type="radio" name="cv-output" data-opt="output" value="jpg" checked> JPG</label><label><input type="radio" name="cv-output" data-opt="output" value="png"> PNG</label></span></div>
+          <label class="cv-field" data-show-when="output=jpg">JPEG quality <input type="range" id="cv-quality" data-opt="quality" min="50" max="100" step="1" value="92"> <output id="cv-quality-out" for="cv-quality">92</output></label>
+          <label class="cv-field" data-show-when="output=jpg">Fill transparent areas with <input type="color" id="cv-bg" data-opt="background" value="#ffffff"></label>
+        </fieldset>
+        <p class="cv-net" id="cv-net"><span class="cv-net-dot" aria-hidden="true"></span><span id="cv-net-text">Bytes of your files sent anywhere: 0</span></p>
+        <p class="cv-status" id="cv-status" role="status" aria-live="polite"></p>
+        <ul class="cv-list" id="cv-list" aria-label="Files"></ul>
+        <div class="cv-bar" id="cv-bar" hidden>
+          <button type="button" class="btn btn-primary" id="cv-all" hidden>Download all as .zip</button>
+          <button type="button" class="btn btn-ghost" id="cv-clear">Clear</button>
+        </div>
+        <p class="tool-privacy">Files are read and converted in this tab, in a background worker. The only requests the page makes are for its own scripts. Your files are never sent anywhere.</p>
+      </div>
+
+      <section class="tool-prose cv-how" aria-labelledby="cv-how-h">
+        <h2 id="cv-how-h">How it works</h2>
+        <p>HEIC is the format iPhones and iPads have used for photos since iOS 11. It stores a photo in about half the space of a JPG, but Windows without an add-on, many web forms and older software cannot open it.</p>
+        <p>This page reads each photo with libheif, the open-source HEIF library, compiled to WebAssembly so it runs inside your browser. A background worker decodes the photo, turns it the way the camera recorded, draws it on an off-screen canvas, and the browser writes the result as a JPG or PNG.</p>
+        <p>The decoder is a 1.5 MB file served from this site, fetched only when you add your first photo. It sends nothing back.</p>
+        <p>On a Mac, Preview converts single photos too: open the photo, choose File, Export, and pick JPEG. This page is quicker for a batch, and it works on Windows and Chromebooks, where a HEIC file often does not open at all.</p>
+      </section>
+
+      <section class="tool-howto">
+        <h2>How to convert HEIC to JPG</h2>
+        <ol>
+          <li><strong>Pick the format.</strong> Choose JPG for photos you will share or upload, or PNG if you need every pixel kept exactly.</li>
+          <li><strong>Add the photos.</strong> Drop the HEIC files on the box, or click it to choose them.</li>
+          <li><strong>Wait for each row.</strong> Each photo is converted in turn. The row shows its progress, then the new size.</li>
+          <li><strong>Download.</strong> Download each photo from its row, or use Download all as .zip for the whole batch.</li>
+        </ol>
+      </section>
+
+      <section class="tool-prose" aria-labelledby="cv-limits-h">
+        <h2 id="cv-limits-h">Limits</h2>
+        <ul class="cv-limits">
+          <li>Up to 100 MB a file and 200 files at a time.</li>
+          <li>The JPG or PNG has no EXIF data: the camera, the date taken and the location are not copied over.</li>
+          <li>Only the main picture is converted. Live Photo motion, depth maps and HDR brightness data are left out.</li>
+          <li>Colors are written as sRGB. Very saturated colors from an iPhone&#x27;s wider Display P3 range can look a little flatter.</li>
+          <li>On an iPhone or iPad, the browser can draw at most about 16.7 megapixels, so 24 and 48 MP photos need a computer.</li>
+          <li>Needs Chrome or Edge 69, Firefox 105 or Safari 16.4, or later.</li>
+        </ul>
+      </section>
+
+      <section class="tool-faq">
+        <h2>Questions</h2>
+        <details><summary>Are my files uploaded?</summary><div class="faq-body">No. The page reads each photo with your browser and converts it in a background worker in this tab. There is no server step. The meter under the drop zone counts the bytes the page and its worker send while they work, so you can check this yourself. The only things the page downloads are its own scripts and the decoder.</div></details>
+        <details><summary>Should I choose JPG or PNG?</summary><div class="faq-body">JPG for photos. It is the smaller file and opens everywhere, and at the default quality of 92 it looks the same as the original to most eyes. PNG keeps every pixel exactly, but a photo saved as PNG is several times larger.</div></details>
+        <details><summary>Does it keep the date taken and the location?</summary><div class="faq-body">No. The converted file is written fresh by the browser, so the EXIF block with the camera, date and GPS position is not carried over. That is useful when you share photos, and a loss if you sort a library by date. Preview on a Mac keeps the EXIF data when it exports.</div></details>
+        <details><summary>Why are my photos HEIC in the first place?</summary><div class="faq-body">iPhones save photos as HEIC when Settings, Camera, Formats is set to High Efficiency, which is the default. Most Compatible saves new photos as JPG instead. Settings, Photos, Transfer to Mac or PC, Automatic converts photos to JPG when you copy them to a computer over a cable.</div></details>
+        <details><summary>Why did a photo fail?</summary><div class="faq-body">The page checks the first bytes of each file, so a JPG renamed to .heic is named for what it is. A HEIC that fails to decode is usually damaged or cut short in transfer. A photo larger than the browser can draw gets a message that says so.</div></details>
+        <details><summary>Can I use it on my iPhone?</summary><div class="faq-body">Yes, for photos up to about 16.7 megapixels, which is the most iOS lets a web page draw. Recent iPhones take 24 or 48 MP photos by default, and those need a computer.</div></details>
+        <details><summary>Is it free?</summary><div class="faq-body">Yes. There is no account, no watermark and no limit beyond the file sizes above.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools">
+        <h2>More free tools</h2>
+        <ul>
+          <li><a href="/tools/webp-to-png/">WebP to PNG</a></li>
+          <li><a href="/tools/jpg-to-pdf/">JPG to PDF</a></li>
+          <li><a href="/tools/png-to-icns/">PNG to ICNS</a></li>
+          <li><a href="/tools/metadata-cleaner/">Metadata Cleaner</a></li>
+          <li><a href="/tools/">All tools</a></li>
+        </ul>
+      </nav>
+
+      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a>. It helps keep these tools free and online.</p>
+    </main>
+
+
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg?v=2f8bd49b19" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/suite/">Mac Suite</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+    <script src="/analytics.js?v=1204a8102f" defer></script>
+  </body>
+</html>

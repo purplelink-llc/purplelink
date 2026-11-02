@@ -1,0 +1,79 @@
+/* File converters (shared by every /tools/<pair>/ converter page). External file so the strict CSP permits it.
+   Dark is the default; light overrides are gated on [data-theme="light"]. */
+.cv-app { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+.cv-app .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+.btn.cv-small { padding: 8px 16px; font-size: 0.9rem; min-height: 40px; }
+.cv-app [hidden], .cv-bar .btn[hidden] { display: none; }
+
+/* drop zone: the whole zone is the label of the file input, so click, Enter and Space all open the picker */
+.cv-drop {
+  position: relative; border: 2px dashed var(--line); border-radius: 14px; padding: 28px 20px 24px; text-align: center;
+  background: var(--panel); display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; justify-items: center;
+  cursor: pointer; transition: border-color 0.2s, background-color 0.2s;
+}
+.cv-drop:hover { border-color: color-mix(in oklch, var(--purple) 60%, var(--line)); }
+.cv-drop.is-over { border-color: var(--purple); background: var(--purple-xlight); }
+/* the file input sits just before the zone, visually hidden; its keyboard focus is drawn on the zone */
+.cv-file:focus-visible + .cv-drop { outline: 2px solid var(--purple); outline-offset: 3px; }
+.cv-drop.is-disabled { cursor: not-allowed; opacity: 0.6; }
+.cv-drop-icon { color: var(--purple); }
+.cv-drop-label { margin: 0; font-size: 1.1rem; }
+.cv-drop-button { pointer-events: none; }
+.cv-hint { margin: 0; color: var(--muted); font-size: 0.9rem; max-width: 56ch; }
+
+/* options */
+.cv-opts { min-width: 0; display: flex; flex-wrap: wrap; gap: 10px 26px; align-items: center; border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; background: var(--panel); margin: 0; }
+.cv-opts legend { padding: 0 6px; font-weight: 600; font-size: 0.95rem; }
+.cv-choice { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+.cv-choice label { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; cursor: pointer; font-size: 0.95rem; }
+.cv-choice label:has(input:checked) { border-color: var(--purple); background: color-mix(in oklch, var(--purple) 16%, var(--panel)); }
+.cv-choice label:has(input:focus-visible) { outline: 2px solid var(--purple); outline-offset: 2px; }
+.cv-choice input { accent-color: var(--purple); width: 16px; height: 16px; margin: 0; }
+.cv-field { display: inline-flex; flex-wrap: wrap; max-width: 100%; align-items: center; gap: 10px; font-size: 0.95rem; min-height: 40px; }
+.cv-field input[type="range"] { accent-color: var(--purple); width: 9rem; }
+.cv-field input[type="color"] { width: 44px; height: 32px; padding: 0 2px; border: 1px solid var(--line); border-radius: 7px; background: var(--bg); cursor: pointer; }
+.cv-field input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--purple); }
+.cv-field output { font-variant-numeric: tabular-nums; min-width: 2ch; color: var(--muted); }
+
+/* meter and status */
+.cv-net { margin: 0; display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+.cv-net-dot { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--purple); }
+.cv-net.is-live .cv-net-dot { background: oklch(75% 0.16 150); }
+:where(:root[data-theme="light"]) .cv-net.is-live .cv-net-dot { background: oklch(55% 0.15 150); }
+.cv-status { margin: 0; min-height: 1.4em; color: var(--muted); }
+.cv-status.is-error { color: oklch(72% 0.17 25); }
+:where(:root[data-theme="light"]) .cv-status.is-error { color: oklch(45% 0.2 25); }
+
+/* queue */
+.cv-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.cv-list:empty { display: none; }
+.cv-item { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; background: var(--panel); display: grid; gap: 8px; }
+.cv-item[data-state="error"] { border-color: oklch(62% 0.2 25); }
+.cv-item[data-state="done"] { border-color: color-mix(in oklch, var(--purple) 45%, var(--line)); }
+.cv-item p { margin: 0; }
+.cv-item-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.cv-name { font-weight: 600; overflow-wrap: anywhere; min-width: 0; }
+.cv-size, .cv-note, .cv-prog-label { color: var(--muted); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+.cv-prog { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border: 0; border-radius: 999px; background: var(--line); overflow: hidden; }
+.cv-prog::-webkit-progress-bar { background: var(--line); border-radius: 999px; }
+.cv-prog::-webkit-progress-value { background: var(--purple); border-radius: 999px; }
+.cv-prog::-moz-progress-bar { background: var(--purple); border-radius: 999px; }
+.cv-warn { font-size: 0.92rem; border-radius: 8px; padding: 8px 12px; background: color-mix(in oklch, var(--purple) 10%, var(--panel)); }
+.cv-error { color: oklch(72% 0.17 25); font-size: 0.95rem; }
+:where(:root[data-theme="light"]) .cv-error { color: oklch(45% 0.2 25); }
+.cv-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.cv-actions a.btn { overflow-wrap: anywhere; text-align: left; }
+.cv-bar { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* how it works */
+.cv-how { display: grid; gap: 10px; }
+.cv-how p { margin: 0; }
+.cv-limits { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cv-drop { transition: none; }
+}
+
+/* selects (CSV separator and encoding) */
+.cv-field select { max-width: 100%; min-width: 0; min-height: 40px; padding: 0 34px 0 12px; border: 1px solid var(--line); border-radius: 999px; background-color: var(--bg); color: var(--ink); font: inherit; font-size: 0.95rem; cursor: pointer; }
+.cv-field select:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }

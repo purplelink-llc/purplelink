@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <title>Free Offline File Converters for Mac | Purplelink</title>
+    <meta name="description" content="How to convert images, PDFs, video, audio, documents, fonts and archives on a Mac without uploading them: the built-in way, a free Purplelink browser tool where one exists, and free open-source apps. Commands checked on macOS 27.0.1.">
+    <link rel="canonical" href="https://purplelink.llc/guides/free-offline-file-converters-mac/">
+    <meta property="og:title" content="Free Offline File Converters for Mac, by Job">
+    <meta property="og:description" content="How to convert images, PDFs, video, audio, documents, fonts and archives on a Mac without uploading them: the built-in way, a free Purplelink browser tool where one exists, and free open-source apps. Commands checked on macOS 27.0.1.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/free-offline-file-converters-mac/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/guides-free-offline-file-converters-mac.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Free Offline File Converters for Mac, by Job">
+    <meta name="twitter:description" content="How to convert images, PDFs, video, audio, documents, fonts and archives on a Mac without uploading them: the built-in way, a free Purplelink browser tool where one exists, and free open-source apps. Commands checked on macOS 27.0.1.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/guides-free-offline-file-converters-mac.jpg">
+    <meta name="twitter:image:alt" content="Free Offline File Converters for Mac, by Job">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "Free Offline File Converters for Mac, by Job",
+      "description": "How to convert images, PDFs, video, audio, documents, fonts and archives on a Mac without uploading them: the built-in way, a free Purplelink browser tool where one exists, and free open-source apps. Commands checked on macOS 27.0.1.",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "datePublished": "2026-11-02",
+      "dateModified": "2026-11-02",
+      "image": "https://purplelink.llc/assets/og/purplelink-card.png",
+      "mainEntityOfPage": "https://purplelink.llc/guides/free-offline-file-converters-mac/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://purplelink.llc/guides/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Free Offline File Converters for Mac, by Job",
+          "item": "https://purplelink.llc/guides/free-offline-file-converters-mac/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Can a Mac convert HEIC to JPG without extra software?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Open the photo in Preview and choose File, Export, JPEG, or run sips -s format jpeg photo.heic --out photo.jpg in Terminal. Finder's Quick Actions, Convert Image handles several photos at once."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can macOS save an image as WebP?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. On macOS 27.0.1, sips --formats lists WebP as readable but not writable. You can open a WebP and convert it to PNG or JPEG, but writing WebP needs another tool."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can afconvert make MP3 files?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. afconvert reads MP3 but fails when asked to write one. It writes M4A, WAV, AIFF and CAF, among others. Use ffmpeg with libmp3lame for MP3."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do Purplelink's converters upload my files?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "HEIC to JPG, WebP to PNG, PNG to ICNS, Metadata Cleaner and PDF merge and split run in your browser and upload nothing. PDF compress, File to Markdown and Markdown to PDF send the file to a Purplelink server, which deletes it after the conversion."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does converting a photo remove its location?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not reliably. In my test, sips copied the GPS tag when it converted a JPEG to PNG, and sips -d all did not remove it. Use Preview's Inspector, Metadata Cleaner or ExifTool, then check the result."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I turn a MOV into an MP4 for free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Run avconvert --source clip.mov --preset Preset1280x720 --output clip.mp4, or use HandBrake. If the video is already H.264 with AAC, ffmpeg -i clip.mov -c copy clip.mp4 changes the container without re-encoding."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I merge or compress a PDF without uploading it?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Merge in Preview by dragging a second PDF into the thumbnail sidebar, or with the PDF Tools merge tab, which runs in the browser. For compression, use Preview's Reduce File Size filter or Ghostscript, since the PDF Tools compress tab uploads the file."
+          }
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png?v=21c86cc2a8" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=f0ab0f06a1"></script>
+    <link rel="stylesheet" href="/styles.css?v=48e72ff534">
+    <link rel="stylesheet" href="/motion.css?v=35524918f9">
+    <script src="/site.js?v=1ae55e2fde" defer></script>
+    <script src="/motion.js?v=d35f4b4ee4" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+</head>
+    <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg?v=2f8bd49b19" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">Guide</p>
+        <h1 class="post-title">Free Offline File Converters for Mac, by Job</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-11-02">November 2, 2026</time></p>
+        <p class="post-lede">Most file conversions on a Mac need no upload and no paid app. macOS converts images, audio, video, text documents and archives itself, and a few free browser tools do the rest in the tab.</p>
+      </div>
+
+      <article class="post-body">
+        <p>Most file conversions on a Mac need no upload and no paid app. macOS converts images, audio, video, text documents and archives with built-in tools, and a few free Purplelink browser tools handle the rest inside the tab. This guide goes job by job: the free built-in way first, then the matching browser tool where one exists, then free open-source apps.</p>
+
+        <h2>How this guide was checked</h2>
+
+        <p>I ran every command below on a Mac running macOS 27.0.1 on November 2, 2026, with files I made for the test. Menu paths such as File, Export are from Apple's documentation and my own use of these apps, and menu names shift between macOS releases, so treat them as a starting point. Where a command did not do what people expect, I say so. Purplelink makes the browser tools named here, and I describe their limits as their own pages state them.</p>
+
+        <h2>Which Purplelink tools stay in your browser</h2>
+
+        <p>Five tools run in the browser tab and send nothing: HEIC to JPG, WebP to PNG, PNG to ICNS, Metadata Cleaner, and the merge and split tabs of PDF Tools. The first four show a counter, "Bytes of your files sent anywhere", that you can watch stay at 0.</p>
+
+        <p>Three others do send the file to a Purplelink server, which converts it and deletes it when the request ends: PDF Tools' compress tab (PDFs up to 20 MB), File to Markdown (up to 20 MB) and Markdown to PDF (up to 2 MB). They are listed below with that label, because a guide about not uploading should not blur the line.</p>
+
+        <h2>Images</h2>
+
+        <h3>HEIC to JPG</h3>
+
+        <p>To convert HEIC to JPG on a Mac without uploading, open the photo in Preview and choose File, Export, then set the format to JPEG. For many photos, select them in Finder, right-click, and choose Quick Actions, Convert Image, which offers JPEG, PNG or HEIF and a size. In Terminal, <code>sips</code> does the same for a whole folder:</p>
+
+        <pre><code>mkdir converted
+sips -s format jpeg -s formatOptions 85 *.[hH][eE][iI][cC] --out converted/</code></pre>
+
+        <p><code>formatOptions</code> takes low, normal, high, best or a percentage. I ran this on a lowercase and an uppercase file name and both were converted. The bracket pattern matters, because iPhone files often end in <code>.HEIC</code>.</p>
+
+        <p>The free browser version is <a href="/tools/heic-to-jpg/">HEIC to JPG</a>. It decodes each photo in a background worker, takes up to 100 MB a file and 200 files a batch, and returns a zip. It writes JPG or PNG without the EXIF block, so the date taken and location are not carried over, and it drops Live Photo motion and HDR data. It is mainly useful on Windows or a Chromebook, or when you want the location gone. Among free apps, ImageMagick (<code>magick photo.heic photo.jpg</code>) reads HEIC when it was built with HEIF support.</p>
+
+        <h3>WebP to PNG</h3>
+
+        <p>macOS can open WebP but cannot save it. <code>sips --formats</code> lists WebP as readable and not writable, and <code>sips</code> converts a WebP to PNG in one line:</p>
+
+        <pre><code>sips -s format png picture.webp --out picture.png</code></pre>
+
+        <p>Preview also opens WebP, then File, Export saves it in a format Preview can write. The browser tool <a href="/tools/webp-to-png/">WebP to PNG</a> does the same for batches, keeps transparency in PNG, can fill it for JPG, and turns an animated WebP into a still of its first frame. It is useful for pdfLaTeX and older Word, which do not take WebP. ImageMagick converts it too: <code>magick picture.webp picture.png</code>.</p>
+
+        <h3>Resize an image</h3>
+
+        <p>In Preview, choose Tools, Adjust Size. In Terminal, <code>sips -Z 1600 photo.jpg --out smaller.jpg</code> scales the longest side to 1600 pixels and keeps the proportions; I checked it with a 640 pixel image and a 320 limit. <code>sips -z height width</code> sets both sides, which can stretch the picture. Purplelink has no resize tool. ImageMagick: <code>magick photo.jpg -resize 1600x smaller.jpg</code>.</p>
+
+        <h3>Remove location from a photo</h3>
+
+        <p>To remove the location from one photo, open it in Preview, choose Tools, Show Inspector, open the GPS tab and click Remove Location Info. When sharing from Photos, the Options button on the share sheet has a Location switch.</p>
+
+        <p>Do not rely on <code>sips</code> for this. In my test, <code>sips -d all</code> left the GPS latitude in a JPEG, and converting that JPEG to PNG with <code>sips</code> copied it across. <a href="/tools/metadata-cleaner/">Metadata Cleaner</a> removes EXIF, GPS, XMP and IPTC from photos in the tab without re-encoding the pixels, and it also cleans PDF, Word, Excel, PowerPoint and MP4 or MOV video. The open-source ExifTool does it from Terminal, and I confirmed that <code>exiftool -gps:all= -overwrite_original photo.jpg</code> removes only the GPS tags, while <code>exiftool -all= -overwrite_original photo.jpg</code> removes all metadata. For manuscripts see <a href="/guides/remove-pdf-metadata-before-double-blind-review/">how to remove PDF metadata before double-blind review</a>.</p>
+
+        <h3>PNG to ICNS for Mac icons</h3>
+
+        <p>Apple's own route is an iconset folder and <code>iconutil</code>. Start from a square 1024 pixel PNG:</p>
+
+        <pre><code>mkdir MyIcon.iconset
+for s in 16 32 128 256 512; do
+  sips -z $s $s icon.png --out MyIcon.iconset/icon_${s}x${s}.png
+  sips -z $((s*2)) $((s*2)) icon.png --out MyIcon.iconset/icon_${s}x${s}@2x.png
+done
+iconutil -c icns MyIcon.iconset</code></pre>
+
+        <p>That writes <code>MyIcon.icns</code> next to the folder. One trap: <code>sips -s format icns</code> is listed as writable, but on this Mac it failed with error 13, so use the iconset route. <a href="/tools/png-to-icns/">PNG to ICNS</a> builds the same ten sizes, 16 to 1024 pixels, in the browser and can include the <code>.iconset</code> folder. It does not accept SVG.</p>
+
+        <h2>PDFs</h2>
+
+        <h3>Merge PDFs</h3>
+
+        <p>In Preview, open the first PDF, show thumbnails with View, Thumbnails, drag the second PDF file into the sidebar, then File, Export as PDF. For images, select them in Finder and use Quick Actions, Create PDF. macOS also carries a command-line joiner inside its Combine PDF Pages Automator action. Apple does not document it, so it may change, but it merged two PDFs into a two-page file here:</p>
+
+        <pre><code>"/System/Library/Automator/Combine PDF Pages.action/Contents/MacOS/join" -o merged.pdf a.pdf b.pdf</code></pre>
+
+        <p><a href="/tools/pdf-tools/">PDF Tools</a> merges in the browser with nothing uploaded, in the order you list the files. Free command-line option: <code>qpdf --empty --pages a.pdf b.pdf -- merged.pdf</code>.</p>
+
+        <h3>Split a PDF</h3>
+
+        <p>In Preview, show thumbnails, select the pages you want and drag them to the Desktop; they save as a new PDF. The PDF Tools split tab does it in the browser from a page list such as <code>1-3, 5, 8-10</code>. With qpdf: <code>qpdf in.pdf --pages . 1-3,5 -- out.pdf</code>.</p>
+
+        <h3>Compress a PDF</h3>
+
+        <p>In Preview, choose File, Export, then Quartz Filter, Reduce File Size. That filter is on this Mac, and it often lowers image quality more than you want, so check the result. The PDF Tools compress tab offers four quality levels but uploads the file, kept only while it runs, so it is not an offline option. The offline open-source route is Ghostscript: <code>gs -sDEVICE=pdfwrite -dPDFSETTINGS=/ebook -o small.pdf in.pdf</code>, where <code>/screen</code>, <code>/ebook</code>, <code>/printer</code> and <code>/prepress</code> trade size for quality.</p>
+
+        <h3>Make a scanned PDF searchable</h3>
+
+        <p>Preview's Live Text lets you select and copy words from a scan on screen, but I found no built-in way to save that text into the file. For a PDF that is itself searchable you need an OCR tool. Tesseract, which is open source, writes one directly, and I confirmed this command produces a PDF:</p>
+
+        <pre><code>tesseract scan.png scan-searchable pdf</code></pre>
+
+        <p>OCRmyPDF wraps Tesseract for whole PDFs: <code>ocrmypdf in.pdf out.pdf</code>. Purplelink's free tools do not do OCR. Its paid <a href="/tapefolio/">Tapefolio</a> app reads scanned pages on the Mac, free for 7 days.</p>
+
+        <h2>Video and audio</h2>
+
+        <h3>MOV to MP4</h3>
+
+        <p>In QuickTime Player, File, Export As offers 4K, 1080p, 720p and 480p, and the result is usually a <code>.mov</code>. To get an MP4 container from Terminal, use <code>avconvert</code>:</p>
+
+        <pre><code>avconvert --source clip.mov --preset Preset1280x720 --output clip.mp4 --replace</code></pre>
+
+        <p>I ran that and the output was an MP4 file. <code>avconvert --help</code> lists the presets: <code>Preset640x480</code>, <code>Preset960x540</code>, <code>Preset1280x720</code>, <code>Preset1920x1080</code>, <code>Preset3840x2160</code>, <code>PresetAppleM4A</code> and three <code>PresetAppleM4V</code> sizes. It re-encodes. Finder also has Quick Actions, Encode Selected Video Files. If the video is already H.264 with AAC audio, ffmpeg can rewrap it without re-encoding, which I confirmed: <code>ffmpeg -i clip.mov -c copy clip.mp4</code>. <a href="https://handbrake.fr/" rel="noopener">HandBrake</a> is the free graphical option, with presets and MP4 or MKV output. Purplelink has no browser video converter, because a browser-based encoder is a large download and slow on a laptop.</p>
+
+        <h3>Extract audio from a video</h3>
+
+        <p>In QuickTime Player, File, Export As, Audio Only gives an M4A. In Terminal, <code>afconvert</code> writes M4A directly from a video file, and I confirmed both of these:</p>
+
+        <pre><code>afconvert -f m4af -d aac clip.mp4 clip.m4a
+avconvert --source clip.mov --preset PresetAppleM4A --output clip.m4a --replace</code></pre>
+
+        <p>For an uncompressed WAV: <code>afconvert -f WAVE -d LEI16 clip.mp4 clip.wav</code>. <strong>afconvert cannot write MP3.</strong> Asking for <code>-f MPG3 -d .mp3</code> fails with <code>ExtAudioFileSetProperty ('cfmt') failed</code>, even though it can read MP3. For MP3, use ffmpeg: <code>ffmpeg -i clip.mp4 -vn -c:a libmp3lame -q:a 2 clip.mp3</code>, which worked here with the Homebrew build.</p>
+
+        <h3>Make a GIF</h3>
+
+        <p>Finder has no GIF converter. The Shortcuts app includes a Make GIF action, which I did not test. ffmpeg works from Terminal, and this two-step palette version made a clean GIF here:</p>
+
+        <pre><code>ffmpeg -i clip.mp4 -vf "fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" clip.gif</code></pre>
+
+        <p>Lower the frame rate and width to keep the file small; GIF is an inefficient format and the file grows quickly.</p>
+
+        <h2>Documents and Markdown</h2>
+
+        <p><code>textutil</code> converts text documents between txt, rtf, rtfd, html, doc, docx, odt, wordml and webarchive. I ran HTML to DOCX, DOCX to TXT and HTML to RTF successfully:</p>
+
+        <pre><code>textutil -convert docx page.html
+textutil -convert txt report.docx -stdout</code></pre>
+
+        <p>Two limits. <code>textutil</code> has no PDF output (it answers "Invalid output format"), and it reads a Markdown file as plain text, so asterisks stay asterisks. For a PDF, open the file in TextEdit, Pages or Word and choose File, Export as PDF, or use Print, Save as PDF.</p>
+
+        <p>For fully local conversion beyond that, LibreOffice does it headless (<code>soffice --headless --convert-to pdf report.docx</code>) and Pandoc handles Markdown (<code>pandoc notes.md -o notes.docx</code>); PDF output from Pandoc needs a LaTeX engine installed. Microsoft's open-source markitdown turns PDF, Word, PowerPoint and Excel into Markdown on your own machine. Purplelink's <a href="/tools/file-to-markdown/">File to Markdown</a> uses markitdown on its server, and <a href="/tools/markdown-to-pdf/">Markdown to PDF</a> uses Pandoc on its server; both upload the file and delete it afterwards. For research papers, see <a href="/guides/research-paper-pdf-to-markdown/">turning a paper PDF into clean Markdown</a>.</p>
+
+        <h2>Fonts</h2>
+
+        <p>macOS installs TTF and OTF fonts in Font Book but has no converter for web formats. The free open-source fontTools library does it, and I confirmed both directions on a system TTF:</p>
+
+        <pre><code>pip install fonttools brotli
+python3 -m fontTools ttLib.woff2 compress font.ttf
+python3 -m fontTools ttLib.woff2 decompress font.woff2 -o font.ttf</code></pre>
+
+        <p>Check the font's license before converting; some forbid web use or modification. Purplelink has no font tool.</p>
+
+        <h2>Archives</h2>
+
+        <p>In Finder, right-click files and choose Compress to make a ZIP; double-click a ZIP to open it. In Terminal, <code>ditto</code> and <code>bsdtar</code> are both installed. I ran these:</p>
+
+        <pre><code>ditto -c -k --keepParent project project.zip
+ditto -x -k project.zip restored/
+bsdtar -czf project.tgz project
+bsdtar -tf project.zip</code></pre>
+
+        <p><code>ditto -c -k</code> writes the ZIP format Finder uses and keeps Mac file metadata. <code>bsdtar -tf</code> lists what is inside an archive without extracting it. For 7z and RAR, <a href="https://www.keka.io/" rel="noopener">Keka</a> is free from its developer's site, and the Mac App Store edition is paid. Purplelink has no archive tool.</p>
+
+        <h2>Audio to text</h2>
+
+        <p>Voice Memos can show a transcript you copy out; the steps and what it leaves out are in <a href="/guides/export-voice-memos-transcript-mac/">exporting a Voice Memos transcript</a>, and <a href="/guides/free-audio-transcription-mac/">free transcription on a Mac with no time limit</a> compares the free options. Open-source whisper.cpp runs on the Mac and wants 16 kHz mono WAV, which <code>afconvert</code> makes:</p>
+
+        <pre><code>afconvert -f WAVE -d LEI16@16000 -c 1 interview.m4a interview.wav</code></pre>
+
+        <p>I confirmed that command writes one channel at 16000 Hz. Purplelink's <a href="/tapefolio/">Tapefolio</a> transcribes on the Mac with speaker labels, free for 7 days, then paid.</p>
+
+        <h2>The whole list in one table</h2>
+
+        <p>"Local" means the file stays on your Mac. "Uploads" means the file goes to a Purplelink server and is deleted after the run.</p>
+
+        <div class="u-scroll-x">
+          <table class="u-table-wide">
+            <thead>
+              <tr><th class="u-th" scope="col">Job</th><th class="u-th" scope="col">Built into macOS</th><th class="u-th" scope="col">Free Purplelink tool</th><th class="u-th" scope="col">Free app or command</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="u-cell">HEIC to JPG</td><td class="u-cell">Preview Export, Convert Image, sips</td><td class="u-cell">HEIC to JPG (local)</td><td class="u-cell">ImageMagick</td></tr>
+              <tr><td class="u-cell">WebP to PNG</td><td class="u-cell">sips (reads WebP, cannot write it)</td><td class="u-cell">WebP to PNG (local)</td><td class="u-cell">ImageMagick</td></tr>
+              <tr><td class="u-cell">Resize an image</td><td class="u-cell">Preview Adjust Size, sips -Z</td><td class="u-cell">None</td><td class="u-cell">ImageMagick</td></tr>
+              <tr><td class="u-cell">Remove photo location</td><td class="u-cell">Preview Inspector, Photos share options</td><td class="u-cell">Metadata Cleaner (local)</td><td class="u-cell">ExifTool</td></tr>
+              <tr><td class="u-cell">PNG to ICNS</td><td class="u-cell">sips and iconutil</td><td class="u-cell">PNG to ICNS (local)</td><td class="u-cell">None needed</td></tr>
+              <tr><td class="u-cell">Merge PDFs</td><td class="u-cell">Preview thumbnails, Create PDF</td><td class="u-cell">PDF Tools (local)</td><td class="u-cell">qpdf</td></tr>
+              <tr><td class="u-cell">Split a PDF</td><td class="u-cell">Preview thumbnails</td><td class="u-cell">PDF Tools (local)</td><td class="u-cell">qpdf</td></tr>
+              <tr><td class="u-cell">Compress a PDF</td><td class="u-cell">Preview Quartz Filter</td><td class="u-cell">PDF Tools (uploads)</td><td class="u-cell">Ghostscript</td></tr>
+              <tr><td class="u-cell">Make a PDF searchable</td><td class="u-cell">Live Text selects text only</td><td class="u-cell">None</td><td class="u-cell">Tesseract, OCRmyPDF</td></tr>
+              <tr><td class="u-cell">MOV to MP4</td><td class="u-cell">avconvert, QuickTime Export</td><td class="u-cell">None</td><td class="u-cell">HandBrake, ffmpeg</td></tr>
+              <tr><td class="u-cell">Video to audio</td><td class="u-cell">afconvert, avconvert, QuickTime</td><td class="u-cell">None</td><td class="u-cell">ffmpeg (for MP3)</td></tr>
+              <tr><td class="u-cell">Video to GIF</td><td class="u-cell">Shortcuts Make GIF (untested)</td><td class="u-cell">None</td><td class="u-cell">ffmpeg</td></tr>
+              <tr><td class="u-cell">Word, HTML, RTF, text</td><td class="u-cell">textutil, TextEdit</td><td class="u-cell">None</td><td class="u-cell">LibreOffice, Pandoc</td></tr>
+              <tr><td class="u-cell">To or from Markdown</td><td class="u-cell">textutil treats it as plain text</td><td class="u-cell">File to Markdown, Markdown to PDF (both upload)</td><td class="u-cell">Pandoc, markitdown</td></tr>
+              <tr><td class="u-cell">Fonts to WOFF2</td><td class="u-cell">None</td><td class="u-cell">None</td><td class="u-cell">fontTools</td></tr>
+              <tr><td class="u-cell">Archives</td><td class="u-cell">Finder Compress, ditto, bsdtar</td><td class="u-cell">None</td><td class="u-cell">Keka</td></tr>
+              <tr><td class="u-cell">Audio to text</td><td class="u-cell">Voice Memos transcript</td><td class="u-cell">None</td><td class="u-cell">whisper.cpp, Tapefolio (paid)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>One more thing coming</h2>
+
+        <p>Purplelink is building a Mac app called Formring. Hold Option and drag files, and a ring of 50 conversions opens at the pointer; drop a file on one and it converts on your Mac. It is not released yet. The planned price is $14.99 after a 7-day trial. Everything above works without it.</p>
+
+        <!-- launch: link /formring/ here -->
+
+        <h2>Questions</h2>
+
+        <h3>Can a Mac convert HEIC to JPG without extra software?</h3>
+        <p>Yes. Open the photo in Preview and choose File, Export, JPEG, or run <code>sips -s format jpeg photo.heic --out photo.jpg</code> in Terminal. Finder's Quick Actions, Convert Image handles several photos at once.</p>
+
+        <h3>Can macOS save an image as WebP?</h3>
+        <p>No. On macOS 27.0.1, <code>sips --formats</code> lists WebP as readable but not writable. You can open a WebP and convert it to PNG or JPEG, but writing WebP needs another tool.</p>
+
+        <h3>Can afconvert make MP3 files?</h3>
+        <p>No. afconvert reads MP3 but fails when asked to write one. It writes M4A, WAV, AIFF and CAF, among others. Use ffmpeg with libmp3lame for MP3.</p>
+
+        <h3>Do Purplelink&#x27;s converters upload my files?</h3>
+        <p>HEIC to JPG, WebP to PNG, PNG to ICNS, Metadata Cleaner and PDF merge and split run in your browser and upload nothing. PDF compress, File to Markdown and Markdown to PDF send the file to a Purplelink server, which deletes it after the conversion.</p>
+
+        <h3>Does converting a photo remove its location?</h3>
+        <p>Not reliably. In my test, sips copied the GPS tag when it converted a JPEG to PNG, and sips -d all did not remove it. Use Preview's Inspector, Metadata Cleaner or ExifTool, then check the result.</p>
+
+        <h3>How do I turn a MOV into an MP4 for free?</h3>
+        <p>Run <code>avconvert --source clip.mov --preset Preset1280x720 --output clip.mp4</code>, or use HandBrake. If the video is already H.264 with AAC, <code>ffmpeg -i clip.mov -c copy clip.mp4</code> changes the container without re-encoding.</p>
+
+        <h3>How do I merge or compress a PDF without uploading it?</h3>
+        <p>Merge in Preview by dragging a second PDF into the thumbnail sidebar, or with the PDF Tools merge tab, which runs in the browser. For compression, use Preview's Reduce File Size filter or Ghostscript, since the PDF Tools compress tab uploads the file.</p>
+      </article>
+
+
+    </main>
+
+
+        <footer class="footer">
+          <div class="footer-grid">
+            <div class="footer-about">
+              <a class="footer-brand" href="/">
+                <img src="/assets/purplelink-mark.svg?v=2f8bd49b19" alt="" width="26" height="26">
+                <span>Purplelink LLC</span>
+              </a>
+              <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+              <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+              <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
+            </div>
+            <nav class="footer-col" aria-label="Products">
+              <p class="footer-head">Products</p>
+              <ul>
+                <li><a href="/moderntex/">ModernTex</a></li>
+                <li><a href="/outbound-veil/">Outbound Veil</a></li>
+                <li><a href="/vitae/">Vitae</a></li>
+                <li><a href="/legroom/">Legroom</a></li>
+                <li><a href="/keyfeel/">Keyfeel</a></li>
+                <li><a href="/tapefolio/">Tapefolio</a></li>
+                <li><a href="/panely/">Panely</a></li>
+                <li><a href="/summonly/">Summonly</a></li>
+                <li><a href="/batterymeter/">BatteryMeter</a></li>
+                <li><a href="/tools/paper-review/">Paper Review</a></li>
+                <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+                <li><a href="/suite/">Mac Suite</a></li>
+                <li><a href="/products/">All products</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Free tools">
+              <p class="footer-head">Free tools</p>
+              <ul>
+                <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+                <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+                <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+                <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+                <li><a href="/tools/word-counter/">Word Counter</a></li>
+                <li><a href="/games/">Daily games</a></li>
+                <li><a href="/games/sports/">Sports games</a></li>
+                <li><a href="/tools/">All tools</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Learn">
+              <p class="footer-head">Learn</p>
+              <ul>
+                <li><a href="/guides/">Guides</a></li>
+                <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+                <li><a href="/templates/">LaTeX templates</a></li>
+                <li><a href="/latex-errors/">LaTeX errors</a></li>
+                <li><a href="/format/">Reference formats</a></li>
+                <li><a href="/blog/">Blog</a></li>
+                <li><a href="/changelog/">Changelog</a></li>
+                <li><a href="/search/">Search</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Company">
+              <p class="footer-head">Company</p>
+              <ul>
+                <li><a href="/about/">About</a></li>
+                <li><a href="/pricing/">Pricing</a></li>
+                <li><a href="/press/">Press</a></li>
+                <li><a href="/photography/">Photography</a></li>
+                <li><a href="/support/">Support</a></li>
+                <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+                <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+                <li><a href="/privacy/">Privacy</a></li>
+                <li><a href="/terms/">Terms</a></li>
+                <li><a href="/recover/">Find a purchase</a></li>
+                <li><a href="/labs/">For labs</a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="footer-bottom">
+            <span>&copy; 2026 Purplelink LLC</span>
+            <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+            <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+          </div>
+        </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=1204a8102f" defer></script>
+</body>
+</html>
