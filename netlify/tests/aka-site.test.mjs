@@ -96,7 +96,7 @@ test("LAUNCHED: launch.js ships live with valid facts, and the static page alrea
   assert.ok(html.includes(`<span data-aka-facts>${facts}</span>`), "the static facts match launch.js");
   assert.match(html, /<meta name="robots" content="index, follow">/);
   const llms = read("llms.txt");
-  assert.match(llms.slice(llms.indexOf("### AKA (macOS)")), new RegExp(`\\*\\*Status:\\*\\* Shipping, version ${cfg.version.replace(/\./g, "\\.")}`));
+  assert.match(llms.slice(llms.indexOf("### AKA (macOS)")), new RegExp(`\\*\\*Status:\\*\\* Shipping, version ${cfg.version.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`));
   const sm = read("sitemap.xml").match(/<loc>https:\/\/purplelink\.llc\/aka\/<\/loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/);
   assert.ok(sm, "aka is listed in the sitemap with a lastmod");
   assert.ok(sm[1] >= "2026-11-02", `aka lastmod ${sm[1]} is on or after the launch day`);
