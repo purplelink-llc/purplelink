@@ -255,7 +255,7 @@ export default async function handler(request) {
   const store = getStore("analytics");
   const now = Date.now();
   const s = {
-    totals: { pageviews: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0, lcbTrialDownloads: 0, pnTrialDownloads: 0, smTrialDownloads: 0, guideTrialClicks: 0, guidePageClicks: 0, events: 0 },
+    totals: { pageviews: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0, lcbTrialDownloads: 0, pnTrialDownloads: 0, smTrialDownloads: 0, guideTrialClicks: 0, guidePageClicks: 0, sendToMac: 0, events: 0 },
     byPath: {}, byReferrer: {}, byUtm: {}, byHost: {}, toolRuns: {},
     checkoutByProduct: {}, checkoutByPath: {},
     otherEvents: {}, otherEventDetail: {},
@@ -296,7 +296,7 @@ export default async function handler(request) {
   for (const { day, blobs } of listings) {
     if (!blobs) continue;            // preserves the old behaviour: skip the day entirely
     if (!s.byDay[day]) {
-      s.byDay[day] = { pageviews: 0, uniques: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0, lcbTrialDownloads: 0, pnTrialDownloads: 0, smTrialDownloads: 0, guideTrialClicks: 0, guidePageClicks: 0 };
+      s.byDay[day] = { pageviews: 0, uniques: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0, lcbTrialDownloads: 0, pnTrialDownloads: 0, smTrialDownloads: 0, guideTrialClicks: 0, guidePageClicks: 0, sendToMac: 0 };
       if (hostFilter) for (const f of Object.values(HOST_EVENT_FIELDS)) s.byDay[day][f] = 0;
     }
     if (!uniquesPerDay[day]) uniquesPerDay[day] = new Set();
@@ -327,23 +327,26 @@ export default async function handler(request) {
       s.totals.events++;
       if (rec.vid) uniquesPerDay[day].add(rec.vid);
       if (rec.host) bump(s.byHost, rec.host);
-      // Funnel by first-touch channel (analytics.js sends ft on pageviews, trial downloads and buy clicks only).
+      // Funnel by first-touch channel (analytics.js sends ft on pageviews, send-to-Mac requests, trial downloads and buy
+      // clicks only).
       // Product-page views are the denominator for a channel's trial and buy rates; the path is kept for pageviews
       // so the dashboard can restrict them to product pages.
       if (rec.ft && !String(rec.meta || "").startsWith("__")) {
         const ft = foldSource(rec.ft);
-        const fc = s.funnelByChannel[ft] || (s.funnelByChannel[ft] = { pageviews: 0, pageviewsByPath: {}, trial: {}, checkout: {}, os: {} });
+        const fc = s.funnelByChannel[ft] || (s.funnelByChannel[ft] = { pageviews: 0, pageviewsByPath: {}, sendToMac: {}, trial: {}, checkout: {}, os: {} });
         // Operating-system family of the channel's pageviews (records before 2026-10-31 have none and are not counted).
         if (rec.type === "pageview") { fc.pageviews++; bump(fc.pageviewsByPath, rec.path); if (rec.os) bump(fc.os, rec.os); }
         else if (rec.type === "checkout_click") bump(fc.checkout, rec.meta || "unknown");
+        else if (rec.type === "send_to_mac") bump(fc.sendToMac, rec.meta || "unknown");
         else if (/_?trial_download$/.test(rec.type)) bump(fc.trial, rec.meta || rec.type);
         else if (rec.type === "guide_mtx_trial") bump(fc.trial, "guide_mtx_trial");
         // The same counts by the first-touch link tag (utm_content), so one placement can be read on its own.
         if (rec.fc) {
           const fk = String(rec.fc).slice(0, 60);
-          const fx = s.funnelByContent[fk] || (s.funnelByContent[fk] = { channel: ft, pageviews: 0, pageviewsByPath: {}, trial: {}, checkout: {}, os: {} });
+          const fx = s.funnelByContent[fk] || (s.funnelByContent[fk] = { channel: ft, pageviews: 0, pageviewsByPath: {}, sendToMac: {}, trial: {}, checkout: {}, os: {} });
           if (rec.type === "pageview") { fx.pageviews++; bump(fx.pageviewsByPath, rec.path); if (rec.os) bump(fx.os, rec.os); }
           else if (rec.type === "checkout_click") bump(fx.checkout, rec.meta || "unknown");
+          else if (rec.type === "send_to_mac") bump(fx.sendToMac, rec.meta || "unknown");
           else if (/_?trial_download$/.test(rec.type)) bump(fx.trial, rec.meta || rec.type);
           else if (rec.type === "guide_mtx_trial") bump(fx.trial, "guide_mtx_trial");
         }
@@ -378,6 +381,10 @@ export default async function handler(request) {
       } else if (rec.type === "tf_trial_download") {
         // Tapefolio trial DMG downloads. Its own event type, for the same reason.
         s.totals.tfTrialDownloads++; s.byDay[day].tfTrialDownloads++;
+      } else if (rec.type === "send_to_mac" && !String(rec.meta || "").startsWith("__")) {
+        // "Send to my Mac" (2026-11-02): a visitor not on a Mac asked for the download link by email. A funnel stage of
+        // its own, between the product-page visit and the trial; meta is the app. See docs/designs/send-to-mac.md.
+        s.totals.sendToMac++; s.byDay[day].sendToMac++;
       } else if (rec.type === "lcb_trial_download") {
         // Lenscrib trial DMG downloads. Its own event type, for the same reason.
         s.totals.lcbTrialDownloads++; s.byDay[day].lcbTrialDownloads++;
@@ -462,12 +469,12 @@ export default async function handler(request) {
     ...(hostFilter ? {} : { journeysByDay: Object.fromEntries(Object.entries(s.journeysByDay).sort()) }),
     funnelByChannel: Object.fromEntries(Object.entries(s.funnelByChannel).map(([ch, v]) => [ch, {
       pageviews: v.pageviews, pageviewsByPath: Object.fromEntries(topN(v.pageviewsByPath, 40).map((x) => [x.key, x.count])),
-      trial: v.trial, checkout: v.checkout, os: v.os,
+      sendToMac: v.sendToMac, trial: v.trial, checkout: v.checkout, os: v.os,
     }])),
     funnelByContent: Object.fromEntries(Object.entries(s.funnelByContent).map(([k, v]) => [k, {
       channel: v.channel, pageviews: v.pageviews,
       pageviewsByPath: Object.fromEntries(topN(v.pageviewsByPath, 20).map((x) => [x.key, x.count])),
-      trial: v.trial, checkout: v.checkout, os: v.os,
+      sendToMac: v.sendToMac, trial: v.trial, checkout: v.checkout, os: v.os,
     }])),
   });
 }

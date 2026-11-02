@@ -110,3 +110,12 @@ test("every ModernTex page that loads the pixel loads analytics.js first, and th
   assert.match(dir("connect-src"), /https:\/\/pixel-config\.reddit\.com/);
   assert.match(dir("img-src"), /https:\/\/alb\.reddit\.com/);
 });
+
+test("a trial click that Send to my Mac turned into a pointer at its form is not a Lead", () => {
+  const v = browser().visit("/moderntex/", AD);
+  const before = v.calls.length;
+  const after = v.click({ href: "/.netlify/functions/moderntex-download?trial=1", "data-s2m-intercept": "1" });
+  assert.ok(!after.slice(before).some((c) => c[1] === "Lead"));
+  // The block's own "anyway" link is a real download and still a Lead.
+  assert.deepEqual(v.click({ href: "/.netlify/functions/moderntex-download?trial=1", "data-s2m-anyway": "" }).at(-1), ["track", "Lead"]);
+});

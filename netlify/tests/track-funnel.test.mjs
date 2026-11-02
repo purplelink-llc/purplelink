@@ -88,3 +88,19 @@ test("funnel pageviews carry the operating-system family and stats counts it per
   const recs = [...stores.entries()].filter(([k]) => k.startsWith("analytics/ev/")).map(([, v]) => v);
   assert.equal(recs.filter((r) => !r.ft).every((r) => !("os" in r)), true);
 });
+
+test("send_to_mac is a funnel stage of its own, by channel and link tag, and never a trial", async () => {
+  await post({ t: "pageview", p: "/moderntex/", h: "purplelink.llc", ft: "paid:reddit", fc: "mtx-ad-test" });
+  await post({ t: "send_to_mac", p: "/moderntex/", h: "purplelink.llc", m: "moderntex", ft: "paid:reddit", fc: "mtx-ad-test" });
+  await post({ t: "send_to_mac", p: "/moderntex/", h: "purplelink.llc", m: "moderntex", ft: "paid:reddit" });
+  await post({ t: "trial_download", p: "/moderntex/", h: "purplelink.llc", m: "moderntex-not-mac", ft: "paid:reddit" });
+  await post({ t: "trial_download", p: "/moderntex/", h: "purplelink.llc", m: "moderntex", ft: "paid:reddit" });
+  const out = await read();
+  const r = out.funnelByChannel["paid:reddit"];
+  assert.deepEqual(r.sendToMac, { moderntex: 2 });
+  assert.deepEqual(r.trial, { "moderntex-not-mac": 1, moderntex: 1 });
+  assert.deepEqual(out.funnelByContent["mtx-ad-test"].sendToMac, { moderntex: 1 });
+  assert.equal(out.totals.sendToMac, 2);
+  // The hero test's count keeps its meaning: every trial click, as before.
+  assert.equal(out.totals.trialDownloads, 2);
+});

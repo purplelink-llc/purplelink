@@ -44,7 +44,8 @@
       var el = ev.target && ev.target.closest ? ev.target.closest("a, button") : null;
       if (!el) return;
       var href = el.getAttribute("href") || "";
-      if (href.indexOf("moderntex-download?trial=1") !== -1) rdt("track", "Lead");
+      // A trial click that "Send to my Mac" turned into a pointer at its email form downloads nothing: no Lead.
+      if (href.indexOf("moderntex-download?trial=1") !== -1) { if (el.getAttribute("data-s2m-intercept") !== "1") rdt("track", "Lead"); }
       else if (el.getAttribute("data-product") === "moderntex") rdt("track", "AddToCart", { currency: "USD", value: 19.99, itemCount: 1 });
     }, true);
   }
