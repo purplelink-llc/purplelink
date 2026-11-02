@@ -77,7 +77,7 @@ test("nothing from the request but the address reaches the email", async () => {
   assert.equal(res.status, 200);
   const [mail] = mails();
   const all = JSON.stringify(mail);
-  assert.ok(!/evil\.example|<script>|Win/.test(all));
+  for (const planted of ["evil.example", "<script", "Win"]) assert.ok(!all.includes(planted), planted);
   assert.match(mail.text, /utm_source=send-to-mac&utm_medium=email/);
 });
 
