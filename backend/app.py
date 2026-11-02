@@ -142,6 +142,9 @@ usage_ledger_dict = DurableDict(
     modal.Dict.from_name("paper-review-usage-ledger", create_if_missing=True),
     durable_volume, "usage-ledger",
 )
+# Buddy, the site chat (docs/designs/buddy-chat.md): the on/off flag, spend totals, cap slots, Buddy's last
+# replies per conversation (1 hour), and the free-check claims, all under prefixed keys.
+buddy_dict = modal.Dict.from_name("buddy-chat", create_if_missing=True)
 
 # Lifecycle email automation — post-purchase tips/review-request/win-back
 # sequence, driven entirely by lifecycle_email_sweep() below.
@@ -202,6 +205,8 @@ def _purchases_waiting(entries, now: float) -> list:
         if not expires_at or expires_at - now < 86400:
             continue
         if entry.get("consumed_tokens") or entry.get("waiting_reminded_at"):
+            continue
+        if entry.get("source") == "buddy-free":   # a free check, not a purchase: no "still waiting" email
             continue
         if now - (entry.get("created_at") or now) < PURCHASE_WAITING_AFTER_DAYS * 86400:
             continue
@@ -310,6 +315,10 @@ resend_secret = modal.Secret.from_name("resend")
 # Feature flags for the coherence check (latextools/coherence.py). Holds COHERENCE_IN_REVIEW=1 since
 # 2026-10-23 (Ben); edit the secret to turn it off: new containers read it at start.
 coherence_flags_secret = modal.Secret.from_name("coherence-flags")
+# The site chat's own key and signing secret, kept apart from anthropic-secret so the chat's spend has its
+# own Console workspace limit and can never use the paid tools' key:
+#   modal secret create buddy-secret BUDDY_ANTHROPIC_API_KEY="sk-ant-..." BUDDY_FREE_SECRET="<random>"
+buddy_secret = modal.Secret.from_name("buddy-secret")
 
 # Product catalog — single source of truth shared between the webhook
 # (which maps Stripe price_id → product), the register-token endpoint
@@ -806,11 +815,15 @@ def adjacent_tool_pipeline(
     title_only: str = "",
     resume_filename: str = "",
     deliver_email: str = "",
+    free_check: bool = False,
 ) -> None:
     """Single dispatcher for cover-letter, anonymity-check, citation-gap,
     revision-review, response-review, resume-review jobs. The product field
     decides which pipeline runs; all of them write progress + result into
-    paper_jobs_dict keyed by token."""
+    paper_jobs_dict keyed by token. `free_check` marks a free Citation Gap
+    check from the site chat: it gets a lower cost ceiling than a paid order
+    (nothing was paid, so the price-based ceiling would be none at all) and
+    one line about Paper Review under the result."""
     import asyncio as _asyncio
     import base64 as _base64
     import time as _time
@@ -822,7 +835,9 @@ def adjacent_tool_pipeline(
         paper_jobs_dict[token] = progress_dict
 
     async def _run():
-      with papercheck.UsageTracker(max_cost_usd=_order_cost_ceiling(product)) as usage:
+      from latextools import buddy as _buddy
+      ceiling = _buddy.FREE_COST_CEILING_USD if free_check else _order_cost_ceiling(product)
+      with papercheck.UsageTracker(max_cost_usd=ceiling) as usage:
         try:
             if product == "cover-letter":
                 # Cover letter uses pasted abstract + journal only — privacy-
@@ -874,6 +889,11 @@ def adjacent_tool_pipeline(
                     else:
                         res = await paperreview_extras.run_citation_gap(client, struct)
                         md = _format_citation_gap_md(res)
+                        if free_check and res.get("status") == "ok":
+                            md += ("\n\n---\n\nThis was a free check. [Paper Review]"
+                                   "(https://purplelink.llc/tools/paper-review/?utm_source=buddy&utm_medium=free-check"
+                                   "&utm_content=citation-gap-result) reads the whole manuscript the way a journal "
+                                   "reviewer would, from $9.\n")
                 paper_jobs_dict[token] = {
                     "status": "done" if res.get("status") == "ok" else "error",
                     "progress_pct": 100,
@@ -1240,9 +1260,10 @@ def pdf_structure_run(pdf_bytes: bytes) -> dict:
     # Stripe key (invoice generation endpoint), Resend key (volume-pack
     # token email + invoice email), subscribe secret (HMAC-verifies
     # lifecycle unsubscribe links — reuses the digest's SUBSCRIBE_SECRET,
-    # namespaced, rather than minting a new one). Anthropic key is NOT
-    # mounted here; only the heavy pipelines need it.
-    secrets=[paper_review_shared_secret, stripe_secret, resend_secret, subscribe_secret],
+    # namespaced, rather than minting a new one). The paid tools' Anthropic
+    # key is NOT mounted here; only the heavy pipelines need it. buddy_secret
+    # carries the site chat's own, separately limited key.
+    secrets=[paper_review_shared_secret, stripe_secret, resend_secret, subscribe_secret, buddy_secret],
 )
 @modal.concurrent(max_inputs=4)
 @modal.asgi_app()
@@ -3741,6 +3762,7 @@ def web():
         claimed = await _start_adjacent(token, session_id, entry, product="citation-gap", spawn_kwargs={
             "pdf_bytes": data,
             "deliver_email": email if email and "@" in email else "",
+            "free_check": entry.get("source") == "buddy-free",
         })
         if claimed == "already_used":
             return JSONResponse({"error": "already_used"}, status_code=409)
@@ -3750,6 +3772,295 @@ def web():
                 status_code=500,
             )
         return JSONResponse({"token": token, "status_url": f"/paper-review/status?token={token}"})
+
+    # ---- Buddy, the site chat (docs/designs/buddy-chat.md) -------------------------------------------------
+    # Every route answers 200 with a fixed line when the chat is off or a cap is hit, so the panel can show it.
+    # Spend and caps fail closed: if the Dict cannot be read, the chat says it is off.
+
+    import json
+
+    from latextools import buddy as _buddy
+
+    BUDDY_ORIGINS = {"https://purplelink.llc", "https://www.purplelink.llc"}
+
+    def _buddy_secret() -> str:
+        return os.environ.get("BUDDY_FREE_SECRET", "")
+
+    def _buddy_on() -> bool:
+        try:
+            return buddy_dict.get("flag:enabled", True) is not False
+        except Exception:
+            return False
+
+    def _buddy_origin_ok(request: Request) -> bool:
+        origin = request.headers.get("origin", "")
+        return origin in BUDDY_ORIGINS or (os.environ.get("ALLOW_LOCAL_CORS") == "1" and origin.startswith("http://localhost"))
+
+    def _buddy_ip_ok(request: Request, bucket: str, per_minute: int, per_day: int) -> bool:
+        now = datetime.datetime.utcnow()
+        digest = core.rate_limit_key(_client_ip(request), "", bucket=bucket).rsplit(":", 1)[-1]
+        limits = [(f"rl:{bucket}:m:{now:%Y-%m-%dT%H:%M}:{digest}", per_minute),
+                  (f"rl:{bucket}:d:{now:%Y-%m-%d}:{digest}", per_day)]
+        return core.check_limits_and_increment(rate_dict, limits) is None
+
+    def _buddy_ip_digest(request: Request) -> str:
+        return core.rate_limit_key(_client_ip(request), "", bucket="buddy").rsplit(":", 1)[-1]
+
+    def _buddy_blocked(request: Request) -> bool:
+        """An address with STRIKES_PER_IP_DAY strikes today is shut out of the chat and the free check."""
+        day = datetime.datetime.utcnow().strftime("%Y-%m-%d")
+        try:
+            return int(buddy_dict.get(f"strikes:{day}:{_buddy_ip_digest(request)}", 0)) >= _buddy.STRIKES_PER_IP_DAY
+        except Exception:
+            return True
+
+    def _buddy_strike(request: Request, why: str) -> None:
+        day = datetime.datetime.utcnow().strftime("%Y-%m-%d")
+        key = f"strikes:{day}:{_buddy_ip_digest(request)}"
+        try:
+            buddy_dict[key] = int(buddy_dict.get(key, 0)) + 1
+            buddy_dict.put(f"strikelog:{day}:{why}:{_secrets_module.token_hex(4)}", 1)
+        except Exception:
+            logger.exception("buddy strike write failed")
+
+    def _buddy_session(body: dict) -> str | None:
+        return _buddy.session_id(str(body.get("session") or ""), _buddy_secret())
+
+    async def _buddy_body(request: Request) -> dict | None:
+        if _too_large(request, _buddy.MAX_BODY_BYTES):
+            return None
+        raw = await request.body()
+        if len(raw) > _buddy.MAX_BODY_BYTES:
+            return None
+        try:
+            body = json.loads(raw or b"{}")
+        except ValueError:
+            return None
+        return body if isinstance(body, dict) else None
+
+    def _buddy_alert(day_total: float) -> None:
+        """One email to Ben the first time a day's chat spend passes half the daily cap."""
+        day_key, _ = _buddy.spend_keys()
+        if day_total < _buddy.CHAT_DAILY_USD / 2 or not buddy_dict.put(f"alert:{day_key}", 1, skip_if_exists=True):
+            return
+        try:
+            import asyncio as _aio
+            import httpx as _hx
+            from latextools import delivery as _delivery
+
+            async def _send():
+                async with _hx.AsyncClient() as c:
+                    await _delivery.send_email(
+                        c, to="ben@purplelink.llc", subject="Buddy chat passed half its daily cap",
+                        html=f"<p>Chat spend today: ${day_total:.2f} of ${_buddy.CHAT_DAILY_USD:.2f}.</p>"
+                             "<p>Turn it off with <code>python3 scripts/buddy_flag.py off</code>.</p>",
+                        from_name="Purplelink Buddy")
+            _aio.get_running_loop().create_task(_send())
+        except Exception:
+            logger.exception("buddy alert email failed")
+
+    @api.post("/buddy/status")
+    async def buddy_status(request: Request):
+        if not _buddy_origin_ok(request):
+            return JSONResponse({"error": "forbidden_origin"}, status_code=403)
+        secret = _buddy_secret()
+        on = _buddy_on() and bool(secret) and not _buddy_blocked(request)
+        return JSONResponse({"enabled": on,
+                             "form_ts": _buddy.form_stamp(secret) if on else "",
+                             "challenge": _buddy.new_challenge(secret) if on else "",
+                             "bits": _buddy.POW_BITS})
+
+    @api.post("/buddy/session")
+    async def buddy_session(request: Request):
+        """Trade a solved proof-of-work challenge for a signed one-hour session. Each challenge works once,
+        and an address gets SESSIONS_PER_IP_DAY sessions a day, so scripts pay for every conversation."""
+        if not _buddy_origin_ok(request):
+            return JSONResponse({"error": "forbidden_origin"}, status_code=403)
+        secret = _buddy_secret()
+        if not _buddy_on() or not secret or _buddy_blocked(request):
+            return JSONResponse({"error": "off"}, status_code=200)
+        body = await _buddy_body(request) or {}
+        challenge, nonce = str(body.get("challenge") or ""), str(body.get("nonce") or "")
+        payload = _buddy.verify(challenge, secret, "buddy-pow")
+        if not payload or not _buddy.pow_solved(challenge, nonce, int(payload.get("b") or _buddy.POW_BITS)):
+            return JSONResponse({"error": "invalid"}, status_code=400)
+        try:
+            if not buddy_dict.put(f"pow:{payload['c']}", 1, skip_if_exists=True):
+                return JSONResponse({"error": "invalid"}, status_code=400)
+        except Exception:
+            return JSONResponse({"error": "off"}, status_code=200)
+        if not _buddy_ip_ok(request, "buddy-session", _buddy.SESSIONS_PER_IP_DAY, _buddy.SESSIONS_PER_IP_DAY):
+            return JSONResponse({"error": "limited"}, status_code=200)
+        _sid, token = _buddy.new_session(secret)
+        return JSONResponse({"session": token})
+
+    @api.post("/buddy/chat")
+    async def buddy_chat(request: Request):
+        import httpx as _hx
+
+        if not _buddy_origin_ok(request):
+            return JSONResponse({"error": "forbidden_origin"}, status_code=403)
+        api_key = os.environ.get("BUDDY_ANTHROPIC_API_KEY", "")
+        if not _buddy_on() or not api_key or not _buddy_secret():
+            return JSONResponse({"reply": _buddy.OFF_LINE, "off": True})
+        if _buddy_blocked(request):
+            return JSONResponse({"reply": "The chat is closed for you today. You can write to Ben instead.",
+                                 "limited": True})
+        body = await _buddy_body(request)
+        if body is None:
+            return JSONResponse({"error": "invalid"}, status_code=400)
+        convo = _buddy_session(body)
+        turns = _buddy.clean_turns(body.get("turns"))
+        if not convo:
+            return JSONResponse({"error": "no_session"}, status_code=401)
+        if turns is None:
+            return JSONResponse({"error": "invalid"}, status_code=400)
+        if not _buddy_ip_ok(request, "buddy-chat", _buddy.CHAT_PER_IP_MINUTE, _buddy.CHAT_PER_IP_DAY):
+            return JSONResponse({"reply": "That is a lot of questions for one day. You can write to Ben instead.",
+                                 "limited": True})
+        day = datetime.datetime.utcnow().strftime("%Y-%m-%d")
+        if core.check_limits_and_increment(rate_dict, [(f"buddy:msgs:{day}", _buddy.GLOBAL_MESSAGES_DAY)]) is not None:
+            return JSONResponse({"reply": _buddy.OFF_LINE, "off": True})
+        if _buddy.looks_like_injection(turns[-1]):
+            _buddy_strike(request, "injection")
+
+        convo_key = f"convo:{convo}"
+        try:
+            state = buddy_dict.get(convo_key) or {}
+        except Exception:
+            return JSONResponse({"reply": _buddy.OFF_LINE, "off": True})
+        if not isinstance(state, dict) or state.get("expires", 0) < _time_module.time():
+            state = {"n": 0, "replies": []}
+        if state["n"] >= _buddy.MAX_VISITOR_TURNS:
+            return JSONResponse({"reply": "This chat has reached its length limit. You can write to Ben instead.",
+                                 "limited": True})
+
+        messages = _buddy.build_messages(turns, state.get("replies") or [])
+        reserve = _buddy.estimate_cost(len(json.dumps(messages)) + len(_buddy.facts()) + len(_buddy.VOICE) + 3000)
+        try:
+            if not _buddy.reserve_spend(buddy_dict, reserve):
+                return JSONResponse({"reply": _buddy.OFF_LINE, "off": True})
+        except Exception:
+            return JSONResponse({"reply": _buddy.OFF_LINE, "off": True})
+
+        actual = 0.0
+        try:
+            async with _hx.AsyncClient() as c:
+                reply, usage = await _buddy.ask_model(c, api_key, messages)
+            actual = _buddy.usage_cost(usage)
+        except Exception:
+            logger.exception("buddy chat call failed")
+            reply = None
+        finally:
+            day_total = _buddy.settle_spend(buddy_dict, reserve, actual)
+        _buddy_alert(day_total)
+        if reply is None:
+            return JSONResponse({"reply": _buddy.ERROR_LINE})
+
+        screened = _buddy.screen_reply(reply)
+        if screened != reply[:1500]:
+            _buddy_strike(request, "screened")
+        elif screened.startswith(_buddy.REFUSAL_START):
+            _buddy_strike(request, "off_topic")
+        reply = screened
+        state["n"] += 1
+        state["replies"] = (state.get("replies") or [])[-(_buddy.HISTORY_TURNS - 1):] + [reply]
+        state["expires"] = _time_module.time() + _buddy.CONVO_TTL_SECONDS
+        buddy_dict[convo_key] = state
+        return JSONResponse({"reply": reply})
+
+    @api.post("/buddy/free-check")
+    async def buddy_free_check(request: Request):
+        import httpx as _hx
+        from latextools import delivery as _delivery
+
+        if not _buddy_origin_ok(request):
+            return JSONResponse({"error": "forbidden_origin"}, status_code=403)
+        secret = _buddy_secret()
+        if not _buddy_on() or not secret:
+            return JSONResponse({"ok": False, "message": _buddy.OFF_LINE})
+        body = await _buddy_body(request)
+        if body is None:
+            return JSONResponse({"error": "invalid"}, status_code=400)
+        sent = {"ok": True, "message": "If that address can get a free check, the upload link is on its way. "
+                                       "It works for 3 days."}
+        if _buddy_blocked(request):
+            return JSONResponse(sent)
+        if not _buddy_session(body):
+            return JSONResponse({"error": "no_session"}, status_code=401)
+        # A filled honeypot or a too-fast form looks like success and does nothing.
+        if body.get("website") or not _buddy.form_stamp_ok(str(body.get("form_ts") or ""), secret):
+            return JSONResponse(sent)
+        addr = _buddy.canonical_email(str(body.get("email") or ""))
+        if not addr:
+            return JSONResponse({"ok": False, "message": "That email address does not look right."})
+        if _buddy.is_disposable(addr):
+            return JSONResponse({"ok": False, "message": "Please use an email address you keep, not a "
+                                                         "throwaway one."})
+        day = datetime.datetime.utcnow().strftime("%Y-%m-%d")
+        try:
+            if not _buddy_ip_ok(request, "buddy-free", _buddy.FREE_PER_IP_DAY, _buddy.FREE_PER_IP_DAY):
+                return JSONResponse(sent)
+            akey = _buddy.address_key(addr, secret)
+            if buddy_dict.get(f"claim:{akey}"):
+                return JSONResponse(sent)
+            if not _buddy.take_slot(buddy_dict, f"free:{day}", _buddy.FREE_GLOBAL_DAY):
+                return JSONResponse({"ok": False, "message": "Today's free checks are taken. Please try again "
+                                                             "tomorrow."})
+            if not buddy_dict.put(f"claim:{akey}", {"at": _time_module.time(), "state": "sent"}, skip_if_exists=True):
+                return JSONResponse(sent)
+        except Exception:
+            logger.exception("buddy free-check caps failed")
+            return JSONResponse({"ok": False, "message": _buddy.OFF_LINE})
+
+        nonce = _buddy.new_nonce()
+        link_token = _buddy.sign({"a": akey, "n": nonce, "exp": int(_time_module.time()) + _buddy.FREE_LINK_SECONDS},
+                                 secret, "buddy-free")
+        async with _hx.AsyncClient() as c:
+            result = await _delivery.send_email(
+                c, to=str(body.get("email")).strip(), subject="Your free Citation Gap check",
+                html=_buddy.free_check_email_html(_buddy.free_link(link_token)),
+                tags=[{"name": "kind", "value": "buddy-free-check"}], from_name="Purplelink")
+        if result.get("status") != "ok":
+            buddy_dict.pop(f"claim:{akey}", None)   # let them try again; the day slot stays used
+            return JSONResponse({"ok": False, "message": "The email did not go out. Please try again later."})
+        return JSONResponse(sent)
+
+    @api.post("/buddy/free-check/redeem")
+    async def buddy_free_check_redeem(request: Request):
+        if not _buddy_origin_ok(request):
+            return JSONResponse({"error": "forbidden_origin"}, status_code=403)
+        if not _enforce_rate_limit(request, "buddy-redeem"):
+            return JSONResponse({"error": "rate_limited"}, status_code=429)
+        secret = _buddy_secret()
+        body = await _buddy_body(request)
+        payload = _buddy.verify(str((body or {}).get("free") or ""), secret, "buddy-free") if secret else None
+        if not payload or not isinstance(payload.get("n"), str) or not isinstance(payload.get("a"), str):
+            return JSONResponse({"error": "invalid_link"}, status_code=400)
+        nonce, akey = payload["n"], payload["a"]
+        token = _gen_token()
+        # The nonce is claimed once; a reload of the same link gets the same token back.
+        if not buddy_dict.put(f"nonce:{nonce}", token, skip_if_exists=True):
+            token = buddy_dict.get(f"nonce:{nonce}")
+            return JSONResponse({"token": token, "product": "citation-gap", "category": "citation-gap"})
+        session_id = f"buddy-free:{nonce}"
+        now = _time_module.time()
+        paper_tokens_dict[session_id] = {
+            "tokens": [token],
+            "product_key": "citation-gap",
+            "product_cfg": PAID_PRODUCTS["citation-gap"],
+            "email": "",
+            "amount_paid": 0,
+            "source": "buddy-free",
+            "redeemed": True,
+            "consumed_tokens": [],
+            "created_at": now,
+            "expires_at": now + PAPER_TOKEN_TTL_SECONDS,
+        }
+        paper_token_index_dict[token] = session_id
+        claim = buddy_dict.get(f"claim:{akey}") or {}
+        buddy_dict[f"claim:{akey}"] = {**claim, "state": "redeemed", "redeemed_at": now}
+        return JSONResponse({"token": token, "product": "citation-gap", "category": "citation-gap"})
 
     @api.post("/revision-review/submit")
     async def revision_review_submit(
