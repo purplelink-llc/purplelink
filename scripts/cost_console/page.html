@@ -1,0 +1,413 @@
+<title>Session Cost Console</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one working column; a summary strip, then tabbed views. Purplelink purple (hue 310) as the only accent. */
+:root {
+  --bg: oklch(98.5% 0.006 310); --panel: oklch(100% 0 0); --fg: oklch(22% 0.03 310); --muted: oklch(48% 0.03 310);
+  --line: oklch(90% 0.012 310); --accent: oklch(48% 0.17 310); --accent-soft: oklch(94% 0.03 310);
+  --bad: oklch(52% 0.19 25); --warn: oklch(62% 0.14 70); --ok: oklch(55% 0.12 150);
+  --s1: oklch(48% 0.17 310); --s2: oklch(64% 0.12 230); --s3: oklch(72% 0.13 80); --s4: oklch(58% 0.13 160); --s5: oklch(60% 0.05 310);
+  --sans: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: oklch(17% 0.02 310); --panel: oklch(21% 0.025 310); --fg: oklch(93% 0.01 310); --muted: oklch(70% 0.03 310);
+  --line: oklch(31% 0.03 310); --accent: oklch(75% 0.13 310); --accent-soft: oklch(28% 0.05 310);
+  --bad: oklch(70% 0.16 25); --warn: oklch(80% 0.13 80); --ok: oklch(75% 0.12 150);
+  --s1: oklch(72% 0.14 310); --s2: oklch(72% 0.11 230); --s3: oklch(82% 0.12 85); --s4: oklch(72% 0.12 160); --s5: oklch(60% 0.04 310);
+  color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: oklch(17% 0.02 310); --panel: oklch(21% 0.025 310); --fg: oklch(93% 0.01 310); --muted: oklch(70% 0.03 310);
+  --line: oklch(31% 0.03 310); --accent: oklch(75% 0.13 310); --accent-soft: oklch(28% 0.05 310);
+  --bad: oklch(70% 0.16 25); --warn: oklch(80% 0.13 80); --ok: oklch(75% 0.12 150);
+  --s1: oklch(72% 0.14 310); --s2: oklch(72% 0.11 230); --s3: oklch(82% 0.12 85); --s4: oklch(72% 0.12 160); --s5: oklch(60% 0.04 310);
+  color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 14px/1.5 var(--sans); }
+[hidden] { display: none !important; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-block: 20px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 18px; }
+h1 { font-size: 1.5rem; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+h2 { font-size: 1.05rem; margin: 0; }
+.sub { color: var(--muted); font-size: 0.86rem; }
+.head { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline; justify-content: space-between; }
+.banner { border: 1px solid var(--bad); color: var(--bad); border-radius: 8px; padding: 8px 12px; font-weight: 600; }
+.strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.stat { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; display: grid; gap: 2px; }
+.stat .k { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.stat .v { font: 600 1.35rem/1.2 var(--mono); font-variant-numeric: tabular-nums; }
+.stat .n { font-size: 0.78rem; color: var(--muted); }
+.mixbar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: var(--line); }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+.tabs button { font: 600 0.86rem var(--sans); border: 1px solid var(--line); background: var(--panel); color: var(--fg);
+  border-radius: 999px; padding: 5px 14px; cursor: pointer; }
+.tabs button[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.tabs button:focus-visible, .ctl:focus-visible, th button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.view { display: grid; gap: 14px; min-width: 0; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 10px; min-width: 0; }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.84rem; }
+th, td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); white-space: nowrap; }
+th button { all: unset; cursor: pointer; }
+th button[data-dir]::after { content: attr(data-dir); margin-left: 4px; color: var(--accent); }
+td.num, th.num { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.title { min-width: 220px; max-width: 420px; }
+tr.click { cursor: pointer; } tr.click:hover td { background: var(--accent-soft); }
+.chip { display: inline-block; font-size: 0.7rem; font-weight: 600; border-radius: 999px; padding: 1px 7px; margin: 1px 2px 1px 0;
+  border: 1px solid currentColor; white-space: nowrap; }
+.chip.bad { color: var(--bad); } .chip.warn { color: var(--warn); } .chip.info { color: var(--accent); }
+.ctl { font: 0.86rem var(--sans); border: 1px solid var(--line); background: var(--panel); color: var(--fg); border-radius: 8px; padding: 6px 10px; max-width: 100%; }
+.row { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 0.8rem; color: var(--muted); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+svg text { fill: var(--muted); font: 11px var(--sans); }
+.tree { list-style: none; margin: 0; padding-left: 18px; border-left: 1px solid var(--line); }
+.tree.root { padding-left: 0; border: 0; }
+.tree li { padding: 3px 0; }
+.tree .node { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.tree .c { font: 0.82rem var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.tools { font: 0.76rem var(--mono); color: var(--muted); word-break: break-word; }
+.tools b { color: var(--fg); font-weight: 600; }
+.err { color: var(--bad); font-weight: 600; }
+.note { color: var(--muted); font-size: 0.82rem; max-width: 75ch; }
+.flaglist { display: grid; gap: 6px; }
+details summary { cursor: pointer; font-weight: 600; }
+.tip { position: fixed; pointer-events: none; background: var(--fg); color: var(--bg); font: 0.78rem var(--sans); padding: 5px 8px; border-radius: 6px; z-index: 5; }
+@media (prefers-reduced-motion: no-preference) { .tabs button { transition: background 0.15s; } }
+</style>
+
+<div class="wrap">
+  <header class="head">
+    <div>
+      <h1>Session Cost Console</h1>
+      <div class="sub" id="gen"></div>
+    </div>
+    <div class="sub" id="basis"></div>
+  </header>
+  <div id="banners"></div>
+  <section class="strip" id="strip" aria-label="Summary"></section>
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+  <main id="views"></main>
+  <footer class="note" id="foot"></footer>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script>
+(function () {
+  "use strict";
+  const D = JSON.parse(document.getElementById("data").textContent);
+  const $ = (sel, el) => (el || document).querySelector(sel);
+  const h = (tag, attrs, ...kids) => {
+    const el = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs || {})) {
+      if (v == null || v === false) continue;
+      if (k === "class") el.className = v; else if (k === "text") el.textContent = v;
+      else if (k.startsWith("on")) el.addEventListener(k.slice(2), v); else el.setAttribute(k, v);
+    }
+    for (const kid of kids.flat()) if (kid != null) el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+    return el;
+  };
+  const usd = (v, d) => "$" + (v || 0).toLocaleString("en-US", { minimumFractionDigits: d ?? 2, maximumFractionDigits: d ?? 2 });
+  const tok = v => v >= 1e9 ? (v / 1e9).toFixed(2) + "B" : v >= 1e6 ? (v / 1e6).toFixed(1) + "M" : v >= 1e3 ? (v / 1e3).toFixed(1) + "k" : String(v || 0);
+  const tz = { timeZone: "America/New_York" };
+  const when = ts => new Date(ts * 1000).toLocaleString("en-US", { ...tz, month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+  const dur = s => s < 3600 ? Math.round(s / 60) + " min" : s < 86400 ? (s / 3600).toFixed(1) + " h" : (s / 86400).toFixed(1) + " d";
+  const MODEL_COLORS = {};
+  const PALETTE = ["--s1", "--s2", "--s3", "--s4", "--s5"];
+  Object.keys(D.summary.by_model).forEach((m, i) => MODEL_COLORS[m] = `var(${PALETTE[Math.min(i, PALETTE.length - 1)]})`);
+  const mcolor = m => MODEL_COLORS[m] || "var(--s5)";
+  const ORIGIN_LABEL = {
+    human: "Ben", subagent: "subagent", task_notification: "own background task", peer: "another session",
+    headless: "headless run", side_session_task: "side-session brief", scheduled: "scheduled task",
+    after_compaction: "after context reset", side_session_event: "side-session wake-up", app_other: "app message",
+    ci_event: "CI monitor", app_resume: "app relaunch", compaction: "context summary", system: "app notice", unknown: "unknown"
+  };
+  const olabel = o => ORIGIN_LABEL[o] || o;
+  const byKey = Object.fromEntries(D.sessions.map(s => [s.key, s]));
+
+  // ---------- header ----------
+  const ageH = (Date.now() / 1000 - D.generated) / 3600;
+  $("#gen").textContent = `Last ${D.days} days (US Eastern), built ${when(D.generated)}. ${D.summary.sessions.toLocaleString()} sessions.`;
+  $("#basis").textContent = "API-equivalent cost at public API rates, not cash billed";
+  const banners = $("#banners");
+  if (ageH > 36) banners.append(h("div", { class: "banner", text: `This page is ${Math.round(ageH)} hours old. The nightly refresh has not run since ${when(D.generated)}.` }));
+  if (D.pricing.stale) banners.append(h("div", { class: "banner", text: `Prices were last checked ${D.pricing.checked}. Check them against Anthropic's pricing page and update pricing.json.` }));
+  if (D.summary.unknown_models.length) banners.append(h("div", { class: "banner", text: "Models not in the price table, priced at the top rate: " + D.summary.unknown_models.join(", ") }));
+
+  // ---------- summary strip ----------
+  const S = D.summary;
+  const idle = ["peer", "side_session_event", "ci_event", "system"].reduce((a, k) => a + (S.by_origin[k] || 0), 0);
+  const pings = ["side_session_event", "ci_event", "system", "app_resume"].reduce((a, k) => a + (S.by_origin[k] || 0), 0);
+  const fable = D.sessions.reduce((a, s) => a + (s.flags.fable ? s.flags.fable.cost : 0), 0);
+  const mix = h("div", { class: "mixbar", "aria-hidden": "true" }, Object.entries(S.by_model).map(([m, c]) =>
+    h("span", { style: `width:${(100 * c / S.total).toFixed(2)}%;background:${mcolor(m)}` })));
+  const stat = (k, v, n, extra) => h("div", { class: "stat" }, h("span", { class: "k", text: k }), h("span", { class: "v", text: v }), extra, n ? h("span", { class: "n", text: n }) : null);
+  $("#strip").append(
+    stat(`${D.days}-day total`, usd(S.total, 0), Object.entries(S.by_model).filter(([, c]) => c / S.total >= 0.005).map(([m, c]) => `${m} ${Math.round(100 * c / S.total)}%`).join(" · "), mix),
+    stat("Today so far", usd(S.today, 0), "since midnight Eastern"),
+    stat("Yesterday", usd(S.yesterday, 0), `7-day average ${usd(S.avg7, 0)}`),
+    stat("Cache share", Math.round(100 * (S.by_kind.cache_read + S.by_kind.cache_write) / S.total) + "%", `reads ${usd(S.by_kind.cache_read, 0)} · writes ${usd(S.by_kind.cache_write, 0)}`),
+    stat("Wake-ups and pings", usd(pings, 0), `side-session events, CI monitor, app notices; ${usd(S.by_origin.peer || 0, 0)} more from messages between sessions`),
+    stat("Fable", usd(fable, 2), fable ? "rule: no Fable calls" : "no Fable calls in the window")
+  );
+
+  // ---------- tabs ----------
+  const VIEWS = [["sessions", "Sessions"], ["days", "Days and weeks"], ["top", "Top spenders"], ["tree", "Who started whom"],
+                 ["models", "Models"], ["flags", "Flags"], ["replay", "Run replay"]];
+  const built = {};
+  const tabs = $("#tabs"), views = $("#views");
+  function show(id) {
+    if (!VIEWS.some(v => v[0] === id)) id = "sessions";
+    for (const b of tabs.children) b.setAttribute("aria-selected", b.dataset.id === id ? "true" : "false");
+    for (const v of views.children) v.hidden = v.dataset.id !== id;
+    if (!built[id]) { built[id] = true; BUILD[id](views.querySelector(`[data-id="${id}"]`)); }
+    try { localStorage.setItem("cc-tab", id); } catch (e) { /* storage blocked */ }
+  }
+  for (const [id, label] of VIEWS) {
+    tabs.append(h("button", { role: "tab", "data-id": id, text: label, onclick: () => { history.replaceState(null, "", "#" + id); show(id); } }));
+    views.append(h("section", { class: "view", "data-id": id, role: "tabpanel", hidden: true }));
+  }
+
+  function sortableTable(cols, rows, opts) {
+    // cols: [{key, label, num, get, render}]
+    const state = { key: opts.sort, dir: -1 };
+    const tbody = h("tbody");
+    const heads = cols.map(c => h("th", { class: c.num ? "num" : null }, h("button", { text: c.label, onclick: () => {
+      state.dir = state.key === c.key ? -state.dir : (c.num ? -1 : 1); state.key = c.key; draw(); } })));
+    function draw() {
+      const col = cols.find(c => c.key === state.key);
+      const get = col.get || (r => r[col.key]);
+      const list = (opts.filter ? rows.filter(opts.filter) : rows).slice().sort((a, b) => {
+        const x = get(a), y = get(b); return (x > y ? 1 : x < y ? -1 : 0) * state.dir; });
+      heads.forEach((th, i) => cols[i].key === state.key ? th.firstChild.setAttribute("data-dir", state.dir < 0 ? "↓" : "↑") : th.firstChild.removeAttribute("data-dir"));
+      tbody.replaceChildren(...list.slice(0, opts.limit ? opts.limit() : list.length).map(r => {
+        const tr = h("tr", { class: opts.onrow ? "click" : null, onclick: opts.onrow ? () => opts.onrow(r) : null });
+        for (const c of cols) tr.append(h("td", { class: (c.num ? "num " : "") + (c.cls || "") }, c.render ? c.render(r) : String((c.get || (x => x[c.key]))(r) ?? "")));
+        return tr;
+      }));
+      if (opts.count) opts.count(list.length);
+    }
+    const table = h("table", {}, h("thead", {}, h("tr", {}, heads)), tbody);
+    draw();
+    return { el: h("div", { class: "scroll" }, table), draw };
+  }
+
+  function flagChips(s) {
+    const f = s.flags, out = [];
+    if (f.fable) out.push(h("span", { class: "chip bad", text: `Fable ${usd(f.fable.cost)}` }));
+    if (f.over_day) out.push(h("span", { class: "chip warn", text: `over $${D.pricing.thresholds.session_day_usd}/day ×${Object.keys(f.over_day).length}` }));
+    if (f.loop) out.push(h("span", { class: "chip bad", text: `loop ×${f.loop.episodes}` }));
+    if (f.repeat) out.push(h("span", { class: "chip warn", text: `same call ×${f.repeat}` }));
+    if (f.pinged) out.push(h("span", { class: "chip info", text: `woken ${Math.round(100 * f.pinged.share)}%` }));
+    if (f.unknown_model) out.push(h("span", { class: "chip bad", text: "unpriced model" }));
+    return out;
+  }
+  const mixText = s => Object.entries(s.by_model).filter(([, c]) => c / (s.cost || 1) >= 0.005).sort((a, b) => b[1] - a[1]).map(([m, c]) => `${m} ${Math.round(100 * c / (s.cost || 1))}%`).join(", ");
+  const openReplay = s => { if (!D.replays[s.key]) return; history.replaceState(null, "", "#replay"); show("replay"); REPLAY.select(s.key); };
+
+  const BUILD = {};
+  let REPLAY = null;
+
+  BUILD.sessions = el => {
+    const q = h("input", { class: "ctl", type: "search", id: "sess-q", placeholder: "Filter by title or project", "aria-label": "Filter sessions" });
+    const flagged = h("input", { type: "checkbox", id: "sess-flagged" });
+    const count = h("span", { class: "sub" });
+    let shown = 200;
+    const more = h("button", { class: "ctl", text: "Show all", onclick: () => { shown = 1e9; t.draw(); more.hidden = true; } });
+    const t = sortableTable([
+      { key: "title", label: "Session", cls: "title", render: s => h("div", {}, h("div", { text: s.title }), h("div", { class: "sub", text: [s.project, s.scheduled ? "scheduled: " + s.scheduled : null, s.archived ? "archived" : null].filter(Boolean).join(" · ") }), h("div", {}, flagChips(s))) },
+      { key: "cost", label: "Cost", num: true, render: s => usd(s.cost) },
+      { key: "sub_cost", label: "Subagents", num: true, render: s => s.sub_cost ? usd(s.sub_cost) : "" },
+      { key: "mix", label: "Model mix", get: mixText },
+      { key: "turns", label: "Turns", num: true, render: s => s.turns.toLocaleString() },
+      { key: "ctx", label: "Context", num: true, get: s => s.ctx_median, render: s => h("span", { title: `median context per turn; 90th percentile ${tok(s.ctx_p90)}` , text: tok(s.ctx_median) }) },
+      { key: "out", label: "Output", num: true, get: s => s.tokens.output, render: s => tok(s.tokens.output) },
+      { key: "cr", label: "Cache read", num: true, get: s => s.tokens.cache_read, render: s => tok(s.tokens.cache_read) },
+      { key: "cw", label: "Cache write", num: true, get: s => s.tokens.cache_write, render: s => tok(s.tokens.cache_write) },
+      { key: "dur", label: "Span", num: true, get: s => s.last - s.first, render: s => dur(s.last - s.first) },
+      { key: "last", label: "Last active", num: true, render: s => when(s.last) },
+    ], D.sessions, {
+      sort: "cost", limit: () => shown, onrow: openReplay,
+      filter: s => (!flagged.checked || Object.keys(s.flags).length) && (!q.value || (s.title + " " + s.project + " " + (s.scheduled || "")).toLowerCase().includes(q.value.toLowerCase())),
+      count: n => { count.textContent = `${Math.min(n, shown).toLocaleString()} of ${n.toLocaleString()} shown. Click a session with a replay to open it.`; more.hidden = n <= shown; }
+    });
+    q.addEventListener("input", t.draw); flagged.addEventListener("change", t.draw);
+    el.append(h("div", { class: "panel" }, h("div", { class: "row" }, q, h("label", {}, flagged, " Flagged only"), count), t.el, more));
+  };
+
+  function stackedBars(container, keys, rowsOf, height) {
+    const draw = () => {
+      const w = Math.max(container.clientWidth, 320), pad = { l: 46, r: 8, t: 10, b: 26 };
+      const max = Math.max(...keys.map(k => Object.values(rowsOf(k)).reduce((a, b) => a + b, 0)), 1);
+      const step = niceStep(max / 4), top = Math.ceil(max / step) * step;
+      const bw = (w - pad.l - pad.r) / keys.length;
+      const y = v => pad.t + (height - pad.t - pad.b) * (1 - v / top);
+      const NS = "http://www.w3.org/2000/svg";
+      const svg = document.createElementNS(NS, "svg");
+      svg.setAttribute("viewBox", `0 0 ${w} ${height}`); svg.setAttribute("width", "100%"); svg.setAttribute("role", "img");
+      svg.setAttribute("aria-label", "Cost per period, stacked by model");
+      const add = (tag, a, text) => { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); if (text != null) e.textContent = text; svg.append(e); return e; };
+      for (let v = 0; v <= top + 1e-9; v += step) {
+        add("line", { x1: pad.l, x2: w - pad.r, y1: y(v), y2: y(v), stroke: "var(--line)", "stroke-width": 1 });
+        add("text", { x: pad.l - 6, y: y(v) + 4, "text-anchor": "end" }, "$" + Math.round(v));
+      }
+      keys.forEach((k, i) => {
+        let acc = 0; const parts = rowsOf(k); const x = pad.l + i * bw + bw * 0.15;
+        for (const m of Object.keys(S.by_model)) {
+          const v = parts[m] || 0; if (!v) continue;
+          const r = add("rect", { x, width: Math.max(bw * 0.7, 1), y: y(acc + v), height: Math.max(y(acc) - y(acc + v), 0.5), fill: mcolor(m), rx: 1.5 });
+          r.addEventListener("mousemove", e => tip(e, `${k}: ${m} ${usd(v)} (total ${usd(Object.values(parts).reduce((a, b) => a + b, 0))})`));
+          r.addEventListener("mouseleave", hideTip);
+          acc += v;
+        }
+        const every = Math.ceil(keys.length / Math.floor((w - pad.l) / 56));
+        if (i % every === 0) add("text", { x: pad.l + i * bw + bw / 2, y: height - 8, "text-anchor": "middle" }, k.slice(5));
+      });
+      container.replaceChildren(svg);
+    };
+    draw();
+    new ResizeObserver(draw).observe(container);
+  }
+  function niceStep(x) { const p = Math.pow(10, Math.floor(Math.log10(x || 1))); const n = x / p; return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * p; }
+  const tipEl = $("#tip");
+  function tip(e, text) { tipEl.textContent = text; tipEl.hidden = false;
+    const x = Math.min(e.clientX + 12, window.innerWidth - tipEl.offsetWidth - 8); tipEl.style.left = x + "px"; tipEl.style.top = (e.clientY + 14) + "px"; }
+  function hideTip() { tipEl.hidden = true; }
+  const legend = () => h("div", { class: "legend" }, Object.keys(S.by_model).map(m => h("span", {}, h("i", { style: `background:${mcolor(m)}` }), m)));
+
+  BUILD.days = el => {
+    const days = Object.keys(D.daily).sort();
+    const chart = h("div");
+    const weeks = {};
+    for (const d of days) {
+      const dt = new Date(d + "T12:00:00Z"); const wd = (dt.getUTCDay() + 6) % 7; dt.setUTCDate(dt.getUTCDate() - wd);
+      const wk = dt.toISOString().slice(0, 10); weeks[wk] = weeks[wk] || {};
+      for (const [m, c] of Object.entries(D.daily[d])) weeks[wk][m] = (weeks[wk][m] || 0) + c;
+    }
+    const models = Object.keys(S.by_model);
+    const tbl = (rows, label) => h("div", { class: "scroll" }, h("table", {},
+      h("thead", {}, h("tr", {}, h("th", { text: label }), models.map(m => h("th", { class: "num", text: m })), h("th", { class: "num", text: "Total" }))),
+      h("tbody", {}, Object.keys(rows).sort().reverse().map(k => h("tr", {}, h("td", { text: k }),
+        models.map(m => h("td", { class: "num", text: usd(rows[k][m] || 0, 0) })),
+        h("td", { class: "num", text: usd(Object.values(rows[k]).reduce((a, b) => a + b, 0), 0) }))))));
+    el.append(h("div", { class: "panel" }, h("h2", { text: "Cost per day" }), legend(), chart,
+      h("p", { class: "note", text: `The first day starts at midnight Eastern ${days[0]}; today is partial.` })));
+    el.append(h("div", { class: "panel" }, h("h2", { text: "Per week (weeks start Monday)" }), tbl(weeks, "Week of")));
+    el.append(h("div", { class: "panel" }, h("h2", { text: "Per day" }), tbl(D.daily, "Day")));
+    stackedBars(chart, days, d => D.daily[d], 240);
+  };
+
+  BUILD.top = el => {
+    const top = D.sessions.slice(0, 10);
+    el.append(h("div", { class: "panel" }, h("h2", { text: "Top 10 sessions" }),
+      h("div", { class: "scroll" }, h("table", {}, h("tbody", {}, top.map((s, i) => h("tr", { class: "click", onclick: () => openReplay(s) },
+        h("td", { class: "num", text: String(i + 1) }), h("td", { class: "title" }, h("div", { text: s.title }), h("div", { class: "sub", text: `${s.project} · ${mixText(s)} · ${s.turns.toLocaleString()} turns` })),
+        h("td", { class: "num", text: usd(s.cost) }), h("td", { class: "num", text: Math.round(100 * s.cost / S.total) + "%" }))))))));
+    el.append(h("div", { class: "panel" }, h("h2", { text: "Scheduled tasks" }),
+      h("p", { class: "note", text: "Every run of a scheduled task is its own session; this adds them up per task." }),
+      h("div", { class: "scroll" }, h("table", {}, h("thead", {}, h("tr", {}, h("th", { text: "Task" }), h("th", { class: "num", text: "Runs" }), h("th", { class: "num", text: "Cost" }), h("th", { class: "num", text: "Per run" }))),
+        h("tbody", {}, D.scheduled.slice(0, 15).map(g => h("tr", {}, h("td", { text: g.task }), h("td", { class: "num", text: String(g.runs) }), h("td", { class: "num", text: usd(g.cost) }), h("td", { class: "num", text: usd(g.cost / g.runs) }))))))));
+    const origins = Object.entries(S.by_origin);
+    el.append(h("div", { class: "panel" }, h("h2", { text: "What started each turn" }),
+      h("p", { class: "note", text: "Each API call is credited to the message that began its turn: Ben, a subagent, a scheduled task, another session, or an app event." }),
+      h("div", { class: "scroll" }, h("table", {}, h("tbody", {}, origins.map(([o, c]) => h("tr", {}, h("td", { text: olabel(o) }), h("td", { class: "num", text: usd(c, 0) }), h("td", { class: "num", text: Math.round(100 * c / S.total) + "%" }))))))));
+  };
+
+  BUILD.tree = el => {
+    const nodes = Object.fromEntries(D.tree.map(n => [n.key, { ...n, kids: [] }]));
+    for (const n of Object.values(nodes)) if (n.parent && nodes[n.parent]) nodes[n.parent].kids.push(n);
+    const sub = (n, seen) => { if (seen.has(n.key)) return 0; seen.add(n.key); n.total = n.cost + n.kids.reduce((a, k) => a + sub(k, seen), 0); return n.total; };
+    const roots = Object.values(nodes).filter(n => !n.parent && n.kids.length);
+    roots.forEach(r => sub(r, new Set()));
+    roots.sort((a, b) => b.total - a.total);
+    const render = (n, depth) => h("li", {}, h("div", { class: "node" }, h("span", { text: n.title }),
+        h("span", { class: "c", text: n.kids.length ? `own ${usd(n.cost)} · with ${countKids(n)} started ${usd(n.total)}` : usd(n.cost) })),
+      n.kids.length && depth < 6 ? h("ul", { class: "tree" }, n.kids.sort((a, b) => (b.total || b.cost) - (a.total || a.cost)).map(k => render(k, depth + 1))) : null);
+    const countKids = n => n.kids.reduce((a, k) => a + 1 + countKids(k), 0);
+    el.append(h("div", { class: "panel" }, h("h2", { text: "Sessions and the sessions they started" }),
+      h("p", { class: "note", text: "From the app's session records. A parent with no turns in the window shows at $0.00." }),
+      h("ul", { class: "tree root" }, roots.map(r => render(r, 0)))));
+  };
+
+  BUILD.models = el => {
+    const tm = S.tokens_by_model;
+    el.append(h("div", { class: "panel" }, h("h2", { text: "By model" }), h("div", { class: "scroll" }, h("table", {},
+      h("thead", {}, h("tr", {}, ["Model", "Turns", "Input", "Output", "Cache read", "Cache write", "Cost", "Share"].map((x, i) => h("th", { class: i ? "num" : null, text: x })))),
+      h("tbody", {}, Object.entries(S.by_model).map(([m, c]) => h("tr", {}, h("td", {}, h("span", { class: "legend" }, h("span", {}, h("i", { style: `background:${mcolor(m)}` }), m))),
+        ...[tm[m].turns.toLocaleString(), tok(tm[m].input), tok(tm[m].output), tok(tm[m].cache_read), tok(tm[m].cache_write), usd(c, 0), Math.round(100 * c / S.total) + "%"].map(x => h("td", { class: "num", text: x })))))))));
+    el.append(h("div", { class: "panel" }, h("h2", { text: "Where the money goes" }), h("div", { class: "scroll" }, h("table", {}, h("tbody", {},
+      Object.entries(S.by_kind).map(([k, c]) => h("tr", {}, h("td", { text: k.replace("_", " ") }), h("td", { class: "num", text: usd(c, 0) }), h("td", { class: "num", text: Math.round(100 * c / S.total) + "%" })))))),
+      h("p", { class: "note", text: "Cache reads are the context each call re-reads; cache writes are new context stored for an hour. Both grow with long sessions and many short turns." })));
+    const P = D.pricing.models;
+    el.append(h("div", { class: "panel" }, h("h2", { text: "Price table" }), h("p", { class: "note", text: D.pricing.source + " Checked " + D.pricing.checked + ". " + D.pricing.note }),
+      h("div", { class: "scroll" }, h("table", {}, h("thead", {}, h("tr", {}, ["Model id prefix", "Input", "Output", "Cache read", "5 min write", "1 h write"].map((x, i) => h("th", { class: i ? "num" : null, text: x })))),
+        h("tbody", {}, Object.entries(P).map(([m, r]) => h("tr", {}, h("td", { text: m }), ...[r.input, r.output, r.cache_read, r.cache_write_5m, r.cache_write_1h].map(v => h("td", { class: "num", text: "$" + v })))))))));
+    if (D.crosscheck) el.append(h("div", { class: "panel" }, h("h2", { text: "Cross-check" }), h("p", { class: "note", text:
+      `ECC's cost tracker, transcript by transcript: ours ${usd(D.crosscheck.ours, 0)} against its ${usd(D.crosscheck.ecc, 0)} over ${D.crosscheck.transcripts} transcripts (ratio ${D.crosscheck.ratio}). ECC prices one-hour cache writes at the five-minute rate, so a ratio a little above 1 is expected. Separately, ${usd(S.copied_history_usd, 0)} of responses appeared in more than one transcript (forks and resumes copy history) and are counted once here.` })));
+  };
+
+  BUILD.flags = el => {
+    const th = D.pricing.thresholds;
+    const group = (title, note, list, line) => el.append(h("div", { class: "panel" }, h("h2", { text: `${title} (${list.length})` }), h("p", { class: "note", text: note }),
+      list.length ? h("div", { class: "flaglist" }, list.map(s => h("div", { class: "row" }, h("a", { href: "#replay", onclick: e => { e.preventDefault(); openReplay(s); }, text: s.title }), h("span", { class: "sub", text: line(s) })))) : h("p", { class: "sub", text: "None in the window." })));
+    const has = f => D.sessions.filter(s => s.flags[f]);
+    group("Fable calls", "Any turn on a Fable or Mythos model. Ben's rule is no Fable calls.", has("fable"), s => `${s.flags.fable.turns} turns, ${usd(s.flags.fable.cost)}`);
+    group("Over the daily threshold", `A session that cost more than $${th.session_day_usd} in one Eastern day, subagents included.`, has("over_day"),
+      s => Object.entries(s.flags.over_day).map(([d, c]) => `${d.slice(5)} ${usd(c, 0)}`).join(" · "));
+    group("Runaway loops", `${th.loop_min_turns} or more consecutive turns under ${th.loop_max_output_tokens} output tokens within ${th.loop_window_minutes} minutes.`, has("loop"), s => `${s.flags.loop.episodes} episodes, ${usd(s.flags.loop.cost)}`);
+    group("Same call repeated", `The identical set of tool calls in ${th.repeat_tool_calls} or more turns in a row (often a polling wait).`, has("repeat"), s => `${s.flags.repeat} in a row`);
+    group("Woken by others", `More than ${Math.round(th.pinged_share * 100)}% of the session's cost came from turns another session or the app started (messages, side-session events, CI monitor), and at least ${usd(th.pinged_min_usd)}.`, has("pinged"), s => `${usd(s.flags.pinged.cost)} of ${usd(s.cost)}`);
+  };
+
+  BUILD.replay = el => {
+    const keys = Object.keys(D.replays).filter(k => byKey[k]).sort((a, b) => byKey[b].cost - byKey[a].cost);
+    const sel = h("select", { class: "ctl", id: "replay-pick", "aria-label": "Session to replay" }, keys.map(k => h("option", { value: k, text: `${usd(byKey[k].cost, 0)}  ${byKey[k].title}${Object.keys(byKey[k].flags).length ? "  (flagged)" : ""}` })));
+    const head = h("div"), spark = h("div"), body = h("div", { class: "scroll" });
+    el.append(h("div", { class: "panel" }, h("div", { class: "row" }, h("label", { for: "replay-pick", text: "Session" }), sel),
+      h("p", { class: "note", text: `Replays are kept for the ${keys.length} sessions that cost the most or carry a flag. Tool inputs are cut to a short preview, with secrets removed.` }), head, spark, body));
+    function select(k) {
+      sel.value = k; const R = D.replays[k], s = byKey[k];
+      head.replaceChildren(h("h2", { text: s.title }), h("div", { class: "sub", text: `${s.project} · ${usd(s.cost)} · ${s.turns.toLocaleString()} turns · ${when(s.first)} to ${when(s.last)} · ${s.errors} failed tool calls` }), h("div", {}, flagChips(s)));
+      // running cost line
+      const W = 600, H = 70; let acc = 0; const pts = R.turns.map((t, i) => [i, acc += t.c]);
+      const NS = "http://www.w3.org/2000/svg"; const svg = document.createElementNS(NS, "svg");
+      svg.setAttribute("viewBox", `0 0 ${W} ${H}`); svg.setAttribute("width", "100%"); svg.setAttribute("preserveAspectRatio", "none"); svg.setAttribute("height", "70");
+      const mx = Math.max(acc, 1e-9), n = Math.max(pts.length - 1, 1);
+      const d = pts.map(([i, v], j) => `${j ? "L" : "M"}${(i / n * W).toFixed(1)},${(H - 4 - v / mx * (H - 8)).toFixed(1)}`).join("");
+      const area = document.createElementNS(NS, "path"); area.setAttribute("d", d + `L${W},${H}L0,${H}Z`); area.setAttribute("fill", "var(--accent-soft)");
+      const line = document.createElementNS(NS, "path"); line.setAttribute("d", d); line.setAttribute("fill", "none"); line.setAttribute("stroke", "var(--accent)"); line.setAttribute("stroke-width", "2"); line.setAttribute("vector-effect", "non-scaling-stroke");
+      svg.append(area, line);
+      spark.replaceChildren(h("div", { class: "sub", text: `Running cost of the turns shown: ${usd(acc)}` }), svg);
+      let run = 0;
+      const rows = [];
+      R.turns.forEach((t, i) => {
+        if (R.omitted && i === R.head) rows.push(h("tr", {}, h("td", { colspan: "7", class: "sub", text: `${R.omitted.toLocaleString()} turns in the middle are not shown.` })));
+        run += t.c;
+        rows.push(h("tr", {},
+          h("td", { class: "num", text: new Date(t.t * 1000).toLocaleString("en-US", { ...tz, month: "numeric", day: "numeric", hour: "numeric", minute: "2-digit" }) }),
+          h("td", {}, h("div", { text: olabel(t.o) }), t.sub ? h("div", { class: "sub", text: "in subagent: " + t.sub }) : null),
+          h("td", { text: t.m }),
+          h("td", { class: "num", text: `${tok(t.out)} out` }), h("td", { class: "num", text: `${tok(t.cr + t.cw + t.in)} ctx` }),
+          h("td", { class: "num", text: usd(t.c, 3) }),
+          h("td", { class: "tools" }, t.tools.map(([n, x]) => h("div", {}, h("b", { text: n }), " " + x)), t.more ? h("div", { text: `+${t.more} more calls` }) : null,
+            t.err ? h("div", { class: "err", text: `${t.err} failed` }) : null, t.stop ? h("div", { class: "err", text: "stopped: " + t.stop }) : null)));
+      });
+      body.replaceChildren(h("table", {}, h("thead", {}, h("tr", {}, ["When", "Started by", "Model", "Output", "Context", "Cost", "Tool calls"].map((x, i) => h("th", { class: [3, 4, 5].includes(i) || i === 0 ? "num" : null, text: x })))), h("tbody", {}, rows)));
+    }
+    sel.addEventListener("change", () => select(sel.value));
+    REPLAY = { select };
+    if (keys.length) select(keys[0]);
+  };
+
+  $("#foot").textContent = `Built from Claude Code transcripts on Ben's Mac (read-only), ${D.scan.files.toLocaleString()} files, ${(D.scan.bytes / 1e9).toFixed(1)} GB. Private page. Refreshes nightly at 04:35 Eastern.`;
+
+  let start = (location.hash || "").slice(1);
+  if (!start) { try { start = localStorage.getItem("cc-tab") || ""; } catch (e) { start = ""; } }
+  show(start || "sessions");
+  window.addEventListener("hashchange", () => show(location.hash.slice(1)));
+})();
+</script>

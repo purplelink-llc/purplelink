@@ -1,0 +1,25 @@
+name: Cost console tests
+
+on:
+  push:
+    paths: ["scripts/cost_console/**", ".github/workflows/cost-console-tests.yml"]
+  pull_request:
+    paths: ["scripts/cost_console/**", ".github/workflows/cost-console-tests.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  cost-console:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: scripts/cost_console
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+      - run: pip install pytest==8.3.3
+      # Synthetic transcripts in tmp_path only; nothing reads a real ~/.claude.
+      - run: python -m pytest -q -p no:cacheprovider
