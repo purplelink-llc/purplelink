@@ -164,7 +164,7 @@ details summary { cursor: pointer; font-weight: 600; }
     if (!VIEWS.some(v => v[0] === id)) id = "sessions";
     for (const b of tabs.children) b.setAttribute("aria-selected", b.dataset.id === id ? "true" : "false");
     for (const v of views.children) v.hidden = v.dataset.id !== id;
-    if (!built[id]) { built[id] = true; BUILD[id](views.querySelector(`[data-id="${id}"]`)); }
+    if (!built[id]) { built[id] = true; buildView(id, views.querySelector(`[data-id="${id}"]`)); }
     try { localStorage.setItem("cc-tab", id); } catch (e) { /* storage blocked */ }
   }
   for (const [id, label] of VIEWS) {
@@ -211,6 +211,19 @@ details summary { cursor: pointer; font-weight: 600; }
 
   const BUILD = {};
   let REPLAY = null;
+  // An explicit switch rather than BUILD[id](): the id comes from the URL hash.
+  function buildView(id, el) {
+    switch (id) {
+      case "sessions": return BUILD.sessions(el);
+      case "days": return BUILD.days(el);
+      case "top": return BUILD.top(el);
+      case "tree": return BUILD.tree(el);
+      case "models": return BUILD.models(el);
+      case "flags": return BUILD.flags(el);
+      case "replay": return BUILD.replay(el);
+      default: return undefined;
+    }
+  }
 
   BUILD.sessions = el => {
     const q = h("input", { class: "ctl", type: "search", id: "sess-q", placeholder: "Filter by title or project", "aria-label": "Filter sessions" });
