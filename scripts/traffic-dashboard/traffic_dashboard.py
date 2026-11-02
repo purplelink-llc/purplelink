@@ -1438,13 +1438,19 @@ def fetch_modal_costs(days: int = COST_DAYS) -> dict | None:
 
 def fetch_api_usage() -> list[dict] | None:
     """Per-job Claude API cost from backend/app.py's paper-review-usage-ledger.
+    Read through the backend's DurableDict, so records the Dict has expired
+    (7 days idle) still come from the paper-review-durable Volume.
     Records with no model call (a job that failed before reaching Claude) are
     dropped: they cost nothing and would only pad the job counts."""
     modal = _modal_sdk()
     if modal is None:
         return None
     try:
-        d = modal.Dict.from_name("paper-review-usage-ledger")
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "backend"))
+        from latextools.durable_dict import DurableDict
+
+        d = DurableDict(modal.Dict.from_name("paper-review-usage-ledger"),
+                        modal.Volume.from_name("paper-review-durable"), "usage-ledger")
         rows = [v for _k, v in d.items()]
     except Exception as exc:  # noqa: BLE001
         print(f"  ! usage ledger unavailable: {str(exc)[:100]}", file=sys.stderr)
