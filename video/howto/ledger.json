@@ -359,5 +359,34 @@
    "ok": true,
    "utm_content": "howto-option-clash-for-package-hyperref-reel"
   }
+ },
+ {
+  "slug": "howto-xcode-simulators-taking-up-space",
+  "app": "legroom",
+  "date": "2026-11-02",
+  "title": "CoreSimulator folder taking up space on Mac (delete old Xcode simulators)",
+  "long_id": "8_ijlb_hbS8",
+  "short_id": "i4TwA7ONRGU",
+  "link_arm": "A",
+  "link_utm_content": "howto-xcode-simulators-taking-up-space",
+  "short_utm_content": "howto-xcode-simulators-taking-up-space-short",
+  "sources": [
+   "https://developer.apple.com/forums/thread/773153",
+   "https://developer.apple.com/forums/thread/758703"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "8_ijlb_hbS8",
+    "caption_id": "AUieDaZWU97QxUMeCT38gfOjIJk_SPSVVvipHlol6FEio6Ft9JPLJ-K8"
+   },
+   "short": {
+    "video_id": "i4TwA7ONRGU",
+    "caption_id": "AUieDabPv51fb1Hi6i5KpF-RzaeWMEOKMyH4351vlQOXGB1oEd-gKE68"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-xcode-simulators-taking-up-space-reel"
+  }
  }
 ]
