@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>PNG to ICNS Converter for Mac Icons | Purplelink</title>
+    <meta name="description" content="Turn a PNG into a macOS .icns icon with every size from 16 to 1024 pixels, in your browser. Optional .iconset folder for iconutil. Nothing is uploaded.">
+    <link rel="canonical" href="https://purplelink.llc/tools/png-to-icns/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="PNG to ICNS for Mac icons, in your browser">
+    <meta property="og:description" content="Turn a PNG into a macOS .icns icon with every size from 16 to 1024 pixels, in your browser. Optional .iconset folder for iconutil. Nothing is uploaded.">
+    <meta property="og:url" content="https://purplelink.llc/tools/png-to-icns/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/tools-png-to-icns.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PNG to ICNS for Mac icons, in your browser">
+    <meta name="twitter:description" content="Turn a PNG into a macOS .icns icon with every size from 16 to 1024 pixels, in your browser. Optional .iconset folder for iconutil. Nothing is uploaded.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/tools-png-to-icns.jpg">
+    <meta name="twitter:image:alt" content="PNG to ICNS for Mac icons, in your browser">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "PNG to ICNS Converter",
+      "url": "https://purplelink.llc/tools/png-to-icns/",
+      "description": "Turn a PNG into a macOS .icns icon with every size from 16 to 1024 pixels, in your browser. Optional .iconset folder for iconutil. Nothing is uploaded.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Any",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "featureList": [
+        "Make a macOS .icns file from a PNG, JPG or WebP",
+        "All ten icon entries, 16 to 1024 pixels, at 1x and 2x",
+        "Optional .iconset folder named for iconutil",
+        "Built in the browser; images are never uploaded"
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "How to convert PNG to ICNS",
+      "tool": [
+        {
+          "@type": "HowToTool",
+          "name": "A current web browser"
+        }
+      ],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Start from a square picture",
+          "text": "Use a PNG of 1024 by 1024 pixels with a transparent background. Smaller pictures work but look soft at the large sizes."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Add it",
+          "text": "Drop the picture on the box, or click it to choose it."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Download the .icns",
+          "text": "Download the file from its row. Tick Include an .iconset folder first if you want the separate PNGs too."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "name": "Use it",
+          "text": "In Finder, select a folder or app, choose File, Get Info, and drag the .icns file onto the small icon at the top left of the window."
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Are my files uploaded?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The page reads each picture with your browser and converts it in a background worker in this tab. There is no server step. The meter under the drop zone counts the bytes the page and its worker send while they work, so you can check this yourself. No library is downloaded; the browser draws the sizes and this page writes the file."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which sizes are in the file?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "16, 32, 128, 256 and 512 pixels at 1x, and the same five at 2x (32, 64, 256, 512 and 1024 pixels), the same ten pictures an .iconset folder holds. They are stored as the entries icp4, icp5, ic07, ic08 and ic09, then ic11, ic12, ic13, ic14 and ic10. Each is a PNG with transparency."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use it in an Xcode project?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Xcode builds the app icon from the PNGs in an asset catalog. Tick Include an .iconset folder and drag those PNGs into the AppIcon set. The .icns file itself is what an app built without Xcode, or a script, points to with CFBundleIconFile in Info.plist."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I change a folder's icon?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Select the folder in Finder and choose File, Get Info. Drag the .icns file onto the small icon at the top left of the Info window. To undo it, click that small icon and press Delete."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does my icon look blurry?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Most often the source picture was smaller than 1024 pixels, so the larger sizes were enlarged. The page warns when that happens. Very thin lines can also fade at 16 and 32 pixels, which is why designers simplify the small sizes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. There is no account and no watermark."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "https://purplelink.llc/tools/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "PNG to ICNS",
+          "item": "https://purplelink.llc/tools/png-to-icns/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png?v=21c86cc2a8" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=f0ab0f06a1"></script>
+    <link rel="stylesheet" href="/styles.css?v=7af9c23b4f">
+    <link rel="stylesheet" href="/motion.css?v=35524918f9">
+    <script src="/site.js?v=1ae55e2fde" defer></script>
+    <script src="/motion.js?v=d35f4b4ee4" defer></script>
+    <script src="/assets/vendor/jszip/jszip.min.js?v=7f839b2d46" defer></script>
+    <link rel="stylesheet" href="/tools/convert/convert.css?v=e1d3c8e967">
+    <link rel="prefetch" as="script" data-convert-worker href="/tools/convert/convert-worker.js?v=b5fdead701">
+    <script src="/tools/convert/convert-core.js?v=6e724118eb" defer></script>
+    <script src="/tools/convert/convert-shell.js?v=0115aafd54" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg?v=2f8bd49b19" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">← All tools</a>
+      <div class="tools-hero">
+        <p class="eyebrow">Free web tool</p>
+        <h1>PNG to ICNS</h1>
+        <p>Turn a PNG, JPG or WebP into a macOS .icns file with the ten icon entries Finder and the Dock use, from 16 to 1024 pixels. The file is built in your browser. Start from a square picture of 1024 by 1024 pixels for a sharp icon. <strong>Nothing is uploaded.</strong></p>
+      </div>
+
+      <div class="tool-app cv-app" data-convert="png-to-icns">
+        <input id="cv-file" class="sr-only cv-file" type="file" multiple accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
+        <label class="cv-drop" id="cv-drop" for="cv-file">
+          <svg class="cv-drop-icon" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true" focusable="false"><rect x="6" y="9" width="36" height="30" rx="3" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M24 31V18m-6 6 6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="cv-drop-label"><strong>Drop a PNG here</strong></span>
+          <span class="btn btn-primary cv-small cv-drop-button">Choose files</span>
+          <span class="cv-hint">PNG, JPG or WebP, ideally square and 1024 pixels wide. You can also paste an image.</span>
+        </label>
+        <fieldset class="cv-opts">
+          <legend>Options</legend>
+          <label class="cv-field"><input type="checkbox" id="cv-iconset"> Include an .iconset folder of PNGs</label>
+        </fieldset>
+        <p class="cv-net" id="cv-net"><span class="cv-net-dot" aria-hidden="true"></span><span id="cv-net-text">Bytes of your files sent anywhere: 0</span></p>
+        <p class="cv-status" id="cv-status" role="status" aria-live="polite"></p>
+        <ul class="cv-list" id="cv-list" aria-label="Files"></ul>
+        <div class="cv-bar" id="cv-bar" hidden>
+          <button type="button" class="btn btn-primary" id="cv-all" hidden>Download all as .zip</button>
+          <button type="button" class="btn btn-ghost" id="cv-clear">Clear</button>
+        </div>
+        <p class="tool-privacy">Files are read and converted in this tab, in a background worker. The only requests the page makes are for its own scripts. Your files are never sent anywhere.</p>
+      </div>
+
+      <section class="tool-prose cv-how" aria-labelledby="cv-how-h">
+        <h2 id="cv-how-h">How it works</h2>
+        <p>An .icns file is a container: a short header, then one PNG for each icon size and pixel density. Finder picks the one that fits, from 16 pixels in a list view to 1024 pixels on a Retina screen.</p>
+        <p>This page draws each size from your picture, halving it step by step so the small sizes stay clean, and writes the container byte by byte. It then reads the file back and checks every entry before it offers the download.</p>
+        <p>Tick Include an .iconset folder to also get the PNGs named the way Apple&#x27;s iconutil expects, from icon_16x16.png to icon_512x512@2x.png. Running iconutil -c icns on that folder builds the same kind of file on your own Mac.</p>
+      </section>
+
+      <section class="tool-howto">
+        <h2>How to convert PNG to ICNS</h2>
+        <ol>
+          <li><strong>Start from a square picture.</strong> Use a PNG of 1024 by 1024 pixels with a transparent background. Smaller pictures work but look soft at the large sizes.</li>
+          <li><strong>Add it.</strong> Drop the picture on the box, or click it to choose it.</li>
+          <li><strong>Download the .icns.</strong> Download the file from its row. Tick Include an .iconset folder first if you want the separate PNGs too.</li>
+          <li><strong>Use it.</strong> In Finder, select a folder or app, choose File, Get Info, and drag the .icns file onto the small icon at the top left of the window.</li>
+        </ol>
+      </section>
+
+      <section class="tool-prose" aria-labelledby="cv-limits-h">
+        <h2 id="cv-limits-h">Limits</h2>
+        <ul class="cv-limits">
+          <li>A picture that is not square is centered, with transparent space around it.</li>
+          <li>Every size is drawn from the same picture. Icon designers often redraw 16 and 32 pixels by hand so they read at that size.</li>
+          <li>SVG is not accepted. Export a 1024 pixel PNG from your drawing app first.</li>
+          <li>macOS 10.8 and later read all ten entry types.</li>
+          <li>Needs Chrome or Edge 69, Firefox 105 or Safari 16.4, or later.</li>
+        </ul>
+      </section>
+
+      <section class="tool-faq">
+        <h2>Questions</h2>
+        <details><summary>Are my files uploaded?</summary><div class="faq-body">No. The page reads each picture with your browser and converts it in a background worker in this tab. There is no server step. The meter under the drop zone counts the bytes the page and its worker send while they work, so you can check this yourself. No library is downloaded; the browser draws the sizes and this page writes the file.</div></details>
+        <details><summary>Which sizes are in the file?</summary><div class="faq-body">16, 32, 128, 256 and 512 pixels at 1x, and the same five at 2x (32, 64, 256, 512 and 1024 pixels), the same ten pictures an .iconset folder holds. They are stored as the entries icp4, icp5, ic07, ic08 and ic09, then ic11, ic12, ic13, ic14 and ic10. Each is a PNG with transparency.</div></details>
+        <details><summary>Can I use it in an Xcode project?</summary><div class="faq-body">Xcode builds the app icon from the PNGs in an asset catalog. Tick Include an .iconset folder and drag those PNGs into the AppIcon set. The .icns file itself is what an app built without Xcode, or a script, points to with CFBundleIconFile in Info.plist.</div></details>
+        <details><summary>How do I change a folder&#x27;s icon?</summary><div class="faq-body">Select the folder in Finder and choose File, Get Info. Drag the .icns file onto the small icon at the top left of the Info window. To undo it, click that small icon and press Delete.</div></details>
+        <details><summary>Why does my icon look blurry?</summary><div class="faq-body">Most often the source picture was smaller than 1024 pixels, so the larger sizes were enlarged. The page warns when that happens. Very thin lines can also fade at 16 and 32 pixels, which is why designers simplify the small sizes.</div></details>
+        <details><summary>Is it free?</summary><div class="faq-body">Yes. There is no account and no watermark.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools">
+        <h2>More free tools</h2>
+        <ul>
+          <li><a href="/tools/heic-to-jpg/">HEIC to JPG</a></li>
+          <li><a href="/tools/webp-to-png/">WebP to PNG</a></li>
+          <li><a href="/tools/metadata-cleaner/">Metadata Cleaner</a></li>
+          <li><a href="/tools/">All tools</a></li>
+        </ul>
+      </nav>
+
+      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a>. It helps keep these tools free and online.</p>
+    </main>
+
+
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg?v=2f8bd49b19" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/suite/">Mac Suite</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+    <script src="/analytics.js?v=1204a8102f" defer></script>
+  </body>
+</html>

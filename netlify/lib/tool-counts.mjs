@@ -15,10 +15,10 @@
 
 export const TOOL_SLUGS = [
   "abstract-checker", "academic-email-signature", "anonymity-check", "bib-builder", "bib-validator", "camera-ready-checker", "citation-gap",
-  "citation-generator", "cover-letter", "equation-renderer", "file-to-markdown", "latex-diff", "latex-table-generator",
+  "citation-generator", "cover-letter", "equation-renderer", "file-to-markdown", "heic-to-jpg", "latex-diff", "latex-table-generator",
   "latex-to-pdf", "latex-to-word", "markdown-to-pdf", "metadata-cleaner", "paper-review", "pdf-structure", "pdf-tools", "pii-checker",
-  "reference-converter", "reproducibility-checker", "response-letter-template", "response-review", "resume-review",
-  "retraction-check", "stock-keyword-cleaner", "submission-checklist", "thesis-format-checker", "transcript-cleaner", "word-counter", "word-to-latex",
+  "png-to-icns", "reference-converter", "reproducibility-checker", "response-letter-template", "response-review", "resume-review",
+  "retraction-check", "stock-keyword-cleaner", "submission-checklist", "thesis-format-checker", "transcript-cleaner", "webp-to-png", "word-counter", "word-to-latex",
 ];
 export const OUTCOMES = ["ok", "error", "limit"];
 export const OFFER_APPS = ["moderntex", "tapefolio", "outbound-veil", "vitae"];
