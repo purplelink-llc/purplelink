@@ -10,6 +10,7 @@ import modal
 logger = logging.getLogger(__name__)
 
 from latextools import core
+from latextools.durable_dict import DurableDict
 from latextools.safe_exec import minimal_env, run_pandoc_plain, run_pandoc_sandboxed
 
 # Pandoc Lua filter: replace every image with its alt text (or nothing), so no
@@ -107,7 +108,20 @@ rate_dict = modal.Dict.from_name("latextools-rate", create_if_missing=True)
 #   paper_token_index_dict[token]       = session_id (reverse index so token
 #                                          lookups are O(1) instead of a full
 #                                          scan of paper_tokens_dict)
-paper_tokens_dict = modal.Dict.from_name("paper-review-tokens", create_if_missing=True)
+# Records that must outlive modal.Dict's 7-day inactivity expiry (packs,
+# unsubscribes, referral codes) also get a copy on this Volume; see
+# latextools/durable_dict.py.
+durable_volume = modal.Volume.from_name("paper-review-durable", create_if_missing=True)
+
+
+def _is_volume_pack(entry) -> bool:
+    return isinstance(entry, dict) and not entry.get("expires_at")
+
+
+paper_tokens_dict = DurableDict(
+    modal.Dict.from_name("paper-review-tokens", create_if_missing=True),
+    durable_volume, "paper-tokens", keep=_is_volume_pack,
+)
 paper_jobs_dict = modal.Dict.from_name("paper-review-jobs", create_if_missing=True)
 paper_token_claims_dict = modal.Dict.from_name("paper-review-token-claims", create_if_missing=True)
 paper_token_index_dict = modal.Dict.from_name("paper-review-token-index", create_if_missing=True)
@@ -131,7 +145,10 @@ usage_ledger_dict = modal.Dict.from_name("paper-review-usage-ledger", create_if_
 #   }
 #   lifecycle_optout_dict[email] = True   # written by /lifecycle/unsubscribe
 customer_lifecycle_dict = modal.Dict.from_name("paper-review-lifecycle", create_if_missing=True)
-lifecycle_optout_dict = modal.Dict.from_name("paper-review-lifecycle-optout", create_if_missing=True)
+lifecycle_optout_dict = DurableDict(
+    modal.Dict.from_name("paper-review-lifecycle-optout", create_if_missing=True),
+    durable_volume, "lifecycle-optout",
+)
 
 
 # Where each single-use tool's buyer uploads (mirrors successPath in
@@ -195,7 +212,10 @@ def _email_key(email: str) -> str:
 # purchaser's email; codes only become live once that purchaser's own
 # review completes (see paper_review_pipeline._run), since you can't share
 # a code from a report you don't have yet.
-referral_dict = modal.Dict.from_name("paper-review-referral", create_if_missing=True)
+referral_dict = DurableDict(
+    modal.Dict.from_name("paper-review-referral", create_if_missing=True),
+    durable_volume, "referral",
+)
 
 # Customer feedback from the /feedback/ page (linked from the review-request
 # email and the status page): a rating, an optional comment, and permission
@@ -4049,8 +4069,9 @@ def web():
 # `lifecycle_email_sweep` cron so all three paper-review cleanup jobs share one
 # scheduled slot (Modal's 5-scheduled-function cap). Tests call it directly.
 # Unused volume-pack tokens never expire, but modal.Dict evicts an entry that
-# goes unread and unwritten for about 7 days (see _expire_token_entry). Writing
-# the entry back once a day from the sweep keeps an idle pack from vanishing.
+# goes unread and unwritten for 7 days. A pack's durable copy on the Volume
+# (paper_tokens_dict is a DurableDict) is what keeps it; writing the entry back
+# once a day from the sweep also refreshes its token index entries.
 # A pack whose tokens are all used is deleted once it is PACK_SPENT_RETENTION_DAYS
 # old, so the buyer's email isn't kept forever.
 PACK_SPENT_RETENTION_DAYS = 30
@@ -4428,6 +4449,12 @@ def lifecycle_email_sweep() -> dict:
                     purged_tokens, purged_jobs)
     except Exception as exc:
         logger.warning("paper-review housekeeping sweeps failed: %s", exc)
+    try:
+        copied = sum(store.backfill() for store in (lifecycle_optout_dict, referral_dict, paper_tokens_dict))
+        if copied:
+            logger.info("durable backfill: copied %s records to the volume", copied)
+    except Exception:
+        logger.exception("durable backfill failed")
 
     now = _time.time()
     sent = {"tips": 0, "review_request": 0, "winback": 0}
