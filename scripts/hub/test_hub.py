@@ -13,6 +13,21 @@ os.environ.update({
 spec = importlib.util.spec_from_file_location("hub", Path(__file__).with_name("hub.py"))
 hub = importlib.util.module_from_spec(spec); spec.loader.exec_module(hub)
 
+# The fixtures are dated around 2026-10-23 (the funnel's asOf). hub.py reads dt.date.today(), so without a fixed "today"
+# the 2026-10-01 outreach row turned no-response once it was 28 days old (2026-10-30) and two tests began to fail.
+import datetime as _dt
+import types as _types
+
+
+class _FixedDate(_dt.date):
+    @classmethod
+    def today(cls):
+        return cls(2026, 10, 23)
+
+
+hub.dt = _types.SimpleNamespace(**{k: getattr(_dt, k) for k in dir(_dt) if not k.startswith("_")})
+hub.dt.date = _FixedDate
+
 
 def put(rel, text):
     p = tmp / rel
@@ -182,6 +197,15 @@ def test_all():
     # rebuild is idempotent
     run("import")
     assert db().execute("SELECT count(*) FROM placements").fetchone()[0] == len(ids)
+
+
+def test_send_to_mac_trial_keys():
+    # "<app>-s2m" is a real trial after a Send to my Mac email; "<app>-not-mac" downloaded nothing.
+    t = {"moderntex": 3, "moderntex-s2m": 2, "moderntex-not-mac": 7, "legroom": 1}
+    assert hub.trial_count(t, "moderntex") == 5
+    assert hub.trial_count(t, "legroom") == 1
+    assert hub.trial_count(None, "moderntex") == 0
+    assert hub.trial_total(t) == 6
 
 
 def test_sources_untouched():
