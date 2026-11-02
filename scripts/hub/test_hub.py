@@ -13,6 +13,21 @@ os.environ.update({
 spec = importlib.util.spec_from_file_location("hub", Path(__file__).with_name("hub.py"))
 hub = importlib.util.module_from_spec(spec); spec.loader.exec_module(hub)
 
+# The fixtures are dated around 2026-10-23 (the funnel's asOf). hub.py reads dt.date.today(), so without a fixed "today"
+# the 2026-10-01 outreach row turned no-response once it was 28 days old (2026-10-30) and two tests began to fail.
+import datetime as _dt
+import types as _types
+
+
+class _FixedDate(_dt.date):
+    @classmethod
+    def today(cls):
+        return cls(2026, 10, 23)
+
+
+hub.dt = _types.SimpleNamespace(**{k: getattr(_dt, k) for k in dir(_dt) if not k.startswith("_")})
+hub.dt.date = _FixedDate
+
 
 def put(rel, text):
     p = tmp / rel
