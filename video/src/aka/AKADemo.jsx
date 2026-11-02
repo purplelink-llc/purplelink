@@ -3,9 +3,9 @@ import { AbsoluteFill, Img, Sequence, staticFile, useCurrentFrame, interpolate }
 import { brand, clamp01, expoOut, lerp, FONT_DISPLAY, FONT_BODY } from "../theme.js";
 import { useFonts } from "../V2.jsx";
 
-// Silent 24-second demo of Formring for the product page: a title card, the ring over a photo, the PDF ring, the
+// Silent 24-second demo of AKA for the product page: a title card, the ring over a photo, the PDF ring, the
 // video ring, the menu-bar window with its history, and a closing line. Built only from the app's own screenshots
-// (video/assets/formring/, copied from the Formring repo's docs/screenshots). Every scene carries its own caption
+// (video/assets/aka/, copied from the AKA repo's docs/screenshots). Every scene carries its own caption
 // as burned-in text, since the video has no sound. 1920 x 1080, 30 fps.
 
 const FPS = brand.fps;
@@ -57,7 +57,7 @@ function Shot({ file, size, right = 150, top = (1080 - size) / 2, scaleFrom = 0.
   const frame = useCurrentFrame();
   const p = expoOut(clamp01(frame / 26));
   return (
-    <Img src={staticFile(`formring/${file}`)} style={{
+    <Img src={staticFile(`aka/${file}`)} style={{
       position: "absolute", right, top, width: size, height: size === 0 ? "auto" : undefined,
       borderRadius: 28, boxShadow: "0 30px 80px rgba(0,0,0,0.45)", opacity: p, transform: `scale(${lerp(scaleFrom, 1, p)})`,
     }} />
@@ -70,8 +70,8 @@ function Title() {
   const q = expoOut(clamp01((frame - 14) / 28));
   return (
     <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
-      <Img src={staticFile("formring/icon.png")} style={{ width: 300, height: 300, opacity: p, transform: `scale(${lerp(0.9, 1, p)})` }} />
-      <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 132, color: INK, marginTop: 10, opacity: q }}>Formring</div>
+      <Img src={staticFile("aka/icon.png")} style={{ width: 300, height: 300, opacity: p, transform: `scale(${lerp(0.9, 1, p)})` }} />
+      <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 132, color: INK, marginTop: 10, opacity: q }}>AKA</div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 44, color: MUTED, marginTop: 14, opacity: q }}>Convert files from a ring at the pointer</div>
     </AbsoluteFill>
   );
@@ -137,7 +137,7 @@ function History() {
   const H = 880, W = Math.round(H * 680 / 812);
   return (
     <>
-      <Img src={staticFile("formring/menu-bar.png")} style={{
+      <Img src={staticFile("aka/menu-bar.png")} style={{
         position: "absolute", right: 210, top: (1080 - H) / 2, width: W, height: H, borderRadius: 24,
         boxShadow: "0 30px 80px rgba(0,0,0,0.45)", opacity: p, transform: `scale(${lerp(0.94, 1, p)})`,
       }} />
@@ -158,7 +158,7 @@ function End() {
   );
 }
 
-export function FormringDemo() {
+export function AKADemo() {
   useFonts();
   const scenes = [["title", Title], ["photo", Photo], ["pdf", Pdf], ["video", Video], ["history", History], ["end", End]];
   return (
