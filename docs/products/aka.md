@@ -7,7 +7,7 @@ every claim on the page. Name: AKA, slug `aka`, page `/aka/`, success page `/aka
 
 AKA is a macOS 14+ app (universal binary, Apple silicon and Intel) that converts files from a ring of actions at the pointer:
 hold Option while dragging files, drop them on a slice, and the result is saved next to the original. The same actions are in the
-menu-bar item, the Dock icon and Finder's Services menu. 50 actions: images, PDFs, video, audio, transcription, documents, Markdown,
+menu-bar item, the Dock icon and Finder's Services menu. 51 actions: images, PDFs, video, audio, transcription, documents, Markdown,
 fonts, archives. History with Undo (moves results to the Trash). Everything runs on the Mac with Apple frameworks; the only network
 use is the Sparkle update check. Sold at **$14.99 once**, USD, one DMG that runs free for 7 days from first launch and then needs a
 license key (the ring still opens after the trial; running an action asks for a key; History and Undo keep working). One key works

@@ -151,7 +151,7 @@ function End() {
   const p = expoOut(clamp01(frame / 26));
   return (
     <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column", opacity: p }}>
-      <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 96, color: INK }}>50 actions, all on your Mac</div>
+      <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 96, color: INK }}>51 actions, all on your Mac</div>
       <div style={{ fontFamily: FONT_BODY, fontSize: 42, color: MUTED, marginTop: 22 }}>Images, PDFs, video, audio, documents, fonts and archives. Nothing is uploaded.</div>
       <div style={{ width: 120, height: 6, borderRadius: 3, background: ACCENT, marginTop: 40 }} />
     </AbsoluteFill>
