@@ -77,16 +77,21 @@
   // ---- links (section 4) --------------------------------------------------------------------------------------
   function loadAllowed() {
     fetch(BASE + "links.json").then(function (r) { return r.ok ? r.json() : []; })
-      .then(function (list) { allowed = new Set(Array.isArray(list) ? list : []); })
-      .catch(function () { allowed = new Set(); });
+      .then(function (list) {
+        allowed = new Map();
+        (Array.isArray(list) ? list : []).forEach(function (p) {
+          if (typeof p === "string" && /^\/[a-z0-9\/._-]*$/i.test(p)) allowed.set(p, p);
+        });
+      })
+      .catch(function () { allowed = new Map(); });
   }
+  // The href is always the allow-list's own string (from links.json), never text from the model.
   function safeLink(raw) {
     var u;
     try { u = new URL(raw); } catch (e) { return null; }
     if (u.protocol !== "https:" || u.hostname !== "purplelink.llc" || u.search || u.username || u.password) return null;
-    var path = u.pathname.replace(/\/?$/, "/");
-    if (!allowed || !(allowed.has(path) || (MOCK && allowed.size === 0))) return null;
-    return { href: path + u.hash, label: "purplelink.llc" + path };
+    var listed = allowed && allowed.get(u.pathname.replace(/\/?$/, "/"));
+    return listed ? { href: listed, label: "purplelink.llc" + listed } : null;
   }
   function renderText(node, text) {
     var re = /https:\/\/purplelink\.llc[^\s<>"')\]]*/g, last = 0, m;
