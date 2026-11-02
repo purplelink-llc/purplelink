@@ -22,14 +22,14 @@
 .cv-hint { margin: 0; color: var(--muted); font-size: 0.9rem; max-width: 56ch; }
 
 /* options */
-.cv-opts { display: flex; flex-wrap: wrap; gap: 10px 26px; align-items: center; border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; background: var(--panel); margin: 0; }
+.cv-opts { min-width: 0; display: flex; flex-wrap: wrap; gap: 10px 26px; align-items: center; border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px; background: var(--panel); margin: 0; }
 .cv-opts legend { padding: 0 6px; font-weight: 600; font-size: 0.95rem; }
 .cv-choice { display: inline-flex; gap: 6px; flex-wrap: wrap; }
 .cv-choice label { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; cursor: pointer; font-size: 0.95rem; }
 .cv-choice label:has(input:checked) { border-color: var(--purple); background: color-mix(in oklch, var(--purple) 16%, var(--panel)); }
 .cv-choice label:has(input:focus-visible) { outline: 2px solid var(--purple); outline-offset: 2px; }
 .cv-choice input { accent-color: var(--purple); width: 16px; height: 16px; margin: 0; }
-.cv-field { display: inline-flex; align-items: center; gap: 10px; font-size: 0.95rem; min-height: 40px; }
+.cv-field { display: inline-flex; flex-wrap: wrap; max-width: 100%; align-items: center; gap: 10px; font-size: 0.95rem; min-height: 40px; }
 .cv-field input[type="range"] { accent-color: var(--purple); width: 9rem; }
 .cv-field input[type="color"] { width: 44px; height: 32px; padding: 0 2px; border: 1px solid var(--line); border-radius: 7px; background: var(--bg); cursor: pointer; }
 .cv-field input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--purple); }
@@ -73,3 +73,7 @@
 @media (prefers-reduced-motion: reduce) {
   .cv-drop { transition: none; }
 }
+
+/* selects (CSV separator and encoding) */
+.cv-field select { max-width: 100%; min-width: 0; min-height: 40px; padding: 0 34px 0 12px; border: 1px solid var(--line); border-radius: 999px; background-color: var(--bg); color: var(--ink); font: inherit; font-size: 0.95rem; cursor: pointer; }
+.cv-field select:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
