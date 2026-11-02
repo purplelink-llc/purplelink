@@ -15,7 +15,6 @@
   var busy = false;
   var formTs = "";
   var allowed = null;
-  var convo = (crypto.randomUUID && crypto.randomUUID()) || String(Date.now()) + Math.random().toString(16).slice(2);
 
   function track(type, meta) { try { if (window.plTrack) window.plTrack(type, meta || ""); } catch (e) {} }
 
@@ -171,7 +170,8 @@
     var wait = say("wait", "Buddy is thinking");
     wait.className = "bc-msg bc-msg--buddy bc-msg--wait";
     mood("thinking");
-    post("/buddy/chat", { conversation_id: convo, turns: turns.slice(-8) })
+    (sessionReady || Promise.resolve())
+      .then(function () { return post("/buddy/chat", { session: session, turns: turns.slice(-8) }); })
       .then(function (res) { return res && res.reply ? res.reply : "Something went wrong. You can write to Ben instead."; })
       .catch(function () { return "I could not reach the server. You can write to Ben instead."; })
       .then(function (reply) {
@@ -206,7 +206,7 @@
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) { email.focus(); return; }
       go.disabled = true;
       track("free_check_requested");
-      post("/buddy/free-check", { email: email.value.trim(), website: hp.value, form_ts: formTs })
+      post("/buddy/free-check", { email: email.value.trim(), website: hp.value, form_ts: formTs, session: session })
         .then(function (res) {
           f.remove();
           say("buddy", (res && res.message) || "Check your inbox for the upload link. It works for 3 days.");
@@ -294,15 +294,54 @@
     fetchStatus();
   }
 
-  function fetchStatus() {
-    if (MOCK) { formTs = "mock"; return; }
-    post("/buddy/status", {}).then(function (s) {
+  // ---- session: a small proof-of-work puzzle, solved once per chat (design doc, "Guard rails, second pass") ----
+  var session = "";
+  var sessionReady = null;
+
+  function leadingZeroBits(bytes) {
+    var n = 0;
+    for (var i = 0; i < bytes.length; i++) {
+      if (bytes[i] === 0) { n += 8; continue; }
+      for (var b = 7; b >= 0 && !(bytes[i] >> b & 1); b--) n++;
+      break;
+    }
+    return n;
+  }
+  function solve(challenge, bits) {
+    var enc = new TextEncoder();
+    var i = 0;
+    function batch() {
+      var tries = [];
+      for (var k = 0; k < 256; k++, i++) tries.push(String(i));
+      return Promise.all(tries.map(function (nonce) {
+        return crypto.subtle.digest("SHA-256", enc.encode(challenge + ":" + nonce)).then(function (d) {
+          return leadingZeroBits(new Uint8Array(d)) >= bits ? nonce : null;
+        });
+      })).then(function (found) {
+        var hit = found.filter(Boolean)[0];
+        return hit != null ? hit : i < 4000000 ? batch() : Promise.reject();
+      });
+    }
+    return batch();
+  }
+  function getSession() {
+    if (MOCK) { formTs = "mock"; session = "mock"; return Promise.resolve(); }
+    return post("/buddy/status", {}).then(function (s) {
       formTs = s.form_ts || "";
-      if (s.enabled === false) {
-        input.disabled = true; sendBtn.disabled = true;
-        say("buddy", "The chat is off for today. You can write to Ben instead.");
-      }
-    }).catch(function () {});
+      if (s.enabled === false || !s.challenge) throw "off";
+      return solve(s.challenge, s.bits || 16).then(function (nonce) {
+        return post("/buddy/session", { challenge: s.challenge, nonce: nonce });
+      });
+    }).then(function (r) {
+      if (!r || !r.session) throw "off";
+      session = r.session;
+    });
+  }
+  function fetchStatus() {
+    sessionReady = getSession().catch(function () {
+      input.disabled = true; sendBtn.disabled = true;
+      say("buddy", "The chat is off for today. You can write to Ben instead.");
+    });
   }
 
   function show() {
