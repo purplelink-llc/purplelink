@@ -152,7 +152,7 @@ test("the Suite's separate prices are the real ones, and the first-year total ad
     assert.ok(html.includes(row), row);
   }
   // 19.99 + 29.99 + 9.99 + 9.99 + 29.99 + 9.99 + 9.99 + 14.99 + 24 = 158.92 (158.91 with Vitae Plus at its listed $23.99); the page rounds to $159.
-  assert.match(html, /suite-sum-amount">\$159</);
+  assert.match(html, /<del class="suite-sum-amount"><span class="visually-hidden">Regular price <\/span>\$159\+<\/del>/);
 });
 
 test("the Suite's first-year total is the sum of the prices listed beside it, rounded to whole dollars", () => {
@@ -161,12 +161,16 @@ test("the Suite's first-year total is the sum of the prices listed beside it, ro
   assert.equal(rows.length, 9);
   const sumCents = rows.reduce((a, b) => a + b, 0);
   assert.equal(sumCents, 15891, "the listed prices sum to $158.91");
-  const shown = html.match(/suite-sum-amount">\$(\d+)</)[1];
+  const shown = html.match(/suite-sum-amount"><span class="visually-hidden">Regular price <\/span>\$(\d+)\+</)[1];
   assert.equal(Number(shown), Math.round(sumCents / 100));
   // Counting Vitae Plus at a round $24, as the pricing notes always have, gives $143.93 and the same rounded figure.
   assert.equal(Math.round((sumCents - 2399 + 2400) / 100), Number(shown));
   // Tapefolio joining did not move the Suite's price.
   assert.match(html, /<span class="suite-deal-amount">\$59\.99<\/span>/);
+  // "Save N%" is the true saving against the listed prices, rounded down so it never overstates it.
+  const pct = Math.floor(((sumCents - 5999) / sumCents) * 100);
+  assert.match(html, new RegExp(`<p class="suite-save">Save ${pct}%</p>`));
+  assert.equal(pct, 62);
 });
 
 test("the Terms, llms.txt and the products page carry the $59.99 Suite", () => {
