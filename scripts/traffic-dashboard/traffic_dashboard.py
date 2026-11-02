@@ -144,7 +144,7 @@ SITES = [
                         ("kfTrialDownloads", "Keyfeel trial downloads"),
                         ("tfTrialDownloads", "Tapefolio trial downloads"),
                         ("lcbTrialDownloads", "Lenscrib trial downloads"),
-                        ("frTrialDownloads", "Formring trial downloads"),
+                        ("akaTrialDownloads", "AKA trial downloads"),
                         ("pnTrialDownloads", "Panely trial downloads"),
                         ("smTrialDownloads", "Summonly trial downloads"),
                         ("vitaeDownloads", "Vitae downloads"),
@@ -189,8 +189,8 @@ SITES = [
             "/tapefolio/",
             # Lenscrib: buy button (pr-checkout-btn, data-product="lenscrib").
             "/lenscrib/",
-            # Formring: buy button (pr-checkout-btn, data-product="formring"). Hidden until launch, so no views yet.
-            "/formring/",
+            # AKA: buy button (pr-checkout-btn, data-product="aka"). Hidden until launch, so no views yet.
+            "/aka/",
             # Panely and Summonly: buy buttons (pr-checkout-btn, data-product="panely" and "summonly").
             "/panely/",
             "/summonly/",
@@ -280,7 +280,7 @@ ADMOB_APPS = {
                  "appId": "ca-app-pub-6407975157274256~3074958691"},
 }
 ADMOB_DAYS = 7  # matches the Apple Search Ads manual reading, for a fair spend-vs-earnings comparison
-PRODUCT_PAGE_PATHS = {"/moderntex", "/outbound-veil", "/legroom", "/keyfeel", "/tapefolio", "/lenscrib", "/formring", "/panely", "/summonly", "/vitae", "/suite"}
+PRODUCT_PAGE_PATHS = {"/moderntex", "/outbound-veil", "/legroom", "/keyfeel", "/tapefolio", "/lenscrib", "/aka", "/panely", "/summonly", "/vitae", "/suite"}
 AD_FUNNEL_DAYS = 7  # window for the first-touch channel funnel (adFunnel in history.json)
 
 
@@ -673,10 +673,10 @@ def macupdate_summary(entry: dict | None, today: dt.date | None = None) -> dict 
 
 # Our own download counters per app (beacon trial clicks per day), for the all-sources view.
 SITE_DOWNLOAD_METRICS = {"moderntex": "trialDownloads", "outbound-veil": "ovTrialDownloads", "legroom": "lgTrialDownloads",
-                         "keyfeel": "kfTrialDownloads", "tapefolio": "tfTrialDownloads", "lenscrib": "lcbTrialDownloads", "formring": "frTrialDownloads", "panely": "pnTrialDownloads",
+                         "keyfeel": "kfTrialDownloads", "tapefolio": "tfTrialDownloads", "lenscrib": "lcbTrialDownloads", "aka": "akaTrialDownloads", "panely": "pnTrialDownloads",
                          "summonly": "smTrialDownloads", "vitae": "vitaeDownloads"}
 APP_LABELS = {"moderntex": "ModernTex", "outbound-veil": "Outbound Veil", "legroom": "Legroom", "keyfeel": "Keyfeel",
-              "tapefolio": "Tapefolio", "lenscrib": "Lenscrib", "formring": "Formring", "panely": "Panely", "summonly": "Summonly", "vitae": "Vitae"}
+              "tapefolio": "Tapefolio", "lenscrib": "Lenscrib", "aka": "AKA", "panely": "Panely", "summonly": "Summonly", "vitae": "Vitae"}
 
 
 def downloads_all_sources(history: dict, today: dt.date | None = None) -> list[dict]:
@@ -2801,7 +2801,7 @@ def site_card(s: dict) -> str:
 
 
 PRODUCT_LABELS = {
-    "scholar-belt": "Scholar Utility Belt Pro", "moderntex": "ModernTex", "outbound-veil": "Outbound Veil", "legroom": "Legroom", "keyfeel": "Keyfeel", "tapefolio": "Tapefolio", "lenscrib": "Lenscrib", "formring": "Formring", "panely": "Panely", "summonly": "Summonly", "freeboard": "Legroom", "app-suite": "Mac Suite", "bundle-2": "Mac Suite bundle (any 2)", "bundle-3": "Mac Suite bundle (any 3)", "cover-letter": "Cover letter", "anonymity-check": "Anonymity check",
+    "scholar-belt": "Scholar Utility Belt Pro", "moderntex": "ModernTex", "outbound-veil": "Outbound Veil", "legroom": "Legroom", "keyfeel": "Keyfeel", "tapefolio": "Tapefolio", "lenscrib": "Lenscrib", "aka": "AKA", "panely": "Panely", "summonly": "Summonly", "freeboard": "Legroom", "app-suite": "Mac Suite", "bundle-2": "Mac Suite bundle (any 2)", "bundle-3": "Mac Suite bundle (any 3)", "cover-letter": "Cover letter", "anonymity-check": "Anonymity check",
     "citation-gap": "Citation gap", "revision-review": "Revision review",
     "response-review": "Response review", "resume-review": "Resume review",
     "kit-bundle": "Kit bundle", "kit-clip": "Clip pipeline kit",
@@ -3285,7 +3285,7 @@ PRODUCT_GROUPS = [
     ("Keyfeel", "oklch(74% 0.13 190)"),
     ("Tapefolio", "oklch(70% 0.14 255)"),
     ("Lenscrib", "oklch(72% 0.14 90)"),
-    ("Formring", "oklch(72% 0.14 340)"),
+    ("AKA", "oklch(72% 0.14 340)"),
     ("Panely", "oklch(72% 0.13 165)"),
     ("Summonly", "oklch(70% 0.15 25)"),
     ("Mac Suite", "oklch(70% 0.18 330)"),
@@ -3319,8 +3319,8 @@ def product_group(row: dict) -> str:
         return "Tapefolio"
     if product == "lenscrib":
         return "Lenscrib"
-    if product == "formring":
-        return "Formring"
+    if product == "aka":
+        return "AKA"
     if product == "panely":
         return "Panely"
     if product == "summonly":
@@ -4531,7 +4531,7 @@ def print_metrics(m: dict | None) -> None:
 
 PROFIT_DAYS = 7
 COSTS_PATH = Path.home() / ".config" / "purplelink" / "costs.json"
-PROFIT_LINES = ["ModernTex", "Outbound Veil", "Scholar Utility Belt Pro", "Legroom", "Keyfeel", "Tapefolio", "Lenscrib", "Formring", "Panely", "Summonly", "Mac Suite", "Paper Review & tools", "Kits", "Spreadsheets", "Photo prints (Etsy)", "Subscriptions", "MuscleOnGLP",
+PROFIT_LINES = ["ModernTex", "Outbound Veil", "Scholar Utility Belt Pro", "Legroom", "Keyfeel", "Tapefolio", "Lenscrib", "AKA", "Panely", "Summonly", "Mac Suite", "Paper Review & tools", "Kits", "Spreadsheets", "Photo prints (Etsy)", "Subscriptions", "MuscleOnGLP",
                 "GlobePin", "Company"]
 
 

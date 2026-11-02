@@ -1,5 +1,5 @@
 /**
- * Purplelink license keys for Outbound Veil, Legroom and Formring (scheme "PurplelinkLicenseV1").
+ * Purplelink license keys for Outbound Veil, Legroom and AKA (scheme "PurplelinkLicenseV1").
  * Keyfeel has its own, older scheme (KFL1, netlify/lib/keyfeel-license.mjs) and ModernTex has MTX1.
  *
  * A key is  <PREFIX>-  +  Crockford-Base32( nonce[4] ‖ Ed25519 signature[64] ),  split into groups of 5.
@@ -24,10 +24,10 @@ export const PURPLELINK_LICENSE_PUBLIC_KEY_B64 = "d8gyRHTJVAivaL2wx4m1dQTLxrfE2h
 export const LICENSED_PRODUCTS = {
   "outbound-veil": { prefix: "OV1", label: "Outbound Veil", appPath: "/outbound-veil/" },
   legroom: { prefix: "LG1", label: "Legroom", appPath: "/legroom/" },
-  // Formring (FR1) is still hidden. `inSuite: false` keeps it out of every Mac Suite purchase until launch day,
+  // AKA (AKA1) is still hidden. `inSuite: false` keeps it out of every Mac Suite purchase until launch day,
   // so no past Suite buyer is handed a key for an app that is not released. The launch step that flips it (to
-  // true, or by deleting the field) is Ben's decision: see docs/products/formring.md, "Suite gate".
-  formring: { prefix: "FR1", label: "Formring", appPath: "/formring/", inSuite: false },
+  // true, or by deleting the field) is Ben's decision: see docs/products/aka.md, "Suite gate".
+  aka: { prefix: "AKA1", label: "AKA", appPath: "/aka/", inSuite: false },
 };
 
 /** Whether a Mac Suite purchase includes this product. Every entry is in the Suite unless it says `inSuite: false`. */

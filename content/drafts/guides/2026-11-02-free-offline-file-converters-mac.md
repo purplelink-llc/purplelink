@@ -2,7 +2,7 @@
 
 By Benjamin Ampel · November 2, 2026
 
-Status: unlisted until the Formring launch (noindex; not linked from the guides index, sitemap or search).
+Status: unlisted until the AKA launch (noindex; not linked from the guides index, sitemap or search).
 
 Most file conversions on a Mac need no upload and no paid app. macOS converts images, audio, video, text documents and archives with built-in tools, and a few free Purplelink browser tools handle the rest inside the tab. This guide goes job by job: the free built-in way first, then the matching browser tool where one exists, then free open-source apps.
 
@@ -203,9 +203,9 @@ I confirmed that command writes one channel at 16000 Hz. Purplelink's [Tapefolio
 
 ## One more thing coming
 
-Purplelink is building a Mac app called Formring. Hold Option and drag files, and a ring of 50 conversions opens at the pointer; drop a file on one and it converts on your Mac. It is not released yet. The planned price is $14.99 after a 7-day trial. Everything above works without it.
+Purplelink is building a Mac app called AKA. Hold Option and drag files, and a ring of 50 conversions opens at the pointer; drop a file on one and it converts on your Mac. It is not released yet. The planned price is $14.99 after a 7-day trial. Everything above works without it.
 
-<!-- launch: link /formring/ here -->
+<!-- launch: link /aka/ here -->
 
 ## Questions
 
