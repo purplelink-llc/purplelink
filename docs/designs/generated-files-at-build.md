@@ -1,7 +1,8 @@
 # Build generated site files at deploy time, not in git
 
 Status: revised after Goldfish review (four Sonnet reviewers, 2026-11-02; findings and resolutions in
-`generated-files-at-build-review.md`). Approved by Ben 2026-11-02 (option 4 for phase 2). Phase 1 in progress. Owner: Ben.
+`generated-files-at-build-review.md`). Approved by Ben 2026-11-02 (option 4 for phase 2). Phase 1 merged (PR 512, live after the 2026-11-02 17:00 build);
+phase 2 built 2026-11-02 (see "As built" below). Owner: Ben.
 
 ## Problem
 
@@ -147,3 +148,21 @@ Netlify `--check` step), then the strip migration, then the CI `--check-bare` st
 5. Docs as listed.
 6. Parity check; Ben merges; after the next build, compare `?v=` on `/` for `styles.css` with
    `shasum -a 256 site/styles.css | cut -c1-10` computed in a build checkout.
+
+## As built (phase 2)
+
+Differences from the plan above, and why:
+
+- **`deploy.sh` does not refuse a dirty `site/` or run `git checkout -- site`.** It regenerates `site/sitemap.xml` and
+  leaves it for a person to commit, which a checkout would discard. Instead it stamps with `--force-in-place`, runs
+  `--check`, and an `EXIT` trap runs `--strip`, which removes only the stamps (the round-trip test proves strip after
+  stamp returns the committed bytes), so it is safe on a tree with other edits and runs even when a later step fails.
+- **`apply_layout.py --check` ignores stamps** when it compares, so it passes on the bare tree and on CI's stamped tree.
+- **Test helpers.** `site-tests/common.py` `STAMP` and `netlify/tests/_stamp.mjs` `STAMP` are one regex fragment each:
+  required under `CI=true`, optional locally. `test_send_to_mac.py` already allowed both.
+- **Pre-commit** runs `--check-bare` on the staged `site/` HTML and root CSS files (working-tree content).
+- `backend/digest/publisher.py` still stamps its own pages; the digest is retired (2026-10-17) and its directory skip
+  stays in every mode.
+
+Parity: building origin/main and this branch with `NETLIFY=true` (the full Netlify command) in two temporary
+exports gives byte-identical `site/` trees; result in the PR.

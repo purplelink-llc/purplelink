@@ -148,7 +148,7 @@ live. No money moves.
 6. Add the click counter in `site/analytics.js` (a `lenscrib-download?(download|trial)=1` branch firing `lcb_trial_download`, and
    `lcb_trial_download` in the `FUNNEL` regex). The server side (`stats.mjs`, dashboard) is already in. It is held back only
    because changing `analytics.js` restamps every page.
-7. Run `python3 scripts/apply_layout.py --check`, `python3 scripts/fingerprint_assets.py`, `python3 scripts/check_content.py --strict`.
+7. Run `python3 scripts/apply_layout.py --check` and `python3 scripts/check_content.py --strict` (the build adds the `?v=` stamps).
 8. Confirm the Terms and Privacy wording against the shipped app: that the network use is exactly the one-time model download from
    Hugging Face and the update check (app name, version, macOS version, update token); that no photo, metadata or location is sent;
    that there is no analytics; that the trial clock and key check send nothing.

@@ -76,8 +76,9 @@ dark scrim.
    logo (no design) at the bottom somewhere". Generalised to every app, game and product video.
 4. **2026-10-29, logo files are versioned.** The live site served the new mark, but `/assets/*` is cached for 30 days,
    so returning visitors (Ben included) still saw the old one. `scripts/fingerprint_assets.py` now stamps
-   `?v=<hash>` on every mark, logo and lockup reference, and `scripts/apply_layout.py` writes the footer mark with the
-   same stamp, so a changed logo reaches everyone on their next page load.
+   `?v=<hash>` on every mark, logo and lockup reference, so a changed logo reaches everyone on their next page load.
+   Since 2026-11-02 it does so in the Netlify build only; the committed pages are bare
+   (docs/designs/generated-files-at-build.md).
 
 5. **2026-10-30, wordmark B.** Ben approved a new wordmark, "purplelink / software company", replacing "purplelink /
    softwares", with the underline swoosh and star in the brand purple gradient (meaning above). The lockup, the
@@ -96,4 +97,4 @@ dark scrim.
 - Lockup and wordmark B: supplied as final artwork (SVG and PNG, dark and light); copy them into `site/assets/` exactly, do not retrace.
 - Generic brand cards: `python3 scripts/gen_og_cards.py --brand` (template `scripts/og-brand-card.html`).
 - Per-page cards: `python3 scripts/gen_og_cards.py --refresh`.
-- After changing any logo file: `python3 scripts/fingerprint_assets.py`.
+- After changing any logo file: nothing to run; the next build stamps the new hash.

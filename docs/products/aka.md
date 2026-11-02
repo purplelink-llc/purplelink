@@ -214,7 +214,7 @@ live. No money moves.
 7. Add the click counter in `site/analytics.js` (a `aka-download?trial=1` branch firing `aka_trial_download`, and `aka_trial_download`
    in the `FUNNEL` regex). The server side (`stats.mjs`, dashboard) is already in. It is held back only because changing `analytics.js`
    restamps every page.
-8. Run `python3 scripts/apply_layout.py --check`, `python3 scripts/fingerprint_assets.py`, `python3 scripts/check_content.py --strict`.
+8. Run `python3 scripts/apply_layout.py --check` and `python3 scripts/check_content.py --strict` (the build adds the `?v=` stamps).
 9. Confirm the Terms and Privacy wording against the shipped app: that the only network use is the update check (app name, version,
    macOS version, update token); that nothing dropped on the app is sent; that there is no analytics; that the trial clock and key
    check send nothing.

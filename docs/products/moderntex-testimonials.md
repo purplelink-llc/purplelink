@@ -46,5 +46,5 @@ inline styles, so reuse existing classes.
 The site has no quote component yet (checked 2026-10-02: no `blockquote` or `quote` rule in
 site/styles.css). When the first approved quote lands, add a small `.buyer-quote` rule to
 site/styles.css using the existing tokens (surface background, Fraunces for the quote,
-muted small-caps-free caption), then run scripts/fingerprint_assets.py. Dark is the default
+muted small-caps-free caption); the build stamps the new stylesheet hash. Dark is the default
 theme; gate any dark-only values as `:where(:root:not([data-theme="light"]))`.
