@@ -131,5 +131,16 @@
   "started": "2026-11-01",
   "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
   "checked": "2026-11-01"
+ },
+ {
+  "video": "8_ijlb_hbS8",
+  "variants": {
+   "A": "video/out/howto/xcode-simulators-taking-up-space/xcode-simulators-taking-up-space-thumb-A.jpg",
+   "B": "video/out/howto/xcode-simulators-taking-up-space/xcode-simulators-taking-up-space-thumb-B.jpg",
+   "C": "video/out/howto/xcode-simulators-taking-up-space/xcode-simulators-taking-up-space-thumb-C.jpg"
+  },
+  "started": "2026-11-02",
+  "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
+  "checked": "2026-11-02"
  }
 ]

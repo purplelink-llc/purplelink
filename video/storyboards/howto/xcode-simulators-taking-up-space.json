@@ -1,0 +1,48 @@
+{
+ "id": "howto-xcode-simulators-taking-up-space",
+ "app": "legroom",
+ "title": "CoreSimulator folder taking up space on Mac (delete old Xcode simulators)",
+ "short_title": "Xcode simulators using 19 GB? Remove the ones you no longer use",
+ "url": "purplelink.llc/legroom",
+ "page": "https://purplelink.llc/legroom/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://developer.apple.com/forums/thread/773153",
+  "https://developer.apple.com/forums/thread/758703"
+ ],
+ "verify": {
+  "runs": [
+   {"cmd": "cd ~/Library/Developer/CoreSimulator && du -sh Devices", "output": "19G\tDevices"},
+   {"cmd": "xcrun simctl runtime list | tail -1", "output": "Total Disk Images: 2 (11.4G)"},
+   {"cmd": "xcrun simctl help delete", "output": "Delete specified devices, unavailable devices, or all devices.\nUsage: simctl delete <device> [... <device n>] | unavailable | all\nSpecifying unavailable will delete devices that are not supported by the current Xcode SDK."},
+   {"cmd": "xcrun simctl runtime delete -d 30 -n", "output": "No matching images found to delete"}
+  ],
+  "docs": ["https://developer.apple.com/documentation/xcode/installing-additional-simulator-runtimes"],
+  "notes": "Xcode 26 on Ben's Mac, 2026-11-02: 18 simulators (iOS 26.3 and watchOS 26.2), none unavailable. Only read-only commands and a runtime --dry-run were executed; no simulator or runtime was deleted. The Xcode Settings > Components delete path is the one Apple DTS gives in forum thread 758703, quoting the linked documentation. The note about an Xcode beta marking the other Xcode's devices unavailable comes from thread 773153."
+ },
+ "scenes": [
+  {"type": "hook", "short": true, "kicker": "Mac disk space", "title": "CoreSimulator is taking up space", "sub": "Old Xcode simulators keep their data.",
+   "narration": "If the CoreSimulator folder in your Library is taking up tens of gigabytes, here is where that space comes from, and how to get it back safely."},
+  {"type": "symptom", "short": true, "label": "Terminal",
+   "lines": ["$ cd ~/Library/Developer/CoreSimulator && du -sh Devices", "19G\tDevices", "$ xcrun simctl runtime list | tail -1", "Total Disk Images: 2 (11.4G)"],
+   "narration": "On this Mac the simulator devices folder holds 19 gigabytes, and the simulator runtimes take another 11 point 4."},
+  {"type": "cause", "text": "Every simulator keeps its own data folder, and Xcode never removes old ones for you.",
+   "narration": "Each simulated iPhone, iPad or watch has its own folder with the apps and caches you put on it. When you update Xcode, the old simulators and their runtimes stay behind until you remove them."},
+  {"type": "steps", "short": true, "label": "Terminal",
+   "lines": ["$ xcrun simctl list devices", "$ xcrun simctl delete unavailable", "$ xcrun simctl runtime delete -d 30 -n"],
+   "ui": "Or in Xcode: Settings, Components, select a runtime, click the minus button.",
+   "narration": "List your simulators first. Delete unavailable removes the ones your current Xcode no longer supports. If you also use an Xcode beta, skip that step, because each Xcode sees the other's simulators as unavailable. For runtimes, preview first with dash n, the dry run option, or remove one in Xcode under Settings, Components."},
+  {"type": "check", "short": true, "label": "Terminal", "ok": "Preview before anything goes",
+   "lines": ["$ xcrun simctl help delete", "Specifying unavailable will delete devices that are not supported by the current Xcode SDK.", "$ xcrun simctl runtime delete -d 30 -n", "No matching images found to delete"],
+   "narration": "The help text confirms that unavailable means only simulators your Xcode no longer supports. Here the dry run, dash n, finds no runtime unused for thirty days, so nothing would be removed."},
+  {"type": "app", "name": "Legroom", "line": "Lists simulators in Where your space went, with why the space is there and the safe next step.",
+   "url": "purplelink.llc/legroom", "img": "site/legroom/img/what-grew.webp", "icon": "site/assets/legroom-icon.webp",
+   "narration": "Legroom is a menu bar app for Mac disk space. Where your space went lists the whole disk in parts, simulators and developer caches among them, and says why each one is there and the safe next step. It measures once a day and tells you what grew. A cleaning rule shows a preview, and nothing goes until you approve it. There is a free seven day trial."}
+ ],
+ "thumbs": {
+  "A": {"kind": "error", "pill": "Xcode simulators", "msg": "CoreSimulator is taking up space"},
+  "B": {"kind": "long", "pill": "Xcode simulators", "msg": "Simulator devices: 19G", "n": 1, "unit": "command", "sub": "removes old simulators"},
+  "C": {"kind": "product", "name": "Legroom", "line": "See where your space went", "img": "site/legroom/img/what-grew.webp", "icon": "site/assets/legroom-icon.webp", "zoom": 1.25, "pos": "0% 45%"}
+ }
+}
