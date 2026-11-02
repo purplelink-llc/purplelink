@@ -107,6 +107,9 @@ variable (Legroom and Outbound Veil use a Price; the newer apps do not). Session
 - Updates (Sparkle): `?feed=1`, `?update=<dmg>`, `?stats=1` need the `X-Formring-Channel` header, compared in constant time; 403
   otherwise and 403 when the variable is unset. The feed's enclosure URLs are rewritten to the `?update=` door.
 - Feed URL in the app: `https://purplelink.llc/.netlify/functions/formring-download?feed=1`.
+- The feed is signed (Sparkle `sign_update`; the app sets `SURequireSignedFeed`). Upload `appcast.xml` exactly as the app
+  repo's `scripts/build-release.sh` staged it and never edit it by hand: the function serves a signed feed byte for byte,
+  and any change stops every installed copy from updating. Re-sign with `sign_update appcast.xml` after any change.
 
 Keep the DMG well under what a Netlify function can stream in its 30 second limit (the Tapefolio notes record a 182 MB DMG truncating
 at 129 MB).

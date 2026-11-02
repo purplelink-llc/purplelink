@@ -135,7 +135,8 @@ async function streamBlob(store, key, type, disposition) {
  * which 404s and breaks in-app updates. publish-release.sh now post-processes its own
  * output, but the feed is rewritten here too so a stale or hand-uploaded appcast
  * in the store can never ship a dead download link to installed copies.
- * The EdDSA signature covers the DMG, not the URL, so rewriting is safe.
+ * The EdDSA signature on each enclosure covers the DMG, not the URL, so rewriting an unsigned feed is safe; a signed
+ * feed is never rewritten.
  */
 async function serveFeed(store) {
   let xml;
@@ -145,10 +146,15 @@ async function serveFeed(store) {
     xml = null;
   }
   if (!xml) return json(404, { error: "file_unavailable", detail: "No update feed is staged." });
-  const fixed = xml.replace(
-    /url="[^"]*\/(Formring-\d+\.\d+\.\d+\.dmg)"/g,
-    (_m, name) => `url="https://purplelink.llc/.netlify/functions/formring-download?update=${name}"`,
-  );
+  // A signed feed (Sparkle `sign_update` embeds a `sparkle-signatures` comment; the app sets SURequireSignedFeed) is
+  // served byte for byte: any change would break its signature and stop every update. The release script already
+  // points its enclosures at the update door before signing.
+  const fixed = xml.includes("<!-- sparkle-signatures:")
+    ? xml
+    : xml.replace(
+        /url="[^"]*\/(Formring-\d+\.\d+\.\d+\.dmg)"/g,
+        (_m, name) => `url="https://purplelink.llc/.netlify/functions/formring-download?update=${name}"`,
+      );
   return new Response(fixed, {
     status: 200,
     headers: {

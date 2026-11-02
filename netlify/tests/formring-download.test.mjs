@@ -214,6 +214,15 @@ test("the right token serves the appcast with every enclosure pointed at the upd
   assert.match(xml, /sparkle:edSignature="sig"/, "the signature is left untouched");
 });
 
+test("a signed feed is served byte for byte, never rewritten", async () => {
+  const signed = APPCAST.replace(/url="[^"]*"/g, 'url="https://cdn.example/Formring-1.0.0.dmg"') +
+    "<!-- sparkle-signatures:\nedSignature: AAAA\nlength: 10\n-->";
+  stores.set("formring-files/appcast.xml", signed);
+  const res = await call("feed=1", { "x-formring-channel": TOKEN });
+  assert.equal(res.status, 200);
+  assert.equal(await res.text(), signed);
+});
+
 test("the feed is a 404 when no appcast is staged", async () => {
   stores.delete("formring-files/appcast.xml");
   assert.equal((await call("feed=1", { "x-formring-channel": TOKEN })).status, 404);
