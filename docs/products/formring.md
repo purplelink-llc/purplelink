@@ -155,8 +155,7 @@ live. No money moves.
 4. **Decide the Suite gate** (above) and flip `inSuite` in `netlify/lib/license.mjs` as part of the launch change, or leave it.
 5. Launch commit (separate from this PR): fill in `site/formring/launch.js`; delete the PRE-LAUNCH GUARD test; write the live wording into
    the static fallbacks in `index.html` (the strings the script replaces: hero status, the two gated buttons, the `data-fr-facts`
-   sentence); replace the placeholder app icon (the Formring repo's `assets/brand/PLACEHOLDER` says "replace before release", and
-   `site/assets/formring-icon.webp`, the video's icon and the page icon all use it); add a share card and `og:image` (the card
+   sentence); add a share card and `og:image` (the card
    generator `scripts/gen_og_cards.py` does not cover product pages; product cards are `site/assets/og/<slug>.png`); re-render the
    demo video if the icon or screenshots changed; flip `<meta name="robots">` to `index, follow`.
 6. Launch-day links, none of which exist yet: nav and footer (`scripts/apply_layout.py` `FOOTER_COLUMNS`), home dock tile, products
@@ -174,9 +173,8 @@ live. No money moves.
 
 - Intel: the page says Apple silicon and Intel, from the design doc (universal binary). The design doc says Intel behaviour is
   unverified until manual test R11 passes on an Intel Mac or Rosetta; confirm before launch or change the page, FAQ and JSON-LD.
-- The app's `docs/screenshots/history.png` renders as an empty dark rectangle (one flat colour); it is not used. The menu-bar window
-  screenshot shows the history list instead. Re-render it with `FormringApp --render-screenshots` if a History window shot is wanted.
-- The app icon is a placeholder (see launch step 5).
+- Done in the follow-up PR: the designed app icon replaced the placeholder (page, video, icon asset), and the History window
+  screenshot now renders (`Formring --render-screenshots`); the page still uses the menu-bar shot for the history list.
 - Settings: the design mentions a per-app exclusion list; the page does not, because the vendored ring settings only expose the key
   and the on/off switch. Add it to the FAQ if the app ships one.
 - Update policy: the page, FAQ, Terms and reminder email say every update is included, as for Tapefolio and Lenscrib. Ben has not stated
