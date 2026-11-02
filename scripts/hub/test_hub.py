@@ -199,6 +199,15 @@ def test_all():
     assert db().execute("SELECT count(*) FROM placements").fetchone()[0] == len(ids)
 
 
+def test_send_to_mac_trial_keys():
+    # "<app>-s2m" is a real trial after a Send to my Mac email; "<app>-not-mac" downloaded nothing.
+    t = {"moderntex": 3, "moderntex-s2m": 2, "moderntex-not-mac": 7, "legroom": 1}
+    assert hub.trial_count(t, "moderntex") == 5
+    assert hub.trial_count(t, "legroom") == 1
+    assert hub.trial_count(None, "moderntex") == 0
+    assert hub.trial_total(t) == 6
+
+
 def test_sources_untouched():
     snap = lambda: {p: p.read_bytes() for p in tmp.rglob("*") if p.is_file() and "hub" not in p.parts}
     before = snap()

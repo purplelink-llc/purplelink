@@ -157,7 +157,12 @@
     var f = attr.first || attr.last;
     return f && f.t ? clip(f.t, 60) : "";
   }
-  var FUNNEL = /^(checkout_click|trial_download|ov_trial_download|lg_trial_download|kf_trial_download|tf_trial_download|pn_trial_download|sm_trial_download|guide_mtx_trial)$/;
+  // The same first-touch details for site/send-to-mac.js, which sends them with a "Send to my Mac" request so the
+  // link in that email carries the channel to the visitor's Mac. Not defined under Do Not Track (this file stops above).
+  window.plAttribution = function () {
+    return { ft: channel(), fc: contentTag(), rdt: rdtClick || "" };
+  };
+  var FUNNEL = /^(checkout_click|send_to_mac|trial_download|ov_trial_download|lg_trial_download|kf_trial_download|tf_trial_download|pn_trial_download|sm_trial_download|guide_mtx_trial)$/;
 
   function send(payload) {
     try {
@@ -310,28 +315,36 @@
   document.addEventListener("click", function (ev) {
     try {
       var a = ev.target && ev.target.closest && ev.target.closest("a[href]");
+      // On a page with "Send to my Mac" (site/send-to-mac.js), a trial click by a visitor who is not on a Mac points
+      // at the email form and downloads nothing. It is still sent as the same event, so the hero test's count keeps
+      // its meaning, but the meta says "<app>-not-mac" and the funnel counts it apart from real downloads.
+      var nm = a && a.getAttribute("data-s2m-intercept") === "1" ? "-not-mac" : "";
+      // A real download by a visitor who first arrived from a "Send to my Mac" email (utm_campaign=send-to-mac) reads
+      // "<app>-s2m", so trials started on the Mac after that email can be counted.
+      var f0 = attr.first || attr.last;
+      if (!nm && f0 && f0.c === "send-to-mac") nm = "-s2m";
       if (a && a.getAttribute("href").indexOf("moderntex-download?trial=1") !== -1) {
-        window.plTrack("trial_download", "moderntex");
-        tagTrialLink(a);
+        window.plTrack("trial_download", "moderntex" + nm);
+        if (nm !== "-not-mac") tagTrialLink(a);
       }
       if (a && a.getAttribute("href").indexOf("outbound-veil-download?trial=1") !== -1) {
-        window.plTrack("ov_trial_download", "outbound-veil");
+        window.plTrack("ov_trial_download", "outbound-veil" + nm);
       }
       if (a && a.getAttribute("href").indexOf("legroom-download?trial=1") !== -1) {
-        window.plTrack("lg_trial_download", "legroom");
+        window.plTrack("lg_trial_download", "legroom" + nm);
       }
       // Keyfeel's page links ?download=1 (since 1.1.0 there is one download); ?trial=1 is the old link, kept so cached pages still count.
       if (a && /keyfeel-download\?(download|trial)=1/.test(a.getAttribute("href"))) {
-        window.plTrack("kf_trial_download", "keyfeel");
+        window.plTrack("kf_trial_download", "keyfeel" + nm);
       }
       if (a && /tapefolio-download\?(download|trial)=1/.test(a.getAttribute("href"))) {
-        window.plTrack("tf_trial_download", "tapefolio");
+        window.plTrack("tf_trial_download", "tapefolio" + nm);
       }
       if (a && /panely-download\?(download|trial)=1/.test(a.getAttribute("href"))) {
-        window.plTrack("pn_trial_download", "panely");
+        window.plTrack("pn_trial_download", "panely" + nm);
       }
       if (a && /summonly-download\?(download|trial)=1/.test(a.getAttribute("href"))) {
-        window.plTrack("sm_trial_download", "summonly");
+        window.plTrack("sm_trial_download", "summonly" + nm);
       }
       countAffiliate(ev);
       // Anything else marked data-track="<event>" (optional data-track-meta):
