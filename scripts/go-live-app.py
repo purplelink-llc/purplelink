@@ -17,7 +17,7 @@ from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SLUGS = ("panely", "summonly")
+SLUGS = ("panely", "summonly", "aka")
 
 def main(argv):
     if len(argv) != 5 or argv[1] not in SLUGS:
@@ -38,7 +38,7 @@ def main(argv):
     h = h.replace('"availability": "https://schema.org/PreOrder"', '"availability": "https://schema.org/InStock"')
     h = re.sub(r"<!-- LAUNCH CHECKLIST.*?-->\n", "", h, count=1, flags=re.S)
     # The static HTML goes live too, so the page is right with scripts off. The tags below are the ones launch.js switches.
-    pf = {"panely": "pf", "summonly": "lf"}[slug]
+    pf = {"panely": "pf", "summonly": "lf", "aka": "aka"}[slug]
     def gated(m):
         tag = m.group(0)
         href = re.search(rf'data-{pf}-href="([^"]+)"', tag).group(1)
@@ -46,11 +46,15 @@ def main(argv):
         tag = tag.replace(' aria-disabled="true"', f' href="{href}"')
         return re.sub(r">[^<]*</a>$", f">{text}</a>", tag)
     h = re.sub(rf'<a\b[^>]*data-{pf}-gated[^>]*>[^<]*</a>', gated, h)
-    h = re.sub(r'(<button\b[^>]*id="checkout-btn"[^>]*?) disabled', r"\1", h)
+    def btn(m):
+        tag = m.group(0).replace(" disabled", "", 1)
+        text = re.search(rf'data-{pf}-live-text="([^"]+)"', tag)
+        return re.sub(r">[^<]*</button>$", f">{text.group(1)}</button>", tag) if text else tag
+    h = re.sub(r'<button\b[^>]*id="checkout-btn"[^>]*>[^<]*</button>', btn, h)
     h = re.sub(rf'\s*<span class="product-status product-status-soon" data-{pf}-pre-only>[^<]*</span>', "", h)
     h = re.sub(rf'(data-{pf}-live-only) hidden', r"\1", h)
     nice = date.fromisoformat(released).strftime("%B %-d, %Y")
-    h = re.sub(rf'(data-{pf}-facts>)[^<]*(</p>)', lambda m: f'{m.group(1)}Version {version}, released {nice}. {size} MB disk image.{m.group(2)}', h)    # also replaces an older version's text
+    h = re.sub(rf'(data-{pf}-facts>)[^<]*(</(?:p|span)>)', lambda m: f'{m.group(1)}Version {version}, released {nice}. {size} MB disk image.{m.group(2)}', h)    # also replaces an older version's text
     page.write_text(h)
 
     sm = site / "sitemap.xml"; x = sm.read_text()

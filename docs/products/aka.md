@@ -23,7 +23,7 @@ plainly what the app does not do (PDF to Word loses layout, background removal c
 AKA uses **PurplelinkLicenseV1** (prefix `AKA1`, slug `aka`), the same scheme as Outbound Veil and Legroom, not a separate
 one like Lenscrib. The entry is in `LICENSED_PRODUCTS` in `netlify/lib/license.mjs`:
 
-    aka: { prefix: "AKA1", label: "AKA", appPath: "/aka/", inSuite: false }
+    aka: { prefix: "AKA1", label: "AKA", appPath: "/aka/" }
 
 No new signing key and no new env var for keys: it signs with the existing `PURPLELINK_LICENSE_PRIVATE_KEY` and the app embeds the
 existing public key `d8gyRHTJVAivaL2wx4m1dQTLxrfE2htFhxzNDF8dFs4=`. Keys are derived from the Stripe session id, so the success
@@ -37,8 +37,8 @@ leaves it out of the Suite, and `aka-download.mjs` refuses an `app-suite` sessio
 `BUNDLE_PARTS`). Outbound Veil and Legroom are unchanged; `aka-license.test.mjs` pins their keys byte for byte against the code
 as it was before.
 
-**Suite decision (Ben, 2026-11-02): YES, AKA joins the Mac Suite.** It stays `inSuite: false` while the page is hidden, so no past
-Suite buyer is handed a key for an unreleased app. The launch commit flips `inSuite` to `true` (or deletes the field) AND does all of
+**Suite decision (Ben, 2026-11-02): YES, AKA joins the Mac Suite. Done in the launch PR.** It stayed `inSuite: false` while the page was hidden, so no past
+Suite buyer was handed a key for an unreleased app. The launch commit removes the field AND does all of
 the following in the same commit, so the Suite never advertises or entitles something that is not live. Line numbers are as of the
 rename PR; search for `Panely and Summonly` / `Panely, Summonly` to re-find them.
 
@@ -108,9 +108,8 @@ Working name: the app was called Formring until 2026-11-02.
 | Demo video source | `video/src/aka/AKADemo.jsx`, composition `AKADemo` in `video/src/Root.jsx`, `video/build-aka.mjs`, stills in `video/assets/aka/` |
 | Tests | `aka-license`, `aka-download`, `aka-purchase`, `aka-site` (all `netlify/tests/aka-*.test.mjs`); `tapefolio-site.test.mjs` and `lenscrib-site.test.mjs` strings updated for the new Terms and Privacy wording |
 
-Safe to merge now: nothing is linked and the page is switched off. There is no nav, footer, home, products, pricing, suite, sitemap,
-search index or llms link to `/aka/` (a test asserts it), and the page is `noindex, follow`. The trial link has no `href`, the Buy
-button is `disabled`, and the hero says "Not released yet".
+Before the launch PR the page was hidden: no link anywhere, `noindex, follow`, dead buttons and "Not released yet". The launch PR
+(`aka-launch`, draft) switches all of that on at once, so it must not merge before the manual steps in the checklist below.
 
 The checkout itself is not gated: `POST /.netlify/functions/checkout {"product":"aka"}` returns a real Stripe session as soon as
 this deploys. Nothing on the site calls it while the buttons are dead.
@@ -119,8 +118,9 @@ this deploys. Nothing on the site calls it while the buttons are dead.
 
 `site/aka/launch.js` holds the only page switch: `window.AKA_LAUNCH = { live, version, sizeMb, released }`. Until `live` is
 `true` and `version` (x.y.z), `sizeMb` (whole number) and `released` (YYYY-MM-DD) are all valid, the trial link has no `href` and is
-`aria-disabled`, the Buy button is `disabled`, the hero says "Not released yet", and the sticky bar is removed. The PRE-LAUNCH GUARD
-test in `aka-site.test.mjs` pins the shipped state; delete it at launch, as Tapefolio did.
+`aria-disabled`, the Buy button is `disabled`, the hero says "Not released yet", and the sticky bar is removed. The launch PR sets `live`
+to `true` with version 1.0.0, 5 MB and the release date, and `go-live-app.py aka` (re-runnable) writes the same wording into the static
+HTML. The LAUNCHED test in `aka-site.test.mjs` replaced the PRE-LAUNCH GUARD and checks that `launch.js` and the static page agree.
 
 The trial door `aka-download?trial=1` is public but stays closed while nothing is released: with no DMG in `aka-files` it
 answers 404 `no_trial`. There is no separate trial build; the trial door serves the same newest `AKA-x.y.z.dmg` buyers get, and
@@ -148,7 +148,7 @@ variable (Legroom and Outbound Veil use a Price; the newer apps do not). Session
 `netlify/functions/aka-download.mjs`, a copy of `legroom-download.mjs` with one DMG name pattern (`AKA-x.y.z.dmg`):
 
 - Buyers: `?session_id=cs_...` lists the newest DMG; `&file=AKA-x.y.z.dmg` streams any released version. The session must be paid,
-  not refunded or disputed, and carry `metadata.product` of `aka` (or `app-suite` only after the Suite gate is flipped). The
+  not refunded or disputed, and carry `metadata.product` of `aka`, `app-suite`, or a custom bundle whose `apps` include `aka`. The
   license key is not in this response; the success page gets it from `purchase-license` through `license-keys.js`, like Legroom.
 - Public trial: `?trial=1`, newest DMG, 20 per IP per day (429 after).
 - Updates (Sparkle): `?feed=1`, `?update=<dmg>`, `?stats=1` need the `X-AKA-Channel` header, compared in constant time; 403
@@ -198,26 +198,25 @@ live. No money moves.
 
 ## Launch checklist (owner)
 
-1. Set `AKA_UPDATE_TOKEN` on Netlify (production) from `~/.config/purplelink/aka-update-token`. Do not print it. No Stripe
-   price and no key variable to create (see above).
-2. Build the app with the same token and header and the shared public key; stage `AKA-<ver>.dmg` and `appcast.xml` in `aka-files`.
-3. Run the test checkout recipe.
-4. **Suite: decided YES.** The launch commit flips `inSuite` and does the mechanical list under "Suite decision" above.
-5. Launch commit (separate from this PR): fill in `site/aka/launch.js`; delete the PRE-LAUNCH GUARD test; write the live wording into
-   the static fallbacks in `index.html` (the strings the script replaces: hero status, the two gated buttons, the `data-aka-facts`
-   sentence); add a share card and `og:image` (the card
-   generator `scripts/gen_og_cards.py` does not cover product pages; product cards are `site/assets/og/<slug>.png`); re-render the
-   demo video if the icon or screenshots changed; flip `<meta name="robots">` to `index, follow`.
-6. Launch-day links, none of which exist yet: nav and footer (`scripts/apply_layout.py` `FOOTER_COLUMNS`), home dock tile, products
-   card and chooser, pricing row, sitemap, search index, `llms.txt` block, `gen_llms_full.py` page list, changelog entry, `/li/aka`
-   style redirects in `netlify.toml`, and the support-box topic (`support-message.mjs` `TOPICS` plus `apply_support_box.py`).
-7. Add the click counter in `site/analytics.js` (a `aka-download?trial=1` branch firing `aka_trial_download`, and `aka_trial_download`
-   in the `FUNNEL` regex). The server side (`stats.mjs`, dashboard) is already in. It is held back only because changing `analytics.js`
-   restamps every page.
-8. Run `python3 scripts/apply_layout.py --check`, `python3 scripts/fingerprint_assets.py`, `python3 scripts/check_content.py --strict`.
-9. Confirm the Terms and Privacy wording against the shipped app: that the only network use is the update check (app name, version,
-   macOS version, update token); that nothing dropped on the app is sent; that there is no analytics; that the trial clock and key
-   check send nothing.
+Status as of the launch PR (draft, `aka-launch` branch, do not merge until Ben says go). "In the PR" means the files are
+changed there; "manual" means a person does it, in this order, on launch day.
+
+| # | Step | Status |
+|---|---|---|
+| 1 | `AKA_UPDATE_TOKEN` on Netlify production, from `~/.config/purplelink/aka-update-token`, never printed | **Manual**, before merge. Takes effect on the next deploy |
+| 2 | Upload `AKA-1.0.0.dmg` and the signed `appcast.xml` (never edited) to the `aka-files` Blobs store and read both back; SHA-256 `01ce39d5...0e8acb` and `674f663c...b332665` | **Manual**, before merge |
+| 3 | Test checkout recipe (100%-off code), above | **Manual**, after a deploy that carries the PR |
+| 4 | Suite: `inSuite` removed, bundle part, Suite page, success page, emails, copy, tests | **In the PR** |
+| 5 | Launch commit: `launch.js` live (1.0.0, 5 MB), static wording, robots `index, follow`, share card `site/assets/og/aka.png` (and a refreshed `mac-suite.png`), PRE-LAUNCH GUARD test replaced by LAUNCHED | **In the PR**. The release date in `launch.js`, the sitemap, the changelog entry and the static facts is the day the PR was prepared: if launch is on another day, run `python3 scripts/go-live-app.py aka 1.0.0 5 YYYY-MM-DD` (idempotent) and change the changelog date |
+| 6 | Launch-day links: footer, home dock tile and price ladder, products card and chooser, pricing row and `pricing.md`, sitemap, `llms.txt` block and the `gen_llms_full.py` page list, changelog entry, support-box topic, house promo card in `site.js` | **In the PR**. Not done on purpose: the `/li/aka`-style social short links (the social engine's `PRODUCTS` list and its tests change with them, and posting is an outward action) |
+| 7 | Click counter in `site/analytics.js` (`aka-download?trial=1` fires `aka_trial_download`, also in `FUNNEL`) | **In the PR** |
+| 8 | `apply_layout.py --check`, `fingerprint_assets.py`, `check_content.py --strict`, both test suites | Run, green |
+| 9 | Terms and Privacy wording confirmed against the shipped app | **Manual**: Ben reads the AKA sections once more against the app's behavior |
+| 10 | Guide "Free offline file converters for Mac" listed and linked to `/aka/` | **In the PR** |
+
+Merge, then the scheduled 06:00 or 17:00 Eastern build publishes the site. The DMG and appcast are live as soon as they are in
+Blobs; the page, the Suite change and the `AKA_UPDATE_TOKEN` take effect with that build. Do not put `[deploy now]` in the PR:
+nothing here is a customer-harm fix.
 
 ## Open items
 

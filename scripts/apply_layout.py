@@ -67,6 +67,7 @@ FOOTER_COLUMNS = [
         ("Tapefolio", "/tapefolio/"),
         ("Panely", "/panely/"),
         ("Summonly", "/summonly/"),
+        ("AKA", "/aka/"),
         ("BatteryMeter", "/batterymeter/"),
         ("Paper Review", "/tools/paper-review/"),
         ("Scholar Utility Belt", "/scholar-utility-belt/"),

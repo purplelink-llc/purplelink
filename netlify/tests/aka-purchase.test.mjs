@@ -1,5 +1,5 @@
 // Selling AKA: the checkout catalog, the purchase email (link, AKA1 key, practical note), the key a session is
-// entitled to (including the Suite launch gate), the Suite and bundle emails (which must not carry it yet), and the
+// entitled to (the Suite and bundles that name it), the Suite and bundle emails, and the
 // recovery email. Stripe, Resend and Blobs are stubbed; signing keys are throwaway. The production keys are never read.
 //
 // Run with: node --experimental-test-module-mocks --test netlify/tests/aka-purchase.test.mjs
@@ -76,11 +76,13 @@ test("checkout sells AKA at $14.99 from the catalog, with its own success page a
   assert.match(p.get("custom_text[submit][message]") || "", /full \$14\.99/);
 });
 
-test("AKA is not a custom bundle part, and the Suite line does not name it", async () => {
-  const bad = await post({ product: "bundle-2", apps: ["aka", "panely"] });
-  assert.equal(bad.status, 400);
+test("AKA is a custom bundle part, and the Suite line names it", async () => {
+  const ok = await post({ product: "bundle-2", apps: ["aka", "panely"] });
+  assert.equal(ok.status, 200);
+  assert.equal(stripeParams().get("metadata[apps]"), "panely,aka");
+  calls.length = 0;
   await post({ product: "app-suite" });
-  assert.doesNotMatch(stripeParams().get("line_items[0][price_data][product_data][name]"), /AKA/);
+  assert.match(stripeParams().get("line_items[0][price_data][product_data][name]"), /Summonly, AKA and Vitae Plus for life/);
 });
 
 test("AKA has a tax code and a follow-up name like the other apps", () => {
@@ -99,20 +101,14 @@ test("a AKA session is entitled to one AKA1 key that verifies for AKA", () => {
   assert.equal(keys[0].key, licenseKeysForSession("aka", "cs_live_aka_abcdefghij")[0].key, "derived from the session, so every caller gets the same key");
 });
 
-test("LAUNCH GATE: a Mac Suite session gets keys for Outbound Veil and Legroom but no AKA key", () => {
+test("a Mac Suite session gets an AKA key with the other keyed apps; a custom bundle gets one only if it names AKA", () => {
   const slugs = licenseKeysForSession("app-suite", "cs_live_su_abcdefghij").map((k) => k.slug);
-  assert.ok(slugs.includes("outbound-veil") && slugs.includes("legroom"));
-  assert.ok(!slugs.includes("aka"));
-});
-
-test("once the Suite gate is flipped, a Suite session gets a AKA key too; a custom bundle still never does", () => {
-  LICENSED_PRODUCTS.aka.inSuite = true;
-  try {
-    assert.ok(licenseKeysForSession("app-suite", "cs_live_su_abcdefghij").some((k) => k.slug === "aka"));
-    assert.ok(!licenseKeysForSession("bundle-2", "cs_live_b2_abcdefghij", { apps: "legroom,panely" }).some((k) => k.slug === "aka"));
-  } finally {
-    LICENSED_PRODUCTS.aka.inSuite = false;
-  }
+  assert.ok(slugs.includes("outbound-veil") && slugs.includes("legroom") && slugs.includes("aka"));
+  assert.ok(!licenseKeysForSession("bundle-2", "cs_live_b2_abcdefghij", { apps: "legroom,panely" }).some((k) => k.slug === "aka"));
+  const withAka = licenseKeysForSession("bundle-2", "cs_live_b2_abcdefghij", { apps: "legroom,aka" });
+  assert.deepEqual(withAka.map((k) => k.slug).sort(), ["aka", "legroom"]);
+  const key = withAka.find((k) => k.slug === "aka").key;
+  assert.equal(verifyLicense("aka", key, { publicB64: PUBLIC }), true);
 });
 
 // ---- delivery ----
@@ -137,15 +133,21 @@ test("a paid AKA order emails the page link, its AKA1 key and one practical note
   assert.doesNotMatch(mail.text + mail.html, /[—;]\s*$/m);
 });
 
-test("a paid Suite order carries no AKA key or text while the gate is closed", async () => {
+test("a paid Suite order carries the AKA key and the practical note, and a bundle without AKA carries neither", async () => {
   await webhook(signed(paid({ product: "app-suite" }, 5999, "evt_su", "cs_live_su_abcdefghij")));
   const mail = mailOf();
-  assert.doesNotMatch(mail.text + mail.html, /AKA|AKA1-/);
+  assert.match(mail.text, /AKA: AKA1-([0-9A-Z]{5}-){21}[0-9A-Z]{4}/);
+  assert.match(mail.text, /AKA downloads/);
+  assert.match(mail.text, /hold Option/);
+  calls.length = 0;
+  await webhook(signed(paid({ product: "bundle-2", apps: "legroom,panely" }, 3499, "evt_b2", "cs_live_b2_abcdefghij")));
+  const other = mailOf();
+  assert.doesNotMatch(other.text + other.html, /AKA|AKA1-/);
 });
 
 // ---- recovery ----
 
-test("the recovery email lists a AKA purchase with its page and key, and a Suite purchase without one", () => {
+test("the recovery email lists a AKA purchase with its page and key, and a Suite purchase with the key and the AKA download", () => {
   const key = "AKA1-AAAAA-BBBBB";
   const only = recoveryEmail([{ sessionId: "cs_fr", product: "aka", created: 5 }], null, null, new Map([["cs_fr", [{ slug: "aka", label: "AKA", key }]]]));
   assert.match(only.text, /AKA for macOS/);
@@ -153,5 +155,6 @@ test("the recovery email lists a AKA purchase with its page and key, and a Suite
   assert.ok(only.text.includes(`AKA: ${key}`));
   const suite = recoveryEmail([{ sessionId: "cs_su", product: "app-suite", created: 5 }], null, null,
     new Map([["cs_su", licenseKeysForSession("app-suite", "cs_su")]]));
-  assert.doesNotMatch(suite.text, /AKA|AKA1-/);
+  assert.match(suite.text, /AKA: AKA1-/);
+  assert.match(suite.text, /Summonly and AKA downloads/);
 });

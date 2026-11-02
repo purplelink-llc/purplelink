@@ -1,12 +1,7 @@
-"""The guide "Free offline file converters for Mac" is unlisted until the AKA launch (2026-11-02).
+"""The guide "Free offline file converters for Mac" is listed since the AKA launch (2026-11-02).
 
-It is public by URL only: noindex, absent from the sitemap, the search index, llms.txt and llms-full.txt, and not
-linked from any other page. It also holds the launch marker where the /aka/ link goes, and must not link
-/aka/ yet (that page is hidden until launch).
-
-To list it at launch: change the robots meta to "index, follow", add it to site/guides/index.html, add
-guides/free-offline-file-converters-mac/ to scripts/gen_llms_full.py, replace the HTML comment with a link to
-/aka/, then delete or invert test_unlisted_* below.
+It is indexable, in the sitemap and the guides index, and links /aka/ once, in one short section that says AKA is
+available for $14.99 after a 7-day trial.
 """
 import html
 import re
@@ -16,55 +11,48 @@ from common import SITE, ORIGIN, EMOJI, ROOT, page_of, canonical, jsonld_blocks,
 
 SLUG = "free-offline-file-converters-mac"
 URL = f"/guides/{SLUG}/"
-MARKER = "<!-- launch: link /aka/ here -->"
 
 
 def strip_tags(text, sep=" "):
     return html.unescape(re.sub(r"<[^>]+>", sep, text))
 
 
-class UnlistedConvertersGuide(unittest.TestCase):
+class ConvertersGuide(unittest.TestCase):
     def setUp(self):
         self.text = page_of(URL).read_text(encoding="utf-8")
 
-    # ---- unlisted
-    def test_unlisted_noindex(self):
-        self.assertTrue(has_noindex(self.text))
+    # ---- listed
+    def test_indexable(self):
+        self.assertFalse(has_noindex(self.text))
+        self.assertIn('<meta name="robots" content="index, follow">', self.text)
 
-    def test_unlisted_not_in_sitemaps(self):
-        self.assertNotIn(URL, sitemap_paths())
-        for name in ("sitemap.xml", "sitemap-images.xml"):
-            self.assertNotIn(SLUG, read_site(name))
+    def test_in_sitemap(self):
+        self.assertIn(URL, sitemap_paths())
 
-    def test_unlisted_not_in_search_index_or_llms(self):
-        for name in ("search-index.json", "llms.txt"):
-            self.assertNotIn(SLUG, read_site(name), name)
-        self.assertNotIn(SLUG, (ROOT / "site" / "llms-full.txt").read_text(encoding="utf-8"))
+    def test_linked_from_guides_index(self):
+        self.assertIn(URL, read_site("guides/index.html"))
 
-    def test_unlisted_not_linked_from_any_page(self):
-        own = page_of(URL)
-        linked = []
-        for f in SITE.rglob("*.html"):
-            if f == own or "assets" in f.relative_to(SITE).parts:
-                continue
-            if SLUG in f.read_text(encoding="utf-8", errors="ignore"):
-                linked.append(str(f.relative_to(SITE)))
-        self.assertEqual(linked, [])
+    def test_in_llms_full_page_list(self):
+        src = (ROOT / "scripts" / "gen_llms_full.py").read_text(encoding="utf-8")
+        self.assertIn(f'"guides/{SLUG}/"', src)
 
-    def test_unlisted_not_in_guides_index_or_feeds(self):
-        self.assertNotIn(SLUG, read_site("guides/index.html"))
-        for f in list(SITE.glob("*.xml")) + list(SITE.glob("blog/*.xml")):
-            self.assertNotIn(SLUG, f.read_text(encoding="utf-8", errors="ignore"), f.name)
+    # ---- the AKA section
+    def test_launch_marker_gone_and_aka_linked_once(self):
+        self.assertNotIn("launch: link", self.text)
+        article = re.search(r"<article.*?</article>", self.text, re.S).group(0)
+        self.assertEqual(len(re.findall(r'href="/aka/"', article)), 1)
 
-    # ---- no AKA link before launch
-    def test_launch_marker_present_and_no_aka_link(self):
-        self.assertIn(MARKER, self.text)
-        self.assertNotRegex(self.text, r'href="[^"]*/aka(?:/|")', re.I)
-        self.assertNotIn("/aka/", re.sub(r"<!--.*?-->", "", self.text, flags=re.S))
-
-    def test_aka_named_once_in_one_section(self):
-        body = strip_tags(re.search(r"<article.*?</article>", self.text, re.S).group(0))
-        self.assertEqual(len(re.findall(r"AKA", body)), 1)
+    def test_aka_named_in_one_section_only(self):
+        body = re.search(r"<article.*?</article>", self.text, re.S).group(0)
+        sections = re.split(r"(?=<h2>)", body)
+        with_aka = [sec for sec in sections if "AKA" in strip_tags(sec)]
+        self.assertEqual(len(with_aka), 1)
+        text = " ".join(strip_tags(with_aka[0]).split())
+        self.assertIn("$14.99", text)
+        self.assertIn("7-day trial", text)
+        self.assertIn("available", text)
+        self.assertNotIn("not released", text.lower())
+        self.assertNotIn("planned", text.lower())
 
     # ---- page hygiene
     def test_canonical_and_one_h1(self):
