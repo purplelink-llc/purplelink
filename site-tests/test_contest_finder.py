@@ -227,7 +227,7 @@ class OtherTerms(unittest.TestCase):
 class ScoreAndPicks(unittest.TestCase):
     def rec(self, **kw):
         base = {"id": "x", "name": "X", "url": "https://x.org/", "group": "photo", "size": "small", "themes": ["landscape"],
-                "fee_usd": 10, "prize_usd": 1000, "images": 3, "deadline": "2026-12-01", "deadline_status": "verified",
+                "fee_usd": 0, "prize_usd": 1000, "images": 3, "deadline": "2026-12-01", "deadline_status": "verified",
                 "status": "open", "source": "registry", "us_eligible": True,
                 "licence_text": "Winning images may be licensed for promotion of the awards."}
         base.update(kw)
@@ -238,8 +238,28 @@ class ScoreAndPicks(unittest.TestCase):
         r = self.rec()
         si = r["score_inputs"]
         self.assertAlmostEqual(si["ev"], 1000 * PROFILE["score"]["odds"]["photo-small"] * 3 * 1.0, places=2)
-        self.assertAlmostEqual(si["score"], round(si["ev"] - 10 - si["rights_cost"], 2), places=2)
+        self.assertAlmostEqual(si["score"], round(si["ev"] - 0 - si["rights_cost"], 2), places=2)
         self.assertEqual(cf.pickable(r, PROFILE, TODAY), "")
+
+    def test_free_contests_only(self):
+        s = PROFILE["score"]
+        self.assertEqual(s["max_fee_usd"], 0)
+        self.assertEqual(s["min_score"], 0)
+        paid = self.rec(fee_usd=10, prize_usd=10_000_000)
+        self.assertGreater(paid["score_inputs"]["score"], 0)
+        self.assertIn("fee", cf.pickable(paid, PROFILE, TODAY))
+        uncapped = {**PROFILE, "score": {**s, "max_fee_usd": None}}
+        self.assertEqual(cf.pickable(paid, uncapped, TODAY), "")
+
+    def test_digest_states_the_bar(self):
+        self.assertEqual(cf.bar_line(PROFILE), "Bar: free contests only; a pick must score above 0.")
+        self.assertIn("no fee cap", cf.bar_line({"score": {"min_score": -40, "max_fee_usd": None}}))
+
+    def test_free_but_costly_rights_is_not_picked(self):
+        r = self.rec(prize_usd=1, licence_text="Every entrant grants the organiser a licence to use all entries "
+                     "in its promotion for three years.")
+        self.assertLessEqual(r["score_inputs"]["score"], 0)
+        self.assertIn("score", cf.pickable(r, PROFILE, TODAY))
 
     def test_unknown_fee_is_unscored(self):
         r = self.rec(fee_usd=None)
@@ -267,6 +287,15 @@ class PhotoRules(unittest.TestCase):
                 "editorial": False, "people": False, "exclusive": False, "taken": "2024-05-01", "location": ""}
         base.update(kw)
         return base
+
+    def test_ai_denoise_ban(self):
+        text = "AI enhancement beyond standard correction, AI noise reduction and upscaling are banned."
+        self.assertTrue(cf.ai_denoise_banned(text))
+        self.assertFalse(cf.ai_denoise_banned("Noise reduction and sharpening are allowed. AI-generated images are banned."))
+        rec = {"ai_denoise_banned": True}
+        self.assertIn("AI denoise", cf.photo_eligible(self.ph(file="DSC_1906-Enhanced-NR.jpeg"), rec))
+        self.assertEqual(cf.photo_eligible(self.ph(file="DSC_1906.jpeg"), rec), "")
+        self.assertEqual(cf.photo_eligible(self.ph(file="DSC_1906-Enhanced-NR.jpeg"), {}), "")
 
     def test_wild_only(self):
         rec = {"wild_only_detected": True}
@@ -336,7 +365,7 @@ class EndToEnd(unittest.TestCase):
         self.originals = {q.name: q.read_bytes() for q in lib.iterdir()}
         sources = {"schema": 1, "contests": [
             {"id": "lake-awards", "name": "Lake Awards 2026", "url": "https://lake.example/rules", "group": "photo", "size": "small",
-             "themes": ["landscape"], "edition": "2026", "deadline": "2026-12-01", "deadline_status": "verified", "fee_usd": 5,
+             "themes": ["landscape"], "edition": "2026", "deadline": "2026-12-01", "deadline_status": "verified", "fee_usd": 0,
              "images": 3, "prize_usd": 1000, "us_eligible": True},
             {"id": "grab", "name": "Grab Contest", "url": "https://grab.example/rules", "group": "photo", "themes": ["landscape"],
              "edition": "2026", "deadline": "2026-12-01", "deadline_status": "verified", "fee_usd": 0, "prize_usd": 2500, "us_eligible": True},
