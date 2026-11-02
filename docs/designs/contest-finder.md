@@ -2,6 +2,7 @@
 
 Status: reviewed (EGM Goldfish review, four Sonnet reviewers, 2026-11-02), resolved and built in the same change.
 Owner: Ben. Where the built version differs from draft 1, the section "Changes after review" wins. Review log at the end.
+Updated 2026-11-02 (Ben: "set the contest bar to free contests only"): see "Free contests only" below.
 
 ## Concepts brief
 
@@ -312,8 +313,8 @@ rolling or unknown is never picked. Unknown US eligibility is never picked. Expo
 never added to it.
 
 **Pick rule.** Status `open`, in the registry, a verified deadline at least 3 days away, open now, no rights gate, US
-eligibility confirmed, and a score above `min_score` (-40: the largest expected loss per entry treated as an
-acceptable lottery ticket). Up to 3 a week, best score first.
+eligibility confirmed, an entry fee no higher than `max_fee_usd`, and a score above `min_score`. Up to 3 a week, best
+score first. Both values are in `profile.json`; see "Free contests only".
 
 **Deadlines.** The registry date is authoritative. A page date that differs is a warning; when the registry date has
 passed and the page shows a later one, the page date is used and the digest asks for a re-read. "until" and "ends"
@@ -389,15 +390,37 @@ The registry fields are documented in `sources.json`'s `_doc` key; the weights i
 deadline formats and labels, the Creo clause-7 paraphrase (all entries, irrevocable, worldwide, three years,
 perpetual 7.2(h), products only by agreement, non-commercial viewing not flagged), winners-only, rights-grab and
 no-licence fixtures, the score formula and pick rule, status transitions, photo rules (wild-only, capture dates),
-an end-to-end `weekly` with a fake fetcher (originals byte-identical afterwards, no second queue item on a re-run),
+the free-only fee cap and bar, the AI-denoise photo rule, an end-to-end `weekly` with a fake fetcher (originals byte-identical afterwards, no second queue item on a re-run),
 the product entry and its tag, the hub source and the queue lint. First real run, 2026-11-02: 27 registry entries,
 24 pages read (3 refused), one pick, two prefilled entries, two pending queue items, three hub placements.
 
+### Free contests only (2026-11-02)
+
+Ben chose free contests only, so `profile.json` now has `max_fee_usd: 0` and `min_score: 0` (it was -40).
+
+- `max_fee_usd` is a hard cap checked before the score: a contest with any entry fee is never picked, however large
+  its prize. `null` removes the cap. Without it, a big enough prize prior could outscore a fee.
+- `min_score: 0` means a free contest must also have a positive expected value after its rights cost, so a free
+  contest that takes a licence on every entry for a small prize is not picked either.
+- The digest states the bar at the top and lists contests Ben declined, with his reason, under "Declined by Ben".
+- The two paid entries from the first run (The Nature Photography Contest, Wildlife Photographer of the Year) were
+  rejected in the queue as declined by Ben and marked `rejected` in the ledger. Their photo copies stay in their entry
+  folders.
+
+The rescan under this bar picked nothing. Every free contest in the registry is blocked: 35AWARDS (no cash prize, a
+licence on every entry), CEWE Photo Award (a perpetual licence on every entry, so the rights gate), and the rest have
+no confirmed deadline (BSSW Fellowship, Apple Design Awards, TechCrunch Startup Battlefield, Product Hunt Orbit) or an
+unknown cost (NASE grants need a paid membership). 35AWARDS and CEWE were prefilled by hand below the bar, each queue
+item saying why the finder would not pick it.
+
+The same change added one photo rule. When the terms ban AI noise reduction or upscaling (35AWARDS does), picks skip
+Lightroom's `-Enhanced-NR` and `-Enhanced-SR` files, and the checklist says so.
+
 ## Open trade-offs for Ben (after review)
 
-1. **`min_score` -40 and the $40 per image.** On these priors almost every paid contest has a negative expected
-   value; -40 lets a cheap entry through. Raise it to 0 to enter only free contests, as the photography plan's idea
-   10 suggested.
+1. **The $40 per image rights value.** Settled in part: Ben chose free contests only (2026-11-02), so the bar is 0
+   and fees are capped at 0. The $40 per image still decides whether a free contest with a licence on every entry
+   clears the bar; at that value, none in the registry does.
 2. **The Sony site-wide terms.** Clause 4 of worldphoto.org's general terms says any material sent through the site
    becomes WPO's property. The competition rules defer to their own clause 7, so it probably does not reach entries,
    but the flagger reports it as a copyright transfer. Worth one read.

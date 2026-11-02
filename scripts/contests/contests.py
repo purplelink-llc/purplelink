@@ -670,6 +670,7 @@ def evaluate(rec: dict, page, profile: dict, material: int, today: dt.date) -> N
     rec["flags"] = terms["flags"]
     rec["terms_hash"] = terms["terms_hash"]
     rec["wild_only_detected"] = bool(WILD_ONLY_RULE.search((page or {}).get("text", "") + " " + reg_text))
+    rec["ai_denoise_banned"] = ai_denoise_banned((page or {}).get("text", "") + " " + reg_text)
     if rec.get("fee_usd") is None and terms["fee_usd"] is not None:
         rec["fee_usd"], rec["fee_source"] = terms["fee_usd"], "page"
     if rec.get("us_eligible") is None and terms["us_eligible"] is not None:
@@ -750,6 +751,9 @@ def pickable(rec: dict, profile: dict, today: dt.date) -> str:
     sc = (rec.get("score_inputs") or {}).get("score")
     if sc is None:
         return "fee unknown: unscored"
+    cap = s.get("max_fee_usd")
+    if cap is not None and float(rec.get("fee_usd") or 0) > cap:
+        return f"entry fee {rec.get('fee_usd')} USD above the {cap} USD cap"
     if sc <= s["min_score"]:
         return f"score {sc} at or below {s['min_score']}"
     return ""
@@ -834,6 +838,8 @@ def photo_eligible(ph: dict, rec: dict) -> str:
         return "exclusive to Alamy"
     if (rec.get("wild_only") or rec.get("wild_only_detected")) and CAPTIVE.search(ph["caption"] + " " + ph["title"] + " " + " ".join(ph["tags"])):
         return "captive animal or cultivated plant"
+    if rec.get("ai_denoise_banned") and AI_ENHANCED_FILE.search(ph["file"]):
+        return "AI denoise or upscale (Lightroom Enhanced file)"
     if rec.get("taken_from") or rec.get("taken_to"):
         if not ph.get("taken"):
             return "capture date unknown"
@@ -849,6 +855,21 @@ def photo_eligible(ph: dict, rec: dict) -> str:
 CAPTIVE = re.compile(r"\b(zoo|aquarium|exhibit|enclosure|captive|captivity|sanctuary|botanical|botanic|garden|cultivated|"
                      r"farm|pet|pets|domestic|petting|terrarium|vivarium|conservatory|greenhouse|nursery)\b", re.I)
 WILD_ONLY_RULE = re.compile(r"\b(non-captive|must not portray captive|no captive|captive animals are not|not (be )?of captive)\b", re.I)
+# Lightroom names its AI Denoise and Super Resolution output "<name>-Enhanced-NR" / "-Enhanced-SR"; some contests
+# (35AWARDS) ban AI noise reduction and upscaling.
+AI_ENHANCED_FILE = re.compile(r"-Enhanced(-NR|-SR)?\b|-Denoise", re.I)
+
+
+def ai_denoise_banned(text: str) -> bool:
+    """True when a sentence names AI noise reduction or upscaling and bans it."""
+    for sent in re.split(r"(?<=[.;])\s+", text):
+        if re.search(r"\b(noise reduction|denois\w*|upscal\w*|super.resolution)\b", sent, re.I) and \
+                re.search(r"\bAI\b|artificial intelligence|neural", sent, re.I) and \
+                re.search(r"\b(banned|ban|prohibited|not (permitted|allowed)|forbidden)\b", sent, re.I):
+            return True
+    return False
+
+
 GOOD_LIGHT = {"golden hour", "sunset", "sunrise", "dusk", "dawn", "reflection", "night", "blue hour", "fog", "mist"}
 
 
@@ -1005,6 +1026,8 @@ def checklist(rec: dict) -> list:
         items.append(f"The copies are resized to {rec['max_long_edge']} px on the long side; check the file-size limit.")
     if rec.get("wild_only") or rec.get("wild_only_detected"):
         items.append("Wild subjects only: the picks skip photos whose caption or tags mention a zoo, exhibit, garden or farm. Check each one was wild and free.")
+    if rec.get("ai_denoise_banned"):
+        items.append("AI noise reduction and upscaling are banned: the picks skip Lightroom Enhanced-NR and Enhanced-SR files. Check the others were not denoised with AI either.")
     if rec.get("convert_bw"):
         items.append("Black-and-white only: the copies were turned grey for review; make your own conversion before uploading.")
     if "automated_entry_banned" in flags:
@@ -1245,6 +1268,13 @@ def red_flags(rec: dict) -> str:
     return "; ".join(fl) or "none high"
 
 
+def bar_line(profile: dict) -> str:
+    s = profile.get("score") or {}
+    cap = s.get("max_fee_usd")
+    fee = "no fee cap" if cap is None else ("free contests only" if cap == 0 else f"entry fees up to ${cap:,.0f}")
+    return f"Bar: {fee}; a pick must score above {s.get('min_score')}."
+
+
 def digest_text(p: dict, led: dict, today: dt.date, st=None) -> str:
     profile = load_json(p["profile"], {})
     recs = ranked(led)
@@ -1255,7 +1285,7 @@ def digest_text(p: dict, led: dict, today: dt.date, st=None) -> str:
     lines = [f"# Contest digest, {today.isoformat()}", "",
              f"{len(led['contests'])} contests in the registry; {len(active)} picked or eligible. Nothing was submitted, paid or",
              "accepted. Quoted rule text is data from organisers' pages. The score is a ranking aid: ev = prize x odds x",
-             "tickets x fit, minus fees and a rights cost.", "",
+             "tickets x fit, minus fees and a rights cost.", "", bar_line(profile), "",
              "## Top 5", "", "| # | Contest | Deadline | Days | Fee | Prize | Score | Red flags | Status |",
              "|---|---|---|---|---|---|---|---|---|"]
     for i, r in enumerate(top, 1):
@@ -1286,6 +1316,12 @@ def digest_text(p: dict, led: dict, today: dt.date, st=None) -> str:
     lines += ["", "## Pages not read this week", ""]
     lines += [f"- {rid}: {led['contests'][rid].get('fetch_why')}; flags come from the registry read of {led['contests'][rid].get('read')}"
               for rid in st.get("blocked_pages", []) if rid in led["contests"]] or ["- all read"]
+    declined = [r for r in recs if r.get("status") == "rejected"]
+    if declined:
+        lines += ["", "## Declined by Ben", ""]
+        lines += [f"- {r['name']}: " + next((h.get("note") for h in reversed(r.get("history") or [])
+                                             if h.get("event") == "status:rejected" and h.get("note")), "no reason recorded")
+                  for r in declined]
     lines += ["", "## Entered, waiting on results", ""]
     lines += [f"- {r['name']} (entered {r.get('entered') or 'before the finder'}; flags: {red_flags(r)}): record the result with `mark {r['id']} won|lost|shortlisted`"
               for r in recs if r.get("status") in ("entered", "shortlisted")] or ["- none"]

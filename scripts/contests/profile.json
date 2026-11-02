@@ -162,9 +162,11 @@
   "goods_factor": 0.5,
   "min_material": 3,
   "min_days_left": 3,
-  "min_score": -40,
+  "min_score": 0,
+  "max_fee_usd": 0,
   "picks_per_week": 3,
-  "_min_score": "The largest expected loss per entry (fees and rights cost minus expected winnings) Ben accepts as a lottery ticket. Paid contests are negative expected value on these priors; -40 allows a cheap entry and rejects a $100+ one.",
+  "_min_score": "The largest expected loss per entry (fees and rights cost minus expected winnings) Ben accepts. 0 since 2026-11-02 (Ben: free contests only): a contest must score above 0, so a free contest whose rights cost outweighs its expected prize is not picked either. It was -40.",
+  "_max_fee_usd": "The highest entry fee in USD a picked contest may charge. 0 (Ben, 2026-11-02): any contest with a fee is never picked, whatever its score. null removes the cap.",
   "odds": {
    "photo-large": 0.00033,
    "photo-small": 0.0025,

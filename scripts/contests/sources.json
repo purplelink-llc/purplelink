@@ -223,7 +223,7 @@
    "prize_text": "no cash: top-100 lists, diplomas, a catalogue",
    "us_eligible": true,
    "ai_text": "AI-generated content is banned outside the AI category; AI enhancement beyond standard correction, AI noise reduction and upscaling are banned.",
-   "licence_text": "Photos remain the author's copyright; no licence grant to the organiser was found; catalogue inclusion is without payment.",
+   "licence_text": "Photos remain the author's copyright. By submitting photos, authors grant the organizers permission to use the provided materials for any purpose related to the competition and subsequent exhibitions, and agree to publication in a catalog, contest exhibitions and other post-competition events without any monetary compensation.",
    "read": "2026-11-02"
   },
   {
@@ -270,14 +270,23 @@
    "edition": "2027",
    "opens": "2026-05-06",
    "deadline": "2027-05-31",
-   "deadline_status": "expected",
+   "deadline_status": "verified",
    "fee_usd": 0,
    "images": 10,
    "prize_usd": 0,
    "prize_goods_usd": 10800,
-   "prize_text": "a EUR 10,000 trip and vouchers; no cash",
+   "prize_text": "over 1000 prizes in goods and vouchers (1st: a EUR 10,000 trip plus EUR 7,500 in vouchers); no cash",
    "read": "2026-11-02",
-   "notes": "Terms of participation not read; US eligibility unconfirmed."
+   "notes": "Terms read 2026-11-02 in a browser (the page is rendered by JavaScript). Clause 7.2 says 31 May 2026, a leftover; clause 4.0 gives 31 May 2027.",
+   "deadline_note": "23:59 GMT+2",
+   "eligibility_text": "Natural persons aged 18 or over may enter; no country restriction is stated. A user account is required.",
+   "ai_text": "Photos must be taken with a lens-based camera. AI-generated content and generative fills are not permitted; edits must not add or remove information and must be described on submission.",
+   "licence_text": "CEWE never acquires the copyright. By participating, the entrant grants CEWE and its affiliates an irrevocable, spatially unlimited and perpetual right of use of all submitted photographs for PR work, for non-commercial self-promotion of CEWE, including websites, print, out of home, social networks, exhibitions, charity auctions, press and a CEWE PHOTOBOOK. Any further commercial use requires the separate consent of the participant.",
+   "us_eligible": true,
+   "rules_urls": [
+    "https://www.cewe.co.uk/cewe-photo-award",
+    "https://contest.cewe.co.uk/cewephotoaward2027/en_gb/terms-and-conditions"
+   ]
   },
   {
    "id": "astronomy-photographer-of-the-year",
