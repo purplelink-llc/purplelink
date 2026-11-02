@@ -1,7 +1,7 @@
 # Design: Undershelf waitlist sign-up
 
-Status: revision 2 after Goldfish review (codebase accuracy, design, comprehension), 2026-11-01. Waiting for Ben's
-approval. Branch: `undershelf-waitlist` (not pushed).
+Status: approved by Ben 2026-11-01 ("go with your recommendations": option A, counts on demand, keep utm).
+Built on branch `undershelf-waitlist` (not pushed).
 
 ## 1. Purpose and scope
 
@@ -188,7 +188,7 @@ and runs with `node --experimental-test-module-mocks --test netlify/tests/*.test
   confirmation.
 - Regression: digest and checklist confirmations still work and show their own text.
 
-## 6. Open trade-offs for Ben
+## 6. Decisions (Ben, 2026-11-01)
 
 1. **Option A** (a new function reusing library pieces) or **option B** (one generic list module now).
    Recommendation: A.

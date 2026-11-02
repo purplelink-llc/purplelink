@@ -1,8 +1,18 @@
 // Undershelf waitlist: posts the address and the version the reader would buy. Double opt-in on the server
-// (undershelf-waitlist.mjs, same pattern as checklist-signup.mjs): nothing is kept until the email link is clicked.
+// (netlify/functions/undershelf-waitlist.mjs, docs/designs/undershelf-waitlist.md): nothing is kept until the email
+// link is clicked. The server answers the same way whether or not the address is already on the list.
 (() => {
   const API = "/.netlify/functions/undershelf-waitlist";
   const EMAIL = /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/;
+  const UTM_KEY = "pl_undershelf_utm";
+  // Remember which announcement brought the visitor (the guide loads this script too), for the sign-up count.
+  try {
+    const utm = new URLSearchParams(location.search).get("utm_content");
+    if (utm && /^[a-z0-9_-]{1,64}$/.test(utm)) sessionStorage.setItem(UTM_KEY, utm);
+  } catch (_) { /* storage off: the count just loses the source */ }
+  const storedUtm = () => {
+    try { return sessionStorage.getItem(UTM_KEY) || ""; } catch (_) { return ""; }
+  };
   const box = document.querySelector("[data-undershelf-waitlist]");
   if (!box) return;
   const form = box.querySelector("form");
@@ -26,12 +36,12 @@
       const res = await fetch(API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, version: data.get("version"), website: data.get("website"), page: location.pathname }),
+        body: JSON.stringify({ email, version: data.get("version"), website: data.get("website"), page: location.pathname, utm: storedUtm() }),
       });
       const body = await res.json().catch(() => ({}));
       if (res.ok && body.ok) {
         form.remove();
-        say(body.already ? "You are already on the list." : "Check your email and click the link to confirm.");
+        say("Check your email and click the link to confirm.");
       } else if (res.status === 429) {
         say("Too many tries today. Please try again tomorrow.", true);
       } else {
