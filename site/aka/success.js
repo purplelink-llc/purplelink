@@ -1,5 +1,5 @@
-// /formring/success/: turn a paid Stripe session into download links.
-// Calls formring-download in list mode, then renders one button per entitled file.
+// /aka/success/: turn a paid Stripe session into download links.
+// Calls aka-download in list mode, then renders one button per entitled file.
 (function () {
   var box = document.getElementById("downloads");
   var status = document.getElementById("dl-status");
@@ -18,7 +18,7 @@
     return;
   }
 
-  fetch("/.netlify/functions/formring-download?session_id=" + encodeURIComponent(sessionId))
+  fetch("/.netlify/functions/aka-download?session_id=" + encodeURIComponent(sessionId))
     .then(function (resp) { return resp.json().then(function (b) { return { ok: resp.ok, body: b }; }); })
     .then(function (r) {
       if (!r.ok || !r.body || !r.body.files || !r.body.files.length) {

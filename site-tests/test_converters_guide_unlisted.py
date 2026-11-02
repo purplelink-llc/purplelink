@@ -1,12 +1,12 @@
-"""The guide "Free offline file converters for Mac" is unlisted until the Formring launch (2026-11-02).
+"""The guide "Free offline file converters for Mac" is unlisted until the AKA launch (2026-11-02).
 
 It is public by URL only: noindex, absent from the sitemap, the search index, llms.txt and llms-full.txt, and not
-linked from any other page. It also holds the launch marker where the /formring/ link goes, and must not link
-/formring/ yet (that page is hidden until launch).
+linked from any other page. It also holds the launch marker where the /aka/ link goes, and must not link
+/aka/ yet (that page is hidden until launch).
 
 To list it at launch: change the robots meta to "index, follow", add it to site/guides/index.html, add
 guides/free-offline-file-converters-mac/ to scripts/gen_llms_full.py, replace the HTML comment with a link to
-/formring/, then delete or invert test_unlisted_* below.
+/aka/, then delete or invert test_unlisted_* below.
 """
 import html
 import re
@@ -16,7 +16,7 @@ from common import SITE, ORIGIN, EMOJI, ROOT, page_of, canonical, jsonld_blocks,
 
 SLUG = "free-offline-file-converters-mac"
 URL = f"/guides/{SLUG}/"
-MARKER = "<!-- launch: link /formring/ here -->"
+MARKER = "<!-- launch: link /aka/ here -->"
 
 
 def strip_tags(text, sep=" "):
@@ -56,15 +56,15 @@ class UnlistedConvertersGuide(unittest.TestCase):
         for f in list(SITE.glob("*.xml")) + list(SITE.glob("blog/*.xml")):
             self.assertNotIn(SLUG, f.read_text(encoding="utf-8", errors="ignore"), f.name)
 
-    # ---- no Formring link before launch
-    def test_launch_marker_present_and_no_formring_link(self):
+    # ---- no AKA link before launch
+    def test_launch_marker_present_and_no_aka_link(self):
         self.assertIn(MARKER, self.text)
-        self.assertNotRegex(self.text, r'href="[^"]*formring', re.I)
-        self.assertNotIn("/formring/", re.sub(r"<!--.*?-->", "", self.text, flags=re.S))
+        self.assertNotRegex(self.text, r'href="[^"]*/aka(?:/|")', re.I)
+        self.assertNotIn("/aka/", re.sub(r"<!--.*?-->", "", self.text, flags=re.S))
 
-    def test_formring_named_once_in_one_section(self):
+    def test_aka_named_once_in_one_section(self):
         body = strip_tags(re.search(r"<article.*?</article>", self.text, re.S).group(0))
-        self.assertEqual(len(re.findall(r"Formring", body)), 1)
+        self.assertEqual(len(re.findall(r"AKA", body)), 1)
 
     # ---- page hygiene
     def test_canonical_and_one_h1(self):
