@@ -1,0 +1,16 @@
+/* Undershelf waitlist page: only what the shared list-signup and post styles do not cover. */
+.undershelf-choice {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  margin: 12px 0 16px;
+  padding: 12px 16px;
+}
+.undershelf-choice legend { padding: 0 6px; font-weight: 600; }
+.undershelf-choice label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  cursor: pointer;
+}
+.undershelf-choice input { accent-color: var(--purple); }

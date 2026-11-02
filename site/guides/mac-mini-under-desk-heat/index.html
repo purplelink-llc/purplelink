@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Mac mini under a desk: does it run hotter? | Purplelink</title>
+    <meta name="description" content="Where the M4 and M5 Mac mini take in and push out air, what airflow simulation says about mounting one under a desk, and the rules any under-desk mount should follow: an open floor, nothing flat close below, a fan only if it blows up.">
+    <link rel="canonical" href="https://purplelink.llc/guides/mac-mini-under-desk-heat/">
+    <meta property="og:title" content="Mac mini under a desk: does it run hotter?">
+    <meta property="og:description" content="Where the M4 and M5 Mac mini take in and push out air, what airflow simulation says about mounting one under a desk, and the rules any under-desk mount should follow: an open floor, nothing flat close below, a fan only if it blows up.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/mac-mini-under-desk-heat/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/guides-mac-mini-under-desk-heat.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "Mac mini under a desk: does it run hotter?",
+      "description": "Where the M4 and M5 Mac mini take in and push out air, what airflow simulation says about mounting one under a desk, and the rules any under-desk mount should follow: an open floor, nothing flat close below, a fan only if it blows up.",
+      "author": { "@id": "https://purplelink.llc/about/#person" },
+      "publisher": { "@id": "https://purplelink.llc/#organization" },
+      "datePublished": "2026-11-01",
+      "dateModified": "2026-11-01",
+      "image": "https://purplelink.llc/assets/og/purplelink-card.png",
+      "mainEntityOfPage": "https://purplelink.llc/guides/mac-mini-under-desk-heat/"
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png?v=21c86cc2a8" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js?v=f0ab0f06a1"></script>
+    <link rel="stylesheet" href="/styles.css?v=f247a79f66">
+    <link rel="stylesheet" href="/motion.css?v=35524918f9">
+    <script src="/site.js?v=b053086227" defer></script>
+    <script src="/motion.js?v=d35f4b4ee4" defer></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg?v=2f8bd49b19" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">Guide</p>
+        <h1 class="post-title">Mac mini under a desk: does it run hotter?</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-11-01">November 1, 2026</time></p>
+        <p class="post-lede">Not if the mount leaves the bottom open. The M4 and M5 Mac mini breathe through their base, so what matters is what sits under it, not how close the desk is above it. A flat plate a centimetre below the base is the one set-up that clearly hurt in my simulations.</p>
+      </div>
+
+      <article class="post-body">
+        <p><strong>Disclosure up front:</strong> I am designing an under-desk mount, Undershelf, and this guide comes out of that work. The rules below apply to any mount. The numbers come from airflow simulation, not from a real Mac in a real mount; I say which is which, and a physical test is planned.</p>
+
+        <h2 id="short-answer">The short answer</h2>
+        <ul>
+          <li>Leave the Mac's base open to the room. A cradle that holds it by the edges is fine.</li>
+          <li>Keep any flat surface (a shelf, a tray, a plate) at least 25 mm below the base, and away from the rear of it.</li>
+          <li>Keep hubs and SSDs beside the Mac, not under it. Their heat ends up in the Mac's intake.</li>
+          <li>A fan underneath helps a little if it blows up toward the Mac and keeps running. Blowing down makes things worse.</li>
+          <li>Leave the back clear for cables and air, and make sure you can still reach the power button underneath.</li>
+        </ul>
+
+        <h2 id="how-it-breathes">Where the Mac mini takes in and pushes out air</h2>
+        <p>Apple's guidance for the 2024 Mac mini is only that the vents are on the bottom and the rear, and that both need some clearance (<a href="https://discussions.apple.com/thread/255934449" rel="noopener">Apple Community</a>). Teardown-based accounts and owner reports agree that air comes in through the ring on the base and that the warm air leaves at the back, but they disagree on whether it leaves through the rear part of the bottom ring or through the back. I could not settle that from public sources, so I simulated both. The power button is on the underside near the back corner (<a href="https://appleinsider.com/articles/24/11/12/power-press-fixes-for-apples-oddly-placed-mac-mini-button" rel="noopener">AppleInsider</a>).</p>
+        <p>That layout is the whole story. A Mac that breathes through its base cares about the space below it. If its own warm air can come back round to the intake, it breathes that air again, and everything inside runs warmer by about the same amount.</p>
+
+        <h2 id="what-i-simulated">What I simulated</h2>
+        <p>I ran a lattice Boltzmann airflow and heat simulation of the space under a desk with a Mac mini in a cradle, at 2.5 mm resolution. The Mac was modelled as producing 65 W of heat under sustained load, moving 4 litres of air a second through its base. Both figures are assumptions; Apple does not publish them. The solver matched the textbook answer for flow between two plates to within 0.3%. The number I report is how much warmer than the room the air entering the Mac is.</p>
+
+        <table>
+          <thead><tr><th>Set-up (Mac at 65 W)</th><th>Intake air above room</th></tr></thead>
+          <tbody>
+            <tr><td>Cradle with an open floor</td><td>1.1 C</td></tr>
+            <tr><td>Same, with a hub drawing 5 W beside the Mac</td><td>1.5 C</td></tr>
+            <tr><td>A flat plate with a fan 10 mm below the base, fan off</td><td>5.8 C</td></tr>
+            <tr><td>Same plate 25 mm below, fan moved clear of the exhaust, fan off</td><td>1.9 C</td></tr>
+            <tr><td>A 92 mm fan below, blowing up, low speed</td><td>0.8 to 0.9 C</td></tr>
+            <tr><td>The same fan blowing down</td><td>2.7 C</td></tr>
+          </tbody>
+        </table>
+        <p>If the Mac exhausts out of the back rather than the rear of its base, the plate at 10 mm costs only about 1.2 C, so treat the bad case as the warning it is, not a precise figure. I could not get a trustworthy number for a Mac standing on a desk top, so I do not compare against one here.</p>
+
+        <h2 id="does-it-matter">Does a degree or two matter?</h2>
+        <p>A little. Under a long compute job, my own M5 Pro Mac mini held its hottest die sensor at about 93 to 96 C with the fan near 3,150 rpm (measured with a small sensor logger, not simulated). A Mac at that point responds to warmer intake air by spinning its fan faster first and, if that is not enough, by lowering its clock. One or two degrees of warmer intake means a slightly louder fan, not a slower Mac. Five or six degrees is where I would start to expect lower sustained clocks, and I have not tested that.</p>
+
+        <h2 id="rules">Rules for any under-desk mount</h2>
+        <ol>
+          <li><strong>Open floor.</strong> Hold the Mac by its edges. A solid shelf directly under the base is the worst layout.</li>
+          <li><strong>25 mm or more below the base</strong> for anything flat, and nothing flat right under the back half, where the warm air leaves.</li>
+          <li><strong>Hubs and drives to the side.</strong> A 5 W hub raised the intake air by about half a degree in the simulation, even beside the Mac.</li>
+          <li><strong>Fans blow up and stay on.</strong> A stopped fan under the Mac is a flat plate with a hole in it.</li>
+          <li><strong>Solid wood or board for the screws.</strong> Not a hollow or honeycomb desk top, and screws shorter than the desk is thick.</li>
+          <li><strong>Reach the power button</strong> without taking the Mac down.</li>
+        </ol>
+
+        <h2 id="undershelf">Undershelf</h2>
+        <p>Undershelf is the mount I am designing with these rules: an open floor, a ridge that holds the Mac, room for the power button, and a drilling template. Before it is sold it gets a physical hang test and a with-and-without temperature run on a real Mac, and I will publish both. <a href="/undershelf/">Join the waitlist</a> if you want one email when it is ready.</p>
+
+        <h2 id="limits">What I have not verified</h2>
+        <ul>
+          <li>The Mac's real heat output, airflow and exhaust direction. All three are assumptions above.</li>
+          <li>The simulations were stopped after 1.6 seconds of simulated time while the warm air was still building slightly, so the numbers are a little low. The order of the set-ups did not change between earlier and later checkpoints.</li>
+          <li>No real Mac has been tested in Undershelf yet.</li>
+        </ul>
+      </article>
+    </main>
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg?v=2f8bd49b19" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/suite/">Mac Suite</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js?v=059b6eb933" defer></script>
+</body>
+</html>
