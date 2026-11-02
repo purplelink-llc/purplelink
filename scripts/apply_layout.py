@@ -324,6 +324,31 @@ def with_motion(html: str) -> str:
                   lambda m: m.group(1) + MOTION_JS, out, count=1) if "motion.js" not in out else out
 
 
+# Buddy, the site chat (docs/designs/buddy-chat.md): only these pages get the launcher for its first test.
+CHAT_PAGES = {f"{p}/index.html" for p in (
+    "tools/paper-review", "tools/paper-review/revision", "tools/citation-gap", "tools/anonymity-check",
+    "tools/cover-letter", "tools/response-review", "tools/resume-review",
+    "moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "panely", "summonly", "lenscrib", "suite",
+    "buddy", "vitae",
+)}
+CHAT_TAGS = ('    <link rel="stylesheet" href="/buddy-chat/chat.css">\n'
+             '    <script src="/buddy-chat/loader.js" defer></script>\n')
+
+
+def with_chat(rel: str, html: str) -> str:
+    """Add the chat launcher to CHAT_PAGES and take it off any other page. Pages that already carry it
+    (with or without the ?v hash fingerprint_assets stamps) are left alone, as with_motion does."""
+    has = "/buddy-chat/loader.js" in html
+    if rel in CHAT_PAGES:
+        if has or "</head>" not in html:
+            return html
+        return re.sub(r"([ \t]*)</head>", lambda m: CHAT_TAGS + m.group(0), html, count=1)
+    if not has:
+        return html
+    return re.sub(r'[ \t]*<link rel="stylesheet" href="/buddy-chat/chat\.css[^"]*">\n'
+                  r'[ \t]*<script src="/buddy-chat/loader\.js[^"]*" defer></script>\n', "", html)
+
+
 def render(rel: str, html: str) -> str:
     def nav_sub(m: re.Match) -> str:
         inline = "\n" not in m.group(2)
@@ -333,7 +358,7 @@ def render(rel: str, html: str) -> str:
 
     out = NAV_RE.sub(nav_sub, html, count=1)
     out = FOOTER_RE.sub(lambda m: footer_html(m.group(1), locale_of(rel)), out, count=1)
-    return with_theme(with_motion(out))
+    return with_chat(rel, with_theme(with_motion(out)))
 
 
 def pages():

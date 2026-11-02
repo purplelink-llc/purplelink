@@ -270,6 +270,30 @@ window.setupPaidToolUpload = function (cfg) {
       });
   });
 
+  // A free Citation Gap check from the site chat arrives as ?free=<signed link> instead of a Stripe
+  // session_id (docs/designs/buddy-chat.md, section 6). The link is a bearer credential, so it is taken
+  // out of the address bar at once.
+  var freeLink = cfg.productCategory === "citation-gap" ? new URLSearchParams(window.location.search).get("free") : null;
+  if (freeLink) {
+    try { history.replaceState(null, "", window.location.pathname); } catch (e) { /* ignore */ }
+    fetch(API_BASE + "/buddy/free-check/redeem", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ free: freeLink }),
+    })
+      .then(function (resp) { return resp.json().then(function (p) { return resp.ok ? p : Promise.reject(p); }); })
+      .then(function (data) {
+        if (!data || !data.token) throw {};
+        token = data.token;
+        setRedeemStatus("Your free check is ready. Choose your PDF below.", false);
+        showForm();
+      })
+      .catch(function () {
+        setRedeemStatus("This free-check link is not valid or has expired. Ask Buddy for a new one, or email ben@purplelink.llc.", true);
+      });
+    return;
+  }
+
   if (!sessionId) {
     setRedeemStatus("We couldn't find a payment in this link. If you paid, open the email titled \"link to start\" that we sent to the address you paid with; it opens this page on any device. Still stuck? Email ben@purplelink.llc with your Stripe receipt, with no need to pay again.", true);
     return;
