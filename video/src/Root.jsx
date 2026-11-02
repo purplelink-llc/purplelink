@@ -17,6 +17,7 @@ import { ChainDay } from "./Chain.jsx";
 import { build as buildChain } from "./chain/plan.js";
 import { build as buildLatexFix } from "./latexfix/plan.js";
 import { bumperTotal, BUMPER } from "./Bumper.jsx";
+import { FormringDemo, TOTAL_FRAMES as FORMRING_FRAMES } from "./formring/FormringDemo.jsx";
 import { FORMATS, brand } from "./theme.js";
 import { buildTimeline, totalFrames } from "./timeline.js";
 
@@ -66,6 +67,7 @@ export const Root = () => (
     <Composition id="StillHero" component={StillHero} fps={brand.fps} width={1920} height={1080} durationInFrames={240}
       defaultProps={{ id: "vitae-promo", timing: { scenes: [] } }}
       calculateMetadata={({ props }) => ({ durationInFrames: Math.round((props.timing.scenes.length ? PRODUCTS[props.id].build(props.timing).hero.T : 8) * brand.fps) })} />
+    <Composition id="FormringDemo" component={FormringDemo} fps={brand.fps} width={1920} height={1080} durationInFrames={FORMRING_FRAMES} />
     <Composition id="PanelyShot" component={PanelyShot} fps={brand.fps} width={1280} height={800} durationInFrames={1} defaultProps={{ shot: "layout-halves" }} />
     <Composition id="HeroV2" component={HeroV2} fps={brand.fps} width={1920} height={1080} durationInFrames={240} defaultProps={{ timing: { scenes: [] } }} />
     <Composition

@@ -96,6 +96,7 @@ export const BLOB_DELIVERED_PRODUCTS = new Map([
   ["keyfeel",           { name: "Keyfeel for macOS",                 successPath: "/keyfeel/success/" }],
   ["tapefolio",         { name: "Tapefolio for macOS",               successPath: "/tapefolio/success/" }],
   ["lenscrib",          { name: "Lenscrib for macOS",                successPath: "/lenscrib/success/" }],
+  ["formring",          { name: "Formring for macOS",                successPath: "/formring/success/" }],
   ["panely",          { name: "Panely for macOS",                successPath: "/panely/success/" }],
   ["summonly",          { name: "Summonly for macOS",                successPath: "/summonly/success/" }],
   // Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Panely + Summonly + Vitae Plus for life. /suite/success/
@@ -322,7 +323,7 @@ export function paperReviewOffer(productKey, nowMs = Date.now()) {
 // when a calendar stops being a sensible gift. Ben approved this exact text on 2026-10-31 (photo-arm plan, idea 3).
 // Stop rule: no calendar sale by December 10 means this line comes out early.
 export const CALENDAR_LINE_LAST_DAY_MS = Date.UTC(2027, 0, 15, 23, 59, 59);
-const CALENDAR_LINE_PRODUCTS = new Set(["moderntex", "moderntex-seats", "outbound-veil", "legroom", "keyfeel", "tapefolio", "lenscrib",
+const CALENDAR_LINE_PRODUCTS = new Set(["moderntex", "moderntex-seats", "outbound-veil", "legroom", "keyfeel", "tapefolio", "lenscrib", "formring",
   "panely", "summonly", "app-suite", "bundle-2", "bundle-3"]);
 
 export function calendarOffer(productKey, nowMs = Date.now()) {
@@ -490,6 +491,13 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     "so read every field before you save.";
   const lenscribText = lenscribKey.text + (isLenscrib ? lenscribNote + "\n\n" : "");
   const lenscribHtml = lenscribKey.html + (isLenscrib ? `<p>${lenscribNote}</p>` : "");
+  // Formring is sold on its own and its key is in the generic keys block above (shared PurplelinkLicenseV1 scheme), so this
+  // is only the one practical note: how the ring opens and what it asks for.
+  const isFormring = productKey === "formring";
+  const formringNote = "Formring needs macOS 14 or later. Start dragging files in Finder, then hold Option: the ring opens at the pointer, and a drop on a slice saves the result next to the original. " +
+    "It needs no Accessibility or Input Monitoring permission. Transcription asks for Speech Recognition permission the first time, and runs on your Mac. Your files are not uploaded.";
+  const formringText = isFormring ? formringNote + "\n\n" : "";
+  const formringHtml = isFormring ? `<p>${formringNote}</p>` : "";
   const text =
     `Thanks for buying ${entry.name}.\n\n` +
     `Your download page:\n${link}\n\n` +
@@ -499,6 +507,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     keyfeelText +
     tapefolioText +
     lenscribText +
+    formringText +
     panelyText +
     summonlyText +
     licenseTextBlock +
@@ -518,6 +527,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     keyfeelHtml +
     tapefolioHtml +
     lenscribHtml +
+    formringHtml +
     panelyHtml +
     summonlyHtml +
     licenseHtmlBlock +
