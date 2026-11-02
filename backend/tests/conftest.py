@@ -12,7 +12,7 @@ def fixtures_dir() -> Path:
 def _isolate_usage_ledger(monkeypatch):
     """Keep `.local()` pipeline tests out of the production cost ledger.
 
-    app.usage_ledger_dict is a real modal.Dict handle, and the pipeline tests
+    app.usage_ledger_dict is a real store (Dict plus durable Volume), and the pipeline tests
     stub the job/token dicts but not this one, so every run used to write
     zero-token records into paper-review-usage-ledger and made real per-job
     Anthropic cost look like $0.00 in the profit view.
@@ -73,7 +73,8 @@ def _isolate_durable_volume(monkeypatch):
         import app as backend_app
     except Exception:
         return
-    for name in ("paper_tokens_dict", "lifecycle_optout_dict", "referral_dict"):
+    for name in ("paper_tokens_dict", "lifecycle_optout_dict", "referral_dict",
+                 "customer_lifecycle_dict", "usage_ledger_dict", "feedback_dict"):
         store = getattr(backend_app, name, None)
         if hasattr(store, "_volume"):
             monkeypatch.setattr(store, "_volume", MemVolume())

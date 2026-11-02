@@ -4,8 +4,9 @@ Modal's Dict reference: "An individual Dict entry will expire after 7 days of
 inactivity (no reads or writes)." Every Dict this backend uses was created
 after the 2025-05-20 cutoff, so that rule applies to all of them. Some records
 must outlive it: a lifecycle unsubscribe lasts forever (CAN-SPAM), a volume
-pack's tokens are sold as never expiring, and a referral code must keep
-crediting its owner.
+pack's tokens are sold as never expiring, a referral code must keep crediting
+its owner, a lifecycle entry must remember which emails were already sent, and
+the cost ledger and customer feedback are kept for good.
 
 DurableDict keeps the Dict as a fast cache and writes each kept record to the
 Volume as one small JSON file. A read that misses the Dict falls back to the
@@ -129,6 +130,7 @@ class DurableDict:
         """Dict entries plus durable records the Dict has lost."""
         out = list(self._cache.items())
         seen = {k for k, _ in out}
+        cached_paths = {self._path(k) for k in seen}
         try:
             entries = self._volume.listdir(self._prefix)
         except Exception as exc:
@@ -136,6 +138,8 @@ class DurableDict:
                 logger.exception("durable listing failed for %s", self._prefix)
             entries = []
         for entry in entries:
+            if entry.path in cached_paths:
+                continue  # the Dict already gave this record; skip the read
             record = self._read(entry.path)
             if record is _MISSING or record.get("key") in seen:
                 continue

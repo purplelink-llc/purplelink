@@ -53,7 +53,22 @@ def test_backfill_copies_records_written_before_the_volume():
 def test_app_stores_are_durable():
     import app as backend_app
 
-    for name in ("paper_tokens_dict", "lifecycle_optout_dict", "referral_dict"):
+    for name in ("paper_tokens_dict", "lifecycle_optout_dict", "referral_dict",
+                 "customer_lifecycle_dict", "feedback_dict"):
         assert isinstance(getattr(backend_app, name), DurableDict), name
     assert backend_app._is_volume_pack({"expires_at": 0})
     assert not backend_app._is_volume_pack({"expires_at": 1.0})
+
+
+def test_items_reads_only_records_the_dict_lost():
+    cache, vol = {}, MemVolume()
+    ledger = DurableDict(cache, vol, "usage-ledger")
+    ledger["job_a"] = {"cost_usd": 0.4}
+    ledger["job_b"] = {"cost_usd": 0.7}
+    _evict(cache, "job_b")
+
+    reads = []
+    real_read = vol.read_file
+    vol.read_file = lambda path: (reads.append(path), real_read(path))[1]
+    assert dict(ledger.items()) == {"job_a": {"cost_usd": 0.4}, "job_b": {"cost_usd": 0.7}}
+    assert len(reads) == 1  # job_a came from the Dict, only job_b from the Volume

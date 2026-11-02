@@ -131,12 +131,17 @@ paper_token_index_dict = modal.Dict.from_name("paper-review-token-index", create
 # uniquely per job so concurrent writes never race on a shared list. Written
 # once, right after a job finishes (success or failure), by both pipeline
 # functions below. Used to calibrate pricing against real Anthropic usage —
-# see docs/paper-review-runbook.md "Cost & margin tracking".
+# see docs/paper-review-runbook.md "Cost & margin tracking". Kept on the
+# durable Volume too, so "never expires" holds past the Dict's 7-day expiry;
+# scripts/traffic-dashboard reads it the same way.
 #   usage_ledger_dict["<token[:16]>_<finished_at>"] = {
 #       ts, product, tier, status, price_charged_usd,
 #       input_tokens, output_tokens, cost_usd, models,
 #   }
-usage_ledger_dict = modal.Dict.from_name("paper-review-usage-ledger", create_if_missing=True)
+usage_ledger_dict = DurableDict(
+    modal.Dict.from_name("paper-review-usage-ledger", create_if_missing=True),
+    durable_volume, "usage-ledger",
+)
 
 # Lifecycle email automation — post-purchase tips/review-request/win-back
 # sequence, driven entirely by lifecycle_email_sweep() below.
@@ -144,7 +149,13 @@ usage_ledger_dict = modal.Dict.from_name("paper-review-usage-ledger", create_if_
 #       email, manuscript_title, purchased_at, last_stage_sent, last_sent_at,
 #   }
 #   lifecycle_optout_dict[email] = True   # written by /lifecycle/unsubscribe
-customer_lifecycle_dict = modal.Dict.from_name("paper-review-lifecycle", create_if_missing=True)
+# Both are durable: an entry can sit untouched for the 76 days between the
+# review-request and win-back stages, and losing it would lose the record of
+# what was already sent.
+customer_lifecycle_dict = DurableDict(
+    modal.Dict.from_name("paper-review-lifecycle", create_if_missing=True),
+    durable_volume, "lifecycle",
+)
 lifecycle_optout_dict = DurableDict(
     modal.Dict.from_name("paper-review-lifecycle-optout", create_if_missing=True),
     durable_volume, "lifecycle-optout",
@@ -220,8 +231,12 @@ referral_dict = DurableDict(
 # Customer feedback from the /feedback/ page (linked from the review-request
 # email and the status page): a rating, an optional comment, and permission
 # to quote. Keyed by a random id the page keeps so it can add the comment
-# after the one-click rating. No email address is stored.
-feedback_dict = modal.Dict.from_name("purplelink-feedback", create_if_missing=True)
+# after the one-click rating. No email address is stored. Durable, since a
+# quote someone allowed must still be there when it is used.
+feedback_dict = DurableDict(
+    modal.Dict.from_name("purplelink-feedback", create_if_missing=True),
+    durable_volume, "feedback",
+)
 FEEDBACK_RATINGS = ("useful", "partly", "not_useful")
 FEEDBACK_PRODUCTS = ("paper-review", "citation-gap", "anonymity-check", "cover-letter",
                      "revision-review", "response-review", "resume-review", "moderntex", "other")
@@ -4450,7 +4465,10 @@ def lifecycle_email_sweep() -> dict:
     except Exception as exc:
         logger.warning("paper-review housekeeping sweeps failed: %s", exc)
     try:
-        copied = sum(store.backfill() for store in (lifecycle_optout_dict, referral_dict, paper_tokens_dict))
+        copied = sum(store.backfill() for store in (
+            lifecycle_optout_dict, referral_dict, paper_tokens_dict,
+            customer_lifecycle_dict, usage_ledger_dict, feedback_dict,
+        ))
         if copied:
             logger.info("durable backfill: copied %s records to the volume", copied)
     except Exception:
