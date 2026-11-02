@@ -290,8 +290,8 @@ PAGES = [
             ("Is it free?",
              "Yes. There is no account and no watermark."),
         ],
-        "related": [("/tools/png-to-icns/", "PNG to ICNS"), ("/tools/webp-to-png/", "WebP to PNG"),
-                    ("/tools/heic-to-jpg/", "HEIC to JPG")],
+        "related": [("/tools/png-to-icns/", "PNG to ICNS"), ("/tools/photo-to-logo/", "Photo to Logo"),
+                    ("/tools/webp-to-png/", "WebP to PNG"), ("/tools/heic-to-jpg/", "HEIC to JPG")],
     },
     {
         "slug": "jpg-to-pdf",
