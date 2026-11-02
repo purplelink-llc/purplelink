@@ -237,6 +237,21 @@ builds it only from site tokens, so it stays calm and works in both themes (deci
 - **Deploy order:** Ben creates the workspace, key and `buddy-secret`; then `bash scripts/deploy.sh --backend`; only
   then may the site change publish, or the launcher would talk to routes that do not exist yet.
 
+## Guard rails, second pass (Ben, 2026-11-02: "double down on guard rails")
+
+- **Proof-of-work sessions.** `/buddy/status` hands out a signed challenge; the browser finds a nonce whose
+  sha256 has 19 leading zero bits (0.1 to 1.2 s measured in the app's browser) and trades it at `/buddy/session` for
+  a signed one-hour session. Each challenge works once (put-if-absent), and an address gets 15 sessions a day. The
+  session id is the conversation key, so a client can no longer pick conversation ids to reset the 20-turn limit.
+  This is the self-hosted challenge the research pass named (ALTCHA-style), with no third-party script.
+- **Strikes.** A visitor message that matches the paper tools' injection patterns (`safety.sanitize_user_text`), a
+  reply that fails the screen, or an off-topic refusal (the model starts those with a fixed sentence) is a strike.
+  Three strikes in a UTC day close the chat and the free check for that address until the next day.
+- **No deals in replies.** A reply that mentions coupons, promo or discount codes, vouchers, "N% off", a free licence,
+  key, copy, Suite or upgrade becomes a fixed line; so does a reply with more than one code block or 25 lines.
+- **Global cap.** 3,000 chat messages a day site-wide, besides the spend caps.
+- **Tighter prompt.** No personas, no rule changes, no stories or games, no code beyond a few LaTeX lines.
+
 ## Research pass: keeping it locked down (2026-11-02)
 
 A Sonnet research agent checked the design against OWASP's Top 10 for LLM Applications (2025), Anthropic's

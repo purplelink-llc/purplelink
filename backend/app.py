@@ -3768,6 +3768,29 @@ def web():
                   (f"rl:{bucket}:d:{now:%Y-%m-%d}:{digest}", per_day)]
         return core.check_limits_and_increment(rate_dict, limits) is None
 
+    def _buddy_ip_digest(request: Request) -> str:
+        return core.rate_limit_key(_client_ip(request), "", bucket="buddy").rsplit(":", 1)[-1]
+
+    def _buddy_blocked(request: Request) -> bool:
+        """An address with STRIKES_PER_IP_DAY strikes today is shut out of the chat and the free check."""
+        day = datetime.datetime.utcnow().strftime("%Y-%m-%d")
+        try:
+            return int(buddy_dict.get(f"strikes:{day}:{_buddy_ip_digest(request)}", 0)) >= _buddy.STRIKES_PER_IP_DAY
+        except Exception:
+            return True
+
+    def _buddy_strike(request: Request, why: str) -> None:
+        day = datetime.datetime.utcnow().strftime("%Y-%m-%d")
+        key = f"strikes:{day}:{_buddy_ip_digest(request)}"
+        try:
+            buddy_dict[key] = int(buddy_dict.get(key, 0)) + 1
+            buddy_dict.put(f"strikelog:{day}:{why}:{_secrets_module.token_hex(4)}", 1)
+        except Exception:
+            logger.exception("buddy strike write failed")
+
+    def _buddy_session(body: dict) -> str | None:
+        return _buddy.session_id(str(body.get("session") or ""), _buddy_secret())
+
     async def _buddy_body(request: Request) -> dict | None:
         if _too_large(request, _buddy.MAX_BODY_BYTES):
             return None
@@ -3806,8 +3829,35 @@ def web():
         if not _buddy_origin_ok(request):
             return JSONResponse({"error": "forbidden_origin"}, status_code=403)
         secret = _buddy_secret()
-        return JSONResponse({"enabled": _buddy_on() and bool(secret),
-                             "form_ts": _buddy.form_stamp(secret) if secret else ""})
+        on = _buddy_on() and bool(secret) and not _buddy_blocked(request)
+        return JSONResponse({"enabled": on,
+                             "form_ts": _buddy.form_stamp(secret) if on else "",
+                             "challenge": _buddy.new_challenge(secret) if on else "",
+                             "bits": _buddy.POW_BITS})
+
+    @api.post("/buddy/session")
+    async def buddy_session(request: Request):
+        """Trade a solved proof-of-work challenge for a signed one-hour session. Each challenge works once,
+        and an address gets SESSIONS_PER_IP_DAY sessions a day, so scripts pay for every conversation."""
+        if not _buddy_origin_ok(request):
+            return JSONResponse({"error": "forbidden_origin"}, status_code=403)
+        secret = _buddy_secret()
+        if not _buddy_on() or not secret or _buddy_blocked(request):
+            return JSONResponse({"error": "off"}, status_code=200)
+        body = await _buddy_body(request) or {}
+        challenge, nonce = str(body.get("challenge") or ""), str(body.get("nonce") or "")
+        payload = _buddy.verify(challenge, secret, "buddy-pow")
+        if not payload or not _buddy.pow_solved(challenge, nonce, int(payload.get("b") or _buddy.POW_BITS)):
+            return JSONResponse({"error": "invalid"}, status_code=400)
+        try:
+            if not buddy_dict.put(f"pow:{payload['c']}", 1, skip_if_exists=True):
+                return JSONResponse({"error": "invalid"}, status_code=400)
+        except Exception:
+            return JSONResponse({"error": "off"}, status_code=200)
+        if not _buddy_ip_ok(request, "buddy-session", _buddy.SESSIONS_PER_IP_DAY, _buddy.SESSIONS_PER_IP_DAY):
+            return JSONResponse({"error": "limited"}, status_code=200)
+        _sid, token = _buddy.new_session(secret)
+        return JSONResponse({"session": token})
 
     @api.post("/buddy/chat")
     async def buddy_chat(request: Request):
@@ -3816,18 +3866,28 @@ def web():
         if not _buddy_origin_ok(request):
             return JSONResponse({"error": "forbidden_origin"}, status_code=403)
         api_key = os.environ.get("BUDDY_ANTHROPIC_API_KEY", "")
-        if not _buddy_on() or not api_key:
+        if not _buddy_on() or not api_key or not _buddy_secret():
             return JSONResponse({"reply": _buddy.OFF_LINE, "off": True})
+        if _buddy_blocked(request):
+            return JSONResponse({"reply": "The chat is closed for you today. You can write to Ben instead.",
+                                 "limited": True})
         body = await _buddy_body(request)
         if body is None:
             return JSONResponse({"error": "invalid"}, status_code=400)
-        convo = body.get("conversation_id")
+        convo = _buddy_session(body)
         turns = _buddy.clean_turns(body.get("turns"))
-        if not isinstance(convo, str) or not 8 <= len(convo) <= 64 or not convo.replace("-", "").isalnum() or turns is None:
+        if not convo:
+            return JSONResponse({"error": "no_session"}, status_code=401)
+        if turns is None:
             return JSONResponse({"error": "invalid"}, status_code=400)
         if not _buddy_ip_ok(request, "buddy-chat", _buddy.CHAT_PER_IP_MINUTE, _buddy.CHAT_PER_IP_DAY):
             return JSONResponse({"reply": "That is a lot of questions for one day. You can write to Ben instead.",
                                  "limited": True})
+        day = datetime.datetime.utcnow().strftime("%Y-%m-%d")
+        if core.check_limits_and_increment(rate_dict, [(f"buddy:msgs:{day}", _buddy.GLOBAL_MESSAGES_DAY)]) is not None:
+            return JSONResponse({"reply": _buddy.OFF_LINE, "off": True})
+        if _buddy.looks_like_injection(turns[-1]):
+            _buddy_strike(request, "injection")
 
         convo_key = f"convo:{convo}"
         try:
@@ -3862,7 +3922,12 @@ def web():
         if reply is None:
             return JSONResponse({"reply": _buddy.ERROR_LINE})
 
-        reply = _buddy.screen_reply(reply)
+        screened = _buddy.screen_reply(reply)
+        if screened != reply[:1500]:
+            _buddy_strike(request, "screened")
+        elif screened.startswith(_buddy.REFUSAL_START):
+            _buddy_strike(request, "off_topic")
+        reply = screened
         state["n"] += 1
         state["replies"] = (state.get("replies") or [])[-(_buddy.HISTORY_TURNS - 1):] + [reply]
         state["expires"] = _time_module.time() + _buddy.CONVO_TTL_SECONDS
@@ -3884,6 +3949,10 @@ def web():
             return JSONResponse({"error": "invalid"}, status_code=400)
         sent = {"ok": True, "message": "If that address can get a free check, the upload link is on its way. "
                                        "It works for 3 days."}
+        if _buddy_blocked(request):
+            return JSONResponse(sent)
+        if not _buddy_session(body):
+            return JSONResponse({"error": "no_session"}, status_code=401)
         # A filled honeypot or a too-fast form looks like success and does nothing.
         if body.get("website") or not _buddy.form_stamp_ok(str(body.get("form_ts") or ""), secret):
             return JSONResponse(sent)
