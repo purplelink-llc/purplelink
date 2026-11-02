@@ -274,7 +274,158 @@ the meta.
 
 Branch `tools-converters` from `origin/main` in `/Volumes/Extreme SSD/_worktrees/Purplelink LLC/converters`; one PR
 with the first three pages; CI green; squash merge; published by the next scheduled build (no `[deploy now]`: new pages
-are not urgent). The second PR follows with the next four.
+are not urgent). The second PR (branch `tools-converters-2`, worktree `converters-2`) adds the next four, below.
+
+## Second set: PNG to ICO, JPG to PDF, AVIF to JPG, CSV to XLSX
+
+Ben, 2026-11-02, after the first PR merged: "build the next four now". This replaces the day-28 gate for these four.
+The 90-day read stays as the check on all seven. Same shell, same worker, one page per pair, a second PR.
+
+| Pair | Accepts | Work | Outputs |
+|---|---|---|---|
+| `png-to-ico` | PNG, JPG, WebP | Same resize path as ICNS; the ICO container is written in `convert-core.js` | .ico |
+| `jpg-to-pdf` | JPEG, PNG | pdf-lib (the copy PDF Tools already uses, `/assets/vendor/pdf-lib.min.js`, 525 KB, MIT), loaded in the worker on the first file. JPEG bytes go into the PDF unchanged | .pdf, one per picture, plus "Download as one PDF" |
+| `avif-to-jpg` | AVIF (sniffed `ftyp` with `avif`/`avis`) | `createImageBitmap`, as WebP | JPG or PNG |
+| `csv-to-xlsx` | CSV, TSV, TXT (text, sniffed by extension plus "no NUL byte in the first 4 KB") | Parser and sheet XML in `convert-core.js`; zipped by JSZip in the worker | .xlsx |
+
+**ICO.** Header `00 00 01 00`, count; one 16-byte directory entry per size (width and height bytes, 0 meaning 256;
+colors 0; planes 1; 32 bits; data length; offset), then the images. Every entry is a PNG, which Windows Vista and
+later, every current browser and macOS read. Windows XP needed BMP entries; it is not supported and the limits say so.
+Two size sets: **All sizes** (16, 24, 32, 48, 64, 128, 256; the default, for Windows icons) and **Favicon** (16, 32,
+48; a smaller file for a site's `/favicon.ico`). Same notes as ICNS for small and non-square sources. The test parses
+the directory back and checks every offset and length, as `parseIcns` does.
+
+**PDF.**
+- **Page size**: Fit to picture (the page is the picture at 96 pixels per inch), A4, or US Letter. The default is
+  Letter when the browser language is `en-US` or `en-CA`, A4 otherwise. A4 and Letter turn landscape for a landscape
+  picture, and the picture is scaled to fit inside a margin.
+- **Margin**: None or 12 mm, for A4 and Letter only.
+- **JPEG**: embedded as is (DCTDecode), so there is no second round of compression. `jpegInfo` in the core walks the
+  markers up to the first scan. It returns `sof`, `precision`, `width`, `height`, `components`, `orientation` (EXIF
+  0x0112, default 1), `adobe` (APP14 present), `dpi` (JFIF density, 72 to 2400, else 0) and `embeddable`. It returns
+  null for a truncated header.
+- **Orientation**: applied with the page's transformation matrix. `pdfMatrix(orientation, W, H, x, y)` maps the
+  stored image's unit square into the displayed box, for all eight orientations. For 5 to 8 the displayed width is the
+  stored height (`displaySize`). A Node test checks where each orientation puts the stored corners, and a browser check
+  renders an orientation-6 file upright. Drawing uses pdf-lib's `newXObject` and `concatTransformationMatrix`, because
+  `drawImage` has no matrix.
+- **What is embedded as is**: baseline or progressive (SOF0 to SOF2), 8-bit, and gray, RGB, or CMYK with Adobe's
+  marker. pdf-lib gives every CMYK JPEG the inverted Decode array (read in the vendored source), which is right for
+  Adobe-written files. Other JPEGs (arithmetic-coded, 12-bit, lossless, CMYK without the marker) are drawn by the browser
+  and re-encoded at quality 95, with a note on the row. The CMYK fixture renders red, not cyan, in Apple's PDF renderer.
+- **PNG**: drawn by the browser first and re-encoded as a plain 8-bit PNG, then embedded by pdf-lib with transparency
+  as a soft mask. This applies the PNG's color profile and avoids pdf-lib's own handling of 16-bit, interlaced and
+  palette files. PNG pages have a 25 MP cap (`maxPixels`), since pdf-lib holds the decoded pixels in memory.
+- **Metadata**: Producer and Creator are set to the tool, so files do not advertise pdf-lib.
+- **Combining**: each picture becomes a one-page PDF in its row. With two or more, "Download as one PDF" reads the
+  finished rows' PDFs from their Blobs, in list order (errored rows are skipped), and sends them, transferred, to the
+  worker as `{id, op: "combine", buffers, libs}`. The worker copies the pages into a single `combined.pdf`
+  (`copyPages`, no re-encoding) and answers like any file. The join is refused above 1 GB in total, the same cap as
+  the zip. Rows on this page get Move up and Move down buttons, labelled with the file name, so the order can be set
+  first; focus stays on the moved row's button and the status line says its new position.
+- **Size limits**: JPEGs are not decoded, so only the file size caps them.
+
+**AVIF.** Decoded by the browser: Chrome 85, Firefox 93, Safari 16.4 on macOS 13 or iOS 16 and later. When the
+browser cannot decode it, the row names those requirements instead of the generic message. The page does not probe
+for support in advance. An animated AVIF (an `avis` brand in `ftyp`) gets the first-frame note. 10-bit and HDR AVIF
+are drawn to an 8-bit sRGB canvas, which the limits state.
+
+**CSV.**
+- **What counts as a CSV**: `kindOf(head, name)`. Image magic wins. Otherwise a UTF-16 BOM, or a name ending in
+  `.csv`, `.tsv`, `.txt` or `.tab` with no NUL byte in the first 4 KB, makes it `csv`. The BOM is checked before the NUL
+  check, and short files count, below `sniff`'s 12-byte minimum. The page and the worker both call it.
+- **Text decoding**: a UTF-8, UTF-16 LE or UTF-16 BE BOM picks the encoding. Without a BOM the whole file is read as
+  strict UTF-8, and as Windows-1252 if that fails (the usual Excel-on-Windows export). A Text encoding option forces
+  UTF-8, Windows-1252, ISO-8859-2, Shift JIS, GB18030 or UTF-16. The row says which encoding and which separator were
+  used, so a wrong guess is visible.
+- **Parsing**: RFC 4180. Quoted fields, `""` escapes, newlines inside quotes, CRLF, LF or CR line ends, ragged rows.
+  Lenient: a quote inside an unquoted field is kept as a character. A trailing line break adds no row; blank lines in
+  the middle stay as empty rows. A quote that never closes is flagged with a note on the row.
+- **Separator**: detected from the first 50 lines outside quotes (comma, semicolon, tab, pipe). The candidate whose
+  per-line count is most often the same and above zero wins; ties go to comma, then semicolon, tab and pipe, and tab
+  first for `.tsv`. A one-column file comes out as comma. A Separator option sets it by hand.
+- **Cells**:
+  - A value becomes a number only in plain decimal notation (`^-?(0|[1-9]\d*)(\.\d+)?$`). Scientific notation counts
+    only with a decimal point or a signed exponent (`1.5e-3`, `2E+5`), so part numbers and gene names like `12E3`
+    stay text.
+  - These stay text:
+    - A leading zero (`02134`).
+    - A leading `+` (phone numbers).
+    - A whole number of 12 digits or more. Excel shows those as `1.23457E+11` under General.
+    - Anything past 15 significant digits.
+    - `.5`, `5.`, `Infinity`, `NaN`, hex, and values with surrounding spaces.
+  - `1.10` is stored as 1.1, as Excel would show it; Keep every value as text avoids that.
+  - In a semicolon file, `3,14` is read as a decimal comma; `1.234,5` stays text.
+  - Everything else is an inline string (`t="inlineStr"`).
+  - Dates stay text. Excel's own guessing of dates is the complaint people have, and the FAQ says how to convert a
+    column.
+  - Nothing is written as a formula, so `=HYPERLINK(...)` in a CSV shows as text: no formula injection.
+  - XML-illegal control characters are dropped.
+  - Cells over 32,767 characters are cut there, with a note.
+  - "Keep every value as text" turns off number detection.
+- **Sheet**:
+  - One sheet, named from the file (31 characters, no `[]:*?/\`).
+  - "First row is a header" (on by default) makes row 1 bold and freezes it.
+  - Column widths come from the longest value in the first 1,000 rows, capped at 60 characters.
+- **Limits**: 1,048,576 rows and 16,384 columns (Excel's) refuse with a message, and so do more than 5 million cells.
+  The parsed rows and the XML both sit in worker memory, and short cells carry about 40 bytes of XML each. The file
+  cap is 50 MB for this pair (`maxBytes` in `CONVERSIONS`). The sheet XML is kept as an array of chunks of 1,000 rows
+  and handed to JSZip as a Blob, so it never has to be one giant string.
+- **Package**: `[Content_Types].xml` (first in the zip), `_rels/.rels`, `docProps/app.xml`, `xl/workbook.xml`,
+  `xl/_rels/workbook.xml.rels`, `xl/styles.xml`, `xl/worksheets/sheet1.xml`.
+  - `buildXlsxParts(rows, fileName, {header, text, delimiter})` returns them; the worker zips with DEFLATE.
+  - The worksheet's elements are in schema order: `dimension`, `sheetViews` (frozen pane), `cols` with `customWidth`,
+    then `sheetData`.
+  - Styles: 0 normal, 1 bold header, 2 wrapped. Cells with a line break get 2, so they show on several lines.
+  - Every `<t>` carries `xml:space="preserve"`.
+  - Sheet names: no apostrophe at either end; History, which Excel reserves, becomes "History 1".
+  - The Node test zips the parts with the vendored JSZip and reads them back. The browser check opened a converted
+    file with `openpyxl` with warnings as errors. Excel and Numbers were not run in this session.
+
+**Shell changes.**
+- Options become generic. Each control carries `data-opt="<key>"`, saved per pair under the same localStorage key.
+  - Radios and selects store their value, checkboxes a boolean, and the quality slider its raw string. The old keys
+    (`output`, `quality`, `background`, `iconset`) keep their names and shapes, so remembered choices survive; a
+    browser check restored an old record on the HEIC page.
+  - A stored value that matches no control is ignored.
+  - `data-show-when="key=a,b"` replaces `data-for-output` (the margin shows only for A4 and Letter).
+  - `data-default-locale` gives US Letter to `en-US` and `en-CA`.
+  - `Convert.options()` validates every key, with fixed defaults (`page: "a4"`), so tests do not depend on the
+    browser.
+- The first 4 KB are read for sniffing, not 64 bytes, and `kindOf(head, name)` adds the text check.
+- Pairs marked `canvas` in `CONVERSIONS` need `OffscreenCanvas` and `createImageBitmap`; CSV and JPG to PDF need only
+  `Worker`. PNGs and odd JPEGs on the PDF page fail on their own row if the canvas is missing. The worker checks the
+  same flag.
+- Pairs with `combine` get row reordering and the one-PDF button.
+- Events: `tool_use` once per batch as before (`jpg-to-pdf:pdf`, `csv-to-xlsx:xlsx`). No separate event for a combined
+  PDF, because `tool-counts.mjs` counts every `tool_use` as a run and it would count the batch twice.
+
+**Worker changes.**
+- Work is routed by `CONVERSIONS[pair].work` (`image`, `icon`, `pdf`, `sheet`). The ICNS and ICO paths share
+  `drawSizes` and `resized`.
+- pdf-lib and JSZip are loaded with `importScripts` the first time their pair needs them, from stamped URLs the page
+  sends with every message (`libs`).
+  - JSZip's URL comes from the page's own `<script src="/assets/vendor/jszip/jszip.min.js?v=">`.
+  - pdf-lib's comes from `<link rel="prefetch" as="script" data-convert-lib="pdf" href="/assets/vendor/pdf-lib.min.js">`,
+    which only the JPG to PDF page carries and which `fingerprint_assets.py` stamps.
+  - The worker accepts only paths under `/assets/vendor/`.
+  - The prefetch fetches pdf-lib at idle into the cache. It is the site's own file and sends nothing.
+- `importScripts` is not counted by the worker's `fetch`/XHR meter. Neither was libheif's load; they are GET requests
+  for this site's files with no body.
+- The browser check ran both libraries in the worker under the production CSP, with no CSP errors. A site test checks
+  that the link is stamped.
+
+**Pages and links.**
+- Each page links to its siblings.
+- JPG to PDF links to PDF Tools, for merging existing PDFs.
+- The `/tools/` index group is renamed "Convert files": seven cards, `ItemList` positions 25 to 28.
+- Each new page gets its own social card.
+
+**Not in this set.**
+- **Several CSVs as sheets of one workbook.** Easy to add later with the combine path.
+- **XLSX to CSV.** The reverse needs a zip reader and shared-strings parsing; a separate pair if asked.
+- **Picking which PNG sizes go into an ICO.** Not offered.
+- **BMP entries in ICO** for Windows XP, older resource compilers and some installers. The limits say so.
 
 ## Open questions
 
@@ -311,3 +462,33 @@ Three Goldfish reviewers on Sonnet, zero context, 2026-11-02. What changed:
 - **Zoom-out: success gate and window.** 90-day read, a day-28 gate for the next set, target queries named.
 - **Zoom-out: HEIC alone first.** Declined, because the brief asked for three and WebP and ICNS add little risk.
 - **Zoom-out: altitude.** The ICNS layout and worker protocol stay, because they are what the tests check against.
+
+Second set, two Goldfish reviewers on Sonnet (design, implementation readiness), zero context, 2026-11-02. What
+changed:
+
+- **Number rule** was too loose. These now stay text: 12-digit and longer integers, scientific notation without a
+  decimal point or a signed exponent, `.5` and `5.`. A Node table of 25 cases pins the rule.
+- **AVIF support**: iOS 16 named; the row message names the browsers. A pre-drop probe was declined: the row message
+  covers it without an extra decode on page load.
+- **PDF orientation**: page box swap and matrix signature specified and tested for all eight orientations.
+  Non-embeddable JPEGs (SOF other than 0 to 2, 12-bit, CMYK without Adobe's marker) are redrawn instead of refused.
+- **CMYK**: checked in the vendored pdf-lib source (it writes the inverted Decode array for every CMYK JPEG), so CMYK
+  without Adobe's marker is redrawn. Rendered red in a browser check.
+- **PNG memory and fidelity**: 25 MP cap for PNG pages; PNGs normalized through the browser before pdf-lib.
+- **Encoding**: BOM before the NUL check, the whole file tested as UTF-8, an encoding option, and the encoding and
+  separator shown on the row. A data preview was declined; the row summary says what was read.
+- **XLSX package**: content types first, schema order, wrap style, reserved and apostrophe sheet names. Checked by
+  openpyxl, not by Excel.
+- **Memory**: a 5 million cell cap, and the sheet XML kept in chunks.
+- **Library stamping** (blocker): stamped `data-convert-lib` link, `libs` in each message, a vendor-path check, a site
+  test.
+- **OffscreenCanvas gate** (blocker): a per-pair `canvas` flag in both shell and worker.
+- **`kindOf`** (blocker): defined; the worker calls it instead of `sniff`.
+- **`options()` dropped new keys** (blocker): every key validated, fixed defaults, tests.
+- **Options storage**: types and compatibility defined, `data-show-when`.
+- **Node loading**: `.cjs` copies of pdf-lib and JSZip; pdf-lib and JSZip run in the main realm, the core in `vm`
+  with `TextDecoder` passed in.
+- **Combine protocol** defined; the separate combined event dropped, since it would double-count runs.
+- **Open: a hash check of the vendored copies in tests.** Not added. pdf-lib and JSZip were already live, and a swap
+  breaks the Node tests that run them.
+

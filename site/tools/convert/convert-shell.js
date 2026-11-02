@@ -1,5 +1,7 @@
 /* File converters, page side: drop zone, queue, worker, network meter, zip. Shared by every /tools/<pair>/ page.
-   The page's .cv-app[data-convert] names the pair; convert-core.js has the table. Files never leave the tab. */
+   The page's .cv-app[data-convert] names the pair; convert-core.js has the table. Files never leave the tab.
+   Options are the controls marked data-opt="<key>" (radios share a key); data-show-when="key=a,b" shows a control
+   only while that option has one of those values. */
 (function () {
   "use strict";
   var C = window.Convert;
@@ -20,36 +22,52 @@
 
   // ---------- options, remembered per pair ----------
   var KEY = "pl-convert-" + PAIR;
-  var outputs = Array.prototype.slice.call(document.querySelectorAll('input[name="cv-output"]'));
-  var quality = $("cv-quality"), qualityOut = $("cv-quality-out"), bg = $("cv-bg"), iconset = $("cv-iconset");
+  var controls = Array.prototype.slice.call(app.querySelectorAll("[data-opt]"));
+  var qualityOut = $("cv-quality-out");
+  function raw() {
+    var o = {};
+    controls.forEach(function (n) {
+      var k = n.getAttribute("data-opt");
+      if (n.type === "radio") { if (n.checked) o[k] = n.value; }
+      else if (n.type === "checkbox") o[k] = n.checked;
+      else o[k] = n.value;
+    });
+    return o;
+  }
   (function restore() {
     var s = {};
     try { s = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { s = {}; }
-    outputs.forEach(function (r) { if (r.value === s.output) r.checked = true; });
-    if (quality && s.quality) quality.value = s.quality;
-    if (bg && s.background) bg.value = s.background;
-    if (iconset && typeof s.iconset === "boolean") iconset.checked = s.iconset;
+    controls.forEach(function (n) {
+      var v = s[n.getAttribute("data-opt")];
+      if (v === undefined) return;
+      if (n.type === "radio") { if (n.value === v) n.checked = true; }
+      else if (n.type === "checkbox") { if (typeof v === "boolean") n.checked = v; }
+      else if (n.tagName === "SELECT") { if (Array.prototype.some.call(n.options, function (o) { return o.value === v; })) n.value = v; }
+      else if (typeof v === "string" && v) n.value = v;
+    });
+    // A radio marked data-default-locale="en-US,en-CA" is the default for those browser languages (US Letter paper).
+    var lang = navigator.language || "";
+    controls.forEach(function (n) {
+      var loc = n.getAttribute("data-default-locale");
+      if (loc && s[n.getAttribute("data-opt")] === undefined && loc.split(",").indexOf(lang) !== -1) n.checked = true;
+    });
   })();
   function options() {
-    var chosen = outputs.filter(function (r) { return r.checked; })[0];
-    return C.options(PAIR, {
-      output: chosen ? chosen.value : CONV.output,
-      quality: quality ? Number(quality.value) / 100 : undefined,
-      background: bg ? bg.value : undefined,
-      iconset: iconset ? iconset.checked : false,
-      mobile: MOBILE
-    });
+    var o = raw();
+    o.mobile = MOBILE;
+    return C.options(PAIR, o);
   }
   function syncOptions() {
-    var o = options();
-    if (qualityOut && quality) qualityOut.textContent = quality.value;
-    // JPEG-only controls are shown only while JPG is chosen.
-    Array.prototype.forEach.call(document.querySelectorAll("[data-for-output]"), function (n) {
-      n.hidden = n.getAttribute("data-for-output") !== o.output;
+    var r = raw();
+    var q = $("cv-quality");
+    if (qualityOut && q) qualityOut.textContent = q.value;
+    Array.prototype.forEach.call(app.querySelectorAll("[data-show-when]"), function (n) {
+      var w = n.getAttribute("data-show-when").split("=");
+      n.hidden = w[1].split(",").indexOf(String(r[w[0]])) === -1;
     });
-    try { localStorage.setItem(KEY, JSON.stringify({ output: o.output, quality: quality ? quality.value : "", background: o.background, iconset: o.iconset })); } catch (e) { /* private mode */ }
+    try { localStorage.setItem(KEY, JSON.stringify(r)); } catch (e) { /* private mode */ }
   }
-  outputs.concat([quality, bg, iconset]).forEach(function (n) { if (n) { n.addEventListener("change", syncOptions); n.addEventListener("input", syncOptions); } });
+  controls.forEach(function (n) { n.addEventListener("change", syncOptions); n.addEventListener("input", syncOptions); });
   syncOptions();
 
   // ---------- network meter: what this page and its worker send while converting ----------
@@ -82,7 +100,18 @@
 
   // ---------- worker ----------
   var worker = null, seq = 0, pending = {};
-  var CAN = typeof Worker !== "undefined" && typeof OffscreenCanvas !== "undefined" && typeof createImageBitmap !== "undefined";
+  var CAN = typeof Worker !== "undefined" &&
+    (!CONV.canvas || (typeof OffscreenCanvas !== "undefined" && typeof createImageBitmap !== "undefined"));
+  // Stamped URLs of the libraries the worker may load, read from this page's own tags.
+  var LIBS = {};
+  (function () {
+    var z = document.querySelector('script[src*="/assets/vendor/jszip/"]');
+    if (z) LIBS.zip = new URL(z.src).pathname + new URL(z.src).search;
+    Array.prototype.forEach.call(document.querySelectorAll("link[data-convert-lib]"), function (l) {
+      var u = new URL(l.href);
+      LIBS[l.getAttribute("data-convert-lib")] = u.pathname + u.search;
+    });
+  })();
   function getWorker() {
     if (worker) return worker;
     var link = document.querySelector("link[data-convert-worker]");
@@ -113,7 +142,14 @@
     return new Promise(function (resolve, reject) {
       var id = ++seq;
       pending[id] = { item: item, resolve: resolve, reject: reject };
-      getWorker().postMessage({ id: id, pair: PAIR, name: item.file.name, buffer: buf, opts: options() }, [buf]);
+      getWorker().postMessage({ id: id, pair: PAIR, name: item.file.name, buffer: buf, opts: options(), libs: LIBS }, [buf]);
+    });
+  }
+  function combine(buffers, item) {
+    return new Promise(function (resolve, reject) {
+      var id = ++seq;
+      pending[id] = { item: item, resolve: resolve, reject: reject };
+      getWorker().postMessage({ id: id, op: "combine", pair: PAIR, buffers: buffers, libs: LIBS }, buffers);
     });
   }
 
@@ -122,7 +158,9 @@
   var drop = $("cv-drop"), input = $("cv-file"), list = $("cv-list"), statusEl = $("cv-status"), bar = $("cv-bar");
 
   if (!CAN) {
-    statusEl.textContent = "This browser cannot convert pictures here. It needs background workers and off-screen drawing, which Chrome and Edge 69, Firefox 105 and Safari 16.4 and later have.";
+    statusEl.textContent = CONV.canvas
+      ? "This browser cannot convert pictures here. It needs background workers and off-screen drawing, which Chrome and Edge 69, Firefox 105 and Safari 16.4 and later have."
+      : "This browser cannot convert files here. It needs background workers, which every current browser has.";
     statusEl.classList.add("is-error");
     drop.classList.add("is-disabled");
     input.disabled = true;
@@ -135,7 +173,7 @@
     if (!arr.length) return;
     if (arr.length > room) { statusEl.textContent = "Up to " + C.MAX_FILES + " files at a time. The first " + Math.max(0, room) + " were added."; arr = arr.slice(0, Math.max(0, room)); }
     arr.forEach(function (file) {
-      var item = { file: file, name: file.name || "pasted picture", state: "queued", p: 0, label: "", li: el("li", "cv-item") };
+      var item = { file: file, name: file.name || "pasted file", state: "queued", p: 0, label: "", li: el("li", "cv-item") };
       items.push(item);
       list.appendChild(item.li);
       paint(item);
@@ -168,7 +206,7 @@
       var ok = items.filter(function (i) { return i.state === "done"; }).length;
       var bad = items.filter(function (i) { return i.state === "error"; }).length;
       statusEl.textContent = ok ? "Done. " + ok + " file" + (ok > 1 ? "s" : "") + " converted" + (bad ? ", " + bad + " could not be." : ".") : (bad ? "Nothing could be converted. The reasons are below." : "");
-      $("cv-all").hidden = ok < 2;
+      syncBar();
       showNet();
       // Counted after the meter is off: one anonymous event per batch, pair and output format only.
       if (converted && window.plTrack) window.plTrack("tool_use", PAIR + ":" + options().output);
@@ -177,8 +215,8 @@
 
   async function convert(item) {
     try {
-      var head = new Uint8Array(await item.file.slice(0, 64).arrayBuffer());
-      var why = C.refuse(PAIR, C.sniff(head), item.file.size);
+      var head = new Uint8Array(await item.file.slice(0, 4096).arrayBuffer());
+      var why = C.refuse(PAIR, C.kindOf(head, item.file.name), item.file.size);
       if (why) throw new Error(why);
       var res = await run(item, await item.file.arrayBuffer());
       item.res = res;
@@ -237,7 +275,8 @@
       li.appendChild(actions);
       return;
     }
-    if (item.res.width) li.appendChild(el("p", "cv-note", item.res.width + " by " + item.res.height + " pixels"));
+    if (item.res.summary) li.appendChild(el("p", "cv-note", item.res.summary));
+    else if (item.res.width) li.appendChild(el("p", "cv-note", item.res.width + " by " + item.res.height + " pixels"));
     (item.res.notes || []).forEach(function (n) { li.appendChild(el("p", "cv-warn", n)); });
     mains.forEach(function (b) {
       var a = el("a", "btn btn-primary cv-small", "Download " + b.name);
@@ -250,6 +289,7 @@
       z.addEventListener("click", function () { saveZip(parts, parts[0].name.split("/")[0] + ".zip", z); });
       actions.appendChild(z);
     }
+    if (CONV.combine) moveButtons(item, actions);
     var rm2 = el("button", "btn btn-ghost cv-small", "Remove"); rm2.type = "button";
     rm2.addEventListener("click", function () { removeItem(item); });
     actions.appendChild(rm2);
@@ -262,7 +302,35 @@
     items = items.filter(function (i) { return i !== item; });
     item.li.remove();
     if (!items.length) { bar.hidden = true; statusEl.textContent = ""; }
-    $("cv-all").hidden = items.filter(function (i) { return i.state === "done"; }).length < 2;
+    syncBar();
+  }
+
+  function syncBar() {
+    var ok = items.filter(function (i) { return i.state === "done"; }).length;
+    $("cv-all").hidden = ok < 2;
+    if ($("cv-one")) $("cv-one").hidden = ok < 2 || running;
+  }
+
+  // Combined PDF: rows can be moved, and the pages follow the order of the finished rows in the list.
+  function moveButtons(item, actions) {
+    var at = items.indexOf(item);
+    [["Move up", -1], ["Move down", 1]].forEach(function (d) {
+      var b = el("button", "btn btn-ghost cv-small", d[0]); b.type = "button";
+      b.disabled = d[1] < 0 ? at === 0 : at === items.length - 1;
+      b.setAttribute("aria-label", d[0] + ": " + item.name);
+      b.addEventListener("click", function () { move(item, d[1], d[0]); });
+      actions.appendChild(b);
+    });
+  }
+  function move(item, by, label) {
+    var at = items.indexOf(item), to = at + by;
+    if (to < 0 || to >= items.length) return;
+    items.splice(at, 1); items.splice(to, 0, item);
+    items.forEach(function (i) { list.appendChild(i.li); });
+    items.forEach(function (i) { if (i.state === "done") paint(i); });
+    var again = Array.prototype.filter.call(item.li.querySelectorAll("button"), function (b) { return b.textContent === label && !b.disabled; })[0];
+    (again || item.li.querySelector("a, button")).focus();
+    statusEl.textContent = item.name + " is now number " + (to + 1) + " of " + items.length + ".";
   }
 
   function saveZip(entries, zipName, button) {
@@ -291,6 +359,34 @@
       if (i.state === "done") i.blobs.forEach(function (b) { entries.push(b); });
     });
     saveZip(entries, PAIR + ".zip", $("cv-all"));
+  });
+  if ($("cv-one")) $("cv-one").addEventListener("click", async function () {
+    var button = $("cv-one");
+    var done = items.filter(function (i) { return i.state === "done"; });
+    var blobs = done.map(function (i) { return i.blobs.filter(function (b) { return !b.part; })[0].blob; });
+    var total = blobs.reduce(function (s, b) { return s + b.size; }, 0);
+    if (total > C.MAX_ZIP_BYTES) { statusEl.textContent = "Together the pages are over 1 GB, too large to join in a browser tab. Download them one by one."; return; }
+    var label = button.textContent;
+    button.disabled = true; button.textContent = "Joining " + done.length + " pages…";
+    net.armed = true;
+    try {
+      var buffers = await Promise.all(blobs.map(function (b) { return b.arrayBuffer(); }));
+      var res = await combine(buffers, { li: null });
+      var o = res.outputs[0];
+      var blob = new Blob([o.bytes], { type: o.mime });
+      var a = document.createElement("a");
+      var u = URL.createObjectURL(blob);
+      a.href = u; a.download = o.name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(u); }, 30000);
+      statusEl.textContent = "Saved one PDF of " + done.length + " pages, " + C.formatBytes(blob.size) + ".";
+    } catch (e) {
+      statusEl.textContent = (e && e.message) || "The pages could not be joined. Download them one by one.";
+    } finally {
+      net.armed = false;
+      showNet();
+      button.disabled = false; button.textContent = label;
+    }
   });
   $("cv-clear").addEventListener("click", function () {
     items.filter(function (i) { return i.state !== "working"; }).forEach(removeItem);

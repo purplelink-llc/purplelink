@@ -81,6 +81,26 @@ class ConverterPages(unittest.TestCase):
             self.assertIn(f'<a class="tool-card" href="/tools/{slug}/">', index)
             self.assertIn(f'"url": "https://purplelink.llc/tools/{slug}/"', index)
 
+    def test_options_and_worker_libraries(self):
+        for p in G.PAGES:
+            page = read_site(f"tools/{p['slug']}/index.html")
+            app = page.split('class="tool-app cv-app"')[1].split("</fieldset>")[0] if "<fieldset" in page else ""
+            # Every control the shell reads is marked with data-opt; ids alone are not read any more.
+            for ctl in re.findall(r"<(?:input|select)\b[^>]*>", app):
+                if 'id="cv-file"' in ctl:
+                    continue
+                self.assertIn("data-opt=", ctl, f"{p['slug']}: {ctl}")
+            for when in re.findall(r'data-show-when="([^"]+)"', page):
+                key = when.split("=")[0]
+                self.assertIn(f'data-opt="{key}"', page, f"{p['slug']}: shows on an option it does not have")
+            libs = re.findall(r'<link rel="prefetch" as="script" data-convert-lib="(\w+)" href="([^"]+)">', page)
+            self.assertEqual([k for k, _ in libs], p.get("libs", []), p["slug"])
+            for _, href in libs:
+                self.assertRegex(href, r"^/assets/vendor/.+\.js\?v=[0-9a-f]+$", "stamped, so the worker never loads a stale copy")
+                self.assertTrue((SITE / href.split("?")[0].lstrip("/")).is_file(), href)
+            self.assertEqual('id="cv-one"' in page, bool(p.get("combine")), p["slug"])
+            self.assertRegex(page, r'<script src="/assets/vendor/jszip/jszip\.min\.js\?v=[0-9a-f]+" defer>', "the worker's JSZip URL comes from this tag")
+
     def test_csp_allows_wasm_and_nothing_broader(self):
         conf = tomllib.loads((ROOT / "netlify.toml").read_text())
         csp = next(h["values"]["Content-Security-Policy"] for h in conf["headers"]
