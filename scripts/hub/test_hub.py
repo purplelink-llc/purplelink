@@ -7,6 +7,8 @@ tmp = Path(tempfile.mkdtemp())
 os.environ.update({
     "PURPLELINK_HUB": str(tmp / "hub"), "PURPLELINK_QUEUE": str(tmp / "queue"), "PURPLELINK_REPO": str(tmp / "repo"),
     "PURPLELINK_SOCIAL_QUEUE": str(tmp / "social"), "PURPLELINK_TRAFFIC_HISTORY": str(tmp / "history.json"),
+    # doctor's delivery check calls the live stats function; tests pass their own fetch instead
+    "PURPLELINK_STATS_OFFLINE": "1",
 })
 spec = importlib.util.spec_from_file_location("hub", Path(__file__).with_name("hub.py"))
 hub = importlib.util.module_from_spec(spec); spec.loader.exec_module(hub)
@@ -515,7 +517,7 @@ def test_campaigns():
     # exact-link trials and an order whose first touch carried ad b's tag
     saved = (tmp / "hub" / "funnel.json").read_text()
     f = json.loads(saved)
-    f["content"] = {str(w): {"widget-reddit-a": {"channel": "paid:reddit", "pageviews": 20, "pageviewsByPath": {"/widget/": 20}, "trial": {"widget": 2}, "checkout": {}},
+    f["content"] = {str(w): {"widget-reddit-a": {"channel": "paid:reddit", "pageviews": 20, "pageviewsByPath": {"/widget/": 20}, "trial": {"widget": 2}, "checkout": {}, "os": {"mac": 6, "windows": 4}},
                              "widget-reddit-b": {"channel": "paid:reddit", "pageviews": 10, "pageviewsByPath": {"/widget/": 10}, "trial": {"widget": 1}, "checkout": {}}}
                     for w in hub.FUNNEL_WINDOWS}
     put("hub/funnel.json", json.dumps(f))
@@ -528,6 +530,10 @@ def test_campaigns():
     assert rep["costPerTrial"] == 5.33 and rep["costPerOrder"] == 16.0 and "under the $18 break-even" in rep["reading"]
     assert "not a rate" in rep["reading"]
     assert {a["ad"]: a["orders"] for a in rep["ads"]} == {"a": 0, "b": 1}
+    # visitor OS summed over the ad links (ad b has no os field: older stats)
+    assert rep["os"] == {"mac": 6, "windows": 4}
+    assert hub.os_line(rep["os"]) == "mac 6 of 10 (60%); windows 4" and hub.os_line({}) == ""
+    assert "mac 6 of 10 (60%)" in run("campaigns")
     assert "widget-test-2026-11" in run("campaigns")
     try:
         hub.record_campaign_spend(P, "nope", 1.0, None, None); assert False
@@ -876,8 +882,102 @@ def test_doctor_notices_missing_reddit_attribution_fields():
         put("history.json", saved_h)
 
 
+def test_doctor_flags_campaigns_with_no_spend_or_no_trials():
+    """A running campaign whose spend was never recorded has no cost figures at all, and one whose ad traffic brings
+    no trials for a week has either a broken trial link or an ad that does not convert: the doctor names both."""
+    import datetime as dt
+    P = hub.paths()
+    put("hub/campaigns.json", json.dumps({"widget-test-2026-11": {
+        "platformKey": "redditAds", "channel": "reddit-ads", "asset": "widget", "start": "2026-10-20", "end": "2026-11-12",
+        "budget": 80, "breakEven": 18, "approval": "ben test", "readings": ["2026-11-13"],
+        "ads": [{"id": "a", "label": "angle A", "url": "https://purplelink.llc/widget/?utm_source=reddit&utm_medium=cpc&utm_campaign=widget-test-2026-11&utm_content=widget-reddit-a"}]}}))
+    saved_f = (tmp / "hub" / "funnel.json").read_text()
+    ads = P["manual_ads"]
+    saved_ads = ads.read_text() if ads.exists() else None
+    f = json.loads(saved_f)
+    f["windows"]["7"] = dict(f["windows"]["7"], **{"paid:reddit": {
+        "pageviews": 120, "pageviewsByPath": {"/widget/": 120}, "trial": {}, "checkout": {}}})
+    put("hub/funnel.json", json.dumps(f))
+    ads.write_text("{}")  # no spend reading, whatever earlier tests recorded
+    try:
+        run("import")
+        found = {x["problem"] for x in hub.campaign_gaps(db(), P, dt.date(2026, 11, 2))}
+        assert found == {"no spend recorded", "no trials"}, found
+        # one day in, a missing spend reading is not news yet
+        assert "no spend recorded" not in {x["problem"] for x in hub.campaign_gaps(db(), P, dt.date(2026, 10, 21))}
+        # long after the campaign, neither applies
+        assert hub.campaign_gaps(db(), P, dt.date(2026, 12, 30)) == []
+        hub.record_campaign_spend(P, "widget-test-2026-11", 30.0, 4000, 110, as_of="2026-11-01")
+        f["windows"]["7"]["paid:reddit"]["trial"] = {"widget": 1}
+        put("hub/funnel.json", json.dumps(f))
+        run("import")
+        assert hub.campaign_gaps(db(), P, dt.date(2026, 11, 2)) == []
+        assert "0 campaign problems" in run("doctor")
+    finally:
+        put("hub/funnel.json", saved_f)
+        if saved_ads is None:
+            ads.unlink(missing_ok=True)
+        else:
+            ads.write_text(saved_ads)
+        (tmp / "hub" / "campaigns.json").unlink()
+        run("import")
+
+
+def test_doctor_notices_a_campaign_that_stopped_serving():
+    """Reddit showed no impressions on 2026-10-29 and the ad manager cannot be opened from this Mac. A running campaign
+    that had first-touch visits and has none in the last day has most likely stopped serving; a stats fetch that
+    times out must say it could not check, never raise the alarm."""
+    import datetime as dt
+    P = hub.paths()
+    put("hub/campaigns.json", json.dumps({"widget-test-2026-11": {
+        "platformKey": "redditAds", "channel": "reddit-ads", "asset": "widget", "start": "2026-10-20", "end": "2026-11-12",
+        "budget": 80, "breakEven": 18, "approval": "ben test", "readings": ["2026-11-13"],
+        "ads": [{"id": "a", "label": "angle A", "url": "https://purplelink.llc/widget/?utm_source=reddit&utm_medium=cpc&utm_campaign=widget-test-2026-11&utm_content=widget-reddit-a"}]}}))
+    saved_f = (tmp / "hub" / "funnel.json").read_text()
+    f = json.loads(saved_f)
+    f["windows"]["7"] = dict(f["windows"]["7"], **{"paid:reddit": {
+        "pageviews": 39, "pageviewsByPath": {"/widget/": 39}, "trial": {}, "checkout": {}}})
+    put("hub/funnel.json", json.dumps(f))
+    day = dt.date(2026, 11, 2)
+    seen = []
+
+    def serving(days):
+        seen.append(days)
+        return {"paid:reddit": {"pageviews": 2}}
+
+    def stopped(days):
+        return {"www.google.com": {"pageviews": 30}}
+
+    def timed_out(days):
+        return None
+    try:
+        run("import")
+        probs = lambda get: {x["problem"]: x["detail"] for x in hub.campaign_gaps(db(), P, day, recent=get)}
+        assert "not serving" not in probs(serving) and seen == [1], seen
+        got = probs(stopped)
+        assert "ads may have stopped serving: check billing, ad review status and bid in the ad manager" in got["not serving"], got
+        got = probs(timed_out)
+        assert "not serving" not in got and "could not check" in got["delivery not checked"], got
+        # after the campaign ended, no delivery check (and no fetch)
+        seen.clear()
+        assert "not serving" not in {x["problem"] for x in hub.campaign_gaps(db(), P, dt.date(2026, 11, 15), recent=serving)}
+        assert seen == []
+        # never had visits: nothing to compare against
+        f["windows"]["7"]["paid:reddit"]["pageviews"] = 0
+        put("hub/funnel.json", json.dumps(f))
+        assert "not serving" not in probs(stopped)
+        # a fetch that raises is a failed check, not a crash
+        assert hub.fetch_recent(P, 1, get=lambda url, headers: (_ for _ in ()).throw(TimeoutError())) is None
+    finally:
+        put("hub/funnel.json", saved_f)
+        (tmp / "hub" / "campaigns.json").unlink()
+        run("import")
+
+
 if __name__ == "__main__":
     test_all()
+    test_doctor_notices_a_campaign_that_stopped_serving()
+    test_doctor_flags_campaigns_with_no_spend_or_no_trials()
     test_doctor_notices_missing_reddit_attribution_fields()
     test_sources_untouched()
     test_results_and_followups()

@@ -458,6 +458,29 @@
   max-width: 62ch;
 }
 
+/* A real capture of the same kind of error, under the illustrative demo. The
+   image is 2x of a 760px crop, so it never grows past that. */
+.fix-shot {
+  margin: 1.4rem 0 0;
+  max-width: 760px;
+}
+
+.fix-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 24px oklch(0% 0 0 / 0.08);
+}
+
+.fix-shot figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+  max-width: 62ch;
+}
+
 .fix-replay[hidden] { display: none; }
 .fix-replay { margin-top: 0.8rem; }
 

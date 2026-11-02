@@ -326,9 +326,14 @@ def page(title, desc, url, images, body, crumb_items, og_title=None, robots="ind
                         jsonld=json.dumps(jl, indent=2, ensure_ascii=False)) + body + TAIL)
 
 
-def shop_strip():
+def shop_strip(entry=None):
+    """The prints-and-licenses line; a place with "faa_collection" names its own Fine Art America collection."""
+    coll = (entry or {}).get("faa_collection", "")
+    faa = (f'<a href="{esc(coll)}" rel="noopener noreferrer" target="_blank">Fine Art America</a> ships finished prints '
+           f'of these photographs. ' if coll.startswith("https://") else
+           '<a href="' + FAA + '" rel="noopener noreferrer" target="_blank">Fine Art America</a> ships finished prints. ')
     return ('        <aside class="hub-shops" data-reveal>\n'
-            '          <p>Prints: <a href="' + FAA + '" rel="noopener noreferrer" target="_blank">Fine Art America</a> ships finished prints. '
+            '          <p>Prints: ' + faa +
             '<a href="' + ETSY_SHOP + '" rel="noopener noreferrer" target="_blank">Etsy</a> sells the files to print yourself. '
             'Licenses: <a href="/photography/license/">three fixed tiers</a>, delivered as a clean full-resolution file.</p>\n'
             '        </aside>\n')
@@ -388,7 +393,7 @@ def main():
                     f'<a href="/photography/{cs}/">{esc(c["name"])}</a> <span aria-hidden="true">/</span> <span aria-current="page">{esc(p["name"])}</span></nav>\n'
                     f'      <section class="hub-head">\n        <h1>{esc(p["name"])}</h1>\n        <p class="hub-intro">{esc(p["intro"])}</p>\n'
                     f'        <p class="hub-fact">{esc(p["fact"])}</p>\n' + more_paras(p) + '      </section>\n'
-                    f'      <section class="hub-photos" aria-label="Photographs of {esc(p["name"])}">\n' + grid([i for i in imgs if not i["event"]], etsy) + shop_strip() + '      </section>\n')
+                    f'      <section class="hub-photos" aria-label="Photographs of {esc(p["name"])}">\n' + grid([i for i in imgs if not i["event"]], etsy) + shop_strip(p) + '      </section>\n')
             ev = [i for i in imgs if i["event"]]
             if ev:
                 body += ('      <section class="hub-photos" aria-labelledby="hub-events">\n'
@@ -398,9 +403,12 @@ def main():
             title = f"{p['name']} photographs"
             desc = f"{len(imgs)} photographs of {p['name']} by Benjamin Ampel, available as prints and to license. {p['fact']}"
             write(OUT / cs / p["slug"] / "index.html",
-                  page(title, desc[:300], purl, imgs, body, [("Home", BASE + "/"), ("Photography", BASE + "/photography/"), (c["name"], curl), (p["name"], purl)], robots="noindex, follow"),
+                  page(title, desc[:300], purl, imgs, body, [("Home", BASE + "/"), ("Photography", BASE + "/photography/"), (c["name"], curl), (p["name"], purl)],
+                       # place pages are noindex (thin-page prune, 2026-10-12) unless "index": true opts one in
+                       robots="index, follow" if p.get("index") else "noindex, follow"),
                   a.check, changed)
-            sitemap.append((purl, imgs))
+            if p.get("index"):
+                sitemap.append((purl, imgs))
             place_cards.append(f'          <a class="hub-card" href="/photography/{cs}/{p["slug"]}/" data-reveal>\n'
                                f'            <img src="{esc(imgs[0]["thumb"])}" alt="" width="{imgs[0]["tw"]}" height="{imgs[0]["th"]}" loading="lazy" decoding="async">\n'
                                f'            <span class="hub-card-body"><span class="hub-card-name">{esc(p["name"])}</span>'
@@ -427,7 +435,12 @@ def main():
                    # "noindex": true in photo-places.json marks a country page too short to index (2026-10-21)
                    robots="noindex, follow" if c.get("noindex") else "index, follow"),
               a.check, changed)
-        sitemap.append((curl, extra))
+        # The image sitemap lists each photograph under a page Google may index: its own place page if that one
+        # opted in, else the country page, which carries every photograph's ImageObject anyway. Listing them under
+        # a noindex page asks Google to index an image on a page it was told to drop.
+        if not c.get("noindex"):
+            indexed = {i["stem"] for u, imgs in sitemap if u.startswith(curl) for i in imgs}
+            sitemap.append((curl, [i for i in all_imgs if i["stem"] not in indexed]))
         data["countries"].append(cdata)
         cover = cdata["places"][0]["images"][0] if cdata["places"] else extra[0]
         index_cards.append(f'          <a class="hub-card" href="/photography/{cs}/" data-reveal>\n'
@@ -459,7 +472,9 @@ def main():
         xml.append(f"  <url>\n    <loc>{esc(url)}</loc>")
         for i in imgs:
             xml.append(f"    <image:image>\n      <image:loc>{esc(BASE + i['src'])}</image:loc>\n      <image:title>{esc(i['title'])}</image:title>\n"
-                       f"      <image:caption>{esc(i['caption'])}</image:caption>\n      <image:license>{BASE}/photography/license/</image:license>\n    </image:image>")
+                       f"      <image:caption>{esc(i['caption'])}</image:caption>\n"
+                       # event coverage is prints only, never licensed (same rule as image_object)
+                       + ("" if i.get("event") else f"      <image:license>{BASE}/photography/license/</image:license>\n") + "    </image:image>")
         xml.append("  </url>")
     xml.append("</urlset>\n")
     write(IMG_SITEMAP, "\n".join(xml), a.check, changed)

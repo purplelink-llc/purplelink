@@ -25,36 +25,36 @@
     {
      "kind": "games",
      "delays": [
-      0.05,
-      1.2
+      0.0,
+      0.6
      ]
     }
    ],
    "sfx": [
     {
      "name": "select",
-     "at": 0.05
+     "at": 0.0
     },
     {
      "name": "select",
-     "at": 0.33
+     "at": 0.14
     },
     {
      "name": "select",
-     "at": 0.61
+     "at": 0.28
     },
     {
      "name": "select",
-     "at": 0.89
+     "at": 0.42
     },
     {
      "name": "tap",
-     "at": 1.2,
+     "at": 0.6,
      "gain_db": 0
     },
     {
      "name": "tap",
-     "at": 1.48,
+     "at": 0.74,
      "gain_db": 0
     }
    ]
@@ -89,21 +89,28 @@
     {
      "kind": "screen",
      "video": true,
-     "src": "clip-circle.mp4",
-     "from": 3.7,
+     "src": "clip-ring.mp4",
+     "from": 3.8,
      "focus": {
       "x": 0.02,
-      "y": 0.36,
+      "y": 0.37,
       "w": 0.96,
-      "h": 0.34
+      "h": 0.31
      },
-     "chip": "Sample league"
+     "chip": "Sample league",
+     "taps": [
+      {
+       "x": 0.36,
+       "y": 0.46,
+       "at": 0.18000000000000002
+      }
+     ]
     }
    ],
    "sfx": [
     {
      "name": "select",
-     "at": 1.75
+     "at": 0.2
     }
    ]
   },

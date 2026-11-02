@@ -25,9 +25,9 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <script src="/theme.js?v=f0ab0f06a1"></script>
-    <link rel="stylesheet" href="/styles.css?v=bc9982f3ad">
-    <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
-    <script src="/site.js?v=b053086227" defer></script>
+    <link rel="stylesheet" href="/styles.css?v=f247a79f66">
+    <link rel="stylesheet" href="/motion.css?v=35524918f9">
+    <script src="/site.js?v=9f201aa4bb" defer></script>
     <script src="/motion.js?v=d35f4b4ee4" defer></script>
     <script type="application/ld+json">
     {
@@ -67,6 +67,60 @@
 
     <div class="changelog-layout">
     <div class="changelog-list">
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 31, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
+          <h2>Buddy 0.10.1</h2>
+          <p>Auto and Continue now stop typing the moment the Claude app leaves the front or the Mac locks, even partway through the word. Before, those checks ran only before typing started, so switching apps mid-word could send the rest of "continue", and the Return, to the app you switched to. Buddy also presses Return only when the chat's message box holds exactly "continue": if you typed into that box while Buddy was typing, it used to send your text along with it, and now it leaves the box alone and tries again later. <a href="/buddy/">Buddy</a>.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 31, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
+          <h2>Legroom 1.10.0</h2>
+          <p>Developer leftovers lists three more kinds of space: AI models that tools such as Hugging Face, Ollama, LM Studio and Whisper downloaded; Android SDK system images and emulators; and build folders, one line per project your project scan rules cover. You tick what goes, and nothing in these lists is cleared by a rule or by Clean Now. Where your space went now uses the name macOS gives this space, System Data, and says what Legroom cannot measure even with Full Disk Access. The Space Map says what each item is and whether it comes back by itself, and Legroom is now available in German, Japanese and Simplified Chinese, in beta. <a href="/legroom/">Legroom</a>.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 31, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
+          <h2>GlobePin 1.5.1</h2>
+          <p>Your places now sync through your own iCloud account even when iCloud Drive is turned off. Settings &gt; About says where your data is kept. On place pages the Apple Maps credit no longer sits under the place name, and on Travel Reels the distance now reads &ldquo;miles between stops&rdquo;, with the Reel card at the top of the Cards tab. <a href="https://apps.apple.com/us/app/globepin/id6762313540">GlobePin on the App Store</a>.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 31, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
+          <h2>Tapefolio 1.2.1</h2>
+          <p>Fixes a crash when opening or finishing a transcript in the direct download. Versions 1.1.0 to 1.2.0 looked for their name-detection files in the wrong place inside the app, so they could quit as soon as they read a transcript. Nothing else changes, and transcripts, recordings and settings are untouched. <a href="/tapefolio/">Tapefolio</a> offers the update on its own.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 30, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
+          <h2>ModernTex 2.0.3</h2>
+          <p>New from Template and the equation editor no longer crash. ModernTex looked for its bundled templates and equation editor files in the wrong place inside the app, so opening either one quit the app on most Macs. Both open normally again. <a href="/moderntex/">ModernTex</a> offers the update on its own.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 30, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
+          <h2>ModernTex 2.0.2</h2>
+          <p>In Review mode the PDF pane can now be dragged to any split, including an even one, and keeps the width you choose. The divider used to stop at a fixed width, so on a wide display the PDF could not reach half the window. <a href="/moderntex/">ModernTex</a></p>
+        </div>
+      </div>
 
       <div class="changelog-entry">
         <span class="changelog-date">October 29, 2026</span>
@@ -1498,7 +1552,7 @@
         </a>
         <a class="changelog-app" href="/globepin/">
           <img src="/assets/globepin-icon.webp" alt="" width="48" height="48" loading="lazy">
-          <span><strong>GlobePin 1.2</strong><span>Travel map for iPhone · free</span></span>
+          <span><strong>GlobePin 1.5.1</strong><span>Travel map for iPhone · free</span></span>
         </a>
         <p class="changelog-aside-note">Updates arrive through each app's own update check. <a href="/products/">All products</a></p>
       </aside>

@@ -18,7 +18,7 @@ export const C = {
 
 export const FPS = 30;
 
-// cap: the caption headline strip; media: the box the app screen is cropped into; mark: the "purplelink softwares"
+// cap: the caption headline strip; media: the box the app screen is cropped into; mark: the "purplelink / software company"
 // wordmark (the maker's signature, docs/brand/logo-usage.md); note: the small disclosure line.
 export const FORMATS = {
   "9x16": { W: 1080, H: 1920, cap: { y: 150, h: 380, size: 86 }, media: { x: 90, y: 560, w: 900, h: 1150 }, mark: { y: 1732, w: 260 }, note: { y: 1834 } },

@@ -929,6 +929,7 @@
     const path = location.pathname;
     if (/^\/checklist(\/|$)/.test(path) || /^\/blog\/digest(\/|$)/.test(path)) return;
     if (/(^|\/)(waitlist|success)(\/|\.html|$)/.test(path)) return;
+    if (document.body.hasAttribute("data-no-list-signup")) return;  // pages written for another audience
     const robots = document.querySelector('meta[name="robots"]');
     if (robots && /noindex/i.test(robots.getAttribute("content") || "")) return;
     if (signedUp()) return;

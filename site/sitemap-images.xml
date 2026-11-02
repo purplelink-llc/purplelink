@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
-    <loc>https://purplelink.llc/photography/iceland/skogafoss/</loc>
+    <loc>https://purplelink.llc/photography/iceland/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-1326-1200.webp</image:loc>
       <image:title>Skógafoss waterfall with rainbow, Iceland</image:title>
@@ -20,9 +20,6 @@
       <image:caption>South Iceland - June 2024: a person in a rain jacket stands with arms outstretched at the base of Skógafoss waterfall amid rising mist.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/iceland/jokulsarlon/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-1601-1200.webp</image:loc>
       <image:title>Icebergs floating in Jökulsárlón glacier lagoon, Iceland</image:title>
@@ -41,27 +38,18 @@
       <image:caption>A wide panorama of Jökulsárlón glacier lagoon shows scattered icebergs beneath the snow-covered Vatnajökull ice cap, Iceland.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/iceland/fjadrargljufur/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-1570-1200.webp</image:loc>
       <image:title>Waterfall in a mineral-stained slot canyon, Iceland</image:title>
       <image:caption>A narrow waterfall streaked with orange mineral deposits drops through a slot canyon near Fjaðrárgljúfur, south Iceland.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/iceland/dyrholaey/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-1362-1200.webp</image:loc>
       <image:title>Dyrhólaey sea cliffs and arch, Iceland</image:title>
       <image:caption>Dyrhólaey&#x27;s basalt sea cliffs and natural rock arch stretch into the Atlantic Ocean along the south Iceland coast.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/iceland/snaefellsnes/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-1124-1200.webp</image:loc>
       <image:title>Kirkjufell mountain and waterfall on a clear day, Iceland</image:title>
@@ -104,9 +92,6 @@
       <image:caption>Snæfellsnes, Iceland - June 2024: two hikers walk a trail toward the base of a waterfall dropping from a mossy basalt cliff framed by pine trees.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/iceland/golden-circle/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-0865-1200.webp</image:loc>
       <image:title>Gullfoss waterfall cascading through a rocky canyon, Iceland</image:title>
@@ -167,9 +152,6 @@
       <image:caption>Iceland - June 2024: A young man in a beanie and jacket sits on a rock giving a thumbs up beside the bright blue Bruarfoss waterfall.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/iceland/south-coast/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-1143-1200.webp</image:loc>
       <image:title>Waterfall cascading through a basalt canyon, Iceland</image:title>
@@ -218,9 +200,6 @@
       <image:caption>South Iceland - June 2024: a man in a helmet stands inside a glacier ice cave, surrounded by luminous blue and black striated ice walls.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/iceland/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-0748-1200.webp</image:loc>
       <image:title>Turquoise geothermal lagoon beneath a bright blue sky, Iceland</image:title>
@@ -295,7 +274,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://purplelink.llc/photography/japan/kyoto/</loc>
+    <loc>https://purplelink.llc/photography/japan/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-3638-1200.webp</image:loc>
       <image:title>Misty forested gorge above the Hozu River near Arashiyama, Kyoto</image:title>
@@ -392,9 +371,6 @@
       <image:caption>The layered three-story pagoda and main gate of Kiyomizu-dera temple stand atop stone terraces beneath a dramatic cloudy sky in Kyoto, Japan.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/japan/arashiyama/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-2791-1200.webp</image:loc>
       <image:title>Close-up of a bamboo stalk carved with initials</image:title>
@@ -413,9 +389,6 @@
       <image:caption>Sunlight filters through a bamboo grove where several stalks have been carved with initials and names.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/japan/tokyo/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-2859-1200.webp</image:loc>
       <image:title>Aerial view of dense Tokyo cityscape with elevated train tracks</image:title>
@@ -512,9 +485,6 @@
       <image:caption>The grand main hall of Zojoji Temple stands beneath the red and white Tokyo Tower against a vivid blue sky in central Tokyo.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/japan/nara/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-4147-1200.webp</image:loc>
       <image:title>Sika deer with large antlers resting in Nara Park</image:title>
@@ -557,9 +527,6 @@
       <image:caption>Groups of visitors and schoolchildren walk toward the massive Great Buddha Hall of Todai-ji temple beneath a cloudy sky in Nara, Japan.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/japan/osaka/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-4209-1200.webp</image:loc>
       <image:title>Umeda Sky Building rising above a park in Osaka</image:title>
@@ -596,9 +563,6 @@
       <image:caption>A young man gestures a peace sign while standing before the glowing Asahi and Glico billboards of Dotonbori at night in Osaka, Japan.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/japan/miyajima/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-4368-1200.webp</image:loc>
       <image:title>Itsukushima Shrine torii gate framed by shrine pavilions at dusk, Miyajima</image:title>
@@ -641,9 +605,6 @@
       <image:caption>Dark storm clouds loom over Hiroshima Castle and the surrounding city skyline, with mountains in the distance.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/japan/mount-fuji/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-3220-1200.webp</image:loc>
       <image:title>Mount Fuji rising above a rural Japanese village</image:title>
@@ -698,9 +659,6 @@
       <image:caption>A man with a beard and tattoos stands with arms crossed on a stone wall, framed by a distant railway crossing and Mount Fuji rising above a Japanese town.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/japan/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5058-1200.webp</image:loc>
       <image:title>Close-up of pink double cherry blossom flowers in bloom</image:title>
@@ -745,7 +703,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://purplelink.llc/photography/switzerland/zermatt/</loc>
+    <loc>https://purplelink.llc/photography/switzerland/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-8669-1200.webp</image:loc>
       <image:title>The Matterhorn reflected in Riffelsee lake</image:title>
@@ -794,9 +752,6 @@
       <image:caption>Zermatt, Switzerland - June 2026: A helicopter flies past the Riffelhaus Hotel perched on a mountainside above the Zermatt valley.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/switzerland/lauterbrunnen/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-8244-pano-1200.webp</image:loc>
       <image:title>Panoramic view of Interlaken between Lake Thun and Lake Brienz</image:title>
@@ -863,9 +818,6 @@
       <image:caption>Jungfraujoch, Switzerland - June 2026: A smiling man in a blue jacket poses on a viewing platform with snow-covered mountains behind him.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/switzerland/bern/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-8085-1200.webp</image:loc>
       <image:title>Zytglogge clock tower framed by a narrow street in Bern</image:title>
@@ -914,9 +866,6 @@
       <image:caption>Bern, Switzerland - June 2026: Pedestrians walk beneath rows of Swiss and cantonal flags on a bustling street in Bern&#x27;s old town.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/switzerland/swiss-alps/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-8226-1200.webp</image:loc>
       <image:title>Snow-capped alpine peak framed by green forested hillsides</image:title>
@@ -935,9 +884,6 @@
       <image:caption>A brown and white cow grazes on grass beside a fence in a lush green pasture surrounded by shrubs.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/switzerland/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-0423-1200.webp</image:loc>
       <image:title>Layered mountain ranges stretch to the horizon in blue haze</image:title>
@@ -1012,109 +958,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://purplelink.llc/photography/united-kingdom/london/</loc>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6629-edit-1200.webp</image:loc>
-      <image:title>Big Ben and the Houses of Parliament silhouetted at sunset, London</image:title>
-      <image:caption>The clock tower of Big Ben and the Palace of Westminster are silhouetted against a vivid orange and blue sunset sky above the River Thames.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6511-edit-1200.webp</image:loc>
-      <image:title>Fountain and statues at Italian Gardens under stormy sky, London</image:title>
-      <image:caption>London, England - October 2025: Classical urns and reclining stone figures frame a scalloped fountain at the Italian Gardens in Hyde Park beneath dramatic storm clouds.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6519-1200.webp</image:loc>
-      <image:title>Statue of Queen Victoria in front of Kensington Palace, London</image:title>
-      <image:caption>London, England - October 2025: A stone statue of a seated Queen Victoria holding a scepter stands before the red-brick facade of Kensington Palace.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6537-pano-1200.webp</image:loc>
-      <image:title>Gilded spire of the Albert Memorial against a cloudy sky, London</image:title>
-      <image:caption>London, England - October 2025: The ornate Gothic Revival spire of the Albert Memorial rises with gilded statues and mosaics above Kensington Gardens.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6553-1200.webp</image:loc>
-      <image:title>Royal Albert Hall concert venue exterior, London</image:title>
-      <image:caption>London, England - October 2025: The circular red-brick and terracotta facade of the Royal Albert Hall stands beneath an overcast sky in South Kensington.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6577-edit-1200.webp</image:loc>
-      <image:title>Twin Gothic towers of Westminster Abbey against a moody sky, London</image:title>
-      <image:caption>London, England - October 2025: The twin west towers of Westminster Abbey rise above autumn trees under dramatic evening clouds.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6598-1200.webp</image:loc>
-      <image:title>Fan vaulting and banners in Westminster Abbey chapel, London</image:title>
-      <image:caption>London, England - October 2025: Intricate fan vaulting and colorful heraldic banners hang above the Henry VII Lady Chapel inside Westminster Abbey.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6608-edit-1200.webp</image:loc>
-      <image:title>Rose window and spires on Westminster Abbey&#x27;s north facade, London</image:title>
-      <image:caption>London, England - October 2025: The elaborate rose window and Gothic spires of Westminster Abbey&#x27;s north transept rise above autumn trees.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6618-edit-1200.webp</image:loc>
-      <image:title>Gothic towers of the Houses of Parliament at dusk, London</image:title>
-      <image:caption>The pinnacled towers of the Palace of Westminster rise against a pink and blue dusk sky in London.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6626-edit-1200.webp</image:loc>
-      <image:title>River Thames cruise boat passing Big Ben at sunset, London</image:title>
-      <image:caption>London, England - October 2025: A sightseeing boat travels along the River Thames past the Houses of Parliament and Big Ben under a vivid sunset sky.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6649-edit-1200.webp</image:loc>
-      <image:title>Large pro-Palestinian rally outside the Houses of Parliament, London</image:title>
-      <image:caption>London, England - October 2025: A dense crowd waves Palestinian flags and carries placards during a demonstration outside the Houses of Parliament under a dramatic sky.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6658-1200.webp</image:loc>
-      <image:title>Red double-decker bus near Piccadilly Circus, London</image:title>
-      <image:caption>London, England - October 2025: Traffic and pedestrians pass historic curved buildings near Piccadilly Circus with a red double-decker bus and construction scaffolding.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6661-1200.webp</image:loc>
-      <image:title>Illuminated advertising screens at Piccadilly Circus, London</image:title>
-      <image:caption>London, England - October 2025: Large digital advertising screens light up the curved facade above shops and crowds at Piccadilly Circus.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6676-1200.webp</image:loc>
-      <image:title>Classical statue in a niche on a London building facade</image:title>
-      <image:caption>London, England - October 2025: A weathered stone statue of a robed figure stands in an arched niche on the upper facade of a historic London building.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6691-1200.webp</image:loc>
-      <image:title>Tower Bridge over the River Thames under stormy clouds, London</image:title>
-      <image:caption>The twin towers of Tower Bridge span the River Thames beneath dark storm clouds in London.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6699-1200.webp</image:loc>
-      <image:title>Ornate gilded suit of armor on display in a museum, London</image:title>
-      <image:caption>London, England - October 2025: An etched and gilded suit of plate armor with a visored helmet is displayed behind glass at a London museum.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/united-kingdom/</loc>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/denmark/copenhagen/</loc>
+    <loc>https://purplelink.llc/photography/denmark/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-7559-pano-edit-1200.webp</image:loc>
       <image:title>Panoramic view of Copenhagen&#x27;s old town rooftops and church spire</image:title>
@@ -1211,9 +1055,6 @@
       <image:caption>Copenhagen, Denmark - December 2025: Members of the Danish Royal Life Guards in bearskin hats stand at attention outside Amalienborg Palace as onlookers photograph them.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/denmark/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-7242-1200.webp</image:loc>
       <image:title>Historic red-roofed barracks with Danish flag and industrial chimneys</image:title>
@@ -1234,109 +1075,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://purplelink.llc/photography/netherlands/amsterdam/</loc>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-7641-1200.webp</image:loc>
-      <image:title>Rijksmuseum facade and Museumplein lawn in Amsterdam</image:title>
-      <image:caption>Amsterdam, Netherlands - June 2026: The Rijksmuseum&#x27;s grand facade rises above the Museumplein lawn under a partly cloudy sky.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-7686-1200.webp</image:loc>
-      <image:title>Model sailing ship displayed in the window of an Amsterdam houseboat</image:title>
-      <image:caption>A detailed model sailing ship sits in the wooden window box of a weathered Amsterdam houseboat.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-7689-1200.webp</image:loc>
-      <image:title>Amsterdam canal houseboats beneath a tree-lined stone bridge</image:title>
-      <image:caption>Amsterdam, Netherlands - June 2026: Houseboats line a tree-shaded canal beneath a stone bridge crossed by pedestrians and cyclists.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-7702-1200.webp</image:loc>
-      <image:title>Basilica of Saint Nicholas towers over an Amsterdam bridge</image:title>
-      <image:caption>Amsterdam, Netherlands - June 2026: Travelers with luggage cross a bridge in front of the twin spires of the Basilica of Saint Nicholas.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-7720-1200.webp</image:loc>
-      <image:title>Ornate reading room with soaring bookshelves, Rijksmuseum</image:title>
-      <image:caption>Tiered wooden bookshelves and a spiral staircase rise beneath tall arched windows in the Rijksmuseum&#x27;s historic library.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-7732-1200.webp</image:loc>
-      <image:title>Canal boats pass the historic Hotel Victoria near Amsterdam Centraal</image:title>
-      <image:caption>Amsterdam, Netherlands - June 2026: Tour boats cruise past the historic Hotel Victoria near Amsterdam Centraal on an overcast day.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-7736-1200.webp</image:loc>
-      <image:title>Ornate apse with stained glass, Basilica of Saint Nicholas</image:title>
-      <image:caption>Amsterdam, Netherlands - June 2026: Ornate frescoes and stained glass windows fill the apse of the Basilica of Saint Nicholas.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-7737-1200.webp</image:loc>
-      <image:title>Stained glass above the altar, Basilica of Saint Nicholas</image:title>
-      <image:caption>Amsterdam, Netherlands - June 2026: Detailed stained glass windows depict religious scenes above the altar of the Basilica of Saint Nicholas.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-7750-1200.webp</image:loc>
-      <image:title>Zuiderkerk tower rising above a tranquil Amsterdam canal</image:title>
-      <image:caption>The historic Zuiderkerk bell tower rises above a tree-lined Amsterdam canal lined with houseboats.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-7761-pano-1200.webp</image:loc>
-      <image:title>Panoramic view of the Amstel river with houseboats, Amsterdam</image:title>
-      <image:caption>A wide panorama shows moored houseboats along the Amstel river with the Amsterdam skyline and church spires in the distance.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-7766-1200.webp</image:loc>
-      <image:title>Montelbaanstoren tower and canal drawbridge in Amsterdam</image:title>
-      <image:caption>The historic Montelbaanstoren tower rises above a canal drawbridge lined with brick buildings in Amsterdam.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-7794-1200.webp</image:loc>
-      <image:title>Leaning canal houses beneath a basilica dome, Amsterdam</image:title>
-      <image:caption>Amsterdam, Netherlands - June 2026: Traditional canal houses lean together beneath the dome of the Basilica of Saint Nicholas.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-7654-1200.webp</image:loc>
-      <image:title>Busy Amsterdam street with pedestrians and cyclists</image:title>
-      <image:caption>Amsterdam, Netherlands - June 2026: Pedestrians and cyclists fill a narrow shopping street beneath a bicycle route sign.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-7675-1200.webp</image:loc>
-      <image:title>Tourists posing on a canal boat tour beneath an Amsterdam bridge</image:title>
-      <image:caption>Amsterdam, Netherlands - June 2026: Passengers pose and wave from a canal boat passing beneath a bridge lined with cyclists.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-7746-pano-1200.webp</image:loc>
-      <image:title>Visitors inside the domed nave, Basilica of Saint Nicholas</image:title>
-      <image:caption>Amsterdam, Netherlands - June 2026: Visitors gather inside the domed interior of the Basilica of Saint Nicholas beneath painted arches.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-7790-1200.webp</image:loc>
-      <image:title>Tree-lined Amsterdam canal street with pedestrians and traffic signs</image:title>
-      <image:caption>Amsterdam, Netherlands - June 2026: Pedestrians and cyclists pass along a tree-lined canal beneath red and white traffic signs.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/netherlands/</loc>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/germany/cologne/</loc>
+    <loc>https://purplelink.llc/photography/germany/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-7832-pano-1200.webp</image:loc>
       <image:title>Stained glass windows illuminate the Gothic apse of Cologne Cathedral</image:title>
@@ -1403,9 +1142,6 @@
       <image:caption>Cologne, Germany - June 2026: Visitors gather on the steps of Cologne Cathedral beneath its towering Gothic spires.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/germany/heidelberg/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-7979-1200.webp</image:loc>
       <image:title>Aerial view of Heidelberg&#x27;s old town and the Neckar river</image:title>
@@ -1438,10 +1174,189 @@
     </image:image>
   </url>
   <url>
-    <loc>https://purplelink.llc/photography/germany/</loc>
+    <loc>https://purplelink.llc/photography/united-states/atlanta/</loc>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-2731-1200.webp</image:loc>
+      <image:title>City skyline reflected across a lake in falling snow</image:title>
+      <image:caption>A cluster of high-rise buildings rises above a lake and tree line as light snow falls over the city skyline.</image:caption>
+      <image:license>https://purplelink.llc/photography/license/</image:license>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-2751-1200.webp</image:loc>
+      <image:title>Atlanta city skyline at dusk under a snowy winter sky</image:title>
+      <image:caption>Atlanta, Georgia - January 2025: The downtown skyline glows at dusk after a snowfall, with construction cranes and illuminated signage among the high-rise buildings.</image:caption>
+      <image:license>https://purplelink.llc/photography/license/</image:license>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-3554-enhanced-nr-1200.webp</image:loc>
+      <image:title>Atlanta, Georgia - October 2024: aerial view of downtown highway traffic at dusk</image:title>
+      <image:caption>An aerial view of Atlanta, Georgia shows a busy interstate highway with streaking traffic lights winding through downtown skyscrapers at dusk.</image:caption>
+      <image:license>https://purplelink.llc/photography/license/</image:license>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-3566-enhanced-nr-1200.webp</image:loc>
+      <image:title>Atlanta, Georgia - October 2024: downtown skyline with corporate towers at dusk</image:title>
+      <image:caption>An aerial view of downtown Atlanta, Georgia at dusk shows illuminated corporate office towers against a warm orange horizon.</image:caption>
+      <image:license>https://purplelink.llc/photography/license/</image:license>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-3571-enhanced-nr-1200.webp</image:loc>
+      <image:title>Georgia Tech campus at dusk with athletic facilities and city skyline</image:title>
+      <image:caption>An aerial view of the Georgia Tech campus in Atlanta at dusk shows athletic facilities, tennis courts, and academic buildings with the city skyline beyond.</image:caption>
+      <image:license>https://purplelink.llc/photography/license/</image:license>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5101-1200.webp</image:loc>
+      <image:title>Blue glass sculpture fountain in a formal garden, Atlanta</image:title>
+      <image:caption>Atlanta, Georgia - May 2026: A cobalt blue glass sculpture crowns a stone fountain in a formal boxwood garden at the Atlanta Botanical Garden.</image:caption>
+      <image:license>https://purplelink.llc/photography/license/</image:license>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5115-1200.webp</image:loc>
+      <image:title>Earth Goddess floral topiary sculpture at Atlanta Botanical Garden</image:title>
+      <image:caption>Atlanta, Georgia - May 2026: The Earth Goddess living topiary sculpture, crafted from thousands of flowering plants, rests at the Atlanta Botanical Garden.</image:caption>
+      <image:license>https://purplelink.llc/photography/license/</image:license>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5132-1200.webp</image:loc>
+      <image:title>Stone footbridge over a winding garden stream in a forest</image:title>
+      <image:caption>A curved stone footbridge crosses a meandering garden stream lined with ferns and moss beneath a forest canopy.</image:caption>
+      <image:license>https://purplelink.llc/photography/license/</image:license>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5165-1200.webp</image:loc>
+      <image:title>Multi-tiered cascading waterfall over a mossy rock face in a forest</image:title>
+      <image:caption>A tall cascading waterfall flows over a fan-shaped rock face in a forested area of north Georgia.</image:caption>
+      <image:license>https://purplelink.llc/photography/license/</image:license>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5200-1200.webp</image:loc>
+      <image:title>Misty green mountains and forested ridges in the Appalachian foothills</image:title>
+      <image:caption>Layers of misty green forested ridges stretch toward the horizon in the Appalachian foothills of north Georgia.</image:caption>
+      <image:license>https://purplelink.llc/photography/license/</image:license>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-7629-1200.webp</image:loc>
+      <image:title>Atlanta downtown skyline at golden hour</image:title>
+      <image:caption>Atlanta&#x27;s downtown skyline glows in golden evening light, framed by a distinctive pyramid-topped skyscraper.</image:caption>
+      <image:license>https://purplelink.llc/photography/license/</image:license>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-0295-1200.webp</image:loc>
+      <image:title>Young man surprised among lush tropical greenhouse plants</image:title>
+      <image:caption>September 2023: A young man in a light blue shirt reacts with surprise while standing among dense tropical foliage inside a botanical greenhouse.</image:caption>
+      <image:license>https://purplelink.llc/photography/license/</image:license>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5128-1200.webp</image:loc>
+      <image:title>Visitor poses beside the Earth Goddess sculpture, Atlanta</image:title>
+      <image:caption>Atlanta, Georgia - May 2026: A visitor gestures toward the Earth Goddess topiary sculpture at the Atlanta Botanical Garden.</image:caption>
+      <image:license>https://purplelink.llc/photography/license/</image:license>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5174-1200.webp</image:loc>
+      <image:title>Man poses in front of a cascading waterfall wearing a race day shirt</image:title>
+      <image:caption>North Georgia - May 2026: A man wearing a Thanksgiving Day race shirt smiles in front of a tall cascading waterfall.</image:caption>
+      <image:license>https://purplelink.llc/photography/license/</image:license>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5449-1200.webp</image:loc>
+      <image:title>Atlanta, Georgia - July 2025: Braves and Orioles players celebrate at third base during MLB All-Star festivities</image:title>
+      <image:caption>Atlanta, Georgia - July 2025: A runner celebrates reaching third base as players and a coach gather on the infield dirt during the MLB All-Star Game.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5482-1200.webp</image:loc>
+      <image:title>Pittsburgh Pirates player introduced with pyrotechnics before the MLB Home Run Derby</image:title>
+      <image:caption>Atlanta, Georgia - July 2025: A Pittsburgh Pirates player stands on an elevated stage flanked by smoke plumes during pre-game introductions at the MLB Home Run Derby.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5505-1200.webp</image:loc>
+      <image:title>MLB Home Run Derby competitors introduced with fire and smoke effects, Atlanta</image:title>
+      <image:caption>Atlanta, Georgia - July 2025: Eight Home Run Derby competitors stand on lit pedestals as columns of fire and smoke rise behind them during introductions.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5521-1200.webp</image:loc>
+      <image:title>Military flyover and giant American flag before the MLB All-Star Game, Atlanta</image:title>
+      <image:caption>Atlanta, Georgia - July 2025: Military aircraft fly over Truist Park as a giant American flag is unfurled across the outfield before the MLB All-Star Game.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5524-1200.webp</image:loc>
+      <image:title>Military transport plane and fighter jet flying in formation over a baseball stadium</image:title>
+      <image:caption>Atlanta, Georgia - July 2025: A USAF transport aircraft and a stealth fighter jet fly in formation overhead during a pregame flyover at the MLB All-Star Game.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5598-1200.webp</image:loc>
+      <image:title>Tampa Bay Rays infielder swings during the MLB Home Run Derby</image:title>
+      <image:caption>Atlanta, Georgia - July 2025: A Tampa Bay Rays player takes a practice swing at home plate during the MLB Home Run Derby, seen through protective netting.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5671-1200.webp</image:loc>
+      <image:title>Seattle Mariners catcher follows through on a swing during the MLB Home Run Derby</image:title>
+      <image:caption>Atlanta, Georgia - July 2025: A Seattle Mariners player follows through on a home run swing at the plate, seen through protective netting.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5737-pano-1200.webp</image:loc>
+      <image:title>Panoramic night view of a packed baseball stadium during the MLB All-Star Game</image:title>
+      <image:caption>Atlanta, Georgia - July 2025: Fans pack every seat of Truist Park under bright stadium lights during the MLB All-Star Game.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5778-1200.webp</image:loc>
+      <image:title>Tampa Bay Rays player mid-swing during the MLB Home Run Derby</image:title>
+      <image:caption>Atlanta, Georgia - July 2025: A Tampa Bay Rays player connects with a pitch during the MLB Home Run Derby, viewed through protective netting.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5785-1200.webp</image:loc>
+      <image:title>Pittsburgh Pirates slugger swings during the MLB Home Run Derby</image:title>
+      <image:caption>Atlanta, Georgia - July 2025: A Pittsburgh Pirates player takes a big swing at home plate during the MLB Home Run Derby.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5797-1200.webp</image:loc>
+      <image:title>Players celebrate at home plate after the MLB Home Run Derby round</image:title>
+      <image:caption>Atlanta, Georgia - July 2025: A group of players and staff gather at home plate to celebrate after a round of the MLB Home Run Derby.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5819-1200.webp</image:loc>
+      <image:title>Seattle Mariners catcher surrounded by photographers during the MLB Home Run Derby</image:title>
+      <image:caption>Atlanta, Georgia - July 2025: A Seattle Mariners player prepares to bat at home plate as photographers and media crowd around during the MLB Home Run Derby.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5922-1200.webp</image:loc>
+      <image:title>Pitcher delivers to a batter during the MLB All-Star Game at Truist Park</image:title>
+      <image:caption>Atlanta, Georgia - July 2025: A pitcher releases the ball toward home plate as a batter prepares to swing during the MLB All-Star Game.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6038-1200.webp</image:loc>
+      <image:title>Outfielders track a fly ball during the MLB All-Star Game</image:title>
+      <image:caption>Atlanta, Georgia - July 2025: Two outfielders watch a fly ball in the air during play at the MLB All-Star Game.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6093-1200.webp</image:loc>
+      <image:title>Los Angeles Dodgers pitcher walks off the mound to applause during the MLB All-Star Game</image:title>
+      <image:caption>Atlanta, Georgia - July 2025: A Los Angeles Dodgers pitcher waves to teammates in the dugout while walking off the field during the MLB All-Star Game.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6105-1200.webp</image:loc>
+      <image:title>All-Star Game logo mowed into the outfield grass at Truist Park</image:title>
+      <image:caption>Atlanta, Georgia - July 2025: The MLB All-Star Game logo is mowed into the outfield turf, framed by outfield advertising boards at Truist Park.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6223-1200.webp</image:loc>
+      <image:title>National League players applaud from the dugout during the MLB All-Star Game</image:title>
+      <image:caption>Atlanta, Georgia - July 2025: National League players clap and cheer from the dugout railing as a teammate takes the field during the MLB All-Star Game.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6306-1200.webp</image:loc>
+      <image:title>Batter faces off against catcher and umpire during the MLB All-Star Game</image:title>
+      <image:caption>Atlanta, Georgia - July 2025: A batter stands ready at home plate as the catcher and umpire watch a pitch during the MLB All-Star Game.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6331-pano-1200.webp</image:loc>
+      <image:title>Panoramic night view of fans watching the MLB All-Star Game from the stands</image:title>
+      <image:caption>Atlanta, Georgia - July 2025: Fans fill the stands and hold up phones as they watch play unfold on the field during the MLB All-Star Game at night.</image:caption>
+    </image:image>
   </url>
   <url>
-    <loc>https://purplelink.llc/photography/united-states/sonoran-desert/</loc>
+    <loc>https://purplelink.llc/photography/united-states/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-7583-1200.webp</image:loc>
       <image:title>Fiery orange sunset over saguaro cacti and desert mountains, Tucson</image:title>
@@ -1538,9 +1453,6 @@
       <image:caption>A stacked stone cairn balances atop a charred tree stump against a backdrop of tall pines and blue sky.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/united-states/hawaii/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-4380-1200.webp</image:loc>
       <image:title>Waipio Valley black sand beach and sea cliffs, Hawaii</image:title>
@@ -1637,192 +1549,6 @@
       <image:caption>Pearl Harbor, Hawaii - January 2024: A glass display case aboard a historic submarine shows a sailor&#x27;s uniform, personal photograph, and wartime belongings.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/united-states/atlanta/</loc>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-2731-1200.webp</image:loc>
-      <image:title>City skyline reflected across a lake in falling snow</image:title>
-      <image:caption>A cluster of high-rise buildings rises above a lake and tree line as light snow falls over the city skyline.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-2751-1200.webp</image:loc>
-      <image:title>Atlanta city skyline at dusk under a snowy winter sky</image:title>
-      <image:caption>Atlanta, Georgia - January 2025: The downtown skyline glows at dusk after a snowfall, with construction cranes and illuminated signage among the high-rise buildings.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-3554-enhanced-nr-1200.webp</image:loc>
-      <image:title>Atlanta, Georgia - October 2024: aerial view of downtown highway traffic at dusk</image:title>
-      <image:caption>An aerial view of Atlanta, Georgia shows a busy interstate highway with streaking traffic lights winding through downtown skyscrapers at dusk.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-3566-enhanced-nr-1200.webp</image:loc>
-      <image:title>Atlanta, Georgia - October 2024: downtown skyline with corporate towers at dusk</image:title>
-      <image:caption>An aerial view of downtown Atlanta, Georgia at dusk shows illuminated corporate office towers against a warm orange horizon.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-3571-enhanced-nr-1200.webp</image:loc>
-      <image:title>Georgia Tech campus at dusk with athletic facilities and city skyline</image:title>
-      <image:caption>An aerial view of the Georgia Tech campus in Atlanta at dusk shows athletic facilities, tennis courts, and academic buildings with the city skyline beyond.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5101-1200.webp</image:loc>
-      <image:title>Blue glass sculpture fountain in a formal garden, Atlanta</image:title>
-      <image:caption>Atlanta, Georgia - May 2026: A cobalt blue glass sculpture crowns a stone fountain in a formal boxwood garden at the Atlanta Botanical Garden.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5115-1200.webp</image:loc>
-      <image:title>Earth Goddess floral topiary sculpture at Atlanta Botanical Garden</image:title>
-      <image:caption>Atlanta, Georgia - May 2026: The Earth Goddess living topiary sculpture, crafted from thousands of flowering plants, rests at the Atlanta Botanical Garden.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5132-1200.webp</image:loc>
-      <image:title>Stone footbridge over a winding garden stream in a forest</image:title>
-      <image:caption>A curved stone footbridge crosses a meandering garden stream lined with ferns and moss beneath a forest canopy.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-7629-1200.webp</image:loc>
-      <image:title>Atlanta downtown skyline at golden hour</image:title>
-      <image:caption>Atlanta&#x27;s downtown skyline glows in golden evening light, framed by a distinctive pyramid-topped skyscraper.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-0295-1200.webp</image:loc>
-      <image:title>Young man surprised among lush tropical greenhouse plants</image:title>
-      <image:caption>September 2023: A young man in a light blue shirt reacts with surprise while standing among dense tropical foliage inside a botanical greenhouse.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5128-1200.webp</image:loc>
-      <image:title>Visitor poses beside the Earth Goddess sculpture, Atlanta</image:title>
-      <image:caption>Atlanta, Georgia - May 2026: A visitor gestures toward the Earth Goddess topiary sculpture at the Atlanta Botanical Garden.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5449-1200.webp</image:loc>
-      <image:title>Atlanta, Georgia - July 2025: Braves and Orioles players celebrate at third base during MLB All-Star festivities</image:title>
-      <image:caption>Atlanta, Georgia - July 2025: A runner celebrates reaching third base as players and a coach gather on the infield dirt during the MLB All-Star Game.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5482-1200.webp</image:loc>
-      <image:title>Pittsburgh Pirates player introduced with pyrotechnics before the MLB Home Run Derby</image:title>
-      <image:caption>Atlanta, Georgia - July 2025: A Pittsburgh Pirates player stands on an elevated stage flanked by smoke plumes during pre-game introductions at the MLB Home Run Derby.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5505-1200.webp</image:loc>
-      <image:title>MLB Home Run Derby competitors introduced with fire and smoke effects, Atlanta</image:title>
-      <image:caption>Atlanta, Georgia - July 2025: Eight Home Run Derby competitors stand on lit pedestals as columns of fire and smoke rise behind them during introductions.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5521-1200.webp</image:loc>
-      <image:title>Military flyover and giant American flag before the MLB All-Star Game, Atlanta</image:title>
-      <image:caption>Atlanta, Georgia - July 2025: Military aircraft fly over Truist Park as a giant American flag is unfurled across the outfield before the MLB All-Star Game.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5524-1200.webp</image:loc>
-      <image:title>Military transport plane and fighter jet flying in formation over a baseball stadium</image:title>
-      <image:caption>Atlanta, Georgia - July 2025: A USAF transport aircraft and a stealth fighter jet fly in formation overhead during a pregame flyover at the MLB All-Star Game.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5598-1200.webp</image:loc>
-      <image:title>Tampa Bay Rays infielder swings during the MLB Home Run Derby</image:title>
-      <image:caption>Atlanta, Georgia - July 2025: A Tampa Bay Rays player takes a practice swing at home plate during the MLB Home Run Derby, seen through protective netting.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5671-1200.webp</image:loc>
-      <image:title>Seattle Mariners catcher follows through on a swing during the MLB Home Run Derby</image:title>
-      <image:caption>Atlanta, Georgia - July 2025: A Seattle Mariners player follows through on a home run swing at the plate, seen through protective netting.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5737-pano-1200.webp</image:loc>
-      <image:title>Panoramic night view of a packed baseball stadium during the MLB All-Star Game</image:title>
-      <image:caption>Atlanta, Georgia - July 2025: Fans pack every seat of Truist Park under bright stadium lights during the MLB All-Star Game.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5778-1200.webp</image:loc>
-      <image:title>Tampa Bay Rays player mid-swing during the MLB Home Run Derby</image:title>
-      <image:caption>Atlanta, Georgia - July 2025: A Tampa Bay Rays player connects with a pitch during the MLB Home Run Derby, viewed through protective netting.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5785-1200.webp</image:loc>
-      <image:title>Pittsburgh Pirates slugger swings during the MLB Home Run Derby</image:title>
-      <image:caption>Atlanta, Georgia - July 2025: A Pittsburgh Pirates player takes a big swing at home plate during the MLB Home Run Derby.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5797-1200.webp</image:loc>
-      <image:title>Players celebrate at home plate after the MLB Home Run Derby round</image:title>
-      <image:caption>Atlanta, Georgia - July 2025: A group of players and staff gather at home plate to celebrate after a round of the MLB Home Run Derby.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5819-1200.webp</image:loc>
-      <image:title>Seattle Mariners catcher surrounded by photographers during the MLB Home Run Derby</image:title>
-      <image:caption>Atlanta, Georgia - July 2025: A Seattle Mariners player prepares to bat at home plate as photographers and media crowd around during the MLB Home Run Derby.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5922-1200.webp</image:loc>
-      <image:title>Pitcher delivers to a batter during the MLB All-Star Game at Truist Park</image:title>
-      <image:caption>Atlanta, Georgia - July 2025: A pitcher releases the ball toward home plate as a batter prepares to swing during the MLB All-Star Game.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6038-1200.webp</image:loc>
-      <image:title>Outfielders track a fly ball during the MLB All-Star Game</image:title>
-      <image:caption>Atlanta, Georgia - July 2025: Two outfielders watch a fly ball in the air during play at the MLB All-Star Game.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6093-1200.webp</image:loc>
-      <image:title>Los Angeles Dodgers pitcher walks off the mound to applause during the MLB All-Star Game</image:title>
-      <image:caption>Atlanta, Georgia - July 2025: A Los Angeles Dodgers pitcher waves to teammates in the dugout while walking off the field during the MLB All-Star Game.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6105-1200.webp</image:loc>
-      <image:title>All-Star Game logo mowed into the outfield grass at Truist Park</image:title>
-      <image:caption>Atlanta, Georgia - July 2025: The MLB All-Star Game logo is mowed into the outfield turf, framed by outfield advertising boards at Truist Park.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6223-1200.webp</image:loc>
-      <image:title>National League players applaud from the dugout during the MLB All-Star Game</image:title>
-      <image:caption>Atlanta, Georgia - July 2025: National League players clap and cheer from the dugout railing as a teammate takes the field during the MLB All-Star Game.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6306-1200.webp</image:loc>
-      <image:title>Batter faces off against catcher and umpire during the MLB All-Star Game</image:title>
-      <image:caption>Atlanta, Georgia - July 2025: A batter stands ready at home plate as the catcher and umpire watch a pitch during the MLB All-Star Game.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-6331-pano-1200.webp</image:loc>
-      <image:title>Panoramic night view of fans watching the MLB All-Star Game from the stands</image:title>
-      <image:caption>Atlanta, Georgia - July 2025: Fans fill the stands and hold up phones as they watch play unfold on the field during the MLB All-Star Game at night.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/united-states/san-francisco/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-4707-1200.webp</image:loc>
       <image:title>San Francisco City Hall dome framed by a bronze equestrian statue and string lights</image:title>
@@ -1877,9 +1603,6 @@
       <image:caption>A man wearing a Nike t-shirt stands with hands on hips in front of the Golden Gate Bridge and San Francisco Bay.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/united-states/pittsburgh/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-0107-1200.webp</image:loc>
       <image:title>City street with storefronts and skyline, Pittsburgh</image:title>
@@ -1892,18 +1615,12 @@
       <image:caption>Pittsburgh, Pennsylvania - July 2022: The soaring Gothic tower of a university building rises above manicured lawns and trees under a clear blue sky.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/united-states/sequoias/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-4842-1200.webp</image:loc>
       <image:title>Person sitting alone on a bench in a redwood grove</image:title>
       <image:caption>A person sits alone on a wooden bench, looking out into a grove of towering redwood trees dappled with sunlight.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/united-states/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-0006-enhanced-1200.webp</image:loc>
       <image:title>Starry night sky over a silhouetted desert mountain</image:title>
@@ -1978,49 +1695,7 @@
     </image:image>
   </url>
   <url>
-    <loc>https://purplelink.llc/photography/canada/vancouver/</loc>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-4864-1200.webp</image:loc>
-      <image:title>Carved totem poles backlit by sunlight in Stanley Park, Vancouver</image:title>
-      <image:caption>Vancouver, Canada - April 2026: Sunlit totem poles rise above the forest at Stanley Park&#x27;s totem pole exhibit.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-4908-1200.webp</image:loc>
-      <image:title>Vancouver downtown skyline viewed across the water from Stanley Park</image:title>
-      <image:caption>Vancouver&#x27;s downtown skyline rises beyond a rocky low-tide shoreline and a historic red brick building near Stanley Park.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5033-pano-1200.webp</image:loc>
-      <image:title>Panoramic view of Vancouver and English Bay from a mountain gondola</image:title>
-      <image:caption>A gondola cable and support tower frame a wide panorama of Vancouver, English Bay, and anchored cargo ships from a mountainside.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5041-1200.webp</image:loc>
-      <image:title>Vancouver skyline and harbor seen through evergreen trees</image:title>
-      <image:caption>Evergreen treetops frame a distant view of Vancouver&#x27;s skyline, harbor, and anchored ships from a mountainside overlook.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-5067-1200.webp</image:loc>
-      <image:title>Cherry blossom trees forming a canopy over a residential street</image:title>
-      <image:caption>Cherry blossom trees form a blooming pink canopy over a quiet residential street in Vancouver, Canada.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-    <image:image>
-      <image:loc>https://purplelink.llc/assets/photography/hub/dsc-4970-1200.webp</image:loc>
-      <image:title>Visitor poses with a grizzly bear at a Vancouver wildlife refuge</image:title>
-      <image:caption>Vancouver, Canada - April 2026: A visitor poses for a photo with a grizzly bear grazing behind a wire fence at the Grouse Mountain wildlife refuge.</image:caption>
-      <image:license>https://purplelink.llc/photography/license/</image:license>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/canada/</loc>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/panama/panama-city/</loc>
+    <loc>https://purplelink.llc/photography/panama/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-0119-1200.webp</image:loc>
       <image:title>Weathered colonial church bell tower against a blue sky</image:title>
@@ -2099,9 +1774,6 @@
       <image:caption>Panama - August 2023: A man in a white t-shirt sits on a rocky outcrop above a turquoise river, holding up his phone and giving a peace sign.</image:caption>
       <image:license>https://purplelink.llc/photography/license/</image:license>
     </image:image>
-  </url>
-  <url>
-    <loc>https://purplelink.llc/photography/panama/</loc>
     <image:image>
       <image:loc>https://purplelink.llc/assets/photography/hub/dsc-0030-1200.webp</image:loc>
       <image:title>Black spiny-tailed iguana resting on a resort sidewalk</image:title>

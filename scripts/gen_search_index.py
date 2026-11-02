@@ -13,6 +13,7 @@ Usage:
 from __future__ import annotations
 
 import html
+import os
 import json
 import re
 from pathlib import Path
@@ -81,7 +82,11 @@ def main() -> int:
             "s": section_for(rel),
             "h": heads,
         })
-    OUT.write_text(json.dumps(entries, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    # Written to a per-process temp file and renamed, because test files running in parallel each regenerate it
+    # (netlify/tests/_generated.mjs) and must never read a half-written copy.
+    tmp = OUT.with_name(f".{OUT.name}.{os.getpid()}.tmp")
+    tmp.write_text(json.dumps(entries, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    os.replace(tmp, OUT)
     print(f"search index: {len(entries)} pages, {OUT.stat().st_size // 1024} KB")
     return 0
 

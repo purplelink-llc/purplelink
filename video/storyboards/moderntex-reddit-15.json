@@ -1,0 +1,216 @@
+{
+ "id": "moderntex-reddit-15",
+ "title": "ModernTex Reddit video ad, 15 s cutdown",
+ "bed": {
+  "style": {
+   "genre": "synthwave",
+   "bpm": 104,
+   "mood": "bright",
+   "key": "D"
+  },
+  "seed": 7,
+  "gain_db": -13,
+  "dropScene": 1
+ },
+ "scenes": [
+  {
+   "kind": "seq",
+   "seq": "clean",
+   "dur": 1.8,
+   "focus": {
+    "x": 0,
+    "y": 0,
+    "w": 1,
+    "h": 1
+   },
+   "push": 0.05,
+   "cap": {
+    "lines": [
+     "LaTeX on your Mac"
+    ],
+    "hl": [
+     "mac"
+    ]
+   }
+  },
+  {
+   "kind": "seq",
+   "seq": "type",
+   "dur": 2.8,
+   "from": 1.0,
+   "rate": 3.6,
+   "clicks": 3,
+   "focus": {
+    "x": 0.03,
+    "y": 0.38,
+    "w": 0.36,
+    "h": 0.24
+   },
+   "cap": {
+    "lines": [
+     "Write the source"
+    ]
+   }
+  },
+  {
+   "kind": "seq",
+   "seq": "build",
+   "dur": 2.0,
+   "rate": 0.6,
+   "press": 0.05,
+   "focus": {
+    "x": 0.03,
+    "y": 0.44,
+    "w": 0.36,
+    "h": 0.16
+   },
+   "focusTo": {
+    "x": 0.6,
+    "y": 0.36,
+    "w": 0.38,
+    "h": 0.14
+   },
+   "panAt": 0.1,
+   "panEnd": 0.9,
+   "cap": {
+    "lines": [
+     "It builds on your Mac"
+    ],
+    "hl": [
+     "mac"
+    ]
+   }
+  },
+  {
+   "kind": "seq",
+   "seq": "sync",
+   "dur": 2.0,
+   "rate": 0.7,
+   "press": 0.05,
+   "focus": {
+    "x": 0.04,
+    "y": 0.45,
+    "w": 0.34,
+    "h": 0.14
+   },
+   "focusTo": {
+    "x": 0.6,
+    "y": 0.38,
+    "w": 0.38,
+    "h": 0.14
+   },
+   "panAt": 0.15,
+   "panEnd": 0.85,
+   "rings": [
+    {
+     "x": 0.055,
+     "y": 0.506,
+     "w": 0.25,
+     "h": 0.034,
+     "at": 0.0,
+     "dur": 0.3
+    },
+    {
+     "x": 0.772,
+     "y": 0.43,
+     "w": 0.07,
+     "h": 0.044,
+     "at": 0.85,
+     "dur": 0.35
+    }
+   ],
+   "cap": {
+    "lines": [
+     "Click a line, the PDF follows"
+    ],
+    "hl": [
+     "pdf"
+    ]
+   }
+  },
+  {
+   "kind": "seq",
+   "seq": "typo",
+   "dur": 1.8,
+   "from": 2.2,
+   "rate": 1.2,
+   "press": 0.7,
+   "focus": {
+    "x": 0.02,
+    "y": 0.47,
+    "w": 0.42,
+    "h": 0.15
+   },
+   "focusTo": {
+    "x": 0.0,
+    "y": 0.47,
+    "w": 0.56,
+    "h": 0.51
+   },
+   "panAt": 0.7,
+   "panEnd": 1.4,
+   "cap": {
+    "lines": [
+     "A typo? Plain words,",
+     "and a one-click fix"
+    ],
+    "hl": [
+     "one-click",
+     "fix"
+    ]
+   }
+  },
+  {
+   "kind": "seq",
+   "seq": "fix",
+   "dur": 1.6,
+   "from": -0.5,
+   "rate": 1.4,
+   "press": 0.5,
+   "capSame": true,
+   "focus": {
+    "x": 0.0,
+    "y": 0.47,
+    "w": 0.56,
+    "h": 0.51
+   },
+   "push": 0.02,
+   "rings": [
+    {
+     "x": 0.04,
+     "y": 0.912,
+     "w": 0.2,
+     "h": 0.05,
+     "at": 0.0,
+     "dur": 0.3,
+     "until": 0.75
+    },
+    {
+     "x": 0.1,
+     "y": 0.543,
+     "w": 0.115,
+     "h": 0.035,
+     "at": 0.9,
+     "dur": 0.35
+    }
+   ],
+   "cap": {
+    "lines": [
+     "A typo? Plain words,",
+     "and a one-click fix"
+    ],
+    "hl": [
+     "one-click",
+     "fix"
+    ]
+   }
+  },
+  {
+   "kind": "end",
+   "dur": 3.0,
+   "tagline": "The LaTeX editor for Mac",
+   "price": "$19.99 once · 7-day free trial",
+   "url": "purplelink.llc/moderntex"
+  }
+ ]
+}

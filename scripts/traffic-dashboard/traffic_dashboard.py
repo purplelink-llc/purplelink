@@ -66,7 +66,16 @@ METRIC_START_OVERRIDES = {
     # Vitae moved behind the counted vitae-download function on this day; before
     # it the DMG was a static file and no download was ever recorded.
     ("purplelink", "vitaeDownloads"): "2026-09-22",
+    # The free wallpaper pack (/photography/wallpapers/) and its optional email list went live with the
+    # 2026-10-31 evening build; wallpaper-download.mjs started counting then.
+    ("purplelink", "wallpaperDownloads"): "2026-10-31",
+    ("purplelink", "wallpaperSignups"): "2026-10-31",
 }
+
+# The wallpaper test's stop rule (log_change 03653cc186): fewer than WALLPAPER_STOP_MIN downloads in the
+# first WALLPAPER_STOP_DAYS days means the paid 30-pack is not built.
+WALLPAPER_STOP_MIN = 50
+WALLPAPER_STOP_DAYS = 30
 
 # Events we generated ourselves. The beacon cannot tell a verification click
 # from a customer's, so they are subtracted here rather than left to be read as
@@ -134,9 +143,12 @@ SITES = [
                         ("lgTrialDownloads", "Legroom trial downloads"),
                         ("kfTrialDownloads", "Keyfeel trial downloads"),
                         ("tfTrialDownloads", "Tapefolio trial downloads"),
+                        ("lcbTrialDownloads", "Lenscrib trial downloads"),
                         ("pnTrialDownloads", "Panely trial downloads"),
                         ("smTrialDownloads", "Summonly trial downloads"),
                         ("vitaeDownloads", "Vitae downloads"),
+                        ("wallpaperDownloads", "wallpaper downloads"),
+                        ("wallpaperSignups", "wallpaper-list signups"),
                         ("checkoutClicks", "checkout clicks")],
         # Paths that actually show a buy button. The useful denominator for a
         # checkout rate is "people who reached a page where buying was possible",
@@ -174,6 +186,8 @@ SITES = [
             "/keyfeel/",
             # Tapefolio: buy button (pr-checkout-btn, data-product="tapefolio").
             "/tapefolio/",
+            # Lenscrib: buy button (pr-checkout-btn, data-product="lenscrib").
+            "/lenscrib/",
             # Panely and Summonly: buy buttons (pr-checkout-btn, data-product="panely" and "summonly").
             "/panely/",
             "/summonly/",
@@ -194,6 +208,7 @@ SITES = [
         "signup_forms": {
             "waitlist-haea": "haeaSignups",
             "moderntex-releases": "moderntexReleaseSignups",
+            "wallpaper-news": "wallpaperSignups",
         },
         # Search Console property id. Purplelink is a URL-prefix property, so
         # the trailing slash is part of the id; getmuscleonglp is a domain
@@ -262,7 +277,7 @@ ADMOB_APPS = {
                  "appId": "ca-app-pub-6407975157274256~3074958691"},
 }
 ADMOB_DAYS = 7  # matches the Apple Search Ads manual reading, for a fair spend-vs-earnings comparison
-PRODUCT_PAGE_PATHS = {"/moderntex", "/outbound-veil", "/legroom", "/keyfeel", "/tapefolio", "/panely", "/summonly", "/vitae", "/suite"}
+PRODUCT_PAGE_PATHS = {"/moderntex", "/outbound-veil", "/legroom", "/keyfeel", "/tapefolio", "/lenscrib", "/panely", "/summonly", "/vitae", "/suite"}
 AD_FUNNEL_DAYS = 7  # window for the first-touch channel funnel (adFunnel in history.json)
 
 
@@ -460,6 +475,29 @@ def fetch_vitae_downloads_blobs() -> dict | None:
         return None
 
 
+def fetch_wallpaper_downloads_blobs() -> dict | None:
+    """{"downloads": {file: lifetime}, "byDay": {date: n}} from the wallpaper-stats store, which
+    netlify/functions/wallpaper-download.mjs fills (non-crawler GETs only), or None on failure."""
+    try:
+        return {"downloads": blobs_read("wallpaper-stats", "downloads:"),
+                "byDay": blobs_read("wallpaper-stats", "day:")}
+    except (OSError, http.client.HTTPException, ValueError) as exc:
+        print(f"  ! Wallpaper downloads (Blobs) unavailable: {str(exc)[:80]}", file=sys.stderr)
+        return None
+
+
+def wallpaper_test(by_day: dict, today: dt.date) -> dict:
+    """Progress of the wallpaper stop rule: downloads over the test's first WALLPAPER_STOP_DAYS days,
+    counted through yesterday (complete days) or the window's end, whichever is first."""
+    start = dt.date.fromisoformat(METRIC_START_OVERRIDES[("purplelink", "wallpaperDownloads")])
+    end = start + dt.timedelta(days=WALLPAPER_STOP_DAYS - 1)
+    last = min(end, today - dt.timedelta(days=1))
+    days = [(start + dt.timedelta(days=i)).isoformat() for i in range((last - start).days + 1)]
+    n = sum(int((by_day.get(d) or {}).get("wallpaperDownloads", 0) or 0) for d in days)
+    return {"downloads": n, "daysIn": len(days), "start": start.isoformat(), "end": end.isoformat(),
+            "done": last == end}
+
+
 def fetch_sparkle_updates_blobs() -> dict | None:
     """Same shape as fetch_sparkle_updates, read from the moderntex-stats store when
     MODERNTEX_UPDATE_TOKEN is not set. That token is compiled into the shipped app, so it is read
@@ -632,10 +670,10 @@ def macupdate_summary(entry: dict | None, today: dt.date | None = None) -> dict 
 
 # Our own download counters per app (beacon trial clicks per day), for the all-sources view.
 SITE_DOWNLOAD_METRICS = {"moderntex": "trialDownloads", "outbound-veil": "ovTrialDownloads", "legroom": "lgTrialDownloads",
-                         "keyfeel": "kfTrialDownloads", "tapefolio": "tfTrialDownloads", "panely": "pnTrialDownloads",
+                         "keyfeel": "kfTrialDownloads", "tapefolio": "tfTrialDownloads", "lenscrib": "lcbTrialDownloads", "panely": "pnTrialDownloads",
                          "summonly": "smTrialDownloads", "vitae": "vitaeDownloads"}
 APP_LABELS = {"moderntex": "ModernTex", "outbound-veil": "Outbound Veil", "legroom": "Legroom", "keyfeel": "Keyfeel",
-              "tapefolio": "Tapefolio", "panely": "Panely", "summonly": "Summonly", "vitae": "Vitae"}
+              "tapefolio": "Tapefolio", "lenscrib": "Lenscrib", "panely": "Panely", "summonly": "Summonly", "vitae": "Vitae"}
 
 
 def downloads_all_sources(history: dict, today: dt.date | None = None) -> list[dict]:
@@ -1013,6 +1051,115 @@ def fetch_chrome_web_store(prior: dict | None) -> dict | None:
             last = exc
     print(f"  ! chrome web store unavailable: {str(last)[:80]}", file=sys.stderr)
     return prior
+
+
+# --- Firefox (AMO) and Microsoft Edge Add-ons ------------------------------
+#
+# Both stores have a public JSON read endpoint that needs no key (their
+# publish APIs carry no stats). AMO gives exact average daily users; Edge gives
+# an active install count. The Edge listing id is NOT the Chrome id: it is the
+# 32-letter id in the Edge store URL (Partner Center > Extension overview), set
+# as EDGE_ADDON_CRX_ID in traffic.env. Until it is set, the block says so.
+
+AMO_SLUG = "google-scholar-utility-belt"
+EDGE_CRX_ID_KEY = "EDGE_ADDON_CRX_ID"
+
+
+def _get_store_json(url: str, what: str) -> dict | None:
+    """GET a public store JSON document with retries; None on a hard failure."""
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (purplelink-traffic-dashboard)",
+                                               "Accept": "application/json"})
+    last: Exception | None = None
+    for attempt in range(RETRIES):
+        if attempt:
+            time.sleep(RETRY_BACKOFF * (2 ** (attempt - 1)))
+        try:
+            with urllib.request.urlopen(req, timeout=TIMEOUT, context=_ssl_context()) as resp:
+                return json.loads(resp.read().decode("utf-8", errors="replace"))
+        except urllib.error.HTTPError as exc:
+            if exc.code < 500 and exc.code != 429:
+                print(f"  ! {what}: HTTP {exc.code}", file=sys.stderr)
+                return None
+            last = exc
+        except (OSError, http.client.HTTPException, ValueError) as exc:
+            last = exc
+    print(f"  ! {what} unavailable: {str(last)[:80]}", file=sys.stderr)
+    return None
+
+
+def fetch_amo(prior: dict | None) -> dict | None:
+    """Scholar Utility Belt on addons.mozilla.org, or the prior reading on failure."""
+    d = _get_store_json(f"https://addons.mozilla.org/api/v5/addons/addon/{AMO_SLUG}/", "firefox add-ons")
+    if not isinstance(d, dict) or "average_daily_users" not in d:
+        return prior
+    ratings = d.get("ratings") or {}
+    return {"label": CWS_LABEL,
+            "url": d.get("url") or f"https://addons.mozilla.org/firefox/addon/{AMO_SLUG}/",
+            "users": int(d.get("average_daily_users") or 0),
+            "weeklyDownloads": int(d.get("weekly_downloads") or 0),
+            "ratingCount": int(ratings.get("count") or 0),
+            "ratingAvg": float(ratings.get("average") or 0.0),
+            "version": (d.get("current_version") or {}).get("version"),
+            "lastUpdated": d.get("last_updated"),
+            "asOf": dt.date.today().isoformat()}
+
+
+def fetch_edge_addon(crx_id: str, prior: dict | None) -> dict | None:
+    """Scholar Utility Belt on Microsoft Edge Add-ons, or the prior reading on failure."""
+    if not crx_id:
+        return {"missing": "Edge listing id not set"}
+    d = _get_store_json(f"https://microsoftedge.microsoft.com/addons/getproductdetailsbycrxid/{crx_id}",
+                        "edge add-ons")
+    if not isinstance(d, dict) or "activeInstallCount" not in d:
+        return None if (prior or {}).get("missing") else prior
+    return {"label": CWS_LABEL,
+            "url": f"https://microsoftedge.microsoft.com/addons/detail/{crx_id}",
+            "users": int(d.get("activeInstallCount") or 0),
+            "ratingCount": int(d.get("ratingCount") or 0),
+            "ratingAvg": float(d.get("averageRating") or 0.0),
+            "version": d.get("version"),
+            "asOf": dt.date.today().isoformat()}
+
+
+def record_extension_stores(history: dict, readings: dict[str, dict | None]) -> None:
+    """Add each store's fresh reading to history["extensionStores"][store]["days"].
+
+    A fetcher that failed hands back the prior reading, dated its own day, so a
+    stale reading never lands on today and the series has a gap, not a repeat.
+    """
+    stores = history.setdefault("extensionStores", {})
+    for store, r in readings.items():
+        entry = stores.setdefault(store, {"days": {}})
+        if not r or r.get("missing"):
+            entry["missing"] = (r or {}).get("missing")
+            continue
+        entry.pop("missing", None)
+        entry["latest"] = r
+        users = r.get("users")
+        if isinstance(users, str):
+            users = int(users.replace(",", "")) if users.replace(",", "").isdigit() else None
+        entry["days"][r["asOf"]] = {k: v for k, v in {"users": users, "ratingCount": r.get("ratingCount"),
+                                                       "ratingAvg": r.get("ratingAvg"),
+                                                       "version": r.get("version")}.items() if v is not None}
+
+
+def extension_store_rows(history: dict) -> list[dict]:
+    """One row per store: latest users, ratings, version, and change since the previous recorded day."""
+    rows = []
+    for store, name in (("chrome", "Chrome Web Store"), ("firefox", "Firefox Add-ons"), ("edge", "Edge Add-ons")):
+        entry = (history.get("extensionStores") or {}).get(store) or {}
+        days = entry.get("days") or {}
+        keys = sorted(days)
+        last = days[keys[-1]] if keys else {}
+        prev = days[keys[-2]] if len(keys) > 1 else {}
+        change = (last["users"] - prev["users"]
+                  if isinstance(last.get("users"), int) and isinstance(prev.get("users"), int) else None)
+        rows.append({"store": store, "name": name, "missing": entry.get("missing"),
+                     "url": (entry.get("latest") or {}).get("url"), "asOf": keys[-1] if keys else None,
+                     "users": last.get("users"), "ratingCount": last.get("ratingCount"),
+                     "ratingAvg": last.get("ratingAvg"), "version": last.get("version"), "change": change,
+                     "prevDay": keys[-2] if len(keys) > 1 else None})
+    return rows
 
 
 # Search Console rows that are not readers. A new site with a handful of
@@ -1803,6 +1950,7 @@ def summarise(site: dict, site_hist: dict) -> dict:
         # checkout clicks only as a 30-day total, so the per-day click count here
         # is every product's buy button (at this volume nearly all ModernTex).
         "trial_days": trial_days,
+        "wallpaper_test": wallpaper_test(by_day, today) if site["key"] == "purplelink" else None,
         "trial30": int(total(trial_days, "trialDownloads") or 0),
         "trial_clicks30": int(total(trial_days, "checkoutClicks") or 0),
         "bounds": [b for b in (
@@ -1998,6 +2146,20 @@ def observations(summaries: list[dict], sales: dict | None = None) -> list[str]:
                 out.append(f"{s['label']}: {ck['clicks']} checkout click(s) from {ck['views']} "
                            f"product-page view(s) in 30 days — a {ck['pct']:.1f}% checkout rate.")
 
+        # The wallpaper test: one line against its stop rule, so the decision date is not missed.
+        wt = s.get("wallpaper_test")
+        if wt and wt["daysIn"] > 0:
+            if wt["done"]:
+                verdict = ("passed: the paid 30-pack can be built" if wt["downloads"] >= WALLPAPER_STOP_MIN
+                           else "missed: no paid pack")
+                out.append(f"{s['label']}: wallpaper test finished with {wt['downloads']} download(s) in "
+                           f"{WALLPAPER_STOP_DAYS} days ({wt['start']} to {wt['end']}); the stop rule "
+                           f"({WALLPAPER_STOP_MIN}) is {verdict}.")
+            else:
+                out.append(f"{s['label']}: wallpaper test at {wt['downloads']} download(s) after {wt['daysIn']} "
+                           f"of {WALLPAPER_STOP_DAYS} days; under {WALLPAPER_STOP_MIN} by {wt['end']} means "
+                           f"no paid pack.")
+
         # The ModernTex trial funnel: download -> buy click -> paid order. This is
         # the one number the trial was built to produce, so it gets its own line
         # rather than being read off three separate counters. Orders come from
@@ -2035,6 +2197,7 @@ def observations(summaries: list[dict], sales: dict | None = None) -> list[str]:
                            ("subscribes", "subscribes"),
                            ("calcRuns", "calculator runs"),
                            ("vitaeDownloads", "Vitae downloads"),
+                           ("wallpaperDownloads", "wallpaper downloads"),
                            ("trialDownloads", "trial downloads")) if k == adj["metric"]), adj["metric"])
             out.append(f"{s['label']}: {adj['removed']} of the {adj['raw']} {label} on "
                        f"{adj['day']} were ours and are excluded above ({adj['why']}). "
@@ -2635,7 +2798,7 @@ def site_card(s: dict) -> str:
 
 
 PRODUCT_LABELS = {
-    "scholar-belt": "Scholar Utility Belt Pro", "moderntex": "ModernTex", "outbound-veil": "Outbound Veil", "legroom": "Legroom", "keyfeel": "Keyfeel", "tapefolio": "Tapefolio", "panely": "Panely", "summonly": "Summonly", "freeboard": "Legroom", "app-suite": "Mac Suite", "bundle-2": "Mac Suite bundle (any 2)", "bundle-3": "Mac Suite bundle (any 3)", "cover-letter": "Cover letter", "anonymity-check": "Anonymity check",
+    "scholar-belt": "Scholar Utility Belt Pro", "moderntex": "ModernTex", "outbound-veil": "Outbound Veil", "legroom": "Legroom", "keyfeel": "Keyfeel", "tapefolio": "Tapefolio", "lenscrib": "Lenscrib", "panely": "Panely", "summonly": "Summonly", "freeboard": "Legroom", "app-suite": "Mac Suite", "bundle-2": "Mac Suite bundle (any 2)", "bundle-3": "Mac Suite bundle (any 3)", "cover-letter": "Cover letter", "anonymity-check": "Anonymity check",
     "citation-gap": "Citation gap", "revision-review": "Revision review",
     "response-review": "Response review", "resume-review": "Resume review",
     "kit-bundle": "Kit bundle", "kit-clip": "Clip pipeline kit",
@@ -2947,6 +3110,40 @@ def chrome_web_store_block(cws: dict | None) -> str:
 </section>"""
 
 
+def extension_stores_block(history: dict) -> str:
+    """Scholar Utility Belt across Chrome, Firefox and Edge, with the change since the previous reading."""
+    rows = extension_store_rows(history)
+    if not any(r["asOf"] or r["missing"] for r in rows):
+        return ""
+    body = []
+    for r in rows:
+        name = (f"<a href=\"{html.escape(r['url'])}\">{html.escape(r['name'])}</a>" if r["url"]
+                else html.escape(r["name"]))
+        if r["missing"] and not r["asOf"]:
+            body.append(f"<tr><td>{name}</td><td colspan='4'>{html.escape(r['missing'])}</td></tr>")
+            continue
+        if not r["asOf"]:
+            body.append(f"<tr><td>{name}</td><td colspan='4'>No reading yet</td></tr>")
+            continue
+        users = f"{r['users']:,}" if isinstance(r["users"], int) else "—"
+        change = ("—" if r["change"] is None else f"{r['change']:+,}")
+        ratings = (f"{r['ratingAvg']:.1f} ({r['ratingCount']:,})" if r.get("ratingCount")
+                   else ("none yet" if r.get("ratingCount") == 0 else "—"))
+        body.append(f"<tr><td>{name}</td><td>{users}</td><td>{change}</td><td>{ratings}</td>"
+                    f"<td>{html.escape(str(r['version'] or '—'))}</td></tr>")
+    return f"""
+<section class="sales appstore">
+  <h2>Browser extension stores · {html.escape(CWS_LABEL)}</h2>
+  <div class="sales-scroll"><table class="sales-list">
+    <thead><tr><th>Store</th><th>Users</th><th>Since last reading</th><th>Rating</th><th>Live version</th></tr></thead>
+    <tbody>{''.join(body)}</tbody>
+  </table></div>
+  <p class="sales-foot">Chrome: rounded installed users from the public listing. Firefox: average daily users from the
+    public AMO API. Edge: active installs from the public product endpoint. One reading a day; a failed fetch leaves
+    a gap rather than repeating the last value.</p>
+</section>"""
+
+
 # ---------------------------------------------------------------- manual ad platforms
 #
 # Some ad platforms have no API path we're willing to automate — Apple Search
@@ -3084,6 +3281,7 @@ PRODUCT_GROUPS = [
     ("Legroom", "oklch(72% 0.14 215)"),
     ("Keyfeel", "oklch(74% 0.13 190)"),
     ("Tapefolio", "oklch(70% 0.14 255)"),
+    ("Lenscrib", "oklch(72% 0.14 90)"),
     ("Panely", "oklch(72% 0.13 165)"),
     ("Summonly", "oklch(70% 0.15 25)"),
     ("Mac Suite", "oklch(70% 0.18 330)"),
@@ -3115,6 +3313,8 @@ def product_group(row: dict) -> str:
         return "Keyfeel"
     if product == "tapefolio":
         return "Tapefolio"
+    if product == "lenscrib":
+        return "Lenscrib"
     if product == "panely":
         return "Panely"
     if product == "summonly":
@@ -4325,7 +4525,7 @@ def print_metrics(m: dict | None) -> None:
 
 PROFIT_DAYS = 7
 COSTS_PATH = Path.home() / ".config" / "purplelink" / "costs.json"
-PROFIT_LINES = ["ModernTex", "Outbound Veil", "Scholar Utility Belt Pro", "Legroom", "Keyfeel", "Tapefolio", "Panely", "Summonly", "Mac Suite", "Paper Review & tools", "Kits", "Spreadsheets", "Photo prints (Etsy)", "Subscriptions", "MuscleOnGLP",
+PROFIT_LINES = ["ModernTex", "Outbound Veil", "Scholar Utility Belt Pro", "Legroom", "Keyfeel", "Tapefolio", "Lenscrib", "Panely", "Summonly", "Mac Suite", "Paper Review & tools", "Kits", "Spreadsheets", "Photo prints (Etsy)", "Subscriptions", "MuscleOnGLP",
                 "GlobePin", "Company"]
 
 
@@ -6360,7 +6560,8 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
            admob: dict | None = None, metrics: dict | None = None,
            profit: dict | None = None, channels: dict | None = None, tax: dict | None = None,
            marketplaces: dict | None = None, market_rows: list[dict] | None = None,
-           ledger_rows: list[dict] | None = None, revenue_daily: dict | None = None) -> str:
+           ledger_rows: list[dict] | None = None, revenue_daily: dict | None = None,
+           extension_history: dict | None = None) -> str:
     cards = "".join(site_card(s) for s in summaries)
     obs_html = "".join(f"<li>{html.escape(o)}</li>" for o in obs) or "<li>No data yet.</li>"
 
@@ -6412,7 +6613,8 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
                 f"{queue_block()}\n{general_html}")
     money = f"{all_sales_block(ledger_rows or [], appstore, admob)}\n{sales_block(sales)}\n{marketplaces_block(marketplaces)}"
     ads = manual_ads_block(manual_ads or {}, admob)
-    apps = f"{appstore_block(appstore)}\n{chrome_web_store_block(chrome_web_store)}"
+    apps = (f"{appstore_block(appstore)}\n{chrome_web_store_block(chrome_web_store)}\n"
+            f"{extension_stores_block(extension_history or {})}")
     panels = [("overview", "Overview", overview), ("money", "Money", money), ("ads", "Ads", ads), ("apps", "Apps", apps)]
     for s_ in summaries:
         key = "site-" + re.sub(r"[^a-z0-9]+", "-", s_["label"].lower()).strip("-")
@@ -6544,6 +6746,12 @@ def main() -> int:
                                    if sk == "purplelink" and m == "vitaeDownloads")
                         lifetime = max(0, sum(vd["downloads"].values()) - ours)
                         forms_note += f", {lifetime} Vitae download(s) lifetime"
+                    wd = fetch_wallpaper_downloads_blobs()
+                    if wd is not None:
+                        payload.setdefault("byDay", {})
+                        for day, n in wd["byDay"].items():
+                            payload["byDay"].setdefault(day, {})["wallpaperDownloads"] = n
+                        forms_note += f", {sum(wd['downloads'].values())} wallpaper download(s) lifetime"
 
                 merge_history(history, site["key"], payload)
                 entry.pop("error", None)
@@ -6689,6 +6897,22 @@ def main() -> int:
             history["chromeWebStore"] = cws
             print(f"  ok Chrome Web Store ({cws['label']}): {cws['users']} installed users")
 
+        # Firefox (AMO) and Edge Add-ons: public JSON, no auth. One series per store, Chrome included.
+        try:
+            prior_stores = history.get("extensionStores") or {}
+            amo = fetch_amo((prior_stores.get("firefox") or {}).get("latest"))
+            edge = fetch_edge_addon(cfg.get(EDGE_CRX_ID_KEY, ""), (prior_stores.get("edge") or {}).get("latest"))
+            record_extension_stores(history, {"chrome": cws, "firefox": amo, "edge": edge})
+            if amo:
+                print(f"  ok Firefox Add-ons: {amo['users']} daily users, {amo['weeklyDownloads']} downloads/wk, "
+                      f"v{amo['version']}")
+            if edge and edge.get("missing"):
+                print(f"  - Edge Add-ons: {edge['missing']} ({EDGE_CRX_ID_KEY} in traffic.env)")
+            elif edge:
+                print(f"  ok Edge Add-ons: {edge['users']} active installs, v{edge['version']}")
+        except Exception as exc:  # noqa: BLE001 -- never let this sink the run
+            print(f"  ! extension stores unavailable: {str(exc)[:100]}", file=sys.stderr)
+
         stamp = dt.datetime.now(dt.timezone.utc).isoformat()
         month_ago = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=30)).isoformat()
         # Etsy, Gumroad, Payhip: after Stripe so merge_ledger's first-run logic is untouched.
@@ -6745,7 +6969,7 @@ def main() -> int:
         render(summaries, obs, generated, min(firsts) if firsts else None,
                sales, appstore, manual_ads, chrome_web_store, history.get("admob"), metrics,
                profit, channels, tax, marketplaces, market_rows,
-               list((history.get("ledger") or {}).values()), revenue_daily))
+               list((history.get("ledger") or {}).values()), revenue_daily, history))
 
     # Terminal summary, so a manual run is useful without opening a browser.
     print_metrics(metrics)
@@ -6780,6 +7004,14 @@ def main() -> int:
     if chrome_web_store:
         print(f"\n  Chrome Web Store — {chrome_web_store['label']}: "
               f"{chrome_web_store['users']} installed users (rounded, as of {chrome_web_store['asOf']})")
+    for r in extension_store_rows(history):
+        if r["store"] == "chrome" or not (r["asOf"] or r["missing"]):
+            continue
+        if not r["asOf"]:
+            print(f"  {r['name']} — {r['missing']}")
+            continue
+        chg = "" if r["change"] is None else f" ({r['change']:+d} since {r['prevDay']})"
+        print(f"  {r['name']} — {r['users']} users{chg}, v{r['version']} (as of {r['asOf']})")
 
     print(f"\n  Traffic — {generated}")
     for s in summaries:

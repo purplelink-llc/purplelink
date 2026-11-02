@@ -19,6 +19,14 @@ jobs:
         with:
           python-version: "3.11"
       - run: npm install
+      - name: Build output stays out of git
+        # search-index.json and llms-full.txt are made by the build and the test helpers
+        # (docs/designs/generated-files-at-build.md); a forced add would bring the merge conflicts back.
+        run: |
+          if [ -n "$(git ls-files site/search-index.json site/llms-full.txt)" ]; then
+            echo "::error::site/search-index.json or site/llms-full.txt is tracked again. Run: git rm --cached site/search-index.json site/llms-full.txt"
+            exit 1
+          fi
       - name: Node tests (netlify functions)
         run: node --experimental-test-module-mocks --test netlify/tests/*.test.mjs
       - name: Site integrity tests

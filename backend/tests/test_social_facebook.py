@@ -178,7 +178,9 @@ def test_facebook_reel_limits_and_both_platforms_get_reels(env, cfg):
     long = item(env, ["facebook"], video={"path": str(v), "duration": 120.0, "width": 1080, "height": 1920, "alt": "x"})
     errs, _ = items.validate(long, cfg)
     assert any("3 to 90 s" in e for e in errs)
-    now = dt.datetime(2026, 10, 28, 15, 0, tzinfo=dt.timezone.utc)
+    # today at 15:00 UTC: approval refuses an item scheduled more than 48 hours before the real clock, so a fixed date
+    # (2026-10-28) failed from 2026-10-30
+    now = dt.datetime.now(dt.timezone.utc).replace(hour=15, minute=0, second=0, microsecond=0)
     d = igp.reels_dir() / "AAAAAAAAAA1"
     d.mkdir(parents=True)
     (d / "reel.mp4").write_bytes(MP4)

@@ -97,7 +97,7 @@ const zeroed = (keys) => Object.fromEntries(keys.map((k) => [k, 0]));
 // Journeys (analytics backlog AB-20261020-3): of the visitors whose first page of the day was a guide, a tool or
 // anything else, how many viewed a product page later that day, and which one. Built from the daily-salted visitor
 // hash already on every record, so a journey never spans two days and nothing new is stored.
-export const PRODUCT_PAGES = ["moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "panely", "summonly", "suite", "vitae", "batterymeter"];
+export const PRODUCT_PAGES = ["moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "lenscrib", "panely", "summonly", "suite", "vitae", "batterymeter"];
 const PRODUCT_RE = new RegExp(`^/(${PRODUCT_PAGES.join("|")})/`);
 export const entryKind = (path) => (/^\/guides\//.test(path) ? "guide" : /^\/tools\//.test(path) ? "tool" : PRODUCT_RE.test(path) ? "product" : "other");
 export const productOf = (path) => { const m = PRODUCT_RE.exec(path || ""); return m ? m[1] : ""; };
@@ -255,7 +255,7 @@ export default async function handler(request) {
   const store = getStore("analytics");
   const now = Date.now();
   const s = {
-    totals: { pageviews: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0, pnTrialDownloads: 0, smTrialDownloads: 0, guideTrialClicks: 0, guidePageClicks: 0, events: 0 },
+    totals: { pageviews: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0, lcbTrialDownloads: 0, pnTrialDownloads: 0, smTrialDownloads: 0, guideTrialClicks: 0, guidePageClicks: 0, events: 0 },
     byPath: {}, byReferrer: {}, byUtm: {}, byHost: {}, toolRuns: {},
     checkoutByProduct: {}, checkoutByPath: {},
     otherEvents: {}, otherEventDetail: {},
@@ -296,7 +296,7 @@ export default async function handler(request) {
   for (const { day, blobs } of listings) {
     if (!blobs) continue;            // preserves the old behaviour: skip the day entirely
     if (!s.byDay[day]) {
-      s.byDay[day] = { pageviews: 0, uniques: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0, pnTrialDownloads: 0, smTrialDownloads: 0, guideTrialClicks: 0, guidePageClicks: 0 };
+      s.byDay[day] = { pageviews: 0, uniques: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0, lcbTrialDownloads: 0, pnTrialDownloads: 0, smTrialDownloads: 0, guideTrialClicks: 0, guidePageClicks: 0 };
       if (hostFilter) for (const f of Object.values(HOST_EVENT_FIELDS)) s.byDay[day][f] = 0;
     }
     if (!uniquesPerDay[day]) uniquesPerDay[day] = new Set();
@@ -332,16 +332,17 @@ export default async function handler(request) {
       // so the dashboard can restrict them to product pages.
       if (rec.ft && !String(rec.meta || "").startsWith("__")) {
         const ft = foldSource(rec.ft);
-        const fc = s.funnelByChannel[ft] || (s.funnelByChannel[ft] = { pageviews: 0, pageviewsByPath: {}, trial: {}, checkout: {} });
-        if (rec.type === "pageview") { fc.pageviews++; bump(fc.pageviewsByPath, rec.path); }
+        const fc = s.funnelByChannel[ft] || (s.funnelByChannel[ft] = { pageviews: 0, pageviewsByPath: {}, trial: {}, checkout: {}, os: {} });
+        // Operating-system family of the channel's pageviews (records before 2026-10-31 have none and are not counted).
+        if (rec.type === "pageview") { fc.pageviews++; bump(fc.pageviewsByPath, rec.path); if (rec.os) bump(fc.os, rec.os); }
         else if (rec.type === "checkout_click") bump(fc.checkout, rec.meta || "unknown");
         else if (/_?trial_download$/.test(rec.type)) bump(fc.trial, rec.meta || rec.type);
         else if (rec.type === "guide_mtx_trial") bump(fc.trial, "guide_mtx_trial");
         // The same counts by the first-touch link tag (utm_content), so one placement can be read on its own.
         if (rec.fc) {
           const fk = String(rec.fc).slice(0, 60);
-          const fx = s.funnelByContent[fk] || (s.funnelByContent[fk] = { channel: ft, pageviews: 0, pageviewsByPath: {}, trial: {}, checkout: {} });
-          if (rec.type === "pageview") { fx.pageviews++; bump(fx.pageviewsByPath, rec.path); }
+          const fx = s.funnelByContent[fk] || (s.funnelByContent[fk] = { channel: ft, pageviews: 0, pageviewsByPath: {}, trial: {}, checkout: {}, os: {} });
+          if (rec.type === "pageview") { fx.pageviews++; bump(fx.pageviewsByPath, rec.path); if (rec.os) bump(fx.os, rec.os); }
           else if (rec.type === "checkout_click") bump(fx.checkout, rec.meta || "unknown");
           else if (/_?trial_download$/.test(rec.type)) bump(fx.trial, rec.meta || rec.type);
           else if (rec.type === "guide_mtx_trial") bump(fx.trial, "guide_mtx_trial");
@@ -377,6 +378,9 @@ export default async function handler(request) {
       } else if (rec.type === "tf_trial_download") {
         // Tapefolio trial DMG downloads. Its own event type, for the same reason.
         s.totals.tfTrialDownloads++; s.byDay[day].tfTrialDownloads++;
+      } else if (rec.type === "lcb_trial_download") {
+        // Lenscrib trial DMG downloads. Its own event type, for the same reason.
+        s.totals.lcbTrialDownloads++; s.byDay[day].lcbTrialDownloads++;
       } else if (rec.type === "pn_trial_download") {
         // Panely trial DMG downloads. Its own event type, for the same reason.
         s.totals.pnTrialDownloads++; s.byDay[day].pnTrialDownloads++;
@@ -458,12 +462,12 @@ export default async function handler(request) {
     ...(hostFilter ? {} : { journeysByDay: Object.fromEntries(Object.entries(s.journeysByDay).sort()) }),
     funnelByChannel: Object.fromEntries(Object.entries(s.funnelByChannel).map(([ch, v]) => [ch, {
       pageviews: v.pageviews, pageviewsByPath: Object.fromEntries(topN(v.pageviewsByPath, 40).map((x) => [x.key, x.count])),
-      trial: v.trial, checkout: v.checkout,
+      trial: v.trial, checkout: v.checkout, os: v.os,
     }])),
     funnelByContent: Object.fromEntries(Object.entries(s.funnelByContent).map(([k, v]) => [k, {
       channel: v.channel, pageviews: v.pageviews,
       pageviewsByPath: Object.fromEntries(topN(v.pageviewsByPath, 20).map((x) => [x.key, x.count])),
-      trial: v.trial, checkout: v.checkout,
+      trial: v.trial, checkout: v.checkout, os: v.os,
     }])),
   });
 }

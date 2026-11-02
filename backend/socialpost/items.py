@@ -30,11 +30,18 @@ STANDING_SOURCE = "social-daily"
 # feed post with a branded image. Only socialpost.instagram writes it, only for the items it built, only for Instagram.
 # Never RubbleFront's account (the adapter refuses it by name as well as by the pinned identity).
 IG_STANDING_BY = "ben (standing, 2026-10-23)"
-# Facebook joined on 2026-10-28 for Reels: Ben, "back fill my instagram and facebook reels with our youtube shorts".
+# Facebook stays in this tuple only so Reels approved under this label before 2026-11-01 still post; new Facebook
+# Reels carry the Page approval below.
 IG_STANDING_PLATFORMS = ("instagram", "facebook")
 IG_STANDING_SOURCES = ("instagram-reel", "instagram-companion")
+# The Facebook Page approval (2026-10-28): "back fill my instagram and facebook reels with our youtube shorts". Ben
+# confirmed on 2026-11-01 that a Facebook Reel of every Purplelink YouTube video falls under it. Reels only.
+FB_STANDING_BY = "ben (standing, 2026-10-28)"
+FB_STANDING_PLATFORMS = ("facebook",)
+FB_STANDING_SOURCES = ("instagram-reel",)
 STANDING = {STANDING_BY: (STANDING_PLATFORMS, (STANDING_SOURCE,)),
-            IG_STANDING_BY: (IG_STANDING_PLATFORMS, IG_STANDING_SOURCES)}
+            IG_STANDING_BY: (IG_STANDING_PLATFORMS, IG_STANDING_SOURCES),
+            FB_STANDING_BY: (FB_STANDING_PLATFORMS, FB_STANDING_SOURCES)}
 FB_REEL_MAX_S = 90.0   # Facebook Reels through the API: 3 to 90 seconds
 HASHTAG_RE = re.compile(r"(?<![\w&])#\w+")
 
@@ -425,8 +432,14 @@ def approve_standing(item: Item, cfg: dict) -> None:
 
 def approve_instagram_standing(item: Item, cfg: dict) -> None:
     """Approve an Instagram item under Ben's 2026-10-23 standing approval: Instagram only, and only items built by
-    socialpost.instagram (a Reel of a Purplelink YouTube video, or the companion of a posted LinkedIn company post)."""
-    bad = [p for p in item.platforms if p not in IG_STANDING_PLATFORMS]
+    socialpost.instagram (a Reel of a Purplelink YouTube video, or the companion of a posted LinkedIn company post).
+    A Facebook-only Reel gets the 2026-10-28 Facebook Page approval instead."""
+    if item.platforms == ["facebook"]:
+        if item.meta.get("source") not in FB_STANDING_SOURCES:
+            raise ValueError("the Facebook Page standing approval only covers Reels built by socialpost.instagram")
+        approve(item, cfg, FB_STANDING_BY)
+        return
+    bad = [p for p in item.platforms if p not in ("instagram",)]
     if bad:
         raise ValueError(f"the Instagram standing approval does not cover {', '.join(bad)}")
     if item.meta.get("source") not in IG_STANDING_SOURCES:

@@ -25,103 +25,14 @@
    "shots": [
     {
      "kind": "screen",
-     "src": "still-sheet.png",
+     "src": "r4-sheet-mon.png",
      "focus": {
       "x": 0.02,
-      "y": 0.36,
-      "w": 0.83,
-      "h": 0.22
+      "y": 0.37,
+      "w": 0.96,
+      "h": 0.31
      },
      "chip": "Sample league",
-     "rings": [
-      {
-       "x": 0.025,
-       "y": 0.37,
-       "w": 0.12,
-       "h": 0.2,
-       "at": 0.55,
-       "dur": 0.3,
-       "color": "text",
-       "stroke": 5
-      },
-      {
-       "x": 0.29,
-       "y": 0.37,
-       "w": 0.115,
-       "h": 0.2,
-       "at": 0.75,
-       "dur": 0.3,
-       "color": "text",
-       "stroke": 5
-      },
-      {
-       "x": 0.665,
-       "y": 0.37,
-       "w": 0.115,
-       "h": 0.2,
-       "at": 0.95,
-       "dur": 0.3,
-       "color": "text",
-       "stroke": 5
-      }
-     ],
-     "boxes": {
-      "9x16": {
-       "x": 40,
-       "y": 600,
-       "w": 1000,
-       "h": 1000
-      }
-     }
-    }
-   ],
-   "sfx": [
-    {
-     "name": "tap",
-     "at": 0.55
-    },
-    {
-     "name": "tap",
-     "at": 0.75
-    },
-    {
-     "name": "tap",
-     "at": 0.95
-    }
-   ]
-  },
-  {
-   "vo": "b2",
-   "min": 1.9,
-   "tail": 0.25,
-   "shots": [
-    {
-     "kind": "screen",
-     "video": true,
-     "src": "clip-circle.mp4",
-     "from": 2.25,
-     "noEnter": true,
-     "focus": {
-      "x": 0.02,
-      "y": 0.36,
-      "w": 0.83,
-      "h": 0.22
-     },
-     "taps": [
-      {
-       "x": 0.085,
-       "y": 0.47,
-       "at": 0.12
-      }
-     ],
-     "focusTo": {
-      "x": 0.02,
-      "y": 0.36,
-      "w": 0.96,
-      "h": 0.34
-     },
-     "panAt": 0.25,
-     "panEnd": 0.9,
      "boxes": {
       "9x16": {
        "x": 40,
@@ -135,9 +46,45 @@
    "sfx": [
     {
      "name": "select",
-     "at": 0.12
+     "at": 0.05,
+     "gain_db": -4
     }
    ]
+  },
+  {
+   "vo": "b2",
+   "min": 1.9,
+   "tail": 0.25,
+   "shots": [
+    {
+     "kind": "screen",
+     "src": "r4-sheet-mon.png",
+     "noEnter": true,
+     "focus": {
+      "x": 0.02,
+      "y": 0.37,
+      "w": 0.96,
+      "h": 0.31
+     },
+     "focusTo": {
+      "x": 0.02,
+      "y": 0.36,
+      "w": 0.62,
+      "h": 0.33
+     },
+     "panAt": 0.1,
+     "panEnd": 1.2,
+     "boxes": {
+      "9x16": {
+       "x": 40,
+       "y": 600,
+       "w": 1000,
+       "h": 1000
+      }
+     }
+    }
+   ],
+   "sfx": []
   },
   {
    "vo": "b3",
@@ -151,24 +98,22 @@
     {
      "kind": "screen",
      "video": true,
-     "src": "clip-circle.mp4",
-     "from": 4.15,
+     "src": "clip-ring.mp4",
+     "from": 0.5800000000000001,
      "noEnter": true,
      "focus": {
       "x": 0.02,
-      "y": 0.36,
+      "y": 0.37,
       "w": 0.96,
-      "h": 0.34
+      "h": 0.31
      },
-     "focusTo": {
-      "x": 0.02,
-      "y": 0.5,
-      "w": 0.96,
-      "h": 0.2
-     },
-     "panAt": 1.4,
-     "panEnd": 2.0,
-     "rate": 0.85,
+     "taps": [
+      {
+       "x": 0.36,
+       "y": 0.46,
+       "at": 3.4
+      }
+     ],
      "boxes": {
       "9x16": {
        "x": 40,
@@ -182,7 +127,7 @@
    "sfx": [
     {
      "name": "select",
-     "at": 1.35
+     "at": 3.42
     }
    ]
   },

@@ -94,6 +94,24 @@ echo "--- $(date '+%F %T') finished, exit $rc ---" >> "$LOG"
 
 [ "$rc" -eq 0 ] && echo "$TODAY" > "$MARKER"
 
+# The Monday memo (scripts/photo-weekly-memo.py) used to run only as the last step of the photo-pitch-weekly
+# task; when Ben paused that task on 2026-10-19 the memo stopped too (10-26 was never written). It now runs
+# here, after the first good sweep of each Monday-to-Sunday week that has no memo yet, so a Monday the Mac
+# sleeps through is caught up later that week. It never changes the sweep's exit code.
+if [ "$rc" -eq 0 ]; then
+  WEEK_START="$(date -v-"$(( ($(date +%u) + 6) % 7 ))"d +%Y-%m-%d)"
+  HAVE_MEMO=""
+  for f in "$VOL"/docs/growth-briefs/photo-memo-*.md; do
+    [ -e "$f" ] || continue
+    d="$(basename "$f" .md)"; d="${d#photo-memo-}"
+    [[ "$d" > "$WEEK_START" || "$d" == "$WEEK_START" ]] && HAVE_MEMO=1
+  done
+  if [ -z "$HAVE_MEMO" ]; then
+    echo "--- $(date '+%F %T') writing this week's photo memo ---" >> "$LOG"
+    "$PY" "$VOL/scripts/photo-weekly-memo.py" >> "$LOG" 2>&1 || echo "--- photo memo failed (sweep unaffected)" >> "$LOG"
+  fi
+fi
+
 if [ -f "$HOME/.purplelink/collector-health.py" ]; then
   "$PY" "$HOME/.purplelink/collector-health.py" --notify >> "$LOG" 2>&1
 fi

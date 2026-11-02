@@ -25,6 +25,7 @@ export const MP_TAX_CODES = Object.freeze({
   "legroom": "txcd_10202000",
   "keyfeel": "txcd_10202000",
   "tapefolio": "txcd_10202000",
+  "lenscrib": "txcd_10202000",
   "panely": "txcd_10202000",
   "summonly": "txcd_10202000",
   "app-suite": "txcd_10202000",

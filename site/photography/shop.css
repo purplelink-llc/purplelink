@@ -78,7 +78,9 @@
 
 /* calendars */
 .cal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: clamp(14px, 2vw, 22px); padding: 10px 0 clamp(24px, 3vw, 40px); }
-.cal-card { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--panel); display: flex; flex-direction: column; }
+.cal-card { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--panel); display: flex; flex-direction: column; scroll-margin-top: 88px; }
+/* a pin links to #cal-<set>; outline the card it lands on */
+.cal-card:target { outline: 2px solid var(--purple); outline-offset: 2px; }
 .cal-card > img { display: block; width: 100%; height: auto; }
 .cal-card-body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
 .cal-card h2, .cal-card h3 { margin: 0; font-size: 1.1rem; }

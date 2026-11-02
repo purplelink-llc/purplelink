@@ -587,6 +587,27 @@ def fetch_funnel(p: dict, get=None) -> dict:
     return out
 
 
+def fetch_recent(p: dict, days: int, get=None, tries: int = 2, timeout: int = 20):
+    """funnelByChannel for the last `days` days, or None when the stats function cannot be read (no token, timeouts,
+    errors: it timed out from this Mac twice on 2026-10-29). Never raises; the token goes in a header."""
+    tok = stats_token(p)
+    if not tok:
+        return None
+    if get is None:
+        import urllib.request
+
+        def get(url, headers):
+            with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=timeout) as r:
+                return json.loads(r.read().decode("utf-8"))
+    for _ in range(tries):
+        try:
+            return get(f"{STATS_URL}?days={days}", {"x-stats-token": tok, "User-Agent": "purplelink-marketing-hub"}
+                       ).get("funnelByChannel") or {}
+        except Exception:
+            continue
+    return None
+
+
 def funnel_stale(path: Path, today: dt.date | None = None) -> bool:
     """True unless funnel.json was fetched today. Its asOf is the fetch date, and a fetch made yesterday afternoon
     misses yesterday's evening; an age rule (under 20 hours) let such a fetch stand in for the next morning's."""
@@ -1342,10 +1363,37 @@ def campaign_report(con, p: dict, today: dt.date | None = None) -> list:
             row["reading"] = f"${spend:.2f} spent, {int(trials)} trial{'s' if trials != 1 else ''}, no orders yet"
         if orders < 30:
             row["reading"] += "; a signal, not a rate (fewer than 30 orders)"
+        row["os"] = campaign_os(p, c, today)
         row["adCheck"] = ad_ctr_check(row["ads"], c.get("adCheck"), today)
         row["decision"] = campaign_decision(c, row, today)
         rows.append(row)
     return rows
+
+
+def campaign_os(p: dict, c: dict, today: dt.date) -> dict:
+    """Operating-system family of the campaign's ad-link pageviews (stats.mjs funnelByContent "os", recorded from
+    2026-10-31), from the smallest funnel window that covers the campaign so far: {family: pageviews}."""
+    try:
+        days = (today - dt.date.fromisoformat(c.get("start") or "")).days + 1
+    except ValueError:
+        return {}
+    win = next((w for w in FUNNEL_WINDOWS if w >= days), FUNNEL_WINDOWS[-1])
+    content = ((load_json(p["funnel"], {}) or {}).get("content") or {}).get(str(win)) or {}
+    out: dict = {}
+    for a in c.get("ads") or []:
+        for fam, n in ((content.get(utm_of(a.get("url", ""), "utm_content")) or {}).get("os") or {}).items():
+            out[fam] = out.get(fam, 0) + n
+    return out
+
+
+def os_line(os_counts: dict) -> str:
+    """'mac 12 of 30 (40%); windows 10, linux 5, ...', or '' when nothing was recorded."""
+    total = sum(os_counts.values())
+    if not total:
+        return ""
+    mac = os_counts.get("mac", 0)
+    rest = ", ".join(f"{k} {v}" for k, v in sorted(os_counts.items(), key=lambda kv: -kv[1]) if k != "mac")
+    return f"mac {mac} of {total} ({mac / total:.0%})" + (f"; {rest}" if rest else "")
 
 
 AD_CHECK_MIN_IMPRESSIONS = 500  # per ad, before a CTR gap can count as "clearly trails"
@@ -1572,7 +1620,8 @@ def doctor(con, p: dict, today: dt.date | None = None) -> dict:
                 bad.append({"id": r["id"], "which": kind, "url": u, "status": c["status"], "final": c.get("final")})
     unverified = sum(1 for c in links.values() if c.get("status") is None)
     return {"missing": missing, "duplicates": dups, "bad_links": bad, "links_checked": len(links),
-            "links_unverifiable": unverified, "pins": override_pins(p), "attribution": attribution_gaps(p)}
+            "links_unverifiable": unverified, "pins": override_pins(p), "attribution": attribution_gaps(p),
+            "campaigns": campaign_gaps(con, p, today)}
 
 
 # sales.mjs writes `reddit` on every Stripe purchase, and the pl_attr cookie keeps the ad's tag, from the 2026-10-29
@@ -1606,6 +1655,56 @@ def attribution_gaps(p: dict, since: str = ATTR_FIELDS_SINCE) -> list:
             continue
         out.append({"id": k, "date": day, "product": o.get("product") or "", "problem": problem})
     return sorted(out, key=lambda x: (x["date"], x["id"]))
+
+
+# A campaign's spend reading is due two days after it starts; checks stop a week after it ends. 100 first-touch
+# pageviews with no trial would happen about 1 time in 20 even if ad visitors tried the app at a quarter of the site rate.
+SPEND_DUE_DAYS, CAMPAIGN_TAIL_DAYS, NO_TRIAL_PAGEVIEWS = 2, 7, 100
+
+
+def campaign_gaps(con, p: dict, today: dt.date | None = None, recent=None) -> list:
+    """Running campaigns with no spend recorded (no cost per trial or order can be computed), campaigns whose
+    channel brought NO_TRIAL_PAGEVIEWS first-touch pageviews in 7 days and no trial (a trial link that lost its
+    channel, or an ad that does not convert; the funnel cannot tell which), and running campaigns that had visits but
+    none in the last day (ads no longer serving). `recent(days)` returns the stats function's funnelByChannel or None;
+    by default fetch_recent, skipped when PURPLELINK_STATS_OFFLINE is set."""
+    today = today or dt.date.today()
+    week = ((load_json(p["funnel"], {}) or {}).get("windows") or {}).get("7") or {}
+    if recent is None:
+        recent = (lambda days: "offline") if os.environ.get("PURPLELINK_STATS_OFFLINE") else (lambda days: fetch_recent(p, days))
+    day: dict = {}  # fetched once, only when a running campaign needs it
+    out = []
+    for r in campaign_report(con, p, today):
+        try:
+            start, end = dt.date.fromisoformat(r["start"]), dt.date.fromisoformat(r["end"])
+        except (TypeError, ValueError):
+            continue
+        if not start <= today <= end + dt.timedelta(days=CAMPAIGN_TAIL_DAYS):
+            continue
+        if r["spend"] is None and today >= start + dt.timedelta(days=SPEND_DUE_DAYS):
+            out.append({"campaign": r["campaign"], "problem": "no spend recorded",
+                        "detail": f"{(today - start).days} days after the start; record it with hub.py campaign-spend"})
+        rows = [week.get(k) or {} for k in CHANNEL_KEYS.get(r["channel"], (r["channel"],))]
+        views = sum(x.get("pageviews") or 0 for x in rows)
+        trials = sum((x.get("trial") or {}).get(r["asset"], 0) for x in rows)
+        if views and start < today <= end:
+            if "f" not in day:
+                day["f"] = recent(1)
+            last = day["f"]
+            if last is None:
+                out.append({"campaign": r["campaign"], "problem": "delivery not checked",
+                            "detail": "could not check: the stats function did not answer (timeout or error)"})
+            elif last != "offline":
+                keys = CHANNEL_KEYS.get(r["channel"], (r["channel"],))
+                if not sum((last.get(k) or {}).get("pageviews") or 0 for k in keys):
+                    out.append({"campaign": r["campaign"], "problem": "not serving",
+                                "detail": f"0 first-touch pageviews in the last day after {views} in 7 days; ads may "
+                                          "have stopped serving: check billing, ad review status and bid in the ad manager"})
+        if views >= NO_TRIAL_PAGEVIEWS and not trials:
+            out.append({"campaign": r["campaign"], "problem": "no trials",
+                        "detail": f"{views} first-touch pageviews in 7 days and 0 {r['asset']} trials; check that the "
+                                  "trial link keeps its channel before reading it as an ad that does not convert"})
+    return out
 
 
 def override_pins(p: dict) -> list:
@@ -2102,6 +2201,8 @@ def cmd_campaigns(a, p):
                   "(first touch restored from the pl_attr cookie, or only checkout's reddit_ad flag)")
         if r.get("redditFlagged") is not None:
             print(f"  checkout reddit_ad flag on {r['redditFlagged']} order{'s' if r['redditFlagged'] != 1 else ''} since the start")
+        line = os_line(r.get("os") or {})
+        print(f"  visitor OS (ad-link pageviews, recorded since 2026-10-31): {line or 'none recorded yet'}")
         print(f"  {r['reading']}. Next reading {r['nextReading'] or 'none left'}.")
         ac = r["adCheck"]
         print(f"  ad check{' (due ' + ac['due'] + ')' if ac['due'] else ''}: {ac['verdict']}")
@@ -2144,6 +2245,10 @@ def cmd_doctor(a, p):
     for x in d["pins"]:
         where = f"; pinned row now at {', '.join(x['now'])}" if x["now"] else ""
         print(f"  {x['id']:16} {x['problem']}{where}" + (f"  (pin: {x['pin']})" if x["pin"] else ""))
+    c = d["campaigns"]
+    print(f"{len(c)} campaign problem{'s' if len(c) != 1 else ''}:")
+    for x in c:
+        print(f"  {x['campaign']:28} {x['problem']}: {x['detail']}")
     g = d["attribution"]
     print(f"{len(g)} purchase{'s' if len(g) != 1 else ''} since {ATTR_FIELDS_SINCE} missing an attribution field:")
     for x in g:

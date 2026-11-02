@@ -72,3 +72,19 @@ test("the first-touch link tag (utm_content) is stored with the channel and grou
   assert.equal(odd.length, 1);
   assert.ok(odd[0].length <= 60 && !/[<>]/.test(odd[0]));
 });
+
+test("funnel pageviews carry the operating-system family and stats counts it per channel and link tag", async () => {
+  const ua = { mac: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15", win: "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+    linux: "Mozilla/5.0 (X11; Linux x86_64)", android: "Mozilla/5.0 (Linux; Android 14; Pixel 8)", iphone: "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)" };
+  const send = (agent, body) => track(new Request("https://purplelink.llc/.netlify/functions/track", {
+    method: "POST", headers: { "user-agent": agent, "x-nf-client-connection-ip": `198.51.100.${++n}` }, body: JSON.stringify(body) }));
+  const pv = { t: "pageview", p: "/moderntex/", h: "purplelink.llc", ft: "paid:reddit", fc: "moderntex-reddit-261027-b" };
+  await send(ua.mac, pv); await send(ua.mac, pv); await send(ua.win, pv); await send(ua.linux, pv);
+  await send(ua.android, pv); await send(ua.iphone, pv);
+  await send(ua.win, { t: "pageview", p: "/", h: "purplelink.llc" });   // no channel: no os kept
+  const out = await read();
+  assert.deepEqual(out.funnelByChannel["paid:reddit"].os, { mac: 2, windows: 1, linux: 1, android: 1, ios: 1 });
+  assert.deepEqual(out.funnelByContent["moderntex-reddit-261027-b"].os, { mac: 2, windows: 1, linux: 1, android: 1, ios: 1 });
+  const recs = [...stores.entries()].filter(([k]) => k.startsWith("analytics/ev/")).map(([, v]) => v);
+  assert.equal(recs.filter((r) => !r.ft).every((r) => !("os" in r)), true);
+});

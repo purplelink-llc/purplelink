@@ -30,7 +30,7 @@
           "author": { "@id": "https://purplelink.llc/about/#person" },
           "publisher": { "@id": "https://purplelink.llc/#organization" },
           "datePublished": "2026-10-12",
-          "dateModified": "2026-10-19",
+          "dateModified": "2026-11-02",
           "image": "https://purplelink.llc/assets/og/products.png",
           "mainEntityOfPage": "https://purplelink.llc/guides/mac-system-data-huge/"
         },
@@ -96,6 +96,22 @@
     },
     {
       "@type": "Question",
+      "name": "Why is com.apple.wallpaper or idleassetsd so large?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Usually because of aerial wallpaper and screen saver videos, which macOS downloads when you choose or preview one. One developer measured about 42 GB in each of two folders. Set a still wallpaper and screen saver before you remove them, because people report macOS downloading them again."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I delete group.com.apple.notes?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It holds your notes and their pictures and attachments. Do not delete files in it in Finder. Delete the notes you no longer need in Notes, then empty the Recently Deleted folder in Notes."
+      }
+    },
+    {
+      "@type": "Question",
       "name": "What is Syndication.photoslibrary, and can I delete it?",
       "acceptedAnswer": {
         "@type": "Answer",
@@ -106,9 +122,9 @@
 }
     </script>
     <script src="/theme.js?v=f0ab0f06a1"></script>
-<link rel="stylesheet" href="/styles.css?v=bc9982f3ad">
-    <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
-    <script src="/site.js?v=b053086227" defer></script>
+<link rel="stylesheet" href="/styles.css?v=f247a79f66">
+    <link rel="stylesheet" href="/motion.css?v=35524918f9">
+    <script src="/site.js?v=9f201aa4bb" defer></script>
     <script src="/motion.js?v=d35f4b4ee4" defer></script>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
 </head>
@@ -164,6 +180,8 @@
               <tr><td class="u-cell">Apple Intelligence models</td><td class="u-cell">Managed by macOS</td><td class="u-cell">Not by hand. Apple's page does not describe removing them. See below.</td></tr>
               <tr><td class="u-cell">Media analysis cache</td><td class="u-cell"><code>~/Library/Containers/com.apple.mediaanalysisd/Data/Library/Caches</code></td><td class="u-cell">Apple does not say. Reports exist of people clearing it. See below.</td></tr>
               <tr><td class="u-cell">Photos sent to you in Messages</td><td class="u-cell"><code>~/Library/Photos/Libraries/Syndication.photoslibrary</code></td><td class="u-cell">Not by hand. Shrink it from Messages. See below.</td></tr>
+              <tr><td class="u-cell">Aerial wallpaper and screen saver videos</td><td class="u-cell"><code>~/Library/Application Support/com.apple.wallpaper/aerials</code>, <code>/Library/Application Support/com.apple.idleassetsd/Customer</code></td><td class="u-cell">Switch to a still wallpaper and screen saver first, or macOS may download them again. See below.</td></tr>
+              <tr><td class="u-cell">Images kept by Notes</td><td class="u-cell"><code>~/Library/Group Containers/group.com.apple.notes</code></td><td class="u-cell">Not by hand. This is your notes' data. Delete notes in Notes. See below.</td></tr>
               <tr><td class="u-cell">Swap and the sleep image</td><td class="u-cell"><code>/private/var/vm</code></td><td class="u-cell">No. macOS manages these. Leave them alone.</td></tr>
             </tbody>
           </table>
@@ -185,6 +203,14 @@
         <h3>Photos sent to you in Messages</h3>
         <p>Messages keeps the photos and videos people send you in a separate, hidden Photos library, <code>Syndication.photoslibrary</code>, which feeds Shared with You. <a href="https://eclecticlight.co/2025/12/12/did-you-know-your-photos-are-being-syndicated/" rel="noopener">Howard Oakley at Eclectic Light</a> (December 12, 2025) found it can keep items Messages no longer shows, and advises against deleting it. An <a href="https://www.reddit.com/r/MacOS/comments/1x9t7h6/" rel="noopener">r/MacOS post</a> in October 2026 reported 8 GB, and turning off Shared with You did not shrink it, because that only stops new items. On my Mac it is 3.2 GB.</p>
         <p>To shrink it, remove the attachments in Messages itself. Apple's page on <a href="https://support.apple.com/guide/messages/icht1035/mac" rel="noopener">deleting messages on Mac</a> describes both ways: delete items from a conversation's Photos list, or choose Messages, Settings, General and set Keep messages to something other than Forever, which removes older conversations and their attachments. If Messages in iCloud is on, deletions reach your other devices too, so save anything you want into Photos first.</p>
+
+        <h3>Aerial wallpaper and screen saver videos</h3>
+        <p>The moving landscape wallpapers and screen savers are video files that macOS downloads when you choose or preview one. <a href="https://dev.to/frr149/apple-installed-84gb-of-jellyfish-on-my-mac-duplicated-nf4" rel="noopener">One developer</a> (April 30, 2026) measured about 42 GB in each of two folders: <code>/Library/Application Support/com.apple.idleassetsd/Customer</code> and <code>~/Library/Application Support/com.apple.wallpaper/aerials</code>. On my Mac (macOS 27.0.1, measured November 2, 2026) the first folder was empty and the second held 595 MB, so the size depends on which aerials you have used.</p>
+        <p>Before removing them, set a still picture as both your wallpaper and your screen saver, because the one in use cannot be removed. In a <a href="https://forums.macrumors.com/threads/how-to-remove-downloaded-aerial-wallpapers.2392675/" rel="noopener">MacRumors thread</a> (June 2023 to January 2024, macOS Sonoma), two people deleted the files in the system folder and found them downloaded again soon after. The same thread says Apple's help for macOS Ventura described a Remove Download command on the wallpaper thumbnail, and that the Sonoma help no longer mentions it. I have not checked whether macOS 27 has that command.</p>
+
+        <h3>Images kept by Notes</h3>
+        <p>Pictures, scans and attachments in your notes are stored in Notes' own folder, <code>~/Library/Group Containers/group.com.apple.notes</code>, next to its database. Posts on <a href="https://www.reddit.com/r/mac/comments/1xl8iq9/" rel="noopener">r/mac</a> and <a href="https://www.reddit.com/r/MacOS/comments/1xl8kdi/" rel="noopener">r/MacOS</a> this week asked whether several gigabytes of PNG files in this kind of folder can be deleted, and commenters traced them to Notes and Messages. <a href="https://forums.macrumors.com/threads/notes-media-files-are-taking-space-even-after-deletion-why.2428355/" rel="noopener">MacRumors posters</a> have also reported Notes media staying after the notes were deleted. On my Mac the folder is 23 MB.</p>
+        <p>Do not delete files in this folder in Finder. It holds your notes' database and their attachments. Delete the notes you no longer need in Notes, then empty the Recently Deleted folder in Notes. If you use iCloud for Notes, deleting a note removes it on your other devices too. Messages attachments are a separate store, in <code>~/Library/Messages/Attachments</code> (4 GB on my Mac). Shrink that from Messages, as described in the section above.</p>
 
         <h3>What to leave alone</h3>
         <p>Do not touch <code>/System</code>, and do not delete swap or the sleep image in <code>/private/var/vm</code>. The sleep image on my Mac is 2 GB. macOS manages it. If you cannot name what a folder is, find out before you remove it.</p>
@@ -225,6 +251,10 @@
         <p>Apple does not document it, so I cannot say it is safe. People in an Apple Community thread report deleting it and freeing tens of gigabytes, and nobody there reported a problem. However, that is not Apple's guidance. If you try it, quit the apps that use Photos first and remove only the contents of the cache folder, not the container itself.</p>
         <h3>Does Legroom clear System Data?</h3>
         <p>Partly, and not the biggest suspects. Legroom shows which folders grew over the last 1, 7 or 30 days and previews each cleaning rule before anything is removed. It does not offer Apple's media analysis cache for cleaning, it does not remove Apple Intelligence models, and it reports Time Machine snapshot space as not measured.</p>
+        <h3>Why is com.apple.wallpaper or idleassetsd so large?</h3>
+        <p>Usually because of aerial wallpaper and screen saver videos, which macOS downloads when you choose or preview one. One developer measured about 42 GB in each of two folders. Set a still wallpaper and screen saver before you remove them, because people report macOS downloading them again.</p>
+        <h3>Can I delete group.com.apple.notes?</h3>
+        <p>It holds your notes and their pictures and attachments. Do not delete files in it in Finder. Delete the notes you no longer need in Notes, then empty the Recently Deleted folder in Notes.</p>
         <h3>What is Syndication.photoslibrary, and can I delete it?</h3>
         <p>It is a hidden Photos library in your Library folder that holds photos and videos people sent you in Messages, for Shared with You. Do not delete it by hand: macOS rebuilds it, and Messages media can go with it. Shrink it by deleting large attachments in Messages, or by setting Keep messages to 1 year. Turning off Shared with You only stops new items being added.</p>
 

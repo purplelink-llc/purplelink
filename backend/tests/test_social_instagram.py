@@ -192,6 +192,26 @@ def test_instagram_standing_approval_is_narrow(env, cfg):
         items.approve_instagram_standing(li, cfg)
 
 
+
+def test_facebook_reels_get_the_page_approval(env, cfg, monkeypatch):
+    seen = []
+    monkeypatch.setattr(items, "approve", lambda item, cfg, who="ben": seen.append(who))
+    fb = ig_item(env, source="instagram-reel", platforms=["facebook"])
+    items.approve_instagram_standing(fb, cfg)
+    ig = ig_item(env, source="instagram-reel")
+    items.approve_instagram_standing(ig, cfg)
+    assert seen == [items.FB_STANDING_BY, items.IG_STANDING_BY]
+    # the Page approval covers Reels only; a mixed Instagram + Facebook item gets neither label
+    with pytest.raises(ValueError):
+        items.approve_instagram_standing(ig_item(env, source="instagram-companion", platforms=["facebook"]), cfg)
+    with pytest.raises(ValueError):
+        items.approve_instagram_standing(ig_item(env, source="instagram-reel", platforms=["instagram", "facebook"]),
+                                         cfg)
+    monkeypatch.undo()
+    other = ig_item(env, images=[{"path": str(jpeg(env.tmp / "f.jpg")), "alt": "x"}], source="instagram-companion")
+    items.approve(other, cfg, items.FB_STANDING_BY)
+    assert not items.Item.load(other.path).approval_valid()[0]
+
 # ---------------------------------------------------------------- captions
 HOWTO_DESC = """Spotlight not finding files on an external drive? Spotlight skips some drives until you reindex them.
 

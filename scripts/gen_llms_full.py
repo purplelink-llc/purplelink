@@ -12,6 +12,7 @@ drift from the pages the way the hand-written llms.txt once did.
 from __future__ import annotations
 
 import html
+import os
 import re
 from html.parser import HTMLParser
 from pathlib import Path
@@ -155,7 +156,10 @@ def main() -> None:
             continue
         title, text = page_text(rel)
         parts.append(f"\n\n---\n\nSource: {BASE}/{rel}\nTitle: {title}\n\n{text}\n")
-    OUT.write_text("".join(parts), encoding="utf-8")
+    # Temp file and rename, as in gen_search_index.py: parallel test files regenerate this and must not see half of it.
+    tmp = OUT.with_name(f".{OUT.name}.{os.getpid()}.tmp")
+    tmp.write_text("".join(parts), encoding="utf-8")
+    os.replace(tmp, OUT)
     print(f"wrote {OUT.relative_to(ROOT)} ({OUT.stat().st_size // 1024} KB, {len(PAGES)} pages)")
 
 
