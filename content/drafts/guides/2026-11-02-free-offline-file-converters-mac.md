@@ -203,7 +203,7 @@ I confirmed that command writes one channel at 16000 Hz. Purplelink's [Tapefolio
 
 ## One more thing coming
 
-Purplelink is building a Mac app called AKA. Hold Option and drag files, and a ring of 50 conversions opens at the pointer; drop a file on one and it converts on your Mac. It is not released yet. The planned price is $14.99 after a 7-day trial. Everything above works without it.
+Purplelink is building a Mac app called AKA. Hold Option and drag files, and a ring of 51 conversions opens at the pointer; drop a file on one and it converts on your Mac. It is not released yet. The planned price is $14.99 after a 7-day trial. Everything above works without it.
 
 <!-- launch: link /aka/ here -->
 
