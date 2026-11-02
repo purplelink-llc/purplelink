@@ -134,10 +134,14 @@ python3 scripts/apply_layout.py
 # Every local CSS/JS reference carries ?v=<hash of the file>, so a changed asset
 # is a new URL and the assets themselves can be cached hard (see netlify.toml).
 # This MUST run before every deploy: the immutable headers mean an asset that
-# ships without a fresh stamp stays cached for a year. Runs first so the deploy
-# and a git-triggered Netlify build publish identical HTML.
+# ships without a fresh stamp stays cached for a year. The committed pages are
+# bare (docs/designs/generated-files-at-build.md), so stamp here and strip the
+# stamps again on exit, success or not; --strip removes only the stamps, so
+# other edits in site/ (the sitemap above, uncommitted work) stay as they are.
 step "fingerprint assets"
-python3 scripts/fingerprint_assets.py
+trap 'python3 scripts/fingerprint_assets.py --strip >/dev/null' EXIT
+python3 scripts/fingerprint_assets.py --force-in-place
+python3 scripts/fingerprint_assets.py --check
 
 # 2b2. llms-full.txt
 # The readable text of the main pages for language models, regenerated from
