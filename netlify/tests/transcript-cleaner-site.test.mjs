@@ -5,6 +5,7 @@
 //
 // Run with: node --test netlify/tests/transcript-cleaner-site.test.mjs
 
+import "./_generated.mjs"; // builds search-index.json and llms-full.txt first
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, statSync, existsSync } from "node:fs";

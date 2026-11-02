@@ -1,12 +1,20 @@
-"""Shared helpers for the site tests. Stdlib only; everything reads checked-in files, no network."""
+"""Shared helpers for the site tests. Stdlib only; everything reads files in the checkout, no network."""
 import html
 import json
 import re
+import subprocess
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SITE = ROOT / "site"
 ORIGIN = "https://purplelink.llc"
+
+# site/search-index.json and site/llms-full.txt are build output, not committed (docs/designs/generated-files-at-build.md).
+# Every test module that reads them imports this one, so they are rebuilt from the current pages once per run (about
+# 0.4 s): a fresh clone or worktree passes without a manual step, and a page edited since the last build is in the index.
+for _gen in ("gen_search_index.py", "gen_llms_full.py"):
+    subprocess.run([sys.executable, str(ROOT / "scripts" / _gen)], cwd=ROOT, check=True, capture_output=True, timeout=120)
 
 EMOJI = re.compile(
     "[\U0001F300-\U0001FAFF\U00002600-\U000027BF\U0001F000-\U0001F2FF\U0001F900-\U0001F9FF\U00002B50\U00002B55\U0000FE0F\U0000200D]"

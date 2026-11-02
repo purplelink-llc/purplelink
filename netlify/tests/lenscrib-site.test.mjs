@@ -5,6 +5,7 @@
 //
 // Run with: node --test netlify/tests/lenscrib-site.test.mjs
 
+import "./_generated.mjs"; // builds search-index.json and llms-full.txt first
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
