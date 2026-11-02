@@ -68,6 +68,18 @@ HOME = Path.home()
 SITE_HOST = "purplelink.llc"
 
 
+# Trial maps in stats.mjs are keyed by the download event's meta. "<app>-s2m" is a real download on a Mac after a
+# "Send to my Mac" email and counts as a trial of <app>; "<app>-not-mac" is a click that only pointed at that email
+# form and downloaded nothing, so it never counts (docs/designs/send-to-mac.md).
+def trial_count(trial, prod):
+    t = trial or {}
+    return t.get(prod, 0) + t.get(f"{prod}-s2m", 0)
+
+
+def trial_total(trial):
+    return sum(n for k, n in (trial or {}).items() if not str(k).endswith("-not-mac"))
+
+
 def env_path(name: str, default: Path) -> Path:
     return Path(os.environ.get(name) or default)
 
@@ -763,7 +775,7 @@ def placement_results(pls: list, links: dict, assets: dict, funnel: dict, orders
                     continue
                 pbp = v.get("pageviewsByPath") or {}
                 visits += sum(pbp.get(path, 0) for path in paths)
-                trials += sum((v.get("trial") or {}).get(prod, 0) for prod in products)
+                trials += sum(trial_count(v.get("trial"), prod) for prod in products)
                 checkouts += sum((v.get("checkout") or {}).get(prod, 0) for prod in products)
             n_share = max([shared.get((w, k, path), 1) for k in keys for path in paths] or [1])
             conf = f"path-shared:{n_share}" if n_share > 1 else "path"
@@ -786,7 +798,7 @@ def placement_results(pls: list, links: dict, assets: dict, funnel: dict, orders
         rows_w = cont[str(w)]
         hit = [rows_w[t] for t in tags if t in rows_w]
         v = sum(x.get("pageviews", 0) for x in hit)
-        tr = sum(sum((x.get("trial") or {}).get(prod, 0) for prod in products) if products else sum((x.get("trial") or {}).values()) for x in hit)
+        tr = sum(sum(trial_count(x.get("trial"), prod) for prod in products) if products else trial_total(x.get("trial")) for x in hit)
         ck = sum(sum((x.get("checkout") or {}).get(prod, 0) for prod in products) if products else sum((x.get("checkout") or {}).values()) for x in hit)
         for metric, val in (("link-visits", v), ("link-trials", tr), ("link-checkout-clicks", ck)):
             rows.append((pl["id"], asof, metric, val, f"funnel-link:{w}d", "exact-link"))
@@ -931,7 +943,7 @@ def channel_stats(pls: list, links: dict, assets: dict, funnel: dict, orders: li
             for fk, v in fun.items():
                 if key_matches(fk, g["keys"]):
                     visits += sum(c for pth, c in (v.get("pageviewsByPath") or {}).items() if pth.startswith(path))
-                    trials += (v.get("trial") or {}).get(prod, 0)
+                    trials += trial_count(v.get("trial"), prod)
         n_orders = sum(1 for o in orders if o["product"] == prod and o["date"] >= since and order_matches(o, g["keys"]))
         n_heard = sum(1 for o in orders if o["product"] == prod and o["date"] >= since and HEARD_CHANNEL.get(o["heard"]) == ch)
         # Trials start on guide pages too, while visits count the product's own pages only. Where trials outnumber
@@ -1686,7 +1698,7 @@ def campaign_gaps(con, p: dict, today: dt.date | None = None, recent=None) -> li
                         "detail": f"{(today - start).days} days after the start; record it with hub.py campaign-spend"})
         rows = [week.get(k) or {} for k in CHANNEL_KEYS.get(r["channel"], (r["channel"],))]
         views = sum(x.get("pageviews") or 0 for x in rows)
-        trials = sum((x.get("trial") or {}).get(r["asset"], 0) for x in rows)
+        trials = sum(trial_count(x.get("trial"), r["asset"]) for x in rows)
         if views and start < today <= end:
             if "f" not in day:
                 day["f"] = recent(1)

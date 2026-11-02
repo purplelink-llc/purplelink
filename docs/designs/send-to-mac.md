@@ -196,7 +196,10 @@ pageview per email opened on a Mac.
 - `stats.mjs`: `totals.sendToMac`, `byDay[day].sendToMac`, and `sendToMac: { <app>: n }` in every `funnelByChannel`
   and `funnelByContent` entry (initialised, counted and returned in both maps). `trial` maps keep counting by meta, so
   `moderntex` (real downloads), `moderntex-s2m` (real, after the email) and `moderntex-not-mac` (pointer clicks, not
-  downloads) stay apart; `totals.trialDownloads` still counts all three, as before.
+  downloads) stay apart; `totals.trialDownloads` still counts all three, as before, and `totals.trialNotMac` /
+  `byDay[day].trialNotMac` count the pointer clicks so a reader can subtract them per day (the revenue forecast does).
+- `scripts/hub/hub.py` counts a product's trials as `<app>` plus `<app>-s2m` and never `-not-mac` (`trial_count`,
+  `trial_total`).
 - The traffic dashboard and the Reddit cost-per-trial view are owned by the Analytics session, which is sent the
   event name, fields and trial keys. This change ships the API fields only.
 

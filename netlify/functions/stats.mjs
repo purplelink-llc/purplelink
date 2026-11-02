@@ -255,7 +255,7 @@ export default async function handler(request) {
   const store = getStore("analytics");
   const now = Date.now();
   const s = {
-    totals: { pageviews: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0, lcbTrialDownloads: 0, pnTrialDownloads: 0, smTrialDownloads: 0, guideTrialClicks: 0, guidePageClicks: 0, sendToMac: 0, events: 0 },
+    totals: { pageviews: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0, lcbTrialDownloads: 0, pnTrialDownloads: 0, smTrialDownloads: 0, guideTrialClicks: 0, guidePageClicks: 0, sendToMac: 0, trialNotMac: 0, events: 0 },
     byPath: {}, byReferrer: {}, byUtm: {}, byHost: {}, toolRuns: {},
     checkoutByProduct: {}, checkoutByPath: {},
     otherEvents: {}, otherEventDetail: {},
@@ -296,7 +296,7 @@ export default async function handler(request) {
   for (const { day, blobs } of listings) {
     if (!blobs) continue;            // preserves the old behaviour: skip the day entirely
     if (!s.byDay[day]) {
-      s.byDay[day] = { pageviews: 0, uniques: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0, lcbTrialDownloads: 0, pnTrialDownloads: 0, smTrialDownloads: 0, guideTrialClicks: 0, guidePageClicks: 0, sendToMac: 0 };
+      s.byDay[day] = { pageviews: 0, uniques: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0, lcbTrialDownloads: 0, pnTrialDownloads: 0, smTrialDownloads: 0, guideTrialClicks: 0, guidePageClicks: 0, sendToMac: 0, trialNotMac: 0 };
       if (hostFilter) for (const f of Object.values(HOST_EVENT_FIELDS)) s.byDay[day][f] = 0;
     }
     if (!uniquesPerDay[day]) uniquesPerDay[day] = new Set();
@@ -350,6 +350,13 @@ export default async function handler(request) {
           else if (/_?trial_download$/.test(rec.type)) bump(fx.trial, rec.meta || rec.type);
           else if (rec.type === "guide_mtx_trial") bump(fx.trial, "guide_mtx_trial");
         }
+      }
+
+      // "Send to my Mac" pointer clicks: a trial-button click by a visitor not on a Mac that downloaded nothing (meta
+      // "<app>-not-mac"). They stay in trialDownloads and the per-app counts so the hero test's metric keeps its
+      // definition; trialNotMac lets a reader take them back out, per day.
+      if (/_?trial_download$/.test(rec.type) && String(rec.meta || "").endsWith("-not-mac")) {
+        s.totals.trialNotMac++; s.byDay[day].trialNotMac++;
       }
 
       if (rec.type === "pageview") {

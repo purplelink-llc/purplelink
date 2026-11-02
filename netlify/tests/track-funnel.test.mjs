@@ -103,4 +103,7 @@ test("send_to_mac is a funnel stage of its own, by channel and link tag, and nev
   assert.equal(out.totals.sendToMac, 2);
   // The hero test's count keeps its meaning: every trial click, as before.
   assert.equal(out.totals.trialDownloads, 2);
+  // ...and readers can take the pointer clicks back out, per day.
+  assert.equal(out.totals.trialNotMac, 1);
+  assert.equal(Object.values(out.byDay).reduce((n, d) => n + d.trialNotMac, 0), 1);
 });
