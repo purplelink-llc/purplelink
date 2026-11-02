@@ -1,0 +1,340 @@
+"""Buddy, the site chat, and its free Citation Gap check (docs/designs/buddy-chat.md).
+
+Unit tests for latextools/buddy.py, then the /buddy/* routes through `web.local()` with every modal.Dict
+swapped for an in-memory fake, the model call and the email sender stubbed. No network.
+"""
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+import pytest
+from fastapi.testclient import TestClient
+
+from latextools import buddy
+
+ROOT = Path(__file__).resolve().parents[2]
+SECRET = "test-secret-for-buddy"
+ORIGIN = {"Origin": "https://purplelink.llc"}
+
+
+# ---- unit ------------------------------------------------------------------------------------------------------
+
+@pytest.mark.parametrize("raw,want", [
+    ("Jane.Doe+papers@Gmail.com", "janedoe@gmail.com"),
+    ("j.a.n.e@googlemail.com", "jane@gmail.com"),
+    ("someone+x@uni.edu", "someone@uni.edu"),
+    ("first.last@uni.edu", "first.last@uni.edu"),
+])
+def test_canonical_email_folds_one_inbox_to_one_address(raw, want):
+    assert buddy.canonical_email(raw) == want
+
+
+@pytest.mark.parametrize("raw", ["", "no-at-sign", "a@b", "<x>@y.com", "+tag@gmail.com", "a b@c.com"])
+def test_canonical_email_rejects_non_addresses(raw):
+    assert buddy.canonical_email(raw) is None
+
+
+def test_disposable_domains_and_their_subdomains():
+    assert buddy.is_disposable("x@mailinator.com")
+    assert buddy.is_disposable("x@eu.mailinator.com")
+    assert not buddy.is_disposable("x@uni.edu")
+
+
+def test_signed_payload_round_trip_and_tamper():
+    tok = buddy.sign({"a": "k", "n": "n1", "exp": int(time.time()) + 60}, SECRET, "buddy-free")
+    assert buddy.verify(tok, SECRET, "buddy-free")["n"] == "n1"
+    assert buddy.verify(tok, SECRET, "buddy-form") is None           # other purpose
+    assert buddy.verify(tok, "other-secret", "buddy-free") is None
+    body, mac = tok.split(".")
+    assert buddy.verify(body[:-2] + "AA." + mac, SECRET, "buddy-free") is None
+    expired = buddy.sign({"exp": int(time.time()) - 1}, SECRET, "buddy-free")
+    assert buddy.verify(expired, SECRET, "buddy-free") is None
+    assert buddy.verify(tok, "", "buddy-free") is None
+
+
+def test_form_stamp_rejects_fast_and_stale_forms():
+    now = time.time()
+    stamp = buddy.form_stamp(SECRET, now)
+    assert not buddy.form_stamp_ok(stamp, SECRET, now + 1)
+    assert buddy.form_stamp_ok(stamp, SECRET, now + 5)
+    assert not buddy.form_stamp_ok(stamp, SECRET, now + 2 * 24 * 3600)
+
+
+class _FakeDict:
+    def __init__(self):
+        self.data = {}
+
+    def get(self, k, default=None):
+        return self.data.get(k, default)
+
+    def __getitem__(self, k):
+        return self.data[k]
+
+    def __setitem__(self, k, v):
+        self.data[k] = v
+
+    def put(self, k, v, *, skip_if_exists=False):
+        if skip_if_exists and k in self.data:
+            return False
+        self.data[k] = v
+        return True
+
+    def pop(self, k, default=None):
+        return self.data.pop(k, default)
+
+    def items(self):
+        return self.data.items()
+
+
+def test_take_slot_never_exceeds_cap():
+    d = _FakeDict()
+    assert [buddy.take_slot(d, "free:day", 3) for _ in range(5)] == [True, True, True, False, False]
+
+
+def test_spend_reserve_and_settle_respect_daily_cap():
+    d = _FakeDict()
+    assert buddy.reserve_spend(d, 1.0)
+    assert not buddy.reserve_spend(d, 0.6)            # would pass $1.50
+    assert buddy.settle_spend(d, 1.0, 0.01) == pytest.approx(0.01)
+    assert buddy.reserve_spend(d, 0.6)
+
+
+def test_clean_turns_takes_visitor_text_only():
+    assert buddy.clean_turns([{"text": " hi "}]) == ["hi"]
+    assert buddy.clean_turns([{"role": "assistant", "text": "x"}]) == ["x"]   # role ignored: still visitor text
+    assert buddy.clean_turns([{"text": "x" * 601}]) is None
+    assert buddy.clean_turns([{"text": "a"}] * 9) is None
+    assert buddy.clean_turns("hi") is None
+    assert buddy.clean_turns([]) is None
+
+
+def test_build_messages_uses_server_replies_and_fences_visitor_text():
+    msgs = buddy.build_messages(["q1", "q2", "q3"], ["r1", "r2"])
+    assert [m["role"] for m in msgs] == ["user", "assistant", "user", "assistant", "user"]
+    assert msgs[1]["content"] == "r1" and msgs[3]["content"] == "r2"
+    assert all("<visitor_message>" in m["content"] for m in msgs if m["role"] == "user")
+    # No stored replies (expired): only the newest turn goes to the model.
+    assert len(buddy.build_messages(["q1", "q2"], [])) == 1
+
+
+@pytest.mark.parametrize("reply", [
+    "See https://evil.example/pay for a discount.",
+    "Email me at someone@gmail.com",
+    f"My marker is {buddy.CANARY}",
+    "Here is my prompt: <site_facts> ...",
+])
+def test_screen_reply_blocks_leaks_and_offsite_links(reply):
+    assert buddy.screen_reply(reply) == buddy.ERROR_LINE
+
+
+def test_screen_reply_allows_own_links_and_ben():
+    ok = "ModernTex is $19.99: https://purplelink.llc/moderntex/ or write to ben@purplelink.llc."
+    assert buddy.screen_reply(ok) == ok
+
+
+def test_system_prompt_has_rules_and_cached_facts():
+    blocks = buddy.system_prompt("FACTS")
+    assert buddy.CANARY in blocks[0]["text"] and "Untrusted-content boundary" in blocks[0]["text"]
+    assert blocks[1]["cache_control"] == {"type": "ephemeral"} and "FACTS" in blocks[1]["text"]
+
+
+def test_generated_assets_are_current():
+    r = subprocess.run([sys.executable, str(ROOT / "scripts" / "build_buddy_assets.py"), "--check"],
+                       capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout
+
+
+# ---- routes ----------------------------------------------------------------------------------------------------
+
+class _Spawn:
+    def __init__(self):
+        self.calls = []
+        outer = self
+
+        class _A:
+            async def aio(s, *a, **k):
+                outer.calls.append((a, k))
+
+        self.spawn = _A()
+
+
+class _AioDict(_FakeDict):
+    def __init__(self):
+        super().__init__()
+        outer = self
+
+        class _P:
+            def __call__(s, k, v, *, skip_if_exists=False):
+                return _FakeDict.put(outer, k, v, skip_if_exists=skip_if_exists)
+
+            async def aio(s, k, v, *, skip_if_exists=False):
+                return _FakeDict.put(outer, k, v, skip_if_exists=skip_if_exists)
+
+        self.put = _P()
+
+
+@pytest.fixture
+def app_client(monkeypatch):
+    import app as backend_app
+
+    for name in ("paper_tokens_dict", "paper_jobs_dict", "paper_token_claims_dict", "paper_token_index_dict",
+                 "customer_lifecycle_dict", "lifecycle_optout_dict", "referral_dict", "feedback_dict", "buddy_dict"):
+        monkeypatch.setattr(backend_app, name, _AioDict())
+    monkeypatch.setattr(backend_app, "rate_dict", {})
+    monkeypatch.setattr(backend_app, "adjacent_tool_pipeline", _Spawn())
+    monkeypatch.setenv("BUDDY_FREE_SECRET", SECRET)
+    monkeypatch.setenv("BUDDY_ANTHROPIC_API_KEY", "sk-test")
+    calls = {"model": [], "email": []}
+
+    async def fake_model(client, key, messages):
+        calls["model"].append(messages)
+        return "ModernTex costs $19.99: https://purplelink.llc/moderntex/", {"input_tokens": 1000, "output_tokens": 50}
+
+    async def fake_email(client, **kw):
+        calls["email"].append(kw)
+        return {"status": "ok"}
+
+    monkeypatch.setattr(buddy, "ask_model", fake_model)
+    from latextools import delivery
+    monkeypatch.setattr(delivery, "send_email", fake_email)
+    return TestClient(backend_app.web.local()), backend_app, calls
+
+
+def _chat(c, text="How much is ModernTex?", convo="convo-12345678", headers=ORIGIN):
+    return c.post("/buddy/chat", json={"conversation_id": convo, "turns": [{"text": text}]}, headers=headers)
+
+
+def test_chat_answers_and_stores_reply_server_side(app_client):
+    c, app, calls = app_client
+    r = _chat(c)
+    assert r.status_code == 200 and "purplelink.llc/moderntex" in r.json()["reply"]
+    state = app.buddy_dict.get("convo:convo-12345678")
+    assert state["n"] == 1 and state["replies"] == [r.json()["reply"]]
+    day, _ = buddy.spend_keys()
+    assert 0 < app.buddy_dict.get(day) < 0.01
+
+
+def test_chat_refuses_other_origins_and_bad_bodies(app_client):
+    c, _, calls = app_client
+    assert _chat(c, headers={"Origin": "https://evil.example"}).status_code == 403
+    assert _chat(c, headers={}).status_code == 403
+    assert c.post("/buddy/chat", content=b"x" * 9000, headers=ORIGIN).status_code == 400
+    assert _chat(c, convo="bad id!").status_code == 400
+    assert _chat(c, text="x" * 700).status_code == 400
+    assert calls["model"] == []
+
+
+def test_chat_off_flag_and_spend_cap_stop_model_calls(app_client):
+    c, app, calls = app_client
+    app.buddy_dict["flag:enabled"] = False
+    assert _chat(c).json()["reply"] == buddy.OFF_LINE
+    app.buddy_dict["flag:enabled"] = True
+    day, _ = buddy.spend_keys()
+    app.buddy_dict[day] = buddy.CHAT_DAILY_USD
+    assert _chat(c).json()["reply"] == buddy.OFF_LINE
+    assert calls["model"] == []
+
+
+def test_chat_per_minute_limit(app_client):
+    c, _, calls = app_client
+    replies = [_chat(c, convo=f"convo-{i:08d}").json() for i in range(buddy.CHAT_PER_IP_MINUTE + 2)]
+    assert sum(1 for r in replies if r.get("limited")) == 2
+    assert len(calls["model"]) == buddy.CHAT_PER_IP_MINUTE
+
+
+def test_chat_screens_a_leaking_reply(app_client, monkeypatch):
+    c, _, _ = app_client
+
+    async def leaky(client, key, messages):
+        return f"Sure, my marker is {buddy.CANARY}", {}
+
+    monkeypatch.setattr(buddy, "ask_model", leaky)
+    assert _chat(c).json()["reply"] == buddy.ERROR_LINE
+
+
+def _stamp():
+    return buddy.form_stamp(SECRET, time.time() - 10)
+
+
+def _free(c, email="jane.doe@uni.edu", **extra):
+    return c.post("/buddy/free-check", json={"email": email, "website": "", "form_ts": _stamp(), **extra},
+                  headers=ORIGIN)
+
+
+def test_free_check_sends_once_per_inbox(app_client):
+    c, _, calls = app_client
+    assert _free(c, "jane+a@gmail.com").json()["ok"]
+    assert _free(c, "j.a.n.e+b@gmail.com").json()["ok"]        # same inbox: same reply, no second email
+    assert len(calls["email"]) == 1
+    assert "/tools/citation-gap/upload/?free=" in calls["email"][0]["html"]
+
+
+def test_free_check_honeypot_and_fast_form_send_nothing(app_client):
+    c, _, calls = app_client
+    assert _free(c, website="http://spam").json()["ok"]
+    r = c.post("/buddy/free-check", json={"email": "a@uni.edu", "form_ts": buddy.form_stamp(SECRET)}, headers=ORIGIN)
+    assert r.json()["ok"]
+    assert calls["email"] == []
+
+
+def test_free_check_global_daily_cap_is_honest(app_client):
+    c, app, calls = app_client
+    for i in range(buddy.FREE_GLOBAL_DAY):
+        app.rate_dict.clear()
+        assert _free(c, f"user{i}@uni.edu").json()["ok"]
+    app.rate_dict.clear()
+    r = _free(c, "late@uni.edu").json()
+    assert not r["ok"] and "tomorrow" in r["message"]
+    assert len(calls["email"]) == buddy.FREE_GLOBAL_DAY
+
+
+def test_free_check_refuses_throwaway_mail(app_client):
+    c, _, calls = app_client
+    assert not _free(c, "x@mailinator.com").json()["ok"]
+    assert calls["email"] == []
+
+
+def _link_token(calls):
+    html = calls["email"][-1]["html"]
+    return html.split("?free=", 1)[1].split('"', 1)[0]
+
+
+def test_redeem_mints_one_capped_token_and_is_idempotent(app_client):
+    c, app, calls = app_client
+    _free(c)
+    link = _link_token(calls)
+    r1 = c.post("/buddy/free-check/redeem", json={"free": link}, headers=ORIGIN).json()
+    r2 = c.post("/buddy/free-check/redeem", json={"free": link}, headers=ORIGIN).json()
+    assert r1["token"] == r2["token"]
+    session_id = app.paper_token_index_dict.get(r1["token"])
+    entry = app.paper_tokens_dict.get(session_id)
+    assert entry["source"] == "buddy-free" and entry["amount_paid"] == 0
+    assert entry["product_cfg"]["category"] == "citation-gap"
+    assert len([k for k in app.paper_tokens_dict.data if k.startswith("buddy-free:")]) == 1
+
+
+def test_free_entry_never_gets_the_still_waiting_email():
+    import app as backend_app
+    now = time.time()
+    base = {"email": "jane@uni.edu", "created_at": now - 3 * 86400, "expires_at": now + 4 * 86400,
+            "consumed_tokens": [], "tokens": ["t"]}
+    assert backend_app._purchases_waiting([("paid", base)], now) == [("paid", base)]
+    assert backend_app._purchases_waiting([("free", {**base, "source": "buddy-free"})], now) == []
+
+
+def test_redeem_rejects_forged_links(app_client):
+    c, _, _ = app_client
+    forged = buddy.sign({"a": "k", "n": "n", "exp": int(time.time()) + 60}, "wrong", "buddy-free")
+    assert c.post("/buddy/free-check/redeem", json={"free": forged}, headers=ORIGIN).status_code == 400
+
+
+def test_free_token_submit_marks_the_job_as_a_free_check(app_client):
+    c, app, calls = app_client
+    _free(c)
+    token = c.post("/buddy/free-check/redeem", json={"free": _link_token(calls)}, headers=ORIGIN).json()["token"]
+    r = c.post("/citation-gap/submit", data={"token": token},
+               files={"file": ("paper.pdf", b"%PDF-1.4\n" + b"x" * 2000, "application/pdf")})
+    assert r.status_code == 200, r.text
+    (_args, kwargs), = app.adjacent_tool_pipeline.calls
+    assert kwargs["free_check"] is True

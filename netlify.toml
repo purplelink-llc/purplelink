@@ -129,6 +129,13 @@
   [headers.values]
     Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
 
+# The site chat's key sounds (site/buddy-chat/sounds/) never change in place; a new sound gets a new name.
+# chat.js and links.json are loaded unstamped by loader.js, so they keep the default revalidating cache.
+[[headers]]
+  for = "/buddy-chat/sounds/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
 # Everything under /tools/ is referenced only from stamped pages, so it can be
 # cached hard. This also retires the revalidation round-trip those stylesheets
 # and scripts were paying on every single page load.

@@ -1,0 +1,205 @@
+/* Buddy chat (docs/designs/buddy-chat.md, section 2). Site tokens only; dark is the default theme. */
+
+.bc-launcher,
+.bc-panel {
+  --bc-fur: oklch(68% 0.14 300);
+  --bc-fur-shade: oklch(56% 0.16 298);
+  --bc-light: oklch(88% 0.06 305);
+  --bc-ink: oklch(20% 0.06 300);
+  --bc-tongue: oklch(72% 0.15 10);
+  --bc-glass: color-mix(in oklch, var(--panel) 72%, transparent);
+  --bc-edge: color-mix(in oklch, var(--ink) 10%, transparent);
+  --bc-shadow: 0 18px 48px -12px color-mix(in oklch, var(--ink) 28%, transparent);
+}
+
+/* Buddy's face */
+.bc-face { display: block; width: 100%; height: 100%; overflow: visible; }
+.bc-head { fill: var(--bc-fur); }
+.bc-ear { fill: var(--bc-fur-shade); }
+.bc-ear-in, .bc-muzzle { fill: var(--bc-light); }
+.bc-ink { fill: var(--bc-ink); }
+.bc-ink-line { fill: none; stroke: var(--bc-ink); stroke-width: 5; stroke-linecap: round; }
+.bc-glint { fill: #fff; }
+.bc-tongue { fill: var(--bc-tongue); opacity: 0; transition: opacity 0.2s ease; }
+.bc-eye-happy { opacity: 0; }
+.bc-eyes, .bc-eye-open { transform-box: fill-box; transform-origin: center; }
+.is-happy .bc-eye-open { opacity: 0; }
+.is-happy .bc-eye-happy, .is-happy .bc-tongue { opacity: 1; }
+
+/* Launcher */
+.bc-launcher {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 60;
+  width: 56px;
+  height: 56px;
+  padding: 9px 8px 7px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--bc-glass);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  box-shadow: var(--bc-shadow), inset 0 1px 0 var(--bc-edge);
+  cursor: pointer;
+}
+.bc-launcher:focus-visible { outline: 2px solid var(--purple); outline-offset: 3px; }
+.bc-launcher[aria-expanded="true"] { display: none; }
+@media (max-width: 760px) { .bc-launcher.bc-above-cta { bottom: 88px; } }
+
+/* Panel */
+.bc-panel {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 61;
+  display: flex;
+  flex-direction: column;
+  width: 380px;
+  height: min(560px, calc(100vh - 40px));
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--bc-glass);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  box-shadow: var(--bc-shadow), inset 0 1px 0 var(--bc-edge);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  overflow: hidden;
+}
+.bc-panel[hidden] { display: none; }
+@media (max-width: 480px) {
+  .bc-panel { right: 16px; left: 16px; bottom: 16px; width: auto; height: calc(100vh - 32px); }
+}
+
+.bc-head-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 12px 10px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.bc-avatar { width: 36px; height: 36px; flex: none; }
+.bc-title { flex: 1; min-width: 0; }
+.bc-name { margin: 0; font-family: var(--font-display); font-size: 18px; font-weight: 600; line-height: 1.2; }
+.bc-note { margin: 0; color: var(--muted); font-size: 12px; }
+.bc-note a { color: inherit; }
+.bc-icon-btn {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.bc-icon-btn:hover { background: color-mix(in oklch, var(--ink) 8%, transparent); color: var(--ink); }
+.bc-icon-btn:focus-visible { outline: 2px solid var(--purple); outline-offset: 1px; }
+.bc-icon-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.bc-icon-btn[aria-pressed="false"] .bc-wave { display: none; }
+.bc-icon-btn[aria-pressed="true"] .bc-mute { display: none; }
+
+.bc-log {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.bc-msg {
+  max-width: 85%;
+  margin: 0;
+  padding: 9px 13px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.bc-msg a { color: var(--purple); }
+.bc-msg--buddy { align-self: flex-start; background: var(--panel); border-bottom-left-radius: 4px; }
+.bc-msg--you {
+  align-self: flex-end;
+  background: color-mix(in oklch, var(--purple) 14%, var(--panel));
+  border-color: color-mix(in oklch, var(--purple) 30%, var(--line));
+  border-bottom-right-radius: 4px;
+}
+.bc-msg--wait { color: var(--muted); }
+
+.bc-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.bc-chip {
+  padding: 6px 13px;
+  border: 1px solid color-mix(in oklch, var(--purple) 45%, var(--line));
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.bc-chip:hover { background: color-mix(in oklch, var(--purple) 12%, transparent); }
+.bc-chip:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
+
+.bc-form { display: grid; gap: 8px; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
+.bc-form p { margin: 0; font-size: 13px; color: var(--muted); }
+.bc-form label { font-size: 14px; }
+.bc-check { display: flex; gap: 8px; align-items: center; }
+.bc-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+.bc-field {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: color-mix(in oklch, var(--bg) 60%, transparent);
+  color: var(--ink);
+  font: inherit;
+}
+.bc-field:focus { outline: 2px solid var(--purple); outline-offset: 0; border-color: transparent; }
+
+.bc-compose { padding: 10px 12px 8px; border-top: 1px solid var(--line); }
+.bc-compose-row { display: flex; gap: 8px; align-items: flex-end; }
+.bc-compose textarea { resize: none; min-height: 42px; max-height: 120px; field-sizing: content; }
+.bc-send {
+  flex: none;
+  padding: 9px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--purple);
+  color: var(--bg);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.bc-send:disabled { opacity: 0.5; cursor: default; }
+.bc-send:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.bc-credit { margin: 6px 2px 0; color: var(--muted); font-size: 12px; }
+.bc-credit a { color: inherit; }
+
+/* Motion: only when the visitor allows it */
+@media (prefers-reduced-motion: no-preference) {
+  .bc-panel:not([hidden]) { animation: bc-rise 0.22s ease-out; }
+  .bc-blink .bc-eye-open { animation: bc-blink 0.17s ease-in-out; }
+  .is-thinking .bc-eyes { animation: bc-glance 2.4s ease-in-out infinite; }
+  .bc-launcher { transition: transform 0.16s ease-out; }
+  .bc-launcher:hover { transform: translateY(-2px); }
+  .is-happy .bc-face { animation: bc-hop 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+}
+@keyframes bc-rise { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
+@keyframes bc-blink { 0%, 100% { transform: scaleY(1); } 40% { transform: scaleY(0.12); } }
+@keyframes bc-glance { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 60% { transform: translateX(4px); } }
+@keyframes bc-hop { 0%, 100% { transform: translateY(0); } 35% { transform: translateY(-16%); } }
+
+/* No glass where it is unsupported or unwanted */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .bc-launcher, .bc-panel { --bc-glass: var(--panel); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .bc-launcher, .bc-panel { --bc-glass: var(--panel); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
