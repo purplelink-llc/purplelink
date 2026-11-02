@@ -99,7 +99,9 @@ async def main_async(args):
 
     categories = args.categories or DEFAULT_CATEGORIES
 
-    async with httpx.AsyncClient() as client:
+    # Same read timeout as production (backend/app.py): a Citation Gap call takes
+    # well over httpx's 5 s default, which made every paper fail with ReadTimeout.
+    async with httpx.AsyncClient(timeout=httpx.Timeout(connect=10.0, read=180.0, write=10.0, pool=10.0)) as client:
         logger.info("fetching corpus: categories=%s sample_size=%d", categories, args.sample_size)
         papers = await fetch_corpus(client, categories=categories, max_results=args.sample_size)
         if not papers:
