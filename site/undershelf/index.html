@@ -21,9 +21,9 @@
     <script src="/theme.js?v=f0ab0f06a1"></script>
     <link rel="stylesheet" href="/styles.css?v=f247a79f66">
     <link rel="stylesheet" href="/motion.css?v=35524918f9">
-    <script src="/site.js?v=b053086227" defer></script>
+    <script src="/site.js?v=9f201aa4bb" defer></script>
     <script src="/motion.js?v=d35f4b4ee4" defer></script>
-    <link rel="stylesheet" href="/undershelf/undershelf.css?v=103cfec593">
+    <link rel="stylesheet" href="/undershelf/undershelf.css?v=bcd0a53202">
     <script src="/undershelf/undershelf.js?v=c1476ac2d2" defer></script>
   </head>
   <body>
@@ -79,28 +79,28 @@
           </tbody>
         </table>
         <p>Prices are not final. Tell me below which one you would buy; that decides which gets made first.</p>
+        <section class="list-signup list-signup--page" id="waitlist" data-undershelf-waitlist aria-labelledby="waitlist-h">
+          <h2 class="list-signup-head" id="waitlist-h">Join the Undershelf waitlist</h2>
+          <p class="list-signup-lede">One email when it is ready to order, with the test results. Nothing else.</p>
+          <form class="list-signup-form" novalidate>
+            <div class="list-signup-field">
+              <label for="waitlist-email">Email</label>
+              <input type="email" id="waitlist-email" name="email" autocomplete="email" inputmode="email" spellcheck="false" placeholder="you@example.com" required>
+            </div>
+            <fieldset class="undershelf-choice">
+              <legend>Which version would you buy?</legend>
+              <label><input type="radio" name="version" value="standard"> Standard, about $29</label>
+              <label><input type="radio" name="version" value="carbon"> Carbon with walnut, about $49</label>
+              <label><input type="radio" name="version" value="unsure" checked> Not sure yet</label>
+            </fieldset>
+            <input type="text" name="website" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <button type="submit" class="btn btn-primary">Join the waitlist</button>
+          </form>
+          <p class="list-signup-status" data-list-signup-status role="status" aria-live="polite"></p>
+          <p class="list-signup-fine">You confirm by email first. Unsubscribe with one click. <a href="/privacy/">Privacy</a>.</p>
+        </section>
       </article>
 
-      <section class="list-signup list-signup--page" id="waitlist" data-undershelf-waitlist aria-labelledby="waitlist-h">
-        <h2 class="list-signup-head" id="waitlist-h">Join the Undershelf waitlist</h2>
-        <p class="list-signup-lede">One email when it is ready to order, with the test results. Nothing else.</p>
-        <form class="list-signup-form" novalidate>
-          <div class="list-signup-field">
-            <label for="waitlist-email">Email</label>
-            <input type="email" id="waitlist-email" name="email" autocomplete="email" inputmode="email" spellcheck="false" placeholder="you@example.com" required>
-          </div>
-          <fieldset class="undershelf-choice">
-            <legend>Which version would you buy?</legend>
-            <label><input type="radio" name="version" value="standard"> Standard, about $29</label>
-            <label><input type="radio" name="version" value="carbon"> Carbon with walnut, about $49</label>
-            <label><input type="radio" name="version" value="unsure" checked> Not sure yet</label>
-          </fieldset>
-          <input type="text" name="website" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
-          <button type="submit" class="btn btn-primary">Join the waitlist</button>
-        </form>
-        <p class="list-signup-status" data-list-signup-status role="status" aria-live="polite"></p>
-        <p class="list-signup-fine">You confirm by email first. Unsubscribe with one click. <a href="/privacy/">Privacy</a>.</p>
-      </section>
 
       <section class="faq-section" id="faq" aria-labelledby="faq-heading">
         <h2 id="faq-heading">Questions</h2>

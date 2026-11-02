@@ -42,11 +42,11 @@
     <script src="/theme.js?v=f0ab0f06a1"></script>
     <link rel="stylesheet" href="/styles.css?v=f247a79f66">
     <link rel="stylesheet" href="/motion.css?v=35524918f9">
-    <script src="/site.js?v=b053086227" defer></script>
+    <script src="/site.js?v=9f201aa4bb" defer></script>
     <script src="/motion.js?v=d35f4b4ee4" defer></script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
   </head>
-  <body>
+  <body data-no-list-signup>
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="topbar">
       <a class="brand" href="/" aria-label="Purplelink home">
@@ -84,6 +84,10 @@
 
         <h2 id="how-it-breathes">Where the Mac mini takes in and pushes out air</h2>
         <p>Apple's guidance for the 2024 Mac mini is only that the vents are on the bottom and the rear, and that both need some clearance (<a href="https://discussions.apple.com/thread/255934449" rel="noopener">Apple Community</a>). Teardown-based accounts and owner reports agree that air comes in through the ring on the base and that the warm air leaves at the back, but they disagree on whether it leaves through the rear part of the bottom ring or through the back. I could not settle that from public sources, so I simulated both. The power button is on the underside near the back corner (<a href="https://appleinsider.com/articles/24/11/12/power-press-fixes-for-apples-oddly-placed-mac-mini-button" rel="noopener">AppleInsider</a>).</p>
+        <figure class="post-figure">
+          <img src="/assets/undershelf/airflow-slice-cradle.jpg" width="1650" height="616" loading="lazy" alt="Two cross-sections from the airflow simulation of a Mac mini in an open-floor cradle under a desk. Left, front to back: cool room air rises into the front of the base while a warm jet leaves the rear of the base downward and backward. Right, side to side: cool air drawn up into the intake on both sides.">
+          <figcaption>Airflow simulation, Mac at 65 W in an open-floor cradle. Colour is air temperature, arrows are air movement. Left: section front to back, the warm exhaust jet leaving the rear of the base. Right: section across the intake, room air rising into it.</figcaption>
+        </figure>
         <p>That layout is the whole story. A Mac that breathes through its base cares about the space below it. If its own warm air can come back round to the intake, it breathes that air again, and everything inside runs warmer by about the same amount.</p>
 
         <h2 id="what-i-simulated">What I simulated</h2>
@@ -100,6 +104,10 @@
             <tr><td class="u-cell">The same fan blowing down</td><td class="u-cell">2.7 C</td></tr>
           </tbody>
         </table>
+        <figure class="post-figure">
+          <img src="/assets/undershelf/airflow-chart.png" width="1500" height="690" loading="lazy" alt="Bar chart of intake air above room temperature: open-floor cradle 1.1 C, with a 5 W hub 1.5 C, flat plate and fan 10 mm below with the fan off 5.7 C, plate 25 mm below with the fan moved forward 1.9 C, fan blowing up 0.8 C, fan blowing down 2.7 C.">
+          <figcaption>The same results as the table, as a chart. Lower is better.</figcaption>
+        </figure>
         <p>If the Mac exhausts out of the back rather than the rear of its base, the plate at 10 mm costs only about 1.2 C, so treat the bad case as the warning it is, not a precise figure. I could not get a trustworthy number for a Mac standing on a desk top, so I do not compare against one here.</p>
 
         <h2 id="does-it-matter">Does a degree or two matter?</h2>

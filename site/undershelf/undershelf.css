@@ -1,8 +1,10 @@
 /* Undershelf waitlist page: only what the shared list-signup and post styles do not cover. */
 .undershelf-choice {
+  flex-basis: 100%;   /* its own line above the email field and button */
+  order: -1;
   border: 1px solid var(--line);
   border-radius: 12px;
-  margin: 12px 0 16px;
+  margin: 0 0 4px;
   padding: 12px 16px;
 }
 .undershelf-choice legend { padding: 0 6px; font-weight: 600; }
