@@ -185,7 +185,7 @@ test("the page says what it cannot do, in plain words", () => {
   assert.match(text, /14 days/);
   assert.match(text, /two of your macs/);
   assert.match(text, /\$14\.99/);
-  assert.match(text, /50 actions/);
+  assert.match(text, /51 actions/);
 });
 
 test("the page claims nothing the app does not do, and uses none of the banned words", () => {
@@ -199,7 +199,7 @@ test("the page claims nothing the app does not do, and uses none of the banned w
     assert.ok(!text.toLowerCase().includes(unbuilt), `the page mentions: ${unbuilt}`);
   }
   // The action count is the app's own catalog.
-  assert.match(text, /50 actions/);
+  assert.match(text, /51 actions/);
 });
 
 test("the page says nothing about the Mac Suite or the bundles (the Suite gate is a launch decision, see docs/products/aka.md)", () => {

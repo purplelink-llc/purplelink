@@ -4,15 +4,14 @@
     python3 scripts/go-live-app.py panely 1.0.0 4 2026-10-20
 
 Run it AFTER the release is published to the app's Blobs store (scripts/publish-release.sh in the app repo) and the
-update token and license key secrets are set on Netlify. It does the five things that make the page real:
+update token and license key secrets are set on Netlify. It does the four things that make the page real:
   1. site/<slug>/launch.js: live true, with the version, the disk image size in whole MB and the release date;
   2. site/<slug>/index.html: robots "index, follow", and the offer availability InStock;
   3. site/sitemap.xml: lists /<slug>/ (success pages are never listed);
-  4. restamps asset versions (scripts/fingerprint_assets.py);
-  5. prints the checks to run next.
+  4. prints the checks to run next. (Asset ?v= stamps are added by the build, not committed.)
 Idempotent. It does not touch checkout, the webhook or the Suite: those are in the launch-day commit it ships with.
 """
-import re, subprocess, sys
+import re, sys
 from datetime import date
 from pathlib import Path
 
@@ -59,7 +58,6 @@ def main(argv):
         x = x.replace("</urlset>", entry + "</urlset>", 1) if "</urlset>" in x else sys.exit("no </urlset> in sitemap.xml")
         sm.write_text(x)
 
-    subprocess.run([sys.executable, str(ROOT / "scripts" / "fingerprint_assets.py")], check=True)
     print(f"{slug} {version} is switched on in the files. Next: node --experimental-test-module-mocks --test netlify/tests/*.test.mjs; "
           f"python3 -m unittest discover -s site-tests; then merge, and verify https://purplelink.llc/{slug}/ and a 100%-off test purchase.")
 

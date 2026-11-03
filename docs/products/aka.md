@@ -7,7 +7,7 @@ every claim on the page. Name: AKA, slug `aka`, page `/aka/`, success page `/aka
 
 AKA is a macOS 14+ app (universal binary, Apple silicon and Intel) that converts files from a ring of actions at the pointer:
 hold Option while dragging files, drop them on a slice, and the result is saved next to the original. The same actions are in the
-menu-bar item, the Dock icon and Finder's Services menu. 50 actions: images, PDFs, video, audio, transcription, documents, Markdown,
+menu-bar item, the Dock icon and Finder's Services menu. 51 actions: images, PDFs, video, audio, transcription, documents, Markdown,
 fonts, archives. History with Undo (moves results to the Trash). Everything runs on the Mac with Apple frameworks; the only network
 use is the Sparkle update check. Sold at **$14.99 once**, USD, one DMG that runs free for 7 days from first launch and then needs a
 license key (the ring still opens after the trial; running an action asks for a key; History and Undo keep working). One key works
@@ -214,7 +214,7 @@ live. No money moves.
 7. Add the click counter in `site/analytics.js` (a `aka-download?trial=1` branch firing `aka_trial_download`, and `aka_trial_download`
    in the `FUNNEL` regex). The server side (`stats.mjs`, dashboard) is already in. It is held back only because changing `analytics.js`
    restamps every page.
-8. Run `python3 scripts/apply_layout.py --check`, `python3 scripts/fingerprint_assets.py`, `python3 scripts/check_content.py --strict`.
+8. Run `python3 scripts/apply_layout.py --check` and `python3 scripts/check_content.py --strict` (the build adds the `?v=` stamps).
 9. Confirm the Terms and Privacy wording against the shipped app: that the only network use is the update check (app name, version,
    macOS version, update token); that nothing dropped on the app is sent; that there is no analytics; that the trial clock and key
    check send nothing.

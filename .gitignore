@@ -58,3 +58,6 @@ yt.html
 site/search-index.json
 site/llms-full.txt
 site/.*.tmp
+
+# Citation Gap benchmark output (raw paper text and model output; the repo is public)
+backend/benchmark/output/

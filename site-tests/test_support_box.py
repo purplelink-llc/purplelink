@@ -5,7 +5,7 @@ import subprocess
 import sys
 import unittest
 
-from common import EMOJI, ROOT, read, read_site
+from common import EMOJI, ROOT, STAMP, read, read_site
 
 PAGES = ["support", "moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "panely", "summonly", "vitae", "batterymeter", "haea"]
 
@@ -30,7 +30,7 @@ class SupportBox(unittest.TestCase):
         for slug in PAGES:
             html = read_site(f"{slug}/index.html")
             self.assertEqual(html.count("data-support-box"), 1, slug)
-            self.assertRegex(html, r'<script src="/support-box\.js\?v=[0-9a-f]+" defer>', slug)
+            self.assertRegex(html, r'<script src="/support-box\.js' + STAMP + r'" defer>', slug)
             box = html[html.index("<!-- support-box:start -->"):html.index("<!-- support-box:end -->")]
             self.assertIn('href="mailto:ben@purplelink.llc?subject=Support', box, slug)
             self.assertRegex(box, r"<form[^>]*\shidden", slug)
