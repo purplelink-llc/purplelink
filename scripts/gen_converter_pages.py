@@ -1712,6 +1712,8 @@ SUBTITLES = ("tapefolio", "Tapefolio", "To make subtitles from an interview or m
 APP_LINKS = {
     "xlsx-to-latex": ("moderntex", "ModernTex", "To write the paper itself on a Mac, ",
                       " is our LaTeX editor, with a synced PDF preview and BibTeX autocomplete. Free for 7 days."),
+    "pdf-to-jpg": ("moderntex", "ModernTex", "If you write papers or slides in LaTeX on a Mac, ",
+                   " is our editor, with a synced PDF preview and BibTeX autocomplete. Free for 7 days."),
     "pdf-to-text": ("tapefolio", "Tapefolio", "Scanned PDFs have no text for this page to read. ",
                     ", our Mac app, reads scans with OCR on your Mac and keeps two-column pages in reading order. "
                     "Free for 7 days."),
