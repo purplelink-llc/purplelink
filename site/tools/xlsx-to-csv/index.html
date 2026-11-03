@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>XLSX to CSV Converter That Runs in Your Browser | Purplelink</title>
+    <meta name="description" content="Convert Excel workbooks to CSV in your browser, one sheet or all of them. Dates stay dates, and nothing is uploaded. Free, no sign-up.">
+    <link rel="canonical" href="https://purplelink.llc/tools/xlsx-to-csv/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="XLSX to CSV, converted in your browser">
+    <meta property="og:description" content="Convert Excel workbooks to CSV in your browser, one sheet or all of them. Dates stay dates, and nothing is uploaded. Free, no sign-up.">
+    <meta property="og:url" content="https://purplelink.llc/tools/xlsx-to-csv/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/tools-xlsx-to-csv.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="XLSX to CSV, converted in your browser">
+    <meta name="twitter:description" content="Convert Excel workbooks to CSV in your browser, one sheet or all of them. Dates stay dates, and nothing is uploaded. Free, no sign-up.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/tools-xlsx-to-csv.jpg">
+    <meta name="twitter:image:alt" content="XLSX to CSV, converted in your browser">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "XLSX to CSV Converter",
+      "url": "https://purplelink.llc/tools/xlsx-to-csv/",
+      "description": "Convert Excel workbooks to CSV in your browser, one sheet or all of them. Dates stay dates, and nothing is uploaded. Free, no sign-up.",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Any",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "featureList": [
+        "Convert Excel .xlsx and .xlsm workbooks to CSV",
+        "The first sheet, or every sheet as its own CSV in a zip",
+        "Dates written as ISO dates; formulas as their saved results",
+        "Comma, semicolon or tab separated",
+        "Read in the browser; workbooks are never uploaded"
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "How to convert XLSX to CSV",
+      "tool": [
+        {
+          "@type": "HowToTool",
+          "name": "A current web browser"
+        }
+      ],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Pick the sheets and separator",
+          "text": "First sheet for a one-sheet export, All sheets for a zip with one CSV per sheet. Comma suits most tools; semicolon suits Excel where a comma is the decimal mark."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Add the workbooks",
+          "text": "Drop the .xlsx files on the box, or click it to choose them."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Check the row",
+          "text": "Each row says how many rows were read and notes hidden sheets or formulas without a saved result."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "name": "Download",
+          "text": "Download each CSV from its row, or use Download all as .zip."
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Are my files uploaded?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The page reads each workbook with your browser and converts it in a background worker in this tab. There is no server step. The meter under the drop zone counts the bytes the page and its worker send while they work, so you can check this yourself. The only things the page downloads are its own scripts."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How are dates written?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "As ISO 8601: 2026-11-03 for a date, 2026-11-03 14:05:00 for a date and time, 14:05:00 for a time. Excel stores dates as day counts, and the page reads each cell's format to tell a date from a number. Workbooks from old Mac Excel that count from 1904 are read correctly too."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What happens to formulas?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Each formula gives the result Excel saved in the file, as Excel's own Save as CSV does. A workbook made by a program that writes formulas without results has empty cells there; the row says how many. Opening it in Excel and saving it once stores the results."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does some text start with an apostrophe?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Text that starts with =, +, - or @ can run as a formula when Excel opens a CSV, which is how malicious spreadsheets spread. The apostrophe makes Excel show it as text. Turn the option off if the CSV is for R, Python or a database, which do not run formulas."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I convert every sheet?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Choose All sheets and each sheet becomes its own CSV, named after the sheet, in one zip. Hidden sheets are included, and the row names them. Chart sheets have no cells and are skipped."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. There is no account, no watermark and no limit beyond the sizes above."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "https://purplelink.llc/tools/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "XLSX to CSV",
+          "item": "https://purplelink.llc/tools/xlsx-to-csv/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/motion.css">
+    <script src="/site.js" defer></script>
+    <script src="/motion.js" defer></script>
+    <script src="/assets/vendor/jszip/jszip.min.js" defer></script>
+    <link rel="stylesheet" href="/tools/convert/convert.css">
+    <link rel="prefetch" as="script" data-convert-worker href="/tools/convert/convert-worker.js">
+    <script src="/tools/convert/convert-core.js" defer></script>
+    <script src="/tools/convert/convert-shell.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">← All tools</a>
+      <div class="tools-hero">
+        <p class="eyebrow">Free web tool</p>
+        <h1>XLSX to CSV</h1>
+        <p>Convert Excel workbooks (.xlsx) to CSV files, the first sheet or every sheet. Dates come out as dates, formulas as their results, and text exactly as typed. The workbook is read on your device. <strong>Nothing is uploaded.</strong></p>
+      </div>
+
+      <div class="tool-app cv-app" data-convert="xlsx-to-csv">
+        <input id="cv-file" class="sr-only cv-file" type="file" multiple accept=".xlsx,.xlsm,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+        <label class="cv-drop" id="cv-drop" for="cv-file">
+          <svg class="cv-drop-icon" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true" focusable="false"><rect x="6" y="9" width="36" height="30" rx="3" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M24 31V18m-6 6 6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="cv-drop-label"><strong>Drop Excel workbooks here</strong></span>
+          <span class="btn btn-primary cv-small cv-drop-button">Choose files</span>
+          <span class="cv-hint">XLSX and XLSM, up to 50 MB each.</span>
+        </label>
+        <fieldset class="cv-opts">
+          <legend>Options</legend>
+          <input type="hidden" data-opt="output" value="csv">
+          <div class="cv-field"><span id="cv-sheets-label">Sheets</span><span class="cv-choice" role="radiogroup" aria-labelledby="cv-sheets-label"><label><input type="radio" name="cv-sheets" data-opt="sheets" value="first" checked> First sheet</label><label><input type="radio" name="cv-sheets" data-opt="sheets" value="all"> All sheets, as a zip</label></span></div>
+          <label class="cv-field">Separator <select id="cv-delimiter" data-opt="delimiter"><option value="comma">Comma</option><option value="semicolon">Semicolon</option><option value="tab">Tab</option></select></label>
+          <label class="cv-field"><input type="checkbox" id="cv-safe" data-opt="safe" checked> Keep text that starts with = + - @ from running as a formula in Excel</label>
+          <label class="cv-field"><input type="checkbox" id="cv-bom" data-opt="bom"> Add a byte-order mark, so Excel on Windows shows accented letters</label>
+        </fieldset>
+        <p class="cv-net" id="cv-net"><span class="cv-net-dot" aria-hidden="true"></span><span id="cv-net-text">Bytes of your files sent anywhere: 0</span></p>
+        <p class="cv-status" id="cv-status" role="status" aria-live="polite"></p>
+        <ul class="cv-list" id="cv-list" aria-label="Files"></ul>
+        <div class="cv-bar" id="cv-bar" hidden>
+          <button type="button" class="btn btn-primary" id="cv-all" hidden>Download all as .zip</button>
+          <button type="button" class="btn btn-ghost" id="cv-clear">Clear</button>
+        </div>
+        <p class="tool-privacy">Files are read and converted in this tab, in a background worker. The only requests the page makes are for its own scripts. Your files are never sent anywhere.</p>
+      </div>
+
+      <section class="tool-prose cv-how" aria-labelledby="cv-how-h">
+        <h2 id="cv-how-h">How it works</h2>
+        <p>An .xlsx file is a zip of XML files: one lists the sheets, one holds the text that cells share, one the cell styles, and one each sheet&#x27;s cells. This page opens the zip with JSZip, served from this site, and reads those parts in a background worker in this tab.</p>
+        <p>Each cell is written as the workbook stores it. Dates are stored as day counts and shown as dates only through their format, so the page reads the format and writes 2026-11-03 rather than 46329. A formula gives the result Excel saved with the file. Empty cells and rows stay empty, so columns line up.</p>
+        <p>Text that starts with =, +, - or @ was harmless in the workbook but can run as a formula when Excel opens a CSV. With the first option on, such text gets an apostrophe in front, which Excel hides. Numbers are never changed, so -5 stays -5.</p>
+      </section>
+
+      <section class="tool-howto">
+        <h2>How to convert XLSX to CSV</h2>
+        <ol>
+          <li><strong>Pick the sheets and separator.</strong> First sheet for a one-sheet export, All sheets for a zip with one CSV per sheet. Comma suits most tools; semicolon suits Excel where a comma is the decimal mark.</li>
+          <li><strong>Add the workbooks.</strong> Drop the .xlsx files on the box, or click it to choose them.</li>
+          <li><strong>Check the row.</strong> Each row says how many rows were read and notes hidden sheets or formulas without a saved result.</li>
+          <li><strong>Download.</strong> Download each CSV from its row, or use Download all as .zip.</li>
+        </ol>
+      </section>
+
+      <section class="tool-prose" aria-labelledby="cv-limits-h">
+        <h2 id="cv-limits-h">Limits</h2>
+        <ul class="cv-limits">
+          <li>Up to 50 MB a workbook, 100 MB of data in a sheet once unpacked, and 5 million cells.</li>
+          <li>Numbers are written as stored, not as displayed: a cell shown as 12% is written 0.12, and currency signs and thousands separators are left out. An ID typed as a number with more than 15 digits has already been rounded inside the workbook.</li>
+          <li>The older .xls format and workbooks protected with a password cannot be read. Save them as an unprotected .xlsx first.</li>
+          <li>Charts, images, comments and cell colors are not part of a CSV.</li>
+          <li>The CSV is UTF-8. Excel on Windows needs the byte-order mark option to show accented letters correctly; R, Python and most other tools read it either way.</li>
+        </ul>
+      </section>
+
+      <section class="tool-faq">
+        <h2>Questions</h2>
+        <details><summary>Are my files uploaded?</summary><div class="faq-body">No. The page reads each workbook with your browser and converts it in a background worker in this tab. There is no server step. The meter under the drop zone counts the bytes the page and its worker send while they work, so you can check this yourself. The only things the page downloads are its own scripts.</div></details>
+        <details><summary>How are dates written?</summary><div class="faq-body">As ISO 8601: 2026-11-03 for a date, 2026-11-03 14:05:00 for a date and time, 14:05:00 for a time. Excel stores dates as day counts, and the page reads each cell&#x27;s format to tell a date from a number. Workbooks from old Mac Excel that count from 1904 are read correctly too.</div></details>
+        <details><summary>What happens to formulas?</summary><div class="faq-body">Each formula gives the result Excel saved in the file, as Excel&#x27;s own Save as CSV does. A workbook made by a program that writes formulas without results has empty cells there; the row says how many. Opening it in Excel and saving it once stores the results.</div></details>
+        <details><summary>Why does some text start with an apostrophe?</summary><div class="faq-body">Text that starts with =, +, - or @ can run as a formula when Excel opens a CSV, which is how malicious spreadsheets spread. The apostrophe makes Excel show it as text. Turn the option off if the CSV is for R, Python or a database, which do not run formulas.</div></details>
+        <details><summary>Can I convert every sheet?</summary><div class="faq-body">Yes. Choose All sheets and each sheet becomes its own CSV, named after the sheet, in one zip. Hidden sheets are included, and the row names them. Chart sheets have no cells and are skipped.</div></details>
+        <details><summary>Is it free?</summary><div class="faq-body">Yes. There is no account, no watermark and no limit beyond the sizes above.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools">
+        <h2>More free tools</h2>
+        <ul>
+          <li><a href="/tools/csv-to-xlsx/">CSV to XLSX</a></li>
+          <li><a href="/tools/json-to-csv/">JSON to CSV</a></li>
+          <li><a href="/tools/pdf-tools/">PDF Tools</a></li>
+          <li><a href="/tools/metadata-cleaner/">Metadata Cleaner</a></li>
+          <li><a href="/tools/">All tools</a></li>
+        </ul>
+      </nav>
+
+      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a>. It helps keep these tools free and online.</p>
+    </main>
+
+
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/nee/">Née</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/suite/">Mac Suite</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+    <script src="/analytics.js" defer></script>
+  </body>
+</html>
