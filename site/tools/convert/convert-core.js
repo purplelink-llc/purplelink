@@ -1582,13 +1582,20 @@
     return { cues: cues, skipped: skipped };
   }
 
+  /** Remove matches of re until none are left, so a tag split by another (<<b>x>) cannot survive one pass. */
+  function stripTags(s, re) {
+    let prev;
+    do { prev = s; s = s.replace(re, ""); } while (s !== prev);
+    return s;
+  }
+
   /** SRT cue text as WebVTT cue text: b, i and u kept; font tags and ASS overrides ({\an8}) removed; any other <, and
       every &, escaped, since a WebVTT parser would read them as markup. */
   function srtTextToVtt(t) {
     const keep = [];
     let s = t.replace(/\{\\[^}]*\}/g, "");
     s = s.replace(/<(\/?)([biu])>/gi, function (m, slash, tag) { keep.push("<" + slash + tag.toLowerCase() + ">"); return "\u0000" + (keep.length - 1) + "\u0000"; });
-    s = s.replace(/<\/?[a-z][a-z0-9]*(?:\s[^<>]*)?>/gi, ""); // font, s, span and other markup: the text stays
+    s = stripTags(s, /<\/?[a-z][a-z0-9]*(?:\s[^<>]*)?>/gi); // font, s, span and other markup: the text stays
     s = s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     return s.replace(/\u0000(\d+)\u0000/g, function (m, n) { return keep[Number(n)]; });
   }
@@ -1652,7 +1659,7 @@
     });
     s = s.replace(/<\/v>/g, "").replace(/<\d+:\d{2}(?::\d{2})?\.\d{3}>/g, "").replace(/<rt>[\s\S]*?<\/rt>/g, "");
     s = s.replace(/<(\/?)([biu])(?:\.[^>]*)?>/g, "\u0002$1$2\u0003");
-    s = s.replace(/<\/?(?:c|lang|ruby|rt)(?:[.\s][^>]*)?>/g, "").replace(/<[^>]*>/g, "");
+    s = stripTags(stripTags(s, /<\/?(?:c|lang|ruby|rt)(?:[.\s][^>]*)?>/g), /<[^>]*>/g);
     s = subEntities(s).replace(/\u0002(\/?)([biu])\u0003/g, "<$1$2>").replace(/\u0001/g, "");
     return s.split("\n").map(function (l) { return l.replace(/\s+$/, ""); }).filter(function (l) { return l.trim() !== ""; }).join("\n");
   }

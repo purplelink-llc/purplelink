@@ -886,3 +886,10 @@ test("XLSX to JSON: cell kinds, header rules, numbers as JSON, dates with T, no 
   assert.equal(csv.kinds, undefined, "XLSX to CSV gets no kinds");
   assert.throws(() => C.sheetRows('<sheetData><row r="2000000"><c r="A2000000"><v>1</v></c></row></sheetData>', [], [], false), /past Excel's last row/);
 });
+
+test("subtitle tag removal repeats until nothing is left, so nested tags cannot survive", () => {
+  const vtt = C.writeVtt([{ start: 0, end: 1000, text: "<<font>script>x" }]).text;
+  assert.ok(!/<script/i.test(vtt), vtt);
+  const srt = C.writeSrt([{ start: 0, end: 1000, text: "<<c>span>y</span>" }], {}).text;
+  assert.ok(!/<span/i.test(srt), srt);
+});
