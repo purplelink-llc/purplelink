@@ -513,6 +513,101 @@ async function tiffToImages(bytes, name, opts, maxPixels, progress) {
   return res;
 }
 
+// ---------- CSV to JSON ----------
+async function csvToJsonFile(bytes, name, opts, progress) {
+  progress(0.1, "Reading the text");
+  var dec = Convert.decodeText(bytes, opts.encoding === "auto" ? "" : opts.encoding);
+  bytes = null;
+  var d = opts.delimiter === "auto" ? Convert.detectDelimiter(dec.text, name) : Convert.DELIMS[opts.delimiter];
+  progress(0.3, "Splitting into cells");
+  var rows = Convert.parseCsv(dec.text, d);
+  var unclosed = rows.unclosed;
+  dec.text = null;
+  if (!rows.length) throw new Error("This file has no rows.");
+  progress(0.5, "Writing JSON");
+  var lines = opts.output === "jsonl";
+  var r = Convert.csvToJson(rows, { header: opts.header, types: opts.types, unflatten: opts.unflatten, lines: lines, delimiter: d });
+  rows = null;
+  if (!r.rows) throw new Error(opts.header ? "This file has a header row and nothing under it." : "This file has no rows.");
+  var out = new Uint8Array(await new Blob(r.parts, { type: Convert.MIME[opts.output] }).arrayBuffer());
+  var notes = r.notes.slice();
+  if (unclosed) notes.push("A quoted value is never closed, so everything after it ended up in one value. Check the last record.");
+  var names = { ",": "comma", ";": "semicolon", "\t": "tab", "|": "pipe" };
+  return {
+    outputs: [{ name: Convert.outName(name, lines ? "jsonl" : "json"), mime: Convert.MIME[opts.output], bytes: out }], notes: notes,
+    summary: r.rows.toLocaleString("en-US") + " row" + (r.rows === 1 ? "" : "s") + " and " + r.cols + " column" + (r.cols === 1 ? "" : "s") +
+      ", read as " + dec.encoding + ", " + names[d] + "-separated"
+  };
+}
+
+// ---------- ICNS and ICO to PNG ----------
+// Decoded icon sizes are written by the core's PNG writer, not a canvas, so faint pixels keep their exact color.
+function zlib(data) {
+  if (typeof CompressionStream === "undefined") throw new Error("This browser cannot compress the PNG for the older sizes in this icon. Use a current version of Chrome, Edge, Firefox or Safari.");
+  return new Response(new Blob([data]).stream().pipeThrough(new CompressionStream("deflate"))).arrayBuffer().then(function (b) { return new Uint8Array(b); });
+}
+async function rgbaPng(rgba, w, h) { return await Convert.pngEncode(rgba, w, h, zlib); }
+
+function sizesResult(outputs, all, base, count, largest) {
+  var res = { outputs: outputs, notes: [] };
+  if (all) {
+    res.summary = outputs.length + " size" + (outputs.length === 1 ? "" : "s");
+    res.partsLabel = "Download the " + outputs.length + " size" + (outputs.length === 1 ? "" : "s") + " (.zip)";
+    res.zipName = base + "-icons.zip";
+  } else {
+    res.width = largest.width; res.height = largest.height;
+    res.summary = largest.width + " by " + largest.height + " pixels, the largest of " + count + " size" + (count === 1 ? "" : "s");
+  }
+  return res;
+}
+
+async function icnsToPng(bytes, name, opts, progress) {
+  progress(0.1, "Reading the icon");
+  var t = Convert.readIcns(bytes), notes = [];
+  var all = opts.icons === "all" && t.images.length > 1, base = Convert.outName(name, "x").replace(/\.x$/, "");
+  var outputs = [], kept = [];
+  for (var i = 0; i < t.images.length && (all || !kept.length); i++) {
+    var img = t.images[i];
+    progress(0.2 + 0.75 * (i / t.images.length), "Writing " + img.width + " by " + img.height);
+    var png = null;
+    if (img.format === "png") png = img.data.slice();
+    else {
+      var rgba = Convert.icnsRGBA(img);
+      if (!rgba) { notes.push("The " + img.width + " by " + img.height + " size is damaged and was left out."); continue; }
+      png = await rgbaPng(rgba, img.width, img.height);
+    }
+    kept.push(img);
+    outputs.push(all ? { name: base + ".iconset/" + img.slot + ".png", mime: Convert.MIME.png, bytes: png, part: true }
+      : { name: Convert.outName(name, "png"), mime: Convert.MIME.png, bytes: png });
+  }
+  if (!outputs.length) throw new Error(t.skipped.length ? "This ICNS holds no size this page can read: its images are JPEG 2000, which only Safari opens." : "This ICNS holds no size this page can read.");
+  if (t.skipped.length && (all || t.skipped[0] > kept[0].width)) {
+    notes.push(all ? "Sizes stored as JPEG 2000 (" + t.skipped.map(function (s) { return s + " by " + s; }).join(", ") + "), which only Safari reads, were left out."
+      : "This icon also holds a " + t.skipped[0] + " by " + t.skipped[0] + " size in JPEG 2000, which only Safari reads, so " + kept[0].width + " by " + kept[0].height + " was saved.");
+  }
+  var res = sizesResult(outputs, all, base, t.images.length, kept[0]);
+  res.notes = notes;
+  return res;
+}
+
+async function icoToPng(bytes, name, opts, progress) {
+  progress(0.1, "Reading the icon");
+  var t = Convert.readIco(bytes), notes = t.problems.slice();
+  if (!t.images.length) throw new Error(notes[0] || "This ICO holds no size this page can read.");
+  var all = opts.icons === "all" && t.images.length > 1, base = Convert.outName(name, "x").replace(/\.x$/, "");
+  var pick = all ? t.images : [t.images[0]], outputs = [];
+  for (var i = 0; i < pick.length; i++) {
+    var img = pick[i];
+    progress(0.2 + 0.75 * (i / pick.length), "Writing " + img.width + " by " + img.height);
+    var png = img.format === "png" ? img.data.slice() : await rgbaPng(Convert.icoBmp(img), img.width, img.height);
+    outputs.push(all ? { name: base + "-icons/" + base + "-" + img.width + "x" + img.height + ".png", mime: Convert.MIME.png, bytes: png, part: true }
+      : { name: Convert.outName(name, "png"), mime: Convert.MIME.png, bytes: png });
+  }
+  var res = sizesResult(outputs, all, base, t.images.length, pick[0]);
+  res.notes = notes;
+  return res;
+}
+
 self.onmessage = async function (e) {
   var m = e.data;
   var before = { requests: net.requests, bytes: net.bytes };
@@ -539,6 +634,9 @@ self.onmessage = async function (e) {
       else if (pair.work === "unsheet") res = await xlsxToCsv(bytes, m.name, opts, progress);
       else if (pair.work === "json") res = await jsonToTable(bytes, m.name, opts, progress);
       else if (pair.work === "tiff") res = await tiffToImages(bytes, m.name, opts, pair.maxPixels, progress);
+      else if (pair.work === "csvjson") res = await csvToJsonFile(bytes, m.name, opts, progress);
+      else if (pair.work === "icns") res = await icnsToPng(bytes, m.name, opts, progress);
+      else if (pair.work === "ico") res = await icoToPng(bytes, m.name, opts, progress);
       else {
         var pic = kind === "heic" ? await decodeHeif(bytes, opts, progress) : await decodeNative(bytes, kind, opts, pair.maxPixels);
         bytes = null; // the source is no longer needed; let it go before encoding
