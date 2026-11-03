@@ -85,3 +85,6 @@
 /* selects (CSV separator and encoding) */
 .cv-field select { max-width: 100%; min-width: 0; min-height: 40px; padding: 0 34px 0 12px; border: 1px solid var(--line); border-radius: 999px; background-color: var(--bg); color: var(--ink); font: inherit; font-size: 0.95rem; cursor: pointer; }
 .cv-field select:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
+
+/* the one-sentence app link under the converter: plain text, no box */
+.cv-app-link { max-width: 820px; margin: 14px auto 0; color: var(--muted); font-size: 0.93rem; text-align: center; }
