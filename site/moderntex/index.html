@@ -62,14 +62,14 @@
           "@type": "SoftwareApplication",
           "@id": "https://purplelink.llc/moderntex/#app",
           "name": "ModernTex",
-          "inLanguage": ["en", "de"],
+          "inLanguage": ["en", "de", "ja", "zh-Hans"],
           "applicationCategory": "DeveloperApplication",
           "applicationSubCategory": "LaTeX editor",
           "operatingSystem": "macOS 14+",
           "url": "https://purplelink.llc/moderntex/",
           "image": "https://purplelink.llc/assets/og/moderntex.png",
           "description": "ModernTex is a native macOS LaTeX editor built for the academic manuscript workflow: multi-file projects, synchronized PDF preview, plain-language compile errors, BibTeX autocomplete, and submission-readiness checks.",
-          "softwareVersion": "2.0.3",
+          "softwareVersion": "2.1.0",
           "datePublished": "2026-09-12",
           "fileSize": "14 MB",
           "downloadUrl": "https://purplelink.llc/moderntex/",
@@ -190,7 +190,7 @@
             {
               "@type": "Question",
               "name": "Does ModernTex work in German, French, Portuguese, Japanese or Chinese?",
-              "acceptedAnswer": { "@type": "Answer", "text": "The app's interface is in English and German (German is a beta, available since ModernTex 2.0). Chinese and Japanese documents compile with XeLaTeX (ctex) or LuaLaTeX (luatexja, jlreq) when your TeX installation has those packages. This product page is also in German, French, Brazilian Portuguese, Japanese and Simplified Chinese. French and Brazilian Portuguese documents compile with babel or polyglossia, T1 and csquotes; the app's interface is not available in French or Portuguese." }
+              "acceptedAnswer": { "@type": "Answer", "text": "The app's interface is in English, German, Japanese and Chinese (German, Japanese and Simplified Chinese are betas). Chinese and Japanese documents compile with XeLaTeX (ctex) or LuaLaTeX (luatexja, jlreq) when your TeX installation has those packages. This product page is also in German, French, Brazilian Portuguese, Japanese and Simplified Chinese. French and Brazilian Portuguese documents compile with babel or polyglossia, T1 and csquotes; the app's interface is not available in French or Portuguese." }
             },
             {
               "@type": "Question",
@@ -239,7 +239,7 @@
       <div class="app-hero-copy">
         <div class="app-hero-meta">
           <span class="platform-tag platform-macos">macOS</span>
-          <span class="product-status product-status-live">Free 7-day trial · $19.99 to keep · v2.0.3</span>
+          <span class="product-status product-status-live">Free 7-day trial · $19.99 to keep · v2.1.0</span>
         </div>
         <h1 class="app-hero-name">ModernTex</h1>
         <p class="app-hero-tagline">A native macOS LaTeX editor for researchers. It has multi-file editing, a synchronized PDF preview, and the full academic manuscript workflow in one app.</p>
@@ -578,12 +578,13 @@ l.42 As shown by <span class="fix-bad">\citeauthr</span>
           <tr><th scope="row">Working with co-authors</th><td>No real-time co-editing. Get Changes and Send Changes sync between your Macs or with a co-author.</td></tr>
           <tr><th scope="row">AI features</th><td>Optional. Fix with AI proposes a repair for a build error and shows it as a diff before anything changes. It runs on Apple Intelligence on your Mac, or on your own Claude or OpenAI account. Nothing leaves your Mac unless you sign in to Claude or add an OpenAI key, and the app asks for your consent before the first request to either. Purplelink charges nothing for it.</td></tr>
           <tr><th scope="row">Updates</th><td>Checks once a day and installs in place, or choose Check for Updates.</td></tr>
-          <tr><th scope="row">Current version</th><td>2.0.3, released October 30, 2026. <a href="#changelog">Every update since launch is listed below</a>.</td></tr>
+          <tr><th scope="row">Current version</th><td>2.1.0, released November 3, 2026. <a href="#changelog">Every update since launch is listed below</a>.</td></tr>
         </tbody>
       </table>
       <div class="release-strip" id="changelog">
-        <h3 class="release-strip-head">Thirty-five updates since launch on September 4</h3>
+        <h3 class="release-strip-head">Thirty-six updates since launch on September 4</h3>
         <ol class="release-list" data-motion="stagger">
+          <li><time datetime="2026-11-03">Nov 3</time><strong>2.1.0</strong><span>Option-drag files onto the editor to insert a figure or cite a PDF, pictures in their own tab, Export Project as ZIP, theorem insert, a lecture notes template and Chinese and Japanese documents.</span></li>
           <li><time datetime="2026-10-30">Oct 30</time><strong>2.0.3</strong><span>New from Template and the equation editor no longer crash.</span></li>
           <li><time datetime="2026-10-30">Oct 30</time><strong>2.0.2</strong><span>In Review mode the PDF pane can be dragged to any split, including an even one, and keeps the width you choose.</span></li>
           <li><time datetime="2026-10-27">Oct 27</time><strong>2.0.1</strong><span>HTML and EPUB export with the TeX4ht engine keeps footnotes in the same page as the text, with a setting to put them on separate pages.</span></li>
@@ -723,8 +724,8 @@ l.42 As shown by <span class="fix-bad">\citeauthr</span>
       <table class="compare-table specs-table" data-motion="rows">
         <tbody>
           <tr><th scope="row">This page</th><td>Also in <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a>, <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a>, <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a>, <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> and <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a>. The terms, privacy policy and changelog are in English only.</td></tr>
-          <tr><th scope="row">App interface</th><td>English and German (beta). German has been available since ModernTex 2.0, and some wording may still be rough.</td></tr>
-          <tr><th scope="row">Chinese and Japanese documents</th><td>ModernTex compiles them with XeLaTeX (ctex) or LuaLaTeX (luatexja, jlreq), as long as your TeX installation has those packages. The app's own menus stay in English.</td></tr>
+          <tr><th scope="row">App interface</th><td>English, German, Japanese and Chinese (beta). German has been available since ModernTex 2.0, Japanese and Simplified Chinese since a later 2.x release. Some wording in the translations may still be imprecise.</td></tr>
+          <tr><th scope="row">Chinese and Japanese documents</th><td>ModernTex compiles them with XeLaTeX (ctex) or LuaLaTeX (luatexja, jlreq), as long as your TeX installation has those packages.</td></tr>
           <tr><th scope="row">Currency</th><td>The price is USD 19.99. Checkout shows it in your local currency where Stripe supports that, and you can switch back to US dollars. Stripe's exchange rate includes a conversion fee of 2 to 4 percent, paid by the buyer. You pay by card or Link.</td></tr>
         </tbody>
       </table>
@@ -800,7 +801,7 @@ l.42 As shown by <span class="fix-bad">\citeauthr</span>
         </details>
         <details class="faq-item">
           <summary>Does ModernTex work in German, French, Portuguese, Japanese or Chinese?</summary>
-          <div class="faq-body">The app's interface is in English and German (German is a beta, available since ModernTex 2.0). Chinese and Japanese documents compile with XeLaTeX (ctex) or LuaLaTeX (luatexja, jlreq) when your TeX installation has those packages. This product page is also in German, French, Brazilian Portuguese, Japanese and Simplified Chinese. French and Brazilian Portuguese documents compile with babel or polyglossia, T1 and csquotes; the app's interface is not available in French or Portuguese.</div>
+          <div class="faq-body">The app's interface is in English, German, Japanese and Chinese (German, Japanese and Simplified Chinese are betas). Chinese and Japanese documents compile with XeLaTeX (ctex) or LuaLaTeX (luatexja, jlreq) when your TeX installation has those packages. This product page is also in German, French, Brazilian Portuguese, Japanese and Simplified Chinese. French and Brazilian Portuguese documents compile with babel or polyglossia, T1 and csquotes; the app's interface is not available in French or Portuguese.</div>
         </details>
         <details class="faq-item">
           <summary>Can I pay in my own currency?</summary>
