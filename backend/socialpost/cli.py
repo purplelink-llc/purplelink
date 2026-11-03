@@ -209,13 +209,27 @@ def cmd_studio(a, cfg) -> int:
             bad = studio.problems(meta, sections)
             print("\n".join(bad) if bad else "ok: nothing the gate rejects")
             return EXIT_FAILED if bad else EXIT_OK
-        it = studio.make_items(meta, sections)
+        it = studio.make_items(meta, sections, auto=a.auto)
+        auto_ok = False
+        if a.auto:
+            try:
+                studio.auto_approve(it, meta)
+                auto_ok = True
+            except studio.NoteError as e:
+                print(e, file=sys.stderr)       # stays a draft; Ben's yes is needed after all
+                it.meta["needs_ben"] = True
+                it.save()
         why = [w for w in (meta.get("why") or "").split(" | ") if w]
         with tempfile.NamedTemporaryFile("w", suffix=".md", delete=False) as fh:
-            fh.write(studio.queue_markdown(it, meta, why))
+            fh.write(studio.queue_markdown(it, meta, why, auto=auto_ok))
         out = studio.run_new(fh.name)
-        print(f"draft social item {it.id} (status draft, scheduled {it.meta['scheduled_at']})")
+        state = "approved under the standing approval" if auto_ok else "draft"
+        print(f"social item {it.id} ({state}, scheduled {it.meta['scheduled_at']})")
         print(out)
+        if auto_ok:
+            studio.approve_queue_item(out)
+            sysutil.notify(f"Studio note goes out {it.meta['scheduled_at'][:16]}: " + it.raw_text("bluesky")[:120]
+                           + " To stop it: social.py cancel " + it.id, "Studio note queued")
         return EXIT_OK
     except studio.NoteError as e:
         print(e, file=sys.stderr)
@@ -283,6 +297,8 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--days", type=int, default=7, help="material: how many days back")
     p.add_argument("--out", help="material: write the brief to this file")
     p.add_argument("--dry-run", action="store_true", help="queue: run the gate only")
+    p.add_argument("--auto", action="store_true", help="queue: approve under Ben's 2026-11-03 standing approval for "
+                   "studio notes (LinkedIn page, Bluesky, Mastodon); a failed check leaves it a draft for Ben")
     add("pause", cmd_pause, "create the PAUSE file: the scheduler posts nothing")
     add("resume", cmd_resume, "remove the PAUSE file")
     return ap

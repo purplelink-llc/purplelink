@@ -3,7 +3,10 @@ and Mastodon (Ben's voice, the `benampel` skill's rules).
 
 It is a kind of post the standing approvals do NOT cover (docs/social-posting.md, "Studio notes"). So this module only
 ever writes DRAFTS: a `social.py` queue item with status draft, and an approval-queue item with `needs_ben: true` that
-the daily auto-approver cannot pass. Ben's yes in chat is what lets `social.py approve` run.
+the daily auto-approver cannot pass. Ben's yes in chat is what lets `social.py approve` run, unless `queue --auto` is used: since 2026-11-03 Ben's standing
+approval ("Standing approval for notes") covers a note that passes this gate, on LinkedIn company page, Bluesky and
+Mastodon only. `--auto` approves it under that approval, checks the link answers 200, and notifies Ben with the text so
+he can cancel before it goes out (it is scheduled for the next day at 10:30 ET).
 
   material   what happened this week (merged PRs, logged changes), written to a private brief
   queue      validate a drafted note file, tag its links through the marketing hub, write both queue items
@@ -87,7 +90,7 @@ def _week_scheduled(meta: dict) -> str:
     return items.iso(t)
 
 
-def make_items(meta: dict, sections: dict[str, str]) -> items.Item:
+def make_items(meta: dict, sections: dict[str, str], auto: bool = False) -> items.Item:
     bad = problems(meta, sections)
     if bad:
         raise NoteError("not queued:\n  " + "\n  ".join(bad))
@@ -99,7 +102,9 @@ def make_items(meta: dict, sections: dict[str, str]) -> items.Item:
     it.preface = ("Studio note. NOT covered by any standing approval: Ben's own yes in chat, then `social.py approve`. "
                   "Replaces that day's automated post on these platforms only if approved before the daily pick (09:30 ET).")
     it.meta["experiment_note"] = "studio note against the automated daily posts of the same week (clicks per post, replies)"
-    it.meta["needs_ben"] = True
+    it.meta["source"] = items.STUDIO_STANDING_SOURCE
+    if not auto:
+        it.meta["needs_ben"] = True
     if link:
         it.meta["utm_contents"] = {p: hubtags.tag(link, meta.get("asset", "studio"), p, CAMPAIGN,
                                                   preferred=f"studio-note-{stamp}-{p}") for p in PLATFORMS}
@@ -111,7 +116,20 @@ def make_items(meta: dict, sections: dict[str, str]) -> items.Item:
     return it
 
 
-def queue_markdown(it: items.Item, meta: dict, why: list[str]) -> str:
+def auto_approve(it: items.Item, meta: dict, http=None) -> None:
+    """Approve under the standing approval after one more check: the note's link answers 200 and stays on its page."""
+    link = meta.get("link", "")
+    if link:
+        if http is None:
+            from .daily import lib219
+            http = lib219.Http()
+        bad = vet.link_problems(http, link)
+        if bad:
+            raise NoteError("not auto-approved (left as a draft for Ben): " + "; ".join(bad))
+    items.approve_studio_standing(it, config.load())
+
+
+def queue_markdown(it: items.Item, meta: dict, why: list[str], auto: bool = False) -> str:
     today = dt.date.today()
     qid = f"q-{today:%Y%m%d}-studio-{meta['slug']}"[:60]
     expires = (today + dt.timedelta(days=5)).isoformat()
@@ -119,6 +137,11 @@ def queue_markdown(it: items.Item, meta: dict, why: list[str]) -> str:
     drafts = it.raw_text("linkedin")   # {link} stays literal: the tag lives on the social item, and a tag may appear once.  # the queue lint caps a post draft at 220 words; the other two go under Verify
     others = "\n".join(f"  {p.capitalize()}: {it.raw_text(p)}" for p in PLATFORMS if p != "linkedin")
     why_lines = "\n".join(f"- {w}" for w in why) or "- Weekly studio note (Ben's 2026-11-03 yes to the Adam Robinson recommendations 3, 4 and 6)."
+    approve_note = (f"Nothing to do: already approved under the standing approval. To stop it, `social.py cancel {it.id}` before the time above." if auto else f"In chat, say yes. A session then runs `approval_queue.py approve {qid} --by-ben` and `social.py approve {it.id}`.")
+    needs = "" if auto else "needs_ben: true\n"
+    ask_lead = "FYI, approved under your 2026-11-03 standing approval:" if auto else "Approve"
+    ask_tail = ("It goes out at the time below unless you cancel it first (`social.py cancel`)." if auto else
+                "Drafted, not scheduled to go until you say yes. It is outside the standing approvals, so the daily auto-approver cannot pass it.")
     return f"""---
 id: {qid}
 created: {dt.datetime.now().astimezone().isoformat(timespec='seconds')}
@@ -135,11 +158,10 @@ ledger: proposed
 status: pending
 assets: {meta.get('asset', 'studio')}
 channel: social
-needs_ben: true
----
+{needs}---
 
 ## Ask
-Approve this week's studio note for the company LinkedIn page, Bluesky and Mastodon (Mastodon text is in your voice; the three texts are in Draft and Verify). Drafted, not scheduled to go until you say yes. It is outside the standing approvals, so the daily auto-approver cannot pass it.
+{ask_lead} this week's studio note for the company LinkedIn page, Bluesky and Mastodon (Mastodon text is in your voice; the three texts are in Draft and Verify). {ask_tail}
 
 ## Why now
 {why_lines}
@@ -151,12 +173,12 @@ Approve this week's studio note for the company LinkedIn page, Bluesky and Masto
 
 ## Verify
 - Every fact comes from the sources listed under Evidence; the link answers 200 (checked when queued).
-- Social draft item: `{it.id}`, scheduled {when}, status draft. `social.py preview {it.id}` shows the exact text.
+- Social draft item: `{it.id}`, scheduled {when}, status {'approved' if auto else 'draft'}. `social.py preview {it.id}` shows the exact text.
 - The Draft above is the LinkedIn text. The same note on the other platforms ({{link}} is replaced at posting by the research page with that platform's own hub tag; see the social item):
 {others}
 
 ## If approved
-In chat, say yes. A session then runs `approval_queue.py approve {qid} --by-ben` and `social.py approve {it.id}`; `social.py run-due` posts it at {when}. Approve before 09:30 ET that day and the daily pick skips these platforms. Never post it from Ben's personal LinkedIn.
+{approve_note} `social.py run-due` posts it at {when}; because it is approved before the 09:30 ET daily pick that day, the pick skips these platforms. Never from Ben's personal LinkedIn.
 
 ## If rejected
 Give one reason code (tone, wrong-target, wrong-fact, not-now, no-value, risk). A session cancels `{it.id}` with `social.py cancel`.
@@ -212,3 +234,13 @@ def run_new(path: str) -> str:
     r = subprocess.run([sys.executable, str(paths.repo_root() / "scripts" / "queue" / "approval_queue.py"), "new", path],
                        capture_output=True, text=True, timeout=120)
     return (r.stdout + r.stderr).strip()
+
+
+def approve_queue_item(run_new_output: str) -> None:
+    """Record the standing approval on the approval-queue item (first `q-...` id in the output of `new`)."""
+    m = re.search(r"\b(q-\d{8}-[\w-]+)\s+->\s+pending", run_new_output)
+    if not m:
+        return
+    subprocess.run([sys.executable, str(paths.repo_root() / "scripts" / "queue" / "approval_queue.py"), "approve", m.group(1),
+                    "--note", "standing approval (Ben, 2026-11-03, studio notes); socialpost.studio gate passed"],
+                   capture_output=True, text=True, timeout=120)
