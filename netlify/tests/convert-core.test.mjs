@@ -84,7 +84,8 @@ test("options: clamps and defaults", () => {
   assert.deepEqual(plain(C.options("heic-to-jpg", {})), {
     output: "jpg", quality: 0.92, background: "#ffffff", iconset: false, mobile: false,
     sizes: "all", page: "a4", margin: false, delimiter: "auto", encoding: "auto", header: true, text: false,
-    dpi: 150, pages: "", scale: "2", width: 1920, sheets: "first", bom: false, nested: "columns", safe: true, tiffpages: "first"
+    dpi: 150, pages: "", scale: "2", width: 1920, sheets: "first", bom: false, nested: "columns", safe: true, tiffpages: "first",
+    types: true, unflatten: false, icons: "largest"
   });
   assert.equal(C.options("pdf-to-jpg", { dpi: "300" }).dpi, 300);
   assert.equal(C.options("pdf-to-jpg", { dpi: "600" }).dpi, 150);
@@ -714,4 +715,108 @@ test("TIFF pieces: unpackBits, unpredict, refusals, orientation, JPEG tables", (
   const rgb = Array.from(C.tiffJpeg(new Uint8Array([0xff, 0xd8, 0xff, 0xda, 1]), null, true));
   assert.deepEqual(rgb.slice(0, 18), [0xff, 0xd8, 0xff, 0xee, 0, 14, 0x41, 0x64, 0x6f, 0x62, 0x65, 0, 100, 0, 0, 0, 0, 0], "Adobe APP14, transform 0");
   assert.deepEqual(rgb.slice(18), [0xff, 0xda, 1]);
+});
+
+// ---------- fifth set: CSV to JSON, ICNS to PNG, ICO to PNG ----------
+// fixtures/csvjson/*.expected.json were written by a Python reference (csv and json, with the rules in the design
+// doc) apart from this code; fixtures/convert-icns-synth.icns was written with an independent RLE encoder, and
+// iconutil decodes it to the pixels asserted below; the convert-ico-*.ico BMP entries match Pillow's decode, except the
+// 32-bit entry whose alpha is all 0, where the AND mask applies (as in Windows; Pillow leaves it transparent).
+const csvDir = join(HERE, "fixtures/csvjson");
+const pairs = (t) => JSON.parse(t, function (k, v) { return v; });
+
+test("sniff: ICNS and ICO, and an ftyp box that starts like an ICO", () => {
+  assert.equal(C.sniff(new Uint8Array(readFileSync(join(HERE, "fixtures/convert-icns-synth.icns")).subarray(0, 4096))), "icns");
+  assert.equal(C.sniff(new Uint8Array(readFileSync(join(HERE, "fixtures/convert-ico-bmp24.ico")))), "ico");
+  const cur = new Uint8Array(readFileSync(join(HERE, "fixtures/convert-ico-bmp24.ico"))); cur[2] = 2;
+  assert.equal(C.sniff(cur), "ico", "a cursor");
+  const heic = new Uint8Array([0, 0, 1, 0, 0x66, 0x74, 0x79, 0x70, 0x68, 0x65, 0x69, 0x63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+  assert.notEqual(C.sniff(heic), "ico", "a 256-byte ftyp box is not an icon");
+  assert.equal(C.sniff(utf8("icns,size\n1,2\n3,4\n")), "", "a CSV that starts with the word icns");
+  assert.equal(C.refuse("ico-to-png", "icns", 10), "This is an ICNS file, not ICO.");
+  assert.equal(C.refuse("icns-to-png", "png", 10), "This is a PNG file, not ICNS.");
+  const o = C.options("csv-to-json", {});
+  assert.deepEqual([o.output, o.header, o.types, o.unflatten], ["json", true, true, false]);
+  assert.equal(C.options("ico-to-png", { icons: "all" }).icons, "all");
+  assert.equal(C.options("ico-to-png", { icons: "x" }).icons, "largest");
+});
+
+test("csvToJson matches the Python reference on every fixture and option set", () => {
+  const VARIANTS = { default: {}, strings: { types: false }, noheader: { header: false }, unflatten: { unflatten: true } };
+  for (const f of ["basic", "semicolon", "cp1252", "years", "nest", "ragged", "column-clash"]) {
+    const b = new Uint8Array(readFileSync(join(csvDir, f + ".csv")));
+    const want = JSON.parse(readFileSync(join(csvDir, f + ".expected.json"), "utf8"));
+    for (const [v, kw] of Object.entries(VARIANTS)) {
+      const dec = C.decodeText(b, ""), d = C.detectDelimiter(dec.text, f + ".csv"), o = C.options("csv-to-json", kw);
+      for (const lines of [false, true]) {
+        const r = C.csvToJson(C.parseCsv(dec.text, d), { header: o.header, types: o.types, unflatten: o.unflatten, lines, delimiter: d });
+        const text = r.parts.join("");
+        const got = lines ? text.trim().split("\n").map(pairs) : pairs(text);
+        assert.deepEqual(got, pairs(want[v]), f + " " + v + (lines ? " jsonl" : ""));
+      }
+    }
+  }
+});
+
+test("csvToJson keeps header order, the round-trip number rule, and its caps", () => {
+  const rows = (t) => C.parseCsv(t, ",");
+  const text = C.csvToJson(rows("2024,2023,name\n5,4,x\n"), { header: true, types: true, delimiter: "," }).parts.join("");
+  assert.equal(text, '[\n  {\n    "2024": 5,\n    "2023": 4,\n    "name": "x"\n  }\n]\n', "integer-like keys stay in header order");
+  const types = plain(C.columnTypes(rows("3.50,90210,-0,1.5e-400,1.10,TRUE,7\n2,02134,0,1,1.2,false,8\n"), 7, ","));
+  assert.deepEqual(types, ["string", "string", "string", "string", "string", "boolean", "number"]);
+  assert.deepEqual(plain(C.jsonKeys(["", "column 1", "a", "a", "a (2)"], 6)), ["column 1", "column 1 (2)", "a", "a (2)", "a (2) (2)", "column 6"]);
+  assert.equal(C.csvToJson(rows("a\n"), { header: true, delimiter: "," }).rows, 0);
+});
+
+test("readIcns and icnsRGBA: the synthesized icon decodes to what iconutil shows", () => {
+  const t = C.readIcns(new Uint8Array(readFileSync(join(HERE, "fixtures/convert-icns-synth.icns"))));
+  assert.deepEqual(plain(t.images.map((i) => [i.slot, i.type, i.format, i.width])), [["icon_128x128", "ic07", "png", 128], ["icon_32x32", "il32", "rle", 32], ["icon_16x16", "ic04", "argb", 16]]);
+  assert.deepEqual(plain(t.skipped), [512], "the JPEG 2000 512 size is skipped");
+  const at = (rgba, w, x, y) => Array.from(rgba.slice((y * w + x) * 4, (y * w + x) * 4 + 4));
+  const il32 = C.icnsRGBA(t.images[1]);
+  assert.deepEqual([at(il32, 32, 2, 2), at(il32, 32, 30, 2), at(il32, 32, 2, 30)], [[255, 0, 0, 255], [0, 0, 255, 255], [255, 0, 0, 128]]);
+  const ic04 = C.icnsRGBA(t.images[2]);
+  assert.deepEqual([at(ic04, 16, 2, 2), at(ic04, 16, 12, 2)], [[0, 255, 0, 255], [0, 255, 0, 64]], "ARGB colors are premultiplied");
+  assert.equal(C.icnsRle(new Uint8Array([0x81, 7]), 5), null, "a run that stops short");
+  assert.deepEqual(Array.from(C.icnsRle(new Uint8Array([1, 9, 8, 0x80, 5]), 5)), [9, 8, 5, 5, 5]);
+  assert.throws(() => C.readIcns(utf8("icns\0\0\x10\0" + "x".repeat(8))), /cut short/);
+  const bad = new Uint8Array(24); bad.set(utf8("icns"), 0); bad[7] = 24; bad.set(utf8("ic07"), 8); bad[15] = 200;
+  assert.throws(() => C.readIcns(bad), /runs past the end/);
+});
+
+test("readIco and icoBmp: every bit depth, masks, and the lenient directory", () => {
+  const read = (n) => C.readIco(new Uint8Array(readFileSync(join(HERE, "fixtures/convert-ico-" + n + ".ico"))));
+  const px = (img, x, y) => Array.from(C.icoBmp(img).slice((y * img.width + x) * 4, (y * img.width + x) * 4 + 4));
+  const b24 = read("bmp24").images[0];
+  assert.deepEqual([b24.width, b24.height, b24.depth], [16, 16, 24]);
+  assert.deepEqual([px(b24, 1, 0), px(b24, 0, 0), px(b24, 15, 15)], [[16, 0, 128, 255], [0, 0, 128, 0], [240, 240, 128, 0]], "mask bit set where (x + y) % 5 == 0");
+  assert.deepEqual(px(read("bmp1").images[0], 1, 0), [0, 0, 0, 255]);
+  assert.deepEqual(px(read("bmp1").images[0], 4, 0), [255, 255, 255, 255]);
+  assert.deepEqual(px(read("bmp4").images[0], 1, 0), [17, 238, 40, 255], "palette index 1");
+  assert.deepEqual(px(read("bmp8").images[0], 2, 1), [33, 99, 222, 255], "palette index 33");
+  const b32 = read("bmp32").images[0];
+  assert.deepEqual([px(b32, 1, 0), px(b32, 12, 0)], [[16, 0, 128, 255], [192, 0, 128, 64]], "a 32-bit entry keeps its own alpha");
+  const z = read("bmp32-zero-alpha").images[0];
+  assert.deepEqual([px(z, 1, 0), px(z, 0, 0)], [[200, 10, 10, 255], [200, 10, 10, 0]], "all-zero alpha: the AND mask decides, as in Windows");
+  // A directory entry that points past the end is left out with a note; the rest is read.
+  const f = new Uint8Array(readFileSync(join(HERE, "fixtures/convert-ico-bmp24.ico")));
+  const two = new Uint8Array(f.length + 16); two.set(f.subarray(0, 6)); two[4] = 2; two.set(f.subarray(6, 22), 6);
+  two.set([32, 32, 0, 0, 1, 0, 32, 0, 0, 0, 1, 0, 0, 0, 1, 0], 22); two.set(f.subarray(22), 38);
+  two[6 + 12] += 16; // the first entry's data moved 16 bytes
+  const r = C.readIco(two);
+  assert.deepEqual([r.images.length, r.problems.length], [1, 1]);
+  assert.throws(() => C.readIco(utf8("\0\0\x01\0\0\0")), /list of sizes/);
+});
+
+test("pngEncode writes RGBA exactly, faint pixels included, with valid CRCs", async () => {
+  const zlib = createRequire(import.meta.url)("node:zlib");
+  const rgba = new Uint8ClampedArray([255, 255, 255, 3, 162, 139, 139, 22, 0, 0, 0, 0, 10, 20, 30, 255]);
+  const png = await C.pngEncode(rgba, 2, 2, async (d) => new Uint8Array(zlib.deflateSync(d)));
+  assert.deepEqual(plain(C.pngSize(png)), { width: 2, height: 2 });
+  const dv = new DataView(png.buffer, png.byteOffset), idatLen = dv.getUint32(33);
+  assert.equal(String.fromCharCode(...png.subarray(37, 41)), "IDAT");
+  assert.equal(dv.getUint32(41 + idatLen), C.crc32(png.subarray(37, 41 + idatLen)), "IDAT CRC");
+  const raw = zlib.inflateSync(png.subarray(41, 41 + idatLen));
+  assert.deepEqual(Array.from(raw), [0, 255, 255, 255, 3, 162, 139, 139, 22, 0, 0, 0, 0, 0, 10, 20, 30, 255]);
+  assert.equal(C.crc32(new TextEncoder().encode("IEND")), 0xae426082, "the CRC every PNG's IEND carries");
 });

@@ -1,0 +1,6 @@
+{
+ "default": "[{\"user.name\":\"Ada\",\"user.age\":36,\"a\":1,\"a.b\":2,\"x..y\":3,\".lead\":4}]",
+ "strings": "[{\"user.name\":\"Ada\",\"user.age\":\"36\",\"a\":\"1\",\"a.b\":\"2\",\"x..y\":\"3\",\".lead\":\"4\"}]",
+ "noheader": "[[\"user.name\",\"user.age\",\"a\",\"a.b\",\"x..y\",\".lead\"],[\"Ada\",\"36\",\"1\",\"2\",\"3\",\"4\"]]",
+ "unflatten": "[{\"user\":{\"name\":\"Ada\",\"age\":36},\"a\":1,\"a.b\":2,\"x..y\":3,\".lead\":4}]"
+}

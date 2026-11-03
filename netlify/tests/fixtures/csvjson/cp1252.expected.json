@@ -1,0 +1,6 @@
+{
+ "default": "[{\"nom\":\"René\",\"ville\":\"Montréal\"},{\"nom\":\"Zoë\",\"ville\":\"Genève\"}]",
+ "strings": "[{\"nom\":\"René\",\"ville\":\"Montréal\"},{\"nom\":\"Zoë\",\"ville\":\"Genève\"}]",
+ "noheader": "[[\"nom\",\"ville\"],[\"René\",\"Montréal\"],[\"Zoë\",\"Genève\"]]",
+ "unflatten": "[{\"nom\":\"René\",\"ville\":\"Montréal\"},{\"nom\":\"Zoë\",\"ville\":\"Genève\"}]"
+}

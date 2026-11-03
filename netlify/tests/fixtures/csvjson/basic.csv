@@ -1,0 +1,6 @@
+id,name,name,,zip,score,n,ok,note,when
+1,Ada,Lovelace,x,02134,3.50,1,TRUE,"a, b",2026-11-03
+2,"Line
+break",,y,90210,2,2,false,"say ""hi""",
+
+3,  ,z,,00501,-0,3,False,,
