@@ -42,7 +42,8 @@ Hand corrections go in ~/.purplelink/hub/overrides.json: {"<placement id>": {"ur
 Sources: approval queue items (pending, approved, done; outward kinds only), the social queue (posted and scheduled
 company posts, one placement per platform), Outreach/OUTREACH-LOG.md tables, video/howto/ledger.json, the launch videos that
 scripts/app-release-watch.py published (~/.purplelink/app-release-watch/state.json), and the MacUpdate
-readings in the traffic dashboard history. Assets come from site/llms.txt and site/sitemap.xml.
+readings in the traffic dashboard history, and the contest finder's ledger (~/.purplelink/contests/ledger.json: contests
+picked, queued, entered and their results). Assets come from site/llms.txt and site/sitemap.xml.
 
 Contacts are not copied: an outreach row keeps a `contact_ref` (file and line) and email addresses in notes are masked.
 
@@ -66,6 +67,18 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 HOME = Path.home()
 SITE_HOST = "purplelink.llc"
+
+
+# Trial maps in stats.mjs are keyed by the download event's meta. "<app>-s2m" is a real download on a Mac after a
+# "Send to my Mac" email and counts as a trial of <app>; "<app>-not-mac" is a click that only pointed at that email
+# form and downloaded nothing, so it never counts (docs/designs/send-to-mac.md).
+def trial_count(trial, prod):
+    t = trial or {}
+    return t.get(prod, 0) + t.get(f"{prod}-s2m", 0)
+
+
+def trial_total(trial):
+    return sum(n for k, n in (trial or {}).items() if not str(k).endswith("-not-mac"))
 
 
 def env_path(name: str, default: Path) -> Path:
@@ -94,6 +107,7 @@ def paths() -> dict:
         "rechecks": env_path("PURPLELINK_HUB", HOME / ".purplelink" / "hub") / "rechecks.json",
         "links": env_path("PURPLELINK_HUB", HOME / ".purplelink" / "hub") / "links.json",
         "manual_ads": env_path("PURPLELINK_MANUAL_ADS", HOME / ".purplelink" / "traffic" / "manual-ads.json"),
+        "contests": env_path("PURPLELINK_CONTESTS", HOME / ".purplelink" / "contests") / "ledger.json",
     }
 
 
@@ -292,6 +306,8 @@ def from_queue(p: dict) -> list:
             continue
         for f in sorted(d.glob("*.md")):
             fm, body = parse_front(f.read_text(errors="replace"))
+            if fm.get("job") == "contest-finder":
+                continue  # the contest ledger is the record for these (from_contests), so a contest counts once
             result = section(body, "Result")
             # A "pr" item is site work, unless it opened a pull request on someone else's repo (an awesome list).
             pr = fm.get("kind") == "pr" and any(m.lower() not in OWN_GITHUB for m in GITHUB_PR_RE.findall(result))
@@ -498,6 +514,41 @@ def from_app_releases(p: dict) -> list:
                 "_text": str(app), "_assets": [slug],
             })
     return out
+
+
+# Contest finder (scripts/contests/contests.py, docs/designs/contest-finder.md): a contest becomes a placement once it
+# is picked; candidates that were never picked stay in the ledger only.
+CONTEST_STATUS = {"picked": "candidate", "prefilled": "candidate", "queued": "queued", "entered": "live",
+                  "shortlisted": "live", "won": "live", "lost": "live", "skipped": "skipped"}
+CONTEST_RESULT = {"won": 1.0, "shortlisted": 0.5, "lost": 0.0}
+
+
+def from_contests(p: dict) -> tuple[list, list]:
+    """One placement per contest edition that was picked, queued, entered or decided, with results
+    (contest_result: 1 won, 0.5 shortlisted, 0 not placed). Past editions come from each record's `past` list."""
+    led = load_json(p["contests"], {}) or {}
+    out, results = [], []
+    for rid, rec in (led.get("contests") or {}).items():
+        for ed in (rec.get("past") or []) + [rec]:
+            status = CONTEST_STATUS.get(ed.get("status") or "")
+            if not status:
+                continue
+            pid = f"contest:{rid}:{ed.get('edition') or ''}"
+            res = ed.get("result") or {}
+            date = res.get("date") or ed.get("entered") or rec.get("first_seen") or ""
+            out.append({
+                "id": pid, "source": "contest-finder", "channel": "contest", "kind": "submission",
+                "target": f"{rec.get('name', rid)} {ed.get('edition') or ''}".strip()[:200], "status": status,
+                "date": str(date)[:10], "url": ed.get("entry_url_done") or "", "landing_url": ed.get("utm_link") or "",
+                "utm": "", "approval": ed.get("queue_id") or "", "contact_ref": "",
+                "notes": (f"{ed.get('status')}; deadline {ed.get('deadline')}" + (f"; {res.get('note')}" if res.get("note") else ""))[:300],
+                "_text": rec.get("name", rid), "_assets": [rec.get("product") or "photo-licensing"],
+            })
+            if res.get("status") in CONTEST_RESULT:
+                results.append((pid, res.get("date", ""), "contest_result", CONTEST_RESULT[res["status"]], "contest-finder", "exact"))
+            if res.get("prize_usd"):
+                results.append((pid, res.get("date", ""), "contest_prize_usd", float(res["prize_usd"]), "contest-finder", "exact"))
+    return out, results
 
 
 def from_macupdate(p: dict) -> tuple[list, list]:
@@ -763,7 +814,7 @@ def placement_results(pls: list, links: dict, assets: dict, funnel: dict, orders
                     continue
                 pbp = v.get("pageviewsByPath") or {}
                 visits += sum(pbp.get(path, 0) for path in paths)
-                trials += sum((v.get("trial") or {}).get(prod, 0) for prod in products)
+                trials += sum(trial_count(v.get("trial"), prod) for prod in products)
                 checkouts += sum((v.get("checkout") or {}).get(prod, 0) for prod in products)
             n_share = max([shared.get((w, k, path), 1) for k in keys for path in paths] or [1])
             conf = f"path-shared:{n_share}" if n_share > 1 else "path"
@@ -786,7 +837,7 @@ def placement_results(pls: list, links: dict, assets: dict, funnel: dict, orders
         rows_w = cont[str(w)]
         hit = [rows_w[t] for t in tags if t in rows_w]
         v = sum(x.get("pageviews", 0) for x in hit)
-        tr = sum(sum((x.get("trial") or {}).get(prod, 0) for prod in products) if products else sum((x.get("trial") or {}).values()) for x in hit)
+        tr = sum(sum(trial_count(x.get("trial"), prod) for prod in products) if products else trial_total(x.get("trial")) for x in hit)
         ck = sum(sum((x.get("checkout") or {}).get(prod, 0) for prod in products) if products else sum((x.get("checkout") or {}).values()) for x in hit)
         for metric, val in (("link-visits", v), ("link-trials", tr), ("link-checkout-clicks", ck)):
             rows.append((pl["id"], asof, metric, val, f"funnel-link:{w}d", "exact-link"))
@@ -931,7 +982,7 @@ def channel_stats(pls: list, links: dict, assets: dict, funnel: dict, orders: li
             for fk, v in fun.items():
                 if key_matches(fk, g["keys"]):
                     visits += sum(c for pth, c in (v.get("pageviewsByPath") or {}).items() if pth.startswith(path))
-                    trials += (v.get("trial") or {}).get(prod, 0)
+                    trials += trial_count(v.get("trial"), prod)
         n_orders = sum(1 for o in orders if o["product"] == prod and o["date"] >= since and order_matches(o, g["keys"]))
         n_heard = sum(1 for o in orders if o["product"] == prod and o["date"] >= since and HEARD_CHANNEL.get(o["heard"]) == ch)
         # Trials start on guide pages too, while visits count the product's own pages only. Where trials outnumber
@@ -1686,7 +1737,7 @@ def campaign_gaps(con, p: dict, today: dt.date | None = None, recent=None) -> li
                         "detail": f"{(today - start).days} days after the start; record it with hub.py campaign-spend"})
         rows = [week.get(k) or {} for k in CHANNEL_KEYS.get(r["channel"], (r["channel"],))]
         views = sum(x.get("pageviews") or 0 for x in rows)
-        trials = sum((x.get("trial") or {}).get(r["asset"], 0) for x in rows)
+        trials = sum(trial_count(x.get("trial"), r["asset"]) for x in rows)
         if views and start < today <= end:
             if "f" not in day:
                 day["f"] = recent(1)
@@ -1779,6 +1830,8 @@ def merge_listings(placements: list) -> list:
 def build(p: dict) -> dict:
     assets = load_assets(p)
     mu, results = from_macupdate(p)
+    contests, contest_results = from_contests(p)
+    results += contest_results
     social = from_social(p)
     social_ids = {pl["id"].split(":")[1] for pl in social}
     # The social engine also appends a row per platform to the outreach log; the social queue is the record.
@@ -1797,7 +1850,7 @@ def build(p: dict) -> dict:
         q["contact_ref"] = pl["contact_ref"]
         q["date"] = pl["date"] or q["date"]
         q["_text"] += " " + pl["_text"]
-    placements = queue + social + kept + from_videos(p) + from_app_releases(p) + mu + from_campaigns(p)
+    placements = queue + social + kept + from_videos(p) + from_app_releases(p) + mu + from_campaigns(p) + contests
     # Hand corrections, kept apart from the sources (the outreach log stays as written): overrides.json maps a
     # placement id to any of url, status, date, channel, assets (ids; an unknown id becomes a "line" asset such as
     # paper-review) or exclude (a test or not a placement).

@@ -130,6 +130,7 @@ const REFUND_TEXT = {
   "keyfeel": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "tapefolio": `${REFUND_EMAIL} the full $29.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "lenscrib": `${REFUND_EMAIL} the full $19.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
+  "aka": `${REFUND_EMAIL} the full $14.99 to the original payment method. You don't need to give a reason. A refunded purchase's license key is no longer licensed for use.`,
   "panely": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "summonly": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "app-suite": `${REFUND_EMAIL} the full amount you paid to the original payment method. You don't need to give a reason. A refunded Suite's download links stop working, and its ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely and Summonly license keys and its Vitae Plus key are no longer licensed for use.`,
@@ -203,6 +204,12 @@ const PRODUCT_CATALOG = {
   // not in the Mac Suite or the custom bundles. Delivery is the session-gated DMG from the lenscrib-files Blobs store;
   // see lenscrib-download.mjs. Product page and success page: /lenscrib/ and /lenscrib/success/. See docs/products/lenscrib.md.
   "lenscrib":                { amount: 1999, name: "Lenscrib for macOS", successPath: "/lenscrib/success/" },
+  // AKA for macOS: $14.99 one-time, priced inline (no Stripe Price to create), like Lenscrib. Licensed with the shared
+  // PurplelinkLicenseV1 scheme (AKA1 keys, netlify/lib/license.mjs). Sold on its own: not in the custom bundles, and not in the
+  // Mac Suite until the `inSuite` launch gate in license.mjs is flipped. Delivery is the session-gated DMG from the
+  // aka-files Blobs store; see aka-download.mjs. Product page and success page: /aka/ and /aka/success/.
+  // See docs/products/aka.md.
+  "aka":                { amount: 1499, name: "AKA for macOS", successPath: "/aka/success/" },
   // Panely (window manager) and Summonly (launcher and file search): $9.99 one-time each, priced inline like Keyfeel.
   // Delivery is the session-gated DMG from the panely-files / summonly-files Blobs stores. Pages: /panely/ and /summonly/.
   "panely":                { amount: 999, name: "Panely for macOS", successPath: "/panely/success/" },

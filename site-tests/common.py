@@ -1,6 +1,7 @@
 """Shared helpers for the site tests. Stdlib only; everything reads files in the checkout, no network."""
 import html
 import json
+import os
 import re
 import subprocess
 import sys
@@ -15,6 +16,12 @@ ORIGIN = "https://purplelink.llc"
 # 0.4 s): a fresh clone or worktree passes without a manual step, and a page edited since the last build is in the index.
 for _gen in ("gen_search_index.py", "gen_llms_full.py"):
     subprocess.run([sys.executable, str(ROOT / "scripts" / _gen)], cwd=ROOT, check=True, capture_output=True, timeout=120)
+
+# ?v= asset stamps exist only in a build checkout: CI stamps the tree like the Netlify build before the tests run, and
+# the committed pages are bare (docs/designs/generated-files-at-build.md, phase 2). Tests that check a stamp use this
+# pattern, which requires it under CI=true and allows a bare reference in a local checkout.
+IN_CI = os.environ.get("CI") == "true"
+STAMP = r"\?v=[0-9a-f]+" if IN_CI else r"(?:\?v=[0-9a-f]+)?"
 
 EMOJI = re.compile(
     "[\U0001F300-\U0001FAFF\U00002600-\U000027BF\U0001F000-\U0001F2FF\U0001F900-\U0001F9FF\U00002B50\U00002B55\U0000FE0F\U0000200D]"

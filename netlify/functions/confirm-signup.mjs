@@ -1,5 +1,6 @@
 /**
- * Step two of double opt-in for the Daily Digest, the researcher checklist and the Undershelf waitlist.
+ * Step two of double opt-in for the Daily Digest, the researcher checklist, the Undershelf waitlist and the product
+ * news asked for with "Send to my Mac" (send-to-mac.mjs).
  *
  *   GET  ?t=<token>   The link in the confirmation email. Shows a page with one button and changes nothing, so
  *                     a mail scanner that follows the link cannot confirm an address for its owner.
@@ -16,6 +17,7 @@ import { verifyConfirmToken } from "../lib/confirm-token.mjs"
 import { addDigestSubscriber } from "../lib/digest-signup.mjs"
 import { completeChecklistSignup } from "./checklist-signup.mjs"
 import { completeUndershelfSignup } from "./undershelf-waitlist.mjs"
+import { completeNewsSignup, newsUnsubscribeUrl, NEWS_CONFIRM_KIND } from "./send-to-mac.mjs"
 
 const SITE_ORIGIN = "https://purplelink.llc"
 const EMAIL_PATTERN = /^[^\s@<>"`\\]{1,64}@[^\s@<>"`\\]{1,190}\.[^\s@<>"`\\]{2,}$/
@@ -41,6 +43,10 @@ function identify(token, secret) {
   if (wait && typeof wait.e === "string" && EMAIL_PATTERN.test(wait.e)) {
     return { kind: "undershelf", email: wait.e, version: wait.v, page: wait.p, utm: wait.u }
   }
+  const news = verifyConfirmToken(NEWS_CONFIRM_KIND, token, secret)
+  if (news && typeof news.e === "string" && EMAIL_PATTERN.test(news.e)) {
+    return { kind: "news", email: news.e, product: typeof news.p === "string" ? news.p : "" }
+  }
   return null
 }
 
@@ -60,7 +66,7 @@ export default async function handler(request) {
   if (!who) return expired()
 
   const what = { digest: "the Purplelink Daily Digest", checklist: "the Purplelink submission checklist",
-    undershelf: "the Undershelf waitlist" }[who.kind]
+    undershelf: "the Undershelf waitlist", news: "news about new Purplelink apps" }[who.kind]
   if (request.method !== "POST") {
     return page(
       "Confirm your email", "Confirm your email",
@@ -82,6 +88,16 @@ export default async function handler(request) {
         `<p class="post-lede">${escapeHtml(who.email)} will get the next Daily Digest. Every email has an unsubscribe link.</p>
         <p>Know someone who would like it? Your referral link: <a href="${escapeHtml(share)}">${escapeHtml(share)}</a></p>
         <p><a href="/blog/">Back to the blog</a></p>`,
+      )
+    }
+    if (who.kind === "news") {
+      await completeNewsSignup(who.email, who.product)
+      const stop = newsUnsubscribeUrl(who.email, secret)
+      return page(
+        "Confirmed", "You will get Purplelink product news",
+        `<p class="post-lede">${escapeHtml(who.email)} will get a short email when there is a new Purplelink app, a few a year at most. Every one has a link to stop it.</p>
+        <p>To stop it now: <a href="${escapeHtml(stop)}">stop product news</a>.</p>
+        <p><a href="/products/">All products</a></p>`,
       )
     }
     if (who.kind === "undershelf") {

@@ -10,6 +10,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import vm from "node:vm";
+import { STAMP } from "./_stamp.mjs";
 
 const store = new Map();
 const blobsModule = {
@@ -281,7 +282,7 @@ for (const app of APPS) {
       assert.match(f, new RegExp(`data-reminder-api="/\\.netlify/functions/${app.slug}-reminder"`));
       assert.match(f, new RegExp(`data-reminder-link="${app.slug}-download"`));
     }
-    assert.match(html, /<script src="\/trial-reminder\.js\?v=[0-9a-f]+" defer>/);
+    assert.match(html, new RegExp(`<script src="/trial-reminder\\.js${STAMP}" defer>`));
     assert.match(html, /Optional\. Two emails, then nothing/);
     assert.doesNotMatch(html, /<form[^>]*\sstyle\s*=/i);
     // (The support box's own field, id sb-email, is not a trial form.)

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Contest finder, weekly (docs/designs/contest-finder.md). Install:
+       cp scripts/contests/com.purplelink.contest-finder.plist ~/Library/LaunchAgents/
+       launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.purplelink.contest-finder.plist
+     Remove: launchctl bootout gui/$(id -u)/com.purplelink.contest-finder
+     Code runs from the jobs-ro worktree at origin/main (repo-ro.sh); data stays in the shared checkout and ~/.purplelink. -->
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.purplelink.contest-finder</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/bin/bash</string>
+		<string>/Users/benampel/.purplelink/run-when-online.sh</string>
+		<string>/bin/bash</string>
+		<string>/Users/benampel/.purplelink/bin/repo-ro.sh</string>
+		<string>exec</string>
+		<string>/Users/benampel/.local/bin/python3.12</string>
+		<string>scripts/contests/contests.py</string>
+		<string>weekly</string>
+	</array>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>HOME</key>
+		<string>/Users/benampel</string>
+		<key>PATH</key>
+		<string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+		<key>PURPLELINK_REPO</key>
+		<string>/Volumes/Extreme SSD/Purplelink LLC</string>
+		<key>PURPLELINK_CONTEST_BRIEFS</key>
+		<string>/Volumes/Extreme SSD/Purplelink LLC/docs/growth-briefs/contests</string>
+		<key>PURPLELINK_PHOTO_WORKSPACE</key>
+		<string>/Volumes/Extreme SSD/Purplelink LLC/photo-licensing-workspace</string>
+	</dict>
+	<key>StartCalendarInterval</key>
+	<dict>
+		<key>Weekday</key>
+		<integer>1</integer>
+		<key>Hour</key>
+		<integer>6</integer>
+		<key>Minute</key>
+		<integer>40</integer>
+	</dict>
+	<key>RunAtLoad</key>
+	<false/>
+	<key>StandardOutPath</key>
+	<string>/Users/benampel/Library/Logs/purplelink-contest-finder.log</string>
+	<key>StandardErrorPath</key>
+	<string>/Users/benampel/Library/Logs/purplelink-contest-finder.log</string>
+</dict>
+</plist>

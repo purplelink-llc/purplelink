@@ -227,16 +227,16 @@ select { max-width: 100%; }
 
 .brand > span::before {
   background-color: currentColor;
-  -webkit-mask: url("/assets/purplelink-wordmark-text-mask.svg?v=5181b484f3") left center / contain no-repeat;
-  mask: url("/assets/purplelink-wordmark-text-mask.svg?v=5181b484f3") left center / contain no-repeat;
+  -webkit-mask: url("/assets/purplelink-wordmark-text-mask.svg") left center / contain no-repeat;
+  mask: url("/assets/purplelink-wordmark-text-mask.svg") left center / contain no-repeat;
 }
 
 .brand > span::after {
   background-color: #9222cc;
   background-image: linear-gradient(90deg, #c07af1, #9222cc);
   background-image: linear-gradient(90deg, oklch(70% 0.18 310), oklch(52% 0.24 310));
-  -webkit-mask: url("/assets/purplelink-wordmark-accent-mask.svg?v=95aaabad44") left center / contain no-repeat;
-  mask: url("/assets/purplelink-wordmark-accent-mask.svg?v=95aaabad44") left center / contain no-repeat;
+  -webkit-mask: url("/assets/purplelink-wordmark-accent-mask.svg") left center / contain no-repeat;
+  mask: url("/assets/purplelink-wordmark-accent-mask.svg") left center / contain no-repeat;
 }
 
 .topbar nav {
@@ -4255,6 +4255,22 @@ html { scroll-padding-top: 96px; }
 .trial-remind-row input[type="email"] { flex: 1 1 220px; min-height: 44px; padding: 0 14px; border: 1.5px solid var(--field-line); border-radius: 100px; background: var(--bg); color: var(--ink); font: inherit; }
 .trial-remind-row input[type="email"]:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-color: var(--purple); }
 .trial-remind-note { margin: 8px 0 0; color: var(--muted); font-size: 0.85rem; }
+/* "Send to my Mac" (site/send-to-mac.js, scripts/apply_send_to_mac.py). Hidden unless the head script decided, before
+   the first paint, that the visitor is not on a Mac (class "s2m" on <html>), so it never moves the page. Colours are
+   theme tokens, so dark (the default) and light both follow without extra rules. */
+.send-to-mac { margin: 18px 0 4px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); max-width: 560px; }
+.send-to-mac[hidden] { display: none; }
+:root.s2m .send-to-mac[hidden] { display: block; }
+.send-to-mac-head { margin: 0 0 10px; font-weight: 600; color: var(--ink); font-size: 0.95rem; }
+.send-to-mac-label { display: block; margin: 0 0 6px; color: var(--ink); font-size: 0.9rem; }
+.send-to-mac-hp { display: none; }
+.send-to-mac-news { display: flex; align-items: center; gap: 10px; min-height: 44px; margin-top: 6px; color: var(--ink); font-size: 0.9rem; cursor: pointer; }
+.send-to-mac-news input { width: 20px; height: 20px; margin: 0; accent-color: var(--purple); flex: none; }
+.send-to-mac-news input:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
+.send-to-mac-status { color: var(--ink); }
+.send-to-mac-status:empty { margin: 0; }
+.send-to-mac input[aria-invalid="true"] { border-color: var(--danger); }
+.send-to-mac button[aria-disabled="true"] { opacity: 0.6; cursor: progress; }
 /* ModernTex trial-download poll (site/moderntex/poll.js): one optional question, plain radio buttons. */
 .ask-poll { margin: 14px 0 4px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); max-width: 560px; text-align: left; }
 .ask-poll[hidden], .ask-poll [hidden] { display: none; }
@@ -5686,6 +5702,12 @@ dialog, [role="dialog"], [aria-modal="true"], .sales-scroll { overscroll-behavio
 .vitae-short, .vitae-guides { max-width: 900px; margin: 0 auto; padding: 8px 24px 28px; }
 .vitae-short h2, .vitae-guides h2 { margin: 0 0 14px; }
 .vitae-guides ul { margin: 0; padding-left: 1.2em; line-height: 1.7; }
+/* Free converter links on Mac app pages (moderntex, lenscrib, vitae, aka) */
+.app-converters { max-width: 900px; margin: 0 auto; padding: 8px 24px 28px; }
+.app-converters h2 { margin: 0 0 10px; }
+.app-converters p { margin: 0 0 10px; color: var(--muted); }
+.app-converters ul { margin: 0; padding-left: 1.2em; line-height: 1.7; }
+.app-converters a { color: var(--purple); font-weight: 600; }
 
 /* ─── Apple design pass (2026-10-18) ─────────────────────────────────── */
 
