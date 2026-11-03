@@ -16,12 +16,12 @@
 export const TOOL_SLUGS = [
   "abstract-checker", "academic-email-signature", "anonymity-check", "avif-to-jpg", "bib-builder", "bib-validator",
   "camera-ready-checker", "citation-gap", "citation-generator", "cover-letter", "csv-to-json", "csv-to-xlsx", "equation-renderer", "file-to-markdown",
-  "heic-to-jpg", "icns-to-png", "ico-to-png", "jpg-to-pdf", "json-to-csv", "latex-diff", "latex-table-generator", "latex-to-pdf", "latex-to-word", "markdown-to-pdf",
-  "metadata-cleaner", "paper-review", "pdf-structure", "pdf-to-jpg", "pdf-tools", "photo-to-logo", "pii-checker", "png-to-icns", "png-to-ico", "png-to-jpg",
+  "heic-to-jpg", "icns-to-png", "ico-to-png", "image-to-base64", "jpg-to-pdf", "json-to-csv", "latex-diff", "latex-table-generator", "latex-to-pdf", "latex-to-word", "markdown-to-pdf",
+  "metadata-cleaner", "paper-review", "pdf-structure", "pdf-to-jpg", "pdf-to-text", "pdf-tools", "photo-to-logo", "pii-checker", "png-to-icns", "png-to-ico", "png-to-jpg",
   "reference-converter",
   "reproducibility-checker", "response-letter-template", "response-review", "resume-review", "retraction-check", "srt-to-vtt",
   "stock-keyword-cleaner", "submission-checklist", "svg-to-png", "thesis-format-checker", "tiff-to-jpg", "transcript-cleaner", "vtt-to-srt", "webp-to-png", "word-counter",
-  "word-to-latex", "xlsx-to-csv", "xlsx-to-json",
+  "word-to-latex", "xlsx-to-csv", "xlsx-to-json", "xlsx-to-latex",
 ];
 export const OUTCOMES = ["ok", "error", "limit"];
 export const OFFER_APPS = ["moderntex", "tapefolio", "outbound-veil", "vitae"];

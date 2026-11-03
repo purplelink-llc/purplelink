@@ -42,7 +42,11 @@
     "ico-to-png": { label: "ICO", accepts: ["ico"], outputs: ["png"], output: "png", work: "ico", maxBytes: 20 * 1024 * 1024 },
     "xlsx-to-json": { label: "XLSX", accepts: ["xlsx"], outputs: ["json", "jsonl"], output: "json", work: "xlsxread", maxBytes: 50 * 1024 * 1024 },
     "vtt-to-srt": { label: "WebVTT", accepts: ["vtt"], outputs: ["srt"], output: "srt", work: "subs", maxBytes: 5 * 1024 * 1024 },
-    "srt-to-vtt": { label: "SRT", accepts: ["srt"], outputs: ["vtt"], output: "vtt", work: "subs", maxBytes: 5 * 1024 * 1024 }
+    "srt-to-vtt": { label: "SRT", accepts: ["srt"], outputs: ["vtt"], output: "vtt", work: "subs", maxBytes: 5 * 1024 * 1024 },
+    "xlsx-to-latex": { label: "XLSX", accepts: ["xlsx"], outputs: ["tex"], output: "tex", work: "xlsxlatex", maxBytes: 50 * 1024 * 1024 },
+    "pdf-to-text": { label: "PDF", accepts: ["pdf"], outputs: ["txt"], output: "txt", work: "pdftext" },
+    // A data URL past a few MB is no longer practical in a page, so 10 MB.
+    "image-to-base64": { label: "image", accepts: ["png", "jpeg", "gif", "webp", "avif", "bmp", "svg", "ico"], outputs: ["txt"], output: "txt", work: "base64", maxBytes: 10 * 1024 * 1024 }
   };
   // A PDF with more pages than this is refused rather than drawn for minutes.
   const MAX_PDF_PAGES = 500;
@@ -51,7 +55,7 @@
     jpg: "image/jpeg", png: "image/png", icns: "image/icns", ico: "image/x-icon", pdf: "application/pdf",
     xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", zip: "application/zip", csv: "text/csv",
     json: "application/json", jsonl: "application/x-ndjson",
-    srt: "application/x-subrip", vtt: "text/vtt"
+    srt: "application/x-subrip", vtt: "text/vtt", txt: "text/plain", tex: "application/x-tex"
   };
   const KIND_NAMES = { heic: "HEIC", avif: "AVIF", webp: "WebP", png: "PNG", jpeg: "JPEG", gif: "GIF", csv: "CSV", pdf: "PDF", bmp: "BMP", svg: "SVG",
     xlsx: "XLSX", xls: "XLS", json: "JSON", tiff: "TIFF", bigtiff: "BigTIFF", icns: "ICNS", ico: "ICO", srt: "SRT", vtt: "WebVTT" };
@@ -146,7 +150,7 @@
   }
 
   // "an SVG", "an AVIF", "a PNG": by how the name is said, not how it is spelled.
-  function article(name) { return (/^(AVIF|SVG|XLS|ICNS|ICO|SRT)\b/.test(name) ? "an " : "a ") + name; }
+  function article(name) { return (/^(AVIF|SVG|XLSX?|ICNS|ICO|SRT)\b/.test(name) ? "an " : "a ") + name; }
 
   /** "vtt" for text that starts WEBVTT (then a space, tab, line break or the end), "srt" for a .srt name or a head
       that is a cue number and an SRT timing line, or "". A UTF-16 file named .srt or .vtt takes that kind. */
@@ -1691,6 +1695,120 @@
     return { text: text, merged: merged, cues: out.length };
   }
 
+  // ---------- Image to Base64 ----------
+  const B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  /** Bytes to standard Base64 (RFC 4648, with padding, no line breaks), built in chunks. */
+  function base64(b) {
+    const parts = [];
+    let cur = "";
+    for (let i = 0; i < b.length; i += 3) {
+      const n = (b[i] << 16) | ((i + 1 < b.length ? b[i + 1] : 0) << 8) | (i + 2 < b.length ? b[i + 2] : 0);
+      cur += B64[(n >> 18) & 63] + B64[(n >> 12) & 63] + (i + 1 < b.length ? B64[(n >> 6) & 63] : "=") + (i + 2 < b.length ? B64[n & 63] : "=");
+      if (cur.length > 65536) { parts.push(cur); cur = ""; }
+    }
+    parts.push(cur);
+    return parts.join("");
+  }
+  const IMAGE_MIME = { png: "image/png", jpeg: "image/jpeg", gif: "image/gif", webp: "image/webp", avif: "image/avif",
+    bmp: "image/bmp", svg: "image/svg+xml", ico: "image/x-icon" };
+  /** The Base64 text in the chosen form: "dataurl", "base64", "css" or "html". */
+  function base64Snippet(b64, mime, format) {
+    const url = "data:" + mime + ";base64," + b64;
+    if (format === "base64") return b64;
+    if (format === "css") return 'background-image: url("' + url + '");';
+    if (format === "html") return '<img src="' + url + '" alt="">';
+    return url;
+  }
+
+  // ---------- Excel to LaTeX ----------
+  /** Text for a LaTeX table cell: the ten special characters escaped, line breaks as spaces. */
+  function latexEscape(t) {
+    return String(t).replace(/\r\n?|\n/g, " ").replace(/[\\&%$#_{}~^]/g, function (c) {
+      return c === "\\" ? "\\textbackslash{}" : c === "~" ? "\\textasciitilde{}" : c === "^" ? "\\textasciicircum{}" : "\\" + c;
+    });
+  }
+  /** A sheet's rows (from sheetRows with kinds) as a LaTeX tabular: { tex, rows, cols }. Empty rows are skipped and
+      trailing empty columns dropped; a column is right-aligned when every non-empty body cell is a number. opts:
+      header, booktabs, float, caption, label. */
+  function latexTable(rows, kinds, opts) {
+    const keep = [], kk = [];
+    rows.forEach(function (r, i) { if (r && r.some(function (x) { return x !== "" && x != null; })) { keep.push(r); kk.push(kinds[i] || ""); } });
+    let n = 0;
+    keep.forEach(function (r) { for (let c = r.length - 1; c >= n; c--) if (r[c] !== "" && r[c] != null) { n = c + 1; break; } });
+    if (!keep.length || !n) return { tex: "", rows: 0, cols: 0 };
+    const body = opts.header ? keep.slice(1) : keep, bk = opts.header ? kk.slice(1) : kk;
+    const align = [];
+    for (let c = 0; c < n; c++) {
+      let num = true, any = false;
+      body.forEach(function (r, i) { if (r[c] !== undefined && r[c] !== "") { any = true; if ((bk[i] || "")[c] !== "n") num = false; } });
+      align.push(any && num ? "r" : "l");
+    }
+    const ind = opts.float ? "  " : "";
+    const line = function (r) {
+      const cells = [];
+      for (let c = 0; c < n; c++) cells.push(latexEscape(r[c] == null ? "" : r[c]));
+      // A row that starts with [ right after \\ would be read as its optional argument, so it is wrapped.
+      if (/^\[/.test(cells[0])) cells[0] = "{" + cells[0] + "}";
+      return ind + "  " + cells.join(" & ") + " \\\\";
+    };
+    const top = opts.booktabs ? "\\toprule" : "\\hline", mid = opts.booktabs ? "\\midrule" : "\\hline", bottom = opts.booktabs ? "\\bottomrule" : "\\hline";
+    const out = [];
+    if (opts.float) out.push("\\begin{table}[htbp]", "  \\centering", "  \\caption{" + latexEscape(opts.caption || "") + "}", "  \\label{" + (opts.label || "tab:table") + "}");
+    out.push(ind + "\\begin{tabular}{" + align.join("") + "}", ind + "  " + top);
+    if (opts.header) out.push(line(keep[0]), ind + "  " + mid);
+    body.forEach(function (r) { out.push(line(r)); });
+    out.push(ind + "  " + bottom, ind + "\\end{tabular}");
+    if (opts.float) out.push("\\end{table}");
+    return { tex: out.join("\n") + "\n", rows: body.length, cols: n };
+  }
+  /** A label from a sheet name: tab: then lowercase letters, digits and hyphens, unique within used. */
+  function latexLabel(name, used) {
+    const base = "tab:" + (String(name || "table").toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "table");
+    let k = base, i = 2;
+    while (used[k]) k = base + "-" + i++;
+    used[k] = 1;
+    return k;
+  }
+
+  // ---------- PDF to Text ----------
+  /** One page's text from pdf.js getTextContent items. Lines break at hasEOL and where the baseline moves; a space
+      goes in where the gap to the previous item is wider than a fifth of the font size. In "paragraphs" layout, lines
+      join with a space unless the gap to the next baseline is clearly larger than the page's usual one, and a hyphen
+      at a line end joins the word when the next line starts lowercase (a heuristic: "well-" "known" loses its hyphen).
+      Ligatures are folded (NFKC) and soft hyphens removed. Text runs in content order, which on some two-column
+      pages interleaves the columns. */
+  function pdfPageText(items, layout) {
+    const lines = [];
+    let cur = "", y = null, endX = null;
+    items.forEach(function (it) {
+      if (typeof it.str !== "string") return;
+      const tr = it.transform || [1, 0, 0, 1, 0, y || 0];
+      const iy = tr[5], ix = tr[4], size = Math.hypot(tr[2], tr[3]) || it.height || 10;
+      if (y !== null && cur && Math.abs(iy - y) > Math.max(2, size * 0.5)) { lines.push({ t: cur, y: y }); cur = ""; endX = null; }
+      if (cur && endX !== null && ix - endX > size * 0.2 && !/\s$/.test(cur) && !/^\s/.test(it.str)) cur += " ";
+      cur += it.str;
+      y = iy;
+      endX = ix + (it.width || 0);
+      if (it.hasEOL) { lines.push({ t: cur, y: y }); cur = ""; endX = null; }
+    });
+    if (cur) lines.push({ t: cur, y: y });
+    const clean = lines.map(function (l) { return { t: l.t.normalize("NFKC").replace(/\u00ad/g, "").replace(/\s+/g, " ").trim(), y: l.y }; }).filter(function (l) { return l.t; });
+    if (layout === "lines") return clean.map(function (l) { return l.t; }).join("\n");
+    const gaps = [];
+    for (let i = 1; i < clean.length; i++) gaps.push(Math.abs(clean[i - 1].y - clean[i].y));
+    gaps.sort(function (a, b) { return a - b; });
+    const usual = gaps.length ? gaps[Math.floor(gaps.length / 2)] : 0;
+    let out = "";
+    clean.forEach(function (l, i) {
+      if (i === 0) { out = l.t; return; }
+      const gap = Math.abs(clean[i - 1].y - l.y);
+      if (usual && gap > usual * 1.45) out += "\n\n" + l.t;
+      else if (/[a-z]-$/.test(out) && /^[a-z]/.test(l.t)) out = out.slice(0, -1) + l.t;
+      else out += " " + l.t;
+    });
+    return out;
+  }
+
   // ---------- PDF to JPG ----------
   const DPIS = { "72": 72, "150": 150, "300": 300 };
 
@@ -1849,7 +1967,12 @@
       unflatten: bool(raw.unflatten),
       icons: raw.icons === "all" ? "all" : "largest",
       speakers: raw.speakers === undefined ? true : bool(raw.speakers),
-      merge: raw.merge === undefined ? true : bool(raw.merge)
+      merge: raw.merge === undefined ? true : bool(raw.merge),
+      layout: raw.layout === "lines" ? "lines" : "paragraphs",
+      pagebreaks: bool(raw.pagebreaks),
+      booktabs: raw.booktabs === undefined ? true : bool(raw.booktabs),
+      float: raw.float === undefined ? true : bool(raw.float),
+      format: ["dataurl", "base64", "css", "html"].indexOf(raw.format) !== -1 ? raw.format : "dataurl"
     };
   }
 
@@ -1874,7 +1997,8 @@
     unpackBits: unpackBits, tiffUnpredict: tiffUnpredict, tiffRGBA: tiffRGBA, tiffRowBytes: tiffRowBytes,
     orientTransform: orientTransform, tiffJpeg: tiffJpeg, tiffDecodeRaw: tiffDecodeRaw, tiffProblem: tiffProblem, csvToJson: csvToJson, jsonKeys: jsonKeys, columnTypes: columnTypes,
     readIcns: readIcns, icnsRle: icnsRle, icnsRGBA: icnsRGBA, readIco: readIco, icoBmp: icoBmp, jsonWrite: jsonWrite, sheetJson: sheetJson,
-    parseSrt: parseSrt, writeVtt: writeVtt, parseVtt: parseVtt, writeSrt: writeSrt, subtitleKind: subtitleKind, subMs: subMs, pngEncode: pngEncode, crc32: crc32, ICNS_SLOTS: ICNS_SLOTS, MAX_TIFF_PAGES: MAX_TIFF_PAGES, TIFF_COMPRESSIONS: TIFF_COMPRESSIONS, svgSize: svgSize, svgWithSize: svgWithSize, svgNotes: svgNotes, svgOutSize: svgOutSize
+    base64: base64, base64Snippet: base64Snippet, IMAGE_MIME: IMAGE_MIME, latexEscape: latexEscape, latexTable: latexTable,
+    latexLabel: latexLabel, pdfPageText: pdfPageText, parseSrt: parseSrt, writeVtt: writeVtt, parseVtt: parseVtt, writeSrt: writeSrt, subtitleKind: subtitleKind, subMs: subMs, pngEncode: pngEncode, crc32: crc32, ICNS_SLOTS: ICNS_SLOTS, MAX_TIFF_PAGES: MAX_TIFF_PAGES, TIFF_COMPRESSIONS: TIFF_COMPRESSIONS, svgSize: svgSize, svgWithSize: svgWithSize, svgNotes: svgNotes, svgOutSize: svgOutSize
   };
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.Convert = api;

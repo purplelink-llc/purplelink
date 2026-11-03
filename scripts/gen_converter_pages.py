@@ -1343,6 +1343,195 @@ PAGES = [
                     ("/tools/word-counter/", "Word Counter")],
     },
 
+    {
+        "slug": "xlsx-to-latex",
+        "name": "Excel to LaTeX",
+        "title": "Excel to LaTeX Table Converter, in Your Browser | Purplelink",
+        "og_title": "Excel to LaTeX tables, converted in your browser",
+        "description": "Turn an Excel sheet into a LaTeX table with booktabs rules, a caption and a label, in your "
+                       "browser. Special characters are escaped. Nothing is uploaded.",
+        "hero": "Turn an Excel workbook (.xlsx) into LaTeX tables for your paper: booktabs rules, numbers right-aligned, "
+                "special characters escaped, and a table environment with a caption and label. The workbook is read on "
+                "your device.",
+        "accept": ".xlsx,.xlsm,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "drop": "Drop Excel workbooks here",
+        "hint": "XLSX and XLSM, up to 50 MB each.",
+        "outputs": [("tex", "LaTeX")],
+        "opts": [("radio", "sheets", "Sheets", [("first", "First sheet"), ("all", "All sheets, one table each")]),
+                 ("check", "header", "The first row is the header", True),
+                 ("check", "booktabs", "Use booktabs rules", True),
+                 ("check", "float", "Wrap in a table with a caption and label", True)],
+        "category": "BusinessApplication",
+        "features": ["Turn Excel .xlsx sheets into LaTeX tabular code",
+                     "booktabs rules, or plain hlines",
+                     "Numeric columns right-aligned; special characters escaped",
+                     "A table environment with the sheet name as caption and a label",
+                     "Read in the browser; workbooks are never uploaded"],
+        "how": [
+            "The page opens the workbook with JSZip, served from this site, and reads each sheet in a background worker "
+            "in this tab, keeping the type Excel gave each cell.",
+            "Each sheet becomes a tabular: a column is right-aligned when every value under the header is a number, the "
+            "header is set off with a midrule, and the characters LaTeX treats as commands, & % $ # _ { } ~ ^ and the "
+            "backslash, are escaped so the table compiles as it is. Numbers come out as the workbook stores them.",
+            "To paste a few rows instead of uploading a workbook, the LaTeX Table Generator does the same from CSV text.",
+        ],
+        "steps": [
+            ("Pick the options", "Keep booktabs and the table environment on for a paper; turn the environment off to paste the tabular into your own."),
+            ("Add the workbook", "Drop the .xlsx file on the box, or click it to choose it."),
+            ("Download", "Download the .tex file from its row."),
+            ("Add it to your paper", "Paste the table into your document, or use \\input{}, and add \\usepackage{booktabs} to the preamble."),
+        ],
+        "limits": [
+            "Up to 50 MB a workbook and 5 million cells.",
+            "Numbers are written as stored, not as displayed: 12% is 0.12, and currency signs and thousands separators are not added.",
+            "Merged cells, colors, borders and fonts are not carried over, and wide tables are not scaled to the page.",
+            "Line breaks inside a cell become spaces.",
+        ],
+        "faq": [
+            ("Are my files uploaded?",
+             "No. The page reads each workbook with your browser and converts it in a background worker in this tab. "
+             "There is no server step. The meter under the drop zone counts the bytes the page and its worker send "
+             "while they work, so you can check this yourself. The only things the page downloads are its own scripts."),
+            ("What is booktabs?",
+             "A LaTeX package for tables with three horizontal rules of different weights and no vertical lines, the "
+             "style most journals ask for. Add \\usepackage{booktabs} to your preamble, or turn the option off for "
+             "plain \\hline rules."),
+            ("Will special characters break my document?",
+             "No. Ampersands, percent signs, dollar signs, underscores, braces, tildes, carets and backslashes in cells "
+             "are escaped, so the table compiles as it is."),
+            ("Can I convert several sheets?",
+             "Yes. Choose All sheets and each sheet becomes its own table in one .tex file, captioned with the sheet name "
+             "and labelled tab: followed by it."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the sizes above."),
+        ],
+        "related": [("/tools/latex-table-generator/", "LaTeX Table Generator"), ("/tools/xlsx-to-csv/", "XLSX to CSV"),
+                    ("/tools/xlsx-to-json/", "XLSX to JSON"), ("/tools/latex-to-pdf/", "LaTeX to PDF")],
+    },
+    {
+        "slug": "pdf-to-text",
+        "name": "PDF to Text",
+        "title": "PDF to Text Converter That Runs in Your Browser | Purplelink",
+        "og_title": "PDF to text, extracted in your browser",
+        "description": "Extract the text of a PDF to a plain .txt file in your browser, as paragraphs or line by line. "
+                       "The PDF is never uploaded. Free, no sign-up.",
+        "hero": "Extract the text of a PDF, a paper, report or form, to a plain .txt file, as paragraphs or line by line, "
+                "all pages or a range. The PDF is read on your device, in this browser tab.",
+        "accept": ".pdf,application/pdf",
+        "drop": "Drop PDF files here",
+        "hint": "PDF, up to 100 MB each.",
+        "outputs": [("txt", "Text")],
+        "opts": [("radio", "layout", "Layout", [("paragraphs", "Paragraphs"), ("lines", "Line by line, as in the PDF")]),
+                 ("check", "pagebreaks", "Mark page breaks with a form feed", False),
+                 ("text", "pages", "Pages", "All", None, "Leave empty for every page, or enter pages like 1-3, 8.", True)],
+        "libs": ["pdfjs", "pdfjs-worker"],
+        "privacy": "Files are read in this tab. The only requests the page makes are for its own scripts and the files they need. Your files are never sent anywhere.",
+        "features": ["Extract the text layer of a PDF to a .txt file",
+                     "Paragraphs joined, or line breaks kept as in the PDF",
+                     "All pages or a range",
+                     "Ligatures and soft hyphens cleaned up",
+                     "Read in the browser with pdf.js; PDFs are never uploaded"],
+        "how": [
+            "A PDF made from a word processor or LaTeX stores its text as positioned pieces. This page reads them with "
+            "pdf.js, the open-source PDF reader built into Firefox, served from this site, and puts the pieces back into "
+            "lines, spaces and paragraphs.",
+            "In Paragraphs layout, lines that belong together are joined and a word split by a hyphen at a line end is "
+            "rejoined. Line by line keeps the PDF's own line breaks, which suits poems, code and tables.",
+            "For Markdown with headings, lists and equations instead of plain text, File to Markdown converts PDFs on "
+            "our server and deletes the file afterwards.",
+        ],
+        "steps": [
+            ("Pick the layout", "Paragraphs for reading and quoting, Line by line to keep the PDF's breaks."),
+            ("Choose the pages", "Leave Pages empty for the whole PDF, or enter a range."),
+            ("Add the PDF", "Drop the PDF on the box, or click it to choose it."),
+            ("Download", "Download the .txt file from its row."),
+        ],
+        "limits": [
+            "Up to 100 MB a PDF.",
+            "Scanned pages have no text layer and come out empty; the row names them. Text from a scan needs OCR.",
+            "Text runs in the order the PDF stores it, which on some two-column pages mixes the columns.",
+            "Rejoining hyphenated words is a guess: a word that really has a hyphen at a line end, such as well-known, "
+            "can lose it. Choose Line by line to keep every hyphen.",
+        ],
+        "faq": [
+            ("Are my files uploaded?",
+             "No. pdf.js reads the PDF in a background worker in this tab and the page puts the text together. There is "
+             "no server step. The meter under the drop zone counts the bytes the page sends while it works, so you can "
+             "check this yourself."),
+            ("Why is my text empty?",
+             "The PDF is probably a scan: a picture of each page with no text in it. Copying text from it in a PDF reader "
+             "fails too. A scan needs OCR, which this page does not do."),
+            ("Why are words from two columns mixed together?",
+             "The page follows the order the PDF stores its text in. Most two-column papers store one column after the "
+             "other, but some store lines across both. Line by line layout makes the order easier to check."),
+            ("What is the difference from File to Markdown?",
+             "This page gives plain text and runs in your browser. File to Markdown keeps headings, lists and equations as "
+             "Markdown, and runs on our server, deleting the file afterwards."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the size above."),
+        ],
+        "related": [("/tools/file-to-markdown/", "File to Markdown"), ("/tools/pdf-to-jpg/", "PDF to JPG"),
+                    ("/tools/pdf-tools/", "PDF Tools"), ("/tools/word-counter/", "Word Counter")],
+    },
+    {
+        "slug": "image-to-base64",
+        "name": "Image to Base64",
+        "title": "Image to Base64 Converter That Runs in Your Browser | Purplelink",
+        "og_title": "Image to Base64, converted in your browser",
+        "description": "Turn an image into a Base64 data URL, CSS background or HTML img tag in your browser, with a copy "
+                       "button. Nothing is uploaded. Free, no sign-up.",
+        "hero": "Turn a PNG, JPG, SVG, GIF, WebP or other image into Base64 text: a data URL, the bare string, a CSS "
+                "background or an HTML img tag, ready to copy. The image is read on your device.",
+        "accept": ".png,.jpg,.jpeg,.gif,.webp,.avif,.bmp,.svg,.ico,image/*",
+        "drop": "Drop images here",
+        "hint": "PNG, JPG, GIF, WebP, AVIF, BMP, SVG and ICO, up to 10 MB each. You can also paste an image with Ctrl or Cmd V.",
+        "outputs": [("txt", "Text")],
+        "opts": [("radio", "format", "Output", [("dataurl", "Data URL"), ("base64", "Base64 only"), ("css", "CSS background"), ("html", "HTML img tag")])],
+        "category": "DeveloperApplication",
+        "features": ["Turn images into Base64 text",
+                     "Data URL, bare Base64, CSS background or HTML img tag",
+                     "The image's own type in the data URL",
+                     "A copy button and a .txt download",
+                     "Encoded in the browser; images are never uploaded"],
+        "how": [
+            "Base64 writes any file as plain letters, digits, + and /, so it can sit inside HTML, CSS, JSON or an email "
+            "template. The page reads the image's bytes unchanged in a background worker and encodes them, so the "
+            "picture is exactly the original.",
+            "A data URL adds the image's type, such as data:image/png;base64, so a browser can show it from the text "
+            "alone. The CSS and HTML forms wrap it, ready to paste.",
+            "Base64 text is a third larger than the file, and the browser cannot cache it apart from the page, so it "
+            "suits small icons and images. For large pictures a separate file loads faster.",
+        ],
+        "steps": [
+            ("Pick the output", "Data URL for most uses, Base64 only for an API or JSON field, CSS or HTML to paste directly."),
+            ("Add the image", "Drop the image on the box, click it to choose it, or paste it."),
+            ("Copy or download", "Use Copy on the row, or download the .txt file."),
+            ("Paste it", "Put the text where the image would go, such as an img src or a CSS url()."),
+        ],
+        "limits": [
+            "Up to 10 MB an image. The Copy button works up to about 2 MB of text; past that, download the file.",
+            "The image is not resized or compressed: shrink it first, for example with PNG to JPG, for a shorter string.",
+        ],
+        "faq": [
+            ("Are my files uploaded?",
+             "No. The page reads each image with your browser and encodes it in a background worker in this tab. There is "
+             "no server step. The meter under the drop zone counts the bytes the page and its worker send while they "
+             "work, so you can check this yourself. The only things the page downloads are its own scripts."),
+            ("What is a data URL?",
+             "A URL that holds the file itself, such as data:image/png;base64,iVBOR... Browsers show it like an image file, "
+             "so it works in an img tag, CSS, or anywhere a URL goes."),
+            ("When should I not use Base64?",
+             "For large images. The text is a third larger than the file and cannot be cached on its own, so pages load "
+             "slower. It suits icons, small logos and email templates."),
+            ("Does it change the image?",
+             "No. The bytes are encoded exactly as they are, so decoding the text gives back the same file."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the size above."),
+        ],
+        "related": [("/tools/svg-to-png/", "SVG to PNG"), ("/tools/png-to-jpg/", "PNG to JPG"),
+                    ("/tools/png-to-ico/", "PNG to ICO"), ("/tools/metadata-cleaner/", "Metadata Cleaner")],
+    },
+
 ]
 
 DROP_ICON = ('<svg class="cv-drop-icon" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true" focusable="false">'
