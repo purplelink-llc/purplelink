@@ -1,5 +1,5 @@
 /**
- * Purplelink license keys for Outbound Veil, Legroom and AKA (scheme "PurplelinkLicenseV1").
+ * Purplelink license keys for Outbound Veil, Legroom and Née (scheme "PurplelinkLicenseV1").
  * Keyfeel has its own, older scheme (KFL1, netlify/lib/keyfeel-license.mjs) and ModernTex has MTX1.
  *
  * A key is  <PREFIX>-  +  Crockford-Base32( nonce[4] ‖ Ed25519 signature[64] ),  split into groups of 5.
@@ -24,9 +24,9 @@ export const PURPLELINK_LICENSE_PUBLIC_KEY_B64 = "d8gyRHTJVAivaL2wx4m1dQTLxrfE2h
 export const LICENSED_PRODUCTS = {
   "outbound-veil": { prefix: "OV1", label: "Outbound Veil", appPath: "/outbound-veil/" },
   legroom: { prefix: "LG1", label: "Legroom", appPath: "/legroom/" },
-  // AKA (AKA1) is in the Mac Suite since its launch (Ben, 2026-11-02): see docs/products/aka.md, "Suite gate".
+  // Née (NEE1) is in the Mac Suite since its launch (Ben, 2026-11-02): see docs/products/nee.md, "Suite gate".
   // `inSuite: false` is still honoured by suiteIncludes() for any future product that launches hidden.
-  aka: { prefix: "AKA1", label: "AKA", appPath: "/aka/" },
+  nee: { prefix: "NEE1", label: "Née", appPath: "/nee/" },
 };
 
 /** Whether a Mac Suite purchase includes this product. Every entry is in the Suite unless it says `inSuite: false`. */

@@ -1,7 +1,7 @@
-// Timing of the AKA spot, shared by AKASpot.jsx and build-aka-spot.mjs (which cannot import JSX).
+// Timing of the Née spot, shared by NeeSpot.jsx and build-nee-spot.mjs (which cannot import JSX).
 // 120 BPM at 30 fps: one beat = 15 frames.
 export const BEAT = 15;
-// The problem: four everyday conversions (4 beats), an app for each (4), the apps collapse into AKA (4).
+// The problem: four everyday conversions (4 beats), an app for each (4), the apps collapse into Née (4).
 export const PROBLEM = 12 * BEAT;
 export const INTRO = 4 * BEAT;
 export const SETS = ["heic", "pdf", "mov", "m4a", "md", "docx", "zip", "ttf", "batch"];

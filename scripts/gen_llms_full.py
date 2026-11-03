@@ -29,7 +29,7 @@ PAGES = [
     "legroom/",
     "keyfeel/",
     "tapefolio/",
-    "aka/",
+    "nee/",
     "vitae/",
     "vitae/plus/",
     "tools/paper-review/",
