@@ -171,6 +171,16 @@ JPEG slice, the PDF ring, the video ring, the menu-bar window with History and U
 page also describes the video in text. The page loads it with `<video controls preload="none" poster=...>`, so nothing downloads
 until played. Re-render it when the app's screenshots change.
 
+### Spot (26 s, with music)
+
+A fast cut for ads and social, approved by Ben 2026-11-02: the problem (an app downloaded for each conversion), the apps
+folding into AKA, then the ring on eight file types, a batch cut, and the end card. Source `video/src/aka/AKASpot.jsx`
+(timing in `spot-stills.mjs`, 120 BPM), ring frames in `video/assets/aka/spot/` drawn by the app itself
+(`AKA --render-spot DIR`, backgrounds cut out), music from `video/aka-spot-bed.py` (generated, no licence needed).
+`cd video && python3 aka-spot-bed.py out/aka/aka-spot-bed.wav && node build-aka-spot.mjs` writes `out/aka/aka-spot.mp4`
+(silent), `aka-spot-music.mp4` and one still per picker in `out/aka/stills/`. It says "All at once", not "automate":
+AKA has no watch folders or Shortcuts actions.
+
 ## Releasing a version
 
 Same shape as Legroom: a Developer-ID-signed, notarized DMG named `AKA-x.y.z.dmg` with Sparkle built in, `SUFeedURL` as above,
