@@ -48,4 +48,20 @@ if [ -n "$staged_digest" ]; then
     exit 1
 fi
 
+# Guard: committed pages carry no ?v= asset stamps; the Netlify build adds them
+# (docs/designs/generated-files-at-build.md). A stamped page brings back the
+# 400-file merge conflicts. Checks the staged site/ HTML and root CSS files.
+staged_site="$(git diff --cached --name-only --diff-filter=ACMR \
+    | grep -E '^site/.*\.(html|css)$' || true)"
+if [ -n "$staged_site" ]; then
+    root="$(git rev-parse --show-toplevel)"
+    # shellcheck disable=SC2086
+    printf '%s\n' "$staged_site" | (cd "$root" && xargs python3 scripts/fingerprint_assets.py --check-bare >/dev/null) || {
+        echo "" >&2
+        echo "BLOCKED: staged site files carry ?v= stamps (listed above)." >&2
+        echo "  python3 scripts/fingerprint_assets.py --strip && git add -u site" >&2
+        exit 1
+    }
+fi
+
 exit 0

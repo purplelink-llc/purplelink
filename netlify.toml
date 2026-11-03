@@ -12,7 +12,7 @@
   # or a commit message containing "[deploy now]", and only when it changed a build input. Everything else waits for
   # the scheduled build hook (06:00 and 17:00 US Eastern, from Ben's Mac); hook builds are never skipped. See the script.
   ignore = "bash ./scripts/netlify_ignore.sh"
-  command = "python3 scripts/apply_layout.py && python3 scripts/fingerprint_assets.py && python3 scripts/gen_search_index.py && python3 scripts/gen_blog_feed.py && python3 scripts/gen_llms_full.py && python3 scripts/check_og_images.py && python3 scripts/check_content.py && python3 scripts/check_games.py"
+  command = "python3 scripts/apply_layout.py && python3 scripts/fingerprint_assets.py && python3 scripts/fingerprint_assets.py --check && python3 scripts/gen_search_index.py && python3 scripts/gen_blog_feed.py && python3 scripts/gen_llms_full.py && python3 scripts/check_og_images.py && python3 scripts/check_content.py && python3 scripts/check_games.py"
 
 [functions]
   directory = "netlify/functions"
@@ -101,8 +101,10 @@
 # had already loaded the site.
 #
 # The stamp is what makes `immutable` correct here, so it must never be
-# skipped: deploy.sh runs the script on every deploy, and the fingerprints are
-# committed so a git-triggered build publishes the same HTML.
+# skipped: the build command above stamps every page and then runs --check,
+# which fails the build if any reference is unstamped. The committed pages are
+# bare (docs/designs/generated-files-at-build.md); deploy.sh stamps a clean tree
+# with --force-in-place and restores it afterwards.
 # These four keep a one-day cache for any page that loads them unstamped (the
 # removed digest archive was the original reason). Fingerprinted pages still get
 # a fix instantly, because ?v= makes the changed asset a new URL that no cached

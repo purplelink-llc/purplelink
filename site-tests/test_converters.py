@@ -10,7 +10,7 @@ import sys
 import tomllib
 import unittest
 
-from common import ROOT, SITE, EMOJI, read_site
+from common import ROOT, SITE, EMOJI, STAMP, read_site
 
 sys.path.insert(0, str(ROOT / "scripts"))
 import gen_converter_pages as G  # noqa: E402
@@ -56,9 +56,9 @@ class ConverterPages(unittest.TestCase):
         for slug in SLUGS:
             page = read_site(f"tools/{slug}/index.html")
             self.assertIn(f'class="tool-app cv-app" data-convert="{slug}"', page)
-            self.assertRegex(page, r'<link rel="prefetch" as="script" data-convert-worker href="/tools/convert/convert-worker\.js\?v=[0-9a-f]+">')
-            self.assertRegex(page, r'<script src="/tools/convert/convert-core\.js\?v=[0-9a-f]+" defer>')
-            self.assertRegex(page, r'<script src="/tools/convert/convert-shell\.js\?v=[0-9a-f]+" defer>')
+            self.assertRegex(page, r'<link rel="prefetch" as="script" data-convert-worker href="/tools/convert/convert-worker\.js' + STAMP + r'">')
+            self.assertRegex(page, r'<script src="/tools/convert/convert-core\.js' + STAMP + r'" defer>')
+            self.assertRegex(page, r'<script src="/tools/convert/convert-shell\.js' + STAMP + r'" defer>')
             self.assertNotRegex(page, r"\sstyle=")
             self.assertNotIn("adsbygoogle", page, "the converters carry no ads: they handle people's photos")
             self.assertIsNone(EMOJI.search(text(page)), slug)
@@ -96,10 +96,10 @@ class ConverterPages(unittest.TestCase):
             libs = re.findall(r'<link rel="prefetch" as="script" data-convert-lib="(\w+)" href="([^"]+)">', page)
             self.assertEqual([k for k, _ in libs], p.get("libs", []), p["slug"])
             for _, href in libs:
-                self.assertRegex(href, r"^/assets/vendor/.+\.js\?v=[0-9a-f]+$", "stamped, so the worker never loads a stale copy")
+                self.assertRegex(href, r"^/assets/vendor/.+\.js" + STAMP + r"$", "stamped, so the worker never loads a stale copy")
                 self.assertTrue((SITE / href.split("?")[0].lstrip("/")).is_file(), href)
             self.assertEqual('id="cv-one"' in page, bool(p.get("combine")), p["slug"])
-            self.assertRegex(page, r'<script src="/assets/vendor/jszip/jszip\.min\.js\?v=[0-9a-f]+" defer>', "the worker's JSZip URL comes from this tag")
+            self.assertRegex(page, r'<script src="/assets/vendor/jszip/jszip\.min\.js' + STAMP + r'" defer>', "the worker's JSZip URL comes from this tag")
 
     def test_csp_allows_wasm_and_nothing_broader(self):
         conf = tomllib.loads((ROOT / "netlify.toml").read_text())
