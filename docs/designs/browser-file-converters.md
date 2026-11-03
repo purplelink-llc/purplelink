@@ -566,6 +566,129 @@ scan, a password PDF, SVGs with mm sizes and with only a viewBox, an SVGZ, an an
 **Not in this set.** JPG to PNG, XLSX to CSV and TIFF to JPG (above). Extracting the images embedded in a PDF
 unchanged (a different job from drawing pages). Choosing a background for SVG PNGs (they keep transparency).
 
+## Fourth set: XLSX to CSV, JSON to CSV, TIFF to JPG
+
+Ben, 2026-11-03: "build the next three converters". XLSX to CSV and TIFF to JPG were ranked "Next" in the third set.
+The third slot goes to JSON to CSV (research data from APIs and survey tools, the same readers as CSV to XLSX, pure
+JavaScript) rather than JPG to PNG, which ranked weak on fit, or a WebP encoder, which Safari's canvas cannot do.
+
+| Pair | Accepts | Work (worker) | Outputs |
+|---|---|---|---|
+| `xlsx-to-csv` | XLSX and XLSM (`PK\x03\x04` and the name); a legacy .xls (`D0 CF 11 E0`) is refused with its own message | JSZip reads the parts; a cell reader in `convert-core.js` | .csv for the first sheet, or one per sheet in a zip |
+| `json-to-csv` | .json, .jsonl, .ndjson, or text whose first character is `[` or `{` | `JSON.parse`, flatten, the CSV writer; XLSX through `buildXlsxParts` | .csv or .xlsx |
+| `tiff-to-jpg` | TIFF (`II*\0` or `MM\0*`); BigTIFF (`II+\0`) is refused | UTIF.js decodes, `toRGBA8`, then the existing `encode()` | JPG or PNG, one per page; a zip for several |
+
+**XLSX to CSV.**
+- The worker has no `DOMParser`, so the XML is read with small regex readers in the core, tested in Node:
+  `parseWorkbook` (sheet names, order, hidden state, `date1904`), `parseRels`, `parseSharedStrings` (every `<t>` of
+  an `<si>`, rich-text runs joined, phonetic `<rPh>` left out, `_x000D_` escapes decoded), `parseStyles` (which
+  `cellXfs` index is a date or time format), and `sheetRows` (cells by their `r` reference, so skipped cells and
+  rows stay empty; types `s`, `str`, `inlineStr`, `b`, `e`, `n`).
+- Values: the cached result of each formula (a formula with none is empty, and the row counts them); `TRUE` and
+  `FALSE`; error text such as `#N/A`; numbers as stored, through `String(Number(v))`. Date and time formats
+  (built-in ids 14 to 22, 27 to 36, 45 to 47, 50 to 58, and custom codes with d, m, y, h or s outside quotes and
+  brackets) become ISO 8601: `2026-11-03`, `2026-11-03 14:05:00`, or `14:05:00`. Serials use the 1900 system with
+  Excel's leap-year bug (serial 60 and later minus one day) or the 1904 system when the workbook says so. Other
+  formats (currency, percent) give the plain number, so `12%` is `0.12`; the limits say so.
+- `Convert.toCsv(rows, delimiter)`: RFC 4180 quoting (fields with the separator, a quote, CR or LF), CRLF line ends,
+  trailing empty columns trimmed per sheet. Options: `delimiter` comma (default), semicolon or tab; `sheets` "first"
+  (default) or "all"; `bom`, a checkbox, default off ("Add a byte-order mark for Excel on Windows"), because R and
+  some scripts read the mark into the first column name.
+- "All sheets" writes `book-sheets/<sheet name>.csv` in `book-sheets.zip`; hidden sheets are included and named in
+  a note; chart sheets have no cells and are skipped. Caps: 50 MB file, 300 MB of sheet XML unpacked (checked from
+  the zip's directory before inflating), 5 million cells (the CSV to XLSX cap).
+
+**JSON to CSV.**
+- `Convert.jsonRecords(text)`: a top-level array is the rows; an object whose largest array holds objects uses that
+  array (the row note names the key, for API replies such as `{"data": [...]}`); any other object is one row; if the
+  whole text does not parse but every non-empty line does, it is JSON Lines.
+- `Convert.flattenRecords(records, nested)`: columns are the union of keys in first-seen order. `nested` "columns"
+  (default) turns `{"a": {"b": 1}}` into a column `a.b`; arrays, and everything under "json", are written as JSON
+  text. `null` is empty, booleans are `true` and `false`. An array of plain values gives one column, `value`.
+- Large integers: `JSON.parse` rounds integers past 2^53 (tweet and order IDs). Where the browser passes the source
+  text to a reviver (`context.source`; Chrome 114 and Firefox 135 have it, and the page tests for it at run time), those numbers are kept exactly as
+  written; elsewhere the row notes how many were rounded.
+- Options: `output` csv (default) or xlsx; `delimiter` and `bom` as above, CSV only; `nested` "columns" or "json".
+  XLSX goes through `buildXlsxParts`, so leading zeros and long IDs stay text there as well. Cap: 50 MB.
+
+**TIFF to JPG.**
+- UTIF.js 3.1.0 (Photopea, MIT), downloaded with Ben's approval on 2026-11-03 from the npm registry and checked
+  against its sha512, and pako 1.0.11's `pako_inflate.min.js` (MIT and Zlib), copied from a local npm install, in
+  `site/assets/vendor/utif-3.1.0/`. UTIF decodes uncompressed, PackBits, LZW, Deflate (through pako), CCITT G3 and
+  G4, and JPEG-compressed TIFF, at 1 to 16 bits per channel, gray, RGB, palette and CMYK. Its `<img>`-replacing
+  helpers, the only code using `document` or XHR, are never called. UTIF reads `self.pako` when it loads, so the
+  worker loads pako first. Both are stamped `.js` prefetch links, like pdf-lib.
+- The worker reads the directory (`UTIF.decode`), skips reduced-resolution subfiles (bit 0 of tag 254, the
+  thumbnails scanners add), checks each page's size against the pixel cap before decoding, then `decodeImage`,
+  `toRGBA8`, `ImageData`, and the existing `encode()`.
+- Options: `output` jpg (default, with quality and fill) or png; `pages` "first" (default) or "all". Several pages
+  are named like PDF to JPG's (`scan-pages/scan-p001.jpg`, `Download the 4 pages (.zip)`).
+- Notes: 16 bits per channel reduced to 8 (dim scientific images can stay dark; nothing is stretched); an
+  orientation tag that is not upright is not applied; layers and alpha in other channels are left out.
+
+**Shared.** The three pages use the worker, so the privacy line and the first FAQ are the standard ones. Index: 13
+cards in "Convert files", ItemList positions 32 to 34, Photo to Logo to 35. Social cards, `TOOL_SLUGS`, sitemap and
+Buddy as before. CSV to XLSX links to XLSX to CSV and JSON to CSV; PNG to JPG and PDF to JPG to TIFF to JPG. Branch
+`tools-converters-4`, worktree `converters-4`, one PR, squash-merged when green, no `[deploy now]`. Browser runs in
+WebKit and Firefox under the production CSP, every output opened: a workbook with shared and inline strings, dates
+in both systems, a formula, a hidden sheet and a Japanese sheet name; JSON as an array, an object holding an array,
+JSON Lines, nested objects and a 19-digit ID; TIFFs in LZW, Deflate, PackBits, G4, JPEG, 16-bit gray, CMYK,
+palette, and a multi-page scan with a thumbnail.
+
+**Resolved after review (two Goldfish reviewers on Sonnet, 2026-11-03).** These replace the text above where they
+differ.
+
+- **TIFF reading is ours; only UTIF's decompressors are used.** Running UTIF on Pillow-made and hand-made fixtures in
+  Node showed `UTIF.decode` looping without end on a TIFF whose next-directory pointer points back (out of memory),
+  PackBits strips copied raw when their compressed length happens to equal the raw length, and `toRGBA8` wrong for
+  gray with alpha, 1, 2 and 4-bit palettes, planar files and JPEG-in-TIFF. So the core reads the TIFF itself:
+  `Convert.readTiff(bytes)` walks the directory chain with a visited set and a cap of 1,000 directories, checks
+  every strip and tile against the file length, and returns the pages with their tags. The worker decompresses each
+  strip or tile with the core's PackBits, pako (8 and 32946, which is the same zlib stream), or UTIF's
+  `_decodeLZW`, `_decodeG3` and `_decodeG4`; `Convert.tiffUnpredict` undoes predictor 2 for 8 and 16 bits; and
+  `Convert.tiffRGBA` converts gray and WhiteIsZero (1, 2, 4, 8, 16 bits, with or without alpha), RGB and RGBA (8
+  and 16, associated alpha un-premultiplied), palette (1, 2, 4, 8) and CMYK (8 and 16), reading 16-bit samples in the
+  file's byte order. JPEG-in-TIFF (compression 7) is decoded by the browser: each strip or tile becomes a JPEG
+  (`JPEGTables` spliced in after SOI) for `createImageBitmap`, drawn at its place. When the TIFF says the JPEG data is RGB (photometric 2), an Adobe APP14 segment with transform 0 goes in too: the browser run showed WebKit reading such strips as YCbCr (red came out green), while Chrome goes by the component ids. Anything else (planar
+  configuration 2, floating point, CIELab, old-style JPEG, other compressions) is refused with "This TIFF uses
+  <what> that this page cannot read." Every decoder is checked against Pillow's pixels for the same file in Node.
+- **TIFF memory and pages.** `maxPixels` 40 MP per page (checked from tags 256 and 257 before anything is
+  allocated); one page decoded, encoded and released at a time; 500 pages a run; the 1 GB stop of PDF to JPG; a page
+  that fails is skipped with a note. "First page" is the first full-resolution page (thumbnails skipped); when there
+  are more, the row says "This TIFF has N pages. The first was converted; choose All pages for the rest." The
+  orientation tag is applied (`Convert.orientTransform`), and `ImageData` goes through `createImageBitmap` before
+  `encode()`.
+- **Formula protection.** A text value that starts with `=`, `+`, `-`, `@`, a tab or a carriage return can run as a
+  formula when a CSV opens in Excel, even though it was harmless text in the workbook or the JSON. Option `safe`,
+  default on, labelled "Keep text that starts with = + - @ from running as a formula in Excel", puts a `'` in front
+  of such text cells only: numbers, dates and booleans are never touched, so `-5` stays `-5`. The limits say so.
+- **Long integers in JSON.** `Convert.protectBigInts(text)` runs before `JSON.parse` in every browser: a scanner that
+  skips strings marks integer literals of 16 digits or more, which then reach the CSV exactly as written. The
+  reviver and its feature test are dropped.
+- **Kinds, in order.** `sniff` gains `tiff`, `bigtiff` and `xls` (OLE). `kindOf` then: svgz and svg as before; a zip
+  is `xlsx` only when named .xlsx or .xlsm (a .docx stays ""); .json, .jsonl, .ndjson and .geojson are `json`, and so
+  is a .txt whose first character after a BOM and spaces is `[` or `{`; the CSV-family names as before. The OLE
+  refusal says "This is an older Excel workbook (.xls), or an .xlsx protected with a password. Save it as an
+  unprotected .xlsx and add that."
+- **Option keys.** `delimiter` reuses the CSV to XLSX key; for the writers "auto" means comma. New keys: `sheets`
+  ("first" or "all"), `bom` (false), `nested` ("columns" or "json"), `safe` (true), `tiffpages` ("first" or "all"),
+  so the PDF page range keeps `pages`. On JSON to CSV, `delimiter` and `bom` show only for `output=csv`.
+- **Numbers from a workbook** are written as stored (the cell's own text), not as Excel shows them: `12%` is `0.12`,
+  and a 17-digit ID typed as a number has already lost digits inside the workbook. The limits say so.
+- **XLSX memory.** Each sheet's XML is read through JSZip's `internalStream`, counting bytes as they inflate, and
+  stopped past 100 MB ("This sheet is over 100 MB of data, more than this page reads in a browser tab"), so a size
+  field that lies does not matter. Cells stop at 5 million, in `sheetRows` and in `flattenRecords`.
+- **Names.** Sheet file names have `\ / : * ? " < > |` and control characters replaced, leading and trailing dots and
+  spaces trimmed, and duplicates numbered; JSON Lines and GeoJSON names lose their whole extension.
+- **JSON shapes.** The largest array of objects wins, and the note names it and any other candidates. A literal key
+  `a.b` next to a nested `a.b` gets the column `a.b (2)`. Column bookkeeping uses `Object.create(null)`, so a key
+  named `__proto__` is an ordinary column. XLSX output goes through `buildXlsxParts` with the CSV to XLSX number
+  rule, so a JSON string "42" becomes a number cell there; the limits say so.
+- **Messages** for every failure named by the review are in the code and its tests; the Node tests cover the kinds,
+  refusals, options, every reader and writer, date rules (serial 60, 1904, rounding to the second), the TIFF
+  decoders against Pillow, a looping directory chain and an oversized page.
+- **Not done:** a Safari-native TIFF path (UTIF plus the core decode works in every browser, one path is simpler).
+
 ## Open questions
 
 0. **Safari 16.4 and Firefox.** The browser check ran in Chromium. Worker plus Emscripten plus `OffscreenCanvas` is
@@ -649,3 +772,10 @@ changed:
   and zip naming, the ItemList positions, the copy overrides, tests and build order.
 - **Kept**: the regex root edit for SVG instead of `DOMParser`, so the size rules run in the Node tests; the `<img>`
   still parses the whole file. A Cancel button is not added (no converter has one; Clear removes waiting rows).
+
+Fourth set, two Goldfish reviewers on Sonnet (design, implementation readiness), zero context, 2026-11-03. What
+changed: the TIFF reader became the core's own after the reviewers' UTIF findings were confirmed on fixtures
+(looping directory chain, PackBits copied raw, `toRGBA8` gaps); formula protection added, on by default for text
+cells; the long-integer reviver replaced by a pre-pass that works in every browser; option keys, kind order,
+caps, names and messages specified; tests named. The browser runs then found two more: formulas saved with an empty
+`<v>` were not counted, and RGB JPEG-in-TIFF needed the Adobe marker in WebKit. Both fixed with tests.

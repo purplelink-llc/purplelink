@@ -84,7 +84,7 @@ test("options: clamps and defaults", () => {
   assert.deepEqual(plain(C.options("heic-to-jpg", {})), {
     output: "jpg", quality: 0.92, background: "#ffffff", iconset: false, mobile: false,
     sizes: "all", page: "a4", margin: false, delimiter: "auto", encoding: "auto", header: true, text: false,
-    dpi: 150, pages: "", scale: "2", width: 1920
+    dpi: 150, pages: "", scale: "2", width: 1920, sheets: "first", bom: false, nested: "columns", safe: true, tiffpages: "first"
   });
   assert.equal(C.options("pdf-to-jpg", { dpi: "300" }).dpi, 300);
   assert.equal(C.options("pdf-to-jpg", { dpi: "600" }).dpi, 150);
@@ -509,4 +509,209 @@ test("vendored pdf.js is the version its folder names, with the module and worke
   }
   const shell = readFileSync(join(SITE, "tools/convert/convert-shell.js"), "utf8");
   for (const k of ["wasmUrl", "cMapUrl", "standardFontDataUrl", "iccUrl", "useWorkerFetch: false"]) assert.ok(shell.includes(k), k);
+});
+
+// ---------- fourth set: XLSX to CSV, JSON to CSV, TIFF to JPG ----------
+// TIFF fixtures (netlify/tests/fixtures/convert-tiff-*.tif) were written by Pillow or by hand, and every one was
+// decoded to the same pixels as Pillow before it was added here: PackBits whose compressed length equals the raw
+// length (UTIF copies that raw), WhiteIsZero CCITT G4, a 4-bit palette, gray with alpha, LZW with the horizontal
+// predictor, 16 by 16 tiles, Adobe Deflate (32946), big-endian 16-bit gray, a multi-page file with a thumbnail, and
+// a directory chain that points back on itself.
+const tiffLibs = (() => {
+  const c = { self: {}, console: { log() {} }, process: { env: {} } };
+  vm.createContext(c);
+  vm.runInContext(readFileSync(join(SITE, "assets/vendor/utif-3.1.0/pako_inflate.min.js"), "utf8"), c);
+  vm.runInContext(readFileSync(join(SITE, "assets/vendor/utif-3.1.0/UTIF.js"), "utf8"), c);
+  return { pako: c.self.pako, UTIF: c.self.UTIF };
+})();
+const tiff = (name) => new Uint8Array(readFileSync(join(HERE, "fixtures/convert-tiff-" + name + ".tif")));
+const decodeTiff = (name, page = 0) => {
+  const b = tiff(name), t = C.readTiff(b), p = t.pages[page];
+  assert.equal(p.problem, "", name + ": " + p.problem);
+  return { p, rgba: C.tiffRGBA(C.tiffDecodeRaw(b, p, tiffLibs), p) };
+};
+const pix = (d, x, y) => Array.from(d.rgba.slice((y * d.p.width + x) * 4, (y * d.p.width + x) * 4 + 4));
+
+test("sniff and kindOf: TIFF, BigTIFF, XLS, XLSX and JSON", () => {
+  assert.equal(C.sniff(utf8("II*\0\b\0\0\0\0\0\0\0")), "tiff");
+  assert.equal(C.sniff(new Uint8Array([0x4d, 0x4d, 0, 0x2a, 0, 0, 0, 8, 0, 0, 0, 0])), "tiff");
+  assert.equal(C.sniff(utf8("II+\0\b\0\0\0\0\0\0\0")), "bigtiff");
+  assert.equal(C.sniff(new Uint8Array([0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1, 0, 0, 0, 0])), "xls");
+  const zip = new Uint8Array([0x50, 0x4b, 3, 4, 20, 0, 0, 0, 8, 0, 0, 0]);
+  assert.equal(C.kindOf(zip, "book.xlsx"), "xlsx");
+  assert.equal(C.kindOf(zip, "macro.XLSM"), "xlsx");
+  assert.equal(C.kindOf(zip, "letter.docx"), "", "a Word file is a zip too, but not a workbook");
+  assert.equal(C.kindOf(utf8("a,b"), "data.xlsx"), "", "a text file named .xlsx is not a workbook");
+  assert.equal(C.kindOf(utf8('[{"a":1}]'), "x.json"), "json");
+  assert.equal(C.kindOf(utf8('{"a":1}\n{"a":2}\n'), "x.ndjson"), "json");
+  assert.equal(C.kindOf(utf8('﻿  [1,2]'), "export.txt"), "json", "a .txt that starts like JSON");
+  assert.equal(C.kindOf(utf8("a,b\n1,2"), "export.txt"), "csv", "a .txt that does not is still CSV");
+  assert.equal(C.kindOf(utf8("[id],name\n1,a"), "list.csv"), "csv", "a .csv is CSV even when it starts with a bracket");
+});
+
+test("refuse: the fourth set's messages", () => {
+  assert.match(C.refuse("xlsx-to-csv", "xls", 100), /^This is an older Excel workbook \(\.xls\), or an \.xlsx protected with a password\./);
+  assert.equal(C.refuse("xlsx-to-csv", "csv", 100), "This is a CSV file, not XLSX.");
+  assert.equal(C.refuse("tiff-to-jpg", "bigtiff", 100), "This is a BigTIFF, a variant for files over 4 GB that this page cannot read.");
+  assert.equal(C.refuse("tiff-to-jpg", "png", 100), "This is a PNG file, not TIFF.");
+  assert.equal(C.refuse("json-to-csv", "csv", 100), "This is a CSV file, not JSON.");
+  assert.equal(C.refuse("json-to-csv", "json", 51 * 1048576), "That file is over 50 MB.");
+});
+
+test("options: the fourth set's keys and defaults", () => {
+  const o = C.options("xlsx-to-csv", {});
+  assert.deepEqual([o.output, o.sheets, o.bom, o.safe, o.delimiter], ["csv", "first", false, true, "auto"]);
+  assert.equal(C.options("xlsx-to-csv", { sheets: "all", safe: false, bom: true }).sheets, "all");
+  assert.equal(C.options("xlsx-to-csv", { safe: false }).safe, false);
+  assert.equal(C.options("json-to-csv", { nested: "json", output: "xlsx" }).nested, "json");
+  assert.equal(C.options("json-to-csv", { nested: "x" }).nested, "columns");
+  assert.equal(C.options("tiff-to-jpg", { tiffpages: "all" }).tiffpages, "all");
+  assert.equal(C.options("tiff-to-jpg", { tiffpages: "3" }).tiffpages, "first");
+  assert.equal(C.options("pdf-to-jpg", { pages: "2-4" }).pages, "2-4", "the PDF page range keeps its own key");
+});
+
+test("XLSX readers: workbook, rels, shared strings, styles", () => {
+  const wb = C.parseWorkbook('<workbook><workbookPr date1904="1"/><sheets><sheet name="Data &amp; notes" sheetId="1" r:id="rId1"/>' +
+    '<sheet name="データ" sheetId="2" state="hidden" r:id="rId2"/></sheets></workbook>');
+  assert.deepEqual(plain(wb), { sheets: [{ name: "Data & notes", rid: "rId1", state: "visible" }, { name: "データ", rid: "rId2", state: "hidden" }], date1904: true });
+  assert.equal(C.parseWorkbook('<workbook><sheets/></workbook>').date1904, false);
+  const rels = plain(C.parseRels('<Relationships><Relationship Id="rId1" Type="http://x/worksheet" Target="worksheets/sheet1.xml"/>' +
+    '<Relationship Id="rId2" Type="http://x/worksheet" Target="/xl/worksheets/s2.xml"/><Relationship Id="rId3" Type="http://x/chartsheet" Target="../x/c.xml"/></Relationships>', "xl/"));
+  assert.deepEqual(rels, { rId1: { target: "xl/worksheets/sheet1.xml", type: "worksheet" }, rId2: { target: "xl/worksheets/s2.xml", type: "worksheet" }, rId3: { target: "x/c.xml", type: "chartsheet" } });
+  const sst = C.parseSharedStrings('<sst><si><t>plain</t></si><si><r><t>rich </t></r><r><rPr/><t xml:space="preserve">text</t></r></si>' +
+    '<si><t>東京</t><rPh><t>トウキョウ</t></rPh></si><si><t>line_x000D_\nbreak &lt;b&gt; &#233;</t></si><si/></sst>');
+  assert.deepEqual(plain(sst), ["plain", "rich text", "東京", "line\r\nbreak <b> é", ""]);
+  const styles = C.parseStyles('<styleSheet><numFmts><numFmt numFmtId="164" formatCode="yyyy-mm-dd hh:mm"/><numFmt numFmtId="165" formatCode="0.00&quot; days&quot;"/>' +
+    '<numFmt numFmtId="166" formatCode="[h]:mm"/><numFmt numFmtId="167" formatCode="[Red]0.00"/></numFmts><cellXfs><xf numFmtId="0"/><xf numFmtId="14"/>' +
+    '<xf numFmtId="164"/><xf numFmtId="165"/><xf numFmtId="20"/><xf numFmtId="166"/><xf numFmtId="167"/><xf numFmtId="10"/><xf numFmtId="22"/></cellXfs></styleSheet>');
+  assert.deepEqual(plain(styles), ["", "date", "datetime", "", "time", "", "", "", "datetime"]);
+});
+
+test("excelDate: both date systems, the 1900 leap-year bug, rounding to the second", () => {
+  assert.equal(C.excelDate(46329, "date", false), "2026-11-03");
+  assert.equal(C.excelDate(1, "date", false), "1900-01-01");
+  assert.equal(C.excelDate(59, "date", false), "1900-02-28");
+  assert.equal(C.excelDate(60, "date", false), "1900-02-29", "the day Excel counts that never was");
+  assert.equal(C.excelDate(61, "date", false), "1900-03-01");
+  assert.equal(C.excelDate(44867, "date", true), "2026-11-03", "the 1904 system is 1,462 days behind");
+  assert.equal(C.excelDate(46329.5, "datetime", false), "2026-11-03 12:00:00");
+  assert.equal(C.excelDate(0.6, "time", false), "14:24:00", "0.6 of a day is 14:24, not 14:23:59");
+  assert.equal(C.excelDate(46329.9999999, "datetime", false), "2026-11-04 00:00:00", "rounding past midnight moves the day");
+});
+
+test("sheetRows: cell types, gaps, formulas, styles and formula protection", () => {
+  const shared = ["name", "=HYPERLINK(\"x\")", "-5 items"];
+  const styles = ["", "date"];
+  const xml = '<worksheet><sheetData>' +
+    '<row r="1"><c r="A1" t="s"><v>0</v></c><c r="C1" t="inlineStr"><is><t>inline</t></is></c><c r="D1" s="1"><v>46329</v></c></row>' +
+    '<row r="3"><c r="B3"><v>3.50</v></c><c r="C3"><f>1+1</f><v>2</v></c><c r="D3"><f>A1</f></c><c r="G3"><f>B3*2</f><v></v></c><c r="E3" t="b"><v>1</v></c><c r="F3" t="e"><v>#N/A</v></c></row>' +
+    '<row r="4"><c r="A4" t="s"><v>1</v></c><c r="B4" t="s"><v>2</v></c><c r="C4"><v>-5</v></c><c r="D4" t="str"><v>@sum</v></c></row>' +
+    '</sheetData></worksheet>';
+  const r = C.sheetRows(xml, shared, styles, false, 1e6, true);
+  assert.deepEqual(plain(r.rows), [["name", "", "inline", "2026-11-03"], [], ["", "3.50", "2", "", "TRUE", "#N/A"],
+    ["'=HYPERLINK(\"x\")", "'-5 items", "-5", "'@sum"]]);
+  assert.equal(r.formulasWithoutValue, 2, "no <v>, and an empty <v>");
+  assert.equal(C.sheetRows(xml, shared, styles, false, 1e6, false).rows[3][0], "=HYPERLINK(\"x\")", "protection off");
+  assert.throws(() => C.sheetRows(xml, shared, styles, false, 5, true), /more than 5e-06 million cells|more than/);
+});
+
+test("toCsv: quoting, CRLF, trimmed edges; sheetFileName", () => {
+  assert.equal(C.toCsv([["a", "b,c", 'say "hi"'], ["line\nbreak", "", ""], [], []], ","), 'a,"b,c","say ""hi"""\r\n"line\nbreak",,\r\n');
+  assert.equal(C.toCsv([["x", "", ""], ["y", "z", ""]], ";"), "x;\r\ny;z\r\n");
+  assert.equal(C.toCsv([["a;b", "c"]], ";"), '"a;b";c\r\n');
+  assert.equal(C.toCsv([], ","), "");
+  assert.equal(C.sheetFileName("Q1/Q2: draft?"), "Q1_Q2_ draft_");
+  assert.equal(C.sheetFileName("  .hidden. "), "hidden");
+  assert.equal(C.sheetFileName(""), "Sheet");
+});
+
+test("protectBigInts and jsonRecords: shapes, JSON Lines, long IDs, errors", () => {
+  assert.equal(C.protectBigInts('{"id": 1234567890123456789, "n": 12, "s": "1234567890123456789", "f": 1234567890123456.5}'),
+    '{"id": "\\u00001234567890123456789", "n": 12, "s": "1234567890123456789", "f": 1234567890123456.5}');
+  assert.equal(C.protectBigInts('[-12345678901234567890,1e30, "a\\"b 99999999999999999"]'), '["\\u0000-12345678901234567890",1e30, "a\\"b 99999999999999999"]');
+  const api = C.jsonRecords('{"meta": {"count": 2}, "data": [{"id": 1}, {"id": 2}], "included": [{"x": 1}]}');
+  assert.deepEqual([api.from, plain(api.others), api.records.length], ["data", ["included"], 2]);
+  assert.equal(C.jsonRecords('﻿[{"a": 1}]').records.length, 1, "a BOM is fine");
+  const lines = C.jsonRecords('{"a": 1}\n\n{"a": 2, "b": true}\n');
+  assert.deepEqual([lines.lines, lines.records.length], [true, 2]);
+  assert.deepEqual(plain(C.jsonRecords('{"only": "one"}').records), [{ only: "one" }]);
+  assert.throws(() => C.jsonRecords("{nope"), /^Error: This is not valid JSON \(/);
+  assert.throws(() => C.jsonRecords('{"a":1}\n{bad}\n'), /line 2 is not a JSON value either/);
+});
+
+test("flattenRecords: columns, nesting, collisions, long IDs, formula protection, cell cap", () => {
+  const recs = C.jsonRecords('[{"id": 98765432109876543210, "user": {"name": "Ada", "tags": ["x", "y"]}, "user.name": "literal"},' +
+    ' {"id": 2, "score": -5, "note": "=1+1", "ok": false, "none": null, "__proto__": "p"}]').records;
+  const f = C.flattenRecords(recs, "columns", true);
+  assert.deepEqual(plain(f.rows), [
+    ["id", "user.name", "user.tags", "user.name (2)", "score", "note", "ok", "none", "__proto__"],
+    ["98765432109876543210", "Ada", '["x","y"]', "literal", "", "", "", "", ""],
+    ["2", "", "", "", "-5", "'=1+1", "false", "", "p"]]);
+  const j = C.flattenRecords(C.jsonRecords('[{"id": 12345678901234567890, "user": {"id": 12345678901234567891}}]').records, "json", false);
+  assert.deepEqual(plain(j.rows), [["id", "user"], ["12345678901234567890", '{"id":12345678901234567891}']], "long IDs stay exact inside JSON text too");
+  assert.deepEqual(plain(C.flattenRecords([1, "a", null], "columns", false).rows), [["value"], ["1"], ["a"], [""]]);
+  assert.throws(() => C.flattenRecords([{ a: 1, b: 2 }, { c: 3 }], "columns", false, 5), /makes 6 cells \(2 rows by 3 columns\)/);
+});
+
+test("readTiff: pages, thumbnails, a looping chain, damage, BigTIFF", () => {
+  const multi = C.readTiff(tiff("multipage"));
+  assert.deepEqual(plain(multi.pages.map((p) => [p.width, p.height, p.thumbnail])), [[40, 20, false], [10, 5, true], [30, 30, false]]);
+  assert.equal(C.readTiff(tiff("loop")).pages.length, 1, "a directory that points back at itself ends the chain");
+  assert.throws(() => C.readTiff(tiff("packbits").slice(0, 600)), /damaged or cut short/, "the directory itself is cut off");
+  assert.equal(C.readTiff(tiff("be16").slice(0, 150)).pages[0].problem, "This TIFF is damaged or cut short.", "the strip runs past the end");
+  assert.throws(() => C.readTiff(utf8("II+\0\b\0\0\0")), /BigTIFF/);
+  assert.throws(() => C.readTiff(utf8("II\0\0\b\0\0\0")), /not a TIFF/);
+  assert.throws(() => C.readTiff(new Uint8Array(4)), /empty or cut short/);
+});
+
+test("TIFF decoding matches Pillow for every layout the page takes", () => {
+  const RED = [255, 0, 0, 255], BLUE = [0, 0, 255, 255];
+  const pb = decodeTiff("packbits");
+  assert.deepEqual([pix(pb, 1, 1), pix(pb, 38, 1)], [RED, BLUE], "PackBits that happens to be as long as the raw data");
+  const z = decodeTiff("deflate32946");
+  assert.deepEqual([z.p.compression, pix(z, 1, 1), pix(z, 38, 1)], [32946, RED, BLUE]);
+  const g4 = decodeTiff("g4-whiteiszero");
+  assert.deepEqual([pix(g4, 1, 1), pix(g4, 60, 1)], [[255, 255, 255, 255], [0, 0, 0, 255]]);
+  const p4 = decodeTiff("palette4");
+  assert.deepEqual([pix(p4, 0, 0), pix(p4, 1, 0), pix(p4, 4, 1), pix(p4, 5, 1)], [RED, [0, 255, 0, 255], BLUE, [255, 255, 0, 255]]);
+  const ga = decodeTiff("gray-alpha");
+  assert.deepEqual([pix(ga, 1, 1), pix(ga, 38, 1)], [[100, 100, 100, 255], [50, 50, 50, 0]]);
+  for (const name of ["lzw-predictor", "tiled"]) {
+    const g = decodeTiff(name);
+    assert.deepEqual([pix(g, 0, 0), pix(g, 17, 17), pix(g, 39, 19)], [[0, 0, 128, 255], [102, 204, 128, 255], [234, 228, 128, 255]], name);
+  }
+  const be = decodeTiff("be16");
+  assert.deepEqual(pix(be, 3, 2), [192, 192, 192, 255], "16-bit big-endian keeps its high byte");
+  assert.deepEqual(pix(decodeTiff("multipage", 2), 5, 5), [0, 200, 0, 255]);
+});
+
+test("TIFF pieces: unpackBits, unpredict, refusals, orientation, JPEG tables", () => {
+  const out = new Uint8Array(8);
+  assert.equal(C.unpackBits(new Uint8Array([2, 1, 2, 3, 0xfd, 9]), out), 7);
+  assert.deepEqual(Array.from(out), [1, 2, 3, 9, 9, 9, 9, 0]);
+  const p = { spp: 1, bps: [16], le: true };
+  const buf = new Uint8Array([0xff, 0xff, 2, 0]); // 65535 then +2 wraps to 1
+  C.tiffUnpredict(buf, p, 2, 1);
+  assert.deepEqual(Array.from(buf), [0xff, 0xff, 1, 0]);
+  const f = tiff("palette4"), t = C.readTiff(f).pages[0];
+  assert.equal(t.problem, "");
+  for (const [k, v, msg] of [["compression", 6, /compression \(number 6\)/], ["planar", 2, /separate plane/], ["sampleFormat", 3, /floating-point/],
+    ["photometric", 8, /color model \(number 8\)/], ["predictor", 3, /predictor/], ["colorMap", null, /palette that is missing/]]) {
+    const copy = Object.assign({}, t, { [k]: v }, k === "planar" ? { spp: 3 } : {});
+    assert.match(C.tiffProblem(copy, f.length), msg, k);
+  }
+  assert.match(C.tiffProblem(Object.assign({}, t, { photometric: 2, spp: 1, bps: [8] }), f.length), /fewer than three samples/);
+  assert.match(C.tiffProblem(Object.assign({}, t, { photometric: 2, spp: 3, bps: [8, 8, 4] }), f.length), /8\/8\/4 bits per sample/);
+  assert.deepEqual(plain(C.orientTransform(6, 40, 20)), { width: 20, height: 40, m: [0, 1, -1, 0, 20, 0] });
+  // Each transform must land the four corners of the stored picture on the four corners of the upright canvas.
+  for (let o = 1; o <= 8; o++) {
+    const r = C.orientTransform(o, 40, 20), [a, b, c, d, e, g] = r.m;
+    const corners = [[0, 0], [40, 0], [0, 20], [40, 20]].map(([x, y]) => [a * x + c * y + e, b * x + d * y + g].join(",")).sort();
+    assert.deepEqual(corners, ["0,0", `0,${r.height}`, `${r.width},0`, `${r.width},${r.height}`].sort(), "orientation " + o);
+  }
+  const jpg = C.tiffJpeg(new Uint8Array([0xff, 0xd8, 0xff, 0xda, 1, 0xff, 0xd9]), new Uint8Array([0xff, 0xd8, 0xff, 0xdb, 7, 0xff, 0xd9]));
+  assert.deepEqual(Array.from(jpg), [0xff, 0xd8, 0xff, 0xdb, 7, 0xff, 0xda, 1, 0xff, 0xd9]);
+  const rgb = Array.from(C.tiffJpeg(new Uint8Array([0xff, 0xd8, 0xff, 0xda, 1]), null, true));
+  assert.deepEqual(rgb.slice(0, 18), [0xff, 0xd8, 0xff, 0xee, 0, 14, 0x41, 0x64, 0x6f, 0x62, 0x65, 0, 100, 0, 0, 0, 0, 0], "Adobe APP14, transform 0");
+  assert.deepEqual(rgb.slice(18), [0xff, 0xda, 1]);
 });
