@@ -369,7 +369,7 @@ test("every shared footer that links Keyfeel also links Tapefolio, and the layou
 test("the home page dock has a tile for Tapefolio with its icon, and the dock CSS groups the tiles by platform and lays up to five in a row", () => {
   const home = read("index.html");
   const tiles = [...home.matchAll(/<a class="dock-app" href="([^"]+)"/g)].map((m) => m[1]);
-  assert.deepEqual(tiles, ["/moderntex/", "/outbound-veil/", "/legroom/", "/keyfeel/", "/tapefolio/", "/panely/", "/summonly/", "/aka/", "/vitae/", "/globepin/", "/circled-hoops/", "/haea/", "/scholar-utility-belt/"]);
+  assert.deepEqual(tiles, ["/moderntex/", "/outbound-veil/", "/legroom/", "/keyfeel/", "/tapefolio/", "/panely/", "/summonly/", "/nee/", "/vitae/", "/globepin/", "/circled-hoops/", "/haea/", "/scholar-utility-belt/"]);
   assert.match(home, /<a class="dock-app" href="\/tapefolio\/" data-track="home_cta" data-track-meta="dock-tapefolio">\s*<span class="dock-art"><img src="\/assets\/tapefolio-icon\.webp" alt="" width="96" height="96" decoding="async"><\/span>\s*<strong class="dock-name">Tapefolio<\/strong>/);
   assert.match(home, /Free for 7 days, \$29\.99/);
   const css = read("home.css");
@@ -398,7 +398,7 @@ test("the Terms carry Tapefolio's own section: price, refund, two Macs, drafts, 
   assert.match(section, /does not anonymize a transcript/);
   assert.match(section, /Consent/);
   assert.match(section, /Liability cap for Tapefolio/);
-  assert.match(html, /the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Lenscrib, AKA, Panely and Summonly Mac apps/);
+  assert.match(html, /the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Lenscrib, Née, Panely and Summonly Mac apps/);
 });
 
 test("the Privacy page says what Tapefolio sends and does not send, and names its trial emails and recovery", () => {
@@ -406,7 +406,7 @@ test("the Privacy page says what Tapefolio sends and does not send, and names it
   assert.match(html, /<strong>Tapefolio<\/strong> has no account and no analytics/);
   assert.match(html, /does not upload your recordings, transcripts, images or key files/);
   assert.match(html, /Tapefolio trial emails<\/strong>/);
-  assert.match(html, /Keyfeel, Tapefolio, Lenscrib, AKA, Panely, Summonly, Mac Suite and kit purchases/);
+  assert.match(html, /Keyfeel, Tapefolio, Lenscrib, Née, Panely, Summonly, Mac Suite and kit purchases/);
 });
 
 // ---- the success page's script, against a fake DOM ---------------------------------------
@@ -504,7 +504,7 @@ test("the Suite success page has a Tapefolio section and the script shows its ke
   const html = read("suite/success/index.html");
   assert.match(html, /id="dl-tf"/);
   assert.match(html, /Tapefolio&rsquo;s keys are with their downloads below/);
-  const nodes = Object.fromEntries(["dl-moderntex", "dl-ov", "dl-lg", "dl-kf", "dl-tf", "dl-pf", "dl-lf", "dl-aka", "license"].map((id) => [id, new FakeNode()]));
+  const nodes = Object.fromEntries(["dl-moderntex", "dl-ov", "dl-lg", "dl-kf", "dl-tf", "dl-pf", "dl-lf", "dl-nee", "license"].map((id) => [id, new FakeNode()]));
   const ctx = {
     document: { getElementById: (id) => nodes[id] || null, createElement: (t) => new FakeNode(t), createRange: () => ({}), body: new FakeNode("body") },
     window: { location: { search: `?session_id=${SID}` }, getSelection: () => ({}) },
@@ -574,8 +574,8 @@ test("the update check is described the same way everywhere: app name, version, 
 
 test("the Suite page, the Suite terms and llms.txt say the same about updates and the update check", () => {
   const terms = read("terms/index.html");
-  assert.match(terms, /all updates to Keyfeel, Tapefolio, Panely, Summonly and AKA, updates to the version of Legroom you receive/);
-  assert.match(read("suite/index.html"), /so is every Keyfeel, Tapefolio, Panely, Summonly and AKA update\. Legroom updates to the version you buy are included/);
+  assert.match(terms, /all updates to Keyfeel, Tapefolio, Panely, Summonly and Née, updates to the version of Legroom you receive/);
+  assert.match(read("suite/index.html"), /so is every Keyfeel, Tapefolio, Panely, Summonly and Née update\. Legroom updates to the version you buy are included/);
   assert.match(read("suite/index.html"), /its check for a new version, which sends the app's name, its version and the macOS version\. The third is macOS itself/);
 });
 
