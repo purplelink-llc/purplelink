@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createContext, useContext } from "react";
 import { AbsoluteFill, Img, Sequence, staticFile, useCurrentFrame } from "remotion";
 import { clamp01, expoOut, lerp, FONT_DISPLAY, FONT_BODY } from "../theme.js";
 import { useFonts } from "../V2.jsx";
@@ -9,12 +9,22 @@ export { SPOT_FRAMES } from "./spot-stills.mjs";
 // A fast product spot for AKA: a file is dragged, the ring opens at the pointer, the pointer sweeps to a slice, the
 // file drops, the converted copy appears. Eight file types, quicker as it goes, then the end card. Cut on a 120 BPM
 // grid (one beat = 15 frames) so a music bed lines up. Every ring frame is the app's own drawing
-// (`AKA --render-spot`, backgrounds cut out), in video/assets/aka/spot/. 1920 x 1080, 30 fps.
+// (`AKA --render-spot`, backgrounds cut out), in video/assets/aka/spot/. 1920 x 1080, or 1080 x 1920 with `tall`, 30 fps.
 
 const INK = "oklch(97% 0.01 310)";
 const ACCENT = "oklch(70% 0.19 310)";
 const RING = 760; // shown size of the 816 px ring frames
-const CX = 1220, CY = 540; // where the ring opens
+
+// Wide (16:9) and tall (9:16, for Shorts, Reels and TikTok: text kept out of the top 210 px and bottom 400 px).
+const LAYOUTS = {
+  wide: { CX: 1220, CY: 540, mid: [960, 540], from: [-560, 120], word: { left: 130, top: 440, width: 900, size: 150, align: "left" },
+    chore: 150, head: { top: 120, size: 96 }, grid: { cols: 4, x0: 960, y0: 470, dx: 300, dy: 290 }, fold: [960, 560],
+    intro: 190, oneApp: 96 },
+  tall: { CX: 540, CY: 1030, mid: [540, 1000], from: [-260, 420], word: { left: 0, top: 300, width: 1080, size: 130, align: "center" },
+    chore: 120, head: { top: 300, size: 84 }, grid: { cols: 2, x0: 540, y0: 650, dx: 400, dy: 250 }, fold: [540, 960],
+    intro: 150, oneApp: 76 },
+};
+const Layout = createContext(LAYOUTS.wide);
 
 // [word, ext on the tile, input name, frame set, highlight path (last = chosen slice), slices on the page, output name, output tile]
 const CUTS = [
@@ -107,7 +117,7 @@ function Cursor({ x, y }) {
 }
 
 // A point inside slice i of n (slice 0 at the top, clockwise).
-function slicePoint(i, n) {
+function slicePoint(i, n, { CX, CY }) {
   const a = (i / n) * Math.PI * 2;
   const r = RING * 0.4; // the outer band of the slice, past its label
   return [CX + Math.sin(a) * r, CY - Math.cos(a) * r];
@@ -116,6 +126,7 @@ function slicePoint(i, n) {
 function Cut({ cut, len }) {
   const [word, ext, name, set, path, n, outName, outExt, count = 1] = cut;
   const frame = useCurrentFrame();
+  const L = useContext(Layout), { CX, CY } = L;
   const k = len / (4 * BEAT); // 1 for long cuts, 0.5 for short ones
   const t = (x) => Math.max(1, Math.round(x * k));
   const DRAG = t(12), BLOOM = t(8), SWEEP_END = t(40), DROP = t(6), RESULT = t(44);
@@ -123,7 +134,7 @@ function Cut({ cut, len }) {
   const wordIn = expoOut(clamp01(frame / 8));
   // Drag the file from the left to where the ring opens.
   const d = expoOut(clamp01(frame / DRAG));
-  const start = [CX - 560, CY + 120];
+  const start = [CX + L.from[0], CY + L.from[1]];
   let cur = [lerp(start[0], CX, d), lerp(start[1], CY, d)];
   const bloom = expoOut(clamp01((frame - DRAG) / BLOOM));
   // Sweep through the path between the bloom and SWEEP_END.
@@ -131,8 +142,8 @@ function Cut({ cut, len }) {
   const step = (SWEEP_END - sweepStart) / path.length;
   const si = frame < sweepStart ? -1 : Math.min(path.length - 1, Math.floor((frame - sweepStart) / step));
   if (si >= 0) {
-    const from = si === 0 ? [CX, CY] : slicePoint(path[si - 1], n);
-    const to = slicePoint(path[si], n);
+    const from = si === 0 ? [CX, CY] : slicePoint(path[si - 1], n, L);
+    const to = slicePoint(path[si], n, L);
     const p = expoOut(clamp01((frame - sweepStart - si * step) / Math.max(2, step * 0.7)));
     cur = [lerp(from[0], to[0], p), lerp(from[1], to[1], p)];
   }
@@ -147,7 +158,8 @@ function Cut({ cut, len }) {
   return (
     <AbsoluteFill>
       <div style={{
-        position: "absolute", left: 130, top: 440, fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 150, color: INK,
+        position: "absolute", left: L.word.left, top: L.word.top, width: L.word.width, textAlign: L.word.align,
+        fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: L.word.size, color: INK,
         letterSpacing: -2, lineHeight: 1, opacity: wordIn, transform: `translateY(${(1 - wordIn) * 18}px)`,
       }}>{word}</div>
       <Img src={staticFile(`aka/spot/ring-${set}-${highlighted}.png`)} style={{
@@ -192,12 +204,14 @@ function AppTile({ label, hue }) {
 
 function Problem() {
   const frame = useCurrentFrame();
+  const L = useContext(Layout);
   if (frame < 4 * BEAT) {
     const i = Math.floor(frame / BEAT);
     const p = expoOut(clamp01((frame - i * BEAT) / 6));
     return (
       <AbsoluteFill style={{ alignItems: "center", justifyContent: "center" }}>
-        <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 150, color: INK, letterSpacing: -2, opacity: p, transform: `translateY(${(1 - p) * 20}px)` }}>{CHORES[i]}</div>
+        <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: L.chore, color: INK, letterSpacing: -2, opacity: p,
+          maxWidth: 940, textAlign: "center", lineHeight: 1.05, transform: `translateY(${(1 - p) * 20}px)` }}>{CHORES[i]}</div>
       </AbsoluteFill>
     );
   }
@@ -209,15 +223,16 @@ function Problem() {
   return (
     <AbsoluteFill>
       <div style={{
-        position: "absolute", top: 120, width: "100%", textAlign: "center", fontFamily: FONT_DISPLAY, fontWeight: 600,
-        fontSize: 96, color: INK, letterSpacing: -1, opacity: head * (1 - fold),
-      }}>So you download an app for each.</div>
+        position: "absolute", top: L.head.top, left: "50%", transform: "translateX(-50%)", width: Math.min(1700, 940 * (L.grid.cols / 2)),
+        textAlign: "center", fontFamily: FONT_DISPLAY, fontWeight: 600, lineHeight: 1.05, fontSize: L.head.size, color: INK, letterSpacing: -1, opacity: head * (1 - fold),
+        whiteSpace: L.grid.cols === 2 ? "pre-line" : "normal" }}>{"So you download\nan app for each."}</div>
       {APPS.map(([label, hue], i) => {
-        const x = 960 + ((i % 4) - 1.5) * 300, y = 470 + Math.floor(i / 4) * 290;
+        const { cols, x0, y0, dx, dy } = L.grid;
+        const x = x0 + ((i % cols) - (cols - 1) / 2) * dx, y = y0 + Math.floor(i / cols) * dy;
         const pop = expoOut(clamp01((f - i * (BEAT / 2)) / 8));
         return (
           <div key={label} style={{
-            position: "absolute", left: lerp(x, 960, fold), top: lerp(y, 560, fold),
+            position: "absolute", left: lerp(x, L.fold[0], fold), top: lerp(y, L.fold[1], fold),
             transform: `translate(-50%, -50%) scale(${lerp(0.6, 1, pop) * lerp(1, 0.2, fold)})`, opacity: pop * (1 - fold),
           }}><AppTile label={label} hue={hue} /></div>
         );
@@ -225,7 +240,7 @@ function Problem() {
       {icon > 0 && (
         <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
           <Img src={staticFile("aka/icon.png")} style={{ width: 260, height: 260, opacity: icon, transform: `scale(${lerp(0.6, 1, icon)})` }} />
-          <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 96, color: INK, marginTop: 20, letterSpacing: -1, opacity: line }}>Or one app for all of it.</div>
+          <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: L.oneApp, color: INK, marginTop: 20, letterSpacing: -1, opacity: line, textAlign: "center" }}>Or one app for all of it.</div>
         </AbsoluteFill>
       )}
     </AbsoluteFill>
@@ -234,13 +249,14 @@ function Problem() {
 
 function Intro() {
   const frame = useCurrentFrame();
+  const L = useContext(Layout);
   const words = ["Drag.", "Hold Option.", "Drop.", "Done."];
   const i = Math.min(words.length - 1, Math.floor(frame / BEAT));
   const p = expoOut(clamp01((frame - i * BEAT) / 6));
   return (
     <AbsoluteFill style={{ alignItems: "center", justifyContent: "center" }}>
       <div style={{
-        fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 190, color: i === 3 ? ACCENT : INK, letterSpacing: -3,
+        fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: L.intro, color: i === 3 ? ACCENT : INK, letterSpacing: -3,
         opacity: p, transform: `scale(${lerp(1.06, 1, p)})`,
       }}>{words[i]}</div>
     </AbsoluteFill>
@@ -250,12 +266,13 @@ function Intro() {
 // Every ring, a few frames each.
 function Strobe() {
   const frame = useCurrentFrame();
+  const { mid } = useContext(Layout);
   const sets = [...new Set(CUTS.map((c) => c[3]))];
   const per = Math.max(1, Math.floor(STROBE / sets.length));
   const i = Math.min(sets.length - 1, Math.floor(frame / per));
   return (
     <Img src={staticFile(`aka/spot/ring-${sets[i]}-none.png`)} style={{
-      position: "absolute", left: 960 - RING / 2, top: 540 - RING / 2, width: RING, height: RING,
+      position: "absolute", left: mid[0] - RING / 2, top: mid[1] - RING / 2, width: RING, height: RING,
     }} />
   );
 }
@@ -275,9 +292,10 @@ function End() {
   );
 }
 
-export function AKASpot() {
+export function AKASpot({ tall = false }) {
   useFonts();
   return (
+    <Layout.Provider value={tall ? LAYOUTS.tall : LAYOUTS.wide}>
     <AbsoluteFill style={{ background: "black" }}>
       <Wallpaper />
       <Sequence durationInFrames={PROBLEM}><Problem /></Sequence>
@@ -288,5 +306,6 @@ export function AKASpot() {
       <Sequence from={STROBE_AT} durationInFrames={STROBE}><Strobe /></Sequence>
       <Sequence from={END_AT} durationInFrames={END}><End /></Sequence>
     </AbsoluteFill>
+    </Layout.Provider>
   );
 }

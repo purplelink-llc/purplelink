@@ -70,6 +70,7 @@ export const Root = () => (
       calculateMetadata={({ props }) => ({ durationInFrames: Math.round((props.timing.scenes.length ? PRODUCTS[props.id].build(props.timing).hero.T : 8) * brand.fps) })} />
     <Composition id="AKADemo" component={AKADemo} fps={brand.fps} width={1920} height={1080} durationInFrames={AKA_FRAMES} />
     <Composition id="AKASpot" component={AKASpot} fps={brand.fps} width={1920} height={1080} durationInFrames={SPOT_FRAMES} />
+    <Composition id="AKASpotTall" component={AKASpot} fps={brand.fps} width={1080} height={1920} durationInFrames={SPOT_FRAMES} defaultProps={{ tall: true }} />
     <Composition id="PanelyShot" component={PanelyShot} fps={brand.fps} width={1280} height={800} durationInFrames={1} defaultProps={{ shot: "layout-halves" }} />
     <Composition id="HeroV2" component={HeroV2} fps={brand.fps} width={1920} height={1080} durationInFrames={240} defaultProps={{ timing: { scenes: [] } }} />
     <Composition
