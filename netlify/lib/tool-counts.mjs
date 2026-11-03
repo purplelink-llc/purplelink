@@ -24,7 +24,7 @@ export const TOOL_SLUGS = [
   "word-to-latex", "xlsx-to-csv", "xlsx-to-json", "xlsx-to-latex",
 ];
 export const OUTCOMES = ["ok", "error", "limit"];
-export const OFFER_APPS = ["moderntex", "tapefolio", "outbound-veil", "vitae"];
+export const OFFER_APPS = ["moderntex", "tapefolio", "outbound-veil", "vitae", "nee", "suite"];
 export const COUNT_FIELDS = ["runs", "ok", "error", "limit", "offerViews", "offerClicks"];
 /** The beacon event types this module counts. tool_use is also stored as an event record by track.mjs, as before. */
 export const COUNTED_TYPES = ["tool_use", "tool_outcome", "offer_view", "offer_click"];

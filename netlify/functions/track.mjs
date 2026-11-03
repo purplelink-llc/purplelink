@@ -19,7 +19,7 @@
  * other; no version, browser or device model), so a channel's Mac share can be read for the Mac-only apps.
  *
  * Per-tool counts (lib/tool-counts.mjs): a tool_use beacon from a /tools/<slug>/ page also bumps that tool's daily "runs"
- * counter. tool_outcome (m: ok|error|limit), offer_view and offer_click (m: moderntex|tapefolio|outbound-veil|vitae)
+ * counter. tool_outcome (m: ok|error|limit), offer_view and offer_click (m: moderntex|tapefolio|outbound-veil|vitae|nee|suite)
  * are counted per day and tool and nothing else is kept: no event record is written for them. The slug comes from the
  * page path and must be an allowlisted tool directory; a bad slug or meta drops the event. Honors Do Not Track. Best-effort: returns 204 even on an
  * internal hiccup so analytics never breaks a page.
