@@ -17,6 +17,8 @@ fs.rmSync(pub, { recursive: true, force: true });
 fs.mkdirSync(path.join(pub, "fonts"), { recursive: true });
 for (const f of Object.values(brand.fonts)) fs.copyFileSync(path.resolve(ROOT, f.file), path.join(pub, "fonts", path.basename(f.file)));
 fs.cpSync(path.join(ROOT, "assets", "nee"), path.join(pub, "nee"), { recursive: true });
+fs.mkdirSync(path.join(pub, "brand"), { recursive: true });
+fs.copyFileSync(path.join(ROOT, "..", "site", "assets", "purplelink-wordmark-dark.png"), path.join(pub, "brand", "purplelink-wordmark-dark.png")); // wordmark B on the end card (the site copy; video/assets still has the old mark)
 
 const serveUrl = await bundle({ entryPoint: path.join(ROOT, "src", "index.jsx"), publicDir: pub });
 const comp = await selectComposition({ serveUrl, id: "NeeSpot" });

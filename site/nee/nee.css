@@ -24,6 +24,8 @@
 }
 .nee-hero-window { margin: 0; }
 .nee-hero-window .frame-soft { max-width: 760px; margin-inline: auto; }
+/* The hero plays the YouTube spot through motion.js (data-motion="youtube"); a 16:9 frame, not the square ring still. */
+.nee-hero-window .nee-hero-video { max-width: 760px; box-shadow: var(--elev-2); }
 .nee-hero-window figcaption { margin-top: 10px; font-size: 0.85rem; color: var(--muted); }
 
 /* Screenshots, when there are some: <section class="screenshots-section"> with a .nee-shots grid of

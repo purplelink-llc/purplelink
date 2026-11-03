@@ -218,6 +218,7 @@
         </label>
         <fieldset class="cv-opts">
           <legend>Options</legend>
+          <input type="hidden" data-opt="output" value="xlsx">
           <label class="cv-field">Separator <select id="cv-delimiter" data-opt="delimiter"><option value="auto">Detect</option><option value="comma">Comma</option><option value="semicolon">Semicolon</option><option value="tab">Tab</option><option value="pipe">Pipe</option></select></label>
           <label class="cv-field">Text encoding <select id="cv-encoding" data-opt="encoding"><option value="auto">Detect</option><option value="utf-8">UTF-8</option><option value="windows-1252">Windows-1252 (Western)</option><option value="iso-8859-2">ISO-8859-2 (Central European)</option><option value="shift_jis">Shift JIS (Japanese)</option><option value="gb18030">GB18030 (Chinese)</option><option value="utf-16le">UTF-16</option></select></label>
           <label class="cv-field"><input type="checkbox" id="cv-header" data-opt="header" checked> First row is a header (bold and frozen)</label>
@@ -277,6 +278,8 @@
       <nav class="tool-related" aria-label="Related tools">
         <h2>More free tools</h2>
         <ul>
+          <li><a href="/tools/xlsx-to-csv/">XLSX to CSV</a></li>
+          <li><a href="/tools/json-to-csv/">JSON to CSV</a></li>
           <li><a href="/tools/jpg-to-pdf/">JPG to PDF</a></li>
           <li><a href="/tools/pdf-tools/">PDF Tools</a></li>
           <li><a href="/tools/metadata-cleaner/">Metadata Cleaner</a></li>

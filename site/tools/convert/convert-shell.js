@@ -1,7 +1,8 @@
 /* File converters, page side: drop zone, queue, worker, network meter, zip. Shared by every /tools/<pair>/ page.
    The page's .cv-app[data-convert] names the pair; convert-core.js has the table. Files never leave the tab.
    Options are the controls marked data-opt="<key>" (radios share a key); data-show-when="key=a,b" shows a control
-   only while that option has one of those values. */
+   only while that option has one of those values, and data-nostore keeps a control out of the remembered options.
+   PDF pages and SVGs are drawn here on the page (pdf.js and <img> cannot run in the worker); the rest go to the worker. */
 (function () {
   "use strict";
   var C = window.Convert;
@@ -39,7 +40,7 @@
     try { s = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { s = {}; }
     controls.forEach(function (n) {
       var v = s[n.getAttribute("data-opt")];
-      if (v === undefined) return;
+      if (v === undefined || n.hasAttribute("data-nostore") || n.type === "hidden") return;
       if (n.type === "radio") { if (n.value === v) n.checked = true; }
       else if (n.type === "checkbox") { if (typeof v === "boolean") n.checked = v; }
       else if (n.tagName === "SELECT") { if (Array.prototype.some.call(n.options, function (o) { return o.value === v; })) n.value = v; }
@@ -65,6 +66,7 @@
       var w = n.getAttribute("data-show-when").split("=");
       n.hidden = w[1].split(",").indexOf(String(r[w[0]])) === -1;
     });
+    controls.forEach(function (n) { if (n.hasAttribute("data-nostore")) delete r[n.getAttribute("data-opt")]; });
     try { localStorage.setItem(KEY, JSON.stringify(r)); } catch (e) { /* private mode */ }
   }
   controls.forEach(function (n) { n.addEventListener("change", syncOptions); n.addEventListener("input", syncOptions); });
@@ -153,6 +155,164 @@
     });
   }
 
+  // ---------- drawn on the page: PDF pages (pdf.js) and SVG (<img>) ----------
+  function setProgress(item, p, label) { item.p = p; item.label = label; paintProgress(item); }
+
+  // canvas.toBlob runs the encoder off the main thread in Chrome and Firefox. Same check as the worker's encode().
+  function canvasBlob(c, opts) {
+    var type = C.MIME[opts.output];
+    return new Promise(function (resolve, reject) {
+      try {
+        c.toBlob(function (b) {
+          if (!b || b.size === 0 || b.type !== type) reject(new Error("This browser could not write a " + opts.output.toUpperCase() + " of that size."));
+          else resolve(b);
+        }, type, opts.output === "jpg" ? opts.quality : undefined);
+      } catch (e) {
+        reject(e && e.name === "SecurityError"
+          ? new Error("This browser will not export this SVG because it contains HTML (a foreignObject). Try Chrome or Firefox.")
+          : e);
+      }
+    });
+  }
+
+  var pdfjsLoad = null, pdfWorker = null;
+  function loadPdfjs() {
+    var u = LIBS.pdfjs, w = LIBS["pdfjs-worker"];
+    if (!u || !w || u.indexOf("/assets/vendor/") !== 0 || w.indexOf("/assets/vendor/") !== 0) return Promise.reject(new Error("The page did not name its PDF reader."));
+    if (!pdfjsLoad) {
+      pdfjsLoad = import(u).then(function (lib) {
+        lib.GlobalWorkerOptions.workerSrc = w;
+        return lib;
+      }).catch(function () {
+        pdfjsLoad = null; // let the next file try again
+        throw new Error("This browser could not load the PDF reader. Use a current version of Chrome, Edge, Firefox or Safari.");
+      });
+    }
+    return pdfjsLoad;
+  }
+
+  function pdfError(e) {
+    var name = e && e.name;
+    if (name === "PasswordException") return "This PDF is locked with a password. Open it in a PDF reader, save a copy without the password, and add that.";
+    if (name === "InvalidPDFException") return "This file could not be read as a PDF. It may be damaged or cut short.";
+    return "This PDF could not be opened (the reader said: " + ((e && e.message) || e) + ").";
+  }
+
+  async function pdfPages(item, opts) {
+    setProgress(item, 0.05, "Loading the PDF reader");
+    var lib = await loadPdfjs();
+    if (!pdfWorker) pdfWorker = new lib.PDFWorker();
+    var base = LIBS.pdfjs.split("?")[0].replace(/[^/]*$/, "");
+    var data = new Uint8Array(await item.file.arrayBuffer());
+    setProgress(item, 0.08, "Opening the PDF");
+    var task = lib.getDocument({
+        data: data, worker: pdfWorker, wasmUrl: base + "wasm/", cMapUrl: base + "cmaps/", cMapPacked: true,
+        standardFontDataUrl: base + "standard_fonts/", iccUrl: base + "iccs/", useWorkerFetch: false, verbosity: 0
+    });
+    var doc;
+    try { doc = await task.promise; } catch (e) { task.destroy(); throw new Error(pdfError(e)); }
+    var c = document.createElement("canvas");
+    try {
+      var count = doc.numPages;
+      var sel = C.parsePages(opts.pages, count);
+      if (sel.error) throw new Error(sel.error);
+      if (sel.pages.length > C.MAX_PDF_PAGES) throw new Error("This PDF has " + count + " pages. This page draws up to " + C.MAX_PDF_PAGES + " at a time, so enter a range under Pages, such as 1-" + C.MAX_PDF_PAGES + ".");
+      var ctx = c.getContext("2d");
+      var one = sel.pages.length === 1, folder = C.outName(item.file.name, "x").replace(/\.x$/, "") + "-pages";
+      var blobs = [], notes = [], failed = [], total = 0, shrunk = 0, stopped = 0;
+      for (var i = 0; i < sel.pages.length; i++) {
+        var n = sel.pages[i];
+        setProgress(item, 0.1 + 0.88 * (i / sel.pages.length), "Drawing page " + n + " of " + count);
+        var page = await doc.getPage(n);
+        try {
+          var size = page.getViewport({ scale: 1 });
+          var r = C.pageRaster(size.width, size.height, opts.dpi, MOBILE);
+          if (r.dpi < opts.dpi) shrunk = Math.min(shrunk || r.dpi, r.dpi);
+          c.width = r.width; c.height = r.height;
+          await page.render({ canvasContext: ctx, canvas: c, viewport: page.getViewport({ scale: r.scale }), background: "#ffffff" }).promise;
+          var blob = await canvasBlob(c, opts);
+          total += blob.size;
+          blobs.push({ name: one ? C.outName(item.file.name, opts.output) : folder + "/" + C.pageName(item.file.name, n, count, opts.output), part: !one, blob: blob });
+        } catch (e) {
+          failed.push(n);
+        } finally {
+          page.cleanup();
+        }
+        if (total > C.MAX_ZIP_BYTES && i < sel.pages.length - 1) { stopped = n; break; }
+      }
+      if (!blobs.length) throw new Error("No page of this PDF could be drawn" + (failed.length ? " (pages " + failed.join(", ") + ")" : "") + ".");
+      if (shrunk) notes.push("Some pages are too large to draw at " + opts.dpi + " dpi here, so they were drawn at " + shrunk + " dpi.");
+      if (failed.length) notes.push((failed.length === 1 ? "Page " + failed[0] + " could not be drawn and was left out." : "Pages " + failed.join(", ") + " could not be drawn and were left out."));
+      if (stopped) notes.push("Stopped after page " + stopped + ": the pages so far add up to 1 GB, the most this tab can zip. Enter a range under Pages for the rest.");
+      var pages = blobs.length;
+      return {
+        blobs: blobs, notes: notes,
+        summary: pages + " page" + (pages === 1 ? "" : "s") + " at " + (shrunk || opts.dpi) + " dpi, " + C.formatBytes(total),
+        partsLabel: "Download the " + pages + " pages (.zip)", zipName: folder + ".zip"
+      };
+    } finally {
+      c.width = c.height = 0; // Safari keeps canvas memory until the size is zeroed
+      task.destroy(); // frees the document in pdf.js's worker; the worker itself is kept for the next file
+    }
+  }
+
+  async function svgText(file) {
+    var head = new Uint8Array(await file.slice(0, 2).arrayBuffer());
+    var bytes;
+    if (head[0] === 0x1f && head[1] === 0x8b) {
+      if (typeof DecompressionStream === "undefined") throw new Error("This browser cannot unpack .svgz files. Save the drawing as .svg.");
+      var reader = file.stream().pipeThrough(new DecompressionStream("gzip")).getReader(), parts = [], n = 0;
+      for (;;) {
+        var r = await reader.read();
+        if (r.done) break;
+        n += r.value.length;
+        if (n > CONV.maxBytes) { reader.cancel(); throw new Error("Unpacked, this SVGZ is over " + (CONV.maxBytes / 1048576) + " MB, more than this page draws."); }
+        parts.push(r.value);
+      }
+      bytes = new Uint8Array(await new Blob(parts).arrayBuffer());
+    } else bytes = new Uint8Array(await file.arrayBuffer());
+    return C.svgDecode(bytes);
+  }
+
+  function dataUrl(text) {
+    return new Promise(function (resolve, reject) {
+      var fr = new FileReader();
+      fr.onload = function () { resolve(fr.result); };
+      fr.onerror = function () { reject(new Error("The SVG could not be read.")); };
+      fr.readAsDataURL(new Blob([text], { type: "image/svg+xml" }));
+    });
+  }
+
+  async function svgDraw(item, opts) {
+    setProgress(item, 0.1, "Reading the SVG");
+    var text = await svgText(item.file);
+    var size = C.svgSize(text);
+    if (!size) throw new Error("No <svg> element was found in this file.");
+    var out = C.svgOutSize(size.width, size.height, opts.scale, opts.width);
+    var big = C.tooManyPixels(out.width, out.height, MOBILE, C.MAX_PIXELS_PAGE);
+    if (big) throw new Error(big.replace("This picture", "At this size the picture"));
+    setProgress(item, 0.3, "Drawing " + out.width + " by " + out.height + " pixels");
+    var notes = C.svgNotes(text);
+    if (size.from === "default") notes.unshift("This SVG gives no size or viewBox, so it was drawn at 300 by 150 pixels, the browser default, times the size you chose.");
+    var img = new Image();
+    img.src = await dataUrl(C.svgWithSize(text, out.width, out.height));
+    text = null;
+    try { await img.decode(); } catch (e) { throw new Error("This browser could not draw this SVG. The file may not be valid XML."); }
+    var c = document.createElement("canvas");
+    try {
+      c.width = out.width; c.height = out.height;
+      var ctx = c.getContext("2d");
+      if (opts.output === "jpg") { ctx.fillStyle = opts.background; ctx.fillRect(0, 0, out.width, out.height); }
+      ctx.drawImage(img, 0, 0, out.width, out.height);
+      setProgress(item, 0.7, "Writing " + opts.output.toUpperCase());
+      var blob = await canvasBlob(c, opts);
+      return { blobs: [{ name: C.outName(item.file.name, opts.output), part: false, blob: blob }], notes: notes, width: out.width, height: out.height };
+    } finally {
+      c.width = c.height = 0;
+      img.src = "";
+    }
+  }
+
   // ---------- queue ----------
   var items = [], running = false;
   var drop = $("cv-drop"), input = $("cv-file"), list = $("cv-list"), statusEl = $("cv-status"), bar = $("cv-bar");
@@ -218,10 +378,17 @@
       var head = new Uint8Array(await item.file.slice(0, 4096).arrayBuffer());
       var why = C.refuse(PAIR, C.kindOf(head, item.file.name), item.file.size);
       if (why) throw new Error(why);
-      var res = await run(item, await item.file.arrayBuffer());
+      var res;
+      if (CONV.work === "pdfpages" || CONV.work === "svg") {
+        res = CONV.work === "pdfpages" ? await pdfPages(item, options()) : await svgDraw(item, options());
+        item.blobs = res.blobs;
+        res.blobs = null;
+      } else {
+        res = await run(item, await item.file.arrayBuffer());
+        item.blobs = res.outputs.map(function (o) { return { name: o.name, part: !!o.part, blob: new Blob([o.bytes], { type: o.mime }) }; });
+        res.outputs = null; // the blobs hold the bytes now
+      }
       item.res = res;
-      item.blobs = res.outputs.map(function (o) { return { name: o.name, part: !!o.part, blob: new Blob([o.bytes], { type: o.mime }) }; });
-      res.outputs = null; // the blobs hold the bytes now
       item.state = "done";
       return true;
     } catch (e) {
@@ -285,8 +452,9 @@
     });
     var parts = item.blobs.filter(function (b) { return b.part; });
     if (parts.length) {
-      var z = el("button", "btn btn-ghost cv-small", "Download the .iconset folder (.zip)"); z.type = "button";
-      z.addEventListener("click", function () { saveZip(parts, parts[0].name.split("/")[0] + ".zip", z); });
+      var z = el("button", "btn btn-ghost cv-small", item.res.partsLabel || "Download the .iconset folder (.zip)"); z.type = "button";
+      if (!mains.length) z.className = "btn btn-primary cv-small";
+      z.addEventListener("click", function () { saveZip(parts, item.res.zipName || parts[0].name.split("/")[0] + ".zip", z); });
       actions.appendChild(z);
     }
     if (CONV.combine) moveButtons(item, actions);
