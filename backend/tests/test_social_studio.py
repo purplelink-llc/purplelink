@@ -82,3 +82,40 @@ def test_queue_markdown_is_needs_ben_and_keeps_the_tag_off_the_draft(env):
     assert "needs_ben: true" in md and "executor: ben" in md and "kind: post" in md
     assert "utm_content" not in md and "{link}" in md   # one tag lives in one place only
     assert "approve" in md and "--by-ben" in md
+
+
+def test_standing_approval_covers_only_studio_notes_on_three_platforms(env):
+    meta, sec = studio.parse_note(GOOD)
+    it = studio.make_items(meta, sec, auto=True)
+    assert "needs_ben" not in it.meta and it.meta["source"] == "studio-note"
+    studio.auto_approve(it, {**meta, "link": ""}, http=None)   # no link check without a link
+    saved = items.find(it.id)
+    assert saved.status == "approved" and saved.meta["approved_by"] == items.STUDIO_STANDING_BY
+    assert saved.approval_valid()[0] is True
+    # editing after approval voids it
+    saved.sections["bluesky"] += " edited"
+    assert saved.approval_valid()[0] is False
+
+
+def test_standing_approval_refuses_other_platforms_and_sources(env):
+    meta, sec = studio.parse_note(GOOD)
+    it = studio.make_items(meta, sec, auto=True)
+    it.meta["platforms"] = ["linkedin", "threads"]
+    with pytest.raises(ValueError):
+        items.approve_studio_standing(it, {})
+    it.meta["platforms"] = ["linkedin", "bluesky", "mastodon"]
+    it.meta["source"] = "social-daily"
+    with pytest.raises(ValueError):
+        items.approve_studio_standing(it, {})
+
+
+def test_auto_approve_needs_a_live_link(env):
+    from social_helpers import FakeHttp
+    from socialpost.http import Resp
+    meta, sec = studio.parse_note(GOOD)
+    it = studio.make_items(meta, sec, auto=True)
+    with pytest.raises(studio.NoteError):
+        studio.auto_approve(it, meta, http=FakeHttp([("GET", "citation-gaps", Resp(404, b""))]))
+    assert items.find(it.id).status == "draft"
+    studio.auto_approve(it, meta, http=FakeHttp([("GET", "citation-gaps", Resp(200, b"ok"))]))
+    assert items.find(it.id).status == "approved"

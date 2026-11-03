@@ -39,7 +39,14 @@ IG_STANDING_SOURCES = ("instagram-reel", "instagram-companion")
 FB_STANDING_BY = "ben (standing, 2026-10-28)"
 FB_STANDING_PLATFORMS = ("facebook",)
 FB_STANDING_SOURCES = ("instagram-reel",)
+# Ben's standing approval for the weekly studio note (2026-11-03, "Standing approval for notes", chosen in chat when asked
+# what to automate): the note drafted by socialpost.studio goes to the company LinkedIn page, Bluesky and Mastodon once it
+# passes the studio gate. Nothing else: no other platform, no other source, never Ben's personal LinkedIn.
+STUDIO_STANDING_BY = "ben (standing, 2026-11-03)"
+STUDIO_STANDING_PLATFORMS = ("linkedin", "bluesky", "mastodon")
+STUDIO_STANDING_SOURCE = "studio-note"
 STANDING = {STANDING_BY: (STANDING_PLATFORMS, (STANDING_SOURCE,)),
+            STUDIO_STANDING_BY: (STUDIO_STANDING_PLATFORMS, (STUDIO_STANDING_SOURCE,)),
             IG_STANDING_BY: (IG_STANDING_PLATFORMS, IG_STANDING_SOURCES),
             FB_STANDING_BY: (FB_STANDING_PLATFORMS, FB_STANDING_SOURCES)}
 FB_REEL_MAX_S = 90.0   # Facebook Reels through the API: 3 to 90 seconds
@@ -169,7 +176,7 @@ class Item:
             if bad:
                 return False, f"standing approval does not cover {', '.join(bad)}; Ben approves those by hand"
             if m.get("source") not in sources:
-                who = "the daily pipeline" if m["approved_by"] == STANDING_BY else "socialpost.instagram"
+                who = {STANDING_BY: "the daily pipeline", STUDIO_STANDING_BY: "socialpost.studio"}.get(m["approved_by"], "socialpost.instagram")
                 return False, f"standing approval only covers items {who} built"
         if m.get("approved_hash") != self.content_hash():
             return False, "content changed after approval; approve it again"
@@ -428,6 +435,17 @@ def approve_standing(item: Item, cfg: dict) -> None:
     if item.meta.get("source") != STANDING_SOURCE:
         raise ValueError("standing approval only covers items built by the daily pipeline")
     approve(item, cfg, STANDING_BY)
+
+
+def approve_studio_standing(item: Item, cfg: dict) -> None:
+    """Approve a weekly studio note under Ben's 2026-11-03 standing approval: LinkedIn company page, Bluesky and Mastodon
+    only, and only an item socialpost.studio built."""
+    bad = [p for p in item.platforms if p not in STUDIO_STANDING_PLATFORMS]
+    if bad:
+        raise ValueError(f"the studio-note standing approval does not cover {', '.join(bad)}")
+    if item.meta.get("source") != STUDIO_STANDING_SOURCE:
+        raise ValueError("the studio-note standing approval only covers items built by socialpost.studio")
+    approve(item, cfg, STUDIO_STANDING_BY)
 
 
 def approve_instagram_standing(item: Item, cfg: dict) -> None:
