@@ -10,7 +10,7 @@ block under "## Draft", whose first line is "Title: ...". The day's order lives 
 Outreach/reddit-desk/desk.json in the main checkout (git-ignored, never added):
 
   {"posts": [{"id": "q-20261103-rd01", "sub": "MacOSApps", "flair": "Utilities", "slot": "2026-11-03T18:10",
-              "kind": "post", "app": "keyfeel", "note": "..."},
+              "kind": "post", "app": "keyfeel", "images": ["images/keyfeel-collage.png"], "note": "..."},
              {"id": "q-...", "sub": "iosapps", "kind": "comment", "thread": "https://www.reddit.com/r/...", ...}]}
 
   reddit_desk.py status                    the schedule: posted, due, waiting
@@ -132,8 +132,19 @@ def open_in_chrome(url: str) -> None:
     subprocess.run(["open", "-a", "Google Chrome", url], check=True)
 
 
-def submit_url(sub: str, title: str) -> str:
-    return f"https://www.reddit.com/r/{sub}/submit?" + urllib.parse.urlencode({"type": "TEXT", "selftext": "true", "title": title})
+def submit_url(sub: str, title: str, images: bool = False) -> str:
+    # An image post shows the picture in the feed; its body text field takes the same markdown as a text post.
+    q = {"type": "IMAGE", "title": title} if images else {"type": "TEXT", "selftext": "true", "title": title}
+    return f"https://www.reddit.com/r/{sub}/submit?" + urllib.parse.urlencode(q)
+
+
+def image_paths(p: dict) -> list[Path]:
+    """Screenshots and collages for the post, relative to the desk folder. Every post should have one (Ben, 2026-11-03)."""
+    paths = [desk_dir() / x for x in p.get("images") or []]
+    missing = [str(x) for x in paths if not x.is_file()]
+    if missing:
+        sys.exit("missing image: " + ", ".join(missing))
+    return paths
 
 
 def last_post_time(st: dict) -> dt.datetime | None:
@@ -192,16 +203,25 @@ def cmd_next(a) -> None:
     if it["folder"] not in ("pending", "approved"):
         sys.exit(f"{p['id']} is in {it['folder']}/, not pending or approved")
     kind = p.get("kind", "post")
-    url = p["thread"] if kind == "comment" else submit_url(p["sub"], title)
+    images = image_paths(p)
+    url = p["thread"] if kind == "comment" else submit_url(p["sub"], title, bool(images))
     pbcopy(body)
     if not a.no_open:
         open_in_chrome(url)
+        if images:
+            subprocess.run(["open", "-R", str(images[0])], check=True)  # Finder, file selected, ready to drag
     print(f"{p['id']}  r/{p['sub']}  ({kind})")
     if kind == "post":
         print(f"\nTitle (prefilled; if it is empty, run: python3 scripts/reddit_desk.py title {p['id']}):\n  {title}")
         print(f"Flair: {p.get('flair') or 'none needed'}")
     else:
         print(f"\nThread: {url}\nPaste it as a top-level comment.")
+    if images:
+        print("Images (shown in Finder; drag them onto the page" + (" first, then paste the body into the body text box):" if kind == "post" else "):"))
+        for x in images:
+            print(f"  {x}")
+    else:
+        print("No image for this post yet: every post should carry a screenshot or collage (add 'images' in desk.json).")
     print(f"Body: on the clipboard ({len(body.split())} words). utm_content={utm_content(body) or 'none'}")
     if p.get("note"):
         print(f"Check first: {p['note']}")
