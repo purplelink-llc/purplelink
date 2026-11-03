@@ -149,6 +149,15 @@ class ConverterPages(unittest.TestCase):
             self.assertIn(hashlib.sha256((d / f).read_bytes()).hexdigest() + "  " + f, readme, f"{f} differs from the README hash")
         self.assertTrue(any((d / "cmaps").glob("*.bcmap")))
 
+    def test_pdf_checkers_use_the_same_pdfjs(self):
+        # One copy of pdf.js on the site; 6.4 sends font names to the page only with fontExtraProperties.
+        self.assertFalse((SITE / "assets" / "vendor" / "pdfjs").exists(), "the 6.3.289 copy was removed")
+        for tool in ("thesis-format-checker", "camera-ready-checker"):
+            src = read_site(f"tools/{tool}/{tool}.js")
+            self.assertIn('import("/assets/vendor/pdfjs-6.4.299/pdf.min.mjs")', src, tool)
+            self.assertIn('"/assets/vendor/pdfjs-6.4.299/pdf.worker.min.mjs"', src, tool)
+            self.assertIn("fontExtraProperties: true", src, tool)
+
 
 if __name__ == "__main__":
     unittest.main()

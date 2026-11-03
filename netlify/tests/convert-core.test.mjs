@@ -417,6 +417,8 @@ test("sniff and kindOf: PDF, BMP, SVG and SVGZ", () => {
   assert.equal(C.kindOf(utf8(svg), "no-extension"), "svg", "SVG is known by its content");
   assert.equal(C.kindOf(utf8("\ufeff<svg:svg xmlns:svg='http://www.w3.org/2000/svg'/>"), "a.svg"), "svg");
   assert.equal(C.kindOf(utf8("<html><body><svg></svg></body></html>"), "page.svg"), "", "an HTML page is not an SVG");
+  assert.equal(C.kindOf(utf8("<!-- <svg> in a comment that never closes"), "a.svg"), "", "a cut-off comment is not a root");
+  assert.equal(C.kindOf(utf8("<!--a--><!--b-->\n  <?pi x?><svg/>"), "a.svg"), "svg");
   assert.equal(C.kindOf(new Uint8Array([0x1f, 0x8b, 8, 0, 0, 0]), "logo.svgz"), "svg");
   assert.equal(C.kindOf(new Uint8Array([0x1f, 0x8b, 8, 0, 0, 0]), "logo.gz"), "");
   assert.equal(C.kindOf(utf8("a,b\n1,2\n"), "data.csv"), "csv", "CSV detection is unchanged");

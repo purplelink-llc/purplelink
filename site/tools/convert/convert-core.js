@@ -93,8 +93,17 @@
     if (!b || b.length < 5) return false;
     let t = "";
     for (let i = 0; i < b.length && i < 4096; i++) { if (b[i] === 0) return false; t += String.fromCharCode(b[i]); }
-    t = t.replace(/^\xef\xbb\xbf/, "").replace(/<\?xml[\s\S]*?\?>|<!--[\s\S]*?-->|<!DOCTYPE[^>[]*(\[[\s\S]*?\])?\s*>/gi, "").replace(/^\s+/, "");
-    return /^<(svg:)?svg[\s>/]/i.test(t);
+    // Step over the prolog (whitespace, comments, processing instructions, doctype) without rewriting the text; an
+    // item cut off by the 4 KB head runs to the end, so nothing is mistaken for the root.
+    const skip = /\s+|<!--[\s\S]*?(?:-->|$)|<\?[\s\S]*?(?:\?>|$)|<!DOCTYPE[^>[]*(?:\[[\s\S]*?\])?[^>]*(?:>|$)/iy;
+    let at = t.startsWith("\xef\xbb\xbf") ? 3 : 0;
+    for (;;) {
+      skip.lastIndex = at;
+      const m = skip.exec(t);
+      if (!m || !m[0]) break;
+      at = skip.lastIndex;
+    }
+    return /^<(svg:)?svg[\s>/]/i.test(t.slice(at));
   }
 
   // "an SVG", "an AVIF", "a PNG": by how the name is said, not how it is spelled.

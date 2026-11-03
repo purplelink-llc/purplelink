@@ -468,9 +468,13 @@ and fill controls (`data-show-when="output=jpg"`) hidden for good. Every page wi
 - pdf.js 6.4.299, copied from the pdfjs-dist package already installed in the ScholarReader repo (no new download):
   `pdf.min.mjs`, `pdf.worker.min.mjs`, and `wasm/jbig2.wasm`, `wasm/openjpeg.wasm`, `wasm/qcms_bg.wasm` with their
   licenses, in `site/assets/vendor/pdfjs-6.4.299/`. Without the wasm decoders, JBIG2 (black-and-white office scans)
-  and JPEG 2000 images come out blank; `/assets/vendor/pdfjs/` (6.3.289, the two checkers) has no wasm. A versioned
-  folder because pdf.js fetches the wasm files by name without a `?v=` stamp, and `/assets/vendor/*` is cached as
-  immutable for a year. Moving the two checkers to it and removing 6.3.289 is a follow-up.
+  and JPEG 2000 images come out blank. A versioned folder because pdf.js fetches the wasm files by name without a
+  `?v=` stamp, and `/assets/vendor/*` is cached as immutable for a year.
+- The Thesis Format Checker and the Camera-Ready Checker moved to this folder in the same PR, and the old
+  `/assets/vendor/pdfjs/` (6.3.289) was removed. pdf.js 6.4 no longer sends a font's name to the page unless
+  `getDocument` is given `fontExtraProperties: true`, so both checkers now pass it; without it their font lists showed
+  internal ids (`g_d0_f1`). Their reports were compared on six PDFs (two real papers, 7 and 36 pages) under 6.3.289
+  and 6.4.299, in WebKit and Firefox: all 24 identical.
 - Also vendored from the same package, loaded only when a PDF needs them: `cmaps/` (packed CMaps for CJK and other
   non-embedded Type0 fonts), `standard_fonts/` (Foxit and Liberation fonts for the 14 standard PDF fonts, so text in
   non-embedded Helvetica or Times looks the same on every system) and `iccs/`. 4.6 MB on the server in all.

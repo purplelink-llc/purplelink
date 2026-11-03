@@ -1,4 +1,5 @@
-pdf.js 6.4.299 (pdfjs-dist), Apache-2.0, https://github.com/mozilla/pdf.js. Self-hosted for PDF to JPG (/tools/pdf-to-jpg/).
+pdf.js 6.4.299 (pdfjs-dist), Apache-2.0, https://github.com/mozilla/pdf.js. Self-hosted for PDF to JPG (/tools/pdf-to-jpg/), the
+Thesis Format Checker and the Camera-Ready Checker.
 Copied unchanged from the npm package pdfjs-dist@6.4.299 (https://registry.npmjs.org/pdfjs-dist/-/pdfjs-dist-6.4.299.tgz,
 integrity sha512-AVl138zALtfaAPvADulE0PZThbYzCBS79nL4pOSL/6Sm/4AH5A21BD9VHt97OlCuzJuCpmeZtAtkinisF4Vb1g==).
 wasm/ holds the image decoders pdf.js fetches by name: jbig2.wasm (PDFium JBIG2, BSD-3-Clause), openjpeg.wasm
