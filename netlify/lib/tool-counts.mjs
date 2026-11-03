@@ -17,7 +17,7 @@ export const TOOL_SLUGS = [
   "abstract-checker", "academic-email-signature", "anonymity-check", "avif-to-jpg", "bib-builder", "bib-validator",
   "camera-ready-checker", "citation-gap", "citation-generator", "cover-letter", "csv-to-xlsx", "equation-renderer", "file-to-markdown",
   "heic-to-jpg", "jpg-to-pdf", "latex-diff", "latex-table-generator", "latex-to-pdf", "latex-to-word", "markdown-to-pdf",
-  "metadata-cleaner", "paper-review", "pdf-structure", "pdf-tools", "pii-checker", "png-to-icns", "png-to-ico", "reference-converter",
+  "metadata-cleaner", "paper-review", "pdf-structure", "pdf-tools", "photo-to-logo", "pii-checker", "png-to-icns", "png-to-ico", "reference-converter",
   "reproducibility-checker", "response-letter-template", "response-review", "resume-review", "retraction-check",
   "stock-keyword-cleaner", "submission-checklist", "thesis-format-checker", "transcript-cleaner", "webp-to-png", "word-counter",
   "word-to-latex",
