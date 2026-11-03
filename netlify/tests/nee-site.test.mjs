@@ -367,3 +367,33 @@ test("the product name reads Née, and every URL, id and file name uses ASCII ne
   }
   assert.ok(existsSync(join(SITE, "nee", "index.html")) && !existsSync(join(SITE, "aka")), "the page lives at /nee/, not /aka/");
 });
+
+test("the /aka/ redirects come before the catch-all 404, so Netlify reaches them", () => {
+  const toml = readFileSync(join(SITE, "..", "netlify.toml"), "utf8");
+  const catchAll = toml.indexOf('from = "/*"');
+  assert.ok(catchAll > 0, "netlify.toml has the catch-all 404 rule");
+  for (const from of ['from = "/aka/"', 'from = "/aka/*"']) {
+    const at = toml.indexOf(from);
+    assert.ok(at > 0 && at < catchAll, `${from} must sit above the catch-all (Netlify uses the first rule that matches)`);
+  }
+  assert.ok(!toml.slice(catchAll).includes("[[redirects]]"), "the catch-all 404 is the last redirect rule");
+});
+
+test("the hero window plays the YouTube spot: nocookie, muted autoplay loop, a poster and link for reduced motion", () => {
+  const html = read("nee/index.html");
+  const hero = html.slice(html.indexOf('<figure class="app-hero-window nee-hero-window">'), html.indexOf("</figure>", html.indexOf("nee-hero-window")));
+  const box = hero.match(/<div class="yt-embed[^"]*" data-motion="youtube" data-youtube-id="([^"]*)" data-youtube-title="([^"]+)">/);
+  assert.ok(box, "the hero window holds a data-motion=youtube embed with a title for the iframe");
+  const id = box[1];
+  assert.match(id, /^[\w-]{11}$/, "data-youtube-id is a real YouTube id (replace the NEE_YT_ID placeholder after the upload)");
+  assert.ok(hero.includes(`href="https://www.youtube.com/watch?v=${id}"`), "the play link opens the same video");
+  const poster = hero.match(/<img class="yt-poster" src="\/([^"]+)" alt="[^"]+" width="1920" height="1080"/);
+  assert.ok(poster && existsSync(join(SITE, poster[1])), "a 16:9 poster with alt text, served from the site");
+  assert.doesNotMatch(html, /\sstyle="/, "no inline styles (CSP)");
+  const motion = read("motion.js");
+  assert.match(motion, /youtube-nocookie\.com\/embed\//, "the player is the privacy-enhanced one");
+  assert.match(motion, /autoplay=1&mute=1&loop=1&playlist=' \+ id \+ '&playsinline=1&rel=0/, "muted autoplay, looping, inline, no related videos");
+  assert.match(motion, /prefers-reduced-motion: reduce\)'\);\s*if \(reduce\.matches/, "reduced motion keeps the poster and link (no autoplay)");
+  const csp = readFileSync(join(SITE, "..", "netlify.toml"), "utf8").match(/frame-src[^;]*/)[0];
+  assert.match(csp, /https:\/\/www\.youtube-nocookie\.com/, "the CSP lets the nocookie player frame in");
+});

@@ -151,10 +151,11 @@
   // ---------- reading the PDF ----------
   async function analyze(file) {
     setStatus("Loading the PDF reader.", true);
-    const pdfjs = await import("/assets/vendor/pdfjs/pdf.min.mjs");
-    pdfjs.GlobalWorkerOptions.workerSrc = "/assets/vendor/pdfjs/pdf.worker.min.mjs";
+    const pdfjs = await import("/assets/vendor/pdfjs-6.4.299/pdf.min.mjs");
+    pdfjs.GlobalWorkerOptions.workerSrc = "/assets/vendor/pdfjs-6.4.299/pdf.worker.min.mjs";
     const data = new Uint8Array(await file.arrayBuffer());
-    const task = pdfjs.getDocument({ data, verbosity: 0 });
+    // fontExtraProperties: since pdf.js 6.4 a font's name reaches the page only with it.
+    const task = pdfjs.getDocument({ data, verbosity: 0, fontExtraProperties: true });
     const pdf = await task.promise;
     const n = pdf.numPages;
     const OPS = pdfjs.OPS;

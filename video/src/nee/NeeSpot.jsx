@@ -282,12 +282,15 @@ function End() {
   const a = expoOut(clamp01(frame / 14));
   const b = expoOut(clamp01((frame - 10) / 16));
   const c = expoOut(clamp01((frame - 24) / 16));
+  const tall = useContext(Layout) === LAYOUTS.tall;
+  const markW = tall ? 380 : 320; // wordmark B, 1563x448
   return (
     <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
       <Img src={staticFile("nee/icon.png")} style={{ width: 230, height: 230, opacity: a, transform: `scale(${lerp(0.9, 1, a)})` }} />
       <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 150, color: INK, marginTop: 6, letterSpacing: -2, lineHeight: 1.05, opacity: a }}>Née</div>
       <div style={{ fontFamily: FONT_BODY, fontWeight: 500, fontSize: 50, color: INK, marginTop: 12, opacity: b }}>51 actions. All on your Mac.</div>
       <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 36, color: ACCENT, marginTop: 30, opacity: c }}>purplelink.llc/nee</div>
+      <Img src={staticFile("brand/purplelink-wordmark-dark.png")} style={{ position: "absolute", left: "50%", bottom: tall ? 150 : 64, width: markW, height: "auto", marginLeft: -markW / 2, opacity: c }} />
     </AbsoluteFill>
   );
 }
