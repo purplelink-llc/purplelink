@@ -143,7 +143,7 @@ test("a paid Outbound Veil session returns its key, and it is the key the email 
 test("a paid Suite session returns a key for each app on the shared scheme", async () => {
   stripeSession({ id: "cs_live_suite_0123456789", payment_status: "paid", metadata: { product: "app-suite" } });
   const { keys } = await (await licenseCall("cs_live_suite_0123456789")).json();
-  assert.deepEqual(keys.map((k) => k.product).sort(), ["legroom", "outbound-veil"]);
+  assert.deepEqual(keys.map((k) => k.product).sort(), ["aka", "legroom", "outbound-veil"]);
 });
 
 test("unpaid, unknown, wrongly-shaped and keyless sessions get no key", async () => {

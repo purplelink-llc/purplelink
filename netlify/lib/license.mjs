@@ -24,10 +24,9 @@ export const PURPLELINK_LICENSE_PUBLIC_KEY_B64 = "d8gyRHTJVAivaL2wx4m1dQTLxrfE2h
 export const LICENSED_PRODUCTS = {
   "outbound-veil": { prefix: "OV1", label: "Outbound Veil", appPath: "/outbound-veil/" },
   legroom: { prefix: "LG1", label: "Legroom", appPath: "/legroom/" },
-  // AKA (AKA1) is still hidden. `inSuite: false` keeps it out of every Mac Suite purchase until launch day,
-  // so no past Suite buyer is handed a key for an app that is not released. The launch step that flips it (to
-  // true, or by deleting the field) is Ben's decision: see docs/products/aka.md, "Suite gate".
-  aka: { prefix: "AKA1", label: "AKA", appPath: "/aka/", inSuite: false },
+  // AKA (AKA1) is in the Mac Suite since its launch (Ben, 2026-11-02): see docs/products/aka.md, "Suite gate".
+  // `inSuite: false` is still honoured by suiteIncludes() for any future product that launches hidden.
+  aka: { prefix: "AKA1", label: "AKA", appPath: "/aka/" },
 };
 
 /** Whether a Mac Suite purchase includes this product. Every entry is in the Suite unless it says `inSuite: false`. */

@@ -1,5 +1,5 @@
 // The AKA pages, checked as files: the offer in the structured data, the release gate
-// (the trial link and Buy button stay dead until site/aka/launch.js is flipped), the
+// (launch.js is switched on and the static page says the same), the
 // copy rules (what the page may and may not claim), and the success page's script run against
 // a small fake DOM.
 //
@@ -69,22 +69,37 @@ test("the page has every section the brief asks for", () => {
 
 // ---- the release gate ------------------------------------------------------------------
 
-test("PRE-LAUNCH GUARD: the page ships switched off, unlisted, and says so (delete this test when launching)", () => {
+test("LAUNCHED: launch.js ships live with valid facts, and the static page already says the live wording", () => {
   const src = read("aka/launch.js");
-  assert.match(src, /live: false,/);
-  assert.match(src, /version: "",/);
-  assert.match(src, /sizeMb: "",/);
-  assert.match(src, /released: ""/);
+  const cfg = JSON.parse(src.match(/window\.AKA_LAUNCH = (\{[\s\S]*?\});/)[1].replace(/(\w+):/g, '"$1":'));
+  assert.equal(cfg.live, true);
+  assert.match(cfg.version, /^\d+\.\d+\.\d+$/);
+  assert.match(cfg.sizeMb, /^\d{1,4}$/);
+  assert.match(cfg.released, /^\d{4}-\d{2}-\d{2}$/);
+  // The staged 1.0.0 disk image is 5,060,892 bytes, 5 MB to the nearest whole megabyte.
+  if (cfg.version === "1.0.0") assert.equal(Math.round(5060892 / 1e6), Number(cfg.sizeMb));
   const html = read("aka/index.html");
-  const trialTags = [...html.matchAll(/<a\b[^>]*data-aka-gated[^>]*>/g)].map((m) => m[0]);
-  assert.ok(trialTags.length >= 2);
-  for (const tag of trialTags) {
-    assert.doesNotMatch(tag, /\shref=/, "no href until launch");
-    assert.match(tag, /aria-disabled="true"/);
+  const gated = [...html.matchAll(/<a\b[^>]*data-aka-gated[^>]*>/g)].map((m) => m[0]);
+  assert.ok(gated.length >= 2);
+  for (const tag of gated) {
+    assert.match(tag, /\shref="\/\.netlify\/functions\/aka-download\?trial=1"/);
+    assert.doesNotMatch(tag, /aria-disabled/);
   }
-  assert.match(html, /<button\b[^>]*id="checkout-btn"[^>]*\sdisabled/);
-  assert.match(html, /Not released yet/);
-  assert.match(html, /<meta name="robots" content="noindex, follow">/, "unlisted until the launch change flips it");
+  assert.doesNotMatch(html, /<button\b[^>]*id="checkout-btn"[^>]*\sdisabled/);
+  assert.match(html, /id="checkout-btn" data-product="aka"[^>]*>Buy AKA<\/button>/);
+  assert.doesNotMatch(html, /Not released yet|opens at release|are listed here when|data-aka-pre-only/);
+  assert.doesNotMatch(html, /data-aka-live-only hidden/);
+  assert.equal([...html.matchAll(/>Try it free for 7 days<\/a>/g)].length, 2);
+  // What launch.js would write into the page is exactly what the static page already says.
+  const nice = new Date(cfg.released + "T00:00:00Z").toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
+  const facts = `Version ${cfg.version}, released ${nice}. ${cfg.sizeMb} MB disk image.`;
+  assert.ok(html.includes(`<span data-aka-facts>${facts}</span>`), "the static facts match launch.js");
+  assert.match(html, /<meta name="robots" content="index, follow">/);
+  const llms = read("llms.txt");
+  assert.ok(llms.slice(llms.indexOf("### AKA (macOS)")).includes(`**Status:** Shipping, version ${cfg.version}`));
+  const sm = read("sitemap.xml").match(/<loc>https:\/\/purplelink\.llc\/aka\/<\/loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/);
+  assert.ok(sm, "aka is listed in the sitemap with a lastmod");
+  assert.ok(sm[1] >= "2026-11-02", `aka lastmod ${sm[1]} is on or after the launch day`);
 });
 
 class FakeEl {
@@ -202,10 +217,11 @@ test("the page claims nothing the app does not do, and uses none of the banned w
   assert.match(text, /51 actions/);
 });
 
-test("the page says nothing about the Mac Suite or the bundles (the Suite gate is a launch decision, see docs/products/aka.md)", () => {
+test("the page says AKA is in the Mac Suite, links the Suite, and no longer says it is sold on its own", () => {
   const html = read("aka/index.html");
   const main = html.slice(html.indexOf("<main"), html.indexOf("</main>"));
-  assert.doesNotMatch(main, /\/suite\/|Mac Suite|bundle/i);
+  assert.match(main, /Also in the <a href="\/suite\/">Mac Suite<\/a>: [^<]*\bAKA\b[^<]*\$59\.99 once/);
+  assert.doesNotMatch(visibleText(html), /sold on its own|not (part of|in) the (Mac )?Suite/i);
 });
 
 test("every image on the page exists, has a size and alt text, and none is an invented screenshot", () => {
@@ -218,8 +234,14 @@ test("every image on the page exists, has a size and alt text, and none is an in
       assert.match(tag, /\sheight="\d+"/);
       assert.match(tag, /\salt="[^"]*"/);
     }
-    assert.doesNotMatch(html, /og\/aka\.png/, "no share card is referenced until it exists");
   }
+  const page = read("aka/index.html");
+  assert.match(page, /<meta property="og:image" content="https:\/\/purplelink\.llc\/assets\/og\/aka\.png">/);
+  assert.match(page, /<meta name="twitter:image" content="https:\/\/purplelink\.llc\/assets\/og\/aka\.png">/);
+  assert.match(page, /<meta name="twitter:card" content="summary_large_image">/);
+  const card = readFileSync(join(SITE, "assets/og/aka.png"));
+  assert.equal(card.readUInt32BE(16), 1200);
+  assert.equal(card.readUInt32BE(20), 630);
 });
 
 test("the demo video and its poster exist, and the page describes the video in text", () => {
@@ -273,12 +295,15 @@ test("the Privacy page says what AKA sends and does not send, and names its tria
   assert.match(html, /Lenscrib, AKA, Panely, Summonly, Mac Suite and kit purchases/);
 });
 
-test("nothing links to /aka/ yet: no nav, footer, home, products, pricing, sitemap, search index or llms file", () => {
-  for (const p of ["index.html", "products/index.html", "pricing/index.html", "suite/index.html", "sitemap.xml", "llms.txt", "llms-full.txt", "pricing.md", "changelog/index.html", "support/index.html", "recover/index.html", "search/index.html", "lenscrib/index.html", "legroom/index.html"]) {
-    if (!existsSync(join(SITE, p))) continue;
-    assert.doesNotMatch(read(p), /\/aka\//, `${p} links to the unreleased page`);
+test("AKA is linked where the other live Mac apps are: nav, footer, home, products, pricing, Suite, sitemap, search index, llms files", () => {
+  for (const p of ["index.html", "products/index.html", "pricing/index.html", "suite/index.html", "sitemap.xml", "llms.txt", "pricing.md", "legroom/index.html", "404.html"]) {
+    assert.match(read(p), /\/aka\//, `${p} does not link /aka/`);
   }
-  if (existsSync(join(SITE, "search-index.json"))) assert.doesNotMatch(read("search-index.json"), /\/aka\//);
+  assert.match(read("site.js"), /\/aka\//);
+  assert.match(read("analytics.js"), /aka-download\?trial=1[\s\S]{0,120}aka_trial_download/);
+  assert.match(read("analytics.js"), /\|aka_trial_download\|/);
+  assert.match(read("llms-full.txt"), /https:\/\/purplelink\.llc\/aka\//);
+  assert.match(read("search-index.json"), /\/aka\//);
 });
 
 // ---- the success page's script, against a fake DOM ---------------------------------------

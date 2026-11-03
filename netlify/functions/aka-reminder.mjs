@@ -14,7 +14,6 @@
  */
 
 import { createTrialReminder, REMIND_AFTER_DAYS } from "../lib/trial-reminder.mjs";
-import { suiteIncludes } from "../lib/license.mjs";
 
 export { REMIND_AFTER_DAYS };
 
@@ -28,8 +27,8 @@ const { handler, sendDueReminders, setupEmail, reminderEmail } = createTrialRemi
   fnName: "aka-reminder",
   store: "aka-trial-reminders",
   tokenStore: "aka-trial-reminder-tokens",
-  // A Mac Suite buyer counts as a buyer (no reminder) only once the Suite includes AKA (the `inSuite` launch gate).
-  products: suiteIncludes("aka") ? ["aka", "app-suite"] : ["aka"],
+  // A Mac Suite buyer counts as a buyer, so is never nudged to buy.
+  products: ["aka", "app-suite"],
 
   setup: (link) => ({
     subject: "AKA: getting started",
