@@ -1,0 +1,125 @@
+{
+ "id": "howto-find-card-numbers-in-text-before-sending",
+ "app": "outbound-veil",
+ "title": "Find credit card numbers in a note on Mac before you send it (grep fix)",
+ "short_title": "Check a note for card numbers before you paste it",
+ "url": "purplelink.llc/outbound-veil",
+ "page": "https://purplelink.llc/outbound-veil/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://www.forensicfocus.com/forums/general/finding-credit-card-numbers-zero-results/",
+  "https://learn.microsoft.com/en-us/answers/questions/1021319/powershell-script-ssn-and-cc",
+  "https://teamtreehouse.com/community/regular-expression-for-credit-cards"
+ ],
+ "verify": {
+  "runs": [
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf 'Order 5521 for Jane Roe\\nCard: 4111 1111 1111 1111\\nCall 555-0142 after 3pm\\n' > note.txt && cat note.txt",
+    "output": "Order 5521 for Jane Roe\nCard: 4111 1111 1111 1111\nCall 555-0142 after 3pm"
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf 'Order 5521 for Jane Roe\\nCard: 4111 1111 1111 1111\\nCall 555-0142 after 3pm\\n' > note.txt && grep -nE '([0-9]{4}[ -]?){3}[0-9]{4}' note.txt",
+    "output": "2:Card: 4111 1111 1111 1111"
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf 'Order 5521 for Jane Roe\\nCard: 4111 1111 1111 1111\\nCall 555-0142 after 3pm\\n' > note.txt && sed -E 's/([0-9]{4}[ -]?){3}[0-9]{4}/[CARD]/g' note.txt > clean.txt && cat clean.txt && grep -cE '([0-9]{4}[ -]?){3}[0-9]{4}' clean.txt",
+    "output": "Order 5521 for Jane Roe\nCard: [CARD]\nCall 555-0142 after 3pm\n0"
+   }
+  ],
+  "docs": [
+   "https://man.freebsd.org/cgi/man.cgi?query=grep",
+   "https://man.freebsd.org/cgi/man.cgi?query=sed",
+   "https://support.apple.com/guide/terminal/welcome/mac",
+   "https://www.regular-expressions.info/creditcard.html"
+  ],
+  "notes": "macOS /usr/bin/grep and sed, run 2026-11-03 in a fresh mktemp folder with an invented note; nothing outside that folder was touched. 4111 1111 1111 1111 is the widely published Visa test number, not a real card. The pattern finds 16-digit numbers written in groups of four (spaces, hyphens or none); it misses 15-digit American Express numbers and does no Luhn check, and the video says it finds only 16-digit numbers."
+ },
+ "scenes": [
+  {
+   "type": "hook",
+   "short": true,
+   "kicker": "Personal information",
+   "title": "Is there a card number in that note?",
+   "sub": "Check before you paste or send it.",
+   "narration": "Before you paste an order note into an AI chat or an email, check it for card numbers. On a Mac, Terminal can do that in one line."
+  },
+  {
+   "type": "symptom",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ cat note.txt",
+    "Order 5521 for Jane Roe",
+    "Card: 4111 1111 1111 1111",
+    "Call 555-0142 after 3pm"
+   ],
+   "narration": "Here is a short note with an invented customer and a test card number. In a long thread full of order numbers and phone numbers, a card number is easy to miss."
+  },
+  {
+   "type": "cause",
+   "text": "Find searches for the words you type. A card number is a pattern: four groups of four digits.",
+   "narration": "The usual Find box searches for the words you type. A card number is a pattern, sixteen digits, often in four groups of four, so you need a search that understands patterns."
+  },
+  {
+   "type": "steps",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ grep -nE '([0-9]{4}[ -]?){3}[0-9]{4}' note.txt",
+    "2:Card: 4111 1111 1111 1111",
+    "$ sed -E 's/([0-9]{4}[ -]?){3}[0-9]{4}/[CARD]/g' note.txt > clean.txt"
+   ],
+   "ui": "Finds 16-digit numbers, with spaces, hyphens or neither.",
+   "narration": "Run grep with this pattern. It prints the matching line and its number, and it skips the order number and the phone number. Then sed writes a copy, clean dot text, with the card number replaced by a placeholder. It finds sixteen digit numbers only, so a fifteen digit card is missed."
+  },
+  {
+   "type": "check",
+   "short": true,
+   "label": "Terminal",
+   "ok": "No card numbers left",
+   "lines": [
+    "$ cat clean.txt",
+    "Order 5521 for Jane Roe",
+    "Card: [CARD]",
+    "Call 555-0142 after 3pm",
+    "$ grep -cE '([0-9]{4}[ -]?){3}[0-9]{4}' clean.txt",
+    "0"
+   ],
+   "narration": "The clean copy reads the same, with the card number replaced. Counting matches in it gives zero. The name and phone number are still there, so read the copy before you send it."
+  },
+  {
+   "type": "app",
+   "name": "Outbound Veil",
+   "line": "Checks the text field you are typing in, on your Mac, and redacts each finding to a placeholder.",
+   "url": "purplelink.llc/outbound-veil",
+   "img": "site/assets/outbound-veil-screens/redacted.webp",
+   "icon": "site/assets/outbound-veil-icon.webp",
+   "narration": "Outbound Veil is a menu bar app that checks the text field you are typing in for personal information, including card numbers, names and phone numbers, on your Mac. It works in Notes, Messages, and the ChatGPT prompt box in Chrome. Redact all turns each finding into a labelled placeholder. It will miss some things, so read before you send. There is a free seven day trial."
+  }
+ ],
+ "thumbs": {
+  "A": {
+   "kind": "error",
+   "pill": "Before you send",
+   "msg": "Card: 4111 1111 1111 1111"
+  },
+  "B": {
+   "kind": "long",
+   "pill": "grep on Mac",
+   "msg": "Find card numbers in a note",
+   "n": 1,
+   "unit": "line",
+   "sub": "one Terminal command"
+  },
+  "C": {
+   "kind": "product",
+   "name": "Outbound Veil",
+   "line": "Redact before you send",
+   "img": "site/assets/outbound-veil-screens/redacted.webp",
+   "icon": "site/assets/outbound-veil-icon.webp",
+   "zoom": 1.2,
+   "pos": "0% 40%"
+  }
+ }
+}

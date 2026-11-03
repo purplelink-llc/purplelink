@@ -367,3 +367,14 @@ test("the product name reads Née, and every URL, id and file name uses ASCII ne
   }
   assert.ok(existsSync(join(SITE, "nee", "index.html")) && !existsSync(join(SITE, "aka")), "the page lives at /nee/, not /aka/");
 });
+
+test("the /aka/ redirects come before the catch-all 404, so Netlify reaches them", () => {
+  const toml = readFileSync(join(SITE, "..", "netlify.toml"), "utf8");
+  const catchAll = toml.indexOf('from = "/*"');
+  assert.ok(catchAll > 0, "netlify.toml has the catch-all 404 rule");
+  for (const from of ['from = "/aka/"', 'from = "/aka/*"']) {
+    const at = toml.indexOf(from);
+    assert.ok(at > 0 && at < catchAll, `${from} must sit above the catch-all (Netlify uses the first rule that matches)`);
+  }
+  assert.ok(!toml.slice(catchAll).includes("[[redirects]]"), "the catch-all 404 is the last redirect rule");
+});
