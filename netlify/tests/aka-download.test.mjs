@@ -1,4 +1,4 @@
-// AKA delivery: buyer door (a paid aka session; app-suite only after the launch gate flips), public
+// AKA delivery: buyer door (a paid aka session, the Mac Suite, or a custom bundle that names AKA), public
 // trial with a daily cap, and the token-gated update channel. Stripe and Netlify Blobs are stubbed.
 //
 // Run with: node --experimental-test-module-mocks --test netlify/tests/aka-download.test.mjs
@@ -88,25 +88,23 @@ test("a paid session for another product is refused", async () => {
   }
 });
 
-test("a paid Mac Suite session is refused while the launch gate is closed, so Suite buyers do not get AKA yet", async () => {
-  assert.equal(LICENSED_PRODUCTS.aka.inSuite, false, "the shipped state is gated");
+test("a paid Mac Suite session is accepted, since AKA is in the Suite", async () => {
   session.metadata.product = "app-suite";
   const list = await call(`session_id=${SESSION}`);
-  assert.equal(list.status, 403);
-  assert.equal((await list.json()).error, "not_entitled");
-  assert.equal((await call(`session_id=${SESSION}&file=AKA-1.0.0.dmg`)).status, 403);
+  assert.equal(list.status, 200);
+  assert.equal((await list.json()).files[0].key, "AKA-1.10.0.dmg");
+  assert.equal((await call(`session_id=${SESSION}&file=AKA-1.0.0.dmg`)).status, 200);
 });
 
-test("a paid Mac Suite session is accepted once the launch gate is flipped", async () => {
-  LICENSED_PRODUCTS.aka.inSuite = true;
-  try {
-    session.metadata.product = "app-suite";
-    const list = await call(`session_id=${SESSION}`);
-    assert.equal(list.status, 200);
-    assert.equal((await list.json()).files[0].key, "AKA-1.10.0.dmg");
-  } finally {
-    LICENSED_PRODUCTS.aka.inSuite = false;
-  }
+test("a custom bundle that names AKA is accepted, and one that does not is refused", async () => {
+  session.metadata = { product: "bundle-2", apps: "legroom,aka" };
+  assert.equal((await call(`session_id=${SESSION}`)).status, 200);
+  session.metadata = { product: "bundle-3", apps: "keyfeel,summonly,aka" };
+  assert.equal((await call(`session_id=${SESSION}`)).status, 200);
+  session.metadata = { product: "bundle-2", apps: "legroom,keyfeel" };
+  const res = await call(`session_id=${SESSION}`);
+  assert.equal(res.status, 403);
+  assert.equal((await res.json()).error, "not_entitled");
 });
 
 test("a session Stripe does not know is refused", async () => {
