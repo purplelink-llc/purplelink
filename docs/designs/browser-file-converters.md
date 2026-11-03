@@ -853,6 +853,209 @@ differ.
   writer, all 29 compared images match their references exactly in WebKit and Firefox. "Every size" for an icon with a
   single size gives the plain PNG, not a one-file zip.
 
+## Sixth set: XLSX to JSON, SRT to VTT, VTT to SRT
+
+Ben, 2026-11-03: "build the next three converters". Ranked as the fifth set was: fit, browser fit, no new library, and
+a trusted tool on this Mac for the reference outputs.
+
+| Pair | Volume (relative) | Fit | Browser fit | Reference | Rank |
+|---|---|---|---|---|---|
+| XLSX to JSON | Medium | Research and survey data into scripts | The XLSX readers of the fourth set, the JSON writer of the fifth | openpyxl (`data_only=True`) with the same rules | 1 |
+| VTT to SRT | Medium to high | Captions downloaded from YouTube, Zoom and lecture platforms, for editors that want SRT | Text only | `ffmpeg -i x.vtt x.srt` | 2 |
+| SRT to VTT | Medium | Captions for HTML5 video and course sites | Text only | `ffmpeg -i x.srt x.vtt` | 3 |
+| JPG to PNG | Very high | Weak | Native | | Not now |
+
+| Pair | Accepts | Work (worker) | Outputs |
+|---|---|---|---|
+| `xlsx-to-json` | `xlsx` (the fourth set's kind) | `xlsxread`: the same parts as XLSX to CSV, then `Convert.sheetJson` | .json or .jsonl; all sheets as one JSON object, or a zip of .jsonl |
+| `vtt-to-srt` | `vtt`: `WEBVTT` at the start, after a BOM | `Convert.parseVtt`, `Convert.writeSrt` | .srt |
+| `srt-to-vtt` | `srt`: a .srt name, or a head that opens with a cue number and an SRT timing line | `Convert.parseSrt`, `Convert.writeVtt` | .vtt |
+
+**XLSX to JSON.**
+- Excel cells have types, so nothing is guessed: `sheetRows` gains a parallel matrix of cell kinds (`n` number, `b`
+  boolean, `d` date or time, `s` text, `e` error). Numbers are written as the workbook stores them (valid JSON
+  number text, so `0.1` stays `0.1`); booleans as `true` and `false`; dates and times as the ISO strings XLSX to CSV
+  writes; errors and text as strings; empty cells as `null`.
+- Options: `output` "json" (default) or "jsonl"; `header` (default on: the first row gives the keys, with the fifth
+  set's key rules; off: rows as arrays); `sheets` "first" (default) or "all". All with JSON gives one object keyed by
+  sheet name in tab order (`{"Results": [...], "Notes": [...]}`); all with JSON Lines gives one .jsonl per sheet in a
+  zip. `unflatten` as on CSV to JSON.
+- Formula protection does not apply (JSON is not opened by Excel). The XLSX caps and the 200 MB JSON cap apply.
+
+**VTT to SRT.**
+- `parseVtt`: the `WEBVTT` line and its header; NOTE, STYLE and REGION blocks skipped; an optional cue identifier;
+  the timing line in `mm:ss.ttt` or `hh:mm:ss.ttt`, with cue settings after it dropped; the cue text up to a blank
+  line.
+- Text: `<b>`, `<i>` and `<u>` kept (SRT players read them); voice tags `<v Ana>` become the text alone, or
+  `Ana: text` with the "Keep speaker names" option (default on, since lecture and meeting captions use them); class
+  tags (`<c.yellow>`), `<lang>`, `<ruby>` and inline timestamps (`<00:00:01.200>`, used by auto-captions) removed;
+  `&amp;`, `&lt;`, `&gt;`, `&nbsp;` and numeric entities decoded.
+- Auto-captions from YouTube repeat each line in the next cue as it scrolls up. The "Merge repeated caption lines"
+  option (default on) drops a cue's first line when it equals the previous cue's last line and the file has inline
+  timestamps, the mark of those captions. A cue left empty by that is dropped.
+- `writeSrt`: cues numbered from 1, `hh:mm:ss,ttt --> hh:mm:ss,ttt`, CRLF line ends, a blank line between cues.
+
+**SRT to VTT.**
+- `parseSrt`: BOM, CRLF, missing or wrong cue numbers, extra blank lines, a `.` instead of `,` in times, and the
+  `X1:` position coordinates some files carry after the timing are all tolerated. A block without a timing line is
+  skipped with a note.
+- Text: `<b>`, `<i>`, `<u>` kept; `<font>` tags removed and their text kept (VTT has no font tag); `{\an8}`-style ASS
+  tags removed; a literal `<` or `&` escaped.
+- `writeVtt`: `WEBVTT`, a blank line, then each cue as `hh:mm:ss.ttt --> hh:mm:ss.ttt`; cue numbers kept as
+  identifiers, since some players and editors use them.
+
+**Shared.** Kinds `vtt` and `srt` in `kindOf`, before the CSV branch, so a .txt holding SRT is not called CSV. The two
+subtitle pairs use the worker (small files, but one path). Index: 19 cards, positions 38 to 40, Photo to Logo to 41.
+Sibling links between the two subtitle pages, from Transcript Cleaner to both, and from XLSX to CSV and CSV to JSON to
+XLSX to JSON. Branch `tools-converters-6`, one PR, squash-merged when green.
+
+**Tests against reference outputs.**
+- XLSX to JSON: workbooks written with openpyxl (numbers, booleans, dates in both date systems, a formula with a
+  cached value written by LibreOffice-style XML, text, errors, empty cells, a hidden sheet) and the real ABDC list;
+  openpyxl reads each with `data_only=True` and a Python script applies the same rules; the page's JSON must parse to
+  the same values.
+- Subtitles: fixtures with the edge cases above, each converted by ffmpeg; cue starts, ends and text (after the same
+  tag rules, where ffmpeg's differ, as documented) must match. YouTube-style auto-captions are checked against a
+  hand-written expected file, since ffmpeg does not merge repeated lines.
+- Node tests for every reader and writer; browser runs in WebKit and Firefox under the production CSP.
+
+**Resolved after review (two Goldfish reviewers on Sonnet, 2026-11-03).** These replace the text above where they
+differ.
+
+- **Kinds**, checked after the SVG test and before XLSX, JSON and CSV: `vtt` when the head (after a UTF-8 BOM) starts
+  `WEBVTT` followed by a space, tab, line break or the end; `srt` for a .srt name, or a head that is a number line and an
+  SRT timing line. A UTF-16 file (its BOM) named .srt or .vtt takes that kind. `KIND_NAMES` "SRT" and "WebVTT";
+  `article` learns SRT. A .txt holding SRT is now `srt`, so the CSV pages refuse it by name.
+- **Table rows.** `xlsx-to-json`: xlsx, json (default) or jsonl, `work: "xlsxread"`, 50 MB. `vtt-to-srt`: vtt, srt,
+  `work: "subs"`, 5 MB. `srt-to-vtt`: srt, vtt, `work: "subs"`, 5 MB. `MIME` gains `srt` (application/x-subrip) and
+  `vtt` (text/vtt).
+- **Options.** New `speakers` and `merge`, default on; `bom` (SRT output, default off) and `encoding` (subtitle
+  input, Detect by default, through `decodeText`) are reused. VTT output is UTF-8 without a BOM.
+- **The merge rule** acts only in files with inline timestamps (auto-captions), and only in two shapes: a cue whose
+  single line repeats the previous cue's last line and that lasts 50 ms or less (the flash cue YouTube puts between
+  rolls) is dropped; in a cue of two or more lines whose later line carries inline timestamps, a first line that repeats
+  the previous cue's last line is dropped. Lines are compared after tags are removed. Two genuine identical captions
+  ("No." then "No.") fit neither shape. The row says how many lines were merged.
+- **Subtitle text.** Voice tags give "Name: " when the speaker changes, not on every cue; `<rt>` readings are dropped
+  with their tags; `&lrm;` and `&rlm;` are decoded with the rest, once. SRT to VTT keeps `b`, `i` and `u` in any case,
+  removes every other tag (font, s, span and the like) and ASS overrides such as `{\an8}` with a note that positioning
+  was not kept, and escapes every other `<`, `>` and `&`, so `-->` in text cannot end a cue. Cue numbers are not kept
+  as identifiers. A fraction with fewer than three digits is read as a decimal (`,5` is 500 ms; ffmpeg reads 5 ms, a
+  documented difference). In a VTT block, a later line with `-->` starts a new cue, so a missing blank line does not
+  merge two cues. Output names keep the base (`lecture.en.vtt` gives `lecture.en.srt`); the summary is "N cues, the
+  last ending at hh:mm:ss"; no cues gives "This file has no captions."
+- **XLSX to JSON.** `sheetRows(xml, shared, styles, date1904, maxCells, safe, withKinds)`: with `withKinds`, it also
+  returns one string per row with a character per cell (`n` number, `b` boolean, `d` date or time, `s` text, `e`
+  error, space for a gap); XLSX to CSV does not pass it and is unchanged. The worker passes `safe` false. Numbers are
+  written as stored when the text fits the JSON number grammar, else as `String(Number(t))` when finite, else `null`
+  with a note; date-times use `T` (`2026-11-03T14:05:00`), not the CSV space. Leading and trailing empty rows are
+  trimmed and empty rows inside skipped; the header is the first row left. "First sheet" is the first visible sheet.
+  All sheets with JSON give one object keyed by sheet name, written by hand in tab order; with JSON Lines, a zip of
+  `name-sheets/<sheet>.jsonl`. The JSON writer of CSV to JSON is shared (`jsonWrite`), not copied, and its 200 MB
+  estimate covers all sheets together. Workbook opening (zip, index, rels, shared strings, styles, sheet list) moves
+  into one worker helper both XLSX pages use.
+- **Found in passing.** `parseSharedStrings` read a self-closing `<si/>` (and `<t/>`) as the start of a string that
+  swallowed the next one, shifting every later shared string in XLSX to CSV by one cell. Fixed with a test.
+- **Index:** 19 cards, positions 38 to 40, Photo to Logo to 41. Transcript Cleaner's related list links both subtitle
+  pages. **Build order:** core, readers and writers with tests, worker, pages, registration, site tests, browser runs.
+
+## Seventh set: ranking from data, then PDF to Text, Excel to LaTeX, Image to Base64
+
+The parent session, 2026-11-03: before a seventh set, check search volume or Search Console data for conversions not
+built yet, which live pages get impressions, and what the leading converter sites rank for that this site lacks.
+
+**What the data says (Search Console, purplelink.llc, 2026-08-04 to 2026-11-01, read 2026-11-03).**
+- None of the 19 converter pages has an impression yet. The first set went out with the 2026-11-02 build, after the
+  window closes, so the site's own data cannot rank converters yet. The 90-day read in the Concepts brief stands.
+- The conversion queries the site already gets are academic formats: "latex to word" (68 impressions, position 51.6),
+  "word to latex" (51, 35.8, plus variants), "pdf to markdown for scientific equations" (25, 27.7), "docx to tex",
+  "latex table to word", "doi to citation", "bibtex to citation", "latex zip to pdf". Each already has a tool (LaTeX to
+  Word, Word to LaTeX, File to Markdown, LaTeX Table Generator, Citation Generator, Reference Converter, LaTeX to
+  PDF), several of them server-side. An in-browser twin of a server tool would compete with it for the same query, so
+  those are not rebuilt.
+- Tool pages with impressions in the window: Citation Generator 577, LaTeX Diff 549, BibTeX Validator 418, Word to
+  LaTeX 398, LaTeX to Word 372, /tools/ 252, LaTeX to PDF 227; the rest under 100.
+
+**Rerank on 2026-11-24.** Search Console holds no converter data yet (the window above ends 2026-11-01, before the first
+converter build). On 2026-11-24 the converter pages will have about three weeks of impressions: rerank the candidates
+below with real per-page impressions and queries before an eighth set, and drop or merge any page the 90-day rule in
+the Concepts brief would flag.
+
+**Volume.** No keyword tool is connected (no Semrush, Ahrefs or DataForSEO account), and web searches for public
+figures on the candidate phrases returned none, so the volume column below is relative, judged from how many dedicated
+converter sites hold each head term. That is weaker than measured volume, and the 90-day read is the real test.
+
+**What the leading converter sites carry that this site lacks.** CloudConvert, FreeConvert and Convertio list
+document (PDF, DOCX, XLSX), image (PNG, JPG, SVG, WEBP), audio, video and ebook conversions. Against the 19 pages here,
+the gaps that run in a browser without a new library are: PDF to text, image to Base64 and back, JPG to PNG, and the
+spreadsheet-to-code family (Excel to LaTeX, Excel to Markdown or HTML tables). Audio, video, ebook and OCR need a
+library this site does not carry (an MP3 encoder, ffmpeg, an EPUB renderer, an OCR engine) and stay out.
+
+| Candidate | Volume (relative) | Fit | Browser fit | Reference | Rank |
+|---|---|---|---|---|---|
+| PDF to Text | High (every converter site has it) | Researchers pulling text from papers without uploading them | pdf.js, already vendored | Known text, and pypdf's `extract_text` | 2 |
+| Excel to LaTeX | Medium (a handful of table generators hold it) | Papers: the LaTeX Table Generator takes pasted CSV, not a workbook | The XLSX readers of the fourth set | pandoc reads the LaTeX back into cells | 1 |
+| Image to Base64 | High (developer tool sites) | Web pages, email templates, CSS and JSON payloads | Native | the `base64` command | 3 |
+| Base64 to Image | Medium | The reverse | Native | the `base64` command | Next |
+| JPG to PNG | Very high | Weak | Native | | Not now |
+| Excel to Markdown or HTML table | Medium | Docs and READMEs | XLSX readers | pandoc | Next |
+| Server-tool twins (Markdown to Word, PDF to Markdown, LaTeX to Word) | | | | | Not built: they would compete with the server tools |
+
+| Pair | Accepts | Where | Outputs |
+|---|---|---|---|
+| `pdf-to-text` | `pdf` | On the page, through pdf.js, as PDF to JPG does (`work: "pdftext"`) | .txt, UTF-8 |
+| `xlsx-to-latex` | `xlsx` | The worker: `openWorkbook`, `sheetRows` with kinds, `Convert.latexTable` | .tex |
+| `image-to-base64` | png, jpeg, gif, webp, avif, bmp, svg, ico | The worker: bytes to Base64 in the core (`Convert.base64`) | .txt, plus a Copy button on the row |
+
+**PDF to Text.** `getTextContent` per page; items are joined into lines by `hasEOL` and by a change in baseline, and
+lines into paragraphs where the gap between baselines is larger than the line height (option `layout`: "paragraphs",
+the default, or "lines" to keep the PDF's own line breaks). A hyphen at the end of a line joins the word when the next
+line starts with a lowercase letter. Pages are separated by a blank line, or by a form feed (`\f`, as pdftotext
+writes) with the "Mark page breaks" option. `pages` (the PDF to JPG range, not remembered) picks pages. A PDF with no
+text on any page gets "This PDF has no text layer, so it is probably a scan. Text from a scan needs OCR, which this page
+does not do." Reference: pypdf's `extract_text` on the same files; after whitespace is collapsed and line-end hyphens
+joined in both, the word sequence must match at 98% or more (pdf.js and pypdf order some items differently).
+
+**Excel to LaTeX.** One `tabular` per sheet: booktabs rules (`\toprule`, `\midrule` after the header, `\bottomrule`)
+or `\hline` with booktabs off; a column is right-aligned when every non-empty cell in it is a number, else
+left-aligned; LaTeX specials (`& % $ # _ { } ~ ^ \`) escaped; numbers as stored, dates as ISO. Options: `sheets`
+"first" (first visible) or "all" (one table each, in one .tex); `header` (default on); `booktabs` (default on, the
+row notes `\usepackage{booktabs}`); `float` (default on: a `table` environment with `\caption{<sheet name>}` and
+`\label{tab:<slug>}`). Reference: pandoc reads the .tex back (`-f latex -t json`), and its table cells must equal
+openpyxl's values for the same cells.
+
+**Image to Base64.** The file's bytes, unchanged, as Base64 (no line breaks), with the MIME type from the sniffed
+kind. Option `format`: "dataurl" (`data:image/png;base64,...`, the default), "base64" (the bare string), "css"
+(`background-image: url("data:...")`) or "html" (`<img src="data:..." alt="">`). Up to 10 MB; over 100 KB the row
+notes that a data URL that large slows a page down. The row has a Copy button (the shell's new `copyText` result
+field, through `navigator.clipboard.writeText`) and the .txt download. Reference: `base64` on macOS gives the same
+string.
+
+**Shared.** Index: 22 cards, positions 41 to 43, Photo to Logo to 44. Sitemap, Buddy, social cards and slugs as
+before; PDF to Text links to PDF to JPG and File to Markdown; Excel to LaTeX to the LaTeX Table Generator, XLSX to CSV
+and XLSX to JSON (and the LaTeX Table Generator links back); Image to Base64 to SVG to PNG and PNG to JPG.
+
+**Resolved after review (one Goldfish reviewer on Sonnet, design and readiness together, 2026-11-03).**
+- The ranking is by fit to this site's audience, which is the only evidence the data gives: Excel to LaTeX first (the
+  academic queries above), PDF to Text second (a different query from File to Markdown's "pdf to markdown", which
+  stays the server tool for structure and equations; each page links the other), Image to Base64 third, on fit to the
+  developers who use the site's other in-browser tools, the weakest of the three. The 2026-11-24 rerank decides
+  whether it stays.
+- PDF to Text: a space goes in where the gap between items is wider than a fifth of the font size; ligatures are folded
+  (NFKC) and soft hyphens removed; the line-end hyphen rule is a heuristic, said so in the limits; text runs in content
+  order, and two-column pages can interleave (a limit). Option keys `layout` ("paragraphs" or "lines") and
+  `pagebreaks` (form feeds); `pages` is reused and not remembered. A page without text is named in a note.
+- Excel to LaTeX: a row whose first cell starts with `[` is wrapped in braces so `\\` cannot take it as an optional
+  argument; line breaks inside cells become spaces; captions are escaped and labels unique; the worker passes `safe`
+  false; the output is a fragment with a booktabs note. Keys `booktabs` and `float` (default on); `sheets` "all" here
+  is one .tex with a table per sheet.
+- Image to Base64: `IMAGE_MIME` maps kinds to types (jpeg to image/jpeg, svg to image/svg+xml, ico to image/x-icon);
+  every output is .txt; the Copy button appears up to 2 MB of text, and past that the row says to download.
+- Reference tests: PDF to Text is compared with the known text of fixtures made for it (one column, two columns, a
+  ligature, a hyphenated line break), as a token LCS ratio over the known token count: 100% on one column, at least
+  95% on two; pypdf is a second, looser check. Excel to LaTeX is read back by pandoc (`-f latex-smart`) and its cells
+  compared with openpyxl's after whitespace is collapsed. Every Base64 format is decoded back to the original bytes.
+
 ## Open questions
 
 0. **Safari 16.4 and Firefox.** The browser check ran in Chromium. Worker plus Emscripten plus `OffscreenCanvas` is
@@ -952,3 +1155,24 @@ uniquifier; ICNS names by type, with ARGB, mask and JPEG 2000 rules; a lenient I
 allocation and the Windows mask rule; kinds placed after the ftyp branch; option names kept apart from the existing
 ones; committed fixtures with independent references. The reference runs then found ARGB colors stored
 premultiplied, and the canvas rounding that the PNG writer removed.
+
+Sixth set, two Goldfish reviewers on Sonnet (design, implementation readiness), zero context, 2026-11-03. What
+changed: the auto-caption merge narrowed to two shapes so genuine repeats survive; subtitle encodings read through
+`decodeText`; cell kinds opt-in so XLSX to CSV is unchanged; no formula guard in JSON; number text checked against the
+JSON grammar; date-times with T; row and column bounds and a slot cap before padding; kinds, table rows, options,
+messages and names specified. Found while testing against the references: a self-closing `<si/>` shifted every later
+shared string (fixed, affects XLSX to CSV); literal CR LF inside workbook XML was not normalized to LF as XML requires
+(fixed, affects XLSX to CSV). Against openpyxl, the 116,200 cells of the ABDC workbook differ only where empty text
+cells become null (documented) and where openpyxl leaves `_xHHHH_` escapes undecoded (it does not follow the spec).
+
+
+**2026-11-03, seventh set (Excel to LaTeX, PDF to Text, Image to Base64).** Ranked from Search Console fit (no converter
+impressions yet) and the competitor gap; rerank on 2026-11-24. One Goldfish reviewer on Sonnet; findings resolved
+above. Tested in WebKit and Firefox, headless, under the production CSP, with 0 CSP violations and 0 bytes sent while
+converting. Excel to LaTeX: each `.tex` read back with `pandoc -f latex-smart` matches openpyxl on every cell of the
+edge, book and ABDC (2,653 rows) workbooks, apart from three expected differences. Numbers are written as stored (`.5`,
+`1.234567890123457e+19`), a hidden sheet is skipped, and TeX typesets `'` as a right quote. PDF to Text: the two-column
+fixture matches its known text token for token. The one-column fixture differs in one word, because reportlab's
+base-14 Helvetica cannot encode the ffi ligature, so pypdf cannot recover it either. Paragraphs and the hyphen join
+come out right. Image to Base64: PNG, SVG and ICO outputs in every format decode back to the original bytes. Found
+while testing: refusals said "a XLSX"; `article()` now covers XLSX.

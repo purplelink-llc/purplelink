@@ -56,6 +56,7 @@ test("refuse: says what a wrong file is", () => {
   assert.equal(C.refuse("heic-to-jpg", "jpeg", 1000), "This is a JPEG file, not HEIC.");
   assert.equal(C.refuse("heic-to-jpg", "", 1000), "This is not a HEIC file, or it is damaged.");
   assert.equal(C.refuse("png-to-icns", "", 10), "This is not a PNG, JPEG or WebP file, or it is damaged.");
+  assert.equal(C.refuse("pdf-to-text", "xlsx", 1000), "This is an XLSX file, not PDF.");
   assert.equal(C.refuse("png-to-icns", "webp", 10), "");
   assert.equal(C.refuse("webp-to-png", "webp", 0), "That file is empty.");
   assert.match(C.refuse("webp-to-png", "webp", C.MAX_BYTES + 1), /over 100 MB/);
@@ -85,7 +86,8 @@ test("options: clamps and defaults", () => {
     output: "jpg", quality: 0.92, background: "#ffffff", iconset: false, mobile: false,
     sizes: "all", page: "a4", margin: false, delimiter: "auto", encoding: "auto", header: true, text: false,
     dpi: 150, pages: "", scale: "2", width: 1920, sheets: "first", bom: false, nested: "columns", safe: true, tiffpages: "first",
-    types: true, unflatten: false, icons: "largest"
+    types: true, unflatten: false, icons: "largest", speakers: true, merge: true,
+    layout: "paragraphs", pagebreaks: false, booktabs: true, float: true, format: "dataurl"
   });
   assert.equal(C.options("pdf-to-jpg", { dpi: "300" }).dpi, 300);
   assert.equal(C.options("pdf-to-jpg", { dpi: "600" }).dpi, 150);
@@ -819,4 +821,113 @@ test("pngEncode writes RGBA exactly, faint pixels included, with valid CRCs", as
   const raw = zlib.inflateSync(png.subarray(41, 41 + idatLen));
   assert.deepEqual(Array.from(raw), [0, 255, 255, 255, 3, 162, 139, 139, 22, 0, 0, 0, 0, 0, 10, 20, 30, 255]);
   assert.equal(C.crc32(new TextEncoder().encode("IEND")), 0xae426082, "the CRC every PNG's IEND carries");
+});
+
+test("parseSharedStrings: a self-closing <si/> or <t/> is an empty string and does not shift the rest", () => {
+  assert.deepEqual(plain(C.parseSharedStrings("<sst><si><t>a</t></si><si/><si><t>c</t></si><si><r><t/></r><r><t>d</t></r></si></sst>")), ["a", "", "c", "d"]);
+});
+
+test("xmlText: literal line ends normalized as XML does, escaped carriage returns kept", () => {
+  assert.equal(C.xmlText("a\r\nb\rc"), "a\nb\nc");
+  assert.equal(C.xmlText("a_x000D_\nb&#13;"), "a\r\nb\r");
+});
+
+// ---------- sixth set: XLSX to JSON, VTT to SRT, SRT to VTT ----------
+// fixtures/subs/*.expected.* are this code's output, checked against ffmpeg 9.0.2 on the same files: cue times match
+// exactly, and text matches apart from the documented differences (speaker names, decoded numeric entities, the
+// auto-caption merge, a cue whose blank line is missing split off instead of glued into the previous one).
+const subs = join(HERE, "fixtures/subs");
+test("subtitle kinds and refusals", () => {
+  const k = (t, n) => C.kindOf(utf8(t), n);
+  assert.equal(k("WEBVTT\n\n00:01.000 --> 00:02.000\nx\n", "a.vtt"), "vtt");
+  assert.equal(k("﻿WEBVTT - title\n", "captions"), "vtt");
+  assert.equal(k("WEBVTTX\n", "a.txt"), "csv", "WEBVTT must be followed by a space or line break");
+  assert.equal(k("1\r\n00:00:01,000 --> 00:00:02,000\r\nhi\r\n", "captions.txt"), "srt", "a .txt holding SRT");
+  assert.equal(k("anything", "a.srt"), "srt");
+  assert.equal(C.kindOf(new Uint8Array([0xff, 0xfe, 0x31, 0]), "u16.srt"), "srt", "UTF-16 by name");
+  assert.equal(C.refuse("csv-to-json", "srt", 10), "This is an SRT file, not CSV.");
+  assert.equal(C.refuse("srt-to-vtt", "vtt", 10), "This is a WebVTT file, not SRT.");
+});
+test("SRT to VTT and VTT to SRT match the checked outputs", () => {
+  for (const [src, out, fn] of [["basic.srt", "basic.srt.expected.vtt", "vtt"], ["cp1252.srt", "cp1252.srt.expected.vtt", "vtt"],
+    ["basic.vtt", "basic.vtt.expected.srt", "srt"], ["youtube.vtt", "youtube.vtt.expected.srt", "srt"], ["repeat.vtt", "repeat.vtt.expected.srt", "srt"]]) {
+    const text = C.decodeText(new Uint8Array(readFileSync(join(subs, src))), "").text;
+    let got;
+    if (fn === "vtt") got = C.writeVtt(C.parseSrt(text).cues).text;
+    else { const v = C.parseVtt(text); got = C.writeSrt(v.cues, { speakers: true, merge: v.autoCaptions }).text; }
+    assert.equal(got, readFileSync(join(subs, out), "utf8"), src);
+  }
+});
+test("subtitle rules: times, escaping, voices, the two merge shapes", () => {
+  assert.equal(C.subMs("01:02:03,4"), 3723400, "a short fraction is a decimal");
+  assert.equal(C.subMs("123:00:00.000"), 442800000, "hours past 99");
+  const vtt = C.writeVtt([{ start: 0, end: 1000, text: "a & b <x> --> c <I>i</I> {\\an8}top" }]).text;
+  assert.equal(vtt, "WEBVTT\n\n00:00:00.000 --> 00:00:01.000\na &amp; b  --&gt; c <i>i</i> top\n");
+  const s = (cues, o) => C.writeSrt(cues, o).text.replace(/\r/g, "");
+  const two = [{ start: 0, end: 1000, text: "<v Ana>Hi" }, { start: 1000, end: 2000, text: "<v Ana>Again" }, { start: 2000, end: 3000, text: "<v Bob>Yes" }];
+  assert.equal(s(two, {}), "1\n00:00:00,000 --> 00:00:01,000\nAna: Hi\n\n2\n00:00:01,000 --> 00:00:02,000\nAgain\n\n3\n00:00:02,000 --> 00:00:03,000\nBob: Yes\n", "a name only when the speaker changes");
+  assert.equal(s(two, { speakers: false }).split("\n")[2], "Hi");
+  const same = [{ start: 0, end: 900, text: "No." }, { start: 1000, end: 1900, text: "No." }];
+  assert.equal(C.writeSrt(same, { merge: true }).cues, 2, "two genuine identical captions both stay");
+  assert.throws(() => C.parseVtt("1\n00:00:01,000 --> 00:00:02,000\nx"), /does not start with WEBVTT/);
+});
+test("XLSX to JSON: cell kinds, header rules, numbers as JSON, dates with T, no formula guard", async () => {
+  const JSZip = vendored("jszip/jszip.min.js");
+  const zip = await JSZip.loadAsync(readFileSync(join(HERE, "fixtures/convert-xlsx-edge.xlsx")));
+  const txt = async (p) => (zip.file(p) ? await zip.file(p).async("string") : "");
+  const wb = C.parseWorkbook(await txt("xl/workbook.xml")), rels = C.parseRels(await txt("xl/_rels/workbook.xml.rels"), "xl/");
+  const shared = C.parseSharedStrings(await txt("xl/sharedStrings.xml")), styles = C.parseStyles(await txt("xl/styles.xml"));
+  const data = wb.sheets.find((s) => s.name === "Data");
+  const r = C.sheetRows(await txt(rels[data.rid].target), shared, styles, wb.date1904, 5e6, false, true);
+  const j = JSON.parse(C.sheetJson(r.rows, r.kinds, { header: true }).parts.join(""));
+  assert.deepEqual(j[0], { id: 1, name: "-text", score: 3.5, ok: true, when: "2026-11-03", at: "2026-11-03T14:05:00", err: "#N/A", note: null, "id (2)": 7 });
+  assert.equal(j[1].score, 0.5, "a stored .5 becomes valid JSON");
+  assert.equal(j[1].name, "=not a formula", "JSON gets no formula guard");
+  assert.equal(j.length, 3, "the leading blank row and the empty row inside are skipped");
+  const csv = C.sheetRows(await txt(rels[data.rid].target), shared, styles, wb.date1904, 5e6, true);
+  assert.equal(csv.kinds, undefined, "XLSX to CSV gets no kinds");
+  assert.throws(() => C.sheetRows('<sheetData><row r="2000000"><c r="A2000000"><v>1</v></c></row></sheetData>', [], [], false), /past Excel's last row/);
+});
+
+test("subtitle tag removal repeats until nothing is left, so nested tags cannot survive", () => {
+  const vtt = C.writeVtt([{ start: 0, end: 1000, text: "<<font>script>x" }]).text;
+  assert.ok(!/<script/i.test(vtt), vtt);
+  const srt = C.writeSrt([{ start: 0, end: 1000, text: "<<c>span>y</span>" }], {}).text;
+  assert.ok(!/<span/i.test(srt), srt);
+});
+
+// ---------- seventh set: Excel to LaTeX, PDF to Text, Image to Base64 ----------
+test("base64 matches Node's encoder, and every format decodes back to the same bytes", () => {
+  for (const n of [0, 1, 2, 3, 1000, 70000]) {
+    const b = new Uint8Array(n).map((_, i) => (i * 37 + 11) & 255);
+    assert.equal(C.base64(b), Buffer.from(b).toString("base64"), "length " + n);
+  }
+  const png = new Uint8Array(readFileSync(join(HERE, "fixtures/convert-ico-bmp24.ico")));
+  const b64 = C.base64(png);
+  for (const f of ["dataurl", "base64", "css", "html"]) {
+    const s = C.base64Snippet(b64, "image/x-icon", f);
+    const m = /(?:data:([^;]+);base64,)?([A-Za-z0-9+/=]{20,})/.exec(s);
+    assert.deepEqual(new Uint8Array(Buffer.from(m[2], "base64")), png, f);
+    if (f !== "base64") assert.equal(m[1], "image/x-icon", f);
+  }
+  assert.equal(C.IMAGE_MIME.svg, "image/svg+xml");
+});
+test("latexTable: escaping, alignment, booktabs, float, the [ guard, empty rows", () => {
+  assert.equal(C.latexEscape("a & b % c $ # _ { } ~ ^ \\ d\ne"), "a \\& b \\% c \\$ \\# \\_ \\{ \\} \\textasciitilde{} \\textasciicircum{} \\textbackslash{} d e");
+  const rows = [["Name", "Score", "Note"], [], ["[1] first", "3.5", "50%"], ["x_y", "-2", ""]];
+  const kinds = ["sss", "", "sns", "sn"];
+  const t = C.latexTable(rows, kinds, { header: true, booktabs: true, float: true, caption: "Results & more", label: "tab:results" });
+  assert.equal(t.tex, "\\begin{table}[htbp]\n  \\centering\n  \\caption{Results \\& more}\n  \\label{tab:results}\n  \\begin{tabular}{lrl}\n    \\toprule\n" +
+    "    Name & Score & Note \\\\\n    \\midrule\n    {[1] first} & 3.5 & 50\\% \\\\\n    x\\_y & -2 &  \\\\\n    \\bottomrule\n  \\end{tabular}\n\\end{table}\n");
+  const plainT = C.latexTable([["a", "b"], ["1", "2"]], ["ss", "nn"], { header: false, booktabs: false, float: false });
+  assert.equal(plainT.tex, "\\begin{tabular}{ll}\n  \\hline\n  a & b \\\\\n  1 & 2 \\\\\n  \\hline\n\\end{tabular}\n", "with no header the text row keeps columns left");
+  const used = {};
+  assert.deepEqual([C.latexLabel("Résultats 2024", used), C.latexLabel("Résultats 2024", used)], ["tab:resultats-2024", "tab:resultats-2024-2"]);
+});
+test("pdfPageText: spaces from gaps, lines, paragraphs, hyphens, ligatures", () => {
+  const it = (str, x, y, w, eol) => ({ str, transform: [12, 0, 0, 12, x, y], width: w, height: 12, hasEOL: !!eol });
+  const items = [it("Hello", 72, 700, 30), it("world", 106, 700, 30, true), it("exam-", 72, 685, 32, true), it("ple \ufb01ne\u00ad", 72, 670, 40, true),
+    it("New", 72, 640, 22), it("para", 98, 640, 24, true)];
+  assert.equal(C.pdfPageText(items, "paragraphs"), "Hello world example fine\n\nNew para");
+  assert.equal(C.pdfPageText(items, "lines"), "Hello world\nexam-\nple fine\nNew para");
 });

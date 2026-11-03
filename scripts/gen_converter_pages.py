@@ -31,6 +31,7 @@ CSV_ENC = ("select", "encoding", "Text encoding", [("auto", "Detect"), ("utf-8",
                                                   ("iso-8859-2", "ISO-8859-2 (Central European)"),
                                                   ("shift_jis", "Shift JIS (Japanese)"),
                                                   ("gb18030", "GB18030 (Chinese)"), ("utf-16le", "UTF-16")])
+SHEETS = ("radio", "sheets", "Sheets", [("first", "First sheet"), ("all", "All sheets")])
 ICONS = ("radio", "icons", "Sizes", [("largest", "The largest size"), ("all", "Every size, as a zip")])
 SAFE = ("check", "safe", "Keep text that starts with = + - @ from running as a formula in Excel", True)
 BOM = ("check", "bom", "Add a byte-order mark, so Excel on Windows shows accented letters", False)
@@ -807,7 +808,7 @@ PAGES = [
             ("Is it free?",
              "Yes. There is no account, no watermark and no limit beyond the sizes above."),
         ],
-        "related": [("/tools/csv-to-xlsx/", "CSV to XLSX"), ("/tools/json-to-csv/", "JSON to CSV"),
+        "related": [("/tools/xlsx-to-json/", "XLSX to JSON"), ("/tools/csv-to-xlsx/", "CSV to XLSX"), ("/tools/json-to-csv/", "JSON to CSV"),
                     ("/tools/pdf-tools/", "PDF Tools"), ("/tools/metadata-cleaner/", "Metadata Cleaner")],
     },
     {
@@ -1022,7 +1023,7 @@ PAGES = [
             ("Is it free?",
              "Yes. There is no account, no watermark and no limit beyond the sizes above."),
         ],
-        "related": [("/tools/json-to-csv/", "JSON to CSV"), ("/tools/csv-to-xlsx/", "CSV to XLSX"),
+        "related": [("/tools/xlsx-to-json/", "XLSX to JSON"), ("/tools/json-to-csv/", "JSON to CSV"), ("/tools/csv-to-xlsx/", "CSV to XLSX"),
                     ("/tools/xlsx-to-csv/", "XLSX to CSV"), ("/tools/pii-checker/", "PII Checker")],
     },
     {
@@ -1146,6 +1147,389 @@ PAGES = [
         ],
         "related": [("/tools/png-to-ico/", "PNG to ICO"), ("/tools/icns-to-png/", "ICNS to PNG"),
                     ("/tools/png-to-icns/", "PNG to ICNS"), ("/tools/png-to-jpg/", "PNG to JPG")],
+    },
+
+    {
+        "slug": "xlsx-to-json",
+        "name": "XLSX to JSON",
+        "title": "XLSX to JSON Converter That Runs in Your Browser | Purplelink",
+        "og_title": "XLSX to JSON, converted in your browser",
+        "description": "Convert Excel workbooks to JSON or JSON Lines in your browser. Numbers, true and false and dates "
+                       "keep their Excel types. Nothing is uploaded. Free.",
+        "hero": "Convert Excel workbooks (.xlsx) to JSON, or to JSON Lines, one sheet or all of them. Each cell keeps the "
+                "type Excel gave it: numbers stay numbers, dates become ISO dates, and text stays exactly as typed. The "
+                "workbook is read on your device.",
+        "accept": ".xlsx,.xlsm,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "drop": "Drop Excel workbooks here",
+        "hint": "XLSX and XLSM, up to 50 MB each.",
+        "outputs": [("json", "JSON"), ("jsonl", "JSON Lines")],
+        "opts": ["output", SHEETS, ("check", "header", "The first row is the header", True),
+                 ("check", "unflatten", "Turn headers like user.name into nested objects", False, "header=true")],
+        "category": "DeveloperApplication",
+        "features": ["Convert Excel .xlsx and .xlsm workbooks to JSON or JSON Lines",
+                     "Numbers, booleans and dates keep their Excel types",
+                     "One sheet, or every sheet in one JSON object",
+                     "Keys in header order, repeated headers made unique",
+                     "Read in the browser; workbooks are never uploaded"],
+        "how": [
+            "An .xlsx file is a zip of XML parts. The page opens it with JSZip, served from this site, and reads the "
+            "sheets in a background worker in this tab, the same way XLSX to CSV does.",
+            "Unlike a CSV, a workbook records each cell's type, so nothing is guessed: a number cell becomes a JSON "
+            "number written as Excel stored it, a TRUE or FALSE cell a boolean, a date cell an ISO date such as "
+            "2026-11-03 or 2026-11-03T14:05:00, and text a string. Formulas give the result Excel saved with the file.",
+            "With All sheets, the JSON is one object with a key for each sheet, in tab order. With JSON Lines, each sheet "
+            "becomes its own .jsonl file in a zip.",
+        ],
+        "steps": [
+            ("Pick JSON or JSON Lines", "JSON gives one array, or one object for all sheets; JSON Lines gives one record per line."),
+            ("Pick the sheets", "First sheet uses the first visible sheet; All sheets includes every sheet, hidden ones too."),
+            ("Add the workbooks", "Drop the .xlsx files on the box, or click it to choose them."),
+            ("Download", "Download each JSON file from its row, or use Download all as .zip."),
+        ],
+        "limits": [
+            "Up to 50 MB a workbook, 100 MB of data in a sheet once unpacked, 5 million cells, and about 200 MB of JSON.",
+            "Numbers are written as stored, not as displayed: a cell shown as 12% is 0.12. A number typed with more than "
+            "15 digits has already been rounded inside the workbook.",
+            "Dates have no time zone, since Excel stores none. An empty text cell and an empty cell both become null.",
+            "The older .xls format and workbooks protected with a password cannot be read.",
+        ],
+        "faq": [
+            ("Are my files uploaded?",
+             "No. The page reads each workbook with your browser and converts it in a background worker in this tab. "
+             "There is no server step. The meter under the drop zone counts the bytes the page and its worker send "
+             "while they work, so you can check this yourself. The only things the page downloads are its own scripts."),
+            ("How are dates written?",
+             "As ISO 8601 strings: 2026-11-03 for a date, 2026-11-03T14:05:00 for a date and time, 14:05:00 for a time. "
+             "JSON has no date type, and these strings parse in JavaScript, Python and every database."),
+            ("What does All sheets give me?",
+             "With JSON, one object with a key per sheet, in tab order, each holding that sheet's rows. With JSON Lines, a "
+             "zip with one .jsonl file per sheet. Hidden sheets are included, and the row names them."),
+            ("Why is this better than saving as CSV first?",
+             "A CSV loses the cell types, so a converter has to guess which values are numbers. A workbook knows, so "
+             "numbers, booleans, dates and text each come out as what they are."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the sizes above."),
+        ],
+        "related": [("/tools/xlsx-to-csv/", "XLSX to CSV"), ("/tools/csv-to-json/", "CSV to JSON"),
+                    ("/tools/json-to-csv/", "JSON to CSV"), ("/tools/csv-to-xlsx/", "CSV to XLSX")],
+    },
+    {
+        "slug": "vtt-to-srt",
+        "name": "VTT to SRT",
+        "title": "VTT to SRT Converter That Runs in Your Browser | Purplelink",
+        "og_title": "VTT to SRT, converted in your browser",
+        "description": "Convert WebVTT captions to SRT in your browser, with speaker names kept and YouTube auto-caption "
+                       "repeats merged. Nothing is uploaded. Free.",
+        "hero": "Convert WebVTT (.vtt) captions from YouTube, Zoom, Teams or a course site to SRT, the format video "
+                "editors and most players take. Speaker names are kept, and the repeated lines of auto-captions are "
+                "merged. The file is read on your device.",
+        "accept": ".vtt,text/vtt",
+        "drop": "Drop VTT files here",
+        "hint": "WebVTT, up to 5 MB each. You can also paste a file with Ctrl or Cmd V.",
+        "outputs": [("srt", "SRT")],
+        "opts": [("check", "speakers", "Keep speaker names (Ana: text)", True),
+                 ("check", "merge", "Merge the repeated lines of auto-captions", True),
+                 ("check", "bom", "Add a byte-order mark, for older players", False),
+                 ("select", "encoding", "Text encoding", [("auto", "Detect"), ("utf-8", "UTF-8"), ("windows-1252", "Windows-1252 (Western)"), ("utf-16le", "UTF-16")])],
+        "category": "MultimediaApplication",
+        "features": ["Convert WebVTT captions to SRT",
+                     "Speaker names from voice tags kept as Name: text",
+                     "The repeated lines of YouTube auto-captions merged",
+                     "Bold, italic and underline kept; styling and timing tags removed",
+                     "Converted in the browser; files are never uploaded"],
+        "how": [
+            "WebVTT and SRT both list captions with a start time, an end time and text. This page reads the WebVTT file, "
+            "skips its header, notes and style blocks, and writes each caption as a numbered SRT block with times like "
+            "00:01:02,500.",
+            "Meeting and lecture captions often name the speaker with a voice tag. With the first option, the page writes "
+            "the name before the text when the speaker changes, since SRT has no voice tags. Styling, colors and the "
+            "word-by-word timing tags of auto-captions are removed; bold, italic and underline stay.",
+            "YouTube's automatic captions scroll: each caption repeats the line above it, with a flash of a few "
+            "milliseconds between them. Converted as they are, every line appears twice. With the second option, the "
+            "page drops those repeats, but only in files that carry auto-caption timing tags, so two real captions that "
+            "say the same thing are kept.",
+        ],
+        "steps": [
+            ("Get the captions", "Download the .vtt file from YouTube Studio, Zoom, Teams or your course site."),
+            ("Check the options", "Keep speaker names and merging on for most files."),
+            ("Add the file", "Drop the .vtt file on the box, click it to choose it, or paste it."),
+            ("Download", "Download the .srt file from its row."),
+        ],
+        "limits": [
+            "Up to 5 MB a file.",
+            "Positions, alignment, regions and colors are not part of SRT, so captions show at the player's default "
+            "place and color.",
+            "SRT has no way to show a literal < followed by a tag name, so such text can look like markup to some players.",
+        ],
+        "faq": [
+            ("Are my files uploaded?",
+             "No. The page reads each file with your browser and converts it in a background worker in this tab. There "
+             "is no server step. The meter under the drop zone counts the bytes the page and its worker send while they "
+             "work, so you can check this yourself. The only things the page downloads are its own scripts."),
+            ("Why does every line appear twice in my YouTube captions?",
+             "YouTube's automatic captions scroll up a line at a time, so each caption repeats the one before it. Keep "
+             "Merge the repeated lines on and each line appears once, at the time it was first said."),
+            ("What happens to speaker names?",
+             "A voice tag such as <v Ana> becomes Ana: before the text, written when the speaker changes. Turn the option "
+             "off to drop the names."),
+            ("Will it work with Zoom and Teams transcripts?",
+             "Yes. Both export WebVTT with speaker names, which the page keeps. For a plain text transcript without "
+             "times, use Transcript Cleaner."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the size above."),
+        ],
+        "related": [("/tools/srt-to-vtt/", "SRT to VTT"), ("/tools/transcript-cleaner/", "Transcript Cleaner"),
+                    ("/tools/word-counter/", "Word Counter")],
+    },
+    {
+        "slug": "srt-to-vtt",
+        "name": "SRT to VTT",
+        "title": "SRT to VTT Converter That Runs in Your Browser | Purplelink",
+        "og_title": "SRT to VTT, converted in your browser",
+        "description": "Convert SRT subtitles to WebVTT for HTML5 video and course sites, in your browser. Old encodings "
+                       "are read correctly. Nothing is uploaded. Free.",
+        "hero": "Convert SRT subtitles to WebVTT (.vtt), the format HTML5 video, YouTube and most course sites use. "
+                "Files saved in older Windows encodings are read correctly. The file is read on your device.",
+        "accept": ".srt,application/x-subrip",
+        "drop": "Drop SRT files here",
+        "hint": "SRT, up to 5 MB each. You can also paste a file with Ctrl or Cmd V.",
+        "outputs": [("vtt", "VTT")],
+        "opts": [("select", "encoding", "Text encoding", [("auto", "Detect"), ("utf-8", "UTF-8"), ("windows-1252", "Windows-1252 (Western)"),
+                                                        ("iso-8859-2", "ISO-8859-2 (Central European)"), ("utf-16le", "UTF-16")])],
+        "category": "MultimediaApplication",
+        "features": ["Convert SRT subtitles to WebVTT",
+                     "UTF-8, UTF-16 and older Windows encodings detected",
+                     "Bold, italic and underline kept; font and position tags removed",
+                     "Captions put in time order, as WebVTT requires",
+                     "Converted in the browser; files are never uploaded"],
+        "how": [
+            "SRT and WebVTT both list captions with times and text. This page reads the SRT file, tolerating missing or "
+            "wrong caption numbers, extra blank lines and a full stop where SRT uses a comma, and writes a WebVTT file "
+            "with times like 00:01:02.500.",
+            "Many SRT files were saved in an older Windows encoding, which shows accented letters as garbage when read as "
+            "UTF-8. The page tries UTF-8 first and falls back to Windows-1252, and you can pick the encoding yourself. "
+            "The WebVTT file is always UTF-8.",
+            "WebVTT reads < and & as markup, so the page escapes them in caption text and keeps only bold, italic and "
+            "underline. Font colors and {\\an8} position codes, which WebVTT does not support, are removed.",
+        ],
+        "steps": [
+            ("Pick the encoding", "Leave it on Detect unless accented letters come out wrong."),
+            ("Add the file", "Drop the .srt file on the box, click it to choose it, or paste it."),
+            ("Check the row", "The row shows the number of captions, when the last one ends, and any notes."),
+            ("Download", "Download the .vtt file from its row."),
+        ],
+        "limits": [
+            "Up to 5 MB a file.",
+            "Font colors and {\\an8}-style position codes are removed; WebVTT positioning is not added in their place.",
+            "Captions are sorted by start time, as WebVTT requires, and the row says when that changed the order.",
+        ],
+        "faq": [
+            ("Are my files uploaded?",
+             "No. The page reads each file with your browser and converts it in a background worker in this tab. There "
+             "is no server step. The meter under the drop zone counts the bytes the page and its worker send while they "
+             "work, so you can check this yourself. The only things the page downloads are its own scripts."),
+            ("Why do accented letters look wrong in my subtitles?",
+             "The SRT was saved in an older encoding such as Windows-1252, and something read it as UTF-8. This page "
+             "detects that, and you can choose the encoding under Options. The VTT it writes is UTF-8, which browsers expect."),
+            ("How do I add a VTT file to a video on a web page?",
+             "Put it next to the video and add a track element inside the video tag, such as <track src=\"captions.vtt\" "
+             "kind=\"subtitles\" srclang=\"en\" label=\"English\">."),
+            ("Does it keep italics?",
+             "Yes. Bold, italic and underline tags are kept, since WebVTT supports them. Font colors are removed."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the size above."),
+        ],
+        "related": [("/tools/vtt-to-srt/", "VTT to SRT"), ("/tools/transcript-cleaner/", "Transcript Cleaner"),
+                    ("/tools/word-counter/", "Word Counter")],
+    },
+
+    {
+        "slug": "xlsx-to-latex",
+        "name": "Excel to LaTeX",
+        "title": "Excel to LaTeX Table Converter, in Your Browser | Purplelink",
+        "og_title": "Excel to LaTeX tables, converted in your browser",
+        "description": "Turn an Excel sheet into a LaTeX table with booktabs rules, a caption and a label, in your "
+                       "browser. Special characters are escaped. Nothing is uploaded.",
+        "hero": "Turn an Excel workbook (.xlsx) into LaTeX tables for your paper: booktabs rules, numbers right-aligned, "
+                "special characters escaped, and a table environment with a caption and label. The workbook is read on "
+                "your device.",
+        "accept": ".xlsx,.xlsm,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "drop": "Drop Excel workbooks here",
+        "hint": "XLSX and XLSM, up to 50 MB each.",
+        "outputs": [("tex", "LaTeX")],
+        "opts": [("radio", "sheets", "Sheets", [("first", "First sheet"), ("all", "All sheets, one table each")]),
+                 ("check", "header", "The first row is the header", True),
+                 ("check", "booktabs", "Use booktabs rules", True),
+                 ("check", "float", "Wrap in a table with a caption and label", True)],
+        "category": "BusinessApplication",
+        "features": ["Turn Excel .xlsx sheets into LaTeX tabular code",
+                     "booktabs rules, or plain hlines",
+                     "Numeric columns right-aligned; special characters escaped",
+                     "A table environment with the sheet name as caption and a label",
+                     "Read in the browser; workbooks are never uploaded"],
+        "how": [
+            "The page opens the workbook with JSZip, served from this site, and reads each sheet in a background worker "
+            "in this tab, keeping the type Excel gave each cell.",
+            "Each sheet becomes a tabular: a column is right-aligned when every value under the header is a number, the "
+            "header is set off with a midrule, and the characters LaTeX treats as commands, & % $ # _ { } ~ ^ and the "
+            "backslash, are escaped so the table compiles as it is. Numbers come out as the workbook stores them.",
+            "To paste a few rows instead of uploading a workbook, the LaTeX Table Generator does the same from CSV text.",
+        ],
+        "steps": [
+            ("Pick the options", "Keep booktabs and the table environment on for a paper; turn the environment off to paste the tabular into your own."),
+            ("Add the workbook", "Drop the .xlsx file on the box, or click it to choose it."),
+            ("Download", "Download the .tex file from its row."),
+            ("Add it to your paper", "Paste the table into your document, or use \\input{}, and add \\usepackage{booktabs} to the preamble."),
+        ],
+        "limits": [
+            "Up to 50 MB a workbook and 5 million cells.",
+            "Numbers are written as stored, not as displayed: 12% is 0.12, and currency signs and thousands separators are not added.",
+            "Merged cells, colors, borders and fonts are not carried over, and wide tables are not scaled to the page.",
+            "Line breaks inside a cell become spaces.",
+        ],
+        "faq": [
+            ("Are my files uploaded?",
+             "No. The page reads each workbook with your browser and converts it in a background worker in this tab. "
+             "There is no server step. The meter under the drop zone counts the bytes the page and its worker send "
+             "while they work, so you can check this yourself. The only things the page downloads are its own scripts."),
+            ("What is booktabs?",
+             "A LaTeX package for tables with three horizontal rules of different weights and no vertical lines, the "
+             "style most journals ask for. Add \\usepackage{booktabs} to your preamble, or turn the option off for "
+             "plain \\hline rules."),
+            ("Will special characters break my document?",
+             "No. Ampersands, percent signs, dollar signs, underscores, braces, tildes, carets and backslashes in cells "
+             "are escaped, so the table compiles as it is."),
+            ("Can I convert several sheets?",
+             "Yes. Choose All sheets and each sheet becomes its own table in one .tex file, captioned with the sheet name "
+             "and labelled tab: followed by it."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the sizes above."),
+        ],
+        "related": [("/tools/latex-table-generator/", "LaTeX Table Generator"), ("/tools/xlsx-to-csv/", "XLSX to CSV"),
+                    ("/tools/xlsx-to-json/", "XLSX to JSON"), ("/tools/latex-to-pdf/", "LaTeX to PDF")],
+    },
+    {
+        "slug": "pdf-to-text",
+        "name": "PDF to Text",
+        "title": "PDF to Text Converter That Runs in Your Browser | Purplelink",
+        "og_title": "PDF to text, extracted in your browser",
+        "description": "Extract the text of a PDF to a plain .txt file in your browser, as paragraphs or line by line. "
+                       "The PDF is never uploaded. Free, no sign-up.",
+        "hero": "Extract the text of a PDF, a paper, report or form, to a plain .txt file, as paragraphs or line by line, "
+                "all pages or a range. The PDF is read on your device, in this browser tab.",
+        "accept": ".pdf,application/pdf",
+        "drop": "Drop PDF files here",
+        "hint": "PDF, up to 100 MB each.",
+        "outputs": [("txt", "Text")],
+        "opts": [("radio", "layout", "Layout", [("paragraphs", "Paragraphs"), ("lines", "Line by line, as in the PDF")]),
+                 ("check", "pagebreaks", "Mark page breaks with a form feed", False),
+                 ("text", "pages", "Pages", "All", None, "Leave empty for every page, or enter pages like 1-3, 8.", True)],
+        "libs": ["pdfjs", "pdfjs-worker"],
+        "privacy": "Files are read in this tab. The only requests the page makes are for its own scripts and the files they need. Your files are never sent anywhere.",
+        "features": ["Extract the text layer of a PDF to a .txt file",
+                     "Paragraphs joined, or line breaks kept as in the PDF",
+                     "All pages or a range",
+                     "Ligatures and soft hyphens cleaned up",
+                     "Read in the browser with pdf.js; PDFs are never uploaded"],
+        "how": [
+            "A PDF made from a word processor or LaTeX stores its text as positioned pieces. This page reads them with "
+            "pdf.js, the open-source PDF reader built into Firefox, served from this site, and puts the pieces back into "
+            "lines, spaces and paragraphs.",
+            "In Paragraphs layout, lines that belong together are joined and a word split by a hyphen at a line end is "
+            "rejoined. Line by line keeps the PDF's own line breaks, which suits poems, code and tables.",
+            "For Markdown with headings, lists and equations instead of plain text, File to Markdown converts PDFs on "
+            "our server and deletes the file afterwards.",
+        ],
+        "steps": [
+            ("Pick the layout", "Paragraphs for reading and quoting, Line by line to keep the PDF's breaks."),
+            ("Choose the pages", "Leave Pages empty for the whole PDF, or enter a range."),
+            ("Add the PDF", "Drop the PDF on the box, or click it to choose it."),
+            ("Download", "Download the .txt file from its row."),
+        ],
+        "limits": [
+            "Up to 100 MB a PDF.",
+            "Scanned pages have no text layer and come out empty; the row names them. Text from a scan needs OCR.",
+            "Text runs in the order the PDF stores it, which on some two-column pages mixes the columns.",
+            "Rejoining hyphenated words is a guess: a word that really has a hyphen at a line end, such as well-known, "
+            "can lose it. Choose Line by line to keep every hyphen.",
+        ],
+        "faq": [
+            ("Are my files uploaded?",
+             "No. pdf.js reads the PDF in a background worker in this tab and the page puts the text together. There is "
+             "no server step. The meter under the drop zone counts the bytes the page sends while it works, so you can "
+             "check this yourself."),
+            ("Why is my text empty?",
+             "The PDF is probably a scan: a picture of each page with no text in it. Copying text from it in a PDF reader "
+             "fails too. A scan needs OCR, which this page does not do."),
+            ("Why are words from two columns mixed together?",
+             "The page follows the order the PDF stores its text in. Most two-column papers store one column after the "
+             "other, but some store lines across both. Line by line layout makes the order easier to check."),
+            ("What is the difference from File to Markdown?",
+             "This page gives plain text and runs in your browser. File to Markdown keeps headings, lists and equations as "
+             "Markdown, and runs on our server, deleting the file afterwards."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the size above."),
+        ],
+        "related": [("/tools/file-to-markdown/", "File to Markdown"), ("/tools/pdf-to-jpg/", "PDF to JPG"),
+                    ("/tools/pdf-tools/", "PDF Tools"), ("/tools/word-counter/", "Word Counter")],
+    },
+    {
+        "slug": "image-to-base64",
+        "name": "Image to Base64",
+        "title": "Image to Base64 Converter That Runs in Your Browser | Purplelink",
+        "og_title": "Image to Base64, converted in your browser",
+        "description": "Turn an image into a Base64 data URL, CSS background or HTML img tag in your browser, with a copy "
+                       "button. Nothing is uploaded. Free, no sign-up.",
+        "hero": "Turn a PNG, JPG, SVG, GIF, WebP or other image into Base64 text: a data URL, the bare string, a CSS "
+                "background or an HTML img tag, ready to copy. The image is read on your device.",
+        "accept": ".png,.jpg,.jpeg,.gif,.webp,.avif,.bmp,.svg,.ico,image/*",
+        "drop": "Drop images here",
+        "hint": "PNG, JPG, GIF, WebP, AVIF, BMP, SVG and ICO, up to 10 MB each. You can also paste an image with Ctrl or Cmd V.",
+        "outputs": [("txt", "Text")],
+        "opts": [("radio", "format", "Output", [("dataurl", "Data URL"), ("base64", "Base64 only"), ("css", "CSS background"), ("html", "HTML img tag")])],
+        "category": "DeveloperApplication",
+        "features": ["Turn images into Base64 text",
+                     "Data URL, bare Base64, CSS background or HTML img tag",
+                     "The image's own type in the data URL",
+                     "A copy button and a .txt download",
+                     "Encoded in the browser; images are never uploaded"],
+        "how": [
+            "Base64 writes any file as plain letters, digits, + and /, so it can sit inside HTML, CSS, JSON or an email "
+            "template. The page reads the image's bytes unchanged in a background worker and encodes them, so the "
+            "picture is exactly the original.",
+            "A data URL adds the image's type, such as data:image/png;base64, so a browser can show it from the text "
+            "alone. The CSS and HTML forms wrap it, ready to paste.",
+            "Base64 text is a third larger than the file, and the browser cannot cache it apart from the page, so it "
+            "suits small icons and images. For large pictures a separate file loads faster.",
+        ],
+        "steps": [
+            ("Pick the output", "Data URL for most uses, Base64 only for an API or JSON field, CSS or HTML to paste directly."),
+            ("Add the image", "Drop the image on the box, click it to choose it, or paste it."),
+            ("Copy or download", "Use Copy on the row, or download the .txt file."),
+            ("Paste it", "Put the text where the image would go, such as an img src or a CSS url()."),
+        ],
+        "limits": [
+            "Up to 10 MB an image. The Copy button works up to about 2 MB of text; past that, download the file.",
+            "The image is not resized or compressed: shrink it first, for example with PNG to JPG, for a shorter string.",
+        ],
+        "faq": [
+            ("Are my files uploaded?",
+             "No. The page reads each image with your browser and encodes it in a background worker in this tab. There is "
+             "no server step. The meter under the drop zone counts the bytes the page and its worker send while they "
+             "work, so you can check this yourself. The only things the page downloads are its own scripts."),
+            ("What is a data URL?",
+             "A URL that holds the file itself, such as data:image/png;base64,iVBOR... Browsers show it like an image file, "
+             "so it works in an img tag, CSS, or anywhere a URL goes."),
+            ("When should I not use Base64?",
+             "For large images. The text is a third larger than the file and cannot be cached on its own, so pages load "
+             "slower. It suits icons, small logos and email templates."),
+            ("Does it change the image?",
+             "No. The bytes are encoded exactly as they are, so decoding the text gives back the same file."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the size above."),
+        ],
+        "related": [("/tools/svg-to-png/", "SVG to PNG"), ("/tools/png-to-jpg/", "PNG to JPG"),
+                    ("/tools/png-to-ico/", "PNG to ICO"), ("/tools/metadata-cleaner/", "Metadata Cleaner")],
     },
 
 ]
@@ -1283,7 +1667,7 @@ def main_html(p: dict) -> str:
         </div>
         <p class="tool-privacy">{e(p.get("privacy", PRIVACY))}</p>
       </div>
-
+{app_link_html(p)}
       <section class="tool-prose cv-how" aria-labelledby="cv-how-h">
         <h2 id="cv-how-h">How it works</h2>
 {how}
@@ -1318,6 +1702,53 @@ def main_html(p: dict) -> str:
       <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a>. It helps keep these tools free and online.</p>
     </main>
 """
+
+
+# One plain sentence under the converter that names a Purplelink app, only where the app does the next step
+# directly. slug: (app path, app name, text before the link, text after it). The UTM tags let the dashboard tie a
+# trial back to the page: utm_content names the converter.
+SUBTITLES = ("tapefolio", "Tapefolio", "To make subtitles from an interview or meeting recording, ",
+             ", our Mac app, transcribes it on your Mac and exports SRT and VTT. Free for 7 days.")
+NEE_IMAGES = ("nee", "Née", "To convert images in Finder instead, ",
+              ", our Mac app, converts the files you drag onto a ring at the pointer and saves each copy next to the "
+              "original. Free for 7 days.")
+NEE_ICONS = ("nee", "Née", "To make icons in Finder instead, ",
+             ", our Mac app, builds an .icns file, an Xcode icon set and web favicons from one image you drag onto a "
+             "ring at the pointer. Free for 7 days.")
+APP_LINKS = {
+    "heic-to-jpg": NEE_IMAGES, "webp-to-png": NEE_IMAGES, "avif-to-jpg": NEE_IMAGES, "png-to-jpg": NEE_IMAGES,
+    "tiff-to-jpg": NEE_IMAGES, "png-to-icns": NEE_ICONS, "png-to-ico": NEE_ICONS,
+    "xlsx-to-latex": ("moderntex", "ModernTex", "To write the paper itself on a Mac, ",
+                      " is our LaTeX editor, with a synced PDF preview and BibTeX autocomplete. Free for 7 days."),
+    "jpg-to-pdf": ("moderntex", "ModernTex", "If you write papers or slides in LaTeX on a Mac, ",
+                   " is our editor, with a synced PDF preview and BibTeX autocomplete. Free for 7 days."),
+    "pdf-to-jpg": ("moderntex", "ModernTex", "If you write papers or slides in LaTeX on a Mac, ",
+                   " is our editor, with a synced PDF preview and BibTeX autocomplete. Free for 7 days."),
+    "pdf-to-text": ("tapefolio", "Tapefolio", "Scanned PDFs have no text for this page to read. ",
+                    ", our Mac app, reads scans with OCR on your Mac and keeps two-column pages in reading order. "
+                    "Free for 7 days."),
+    "srt-to-vtt": SUBTITLES,
+    "vtt-to-srt": SUBTITLES,
+}
+
+
+def suite_html(p: dict) -> str:
+    """A line that convert-shell.js shows after the first file converts, naming the Mac Suite."""
+    href = (f"/suite/?utm_source=purplelink&amp;utm_medium=tool&amp;utm_campaign=suite-placement"
+            f"&amp;utm_content=converter-done-{p['slug']}")
+    return (f'      <p class="cv-app-link" id="cv-suite" hidden>Our nine Mac apps are also sold together in the '
+            f'<a href="{href}" data-track="offer_click" data-track-meta="suite">Mac Suite</a>, $59.99 once. Each has '
+            f'a free trial or a free version.</p>\n')
+
+
+def app_link_html(p: dict) -> str:
+    if p["slug"] not in APP_LINKS:
+        return suite_html(p)
+    app, name, before, after = APP_LINKS[p["slug"]]
+    href = (f"/{app}/?utm_source=purplelink&amp;utm_medium=tool&amp;utm_campaign=converter-crosslink"
+            f"&amp;utm_content={p['slug']}")
+    return (f'      <p class="cv-app-link">{e(before)}<a href="{href}" data-track="offer_click" '
+            f'data-track-meta="{app}">{e(name)}</a>{e(after)}</p>\n') + suite_html(p)
 
 
 PRIVACY = ("Files are read and converted in this tab, in a background worker. The only requests the page makes are for "

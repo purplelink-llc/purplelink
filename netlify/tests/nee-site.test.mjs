@@ -220,7 +220,7 @@ test("the page claims nothing the app does not do, and uses none of the banned w
 test("the page says Née is in the Mac Suite, links the Suite, and no longer says it is sold on its own", () => {
   const html = read("nee/index.html");
   const main = html.slice(html.indexOf("<main"), html.indexOf("</main>"));
-  assert.match(main, /Also in the <a href="\/suite\/">Mac Suite<\/a>: [^<]*\bNée[^<]*\$59\.99 once/);
+  assert.match(main, /Also in the <a href="\/suite\/[^"]*">Mac Suite<\/a>: [^<]*\bNée[^<]*\$59\.99 once/);
   assert.doesNotMatch(visibleText(html), /sold on its own|not (part of|in) the (Mac )?Suite/i);
 });
 

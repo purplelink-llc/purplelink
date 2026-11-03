@@ -814,6 +814,11 @@ def html_lifecycle_trial_features(*, unsubscribe_url: str, **_ignored) -> str:
     <li><strong>A table from a spreadsheet.</strong> Paste cells from Excel
     or Google Sheets into the Table Editor and get booktabs LaTeX back.</li>
   </ul>
+  <p><strong>New in 2.1:</strong> Insert &gt; Theorem-like Environment adds a
+  theorem, lemma or proof and sets up amsthm for you; File &gt; Export &gt;
+  Project as ZIP collects everything a journal or arXiv upload needs; and a
+  setting in Settings &gt; Compile builds the .tex file you are looking at
+  instead of the root file.</p>
   <p>The bar above the editor counts the days. If you decide it is not for
   you, a reply saying what was missing helps more than you would think.</p>
   <p>
@@ -842,6 +847,9 @@ def html_lifecycle_trial_ending(*, unsubscribe_url: str, **_ignored) -> str:
   email carries a license key. In ModernTex choose Enter license key, paste
   it, and the same copy unlocks, with no reinstall. To get updates in place,
   install the download from your receipt page once.</p>
+  <p>Before you submit, try File &gt; Export &gt; Project as ZIP, new in 2.1:
+  it collects the main file, everything it inputs, the figures and the
+  bibliography into one archive, with a one-folder option for arXiv.</p>
   <p>
     <a href="https://purplelink.llc/moderntex/?utm_source=email&amp;utm_campaign=mtx-trial-6#buy"
        style="display: inline-block; background: #7c3aed; color: #fff;

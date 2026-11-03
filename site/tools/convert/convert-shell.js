@@ -256,6 +256,37 @@
     }
   }
 
+  async function pdfText(item, opts) {
+    setProgress(item, 0.05, "Loading the PDF reader");
+    var lib = await loadPdfjs();
+    if (!pdfWorker) pdfWorker = new lib.PDFWorker();
+    var base = LIBS.pdfjs.split("?")[0].replace(/[^/]*$/, "");
+    var data = new Uint8Array(await item.file.arrayBuffer());
+    var task = lib.getDocument({
+      data: data, worker: pdfWorker, wasmUrl: base + "wasm/", cMapUrl: base + "cmaps/", cMapPacked: true,
+      standardFontDataUrl: base + "standard_fonts/", iccUrl: base + "iccs/", useWorkerFetch: false, verbosity: 0
+    });
+    var doc;
+    try { doc = await task.promise; } catch (e) { task.destroy(); throw new Error(pdfError(e)); }
+    try {
+      var sel = C.parsePages(opts.pages, doc.numPages);
+      if (sel.error) throw new Error(sel.error);
+      var texts = [], empty = [];
+      for (var i = 0; i < sel.pages.length; i++) {
+        setProgress(item, 0.1 + 0.85 * (i / sel.pages.length), "Reading page " + sel.pages[i] + " of " + doc.numPages);
+        var page = await doc.getPage(sel.pages[i]);
+        try { texts.push(C.pdfPageText((await page.getTextContent()).items, opts.layout)); } finally { page.cleanup(); }
+        if (!texts[i].trim()) empty.push(sel.pages[i]);
+      }
+      var text = texts.join(opts.pagebreaks ? "\n\f" : "\n\n") + "\n";
+      if (!text.trim()) throw new Error("This PDF has no text layer, so it is probably a scan. Text from a scan needs OCR, which this page does not do.");
+      var words = (text.match(/\S+/g) || []).length;
+      var notes = empty.length ? [(empty.length === 1 ? "Page " + empty[0] + " has" : "Pages " + empty.join(", ") + " have") + " no text layer (scanned, most likely) and came out empty."] : [];
+      return { blobs: [{ name: C.outName(item.file.name, "txt"), part: false, blob: new Blob([text], { type: "text/plain" }) }], notes: notes,
+        summary: sel.pages.length + " page" + (sel.pages.length === 1 ? "" : "s") + ", " + words.toLocaleString("en-US") + " words" };
+    } finally { task.destroy(); }
+  }
+
   async function svgText(file) {
     var head = new Uint8Array(await file.slice(0, 2).arrayBuffer());
     var bytes;
@@ -379,8 +410,8 @@
       var why = C.refuse(PAIR, C.kindOf(head, item.file.name), item.file.size);
       if (why) throw new Error(why);
       var res;
-      if (CONV.work === "pdfpages" || CONV.work === "svg") {
-        res = CONV.work === "pdfpages" ? await pdfPages(item, options()) : await svgDraw(item, options());
+      if (CONV.work === "pdfpages" || CONV.work === "svg" || CONV.work === "pdftext") {
+        res = CONV.work === "pdfpages" ? await pdfPages(item, options()) : CONV.work === "pdftext" ? await pdfText(item, options()) : await svgDraw(item, options());
         item.blobs = res.blobs;
         res.blobs = null;
       } else {
@@ -457,6 +488,15 @@
       z.addEventListener("click", function () { saveZip(parts, item.res.zipName || parts[0].name.split("/")[0] + ".zip", z); });
       actions.appendChild(z);
     }
+    if (item.res.copyText) {
+      var cp = el("button", "btn btn-ghost cv-small", "Copy"); cp.type = "button";
+      cp.addEventListener("click", function () {
+        var done = function (ok) { cp.textContent = ok ? "Copied" : "Copy failed: download the file instead"; setTimeout(function () { cp.textContent = "Copy"; }, 2500); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(item.res.copyText).then(function () { done(true); }, function () { done(false); });
+        else done(false);
+      });
+      actions.appendChild(cp);
+    }
     if (CONV.combine) moveButtons(item, actions);
     var rm2 = el("button", "btn btn-ghost cv-small", "Remove"); rm2.type = "button";
     rm2.addEventListener("click", function () { removeItem(item); });
@@ -476,6 +516,8 @@
   function syncBar() {
     var ok = items.filter(function (i) { return i.state === "done"; }).length;
     $("cv-all").hidden = ok < 2;
+    // The Mac Suite line appears once a file has converted, and stays until the page is reloaded.
+    if (ok && $("cv-suite")) $("cv-suite").hidden = false;
     if ($("cv-one")) $("cv-one").hidden = ok < 2 || running;
   }
 

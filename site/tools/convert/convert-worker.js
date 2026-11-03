@@ -353,12 +353,12 @@ function partText(zip, path, what) {
   });
 }
 
-async function xlsxToCsv(bytes, name, opts, progress) {
+// Open a workbook: the zip, its index, relations, shared text, styles, and the sheets that hold cells.
+async function openWorkbook(bytes, progress) {
   progress(0.1, "Opening the workbook");
   var Z = loadLib("zip", "JSZip");
   var zip;
   try { zip = await Z.loadAsync(bytes); } catch (e) { throw new Error("This file could not be opened as a workbook. It may be damaged, or not really an .xlsx."); }
-  bytes = null;
   var wbXml = await partText(zip, "xl/workbook.xml", "The workbook index");
   if (!wbXml) throw new Error("This zip has no xl/workbook.xml, so it is not an Excel workbook.");
   var wb = Convert.parseWorkbook(wbXml);
@@ -371,6 +371,13 @@ async function xlsxToCsv(bytes, name, opts, progress) {
     return { name: s.name, state: s.state, path: r.target, type: r.type };
   }).filter(function (s) { return s.type === "worksheet" && s.path && zip.file(s.path); });
   if (!sheets.length) throw new Error("This workbook has no sheets with cells. Chart sheets have none.");
+  return { zip: zip, wb: wb, shared: shared, styles: styles, sheets: sheets };
+}
+
+async function xlsxToCsv(bytes, name, opts, progress) {
+  var book = await openWorkbook(bytes, progress);
+  bytes = null;
+  var zip = book.zip, wb = book.wb, shared = book.shared, styles = book.styles, sheets = book.sheets;
   var pick = opts.sheets === "all" ? sheets : [sheets[0]];
   var d = separator(opts), outputs = [], notes = [], rows = 0, lost = 0;
   var base = Convert.outName(name, "x").replace(/\.x$/, ""), folder = base + "-sheets";
@@ -608,6 +615,106 @@ async function icoToPng(bytes, name, opts, progress) {
   return res;
 }
 
+// ---------- XLSX to JSON ----------
+async function xlsxToJson(bytes, name, opts, progress) {
+  var book = await openWorkbook(bytes, progress);
+  bytes = null;
+  var visible = book.sheets.filter(function (s) { return s.state === "visible"; });
+  var pick = opts.sheets === "all" ? book.sheets : [(visible[0] || book.sheets[0])];
+  var lines = opts.output === "jsonl", notes = [], outputs = [], total = 0, rows = 0;
+  var base = Convert.outName(name, "x").replace(/\.x$/, ""), folder = base + "-sheets";
+  var names = Convert.uniqueNames(pick.map(function (s) { return Convert.sheetFileName(s.name) + ".jsonl"; }));
+  var whole = opts.sheets === "all" && !lines ? ["{"] : null, lost = 0;
+  for (var i = 0; i < pick.length; i++) {
+    progress(0.3 + 0.65 * (i / pick.length), "Reading " + pick[i].name);
+    var xml = await partText(book.zip, pick[i].path, "The sheet \u201c" + pick[i].name + "\u201d");
+    var r = Convert.sheetRows(xml, book.shared, book.styles, book.wb.date1904, Convert.MAX_CELLS, false, true);
+    xml = null;
+    lost += r.formulasWithoutValue;
+    var j = Convert.sheetJson(r.rows, r.kinds, { header: opts.header, unflatten: opts.unflatten, lines: lines, depth: whole ? 1 : 0, already: total });
+    total += j.est; rows += j.rows;
+    j.notes.forEach(function (n) { if (notes.indexOf(n) === -1) notes.push(n); });
+    if (whole) { whole.push((i ? "," : "") + "\n  " + JSON.stringify(pick[i].name) + ": "); whole = whole.concat(j.parts); }
+    else if (lines && pick.length > 1) outputs.push({ name: folder + "/" + names[i], mime: Convert.MIME.jsonl, bytes: new Uint8Array(await new Blob(j.parts).arrayBuffer()), part: true });
+    else outputs.push({ name: Convert.outName(name, lines ? "jsonl" : "json"), mime: Convert.MIME[opts.output], bytes: new Uint8Array(await new Blob(j.parts).arrayBuffer()) });
+  }
+  if (whole) { whole.push("\n}\n"); outputs.push({ name: Convert.outName(name, "json"), mime: Convert.MIME.json, bytes: new Uint8Array(await new Blob(whole).arrayBuffer()) }); }
+  var hidden = pick.filter(function (s) { return s.state !== "visible"; }).map(function (s) { return "\u201c" + s.name + "\u201d"; });
+  if (hidden.length) notes.push("Hidden sheets were included: " + hidden.join(", ") + ".");
+  if (opts.sheets !== "all" && book.sheets.length > 1) notes.push("This workbook has " + book.sheets.length + " sheets. \u201c" + pick[0].name + "\u201d was converted; choose All sheets for the rest.");
+  if (opts.sheets !== "all" && visible.length && pick[0] !== book.sheets[0]) notes.push("The first sheet is hidden, so the first visible one was used.");
+  if (lost) notes.push(lost + " formula" + (lost === 1 ? " has" : "s have") + " no saved result in the file, so " + (lost === 1 ? "its value is" : "their values are") + " null. Open the workbook in Excel and save it once to store the results.");
+  var res = { outputs: outputs, notes: notes };
+  res.summary = pick.length === 1 ? rows.toLocaleString("en-US") + " row" + (rows === 1 ? "" : "s") + " from \u201c" + pick[0].name + "\u201d" : pick.length + " sheets, " + rows.toLocaleString("en-US") + " rows";
+  if (outputs.length > 1) { res.partsLabel = "Download the " + outputs.length + " sheets (.zip)"; res.zipName = folder + ".zip"; }
+  return res;
+}
+
+// ---------- SRT to VTT and VTT to SRT ----------
+async function subtitles(bytes, name, pair, opts, progress) {
+  progress(0.2, "Reading the captions");
+  var dec = Convert.decodeText(bytes, opts.encoding === "auto" ? "" : opts.encoding);
+  bytes = null;
+  var notes = [], text, count, last;
+  if (pair === "srt-to-vtt") {
+    var p = Convert.parseSrt(dec.text);
+    if (!p.cues.length) throw new Error("This file has no captions.");
+    var v = Convert.writeVtt(p.cues);
+    text = v.text; count = p.cues.length; last = p.cues.reduce(function (m, c) { return Math.max(m, c.end); }, 0);
+    if (p.skipped) notes.push(p.skipped + " block" + (p.skipped === 1 ? " has" : "s have") + " no timing line and " + (p.skipped === 1 ? "was" : "were") + " left out.");
+    if (v.reordered) notes.push("Some captions were out of time order and were put in order, as WebVTT requires.");
+    if (/\{\\[^}]*\}/.test(dec.text)) notes.push("Positioning tags such as {\\an8} were removed; the captions show at the default place.");
+  } else {
+    var q = Convert.parseVtt(dec.text);
+    if (!q.cues.length) throw new Error("This file has no captions.");
+    var s2 = Convert.writeSrt(q.cues, { speakers: opts.speakers, merge: opts.merge && q.autoCaptions });
+    text = s2.text; count = s2.cues; last = q.cues.reduce(function (m, c) { return Math.max(m, c.end); }, 0);
+    if (s2.merged) notes.push(s2.merged + " repeated line" + (s2.merged === 1 ? " was" : "s were") + " merged from the scrolling auto-captions.");
+    if (q.skipped) notes.push(q.skipped + " block" + (q.skipped === 1 ? " has" : "s have") + " no timing line and " + (q.skipped === 1 ? "was" : "were") + " left out.");
+    if (opts.bom) text = "\ufeff" + text;
+  }
+  var out = new TextEncoder().encode(text);
+  var hms = function (ms) { var s = Math.round(ms / 1000); return String(Math.floor(s / 3600)).padStart(2, "0") + ":" + String(Math.floor(s / 60) % 60).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); };
+  return { outputs: [{ name: Convert.outName(name, pair === "srt-to-vtt" ? "vtt" : "srt"), mime: Convert.MIME[pair === "srt-to-vtt" ? "vtt" : "srt"], bytes: out }], notes: notes,
+    summary: count + " cue" + (count === 1 ? "" : "s") + ", the last ending at " + hms(last) + (dec.encoding !== "UTF-8" ? ", read as " + dec.encoding : "") };
+}
+
+// ---------- Excel to LaTeX ----------
+async function xlsxToLatex(bytes, name, opts, progress) {
+  var book = await openWorkbook(bytes, progress);
+  bytes = null;
+  var visible = book.sheets.filter(function (s) { return s.state === "visible"; });
+  var pick = opts.sheets === "all" ? book.sheets : [(visible[0] || book.sheets[0])];
+  var used = {}, parts = [], rows = 0, notes = [];
+  for (var i = 0; i < pick.length; i++) {
+    progress(0.3 + 0.65 * (i / pick.length), "Reading " + pick[i].name);
+    var xml = await partText(book.zip, pick[i].path, "The sheet \u201c" + pick[i].name + "\u201d");
+    var r = Convert.sheetRows(xml, book.shared, book.styles, book.wb.date1904, Convert.MAX_CELLS, false, true);
+    xml = null;
+    var t = Convert.latexTable(r.rows, r.kinds, { header: opts.header, booktabs: opts.booktabs, float: opts.float, caption: pick[i].name, label: Convert.latexLabel(pick[i].name, used) });
+    if (!t.tex) { notes.push("The sheet \u201c" + pick[i].name + "\u201d is empty and was left out."); continue; }
+    rows += t.rows;
+    parts.push(t.tex);
+  }
+  if (!parts.length) throw new Error("This workbook has no cells to put in a table.");
+  if (opts.booktabs) notes.push("The table uses booktabs rules, so add \\usepackage{booktabs} to your preamble.");
+  if (opts.sheets !== "all" && book.sheets.length > 1) notes.push("This workbook has " + book.sheets.length + " sheets. \u201c" + pick[0].name + "\u201d was converted; choose All sheets for the rest.");
+  var tex = new TextEncoder().encode(parts.join("\n"));
+  return { outputs: [{ name: Convert.outName(name, "tex"), mime: Convert.MIME.tex, bytes: tex }], notes: notes,
+    summary: parts.length + " table" + (parts.length === 1 ? "" : "s") + ", " + rows.toLocaleString("en-US") + " row" + (rows === 1 ? "" : "s") };
+}
+
+// ---------- Image to Base64 ----------
+function toBase64(bytes, name, opts) {
+  var kind = Convert.kindOf(bytes.subarray(0, 4096), name);
+  var mime = Convert.IMAGE_MIME[kind] || "application/octet-stream";
+  var text = Convert.base64Snippet(Convert.base64(bytes), mime, opts.format);
+  var notes = bytes.length > 100 * 1024 ? ["This image is " + Convert.formatBytes(bytes.length) + ", and as text a third larger. A data URL that big slows a page down; a separate file is usually better."] : [];
+  if (text.length > 2 * 1024 * 1024) notes.push("At this size the Copy button is off; download the .txt file instead.");
+  return { outputs: [{ name: Convert.outName(name, "txt"), mime: Convert.MIME.txt, bytes: new TextEncoder().encode(text) }], notes: notes,
+    summary: text.length.toLocaleString("en-US") + " characters, " + mime, copyText: text.length <= 2 * 1024 * 1024 ? text : "" };
+}
+
 self.onmessage = async function (e) {
   var m = e.data;
   var before = { requests: net.requests, bytes: net.bytes };
@@ -637,6 +744,10 @@ self.onmessage = async function (e) {
       else if (pair.work === "csvjson") res = await csvToJsonFile(bytes, m.name, opts, progress);
       else if (pair.work === "icns") res = await icnsToPng(bytes, m.name, opts, progress);
       else if (pair.work === "ico") res = await icoToPng(bytes, m.name, opts, progress);
+      else if (pair.work === "xlsxread") res = await xlsxToJson(bytes, m.name, opts, progress);
+      else if (pair.work === "subs") res = await subtitles(bytes, m.name, m.pair, opts, progress);
+      else if (pair.work === "xlsxlatex") res = await xlsxToLatex(bytes, m.name, opts, progress);
+      else if (pair.work === "base64") res = toBase64(bytes, m.name, opts);
       else {
         var pic = kind === "heic" ? await decodeHeif(bytes, opts, progress) : await decodeNative(bytes, kind, opts, pair.maxPixels);
         bytes = null; // the source is no longer needed; let it go before encoding

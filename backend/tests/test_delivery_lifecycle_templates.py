@@ -59,3 +59,6 @@ def test_trial_day4_and_day6_copy():
     assert "the trial ends about now. The bar above the editor shows the exact days left." in day6
     assert "Have a license" not in day6
     assert "https://x/u" in day4 and "https://x/u" in day6
+    # 2.1 is announced inside the three trial emails the sign-up promised, not in a fourth.
+    assert "New in 2.1:" in day4 and "Project as ZIP" in " ".join(day4.split())
+    assert "Project as ZIP, new in 2.1" in day6
