@@ -959,6 +959,103 @@ differ.
 - **Index:** 19 cards, positions 38 to 40, Photo to Logo to 41. Transcript Cleaner's related list links both subtitle
   pages. **Build order:** core, readers and writers with tests, worker, pages, registration, site tests, browser runs.
 
+## Seventh set: ranking from data, then PDF to Text, Excel to LaTeX, Image to Base64
+
+The parent session, 2026-11-03: before a seventh set, check search volume or Search Console data for conversions not
+built yet, which live pages get impressions, and what the leading converter sites rank for that this site lacks.
+
+**What the data says (Search Console, purplelink.llc, 2026-08-04 to 2026-11-01, read 2026-11-03).**
+- None of the 19 converter pages has an impression yet. The first set went out with the 2026-11-02 build, after the
+  window closes, so the site's own data cannot rank converters yet. The 90-day read in the Concepts brief stands.
+- The conversion queries the site already gets are academic formats: "latex to word" (68 impressions, position 51.6),
+  "word to latex" (51, 35.8, plus variants), "pdf to markdown for scientific equations" (25, 27.7), "docx to tex",
+  "latex table to word", "doi to citation", "bibtex to citation", "latex zip to pdf". Each already has a tool (LaTeX to
+  Word, Word to LaTeX, File to Markdown, LaTeX Table Generator, Citation Generator, Reference Converter, LaTeX to
+  PDF), several of them server-side. An in-browser twin of a server tool would compete with it for the same query, so
+  those are not rebuilt.
+- Tool pages with impressions in the window: Citation Generator 577, LaTeX Diff 549, BibTeX Validator 418, Word to
+  LaTeX 398, LaTeX to Word 372, /tools/ 252, LaTeX to PDF 227; the rest under 100.
+
+**Rerank on 2026-11-24.** Search Console holds no converter data yet (the window above ends 2026-11-01, before the first
+converter build). On 2026-11-24 the converter pages will have about three weeks of impressions: rerank the candidates
+below with real per-page impressions and queries before an eighth set, and drop or merge any page the 90-day rule in
+the Concepts brief would flag.
+
+**Volume.** No keyword tool is connected (no Semrush, Ahrefs or DataForSEO account), and web searches for public
+figures on the candidate phrases returned none, so the volume column below is relative, judged from how many dedicated
+converter sites hold each head term. That is weaker than measured volume, and the 90-day read is the real test.
+
+**What the leading converter sites carry that this site lacks.** CloudConvert, FreeConvert and Convertio list
+document (PDF, DOCX, XLSX), image (PNG, JPG, SVG, WEBP), audio, video and ebook conversions. Against the 19 pages here,
+the gaps that run in a browser without a new library are: PDF to text, image to Base64 and back, JPG to PNG, and the
+spreadsheet-to-code family (Excel to LaTeX, Excel to Markdown or HTML tables). Audio, video, ebook and OCR need a
+library this site does not carry (an MP3 encoder, ffmpeg, an EPUB renderer, an OCR engine) and stay out.
+
+| Candidate | Volume (relative) | Fit | Browser fit | Reference | Rank |
+|---|---|---|---|---|---|
+| PDF to Text | High (every converter site has it) | Researchers pulling text from papers without uploading them | pdf.js, already vendored | Known text, and pypdf's `extract_text` | 2 |
+| Excel to LaTeX | Medium (a handful of table generators hold it) | Papers: the LaTeX Table Generator takes pasted CSV, not a workbook | The XLSX readers of the fourth set | pandoc reads the LaTeX back into cells | 1 |
+| Image to Base64 | High (developer tool sites) | Web pages, email templates, CSS and JSON payloads | Native | the `base64` command | 3 |
+| Base64 to Image | Medium | The reverse | Native | the `base64` command | Next |
+| JPG to PNG | Very high | Weak | Native | | Not now |
+| Excel to Markdown or HTML table | Medium | Docs and READMEs | XLSX readers | pandoc | Next |
+| Server-tool twins (Markdown to Word, PDF to Markdown, LaTeX to Word) | | | | | Not built: they would compete with the server tools |
+
+| Pair | Accepts | Where | Outputs |
+|---|---|---|---|
+| `pdf-to-text` | `pdf` | On the page, through pdf.js, as PDF to JPG does (`work: "pdftext"`) | .txt, UTF-8 |
+| `xlsx-to-latex` | `xlsx` | The worker: `openWorkbook`, `sheetRows` with kinds, `Convert.latexTable` | .tex |
+| `image-to-base64` | png, jpeg, gif, webp, avif, bmp, svg, ico | The worker: bytes to Base64 in the core (`Convert.base64`) | .txt, plus a Copy button on the row |
+
+**PDF to Text.** `getTextContent` per page; items are joined into lines by `hasEOL` and by a change in baseline, and
+lines into paragraphs where the gap between baselines is larger than the line height (option `layout`: "paragraphs",
+the default, or "lines" to keep the PDF's own line breaks). A hyphen at the end of a line joins the word when the next
+line starts with a lowercase letter. Pages are separated by a blank line, or by a form feed (`\f`, as pdftotext
+writes) with the "Mark page breaks" option. `pages` (the PDF to JPG range, not remembered) picks pages. A PDF with no
+text on any page gets "This PDF has no text layer, so it is probably a scan. Text from a scan needs OCR, which this page
+does not do." Reference: pypdf's `extract_text` on the same files; after whitespace is collapsed and line-end hyphens
+joined in both, the word sequence must match at 98% or more (pdf.js and pypdf order some items differently).
+
+**Excel to LaTeX.** One `tabular` per sheet: booktabs rules (`\toprule`, `\midrule` after the header, `\bottomrule`)
+or `\hline` with booktabs off; a column is right-aligned when every non-empty cell in it is a number, else
+left-aligned; LaTeX specials (`& % $ # _ { } ~ ^ \`) escaped; numbers as stored, dates as ISO. Options: `sheets`
+"first" (first visible) or "all" (one table each, in one .tex); `header` (default on); `booktabs` (default on, the
+row notes `\usepackage{booktabs}`); `float` (default on: a `table` environment with `\caption{<sheet name>}` and
+`\label{tab:<slug>}`). Reference: pandoc reads the .tex back (`-f latex -t json`), and its table cells must equal
+openpyxl's values for the same cells.
+
+**Image to Base64.** The file's bytes, unchanged, as Base64 (no line breaks), with the MIME type from the sniffed
+kind. Option `format`: "dataurl" (`data:image/png;base64,...`, the default), "base64" (the bare string), "css"
+(`background-image: url("data:...")`) or "html" (`<img src="data:..." alt="">`). Up to 10 MB; over 100 KB the row
+notes that a data URL that large slows a page down. The row has a Copy button (the shell's new `copyText` result
+field, through `navigator.clipboard.writeText`) and the .txt download. Reference: `base64` on macOS gives the same
+string.
+
+**Shared.** Index: 22 cards, positions 41 to 43, Photo to Logo to 44. Sitemap, Buddy, social cards and slugs as
+before; PDF to Text links to PDF to JPG and File to Markdown; Excel to LaTeX to the LaTeX Table Generator, XLSX to CSV
+and XLSX to JSON (and the LaTeX Table Generator links back); Image to Base64 to SVG to PNG and PNG to JPG.
+
+**Resolved after review (one Goldfish reviewer on Sonnet, design and readiness together, 2026-11-03).**
+- The ranking is by fit to this site's audience, which is the only evidence the data gives: Excel to LaTeX first (the
+  academic queries above), PDF to Text second (a different query from File to Markdown's "pdf to markdown", which
+  stays the server tool for structure and equations; each page links the other), Image to Base64 third, on fit to the
+  developers who use the site's other in-browser tools, the weakest of the three. The 2026-11-24 rerank decides
+  whether it stays.
+- PDF to Text: a space goes in where the gap between items is wider than a fifth of the font size; ligatures are folded
+  (NFKC) and soft hyphens removed; the line-end hyphen rule is a heuristic, said so in the limits; text runs in content
+  order, and two-column pages can interleave (a limit). Option keys `layout` ("paragraphs" or "lines") and
+  `pagebreaks` (form feeds); `pages` is reused and not remembered. A page without text is named in a note.
+- Excel to LaTeX: a row whose first cell starts with `[` is wrapped in braces so `\\` cannot take it as an optional
+  argument; line breaks inside cells become spaces; captions are escaped and labels unique; the worker passes `safe`
+  false; the output is a fragment with a booktabs note. Keys `booktabs` and `float` (default on); `sheets` "all" here
+  is one .tex with a table per sheet.
+- Image to Base64: `IMAGE_MIME` maps kinds to types (jpeg to image/jpeg, svg to image/svg+xml, ico to image/x-icon);
+  every output is .txt; the Copy button appears up to 2 MB of text, and past that the row says to download.
+- Reference tests: PDF to Text is compared with the known text of fixtures made for it (one column, two columns, a
+  ligature, a hyphenated line break), as a token LCS ratio over the known token count: 100% on one column, at least
+  95% on two; pypdf is a second, looser check. Excel to LaTeX is read back by pandoc (`-f latex-smart`) and its cells
+  compared with openpyxl's after whitespace is collapsed. Every Base64 format is decoded back to the original bytes.
+
 ## Open questions
 
 0. **Safari 16.4 and Firefox.** The browser check ran in Chromium. Worker plus Emscripten plus `OffscreenCanvas` is
@@ -1068,3 +1165,14 @@ shared string (fixed, affects XLSX to CSV); literal CR LF inside workbook XML wa
 (fixed, affects XLSX to CSV). Against openpyxl, the 116,200 cells of the ABDC workbook differ only where empty text
 cells become null (documented) and where openpyxl leaves `_xHHHH_` escapes undecoded (it does not follow the spec).
 
+
+**2026-11-03, seventh set (Excel to LaTeX, PDF to Text, Image to Base64).** Ranked from Search Console fit (no converter
+impressions yet) and the competitor gap; rerank on 2026-11-24. One Goldfish reviewer on Sonnet; findings resolved
+above. Tested in WebKit and Firefox, headless, under the production CSP, with 0 CSP violations and 0 bytes sent while
+converting. Excel to LaTeX: each `.tex` read back with `pandoc -f latex-smart` matches openpyxl on every cell of the
+edge, book and ABDC (2,653 rows) workbooks, apart from three expected differences. Numbers are written as stored (`.5`,
+`1.234567890123457e+19`), a hidden sheet is skipped, and TeX typesets `'` as a right quote. PDF to Text: the two-column
+fixture matches its known text token for token. The one-column fixture differs in one word, because reportlab's
+base-14 Helvetica cannot encode the ffi ligature, so pypdf cannot recover it either. Paragraphs and the hyphen join
+come out right. Image to Base64: PNG, SVG and ICO outputs in every format decode back to the original bytes. Found
+while testing: refusals said "a XLSX"; `article()` now covers XLSX.

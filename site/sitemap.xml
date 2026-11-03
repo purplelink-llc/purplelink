@@ -218,7 +218,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/de/moderntex/</loc>
-    <lastmod>2026-11-02</lastmod>
+    <lastmod>2026-11-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="de" href="https://purplelink.llc/de/moderntex/"/>
@@ -411,7 +411,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/fr/moderntex/</loc>
-    <lastmod>2026-11-02</lastmod>
+    <lastmod>2026-11-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://purplelink.llc/moderntex/"/>
@@ -1210,7 +1210,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/</loc>
-    <lastmod>2026-11-02</lastmod>
+    <lastmod>2026-11-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -1222,7 +1222,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/ja/moderntex/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-11-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="de" href="https://purplelink.llc/de/moderntex/"/>
@@ -1375,7 +1375,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/moderntex/</loc>
-    <lastmod>2026-11-02</lastmod>
+    <lastmod>2026-11-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="de" href="https://purplelink.llc/de/moderntex/"/>
@@ -1532,7 +1532,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/pt-br/moderntex/</loc>
-    <lastmod>2026-11-02</lastmod>
+    <lastmod>2026-11-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="en" href="https://purplelink.llc/moderntex/"/>
@@ -1784,6 +1784,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://purplelink.llc/tools/image-to-base64/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://purplelink.llc/tools/</loc>
     <lastmod>2026-11-03</lastmod>
     <priority>0.8</priority>
@@ -1879,6 +1884,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://purplelink.llc/tools/pdf-to-text/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://purplelink.llc/tools/pdf-tools/</loc>
     <lastmod>2026-11-02</lastmod>
     <priority>0.7</priority>
@@ -1970,7 +1980,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/tools/transcript-cleaner/</loc>
-    <lastmod>2026-11-02</lastmod>
+    <lastmod>2026-11-03</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
@@ -2004,8 +2014,13 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://purplelink.llc/tools/xlsx-to-latex/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://purplelink.llc/vitae/</loc>
-    <lastmod>2026-11-02</lastmod>
+    <lastmod>2026-11-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -2023,7 +2038,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/zh-cn/moderntex/</loc>
-    <lastmod>2026-10-29</lastmod>
+    <lastmod>2026-11-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="de" href="https://purplelink.llc/de/moderntex/"/>

@@ -679,6 +679,42 @@ async function subtitles(bytes, name, pair, opts, progress) {
     summary: count + " cue" + (count === 1 ? "" : "s") + ", the last ending at " + hms(last) + (dec.encoding !== "UTF-8" ? ", read as " + dec.encoding : "") };
 }
 
+// ---------- Excel to LaTeX ----------
+async function xlsxToLatex(bytes, name, opts, progress) {
+  var book = await openWorkbook(bytes, progress);
+  bytes = null;
+  var visible = book.sheets.filter(function (s) { return s.state === "visible"; });
+  var pick = opts.sheets === "all" ? book.sheets : [(visible[0] || book.sheets[0])];
+  var used = {}, parts = [], rows = 0, notes = [];
+  for (var i = 0; i < pick.length; i++) {
+    progress(0.3 + 0.65 * (i / pick.length), "Reading " + pick[i].name);
+    var xml = await partText(book.zip, pick[i].path, "The sheet \u201c" + pick[i].name + "\u201d");
+    var r = Convert.sheetRows(xml, book.shared, book.styles, book.wb.date1904, Convert.MAX_CELLS, false, true);
+    xml = null;
+    var t = Convert.latexTable(r.rows, r.kinds, { header: opts.header, booktabs: opts.booktabs, float: opts.float, caption: pick[i].name, label: Convert.latexLabel(pick[i].name, used) });
+    if (!t.tex) { notes.push("The sheet \u201c" + pick[i].name + "\u201d is empty and was left out."); continue; }
+    rows += t.rows;
+    parts.push(t.tex);
+  }
+  if (!parts.length) throw new Error("This workbook has no cells to put in a table.");
+  if (opts.booktabs) notes.push("The table uses booktabs rules, so add \\usepackage{booktabs} to your preamble.");
+  if (opts.sheets !== "all" && book.sheets.length > 1) notes.push("This workbook has " + book.sheets.length + " sheets. \u201c" + pick[0].name + "\u201d was converted; choose All sheets for the rest.");
+  var tex = new TextEncoder().encode(parts.join("\n"));
+  return { outputs: [{ name: Convert.outName(name, "tex"), mime: Convert.MIME.tex, bytes: tex }], notes: notes,
+    summary: parts.length + " table" + (parts.length === 1 ? "" : "s") + ", " + rows.toLocaleString("en-US") + " row" + (rows === 1 ? "" : "s") };
+}
+
+// ---------- Image to Base64 ----------
+function toBase64(bytes, name, opts) {
+  var kind = Convert.kindOf(bytes.subarray(0, 4096), name);
+  var mime = Convert.IMAGE_MIME[kind] || "application/octet-stream";
+  var text = Convert.base64Snippet(Convert.base64(bytes), mime, opts.format);
+  var notes = bytes.length > 100 * 1024 ? ["This image is " + Convert.formatBytes(bytes.length) + ", and as text a third larger. A data URL that big slows a page down; a separate file is usually better."] : [];
+  if (text.length > 2 * 1024 * 1024) notes.push("At this size the Copy button is off; download the .txt file instead.");
+  return { outputs: [{ name: Convert.outName(name, "txt"), mime: Convert.MIME.txt, bytes: new TextEncoder().encode(text) }], notes: notes,
+    summary: text.length.toLocaleString("en-US") + " characters, " + mime, copyText: text.length <= 2 * 1024 * 1024 ? text : "" };
+}
+
 self.onmessage = async function (e) {
   var m = e.data;
   var before = { requests: net.requests, bytes: net.bytes };
@@ -710,6 +746,8 @@ self.onmessage = async function (e) {
       else if (pair.work === "ico") res = await icoToPng(bytes, m.name, opts, progress);
       else if (pair.work === "xlsxread") res = await xlsxToJson(bytes, m.name, opts, progress);
       else if (pair.work === "subs") res = await subtitles(bytes, m.name, m.pair, opts, progress);
+      else if (pair.work === "xlsxlatex") res = await xlsxToLatex(bytes, m.name, opts, progress);
+      else if (pair.work === "base64") res = toBase64(bytes, m.name, opts);
       else {
         var pic = kind === "heic" ? await decodeHeif(bytes, opts, progress) : await decodeNative(bytes, kind, opts, pair.maxPixels);
         bytes = null; // the source is no longer needed; let it go before encoding
