@@ -7,7 +7,7 @@ import { buildPlan } from "../../src/rubblefront4/plan4.js";
 
 export const id = "rubblefront4";
 const VIDEO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
-const FL = process.env.RF_FRONTLINK || "/Volumes/Extreme SSD/Frontlink";
+const FL = process.env.RF_RUBBLEFRONT || process.env.RF_FRONTLINK || "/Volumes/Extreme SSD/RubbleFront";
 
 export function prepare({ sbPath, format = "16x9", wishlist = false }) {
   const sb = JSON.parse(fs.readFileSync(path.resolve(VIDEO, sbPath), "utf8"));

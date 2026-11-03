@@ -25,6 +25,11 @@
         message(esc((r.body && r.body.detail) || "We could not prepare your download. Email the address on your receipt and we will send the files directly."));
         return;
       }
+      // The order was marked as from a Reddit ad (set from the server-side pl_attr cookie at checkout): tell the pixel.
+      if (r.body.reddit_ad === true) {
+        window.plRedditAd = true;
+        if (typeof window.plRedditPurchase === "function") window.plRedditPurchase();
+      }
       var html = "";
       r.body.files.forEach(function (f) {
         html += '<a class="btn btn-primary kit-dl-btn" href="' + esc(f.url) + '" download>Download: ' + esc(f.label) + "</a>";

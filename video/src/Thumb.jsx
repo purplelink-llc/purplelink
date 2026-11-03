@@ -90,7 +90,7 @@ function LongThumb({ msg, n = 5, unit = "causes", sub = "and the fix for each", 
 
 // One real screen, cropped in (`zoom` around the `pos` focus point) so a single element reads at feed size; it runs
 // off the right edge and stops above the duration stamp. `icons` instead of `img` shows a grid of app icons.
-function ProductThumb({ name, line, img, icon, icons, pos = "center", zoom = 1, portrait = false, box }) {
+function ProductThumb({ name, line, img, icon, lockup, icons, pos = "center", zoom = 1, portrait = false, box }) {
   const shot = box ? { radius: 20, ...box } : portrait
     ? { left: 780, top: 34, width: 320, height: 586, radius: 44 }
     : { left: 560, top: 40, width: 760, height: 540, radius: 24 };
@@ -107,10 +107,14 @@ function ProductThumb({ name, line, img, icon, icons, pos = "center", zoom = 1, 
         )}
       </div>
       <div style={{ position: "absolute", left: 64, top: 64, width: portrait ? 680 : 470, display: "grid", gap: 22 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-          {icon && <Img src={staticFile(icon)} style={{ width: 84, height: 84, borderRadius: 20 }} />}
-          <span style={{ fontFamily: FONT_BODY, fontWeight: 800, fontSize: 42, color: PURPLE }}>{name}</span>
-        </div>
+        {lockup ? (
+          <Img src={staticFile(lockup)} style={{ width: 200, height: "auto" }} />
+        ) : (
+          <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+            {icon && <Img src={staticFile(icon)} style={{ width: 84, height: 84, borderRadius: 20 }} />}
+            <span style={{ fontFamily: FONT_BODY, fontWeight: 800, fontSize: 42, color: PURPLE }}>{name}</span>
+          </div>
+        )}
         <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 700, fontSize: fit(line, [[14, 104], [22, 92], [99, 80]]), lineHeight: 1.0, letterSpacing: "-0.02em", color: INK }}>{line}</div>
       </div>
     </AbsoluteFill>

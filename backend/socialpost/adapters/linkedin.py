@@ -26,6 +26,21 @@ def _norm(s: str) -> str:
     return " ".join(s.split())
 
 
+FEED_URL = "https://www.linkedin.com/feed/update/{urn}/"
+URLISH = re.compile(r"https?://\S+")
+
+
+def permalink_for(rows: list, text: str) -> str | None:
+    """The public URL of the post whose text starts like `text`, from the published page's [urn, visible text] rows
+    (each post element carries data-urn="urn:li:activity:<id>"). Links are left out of the match: LinkedIn shortens
+    them in the visible text."""
+    want = _norm(URLISH.sub(" ", text))[:50]
+    for urn, body in rows:
+        if want and want in _norm(body) and re.fullmatch(r"urn:li:activity:\d{15,22}", str(urn)):
+            return FEED_URL.format(urn=urn)
+    return None
+
+
 class LinkedIn(Adapter):
     name = "linkedin"
     identity_keys = {"company_id": "company_id", "name": "name"}
@@ -66,6 +81,20 @@ class LinkedIn(Adapter):
                 raise SessionExpired("linkedin: session expired; run: python3 backend/scripts/linkedin_login.py")
             return url, page.inner_text("body", timeout=15_000)
 
+    def _published_rows(self) -> list:
+        """[[urn, visible text]] for each post on the published page. Read only."""
+        with self.session() as page:
+            page.goto(COMPANY_URL, wait_until="domcontentloaded", timeout=45_000)
+            page.wait_for_timeout(6_000)
+            return page.evaluate("""() => [...document.querySelectorAll('[data-urn^="urn:li:activity:"]')]
+                .map(e => [e.getAttribute('data-urn'), e.innerText])""")
+
+    def permalink(self, text: str) -> str | None:
+        try:
+            return permalink_for(self._published_rows(), text)
+        except Exception:
+            return None
+
     def whoami(self) -> dict:
         url, body = self._published_page()
         m = re.search(r"/company/(\d+)/admin", url)
@@ -83,7 +112,8 @@ class LinkedIn(Adapter):
         if not dry_run:
             self.check_identity()
             if self._already_live(text):
-                return Result(url=COMPANY_URL, id="already-live", detail="the same text is already on the page; not reposted")
+                return Result(url=self.permalink(text) or COMPANY_URL, id="already-live",
+                              detail="the same text is already on the page; not reposted")
         with tempfile.TemporaryDirectory() as td:
             tf = Path(td) / "post.txt"
             tf.write_text(text, encoding="utf-8")
@@ -106,7 +136,12 @@ class LinkedIn(Adapter):
             self.sleep(20)
             if not self._already_live(text):
                 raise Ambiguous("linkedin: the poster reported success but the post is not on the page yet; check the page")
-        return Result(url=COMPANY_URL, id=f"company-page-{_norm(text)[:24]}", detail="LinkedIn shows no public permalink here")
+        # The published page lists each post with data-urn="urn:li:activity:<id>"; its public URL is the feed update
+        # URL. Nothing below may raise: the post is live.
+        link = self.permalink(text)
+        return Result(url=link or COMPANY_URL, id=link.rsplit(":", 1)[-1].strip("/") if link else
+                      f"company-page-{_norm(text)[:24]}",
+                      detail="" if link else "post found on the page, but its public link could not be read")
 
     def verify(self, url: str) -> bool:
-        return url.startswith("https://www.linkedin.com/company/120183926/")
+        return url.startswith(("https://www.linkedin.com/company/120183926/", "https://www.linkedin.com/feed/update/"))

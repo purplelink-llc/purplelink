@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Per-page social cards (1200x630 JPEG) for the pages that share a generic card.
 
-Pages covered: /format/references-for-*/, the guides and the blog posts whose og:image is still
+Pages covered: /format/references-for-*/, the guides, the blog posts, the /research/ pages and the /tools/ pages whose og:image is still
 assets/og/purplelink-card.png or assets/og/brand.png. Each gets site/assets/og/cards/<section>-<slug>.jpg: a
 background from site/assets/og/bg/ (made with ChatGPT, no text in the image), the page title in Fraunces, and the
 brand mark. The page's og:image and twitter:image tags are rewritten to point at it.
@@ -11,6 +11,8 @@ Rendering: scripts/og-card.html in headless Chrome over a local server rooted at
   python3 scripts/gen_og_cards.py            # render and rewrite
   python3 scripts/gen_og_cards.py --dry-run  # list what would change
   python3 scripts/gen_og_cards.py --only blog/starting-purplelink
+  python3 scripts/gen_og_cards.py --refresh  # re-render every existing card too
+  python3 scripts/gen_og_cards.py --brand    # re-render the two generic brand cards (scripts/og-brand-card.html)
 """
 import argparse, html, http.server, re, socketserver, subprocess, sys, threading, urllib.parse
 from pathlib import Path
@@ -36,8 +38,18 @@ BLOG_BG = {
     "starting-purplelink": "general", "keeping-up-when-your-research-crosses-fields": "general",
 }
 FOOT = {"format": "Reference formats for journals and conferences", "guides": "Free guides for academic authors",
-        "blog": "Notes from a one-person software studio"}
-KICKER = {"format": "Reference format", "guides": "Guide", "blog": "Blog"}
+        "blog": "Notes from a one-person software studio",
+        "tools": "Tools for researchers and Mac users",
+        "research": "Original data from Purplelink",
+        "de/guides": "Kostenlose Anleitungen für Forschende",
+        "fr/guides": "Guides gratuits pour les chercheurs",
+        "pt-br/guides": "Guias gratuitos para pesquisadores", "ja/guides": "研究者のための無料ガイド",
+        "zh-cn/guides": "为研究者准备的免费指南"}
+KICKER = {"format": "Reference format", "guides": "Guide", "blog": "Blog", "tools": "Tool", "research": "Research",
+          "de/guides": "Anleitung", "fr/guides": "Guide", "pt-br/guides": "Guia", "ja/guides": "ガイド", "zh-cn/guides": "指南"}
+# Localized guides (2026-10-29). Their cards are named de-guides-<slug>.jpg, and the template draws CJK text with
+# the system fonts, since Fraunces and Plus Jakarta Sans are Latin subsets.
+SECTIONS = ("format", "guides", "blog", "tools", "research", "de/guides", "fr/guides", "pt-br/guides", "ja/guides", "zh-cn/guides")
 
 
 def meta(t, prop):
@@ -54,28 +66,32 @@ def title_of(t, section):
     return ti
 
 
-def plan(only=None):
+def plan(only=None, refresh=False):
     jobs = []
-    for section in ("format", "guides", "blog"):
+    for section in SECTIONS:
         for p in sorted((SITE / section).glob("*/index.html")):
             slug = p.parent.name
             if slug == "digest" or (only and f"{section}/{slug}" != only):
                 continue
             t = p.read_text(encoding="utf-8", errors="ignore")
             cur = (meta(t, "og:image") or "").rsplit("/", 1)[-1]
-            if cur not in GENERIC:
+            card = f"{section.replace('/', '-')}-{slug}.jpg"
+            if cur not in GENERIC and not (refresh and cur == card):
                 continue
             title = title_of(t, section)
             sub, bg = "", "research"
             if section == "format":
                 venue = re.sub(r"\s+Reference Format.*$", "", title)
                 title, sub, bg = f"{venue} references", "BibTeX style, examples and a checker.", "latex"
-            elif section == "guides":
+            elif section.endswith("guides"):
                 bg = "latex" if any(w in slug for w in LATEX_WORDS) else "research"
+            elif section == "tools":
+                # Image converters (2026-11-02) get the apps background; the rest are research tools.
+                bg = "apps" if slug in ("heic-to-jpg", "webp-to-png", "png-to-icns", "png-to-ico", "avif-to-jpg", "jpg-to-pdf", "csv-to-xlsx") else "research"
             else:
                 bg = BLOG_BG.get(slug, "research")
             jobs.append({"page": p, "section": section, "slug": slug, "title": title, "sub": sub, "bg": bg,
-                         "out": OUT / f"{section}-{slug}.jpg", "url": f"{BASE}/assets/og/cards/{section}-{slug}.jpg"})
+                         "out": OUT / card, "url": f"{BASE}/assets/og/cards/{card}"})
     return jobs
 
 
@@ -115,13 +131,43 @@ def render(srv, job):
     png.unlink()
 
 
+# The two generic cards, built around the primary lockup (see docs/brand/logo-usage.md). Their text is fixed here.
+BRAND_CARDS = {
+    "brand.png": {"k": "Making software that lasts",
+                  "s": "Atlanta studio. Native macOS and iOS apps, plus free academic tools.",
+                  "f": "No sign-up \u00b7 Files deleted after use"},
+    "purplelink-card.png": {"k": "Purplelink LLC",
+                            "s": "macOS and iOS apps, applied AI, and free tools for academics.",
+                            "f": "No sign-up \u00b7 Files never stored"},
+}
+
+
+def render_brand(srv):
+    for name, q in BRAND_CARDS.items():
+        url = f"http://127.0.0.1:{srv.server_address[1]}/scripts/og-brand-card.html?{urllib.parse.urlencode(q)}"
+        out = SITE / "assets" / "og" / name
+        subprocess.run([CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars", "--window-size=1200,630",
+                        "--force-device-scale-factor=1", "--virtual-time-budget=6000", f"--screenshot={out}", url],
+                       check=True, capture_output=True, timeout=90)
+        Image.open(out).convert("RGB").save(out, optimize=True)
+        print(f"wrote {out.relative_to(ROOT)}")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--only")
     ap.add_argument("--no-rewrite", action="store_true", help="render the images only")
+    ap.add_argument("--refresh", action="store_true",
+                    help="also re-render pages that already use their own card (after a brand or template change)")
+    ap.add_argument("--brand", action="store_true", help="re-render only the two generic brand cards")
     a = ap.parse_args()
-    jobs = plan(a.only)
+    if a.brand:
+        srv = serve()
+        render_brand(srv)
+        srv.shutdown()
+        return
+    jobs = plan(a.only, a.refresh)
     print(f"{len(jobs)} pages")
     if a.dry_run:
         for j in jobs:

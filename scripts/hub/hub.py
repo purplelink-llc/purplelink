@@ -13,17 +13,28 @@ it can be deleted at any time with nothing lost. Nothing here posts, sends or ed
 
 Phase 1 (results):
   hub.py import --fetch         also read the first-touch funnel from the stats function (7 windows, one GET each)
+  hub.py import --fetch-if-stale   the same, only when funnel.json was not fetched today (the morning export uses it)
   hub.py channels [PRODUCT]     product x channel over 45 days: placements, visits, trials, orders, verdict
   hub.py followups              outreach emails due a follow-up (day 4) and those past 28 days (no-response)
   hub.py check-listings [--if-older DAYS]   fetch live listing pages; record price and version seen (facts.json)
   hub.py export DIR             aggregate JSON arrays for the dashboard's Marketing tab (no contacts, no email targets)
 
 Phase 2 (the hub as the gate):
-  hub.py utm URL --asset A --channel C [--source S] [--campaign X]   the link with a utm_content no placement uses yet
+  hub.py utm URL --asset A --channel C [--source S] [--campaign X] [--medium M] [--content PREFERRED]
+                                the link with a utm_content no placement uses yet (PREFERRED, or -2, -3 ... when taken)
   hub.py kits [--write ASSET|all]   submission kits from site/llms.txt; says which stored kit is out of date
   hub.py rules [--checked CHANNEL]  platform rules per company channel, due for a re-check after 90 days
   hub.py week pick|measure [--write]   Monday: up to 5 assets to draft for; Sunday: what the week's placements did
   hub.py log                    write Outreach/PLACEMENTS.md, a generated read-only view of every placement
+
+Paid campaigns and data quality:
+  hub.py campaigns              each paid test (campaigns.json): reported spend and clicks beside exact-link visits,
+                                trials and orders, cost per trial and order, and the next reading date
+  hub.py campaign-spend CAMPAIGN --spend X [--clicks N] [--impressions N] [--ad A] [--as-of DATE]
+                                record a reading from the platform's dashboard (cumulative to date) in manual-ads.json
+  hub.py rechecks               deferred decisions (rechecks.json) read against the baseline they were made on
+  hub.py doctor [--links]       placements missing a result, utm_content used twice, links not answering 200
+                                (--links re-checks every live placement and landing link first)
 
 Hand corrections go in ~/.purplelink/hub/overrides.json: {"<placement id>": {"url", "status", "date", "channel",
 "assets": [...], "exclude": true}}. They are applied on every import; the sources are never edited.
@@ -31,7 +42,8 @@ Hand corrections go in ~/.purplelink/hub/overrides.json: {"<placement id>": {"ur
 Sources: approval queue items (pending, approved, done; outward kinds only), the social queue (posted and scheduled
 company posts, one placement per platform), Outreach/OUTREACH-LOG.md tables, video/howto/ledger.json, the launch videos that
 scripts/app-release-watch.py published (~/.purplelink/app-release-watch/state.json), and the MacUpdate
-readings in the traffic dashboard history. Assets come from site/llms.txt and site/sitemap.xml.
+readings in the traffic dashboard history, and the contest finder's ledger (~/.purplelink/contests/ledger.json: contests
+picked, queued, entered and their results). Assets come from site/llms.txt and site/sitemap.xml.
 
 Contacts are not copied: an outreach row keeps a `contact_ref` (file and line) and email addresses in notes are masked.
 
@@ -57,6 +69,18 @@ HOME = Path.home()
 SITE_HOST = "purplelink.llc"
 
 
+# Trial maps in stats.mjs are keyed by the download event's meta. "<app>-s2m" is a real download on a Mac after a
+# "Send to my Mac" email and counts as a trial of <app>; "<app>-not-mac" is a click that only pointed at that email
+# form and downloaded nothing, so it never counts (docs/designs/send-to-mac.md).
+def trial_count(trial, prod):
+    t = trial or {}
+    return t.get(prod, 0) + t.get(f"{prod}-s2m", 0)
+
+
+def trial_total(trial):
+    return sum(n for k, n in (trial or {}).items() if not str(k).endswith("-not-mac"))
+
+
 def env_path(name: str, default: Path) -> Path:
     return Path(os.environ.get(name) or default)
 
@@ -79,6 +103,11 @@ def paths() -> dict:
         "overrides": env_path("PURPLELINK_HUB", HOME / ".purplelink" / "hub") / "overrides.json",
         "social_metrics": env_path("PURPLELINK_SOCIAL_METRICS", HOME / ".purplelink" / "social" / "metrics.json"),
         "traffic_env": env_path("PURPLELINK_TRAFFIC_ENV", HOME / ".config" / "purplelink" / "traffic.env"),
+        "campaigns": env_path("PURPLELINK_HUB", HOME / ".purplelink" / "hub") / "campaigns.json",
+        "rechecks": env_path("PURPLELINK_HUB", HOME / ".purplelink" / "hub") / "rechecks.json",
+        "links": env_path("PURPLELINK_HUB", HOME / ".purplelink" / "hub") / "links.json",
+        "manual_ads": env_path("PURPLELINK_MANUAL_ADS", HOME / ".purplelink" / "traffic" / "manual-ads.json"),
+        "contests": env_path("PURPLELINK_CONTESTS", HOME / ".purplelink" / "contests") / "ledger.json",
     }
 
 
@@ -112,6 +141,8 @@ CHANNELS = [
     ("batch", "email"), ("outreach", "email"), ("pitch", "email"), ("customer note", "email"),
 ]
 OUTWARD = {"post", "email", "listing", "submission", "spend"}
+GITHUB_PR_RE = re.compile(r"https://github\.com/([\w.-]+)/[\w.-]+/pull/\d+")
+OWN_GITHUB = {"purplelink-llc", "benampel"}
 QUEUE_STATUS = {"pending": "queued", "approved": "approved", "done": "live"}
 LOG_STATUS = {"sent": "live", "posted": "live", "replied": "replied", "included": "live", "listed": "live",
               "live": "live", "declined": "rejected-by-target", "rejected": "rejected-by-target",
@@ -275,10 +306,14 @@ def from_queue(p: dict) -> list:
             continue
         for f in sorted(d.glob("*.md")):
             fm, body = parse_front(f.read_text(errors="replace"))
-            if fm.get("kind") not in OUTWARD:
+            if fm.get("job") == "contest-finder":
+                continue  # the contest ledger is the record for these (from_contests), so a contest counts once
+            result = section(body, "Result")
+            # A "pr" item is site work, unless it opened a pull request on someone else's repo (an awesome list).
+            pr = fm.get("kind") == "pr" and any(m.lower() not in OWN_GITHUB for m in GITHUB_PR_RE.findall(result))
+            if fm.get("kind") not in OUTWARD and not pr:
                 continue
             target = str(fm.get("target", ""))
-            result = section(body, "Result")
             draft = section(body, "Draft")
             res_urls = [u for u in URL_RE.findall(result) if not site_path(u)]
             date = (DATE_RE.findall(result) or [str(fm.get("decided") or fm.get("created") or "")[:10]])[-1]
@@ -286,7 +321,7 @@ def from_queue(p: dict) -> list:
             contents = list(dict.fromkeys(re.findall(r"utm_content=([\w.\-]+)", draft)))
             out.append({
                 "id": f"queue:{fm.get('id', f.stem)}", "source": "approval-queue",
-                "channel": str(fm.get("channel") or "") or channel_of(target + " " + str(fm.get("kind")), "email" if fm.get("kind") == "email" else "other"),
+                "channel": str(fm.get("channel") or "") or ("github" if pr else "") or channel_of(target + " " + str(fm.get("kind")), "email" if fm.get("kind") == "email" else "other"),
                 "kind": fm.get("kind"), "target": mask(target)[:200], "status": status,
                 "date": str(fm.get("live") or date)[:10],
                 "url": str(fm.get("placement_url") or "") or (res_urls[0] if res_urls else ""), "landing_url": "",
@@ -299,11 +334,35 @@ def from_queue(p: dict) -> list:
     return out
 
 
+def candidate_assets(cand: str, video_apps: dict) -> list:
+    """The daily pipeline's candidate id (release:<app>:<version>, video:<id>, guide:<slug>, tool:<slug>, blog:<slug>)
+    names what a post promotes, even when its link is a YouTube video rather than a page on the site."""
+    kind, _, rest = (cand or "").partition(":")
+    if kind == "release":
+        return [rest.split(":")[0]] if rest else []
+    if kind == "video":
+        return [video_apps[rest]] if video_apps.get(rest) else []
+    if kind in ("guide", "tool", "blog") and rest:
+        return [f"{kind}:{rest}"]
+    return []
+
+
+def video_apps_of(p: dict) -> dict:
+    """YouTube id (long or Short) -> the app its how-to video is about, from the video ledger."""
+    out = {}
+    for v in (load_json(p["videos"], []) if p["videos"].exists() else []):
+        for fld in ("long_id", "short_id"):
+            if v.get(fld) and v.get("app"):
+                out[v[fld]] = str(v["app"])
+    return out
+
+
 def from_social(p: dict) -> list:
     out = []
     d = p["social"]
     if not d.is_dir():
         return out
+    video_apps = video_apps_of(p)
     for f in sorted(d.glob("*.md")):
         fm, body = parse_front(f.read_text(errors="replace"))
         iid = str(fm.get("id") or f.stem)
@@ -323,14 +382,33 @@ def from_social(p: dict) -> list:
                 status = "approved" if approval else "drafted"
             when = str(r.get("posted_at") or fm.get("scheduled_at") or fm.get("created") or "")[:10]
             campaign = str(fm.get("campaign") or "")
+            utm = f"utm_source={plat}&utm_medium=social&utm_campaign={campaign}" if campaign else ""
+            tags = fm.get("utm_contents") if isinstance(fm.get("utm_contents"), dict) else {}
+            own = tags.get(plat) or (fm.get("utm_content") if plat == "instagram" or not tags else "")
+            if utm and own:
+                utm += f"&utm_content={own}"
+            std = re.search(r"standing, (\d{4}-\d{2}-\d{2})", approval)
             out.append({
                 "id": f"social:{iid}:{plat}", "source": "social-queue", "channel": plat, "kind": "post",
                 "target": f"Purplelink {plat}", "status": status, "date": when, "url": r.get("url") or "",
-                "landing_url": link, "utm": f"utm_source={plat}&utm_medium=social&utm_campaign={campaign}" if campaign else "",
-                "approval": "standing:2026-10-18" if "standing" in approval else approval, "contact_ref": "",
+                "landing_url": link, "utm": utm,
+                "approval": f"standing:{std.group(1)}" if std else approval, "contact_ref": "",
                 "notes": (r.get("error") or r.get("detail") or "")[:200], "_text": link + " " + body,
+                "_assets": candidate_assets(str((fm.get("daily") or {}).get("candidate") or ""), video_apps)
+                if isinstance(fm.get("daily"), dict) else [],
             })
     return out
+
+
+# A row the social engine writes: "| date | <platform>: <social queue id> | url | status | notes |".
+SOCIAL_LOG_HEADER = ["date", "where", "link", "status", "notes"]
+SOCIAL_ROW_RE = re.compile(r"^([a-z]+): (\d{8}-[\w-]+)$")
+
+
+def row_pin(cells: list) -> str:
+    """A log row's first three cells, as an override's "_row": outreach ids are line numbers, so an override records
+    which row it meant and the doctor can tell when an edit above has moved it."""
+    return mask(" ".join(" | ".join(cells[:3]).split()))[:100]
 
 
 def from_outreach(p: dict) -> list:
@@ -348,8 +426,11 @@ def from_outreach(p: dict) -> list:
             continue
         cells = [c.strip() for c in line.strip().strip("|").split("|")]
         if header is None:
-            header = [c.lower() for c in cells]
-            continue
+            # The social engine appends its rows under whatever heading is last, with no table header of its own.
+            if not DATE_RE.fullmatch(cells[0]):
+                header = [c.lower() for c in cells]
+                continue
+            header = SOCIAL_LOG_HEADER
         if all(set(c) <= set("-: ") for c in cells):
             continue
         row = dict(zip(header, cells))
@@ -365,16 +446,28 @@ def from_outreach(p: dict) -> list:
         urls = URL_RE.findall(joined)
         ext = [u for u in urls if not site_path(u)]
         landing = next((u for u in urls if site_path(u)), "")
+        mirror = SOCIAL_ROW_RE.match(row.get(target_key, ""))
         out.append({
-            "id": f"outreach:{n}", "source": "outreach-log", "channel": channel_of(heading + " " + row.get(target_key, ""), "other"),
+            "id": f"outreach:{n}", "source": "outreach-log",
+            "channel": mirror.group(1) if mirror else channel_of(heading + " " + row.get(target_key, ""), "other"),
             "kind": "reply" if "stackexchange" in heading.lower() else "", "target": mask(row.get(target_key, ""))[:200],
             "status": status, "date": date, "url": ext[0] if ext else "", "landing_url": landing, "utm": "",
             "approval": (re.findall(r"q-\d{8}-[\w-]+", joined) or [""])[0], "contact_ref": f"OUTREACH-LOG.md:{n}",
             "notes": mask(row.get("notes", ""))[:300], "_text": heading + " " + joined,
-            "_social": (re.findall(r"^(?:linkedin|bluesky|threads|mastodon|x): (\S+)$", row.get(target_key, "")) or [""])[0],
+            "_social": mirror.group(2) if mirror else "", "_row": row_pin(cells),
             "_assets": ["photo-licensing"] if channel_of(heading, "") == "photo-pitch" else [],
         })
     return out
+
+
+def video_tag(v: dict, fld: str) -> str:
+    """The utm_content a ledger entry's long video or Short links with. The Short has its own tag: short_utm_content
+    since 2026-10-28; before that howto-publish.py gave it <long tag>-short (the published descriptions say so)."""
+    if fld == "long_id":
+        return v.get("link_utm_content") or ""
+    if v.get("short_utm_content"):
+        return v["short_utm_content"]
+    return f"{v['link_utm_content']}-short" if v.get("link_utm_content") else ""
 
 
 def from_videos(p: dict) -> list:
@@ -386,14 +479,15 @@ def from_videos(p: dict) -> list:
             vid = v.get(fld)
             if not vid:
                 continue
+            tag = video_tag(v, fld)
             out.append({
                 "id": f"video:{vid}", "source": "video-ledger", "channel": "youtube", "kind": "video",
                 "target": f"Purplelink YouTube ({label})", "status": "live", "date": v.get("date", ""),
                 "url": f"https://www.youtube.com/watch?v={vid}" if fld == "long_id" else f"https://www.youtube.com/shorts/{vid}",
-                "landing_url": "", "utm": f"utm_content={v.get('link_utm_content', '')}" if v.get("link_utm_content") else "",
+                "landing_url": "", "utm": f"utm_content={tag}" if tag else "",
                 "approval": "standing:daily-howto", "contact_ref": "", "notes": v.get("title", "")[:200],
                 "_text": str(v.get("app", "")), "_assets": [str(v.get("app", ""))],
-                "_contents": [v["link_utm_content"]] if v.get("link_utm_content") else [],
+                "_contents": [tag] if tag else [],
             })
     return out
 
@@ -420,6 +514,41 @@ def from_app_releases(p: dict) -> list:
                 "_text": str(app), "_assets": [slug],
             })
     return out
+
+
+# Contest finder (scripts/contests/contests.py, docs/designs/contest-finder.md): a contest becomes a placement once it
+# is picked; candidates that were never picked stay in the ledger only.
+CONTEST_STATUS = {"picked": "candidate", "prefilled": "candidate", "queued": "queued", "entered": "live",
+                  "shortlisted": "live", "won": "live", "lost": "live", "skipped": "skipped"}
+CONTEST_RESULT = {"won": 1.0, "shortlisted": 0.5, "lost": 0.0}
+
+
+def from_contests(p: dict) -> tuple[list, list]:
+    """One placement per contest edition that was picked, queued, entered or decided, with results
+    (contest_result: 1 won, 0.5 shortlisted, 0 not placed). Past editions come from each record's `past` list."""
+    led = load_json(p["contests"], {}) or {}
+    out, results = [], []
+    for rid, rec in (led.get("contests") or {}).items():
+        for ed in (rec.get("past") or []) + [rec]:
+            status = CONTEST_STATUS.get(ed.get("status") or "")
+            if not status:
+                continue
+            pid = f"contest:{rid}:{ed.get('edition') or ''}"
+            res = ed.get("result") or {}
+            date = res.get("date") or ed.get("entered") or rec.get("first_seen") or ""
+            out.append({
+                "id": pid, "source": "contest-finder", "channel": "contest", "kind": "submission",
+                "target": f"{rec.get('name', rid)} {ed.get('edition') or ''}".strip()[:200], "status": status,
+                "date": str(date)[:10], "url": ed.get("entry_url_done") or "", "landing_url": ed.get("utm_link") or "",
+                "utm": "", "approval": ed.get("queue_id") or "", "contact_ref": "",
+                "notes": (f"{ed.get('status')}; deadline {ed.get('deadline')}" + (f"; {res.get('note')}" if res.get("note") else ""))[:300],
+                "_text": rec.get("name", rid), "_assets": [rec.get("product") or "photo-licensing"],
+            })
+            if res.get("status") in CONTEST_RESULT:
+                results.append((pid, res.get("date", ""), "contest_result", CONTEST_RESULT[res["status"]], "contest-finder", "exact"))
+            if res.get("prize_usd"):
+                results.append((pid, res.get("date", ""), "contest_prize_usd", float(res["prize_usd"]), "contest-finder", "exact"))
+    return out, results
 
 
 def from_macupdate(p: dict) -> tuple[list, list]:
@@ -469,7 +598,10 @@ CHANNEL_KEYS = {
     "email": ("email",), "libguide": ("libguide",), "alternativeto": ("alternativeto", "alternativeto.net"),
     "producthunt": ("producthunt", "www.producthunt.com"), "newsletter": ("newsletter",), "x": ("x", "t.co"),
     "hn": ("news.ycombinator.com", "hn"), "press": ("press",),
+    # Ad clicks: analytics.js labels a first touch with utm_medium=cpc (or an ad click id) "paid:<source>".
+    "reddit-ads": ("paid:reddit",),
 }
+PAID_MEDIA = {"cpc", "ppc", "paid", "paidsocial"}
 # "How did you first hear about us?" codes (netlify/functions/checkout.mjs HEARD_OPTIONS) -> channel, where one fits.
 HEARD_CHANNEL = {"reddit": "reddit", "youtube": "youtube", "macupdate": "macupdate", "directory": "directory",
                  "email": "email", "library": "libguide"}
@@ -506,6 +638,36 @@ def fetch_funnel(p: dict, get=None) -> dict:
     return out
 
 
+def fetch_recent(p: dict, days: int, get=None, tries: int = 2, timeout: int = 20):
+    """funnelByChannel for the last `days` days, or None when the stats function cannot be read (no token, timeouts,
+    errors: it timed out from this Mac twice on 2026-10-29). Never raises; the token goes in a header."""
+    tok = stats_token(p)
+    if not tok:
+        return None
+    if get is None:
+        import urllib.request
+
+        def get(url, headers):
+            with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=timeout) as r:
+                return json.loads(r.read().decode("utf-8"))
+    for _ in range(tries):
+        try:
+            return get(f"{STATS_URL}?days={days}", {"x-stats-token": tok, "User-Agent": "purplelink-marketing-hub"}
+                       ).get("funnelByChannel") or {}
+        except Exception:
+            continue
+    return None
+
+
+def funnel_stale(path: Path, today: dt.date | None = None) -> bool:
+    """True unless funnel.json was fetched today. Its asOf is the fetch date, and a fetch made yesterday afternoon
+    misses yesterday's evening; an age rule (under 20 hours) let such a fetch stand in for the next morning's."""
+    try:
+        return json.loads(path.read_text()).get("asOf", "") < (today or dt.date.today()).isoformat()
+    except (OSError, ValueError, AttributeError):
+        return True
+
+
 def load_json(path: Path, default):
     try:
         return json.loads(path.read_text())
@@ -521,14 +683,31 @@ def host_key(url: str) -> list:
     return [h, h.removeprefix("www."), h.removeprefix("www.").split(".")[0]]
 
 
+def first_touch_key(ft: dict) -> str:
+    """The funnel's label for a stored first touch, folded the way analytics.js channel() folds it: an ad click
+    (click id g, or a paid utm_medium) reads "paid:<source>", so an ad buyer is never counted as organic."""
+    ft = ft or {}
+    if ft.get("g") or str(ft.get("m") or "").lower() in PAID_MEDIA:
+        return "paid:" + (ft.get("s") or "google")
+    return ft.get("s") or ""
+
+
 def source_keys(pl: dict) -> set:
     keys = set(CHANNEL_KEYS.get(pl["channel"], (pl["channel"],)))
     keys.update(host_key(pl.get("url", "")))
     for u in (pl.get("landing_url", ""), pl.get("utm", "")):
         m = re.search(r"utm_source=([\w.\-]+)", u or "")
         if m:
-            keys.add(m.group(1).lower())
+            med = re.search(r"utm_medium=([\w.\-]+)", u or "")
+            paid = bool(med) and med.group(1).lower() in PAID_MEDIA
+            keys.add(("paid:" if paid else "") + m.group(1).lower())
     return keys
+
+
+def order_matches(o: dict, keys: set) -> bool:
+    """An order counts for a placement's source keys by its folded first touch, or, for Reddit ads, by checkout's
+    reddit_ad flag (set from the page, or from the pl_attr cookie when the page had lost its first touch)."""
+    return (bool(o["first"]) and key_matches(o["first"], keys)) or (o.get("reddit_ad") and "paid:reddit" in keys)
 
 
 def key_matches(funnel_key: str, keys: set) -> bool:
@@ -596,8 +775,10 @@ def orders_from_ledger(p: dict) -> list:
         ft = (o.get("attr") or {}).get("first") or {}
         day = dt.datetime.fromtimestamp(float(o.get("ts") or 0), dt.timezone.utc).date().isoformat()
         # tag: the first-touch link's utm_content, stored by checkout.mjs from 2026-10-24
-        out.append({"product": o.get("product") or "", "first": ft.get("s") or "", "tag": ft.get("t") or "",
-                    "heard": o.get("heard") or "", "date": day})
+        out.append({"product": o.get("product") or "", "first": first_touch_key(ft), "tag": ft.get("t") or "",
+                    "heard": o.get("heard") or "", "date": day,
+                    # sales.mjs `reddit` (from checkout metadata reddit_ad / reddit_click_id), since 2026-10-29
+                    "reddit_ad": bool((o.get("reddit") or {}).get("ad"))})
     return out
 
 
@@ -608,7 +789,8 @@ def placement_results(pls: list, links: dict, assets: dict, funnel: dict, orders
     rows = []
     wins = funnel.get("windows") or {}
     asof = funnel.get("asOf") or today.isoformat()
-    live = [pl for pl in pls if pl["status"] in ("live", "replied") and pl.get("date")]
+    # no-response is still a live placement (an email nobody answered); its visits and orders count like any other
+    live = [pl for pl in pls if pl["status"] in ("live", "replied", "no-response") and pl.get("date")]
     shared: dict = {}
     plan = []
     for pl in live:
@@ -632,7 +814,7 @@ def placement_results(pls: list, links: dict, assets: dict, funnel: dict, orders
                     continue
                 pbp = v.get("pageviewsByPath") or {}
                 visits += sum(pbp.get(path, 0) for path in paths)
-                trials += sum((v.get("trial") or {}).get(prod, 0) for prod in products)
+                trials += sum(trial_count(v.get("trial"), prod) for prod in products)
                 checkouts += sum((v.get("checkout") or {}).get(prod, 0) for prod in products)
             n_share = max([shared.get((w, k, path), 1) for k in keys for path in paths] or [1])
             conf = f"path-shared:{n_share}" if n_share > 1 else "path"
@@ -641,8 +823,7 @@ def placement_results(pls: list, links: dict, assets: dict, funnel: dict, orders
                     continue
                 rows.append((pl["id"], asof, metric, val, f"funnel:{w}d", conf))
         if products:
-            n = sum(1 for o in orders if o["product"] in products and o["date"] >= pl["date"]
-                    and o["first"] and key_matches(o["first"], keys))
+            n = sum(1 for o in orders if o["product"] in products and o["date"] >= pl["date"] and order_matches(o, keys))
             rows.append((pl["id"], asof, "orders", n, "ledger", "first-touch"))
     # Per-link counts (utm_content, recorded since 2026-10-23): exact for this placement, not shared with its channel.
     cont = funnel.get("content") or {}
@@ -656,7 +837,7 @@ def placement_results(pls: list, links: dict, assets: dict, funnel: dict, orders
         rows_w = cont[str(w)]
         hit = [rows_w[t] for t in tags if t in rows_w]
         v = sum(x.get("pageviews", 0) for x in hit)
-        tr = sum(sum((x.get("trial") or {}).get(prod, 0) for prod in products) if products else sum((x.get("trial") or {}).values()) for x in hit)
+        tr = sum(sum(trial_count(x.get("trial"), prod) for prod in products) if products else trial_total(x.get("trial")) for x in hit)
         ck = sum(sum((x.get("checkout") or {}).get(prod, 0) for prod in products) if products else sum((x.get("checkout") or {}).values()) for x in hit)
         for metric, val in (("link-visits", v), ("link-trials", tr), ("link-checkout-clicks", ck)):
             rows.append((pl["id"], asof, metric, val, f"funnel-link:{w}d", "exact-link"))
@@ -801,8 +982,8 @@ def channel_stats(pls: list, links: dict, assets: dict, funnel: dict, orders: li
             for fk, v in fun.items():
                 if key_matches(fk, g["keys"]):
                     visits += sum(c for pth, c in (v.get("pageviewsByPath") or {}).items() if pth.startswith(path))
-                    trials += (v.get("trial") or {}).get(prod, 0)
-        n_orders = sum(1 for o in orders if o["product"] == prod and o["date"] >= since and o["first"] and key_matches(o["first"], g["keys"]))
+                    trials += trial_count(v.get("trial"), prod)
+        n_orders = sum(1 for o in orders if o["product"] == prod and o["date"] >= since and order_matches(o, g["keys"]))
         n_heard = sum(1 for o in orders if o["product"] == prod and o["date"] >= since and HEARD_CHANNEL.get(o["heard"]) == ch)
         # Trials start on guide pages too, while visits count the product's own pages only. Where trials outnumber
         # visits there is no honest per-visit rate, so none is given.
@@ -845,25 +1026,34 @@ def used_contents(p: dict) -> set:
         texts += [f.read_text(errors="replace") for f in p["social"].glob("*.md")]
     for t in texts:
         seen.update(re.findall(r"utm_content=([\w.\-]+)", t))
-        seen.update(re.findall(r'"link_utm_content":\s*"([\w.\-]+)"', t))
+        # the video ledger (long, Short and Reel tags) and the social queue's front matter record bare tags
+        seen.update(re.findall(r'"(?:link_|short_|reel_)?utm_content":\s*"([\w.\-]+)"', t))
+        seen.update(re.findall(r'^utm_content:\s*"([\w.\-]+)"', t, re.M))
+        for blob in re.findall(r"^utm_contents:\s*(\{.*\})\s*$", t, re.M):   # social queue: one tag per platform
+            try:
+                seen.update(str(v) for v in json.loads(blob).values() if v)
+            except ValueError:
+                pass
     return seen
 
 
 def make_utm(p: dict, url: str, asset: str, channel: str, source: str = "", campaign: str = "",
-             today: dt.date | None = None) -> str:
+             today: dt.date | None = None, medium: str = "", content: str = "") -> str:
     """The link with utm_source, utm_medium, utm_campaign and a utm_content no other placement uses:
-    <asset>-<channel>-<yymmdd>, with -2, -3 ... when that is taken."""
+    <asset>-<channel>-<yymmdd> (or `content` when the caller has a naming scheme, such as the how-to link test's
+    <slug> and <slug>-short), with -2, -3 ... when that is taken."""
     if not site_path(url):
         raise SystemExit("only links to purplelink.llc are tagged")
     today = today or dt.date.today()
-    base = f"{slug(asset.split(':')[-1], 28)}-{slug(channel, 16)}-{today.strftime('%y%m%d')}"
+    base = slug(content, 80) if content else f"{slug(asset.split(':')[-1], 28)}-{slug(channel, 16)}-{today.strftime('%y%m%d')}"
     taken = used_contents(p)
     content, n = base, 2
     while content in taken:
         content, n = f"{base}-{n}", n + 1
-    medium = {"email": "email", "newsletter": "email", "press": "email", "libguide": "referral", "directory": "referral",
+    medium = slug(medium, 20) or {"email": "email", "newsletter": "email", "press": "email", "libguide": "referral", "directory": "referral",
               "alternativeto": "referral", "macupdate": "referral", "marketplace": "referral", "github": "referral",
-              "texse": "community", "reddit": "community", "hn": "community", "youtube": "video"}.get(channel, "social")
+              "texse": "community", "reddit": "community", "hn": "community", "youtube": "video",
+              "youtube-short": "short"}.get(channel, "social")
     url = re.sub(r"[?&]utm_[a-z]+=[^&#]*", "", url).rstrip("?&")
     q = {"utm_source": slug(source or channel, 30), "utm_medium": medium, "utm_campaign": slug(campaign or f"hub-{asset.split(':')[-1]}", 40),
          "utm_content": content}
@@ -1059,11 +1249,589 @@ def placements_log(p: dict) -> str:
     return "\n".join(out)
 
 
+# --- paid campaigns ------------------------------------------------------------------------------------------------
+#
+# campaigns.json (private) lists each paid test with its ads; each ad is a placement whose link carries its own
+# utm_content, so visits, trials and orders come from the same exact-link results as any tagged placement. Spend,
+# impressions and clicks come from the platform's own dashboard, recorded by hand into manual-ads.json under the
+# platform's key (the file the traffic dashboard already reads for Apple Search Ads), with `hub.py campaign-spend`.
+#
+#   {"moderntex-latex-2026-11": {"platformKey": "redditAds", "channel": "reddit-ads", "asset": "moderntex",
+#     "start": "2026-10-28", "end": "2026-11-12", "budget": 80, "breakEven": 18, "approval": "ben 2026-10-27",
+#     "readings": ["2026-11-13", "2026-11-20", "2026-12-03"],
+#     "ads": [{"id": "a", "label": "Overleaf angle", "url": "https://purplelink.llc/moderntex/?...&utm_content=..."}]}}
+
+def utm_of(url: str, key: str) -> str:
+    m = re.search(rf"[?&]{key}=([^&#\s]+)", url or "")
+    return m.group(1) if m else ""
+
+
+def from_campaigns(p: dict, today: dt.date | None = None) -> list:
+    today = today or dt.date.today()
+    out = []
+    for cid, c in (load_json(p["campaigns"], {}) or {}).items():
+        if cid.startswith("_") or not isinstance(c, dict):
+            continue
+        for ad in c.get("ads") or []:
+            url = ad.get("url", "")
+            content = utm_of(url, "utm_content")
+            started = bool(c.get("start")) and c["start"] <= today.isoformat()
+            ended = bool(c.get("end")) and c["end"] < today.isoformat()
+            out.append({
+                "id": f"campaign:{cid}:{ad.get('id')}", "source": "campaigns", "channel": c.get("channel", "ads"),
+                "kind": "ad", "target": f"{cid} ad {ad.get('id')}: {ad.get('label', '')}".strip(),
+                "status": "live" if started else "scheduled", "date": c.get("start", ""),
+                "url": "", "landing_url": url, "utm": f"utm_campaign={cid}&utm_content={content}" if content else "",
+                "approval": c.get("approval", ""), "contact_ref": "",
+                "notes": f"paid; ran {c.get('start')} to {c.get('end')}" if ended else f"paid; runs {c.get('start')} to {c.get('end')}",
+                "_text": url, "_assets": [c["asset"]] if c.get("asset") else [], "_contents": [content] if content else [],
+                "_campaign": cid, "_ad": str(ad.get("id")),
+            })
+    return out
+
+
+def campaign_readings(p: dict) -> dict:
+    """cid -> {"asOf", "spend", "impressions", "clicks", "ads": {ad id: {...}}} from manual-ads.json, any platform key."""
+    data = load_json(p["manual_ads"], {}) or {}
+    out = {}
+    for block in data.values():
+        if not isinstance(block, dict):
+            continue
+        for c in block.get("campaigns") or []:
+            if isinstance(c, dict) and c.get("key"):
+                out[c["key"]] = {"asOf": block.get("asOf"), **c}
+    return out
+
+
+def campaign_spend_results(pls: list, p: dict) -> list:
+    """Reported spend, impressions and clicks as results on each ad placement (confidence reported: the platform's
+    own figures). A reading with no per-ad split is put on the campaign's first ad and marked campaign-total."""
+    rows = []
+    readings = campaign_readings(p)
+    first_ad: dict = {}
+    for pl in pls:
+        if pl.get("_campaign"):
+            first_ad.setdefault(pl["_campaign"], pl["id"])
+    for pl in pls:
+        cid = pl.get("_campaign")
+        r = readings.get(cid) if cid else None
+        if not r:
+            continue
+        asof = r.get("asOf") or ""
+        per_ad = {str(a.get("id")): a for a in r.get("ads") or [] if isinstance(a, dict)}
+        if per_ad:
+            src, conf = per_ad.get(pl["_ad"]), "reported"
+        elif pl["id"] == first_ad[cid]:
+            src, conf = r, "reported-campaign-total"
+        else:
+            continue
+        for metric in ("spend", "impressions", "clicks"):
+            if src and src.get(metric) is not None:
+                rows.append((pl["id"], asof, metric, float(src[metric]), "manual-ads", conf))
+    return rows
+
+
+def record_campaign_spend(p: dict, cid: str, spend: float, impressions: int | None, clicks: int | None,
+                          ad: str | None = None, as_of: str | None = None) -> dict:
+    """Write one dashboard reading into manual-ads.json under the campaign's platform key (cumulative to date)."""
+    camps = load_json(p["campaigns"], {}) or {}
+    if cid not in camps:
+        raise SystemExit(f"unknown campaign {cid!r}; known: {', '.join(k for k in camps if not k.startswith('_'))}")
+    key = camps[cid].get("platformKey") or "ads"
+    data = load_json(p["manual_ads"], {}) or {}
+    block = data.setdefault(key, {})
+    block["asOf"] = as_of or dt.date.today().isoformat()
+    block.setdefault("window", "Campaign to date")
+    lst = block.setdefault("campaigns", [])
+    entry = next((c for c in lst if c.get("key") == cid), None)
+    if entry is None:
+        entry = {"key": cid}
+        lst.append(entry)
+    target = entry
+    if ad:
+        ads = entry.setdefault("ads", [])
+        target = next((a for a in ads if str(a.get("id")) == ad), None)
+        if target is None:
+            target = {"id": ad}
+            ads.append(target)
+    target.update({k: v for k, v in (("spend", spend), ("impressions", impressions), ("clicks", clicks)) if v is not None})
+    if ad:  # keep the campaign line equal to the sum of its ads
+        for k in ("spend", "impressions", "clicks"):
+            vals = [a.get(k) for a in entry["ads"] if a.get(k) is not None]
+            if vals:
+                entry[k] = round(sum(vals), 2) if k == "spend" else int(sum(vals))
+    p["manual_ads"].parent.mkdir(parents=True, exist_ok=True)
+    tmp = p["manual_ads"].with_suffix(".tmp")
+    tmp.write_text(json.dumps(data, indent=2))
+    os.replace(tmp, p["manual_ads"])
+    return entry
+
+
+def campaign_report(con, p: dict, today: dt.date | None = None) -> list:
+    """One row per campaign and ad: reported spend and clicks next to the site's own exact-link counts."""
+    today = today or dt.date.today()
+    camps = load_json(p["campaigns"], {}) or {}
+    flagged = [o for o in orders_from_ledger(p) if o["reddit_ad"]]
+    res: dict = {}
+    for r in con.execute("SELECT placement_id, metric, value FROM results WHERE placement_id LIKE 'campaign:%'"):
+        res.setdefault(r[0], {})[r[1]] = r[2]
+    rows = []
+    for cid, c in camps.items():
+        if cid.startswith("_") or not isinstance(c, dict):
+            continue
+        ads = [f"campaign:{cid}:{a.get('id')}" for a in c.get("ads") or []]
+        tot = {k: sum(res.get(a, {}).get(k, 0) or 0 for a in ads) for k in
+               ("spend", "impressions", "clicks", "link-visits", "link-trials", "link-checkout-clicks", "link-orders")}
+        nxt = next((d for d in c.get("readings") or [] if d >= today.isoformat()), None)
+        # Every ad row carries the campaign's whole first-touch order count (its source key is shared), so take it
+        # once; an order is credited to one ad only when the buyer's first touch kept that ad's utm_content.
+        camp_orders = max([res.get(a, {}).get("orders", 0) or 0 for a in ads] or [0])
+        spend, trials = tot["spend"], tot["link-trials"]
+        orders = max(camp_orders, tot["link-orders"])
+        row = {"campaign": cid, "asset": c.get("asset"), "channel": c.get("channel"), "start": c.get("start"),
+               "end": c.get("end"), "budget": c.get("budget"), "breakEven": c.get("breakEven"),
+               "spend": spend or None, "impressions": int(tot["impressions"]) or None, "clicks": int(tot["clicks"]) or None,
+               "visits": int(tot["link-visits"]), "trials": int(trials), "orders": int(orders),
+               "ordersNoAd": int(orders - tot["link-orders"]),
+               "redditFlagged": sum(1 for o in flagged if o["product"] == c.get("asset") and o["date"] >= (c.get("start") or ""))
+               if str(c.get("channel", "")).startswith("reddit") else None,
+               "costPerTrial": round(spend / trials, 2) if spend and trials else None,
+               "costPerOrder": round(spend / orders, 2) if spend and orders else None,
+               "nextReading": nxt, "ads": []}
+        for a in c.get("ads") or []:
+            r = res.get(f"campaign:{cid}:{a.get('id')}", {})
+            row["ads"].append({"ad": a.get("id"), "label": a.get("label"), "spend": r.get("spend"),
+                               "clicks": int(r["clicks"]) if r.get("clicks") is not None else None,
+                               "impressions": int(r["impressions"]) if r.get("impressions") is not None else None,
+                               "visits": int(r.get("link-visits", 0) or 0), "trials": int(r.get("link-trials", 0) or 0),
+                               "orders": int(r.get("link-orders", 0) or 0)})
+        if not spend:
+            row["reading"] = "no spend recorded yet (hub.py campaign-spend)"
+        elif orders and c.get("breakEven"):
+            row["reading"] = (f"{orders} order{'s' if orders != 1 else ''} at ${row['costPerOrder']:.2f} each, "
+                              f"{'under' if row['costPerOrder'] < c['breakEven'] else 'over'} the ${c['breakEven']} break-even")
+        else:
+            row["reading"] = f"${spend:.2f} spent, {int(trials)} trial{'s' if trials != 1 else ''}, no orders yet"
+        if orders < 30:
+            row["reading"] += "; a signal, not a rate (fewer than 30 orders)"
+        row["os"] = campaign_os(p, c, today)
+        row["adCheck"] = ad_ctr_check(row["ads"], c.get("adCheck"), today)
+        row["decision"] = campaign_decision(c, row, today)
+        rows.append(row)
+    return rows
+
+
+def campaign_os(p: dict, c: dict, today: dt.date) -> dict:
+    """Operating-system family of the campaign's ad-link pageviews (stats.mjs funnelByContent "os", recorded from
+    2026-10-31), from the smallest funnel window that covers the campaign so far: {family: pageviews}."""
+    try:
+        days = (today - dt.date.fromisoformat(c.get("start") or "")).days + 1
+    except ValueError:
+        return {}
+    win = next((w for w in FUNNEL_WINDOWS if w >= days), FUNNEL_WINDOWS[-1])
+    content = ((load_json(p["funnel"], {}) or {}).get("content") or {}).get(str(win)) or {}
+    out: dict = {}
+    for a in c.get("ads") or []:
+        for fam, n in ((content.get(utm_of(a.get("url", ""), "utm_content")) or {}).get("os") or {}).items():
+            out[fam] = out.get(fam, 0) + n
+    return out
+
+
+def os_line(os_counts: dict) -> str:
+    """'mac 12 of 30 (40%); windows 10, linux 5, ...', or '' when nothing was recorded."""
+    total = sum(os_counts.values())
+    if not total:
+        return ""
+    mac = os_counts.get("mac", 0)
+    rest = ", ".join(f"{k} {v}" for k, v in sorted(os_counts.items(), key=lambda kv: -kv[1]) if k != "mac")
+    return f"mac {mac} of {total} ({mac / total:.0%})" + (f"; {rest}" if rest else "")
+
+
+AD_CHECK_MIN_IMPRESSIONS = 500  # per ad, before a CTR gap can count as "clearly trails"
+
+
+def ad_ctr_check(ads: list, due: str | None, today: dt.date) -> dict:
+    """The setup sheet's swap check: does one ad's click-through rate clearly trail the other's? Two-sided pooled
+    two-proportion z test on the platform's per-ad clicks and impressions; "clearly" means p < 0.05 with at least
+    AD_CHECK_MIN_IMPRESSIONS impressions on each ad. Anything less is "about even", so the swap-in ad waits."""
+    out = {"due": due, "isDue": bool(due) and due <= today.isoformat(), "ctr": {}, "p": None, "trailing": None}
+    rated = [a for a in ads if a.get("impressions") and a.get("clicks") is not None]
+    for a in rated:
+        out["ctr"][str(a["ad"])] = round(a["clicks"] / a["impressions"], 4)
+    if len(rated) < 2:
+        out["verdict"] = "no per-ad clicks and impressions recorded yet (hub.py campaign-spend --ad)"
+        return out
+    x = min(rated, key=lambda a: a["clicks"] / a["impressions"])
+    y = max(rated, key=lambda a: a["clicks"] / a["impressions"])
+    n1, n2, k1, k2 = x["impressions"], y["impressions"], x["clicks"], y["clicks"]
+    pool = (k1 + k2) / (n1 + n2)
+    se = math.sqrt(pool * (1 - pool) * (1 / n1 + 1 / n2)) if 0 < pool < 1 else 0
+    p = math.erfc(abs(k2 / n2 - k1 / n1) / se / math.sqrt(2)) if se else 1.0
+    out["p"] = round(p, 4)
+    if min(n1, n2) < AD_CHECK_MIN_IMPRESSIONS:
+        out["verdict"] = f"too few impressions to compare (need {AD_CHECK_MIN_IMPRESSIONS} per ad)"
+    elif p < 0.05:
+        out["trailing"] = str(x["ad"])
+        out["verdict"] = (f"ad {x['ad']} clearly trails ({k1 / n1:.2%} vs {k2 / n2:.2%} CTR, p = {p:.3f}): "
+                          f"pause it and add the swap-in ad")
+    else:
+        out["verdict"] = f"about even ({k1 / n1:.2%} vs {k2 / n2:.2%} CTR, p = {p:.2f}): the swap-in ad waits"
+    return out
+
+
+def campaign_decision(c: dict, row: dict, today: dt.date) -> dict:
+    """Apply the campaign's pre-registered rule for the latest reading date that has arrived (campaigns.json "rules":
+    {date: "stop-if-no-trials" | "look" | "verdict"}; a reading with no rule is "look"). Before the first reading
+    there is no decision, by design: the 7-day trial delays orders."""
+    readings = sorted(c.get("readings") or [])
+    done = [d for d in readings if d <= today.isoformat()]
+    nxt = next((d for d in readings if d > today.isoformat()), None)
+    trials, orders, spend = row["trials"], row["orders"], row["spend"] or 0
+    if not done:
+        return {"stage": None, "rule": None, "due": readings[0] if readings else None,
+                "text": f"no decision before the first reading ({readings[0] if readings else 'none set'})"}
+    stage = done[-1]
+    rule = (c.get("rules") or {}).get(stage, "look")
+    then = f"; next reading {nxt}" if nxt else ""
+    if rule == "stop-if-no-trials":
+        text = (f"stop: 0 trial downloads from ${spend:.2f}, nothing to wait for" if not trials else
+                f"keep reading: {trials} trial{'s' if trials != 1 else ''}"
+                + (f" at ${row['costPerTrial']:.2f} each" if row.get("costPerTrial") else "") + ", orders decide" + then)
+    elif rule == "verdict":
+        be = c.get("breakEven")
+        if orders <= 1:
+            text = f"no second round: {orders} order{'s' if orders != 1 else ''} by {stage}"
+        elif be and row.get("costPerOrder") is not None and row["costPerOrder"] < be:
+            best = max(row["ads"], key=lambda a: (a["orders"], a["trials"], a["visits"]))
+            text = (f"one more 10-day round with ad {best['ad']}: {orders} orders at ${row['costPerOrder']:.2f} each, "
+                    f"under the ${be} break-even")
+        else:
+            cpo = row.get("costPerOrder")
+            text = f"no second round: {orders} orders" + (f" at ${cpo:.2f} each, over the ${be} break-even" if cpo and be else "")
+    else:
+        text = f"look only: {trials} trials, {orders} orders so far" + then
+    return {"stage": stage, "rule": rule, "due": nxt, "text": text}
+
+
+# --- rechecks: a decision Ben deferred, read against the numbers he decided on -------------------------------------
+#
+# rechecks.json (private): {"<id>": {"question": "...", "due": "2026-11-08", "product": "outbound-veil" | "*",
+#   "channel": "email", "baseline": {"date": "2026-10-25", "placements": 52, "visits": 2, "trials": 0, "orders": 0},
+#   "rule": "what decides", "targets": ["On My Menubar", ...]}}
+# Current numbers are the channel_stats row(s) (45-day first-touch window); "targets" are substrings of placement
+# targets on that channel whose current status is listed (for submissions that have to go live first).
+
+def recheck_report(con, p: dict, today: dt.date | None = None) -> list:
+    today = today or dt.date.today()
+    rows = []
+    for rid, r in sorted((load_json(p["rechecks"], {}) or {}).items(), key=lambda kv: (kv[1] or {}).get("due", "") if isinstance(kv[1], dict) else ""):
+        if rid.startswith("_") or not isinstance(r, dict):
+            continue
+        prod, chan, base = r.get("product", "*"), r.get("channel", ""), r.get("baseline") or {}
+        q = "SELECT * FROM channel_stats WHERE channel = ?" + ("" if prod == "*" else " AND product = ?")
+        stats = [dict(x) for x in con.execute(q, (chan,) if prod == "*" else (chan, prod))]
+        cur = {k: sum(int(x[k] or 0) for x in stats) for k in ("placements", "visits", "trials", "orders")}
+        delta = {k: cur[k] - int(base.get(k) or 0) for k in cur}
+        since = base.get("date") or ""
+        jq = ("SELECT DISTINCT p.id FROM placements p JOIN placement_assets x ON x.placement_id = p.id "
+              "WHERE p.channel = ? AND p.status IN ('live', 'replied', 'no-response') AND p.date > ?")
+        args: tuple = (chan, since)
+        if prod != "*":
+            jq += " AND x.asset_id = ?"
+            args += (prod,)
+        new_live = len(con.execute(jq, args).fetchall())
+        targets = []
+        for t in r.get("targets") or []:
+            hits = con.execute("SELECT status, date FROM placements WHERE channel = ? AND target LIKE ? ORDER BY date DESC",
+                               (chan, f"%{t}%")).fetchall()
+            targets.append({"target": t, "status": hits[0]["status"] if hits else "none", "date": hits[0]["date"] if hits else None})
+        due = r.get("due")
+        window_start = (today - dt.timedelta(days=45)).isoformat()
+        parts = [f"since {since}: {new_live} new live placement{'s' if new_live != 1 else ''}, "
+                 f"{delta['visits']:+d} first-touch visits, {delta['trials']:+d} trials, {delta['orders']:+d} orders"]
+        parts.append(f"now {cur['visits']} visits and {cur['trials']} trials from {cur['placements']} placements (45 days)")
+        if since and since < window_start:
+            parts.append("the 45-day window has moved past the baseline date, so a negative change can be the window")
+        if targets:
+            live_t = sum(1 for t in targets if t["status"] in ("live", "replied"))
+            parts.append(f"{live_t} of {len(targets)} submissions live")
+        rows.append({"id": rid, "question": r.get("question"), "rule": r.get("rule"), "due": due,
+                     "isDue": bool(due) and due <= today.isoformat(),
+                     "daysLeft": (dt.date.fromisoformat(due) - today).days if due else None,
+                     "product": prod, "channel": chan, "baseline": base, "current": cur, "change": delta,
+                     "newLive": new_live, "targets": targets, "reading": "; ".join(parts)})
+    return rows
+
+
+# --- doctor: data quality --------------------------------------------------------------------------------------------
+
+# Hosts that refuse automated requests, so a non-200 there says nothing about the page.
+LINK_UNVERIFIABLE = ("reddit.com", "linkedin.com", "x.com", "twitter.com", "threads.com", "threads.net", "instagram.com",
+                     "facebook.com", "alternativeto.net", "producthunt.com", "tiktok.com", "medium.com",
+                     "stackexchange.com", "stackoverflow.com")
+SE_ANSWER = re.compile(r"https?://([a-z]+)\.stackexchange\.com/a/(\d+)")
+
+
+def se_answer_exists(url: str, fetch_json=None) -> bool | None:
+    """Stack Exchange pages refuse scripts, but its public API says whether an answer still exists (None: no answer)."""
+    m = SE_ANSWER.match(url or "")
+    if not m:
+        return None
+    if fetch_json is None:
+        import urllib.request
+
+        def fetch_json(u):
+            import gzip
+            with urllib.request.urlopen(urllib.request.Request(u, headers={"Accept-Encoding": "gzip"}), timeout=15) as r:
+                raw = r.read()
+                return json.loads(gzip.decompress(raw) if raw[:2] == b"\x1f\x8b" else raw)
+    try:
+        d = fetch_json(f"https://api.stackexchange.com/2.3/answers/{m.group(2)}?site={m.group(1)}&filter=default")
+        return bool(d.get("items"))
+    except Exception:
+        return None
+
+
+def check_links(p: dict, urls: list, get=None, workers: int = 8, se_fetch=None) -> dict:
+    """GET each URL once (redirects followed) and keep {url: {status, final, checked}} in links.json."""
+    from concurrent.futures import ThreadPoolExecutor
+    if get is None:
+        import urllib.error
+        import urllib.request
+
+        def get(url):
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) "
+                                                       "AppleWebKit/605.1.15 (KHTML, like Gecko) Safari/605.1.15"})
+            try:
+                with urllib.request.urlopen(req, timeout=15) as r:
+                    return r.status, r.geturl()
+            except urllib.error.HTTPError as e:
+                return e.code, url
+    store = load_json(p["links"], {}) or {}
+    now = dt.datetime.now().astimezone().isoformat(timespec="minutes")
+
+    def one(u):
+        host = (re.match(r"https?://([^/?#]+)", u) or [None, ""])[1].lower()
+        if SE_ANSWER.match(u):
+            ok = se_answer_exists(u, se_fetch)
+            if ok is not None:
+                return u, {"status": 200 if ok else 404, "note": "checked through the Stack Exchange API", "checked": now}
+        if any(host == h or host.endswith("." + h) for h in LINK_UNVERIFIABLE):
+            return u, {"status": None, "note": "site refuses automated checks", "checked": now}
+        try:
+            status, final = get(u)
+            return u, {"status": status, "final": final if final != u else None, "checked": now}
+        except Exception as exc:
+            return u, {"status": None, "note": f"no answer: {str(exc)[:80]}", "checked": now}
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        for u, r in ex.map(one, sorted(set(urls))):
+            store[u] = r
+    p["links"].parent.mkdir(parents=True, exist_ok=True)
+    p["links"].write_text(json.dumps(store, indent=1))
+    return store
+
+
+def doctor(con, p: dict, today: dt.date | None = None) -> dict:
+    """Placements missing a result, utm_content used by more than one placement, and links that did not answer 200
+    at the last check (run `doctor --links` to re-check). Each finding says whether local data can fix it."""
+    today = today or dt.date.today()
+    oldest = (today - dt.timedelta(days=FUNNEL_WINDOWS[-1] - 1)).isoformat()
+    has_res = {r[0] for r in con.execute("SELECT DISTINCT placement_id FROM results")}
+    missing = []
+    for r in con.execute("SELECT * FROM placements WHERE status IN ('live','replied','no-response') ORDER BY date"):
+        if r["id"] in has_res:
+            continue
+        if not r["date"]:
+            why = "no date, so no funnel window applies (add one in overrides.json)"
+        elif r["date"] < oldest:
+            why = f"older than the stats function's {FUNNEL_WINDOWS[-1]}-day limit; cannot be measured now"
+        else:
+            why = "no funnel reading yet (run import --fetch)"
+        missing.append({"id": r["id"], "channel": r["channel"], "date": r["date"], "why": why})
+    tags: dict = {}
+    for r in con.execute("SELECT id, utm, landing_url, status FROM placements"):
+        for t in set(re.findall(r"utm_content=([\w.\-]+(?:,[\w.\-]+)*)", (r["utm"] or "") + " " + (r["landing_url"] or ""))):
+            for one in t.split(","):
+                tags.setdefault(one, []).append(r["id"])
+    dups = []
+    for t, ids in sorted(tags.items()):
+        ids = sorted(set(ids))
+        if len(ids) < 2:
+            continue
+        dups.append({"utm_content": t, "placements": ids,
+                     "note": "counts for this tag are shared; give the next placement its own tag (hub.py utm)"})
+    links = load_json(p["links"], {}) or {}
+    bad = []
+    for r in con.execute("SELECT id, url, landing_url FROM placements WHERE status IN ('live','replied','no-response')"):
+        for kind, u in (("placement", r["url"]), ("landing", r["landing_url"])):
+            if not u or not u.startswith("http"):
+                continue
+            c = links.get(u)
+            if c and c.get("status") not in (None, 200):
+                bad.append({"id": r["id"], "which": kind, "url": u, "status": c["status"], "final": c.get("final")})
+    unverified = sum(1 for c in links.values() if c.get("status") is None)
+    return {"missing": missing, "duplicates": dups, "bad_links": bad, "links_checked": len(links),
+            "links_unverifiable": unverified, "pins": override_pins(p), "attribution": attribution_gaps(p),
+            "campaigns": campaign_gaps(con, p, today)}
+
+
+# sales.mjs writes `reddit` on every Stripe purchase, and the pl_attr cookie keeps the ad's tag, from the 2026-10-29
+# 17:05 Eastern build (PRs 445, 448); purchases from this UTC day on are checked.
+ATTR_FIELDS_SINCE = "2026-10-30"
+
+
+def attribution_gaps(p: dict, since: str = ATTR_FIELDS_SINCE) -> list:
+    """Stripe purchases that lost a link of the Reddit attribution chain: no `reddit` field (sales.mjs older than the
+    field, or it was dropped), a paid:reddit first touch the checkout did not flag (metadata missing), a flag with no
+    first touch (cookie restore failed), or a paid:reddit first touch without the ad's tag (pl_attr v1 or tag lost)."""
+    out = []
+    for k, o in ((load_json(p["traffic"], {}) or {}).get("ledger") or {}).items():
+        if o.get("kind") != "purchase":
+            continue
+        day = dt.datetime.fromtimestamp(float(o.get("ts") or 0), dt.timezone.utc).date().isoformat()
+        if day < since:
+            continue
+        ft = (o.get("attr") or {}).get("first") or {}
+        paid = first_touch_key(ft) == "paid:reddit"
+        flag = bool((o.get("reddit") or {}).get("ad"))
+        if "reddit" not in o:
+            problem = "no reddit field"
+        elif paid and not flag:
+            problem = "paid:reddit first touch, no reddit_ad flag"
+        elif flag and not ft:
+            problem = "reddit_ad flag, no first touch"
+        elif paid and not ft.get("t"):
+            problem = "paid:reddit first touch, no ad tag"
+        else:
+            continue
+        out.append({"id": k, "date": day, "product": o.get("product") or "", "problem": problem})
+    return sorted(out, key=lambda x: (x["date"], x["id"]))
+
+
+# A campaign's spend reading is due two days after it starts; checks stop a week after it ends. 100 first-touch
+# pageviews with no trial would happen about 1 time in 20 even if ad visitors tried the app at a quarter of the site rate.
+SPEND_DUE_DAYS, CAMPAIGN_TAIL_DAYS, NO_TRIAL_PAGEVIEWS = 2, 7, 100
+
+
+def campaign_gaps(con, p: dict, today: dt.date | None = None, recent=None) -> list:
+    """Running campaigns with no spend recorded (no cost per trial or order can be computed), campaigns whose
+    channel brought NO_TRIAL_PAGEVIEWS first-touch pageviews in 7 days and no trial (a trial link that lost its
+    channel, or an ad that does not convert; the funnel cannot tell which), and running campaigns that had visits but
+    none in the last day (ads no longer serving). `recent(days)` returns the stats function's funnelByChannel or None;
+    by default fetch_recent, skipped when PURPLELINK_STATS_OFFLINE is set."""
+    today = today or dt.date.today()
+    week = ((load_json(p["funnel"], {}) or {}).get("windows") or {}).get("7") or {}
+    if recent is None:
+        recent = (lambda days: "offline") if os.environ.get("PURPLELINK_STATS_OFFLINE") else (lambda days: fetch_recent(p, days))
+    day: dict = {}  # fetched once, only when a running campaign needs it
+    out = []
+    for r in campaign_report(con, p, today):
+        try:
+            start, end = dt.date.fromisoformat(r["start"]), dt.date.fromisoformat(r["end"])
+        except (TypeError, ValueError):
+            continue
+        if not start <= today <= end + dt.timedelta(days=CAMPAIGN_TAIL_DAYS):
+            continue
+        if r["spend"] is None and today >= start + dt.timedelta(days=SPEND_DUE_DAYS):
+            out.append({"campaign": r["campaign"], "problem": "no spend recorded",
+                        "detail": f"{(today - start).days} days after the start; record it with hub.py campaign-spend"})
+        rows = [week.get(k) or {} for k in CHANNEL_KEYS.get(r["channel"], (r["channel"],))]
+        views = sum(x.get("pageviews") or 0 for x in rows)
+        trials = sum(trial_count(x.get("trial"), r["asset"]) for x in rows)
+        if views and start < today <= end:
+            if "f" not in day:
+                day["f"] = recent(1)
+            last = day["f"]
+            if last is None:
+                out.append({"campaign": r["campaign"], "problem": "delivery not checked",
+                            "detail": "could not check: the stats function did not answer (timeout or error)"})
+            elif last != "offline":
+                keys = CHANNEL_KEYS.get(r["channel"], (r["channel"],))
+                if not sum((last.get(k) or {}).get("pageviews") or 0 for k in keys):
+                    out.append({"campaign": r["campaign"], "problem": "not serving",
+                                "detail": f"0 first-touch pageviews in the last day after {views} in 7 days; ads may "
+                                          "have stopped serving: check billing, ad review status and bid in the ad manager"})
+        if views >= NO_TRIAL_PAGEVIEWS and not trials:
+            out.append({"campaign": r["campaign"], "problem": "no trials",
+                        "detail": f"{views} first-touch pageviews in 7 days and 0 {r['asset']} trials; check that the "
+                                  "trial link keeps its channel before reading it as an ad that does not convert"})
+    return out
+
+
+def override_pins(p: dict) -> list:
+    """Hand corrections keyed by an outreach-log line that no longer sit on their row: the line is not a table row
+    (not a log row), the override never recorded its row (unpinned: run doctor --pin), or the row text at that line
+    differs from the pin: row moved when the pinned text is found on other lines (`now`), row changed when it was
+    edited in place (check it, then update or remove "_row")."""
+    if not p["outreach"].exists():
+        # git-ignored, so absent in a worktree: one finding, not every override reported as "not a log row"
+        return [{"id": "OUTREACH-LOG.md", "problem": "log not found; run with PURPLELINK_REPO set to the shared checkout",
+                 "pin": "", "now": []}]
+    rows = {pl["id"]: pl["_row"] for pl in from_outreach(p)}
+    out = []
+    for k, o in (load_json(p["overrides"], {}) or {}).items():
+        if not k.startswith("outreach:") or not isinstance(o, dict):
+            continue
+        pin = o.get("_row") or ""
+        if not pin:
+            out.append({"id": k, "problem": "unpinned" if k in rows else "not a log row", "pin": "", "now": []})
+        elif rows.get(k) != pin:
+            now = [i for i, r in rows.items() if r == pin]
+            problem = "row moved" if now else ("row changed" if k in rows else "not a log row")
+            out.append({"id": k, "problem": problem, "pin": pin, "now": now})
+    return out
+
+
+def pin_overrides(p: dict) -> list:
+    """Record "_row" on every unpinned outreach override that points at a log row; returns the ids pinned.
+    A pin that no longer matches is left alone for a person to resolve."""
+    rows = {pl["id"]: pl["_row"] for pl in from_outreach(p)}
+    data = load_json(p["overrides"], {}) or {}
+    done = []
+    for k, o in data.items():
+        if k.startswith("outreach:") and isinstance(o, dict) and not o.get("_row") and k in rows:
+            o["_row"] = rows[k]
+            done.append(k)
+    if done:
+        tmp = p["overrides"].with_suffix(".tmp")
+        tmp.write_text(json.dumps(data, indent=1))
+        os.replace(tmp, p["overrides"])
+    return done
+
+
 # --- build --------------------------------------------------------------------------------------------------------
+
+def merge_listings(placements: list) -> list:
+    """One live listing URL is one placement. The submission, a later update submission and the MacUpdate tracker can
+    all name the same page; counted apart, each got the listing's full visits. The tracker row is kept (its download
+    readings are keyed to it), else the earliest; it takes the earliest date and the others' references."""
+    groups: dict = {}
+    for pl in placements:
+        if pl["channel"] in LISTING_CHANNELS and pl["status"] in ("live", "replied") and pl.get("url", "").startswith("http"):
+            key = re.sub(r"[?#].*$", "", pl["url"]).rstrip("/").lower()
+            groups.setdefault(key, []).append(pl)
+    drop = set()
+    for rows in groups.values():
+        if len(rows) < 2:
+            continue
+        rows.sort(key=lambda pl: (pl["source"] != "traffic-history", pl.get("date") or "9999"))
+        keep, rest = rows[0], rows[1:]
+        keep["date"] = min(pl["date"] for pl in rows if pl.get("date")) if any(pl.get("date") for pl in rows) else ""
+        for pl in rest:
+            for k in ("approval", "contact_ref"):
+                keep[k] = keep.get(k) or pl.get(k, "")
+            keep["_text"] += " " + pl["_text"]
+            keep["_assets"] = list(dict.fromkeys(keep.get("_assets", []) + pl.get("_assets", [])))
+            drop.add(id(pl))
+        keep["notes"] = (keep.get("notes", "") + "; same listing as " + ", ".join(pl["id"] for pl in rest)).lstrip("; ")[:300]
+    return [pl for pl in placements if id(pl) not in drop]
+
 
 def build(p: dict) -> dict:
     assets = load_assets(p)
     mu, results = from_macupdate(p)
+    contests, contest_results = from_contests(p)
+    results += contest_results
     social = from_social(p)
     social_ids = {pl["id"].split(":")[1] for pl in social}
     # The social engine also appends a row per platform to the outreach log; the social queue is the record.
@@ -1082,7 +1850,7 @@ def build(p: dict) -> dict:
         q["contact_ref"] = pl["contact_ref"]
         q["date"] = pl["date"] or q["date"]
         q["_text"] += " " + pl["_text"]
-    placements = queue + social + kept + from_videos(p) + from_app_releases(p) + mu
+    placements = queue + social + kept + from_videos(p) + from_app_releases(p) + mu + from_campaigns(p) + contests
     # Hand corrections, kept apart from the sources (the outreach log stays as written): overrides.json maps a
     # placement id to any of url, status, date, channel, assets (ids; an unknown id becomes a "line" asset such as
     # paper-review) or exclude (a test or not a placement).
@@ -1096,7 +1864,7 @@ def build(p: dict) -> dict:
             pl["_assets"] = list(o["assets"])
             for a in o["assets"]:
                 assets.setdefault(a, {"kind": "line", "name": a, "product": None, "url": "", "names": []})
-    placements = [pl for pl in placements if not (overrides.get(pl["id"]) or {}).get("exclude")]
+    placements = merge_listings([pl for pl in placements if not (overrides.get(pl["id"]) or {}).get("exclude")])
     for pl in placements:
         add_linked_assets(pl["_text"] + " " + pl["landing_url"], assets)
     today = dt.date.today()
@@ -1121,6 +1889,7 @@ def build(p: dict) -> dict:
     funnel = load_json(p["funnel"], {})
     orders = orders_from_ledger(p)
     results += placement_results(uniq, links, assets, funnel, orders, load_json(p["social_metrics"], {}), today)
+    results += campaign_spend_results(uniq, p)
     chan = channel_stats(uniq, links, assets, funnel, orders, today)
     heard: dict = {}
     for o in orders:
@@ -1176,7 +1945,7 @@ def resolve_asset(con, q: str) -> list:
 # --- commands -----------------------------------------------------------------------------------------------------
 
 def cmd_import(a, p):
-    if a.fetch:
+    if a.fetch or (a.fetch_if_stale and funnel_stale(p["funnel"])):
         f = fetch_funnel(p)
         print(f"funnel: {len(f['windows'])} windows as of {f['asOf']}")
     s = build(p)
@@ -1255,7 +2024,14 @@ def cmd_status(a, p):
     since = (dt.date.today() - dt.timedelta(days=7)).isoformat()
     week = con.execute("SELECT count(*) FROM placements WHERE status IN ('live','replied') AND date >= ?", (since,)).fetchone()[0]
     meta = dict(con.execute("SELECT key, value FROM meta").fetchall())
-    print(f"hub: {n} placements, {live} live, {week} live in 7 days, {meta.get('unmatched')} unmatched (built {meta.get('built')})")
+    soon = (dt.date.today() + dt.timedelta(days=7)).isoformat()
+    due = [f"{r['id']} {r['due']}" for r in recheck_report(con, p) if r["due"] and r["due"] <= soon]
+    for c in campaign_report(con, p):
+        due += [f"{c['campaign']} reading {d}" for d in [c["nextReading"]] if d and d <= soon]
+        if c["adCheck"]["due"] and dt.date.today().isoformat() <= c["adCheck"]["due"] <= soon:
+            due.append(f"{c['campaign']} ad check {c['adCheck']['due']}")
+    print(f"hub: {n} placements, {live} live, {week} live in 7 days, {meta.get('unmatched')} unmatched (built {meta.get('built')})"
+          + (f"; due within 7 days: {', '.join(due)}" if due else ""))
 
 
 def cmd_channels(a, p):
@@ -1386,7 +2162,8 @@ def export_rows(p: dict) -> dict:
     }]
     return {"marketing_summary": summary, "marketing_grid": grid, "marketing_channels": channels,
             "marketing_placements": placements, "marketing_followups": followups, "marketing_listings": listings,
-            "marketing_heard": heard}
+            "marketing_heard": heard, "marketing_campaigns": [{k: v for k, v in r.items()} for r in campaign_report(con, p)],
+            "marketing_rechecks": [{k: v for k, v in r.items() if k != "targets"} for r in recheck_report(con, p)]}
 
 
 def cmd_export(a, p):
@@ -1400,7 +2177,8 @@ def cmd_export(a, p):
 
 
 def cmd_utm(a, p):
-    print(make_utm(p, a.url, a.asset, a.channel, a.source or "", a.campaign or ""))
+    print(make_utm(p, a.url, a.asset, a.channel, a.source or "", a.campaign or "", medium=a.medium or "",
+                   content=a.content or ""))
 
 
 def cmd_kits(a, p):
@@ -1457,10 +2235,94 @@ def cmd_log(a, p):
     print(f"wrote {f}")
 
 
+def cmd_campaigns(a, p):
+    con = connect(p)
+    rows = campaign_report(con, p)
+    if not rows:
+        print(f"no campaigns in {p['campaigns']}")
+    for r in rows:
+        money = lambda v: "-" if v is None else f"${v:,.2f}"
+        print(f"{r['campaign']} ({r['asset']}, {r['channel']}, {r['start']} to {r['end']}, budget {money(r['budget'])})")
+        print(f"  spend {money(r['spend'])}  impressions {r['impressions'] or '-'}  clicks {r['clicks'] or '-'}  |  "
+              f"site: visits {r['visits']}  trials {r['trials']}  orders {r['orders']}  |  "
+              f"per trial {money(r['costPerTrial'])}  per order {money(r['costPerOrder'])}")
+        for ad in r["ads"]:
+            print(f"    ad {ad['ad']} ({ad['label']}): spend {money(ad['spend'])}, clicks {ad['clicks'] if ad['clicks'] is not None else '-'}, "
+                  f"visits {ad['visits']}, trials {ad['trials']}, orders {ad['orders']}")
+        if r["ordersNoAd"]:
+            print(f"    {r['ordersNoAd']} order{'s' if r['ordersNoAd'] != 1 else ''} from the campaign with no ad tag "
+                  "(first touch restored from the pl_attr cookie, or only checkout's reddit_ad flag)")
+        if r.get("redditFlagged") is not None:
+            print(f"  checkout reddit_ad flag on {r['redditFlagged']} order{'s' if r['redditFlagged'] != 1 else ''} since the start")
+        line = os_line(r.get("os") or {})
+        print(f"  visitor OS (ad-link pageviews, recorded since 2026-10-31): {line or 'none recorded yet'}")
+        print(f"  {r['reading']}. Next reading {r['nextReading'] or 'none left'}.")
+        ac = r["adCheck"]
+        print(f"  ad check{' (due ' + ac['due'] + ')' if ac['due'] else ''}: {ac['verdict']}")
+        print(f"  decision{' at ' + r['decision']['stage'] if r['decision']['stage'] else ''}: {r['decision']['text']}")
+
+
+def cmd_rechecks(a, p):
+    rows = recheck_report(connect(p), p)
+    if not rows:
+        print(f"no rechecks in {p['rechecks']}")
+    for r in rows:
+        when = "DUE" if r["isDue"] else f"due {r['due']} ({r['daysLeft']} days)"
+        print(f"{r['id']} [{when}] {r['question']}")
+        print(f"  {r['reading']}")
+        if r["rule"]:
+            print(f"  rule: {r['rule']}")
+        for t in r["targets"]:
+            print(f"    {t['status']:14} {t['target']}" + (f" ({t['date']})" if t["date"] else ""))
+
+
+def cmd_campaign_spend(a, p):
+    e = record_campaign_spend(p, a.campaign, a.spend, a.impressions, a.clicks, a.ad, a.as_of)
+    print(f"recorded {a.campaign}{' ad ' + a.ad if a.ad else ''}: campaign now spend ${e.get('spend', 0):,.2f}, "
+          f"clicks {e.get('clicks', '-')}, impressions {e.get('impressions', '-')} (in {p['manual_ads']})")
+    build(p)
+
+
+def cmd_doctor(a, p):
+    if a.links:
+        con = connect(p)
+        urls = [u for r in con.execute("SELECT url, landing_url FROM placements WHERE status IN ('live','replied','no-response')")
+                for u in r if u and u.startswith("http")]
+        con.close()
+        check_links(p, urls)
+    if a.pin:
+        ids = pin_overrides(p)
+        print(f"pinned {len(ids)} outreach override{'s' if len(ids) != 1 else ''} to their current rows")
+    d = doctor(connect(p), p)
+    print(f"{len(d['pins'])} hand corrections in overrides.json that are not pinned to their outreach-log row:")
+    for x in d["pins"]:
+        where = f"; pinned row now at {', '.join(x['now'])}" if x["now"] else ""
+        print(f"  {x['id']:16} {x['problem']}{where}" + (f"  (pin: {x['pin']})" if x["pin"] else ""))
+    c = d["campaigns"]
+    print(f"{len(c)} campaign problem{'s' if len(c) != 1 else ''}:")
+    for x in c:
+        print(f"  {x['campaign']:28} {x['problem']}: {x['detail']}")
+    g = d["attribution"]
+    print(f"{len(g)} purchase{'s' if len(g) != 1 else ''} since {ATTR_FIELDS_SINCE} missing an attribution field:")
+    for x in g:
+        print(f"  {x['date']} {x['product']:12} {x['id'][:24]:24} {x['problem']}")
+    print(f"{len(d['missing'])} live placements without any result:")
+    for m in d["missing"]:
+        print(f"  {m['date'] or '----------'} {m['channel']:11} {m['id']:34} {m['why']}")
+    print(f"{len(d['duplicates'])} utm_content values used by more than one placement:")
+    for x in d["duplicates"]:
+        print(f"  {x['utm_content']}: {', '.join(x['placements'])}  ({x['note']})")
+    print(f"{len(d['bad_links'])} links that did not answer 200 at the last check "
+          f"({d['links_checked']} checked, {d['links_unverifiable']} on sites that refuse automated checks):")
+    for b in d["bad_links"]:
+        print(f"  {b['status']} {b['which']:9} {b['id']:34} {b['url']}" + (f" -> {b['final']}" if b.get("final") else ""))
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
     im = sub.add_parser("import"); im.add_argument("--fetch", action="store_true")
+    im.add_argument("--fetch-if-stale", action="store_true")
     w = sub.add_parser("where"); w.add_argument("asset"); w.add_argument("--all", action="store_true")
     g = sub.add_parser("grid"); g.add_argument("--all", action="store_true")
     gp = sub.add_parser("gaps"); gp.add_argument("--days", type=int, default=30); gp.add_argument("--all", action="store_true")
@@ -1472,15 +2334,25 @@ def main(argv=None) -> int:
     ex = sub.add_parser("export"); ex.add_argument("dir")
     ut = sub.add_parser("utm"); ut.add_argument("url"); ut.add_argument("--asset", required=True)
     ut.add_argument("--channel", required=True); ut.add_argument("--source"); ut.add_argument("--campaign")
+    ut.add_argument("--medium"); ut.add_argument("--content")
     kt = sub.add_parser("kits"); kt.add_argument("--write")
     ru = sub.add_parser("rules"); ru.add_argument("--checked")
     wk = sub.add_parser("week"); wk.add_argument("step", choices=["pick", "measure"]); wk.add_argument("--write", action="store_true")
     sub.add_parser("log")
+    sub.add_parser("campaigns")
+    sub.add_parser("rechecks")
+    cs = sub.add_parser("campaign-spend"); cs.add_argument("campaign"); cs.add_argument("--spend", type=float, required=True)
+    cs.add_argument("--clicks", type=int); cs.add_argument("--impressions", type=int); cs.add_argument("--ad")
+    cs.add_argument("--as-of", dest="as_of")
+    dr = sub.add_parser("doctor"); dr.add_argument("--links", action="store_true")
+    dr.add_argument("--pin", action="store_true", help="record the row text on unpinned outreach overrides")
     a = ap.parse_args(argv)
     {"import": cmd_import, "where": cmd_where, "grid": cmd_grid, "gaps": cmd_gaps, "unmatched": cmd_unmatched,
      "status": cmd_status, "channels": cmd_channels, "followups": cmd_followups, "check-listings": cmd_check_listings,
      "export": cmd_export, "utm": cmd_utm, "kits": cmd_kits, "rules": cmd_rules, "week": cmd_week,
-     "log": cmd_log}[a.cmd](a, paths())
+     "log": cmd_log, "campaigns": cmd_campaigns, "campaign-spend": cmd_campaign_spend,
+     "rechecks": cmd_rechecks,
+     "doctor": cmd_doctor}[a.cmd](a, paths())
     return 0
 
 

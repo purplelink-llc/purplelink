@@ -907,6 +907,38 @@ def collect_depositphotos(page):
     return out
 
 
+def parse_etsy_stats(t):
+    """Read the all-time tiles from the Etsy Stats page's body text (whitespace collapsed).
+
+    Etsy's 2026-10 redesign (seen 10-29) dropped the "Orders" tile and renamed "Item favorites" to
+    "Total favorites". Orders then come from Revenue / Average order value, which the page still shows;
+    with no revenue there were no orders. The old labels are still accepted in case either layout returns.
+    """
+    out = {}
+    for labels, key in ((("Visits",), "visits"), (("Orders",), "sales"),
+                        (("Item favorites", "Total favorites"), "favorites"),
+                        (("Shop follows",), "followers"), (("Reviews",), "reviews")):
+        for label in labels:
+            m = re.search(rf"\b{label} (\d[\d,]*)", t)
+            if m:
+                out[key] = num(m.group(1))
+                break
+    m = re.search(r"\bRevenue \$([\d,]+\.\d{2})", t)
+    if m:
+        out["revenue"] = num(m.group(1))
+    m = re.search(r"Conversion rate ([\d.]+)%", t)
+    if m:
+        out["conversion_pct"] = num(m.group(1))
+    if "sales" not in out and "revenue" in out:
+        m = re.search(r"Average order value \$([\d,]+\.\d{2})", t)
+        aov = num(m.group(1)) if m else None
+        if out["revenue"] == 0:
+            out["sales"] = 0
+        elif aov:
+            out["sales"] = round(out["revenue"] / aov)
+    return out
+
+
 def collect_etsy(page):
     """Etsy shop PurplelinkDesigns: all-time shop stats plus active listings.
 
@@ -925,19 +957,7 @@ def collect_etsy(page):
     t = re.sub(r"\s+", " ", page.inner_text("body"))
     if "Shop stats" not in t:
         raise RuntimeError("not signed in")
-    out = {}
-    for label, key in (("Visits", "visits"), ("Orders", "sales"),
-                       ("Item favorites", "favorites"), ("Shop follows", "followers"),
-                       ("Reviews", "reviews")):
-        m = re.search(rf"\b{label} (\d[\d,]*)", t)
-        if m:
-            out[key] = num(m.group(1))
-    m = re.search(r"\bRevenue \$([\d,]+\.\d{2})", t)
-    if m:
-        out["revenue"] = num(m.group(1))
-    m = re.search(r"Conversion rate ([\d.]+)%", t)
-    if m:
-        out["conversion_pct"] = num(m.group(1))
+    out = parse_etsy_stats(t)
     if "visits" not in out or "sales" not in out:
         raise RuntimeError("Etsy stats layout changed: visits/orders not found")
 

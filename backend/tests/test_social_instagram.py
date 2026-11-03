@@ -171,7 +171,7 @@ def test_validate_reel_shape(env, cfg):
     assert any("no description" in e for e in errs)
     it.meta["platforms"] = ["instagram", "bluesky"]
     errs, _ = items.validate(it, cfg)
-    assert any("Instagram only" in e for e in errs)
+    assert any("only platform is instagram or facebook" in e for e in errs)
 
 
 def test_instagram_standing_approval_is_narrow(env, cfg):
@@ -191,6 +191,26 @@ def test_instagram_standing_approval_is_narrow(env, cfg):
     with pytest.raises(ValueError):
         items.approve_instagram_standing(li, cfg)
 
+
+
+def test_facebook_reels_get_the_page_approval(env, cfg, monkeypatch):
+    seen = []
+    monkeypatch.setattr(items, "approve", lambda item, cfg, who="ben": seen.append(who))
+    fb = ig_item(env, source="instagram-reel", platforms=["facebook"])
+    items.approve_instagram_standing(fb, cfg)
+    ig = ig_item(env, source="instagram-reel")
+    items.approve_instagram_standing(ig, cfg)
+    assert seen == [items.FB_STANDING_BY, items.IG_STANDING_BY]
+    # the Page approval covers Reels only; a mixed Instagram + Facebook item gets neither label
+    with pytest.raises(ValueError):
+        items.approve_instagram_standing(ig_item(env, source="instagram-companion", platforms=["facebook"]), cfg)
+    with pytest.raises(ValueError):
+        items.approve_instagram_standing(ig_item(env, source="instagram-reel", platforms=["instagram", "facebook"]),
+                                         cfg)
+    monkeypatch.undo()
+    other = ig_item(env, images=[{"path": str(jpeg(env.tmp / "f.jpg")), "alt": "x"}], source="instagram-companion")
+    items.approve(other, cfg, items.FB_STANDING_BY)
+    assert not items.Item.load(other.path).approval_valid()[0]
 
 # ---------------------------------------------------------------- captions
 HOWTO_DESC = """Spotlight not finding files on an external drive? Spotlight skips some drives until you reindex them.
@@ -405,3 +425,78 @@ def test_reel_caption_adds_the_app_tag_and_skips_title_repeats():
     assert c.count("free battery meter") == 1 and "It shows charge and the rate per hour." in c
     assert c.endswith("#macbattery #mac #macos")
     assert cap.app_tags_for_link("https://www.youtube.com/watch?v=x") == []
+
+
+class FakeHub:
+    """The two calls hub_tag makes, with a taken-tag set like the real hub's used_contents."""
+
+    def __init__(self, taken=()):
+        self.taken = set(taken)
+
+    @staticmethod
+    def site_path(url):
+        return "/x/" if url.startswith("https://purplelink.llc/") else None
+
+    @staticmethod
+    def paths():
+        return {}
+
+    def make_utm(self, p, url, asset, channel, source="", campaign="", medium="", content=""):
+        tag, n = content, 2
+        while tag in self.taken:
+            tag, n = f"{content}-{n}", n + 1
+        self.taken.add(tag)
+        return f"{url}?utm_source={source}&utm_medium={medium}&utm_campaign={campaign}&utm_content={tag}"
+
+
+def test_each_reel_gets_its_own_tag_in_the_bio_link(env, cfg):
+    hub = FakeHub(taken={"AAAAAAAAAA1-reel"})
+    assert igp.hub_tag("https://purplelink.llc/guides/x/", "AAAAAAAAAA1", hub) == "AAAAAAAAAA1-reel-2"
+    assert igp.hub_tag("https://www.youtube.com/watch?v=AAAAAAAAAA1", "AAAAAAAAAA1", hub) == ""
+    entry = {"youtube_id": "AAAAAAAAAA2", "title": "Spotlight fix", "description": HOWTO_DESC, "duration": 50.0,
+             "width": 1080, "height": 1920, "link": "https://purplelink.llc/guides/x/", "utm_content": "howto-x-reel"}
+    it = igp.reel_item(entry, items.iso(NOW))
+    assert it.meta["utm_content"] == "howto-x-reel"
+    it.meta["results"] = {"instagram": {"status": "posted", "posted_at": items.iso(NOW)}}
+    it.path.parent.mkdir(parents=True, exist_ok=True)
+    it.save()
+    url = igp.links(cfg, 12)[0]["url"]
+    assert url.endswith("utm_campaign=ig-reel&utm_content=howto-x-reel")
+
+
+def test_business_login_link_code_and_exchange():
+    from socialpost import setup as st
+    url = st.ig_authorize_url("123", "STATE")
+    assert url.startswith("https://www.instagram.com/oauth/authorize?client_id=123&redirect_uri=")
+    assert "scope=instagram_business_basic%2Cinstagram_business_content_publish" in url and "state=STATE" in url
+    back = "https://purplelink.llc/instagram/?code=AQBabc&state=STATE#_"
+    assert st.ig_code_from(back, "STATE") == "AQBabc"
+    assert st.ig_code_from(back, "OTHER") is None             # a sign-in this run did not start
+    assert st.ig_code_from("AQBabc#_", "STATE") == "AQBabc"   # the bare code works too
+    h = FakeHttp([("POST", "api.instagram.com/oauth/access_token", jresp({"access_token": "SHORT", "user_id": 1}))])
+    assert st.ig_exchange_code(h, "123", "SECRET", "AQBabc") == ("SHORT", "")
+    assert h.calls[0]["form"]["redirect_uri"] == "https://purplelink.llc/instagram/" and "SECRET" not in h.calls[0]["url"]
+    bad = FakeHttp([("POST", "oauth/access_token", jresp({"error_message": "code SECRET used"}, status=400))])
+    tok, err = st.ig_exchange_code(bad, "123", "SECRET", "AQBabc")
+    assert tok is None and "SECRET" not in err and "400" in err
+
+
+def test_setup_stores_nothing_for_a_rejected_or_wrong_token(env, monkeypatch, capsys):
+    from socialpost import setup as st, sysutil
+    stored = []
+    monkeypatch.setattr(sysutil, "keychain_set", lambda *a: stored.append(a))
+    answers = iter(["not-a-token"])
+    monkeypatch.setattr(st, "_ask_secret", lambda label, required=True: next(answers))
+    assert st._setup_instagram(cfgmod.load()) == 1 and not stored
+    assert "start with IG" in capsys.readouterr().out
+    answers = iter(["IGAAbad", ""])
+    monkeypatch.setattr(st, "_ask_secret", lambda label, required=True: next(answers))
+    monkeypatch.setattr(st, "build_adapter", lambda cfg, p, secret=None: adapter(
+        dict(cfg, platforms={"instagram": {"expected": {}}}), FakeHttp([("GET", "/me?", Resp(401, b"{}"))])))
+    assert st._setup_instagram(cfgmod.load()) == 1 and not stored
+    assert "Nothing stored" in capsys.readouterr().out
+
+
+def test_app_tags_cover_latex_errors_and_tools():
+    assert cap.app_tags_for_link("https://purplelink.llc/latex-errors/missing-dollar-inserted/") == ["latex"]
+    assert cap.app_tags_for_link("https://purplelink.llc/tools/paper-review/") == ["academicwriting"]

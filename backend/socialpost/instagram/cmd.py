@@ -26,7 +26,8 @@ def cmd_instagram(a, cfg) -> int:
             return EXIT_FAILED
         desc = Path(a.description_file).read_text(encoding="utf-8") if a.description_file else ""
         e = pipeline.reel_add(Path(a.video), a.youtube_id, a.title, desc, a.link or "",
-                              [x for x in a.also.split(",") if x.strip()])
+                              [x for x in a.also.split(",") if x.strip()], utm_content=a.utm_content,
+                              backfill=a.backfill)
         print(f"Reel ready: {pipeline.reels_dir() / e['youtube_id'] / 'reel.mp4'} ({e['duration']} s)")
         return EXIT_OK
     if a.what == "run":
@@ -55,7 +56,7 @@ def preview(http, cfg, out: Path, say=print) -> int:
     for item in res["would_queue"]:
         files = pipeline.copy_preview(item, out)
         say(f"\n=== {item.id}  ({item.meta['instagram']['kind']}, would go out {item.meta['scheduled_at']})")
-        say(item.render("instagram"))
+        say(item.render(item.platforms[0]))
         v = item.video()
         if v:
             say(f"  [reel] {v['duration']} s {v['width']}x{v['height']}  description: {v['alt']}")

@@ -149,7 +149,8 @@ with the same identity check, PAUSE switch, retries, results and OUTREACH-LOG ro
 
 **Link in bio.** `https://purplelink.llc/instagram/` (`netlify/functions/instagram-links.mjs`) lists the latest 12
 posted Instagram items, newest first, each link tagged `utm_source=instagram&utm_medium=social&utm_campaign=<campaign>`
-(companions keep the LinkedIn post's campaign; Reels use `ig-reel`). `instagram run` writes the list to the
+(companions keep the LinkedIn post's campaign; Reels use `ig-reel` plus their own `utm_content` from the marketing hub,
+`<slug>-reel` for a how-to Short, so the hub can tell each Reel's visits apart). `instagram run` writes the list to the
 `instagram-links` Blobs store (`latest.json`) when it changes. With an empty store the page lists products, guides and
 tools. The profile's link is set once, in the Instagram app (the API cannot set it):
 `https://purplelink.llc/instagram/?utm_source=instagram&utm_medium=social&utm_campaign=bio`.
@@ -158,11 +159,63 @@ tools. The profile's link is set once, in the Instagram app (the API cannot set 
 files and captions to DIR and queues nothing. It works before Instagram is enabled. The first one (2026-10-23, from the
 BatteryMeter video 741nCr3zq1g and the Vitae 1.4.2 LinkedIn post) passed.
 
-**Ben's steps** (`social.py setup instagram` prints them): a new Meta app with the use case "Manage messaging &
-content on Instagram", API setup with Instagram login, add @purplelink.llc (accept the tester invite in the Instagram
+**Ben's steps** (`social.py setup instagram` prints them): in the existing Instagram app BallSim's accounts use (a
+token belongs to one Instagram account, so purplelink.llc needs its own), API setup with Instagram login, add @purplelink.llc (accept the tester invite in the Instagram
 app if asked), generate the token, run `social.py setup instagram` and type yes on the identity, set the bio link in
-the app. Then `social.py instagram preview`. The pipeline queues nothing until setup has pinned the account and
+the app. Then `social.py instagram preview`. When Generate token loops on the Instagram login (Safari and Chrome both
+did on 2026-10-28), press Enter at the token prompt: setup prints a Business Login link (Instagram's own consent page),
+takes the address it returns to (`https://purplelink.llc/instagram/?code=...`, which must be listed as an OAuth redirect
+URI in the app's business login settings) and exchanges the code for a long-lived token with the Instagram app ID
+and secret. The pipeline queues nothing until setup has pinned the account and
 enabled the platform.
+
+## Facebook Page and Instagram through it (2026-10-28)
+
+Instagram's own web login loops for @purplelink.llc (its "save your login info" page crashes after the password, in
+Safari, Chrome, the app's browser and on the phone), so neither the dashboard's Generate token nor Business Login could
+finish. On 2026-10-28 Ben had a Facebook Page made instead: "you can have a facebook page for the company, drive it so it
+can also get out posts". The Page is **Purplelink LLC** (id 61595915854939, category Software Company, website
+purplelink.llc, no picture yet), and @purplelink.llc is connected to it.
+
+- `social.py setup facebook` takes a user token from the Graph API Explorer (app Ball Bouncer Poster, which got
+  `instagram_basic` and `instagram_content_publish` the same day), the App ID and App secret, makes the token
+  long-lived, takes the Purplelink LLC Page's own token from `/me/accounts` (it does not expire), stores it in the
+  keychain (`purplelink-social-facebook` / `page_token`), pins the Page, and switches Instagram to `api: "facebook"` with
+  @purplelink.llc's account id pinned. Nothing is stored unless you type yes.
+- `adapters/facebook.py` posts to the Page: text with its tagged link to `/{page}/feed` (Facebook draws the preview),
+  or one image with the text as caption to `/{page}/photos`. It refuses RubbleFront, Ball Bouncer and Bald Streamer
+  Pages by name before the pinned identity check.
+- `adapters/instagram.py` in `facebook` mode makes the same container calls on `graph.facebook.com` with the Page
+  token; there is nothing to refresh.
+- The Page token does not expire, but Meta limits its data access to 90 days (until 2027-01-26 for the token made on
+  2026-10-28): before then, generate and extend a new token in the Explorer and run `social.py setup facebook` again.
+- The social jobs (`run_social.sh`, `run_social_daily.sh`) run their code from the read-only `jobs-ro` worktree at
+  origin/main through `~/.purplelink/bin/repo-ro.sh` since 2026-10-28, like the other scheduled jobs; the shared
+  checkout's main had sat 79 commits behind, so merged social code had not run.
+- Facebook Reels (2026-10-28, Ben: "back fill my instagram and facebook reels with our youtube shorts"): every Reel in
+  the inbox also gets a Facebook item (`<date>-fb-reel-<id>`, campaign `fb-reel`, the Instagram caption with the tagged
+  link instead of "Link in bio.") under the Instagram standing approval, which now covers `facebook` for these items.
+  The Page adapter posts it through `/{page}/video_reels` (start, rupload with the public bucket URL, finish as
+  PUBLISHED). Facebook Reels are 3 to 90 s. Each platform has its own `max_per_day` (Facebook counts only these
+  items, not the daily ranked text post). A Short whose build files are gone is added back with
+  `social.py instagram reel-add --video F --youtube-id ID --title T --description-file D --link URL`; it then goes
+  out on both platforms through the normal queue.
+- The daily ranked pipeline now includes `facebook` (written like LinkedIn: headline, facts, link) under the
+  2026-10-18 standing approval, which Ben extended to the Page with the words above.
+
+## Tracking tags (2026-10-29)
+
+Every post the engine builds carries its own `utm_content` from the marketing hub (`scripts/hub/hub.py make_utm`,
+through `backend/socialpost/hubtags.py`), one per platform, stored on the item as `utm_contents: {platform: tag}` before
+approval (so a changed tag voids the approval) and put on the link by `Item.render`. Daily posts are tagged
+`<asset>-<platform>-<yymmdd>` (for example `legroom-1-9-0-linkedin-261029`), Instagram Reels `<youtube id>-reel` (or the
+how-to Reel's `<slug>-reel`), Facebook Reels `<youtube id>-fb-reel`, companions `<asset>-instagram-<yymmdd>`. Both
+gates reject a purplelink.llc link without a tag, so nothing goes out unmeasured; a YouTube link is not tagged. The hub
+reads `utm_contents` back for its uniqueness check and records each platform's tag. Items queued before this change
+keep their approval and post untagged.
+
+LinkedIn results now record the post's public URL, `https://www.linkedin.com/feed/update/urn:li:activity:<id>/`, read
+from the published page, where each post carries `data-urn`; the admin page URL is kept only when it cannot be read.
 
 ## Files
 

@@ -10,7 +10,7 @@ class W8(unittest.TestCase):
         self.assertIsNotNone(m, "no GlobePin section")
         sec = m.group(0)
         self.assertIn("Pro", sec)
-        self.assertIn("$14.99", sec)
+        self.assertIn("$9.99", sec)
         self.assertNotIn("no in-app purchase", sec.lower())
 
     def test_homepage_paper_review_button(self):

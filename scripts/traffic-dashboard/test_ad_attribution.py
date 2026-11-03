@@ -40,3 +40,22 @@ def test_tool_channels_print_with_their_slug(capsys):
         "tool:latex-diff": {"pageviews": 4, "pageviewsByPath": {"/moderntex/": 4}, "trial": {"moderntex": 1}, "checkout": {}}}}}
     td.print_ad_funnel(h)
     assert "tool:latex-diff" in capsys.readouterr().out
+
+
+def test_a_direct_placeholder_touch_is_direct_not_a_blank_campaign():
+    assert td.classify_touch({"l": "/keyfeel/", "d": "2026-10-28"}) == "Direct (landing page known)"
+    assert td.classify_touch(None) == "Direct / no record"
+    assert td.classify_touch({"r": "www.google.com", "l": "/x/"}) == "Search"
+
+
+def test_channel_revenue_leaves_out_muscleonglp_orders():
+    ledger = {
+        "a": {"ts": 1_790_000_000, "site": "purplelink", "product": "moderntex", "gross": 1999, "net": 1900,
+              "attr": {"first": {"r": "www.google.com"}}},
+        "b": {"ts": 1_790_000_100, "site": "muscleonglp", "product": "tracker-sheet", "gross": 1200, "net": 1100},
+        "c": {"ts": 1_790_000_200, "site": "purplelink", "product": "keyfeel", "gross": 999, "net": 950,
+              "attr": {"first": {"l": "/keyfeel/", "d": "2026-10-28"}}},
+    }
+    res = td.channel_revenue({"ledger": ledger})
+    assert res["orders"] == 2
+    assert {r["channel"] for r in res["rows"]} == {"Search", "Direct (landing page known)"}

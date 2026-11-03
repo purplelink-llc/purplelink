@@ -19,6 +19,7 @@ import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import { issueKeyfeelLicense } from "../lib/keyfeel-license.mjs";
 import { issueTapefolioLicense } from "../lib/tapefolio-license.mjs";
+import { issueLenscribLicense } from "../lib/lenscrib-license.mjs";
 import { issuePanelyLicense } from "../lib/panely-license.mjs";
 import { issueSummonlyLicense } from "../lib/summonly-license.mjs";
 import { issueModernTexLicense, licenseKeysForSession, BLOB_DELIVERED_PRODUCTS, LIVE_PRODUCTS } from "./stripe-webhook.mjs";
@@ -98,7 +99,7 @@ function escapeHtml(s) {
 }
 
 /** The email body for a set of purchases; exported for tests. */
-export function recoveryEmail(purchases, license, keyfeelLicense = null, keysBySession = new Map(), tapefolioLicense = null, panelyLicense = null, summonlyLicense = null) {
+export function recoveryEmail(purchases, license, keyfeelLicense = null, keysBySession = new Map(), tapefolioLicense = null, panelyLicense = null, summonlyLicense = null, lenscribLicense = null) {
   const lines = [];
   const html = [];
   const mtx = purchases.filter((p) => p.product === "moderntex");
@@ -137,6 +138,12 @@ export function recoveryEmail(purchases, license, keyfeelLicense = null, keysByS
       lines.splice(lines.length - 1, 0, `Tapefolio license key (in Tapefolio, choose Enter License Key and paste it): ${tapefolioLicense}`);
       html.push(`<p>Tapefolio license key (in Tapefolio, choose Enter License Key and paste it):</p>` +
         `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${escapeHtml(tapefolioLicense)}</p>`);
+    }
+    // Lenscrib is sold on its own, so it is matched on the product, not on bundle parts.
+    if (lenscribLicense && p.product === "lenscrib") {
+      lines.splice(lines.length - 1, 0, `Lenscrib license key (in Lenscrib, choose Enter License Key and paste it): ${lenscribLicense}`);
+      html.push(`<p>Lenscrib license key (in Lenscrib, choose Enter License Key and paste it):</p>` +
+        `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${escapeHtml(lenscribLicense)}</p>`);
     }
     for (const [slug, name, key] of [["panely", "Panely", panelyLicense], ["summonly", "Summonly", summonlyLicense]]) {
       if (key && parts.has(slug)) {
@@ -228,8 +235,9 @@ async function sendRecovery(to, purchases, revoked = 0) {
   const hasPart = (slug) => purchases.some((p) => p.product === slug || p.product === "app-suite" || (isBundleProduct(p.product) && entitledParts(p.product, { apps: p.apps || "" }).has(slug)));
   const panelyLicense = hasPart("panely") ? issuePanelyLicense(to) : null;
   const summonlyLicense = hasPart("summonly") ? issueSummonlyLicense(to) : null;
+  const lenscribLicense = purchases.some((p) => p.product === "lenscrib") ? issueLenscribLicense(to) : null;
   const keysBySession = new Map(purchases.map((p) => [p.sessionId, licenseKeysForSession(p.product, p.sessionId, { seats: p.seats || 0, apps: p.apps || "" }).filter((k) => k.slug !== "moderntex")]));
-  const mail = recoveryEmail(purchases, license, keyfeelLicense, keysBySession, tapefolioLicense, panelyLicense, summonlyLicense);
+  const mail = recoveryEmail(purchases, license, keyfeelLicense, keysBySession, tapefolioLicense, panelyLicense, summonlyLicense, lenscribLicense);
   if (revoked) {
     mail.text = mail.text.replace("If you did not ask for this", `${REVOKED_LINE}\n\nIf you did not ask for this`);
     mail.html = mail.html.replace("<p>If you did not ask for this", `<p>${REVOKED_LINE}</p><p>If you did not ask for this`);

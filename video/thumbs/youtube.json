@@ -163,7 +163,7 @@
   "kind": "product",
   "name": "Purplelink",
   "line": "Tools for researchers",
-  "icon": "site/assets/purplelink-logo.png",
+  "lockup": "site/assets/purplelink-lockup-light.png",
   "icons": [
    "site/assets/moderntex-icon.png",
    "site/assets/vitae-icon.png",

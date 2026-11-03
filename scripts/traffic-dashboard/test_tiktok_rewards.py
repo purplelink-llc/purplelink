@@ -90,3 +90,25 @@ class Label(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+def test_tiktoks_same_day_zero_is_not_a_zero_day(tmp_path):
+    p = tmp_path / "income.csv"
+    p.write_text(
+        "snapshot_date,snapshot_at,pipeline,program,day,est_income,currency\n"
+        "2026-10-27,2026-10-27T21:36:08,nl,Total,2026-10-26,0.51,USD\n"
+        "2026-10-27,2026-10-27T21:36:08,nl,Total,2026-10-27,0.0,USD\n"
+    )
+    days = td.tiktok_api_daily(p)["nl"]
+    assert days == {"2026-10-26": 0.51}
+    p.write_text(p.read_text() + "2026-10-28,2026-10-28T13:44:30,nl,Total,2026-10-27,0.48,USD\n")
+    assert td.tiktok_api_daily(p)["nl"] == {"2026-10-26": 0.51, "2026-10-27": 0.48}
+
+
+def test_a_real_zero_for_an_earlier_day_still_counts(tmp_path):
+    p = tmp_path / "income.csv"
+    p.write_text(
+        "snapshot_date,snapshot_at,pipeline,program,day,est_income,currency\n"
+        "2026-10-28,2026-10-28T13:44:30,nl,Total,2026-10-20,0.0,USD\n"
+    )
+    assert td.tiktok_api_daily(p)["nl"] == {"2026-10-20": 0.0}

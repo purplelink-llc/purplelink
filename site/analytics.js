@@ -1,9 +1,10 @@
-// First-party, cookieless analytics beacon (purplelink).
+// First-party analytics beacon (purplelink).
 // Sends a pageview on load, exposes window.plTrack(type, meta), and wraps fetch
 // so every call to the LaTeX-tools Modal backend is recorded as a "tool_use"
 // event (tagged by the tool page). This is what Cloudflare Web Analytics can't
-// tell you: which tools are actually run (tool_use, plus tool_outcome and offer_view/offer_click for the per-tool counts in track.mjs), and which affiliate links are clicked (affiliate_click: program and page, never the destination). No cookies, no fingerprinting. Honors
-// Do Not Track. Same-origin only (no CSP change, no third-party load).
+// tell you: which tools are actually run (tool_use, plus tool_outcome and offer_view/offer_click for the per-tool counts in track.mjs), and which affiliate links are clicked (affiliate_click: program and page, never the destination). No fingerprinting. The one cookie is pl_attr,
+// set by the server (not this script) when an ad or campaign visitor downloads the ModernTex trial; see the trial
+// link code at the bottom. Honors Do Not Track. Same-origin only (no CSP change, no third-party load).
 (function () {
   var dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
   if (dnt === "1" || dnt === "yes") return;
@@ -75,12 +76,35 @@
     if (a.first && !(a.first.d >= cutoff)) a.first = null;
     if (a.last && !(a.last.d >= cutoff)) a.last = null;
     var now = arrival();
-    if (now) { if (!a.first) a.first = now; a.last = now; }
+    // A first visit with no campaign tag, outside referrer or ad click is recorded too, as a placeholder (x: 1) holding
+    // only the landing page and date, so an order from a direct visitor shows where they landed instead of nothing
+    // (2026-10-28: 6 of 13 site orders since 09-28 had no record). A later tagged arrival still replaces it, so the
+    // first-touch channel means what it meant before; checkout.mjs keeps l and d and drops the marker.
+    if (now) { if (!a.first || a.first.x) a.first = now; a.last = now; }
+    else if (!a.first) a.first = { x: 1, l: clip(location.pathname, 120), d: new Date().toISOString().slice(0, 10) };
     try {
       if (a.first || a.last) localStorage.setItem(ATTR_KEY, JSON.stringify({ first: a.first || null, last: a.last || null }));
       else localStorage.removeItem(ATTR_KEY);
     } catch (e) { /* storage blocked: the sale just shows as direct */ }
     return a;
+  })();
+
+  // Reddit ad click id (?rdt_cid=), kept like the first arrival (90 days, first one wins, "pl_" prefix so the privacy
+  // page's clear button removes it) and sent only with a ModernTex checkout, so the server can report that sale to
+  // Reddit. Never recorded under Do Not Track (this whole file stops above in that case).
+  var RDT_KEY = "pl_rdt";
+  var rdtClick = (function () {
+    var r = null;
+    try { r = JSON.parse(localStorage.getItem(RDT_KEY) || "null"); } catch (e) { r = null; }
+    var cutoff = new Date(Date.now() - ATTR_DAYS * 864e5).toISOString().slice(0, 10);
+    if (r && !(r.d >= cutoff)) r = null;
+    try {
+      var c = new URLSearchParams(location.search).get("rdt_cid");
+      c = c ? String(c).replace(/[^\w.\-:=]/g, "").slice(0, 128) : "";
+      if (c && !r) r = { c: c, d: new Date().toISOString().slice(0, 10) };
+    } catch (e) { /* ignore */ }
+    try { if (r) localStorage.setItem(RDT_KEY, JSON.stringify(r)); else localStorage.removeItem(RDT_KEY); } catch (e) { /* storage blocked */ }
+    return r ? r.c : "";
   })();
 
   // LinkedIn reaches us under several names: www.linkedin.com and other linkedin.com hosts, the lnkd.in short
@@ -124,6 +148,8 @@
     var label = f.s || f.r || "direct";
     return isLinkedin(label) ? "linkedin" : clip(label, 40);
   }
+  // reddit-pixel.js reads this to load Reddit's pixel only for visitors who first came from a Reddit ad.
+  window.plChannel = channel;
   // The tag naming the one link that brought the first arrival (utm_content, for example a single directory listing
   // or one email batch), so a placement can be counted on its own rather than shared with its whole channel. Sent with
   // the same funnel events as the channel label, never alone. Empty when the link carried none.
@@ -131,7 +157,12 @@
     var f = attr.first || attr.last;
     return f && f.t ? clip(f.t, 60) : "";
   }
-  var FUNNEL = /^(checkout_click|trial_download|ov_trial_download|lg_trial_download|kf_trial_download|tf_trial_download|pn_trial_download|sm_trial_download|guide_mtx_trial)$/;
+  // The same first-touch details for site/send-to-mac.js, which sends them with a "Send to my Mac" request so the
+  // link in that email carries the channel to the visitor's Mac. Not defined under Do Not Track (this file stops above).
+  window.plAttribution = function () {
+    return { ft: channel(), fc: contentTag(), rdt: rdtClick || "" };
+  };
+  var FUNNEL = /^(checkout_click|send_to_mac|trial_download|ov_trial_download|lg_trial_download|kf_trial_download|tf_trial_download|pn_trial_download|sm_trial_download|guide_mtx_trial)$/;
 
   function send(payload) {
     try {
@@ -180,6 +211,10 @@
               if (typeof body === "string") {
                 var parsed = JSON.parse(body) || {};
                 product = parsed.product || "";
+                if (!parsed.rdt && (rdtClick || channel() === "paid:reddit")) {
+                  parsed.rdt = rdtClick ? { c: rdtClick } : {};
+                  init = Object.assign({}, init, { body: JSON.stringify(parsed) });
+                }
                 if ((attr.first || attr.last) && !parsed.attr) {
                   parsed.attr = { first: attr.first || null, last: attr.last || null };
                   init = Object.assign({}, init, { body: JSON.stringify(parsed) });
@@ -229,44 +264,89 @@
     }
   } catch (e) { /* the page works the same without it */ }
 
+  // Affiliate links (rel="sponsored", stamped data-aff="<program>" by scripts/affiliates.py): which program, from
+  // which page. Counted like any other event; the destination URL is never sent.
+  // Links that already carry data-track (the /desk/ book cards send affiliate_click with an ISBN) are counted by the
+  // data-track handler instead.
+  function countAffiliate(ev) {
+    var s = ev.target && ev.target.closest && ev.target.closest('a[rel~="sponsored"]');
+    if (!s || s.hasAttribute("data-track")) return;
+    var prog = s.getAttribute("data-aff") || "";
+    if (!prog) { try { prog = new URL(s.href).hostname.replace(/^www\./, ""); } catch (e) { prog = "unknown"; } }
+    var slug = location.pathname.replace(/\/+$/, "").split("/").pop() || "home";
+    window.plTrack("affiliate_click", (prog + " " + slug).slice(0, 110));
+  }
+  // A middle click opens the link in a new tab and fires auxclick, never click. Count it for paid links only; the
+  // data-track book cards on /desk/ are counted the same way so both kinds of paid link agree.
+  document.addEventListener("auxclick", function (ev) {
+    try {
+      if (ev.button !== 1) return;
+      countAffiliate(ev);
+      var t = ev.target && ev.target.closest && ev.target.closest('a[rel~="sponsored"][data-track]');
+      if (t) window.plTrack(t.getAttribute("data-track"), t.getAttribute("data-track-meta") || "");
+    } catch (e) { /* never interfere with the link */ }
+  }, true);
+
+  // At the moment of the click, add the first-touch channel label (ach), the Reddit click id (arc), the first link's
+  // tag (atg, its utm_content, which names one ad) and the day first seen (ad) to the ModernTex trial link. The server turns them into the first-party pl_attr cookie so a purchase after
+  // the 7-day trial can still be credited (Safari drops script-written storage after 7 days). Nothing is added for a
+  // direct visitor with no ad click, and this file does nothing at all under Do Not Track.
+  function tagTrialLink(a) {
+    try {
+      var ch = channel().replace(/[^\w.\-:]/g, "").slice(0, 40);
+      var rc = rdtClick ? String(rdtClick).replace(/[^\w.\-:=]/g, "").slice(0, 128) : "";
+      if (!rc && (!ch || ch === "direct")) return;
+      var f = attr.first || attr.last;
+      var u = new URL(a.href, location.href);
+      if (u.origin !== location.origin) return;
+      var tg = contentTag().replace(/[^\w.\-]/g, "");
+      u.searchParams.delete("ach"); u.searchParams.delete("arc"); u.searchParams.delete("atg"); u.searchParams.delete("ad");
+      if (ch) u.searchParams.set("ach", ch);
+      if (rc) u.searchParams.set("arc", rc);
+      if (tg) u.searchParams.set("atg", tg);
+      if (f && f.d) u.searchParams.set("ad", String(f.d).slice(0, 10));
+      a.setAttribute("href", u.pathname + u.search);
+    } catch (e) { /* never interfere with the download */ }
+  }
+
   // The ModernTex trial is a plain download link, not a fetch, so the wrapper
   // above never sees it. Count the click: trial downloads against later
   // checkout_click/sales is the whole funnel the trial exists to measure.
   document.addEventListener("click", function (ev) {
     try {
       var a = ev.target && ev.target.closest && ev.target.closest("a[href]");
+      // On a page with "Send to my Mac" (site/send-to-mac.js), a trial click by a visitor who is not on a Mac points
+      // at the email form and downloads nothing. It is still sent as the same event, so the hero test's count keeps
+      // its meaning, but the meta says "<app>-not-mac" and the funnel counts it apart from real downloads.
+      var nm = a && a.getAttribute("data-s2m-intercept") === "1" ? "-not-mac" : "";
+      // A real download by a visitor who first arrived from a "Send to my Mac" email (utm_campaign=send-to-mac) reads
+      // "<app>-s2m", so trials started on the Mac after that email can be counted.
+      var f0 = attr.first || attr.last;
+      if (!nm && f0 && f0.c === "send-to-mac") nm = "-s2m";
       if (a && a.getAttribute("href").indexOf("moderntex-download?trial=1") !== -1) {
-        window.plTrack("trial_download", "moderntex");
+        window.plTrack("trial_download", "moderntex" + nm);
+        if (nm !== "-not-mac") tagTrialLink(a);
       }
       if (a && a.getAttribute("href").indexOf("outbound-veil-download?trial=1") !== -1) {
-        window.plTrack("ov_trial_download", "outbound-veil");
+        window.plTrack("ov_trial_download", "outbound-veil" + nm);
       }
       if (a && a.getAttribute("href").indexOf("legroom-download?trial=1") !== -1) {
-        window.plTrack("lg_trial_download", "legroom");
+        window.plTrack("lg_trial_download", "legroom" + nm);
       }
       // Keyfeel's page links ?download=1 (since 1.1.0 there is one download); ?trial=1 is the old link, kept so cached pages still count.
       if (a && /keyfeel-download\?(download|trial)=1/.test(a.getAttribute("href"))) {
-        window.plTrack("kf_trial_download", "keyfeel");
+        window.plTrack("kf_trial_download", "keyfeel" + nm);
       }
       if (a && /tapefolio-download\?(download|trial)=1/.test(a.getAttribute("href"))) {
-        window.plTrack("tf_trial_download", "tapefolio");
+        window.plTrack("tf_trial_download", "tapefolio" + nm);
       }
       if (a && /panely-download\?(download|trial)=1/.test(a.getAttribute("href"))) {
-        window.plTrack("pn_trial_download", "panely");
+        window.plTrack("pn_trial_download", "panely" + nm);
       }
       if (a && /summonly-download\?(download|trial)=1/.test(a.getAttribute("href"))) {
-        window.plTrack("sm_trial_download", "summonly");
+        window.plTrack("sm_trial_download", "summonly" + nm);
       }
-      // Affiliate links (rel="sponsored", stamped data-aff="<program>" by scripts/affiliates.py): which program, from
-      // which page. Counted like any other event; the destination URL is never sent.
-      // Links that already carry data-track (the /desk/ book cards send affiliate_click with an ISBN) are counted below.
-      var s = ev.target && ev.target.closest && ev.target.closest('a[rel~="sponsored"]');
-      if (s && !s.hasAttribute("data-track")) {
-        var prog = s.getAttribute("data-aff") || "";
-        if (!prog) { try { prog = new URL(s.href).hostname.replace(/^www\./, ""); } catch (e) { prog = "unknown"; } }
-        var slug = location.pathname.replace(/\/+$/, "").split("/").pop() || "home";
-        window.plTrack("affiliate_click", (prog + " " + slug).slice(0, 110));
-      }
+      countAffiliate(ev);
       // Anything else marked data-track="<event>" (optional data-track-meta):
       // template downloads, the phone sticky bar.
       var t = ev.target && ev.target.closest && ev.target.closest("[data-track]");

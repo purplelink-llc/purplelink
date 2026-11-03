@@ -74,7 +74,7 @@ def headline(c, facts: dict, fmt: str, platform: str = "") -> str:
 
 
 # Longest a post may be, a little under each platform's limit (LinkedIn is read as a short note).
-SOFT_LIMIT = {"linkedin": 600, "bluesky": 300, "threads": 500, "mastodon": 500}
+SOFT_LIMIT = {"linkedin": 600, "bluesky": 300, "threads": 500, "mastodon": 500, "facebook": 600}
 # A sentence that leans on the one before it ("Until then ...", "This also ...") is useless on its own.
 DEPENDENT = re.compile(r"^(until|then|this|that|these|those|it|they|its|their|each|also|both|however|but|and|so|"
                        r"which|there|here|such|the same|in that|for that|after that)\b", re.I)
@@ -92,6 +92,12 @@ def lower_first(h: str) -> str:
     return h if len(first) > 1 and any(ch.isupper() for ch in first[1:]) else h[:1].lower() + h[1:]
 
 
+# Headings that are page furniture, not what the page covers: navigation boxes and price or download call-outs
+# (2026-10-26 a guide went out as "It covers on this page and ModernTex: $19.99 once, free for 7 days.").
+NOT_CONTENT_HEADING = re.compile(r"^\s*(on this page|contents|table of contents|in this (guide|article|post)|"
+                                 r"related( guides| reading)?|see also|further reading)\s*$|\$\d", re.I)
+
+
 def fact_units(facts: dict, platform: str) -> list[str]:
     """Verified fact sentences for a post, best first: the page's own description (or, for a release, its changelog
     entry), then a line built from its section headings and one from a step count it states. Boilerplate such as
@@ -99,7 +105,7 @@ def fact_units(facts: dict, platform: str) -> list[str]:
     base = sentences(facts.get("description") or "") or sentences(facts.get("notes") or "")
     base = [s for s in base if not any(b in s.lower() for b in BOILERPLATE) and not DEPENDENT.match(s)][:6]
     units = base[:3]
-    heads = facts.get("headings") or []
+    heads = [h for h in facts.get("headings") or [] if not NOT_CONTENT_HEADING.search(h)]
     if len(heads) >= 2:
         units.append(FACT_TEMPLATES[0].format(a=lower_first(heads[0]), b=lower_first(heads[1])))
     if facts.get("steps"):
@@ -122,7 +128,7 @@ def clause(sentence: str) -> str | None:
 def _options(units: list[str], fmt: str, platform: str = "") -> list[list[str]]:
     """Fact lists to try, richest first. card and link carry one fact (two on LinkedIn, which has no image);
     question and statement carry up to two. When the last sentence is too long, its clause before a colon is tried."""
-    most = 2 if platform == "linkedin" or fmt not in ("card", "link") or \
+    most = 2 if platform in ("linkedin", "facebook") or fmt not in ("card", "link") or \
         (units and len(units[0].split()) < 8) else 1       # a very short first fact ("New: Where your space went.") needs a second
     opts = []
     for k in range(min(most, len(units)), 0, -1):
@@ -143,7 +149,7 @@ def _options(units: list[str], fmt: str, platform: str = "") -> list[list[str]]:
 def _body(c, facts: dict, fmt: str, platform: str, facts_used: list[str], with_closing: bool = True) -> str:
     head = headline(c, facts, fmt, platform)
     text = " ".join(facts_used)
-    if platform == "linkedin":
+    if platform in ("linkedin", "facebook"):
         return f"{head}\n\n{text}\n\n{{link}}"
     if platform == "mastodon":
         closing = MASTODON_CLOSING.format(requirement=facts["requirement"]) \

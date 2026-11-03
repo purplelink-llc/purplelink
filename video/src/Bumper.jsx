@@ -17,7 +17,10 @@ export function Bumper({ format, t, mode, dur, url, xf = BUMPER.xf }) {
   const fadeIn = mode === "close" ? clamp01(t / xf) : clamp01(t / 0.12);
   const fadeOut = mode === "open" ? expoOut(clamp01((t - (dur - xf)) / xf)) : 0;
   const toBg = mode === "close" ? clamp01((t - (dur - 0.45)) / 0.45) : 0;
-  const logo = f.v ? 340 : 300;
+  // Opening sting is about the company: the primary lockup (dark-ink version, the bumper background is light).
+  // The closing bumper follows a product, so it carries only the wordmark, small, at the bottom.
+  const lockupW = f.v ? 520 : 470;
+  const wordW = f.v ? 420 : 340;
   const pop = 0.9 + 0.1 * rv(0.05, 0.8);
   return (
     <AbsoluteFill style={{ opacity: fadeIn * (1 - fadeOut) }}>
@@ -27,14 +30,20 @@ export function Bumper({ format, t, mode, dur, url, xf = BUMPER.xf }) {
       </AbsoluteFill>
       <AbsoluteFill style={{ alignItems: "center", justifyContent: "center" }}>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: f.v ? 22 : 16, transform: `translateY(${f.v ? -120 : -30}px)` }}>
-          <Img src={staticFile("brand/purplelink-logo.png")} style={{ width: logo, height: logo, opacity: rv(0.05, 0.5), transform: `scale(${pop})`, filter: "drop-shadow(0 24px 40px oklch(45% 0.2 310 / 0.25))" }} />
-          <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: f.v ? 104 : 108, letterSpacing: "-0.02em", color: INK, lineHeight: 1.05, opacity: rv(0.18), transform: `translateY(${(1 - rv(0.18)) * 26}px)`, whiteSpace: "nowrap" }}>Purplelink LLC</div>
-          <div style={{ fontFamily: FONT_BODY, fontWeight: 500, fontSize: f.v ? 44 : 40, color: MUTED, opacity: rv(0.32), transform: `translateY(${(1 - rv(0.32)) * 20}px)` }}>purplelink.llc</div>
+          {mode === "open" && (
+            <Img src={staticFile("brand/purplelink-lockup-light.png")} style={{ width: lockupW, height: "auto", opacity: rv(0.05, 0.5), transform: `scale(${pop})`, filter: "drop-shadow(0 24px 40px oklch(45% 0.2 310 / 0.25))" }} />
+          )}
+          {mode === "open" && (
+            <div style={{ fontFamily: FONT_BODY, fontWeight: 500, fontSize: f.v ? 44 : 40, color: MUTED, opacity: rv(0.32), transform: `translateY(${(1 - rv(0.32)) * 20}px)` }}>purplelink.llc</div>
+          )}
           {mode === "close" && url && (
             <div style={{ marginTop: f.v ? 30 : 22, fontFamily: FONT_BODY, fontWeight: 600, fontSize: f.v ? 46 : 44, color: INK, background: "oklch(93% 0.06 310)", borderRadius: 999, padding: f.v ? "16px 44px" : "14px 40px", opacity: rv(0.46), transform: `translateY(${(1 - rv(0.46)) * 20}px)` }}>{url}</div>
           )}
         </div>
       </AbsoluteFill>
+      {mode === "close" && (
+        <Img src={staticFile("brand/purplelink-wordmark-light.png")} style={{ position: "absolute", left: "50%", bottom: f.v ? 150 : 70, width: wordW, height: "auto", marginLeft: -wordW / 2, opacity: rv(0.2) }} />
+      )}
       {toBg > 0 && <AbsoluteFill style={{ background: BUMPER_BG, opacity: toBg }} />}
     </AbsoluteFill>
   );

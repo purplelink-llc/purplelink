@@ -203,7 +203,7 @@ Do this only after the DMG and appcast are in `tapefolio-files` and both env var
 4. (Done in the launch commit.) Fill in `site/tapefolio/launch.js`, delete the PRE-LAUNCH GUARD test, and update the four static
    fallback strings in `site/tapefolio/index.html` to their live wording, as `keyfeel.md` item 7 describes.
 5. Merge the Suite commit and the link commit together, deploy, and rerun `python3 scripts/apply_layout.py --check`,
-   `python3 scripts/fingerprint_assets.py` and `python3 scripts/check_content.py --strict`.
+   and `python3 scripts/check_content.py --strict` (the build adds the `?v=` stamps).
 6. (Done.) The changelog entry and the sitemap `lastmod` already carry the real release date, 2026-10-09 (it is what the stand-in
    guessed), and the `Status:` line of the Tapefolio block in `site/llms.txt` now says "Shipping, version 1.0.0".
 7. Confirm the Terms and Privacy wording against the shipped app: that the network use is only the optional model downloads, the
@@ -291,3 +291,8 @@ percentage on the page that is not in its allowed list, so a new figure needs a 
   `scripts/gen_llms_full.py` now includes `tapefolio/`.
 - Only English meeting audio and generated OCR files have been measured; the page says so. Real handwriting, phone photos,
   other languages and different microphones for speaker memory are untested.
+
+## Mac App Store
+
+Listing copy, in-app purchases, privacy answers, review notes and the screenshot plan for the App Store edition:
+`mac-app-store-listings-2026-10.md`.

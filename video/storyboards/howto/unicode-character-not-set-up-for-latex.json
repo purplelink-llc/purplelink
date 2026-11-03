@@ -1,0 +1,116 @@
+{
+ "id": "howto-unicode-character-not-set-up-for-latex",
+ "app": "moderntex",
+ "title": "Unicode character (U+200B) not set up for use with LaTeX on Mac (remove the hidden character)",
+ "short_title": "LaTeX says Unicode character not set up? Find the hidden one",
+ "url": "purplelink.llc/moderntex",
+ "page": "https://purplelink.llc/moderntex/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://forum.posit.co/t/r-markdown-r-latex-error-unicode-character-u-200b-not-set-up-for-use-with-latex/177596",
+  "https://www.texifier.com/docs/apps/typesetting/further-topics/bad-unicode-characters"
+ ],
+ "verify": {
+  "runs": [
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf \"\\\\\\\\documentclass{article}\\\\n\\\\\\\\begin{document}\\\\nResults were stable\\\\u200b across runs.\\\\n\\\\\\\\end{document}\\\\n\" > main.tex && pdflatex -interaction=nonstopmode -halt-on-error main.tex | grep -A1 'Unicode character'",
+    "output": "! LaTeX Error: Unicode character ​ (U+200B)\n               not set up for use with LaTeX."
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf \"\\\\\\\\documentclass{article}\\\\n\\\\\\\\begin{document}\\\\nResults were stable\\\\u200b across runs.\\\\n\\\\\\\\end{document}\\\\n\" > main.tex && grep -n $'\\u200b' main.tex",
+    "output": "3:Results were stable​ across runs."
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf \"\\\\\\\\documentclass{article}\\\\n\\\\\\\\begin{document}\\\\nResults were stable\\\\u200b across runs.\\\\n\\\\\\\\end{document}\\\\n\" > main.tex && sed -i '' $'s/\\u200b//g' main.tex && grep -c $'\\u200b' main.tex; pdflatex -interaction=nonstopmode main.tex | grep 'Output written'",
+    "output": "0\nOutput written on main.pdf (1 page, 13913 bytes)."
+   }
+  ],
+  "docs": [
+   "https://www.texifier.com/docs/apps/typesetting/further-topics/bad-unicode-characters",
+   "https://www.ctan.org/pkg/latex-base"
+  ],
+  "notes": "Each run builds a small test file containing a zero width space (U+200B) in a fresh temporary folder and compiles it with pdfLaTeX from TeX Live 2026. The error, the grep match, the sed removal and the clean rebuild are copied from those runs. The on-screen error line holds the invisible character itself, as pdflatex prints it."
+ },
+ "scenes": [
+  {
+   "type": "hook",
+   "short": true,
+   "kicker": "LaTeX on a Mac",
+   "title": "Unicode character not set up for use with LaTeX",
+   "sub": "The line looks fine. One character in it is invisible.",
+   "narration": "If pdflatex stops with Unicode character U plus 200B not set up for use with LaTeX, and you cannot see anything wrong with the line, the problem is a character you cannot see."
+  },
+  {
+   "type": "symptom",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ pdflatex main.tex",
+    "! LaTeX Error: Unicode character ​ (U+200B)",
+    "not set up for use with LaTeX."
+   ],
+   "narration": "This is the message. The code after U plus tells you which character it is. 200B is a zero width space."
+  },
+  {
+   "type": "cause",
+   "text": "Text pasted from a web page, a PDF or a chat often carries invisible characters. pdfLaTeX has nothing set up for them, so it stops.",
+   "narration": "Text pasted from a web page, a PDF, or a chat window often carries invisible characters along with it. pdfLaTeX only handles the characters it has been set up for. It has nothing for a zero width space, so it stops."
+  },
+  {
+   "type": "steps",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ grep -n $'\\u200b' main.tex",
+    "$ sed -i '' $'s/\\u200b//g' main.tex"
+   ],
+   "ui": "Use the code from your own error. The first command shows the line, the second removes every copy.",
+   "narration": "In Terminal, search the file for that code with grep. It prints the line number where the character hides. Then remove every copy with sed. Use the code from your own error in both commands."
+  },
+  {
+   "type": "check",
+   "short": true,
+   "label": "Terminal",
+   "ok": "Character gone, PDF built",
+   "lines": [
+    "$ grep -c $'\\u200b' main.tex",
+    "0",
+    "$ pdflatex main.tex",
+    "Output written on main.pdf (1 page, 13913 bytes)."
+   ],
+   "narration": "Count the matches again. Zero means the character is gone. Build again, and pdflatex writes the PDF."
+  },
+  {
+   "type": "app",
+   "name": "ModernTex",
+   "line": "Translates LaTeX build errors into plain explanations with a suggested fix, and marks them in the editor.",
+   "url": "purplelink.llc/moderntex",
+   "img": "site/assets/moderntex-screens/01-editor-clean-1440.webp",
+   "icon": "site/assets/moderntex-icon.png",
+   "narration": "If you write LaTeX on a Mac, ModernTex translates build errors like this one into plain explanations with a suggested fix, and marks them in the editor."
+  }
+ ],
+ "thumbs": {
+  "A": {
+   "kind": "error",
+   "msg": "Unicode character not set up for use with LaTeX"
+  },
+  "B": {
+   "kind": "long",
+   "msg": "Unicode character (U+200B)",
+   "n": 2,
+   "unit": "commands",
+   "sub": "and the PDF builds"
+  },
+  "C": {
+   "kind": "product",
+   "name": "ModernTex",
+   "line": "Hidden character in your LaTeX? Found",
+   "img": "site/assets/moderntex-screens/01-editor-clean-1440.webp",
+   "icon": "site/assets/moderntex-icon.png",
+   "zoom": 1.7,
+   "pos": "28% 22%"
+  }
+ }
+}

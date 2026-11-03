@@ -23,6 +23,14 @@ NYH=$(TZ=America/New_York date +%H)
 [ -f "$REPO/backend/socialpost/daily/metrics.py" ] || { log "metrics code not in the checkout yet; will retry"; exit 0; }
 [ -x "$PYTHON" ] || { log "python not found at $PYTHON"; exit 1; }
 
+# Code runs from the read-only jobs-ro worktree at origin/main (repo-ro.sh), like run_social.sh and
+# run_social_daily.sh; data paths are absolute and stay in the shared checkout. Without jobs-ro, the shared checkout's
+# code runs as before.
+RO="$HOME/.purplelink/bin/repo-ro.sh"
+if [ -x "$RO" ]; then
+  WT=$("$RO" update 2>>"$LOG") && [ -f "$WT/backend/scripts/social.py" ] && SCRIPT="$WT/backend/scripts/social.py"
+fi
+
 if "$PYTHON" "$SCRIPT" daily metrics >> "$LOG" 2>&1; then
   mkdir -p "$(dirname "$MARK")" && echo "$NYDAY" > "$MARK"
 else

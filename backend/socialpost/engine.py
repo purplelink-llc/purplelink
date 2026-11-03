@@ -19,13 +19,14 @@ SEP_RE = "|"
 
 def registry() -> dict[str, type[Adapter]]:
     from .adapters.bluesky import Bluesky
+    from .adapters.facebook import Facebook
     from .adapters.instagram import Instagram
     from .adapters.linkedin import LinkedIn
     from .adapters.mastodon import Mastodon
     from .adapters.threads import Threads
     from .adapters.x import X
     return {"linkedin": LinkedIn, "bluesky": Bluesky, "threads": Threads, "mastodon": Mastodon, "x": X,
-            "instagram": Instagram}
+            "instagram": Instagram, "facebook": Facebook}
 
 
 def build_adapter(cfg: dict, platform: str, factory=None, **kw) -> Adapter:

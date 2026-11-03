@@ -3,7 +3,7 @@ import unittest
 import xml.etree.ElementTree as ET
 from common import SITE, ORIGIN, read_site, has_noindex, sitemap_locs, sitemap_paths
 
-HIDDEN = ["/binnacle/", "/binnacle/terms/", "/budgetcast/", "/budgetcast/privacy/", "/watchlight/privacy/", "/watchlight/terms/"]
+HIDDEN = ["/binnacle/", "/binnacle/terms/", "/budgetcast/", "/budgetcast/privacy/"]
 
 
 class HiddenPages(unittest.TestCase):
@@ -13,6 +13,15 @@ class HiddenPages(unittest.TestCase):
             text = (SITE / u.strip("/") / "index.html").read_text(encoding="utf-8")
             self.assertTrue(has_noindex(text), f"{u} should carry meta robots noindex")
             self.assertNotIn(u, paths, f"{u} must not be in sitemap.xml")
+
+
+class RemovedPages(unittest.TestCase):
+    """Watchlight left the site on 2026-11-01: its pages are gone and answer 410 from netlify.toml."""
+
+    def test_watchlight_pages_removed(self):
+        self.assertFalse((SITE / "watchlight").exists())
+        toml = (SITE.parent / "netlify.toml").read_text(encoding="utf-8")
+        self.assertRegex(toml, r'from = "/watchlight/\*"\n  to = "/404.html"\n  status = 410\n  force = true')
 
 
 class Sitemap(unittest.TestCase):

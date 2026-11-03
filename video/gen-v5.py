@@ -7,7 +7,7 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 OUT = HERE / "storyboards"
-FL = Path("/Volumes/Extreme SSD/Frontlink/build/trailer")
+FL = Path("/Volumes/Extreme SSD/RubbleFront/build/trailer")
 END_LINES = ["Spring 2027", "rubblefront.com", "A Purplelink LLC game"]
 IMPACT = 0.42   # seconds from the Fire press to the hit landing on screen
 

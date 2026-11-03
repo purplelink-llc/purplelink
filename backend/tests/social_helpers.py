@@ -61,7 +61,10 @@ def env(tmp_path, monkeypatch):
     changer = tmp_path / "log_change.py"
     changer.write_text("import sys, pathlib\npathlib.Path(__file__).with_name('changes.txt').open('a').write(' '.join(sys.argv[1:]) + '\\n')\n")
     monkeypatch.setenv("PL_LOG_CHANGE", str(changer))
-    from socialpost import sysutil
+    from socialpost import hubtags, sysutil
+    # A stand-in for the marketing hub's tagger: deterministic, and never reads the real queue or ledger.
+    monkeypatch.setattr(hubtags, "tag", lambda link, asset, channel, campaign, **kw:
+                        f"{asset.split(':')[-1].replace('.', '-')}-{channel}-test"[:60] if hubtags.on_site(link) else "")
     sent: list[str] = []
     monkeypatch.setattr(sysutil, "notify", lambda msg, title="x": sent.append(msg))
     monkeypatch.setattr(sysutil, "keychain_get", lambda platform, field: None)

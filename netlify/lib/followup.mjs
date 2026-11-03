@@ -32,6 +32,8 @@ export const FOLLOWUP_PRODUCTS = {
   legroom: "Legroom",
   keyfeel: "Keyfeel",
   tapefolio: "Tapefolio",
+  lenscrib: "Lenscrib",
+  aka: "AKA",
   panely: "Panely",
   summonly: "Summonly",
   "app-suite": "the Mac Suite",

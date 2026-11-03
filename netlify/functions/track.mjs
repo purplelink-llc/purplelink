@@ -14,7 +14,9 @@
  * fingerprinting; the only per-visitor value is a daily-salted hash of the IP
  * (rotates every day, can't be reversed or linked across days). stats.mjs
  * aggregates on read. Each record also carries `cc`, a two-letter country code from Netlify's geolocation (no city,
- * region, coordinates or IP), empty when unavailable.
+ * region, coordinates or IP), empty when unavailable. Funnel events (the ones with a first-touch channel) also carry
+ * `os`, the operating-system family read from the User-Agent header (mac, windows, linux, chromeos, ios, android or
+ * other; no version, browser or device model), so a channel's Mac share can be read for the Mac-only apps.
  *
  * Per-tool counts (lib/tool-counts.mjs): a tool_use beacon from a /tools/<slug>/ page also bumps that tool's daily "runs"
  * counter. tool_outcome (m: ok|error|limit), offer_view and offer_click (m: moderntex|tapefolio|outbound-veil|vitae)
@@ -46,6 +48,18 @@ function clip(v, n) {
  * v2 passes it as context.geo.country.code (ISO 3166-1 alpha-2); the x-nf-geo header (base64 JSON, same shape) is the
  * fallback for a runtime that does not pass the context.
  */
+// Operating-system family only. iPadOS Safari reports itself as a Mac by default, so a few iPads count as "mac".
+export function osFamily(ua) {
+  const u = String(ua || "");
+  if (/iPhone|iPad|iPod/.test(u)) return "ios";
+  if (/Android/.test(u)) return "android";
+  if (/CrOS/.test(u)) return "chromeos";
+  if (/Macintosh|Mac OS X/.test(u)) return "mac";
+  if (/Windows/.test(u)) return "windows";
+  if (/Linux|X11/.test(u)) return "linux";
+  return "other";
+}
+
 export function countryCode(request, context) {
   let code = context && context.geo && context.geo.country && context.geo.country.code;
   if (code == null) {
@@ -109,7 +123,7 @@ export default async function handler(request, context) {
 
   // Country only (see countryCode). Always present; "" when Netlify gave none. Older records have no cc at all.
   const rec = { type, path, host, refHost, utm, meta, vid, ts: Date.now(), cc: countryCode(request, context) };
-  if (ft) rec.ft = ft;
+  if (ft) { rec.ft = ft; rec.os = osFamily(ua); }
   if (fc) rec.fc = fc;
 
   // Per-IP daily cap, same shared "rate-limits" store pattern as the other functions. The key holds a hash of the IP,

@@ -23,17 +23,17 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <script src="/theme.js?v=f0ab0f06a1"></script>
-    <link rel="stylesheet" href="/styles.css?v=f29b65c694">
-    <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
-    <link rel="stylesheet" href="/product-flair.css?v=6dc1d15444">
-    <link rel="stylesheet" href="/buy.css?v=cb10cb94d2">
-    <script src="/site.js?v=b053086227" defer></script>
-    <script src="/support-box.js?v=119d97fc71" defer></script>
-    <script src="/motion.js?v=d35f4b4ee4" defer></script>
-    <script src="/product-flair.js?v=7ecbf83f91" defer></script>
-    <script src="/outbound-veil/trial.js?v=64038c76e9" defer></script>
-    <script src="/tools/paper-review/paid-tool-landing.js?v=41be4deb54" defer></script>
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/motion.css">
+    <link rel="stylesheet" href="/product-flair.css">
+    <link rel="stylesheet" href="/buy.css">
+    <script src="/site.js" defer></script>
+    <script src="/support-box.js" defer></script>
+    <script src="/motion.js" defer></script>
+    <script src="/product-flair.js" defer></script>
+    <script src="/outbound-veil/trial.js" defer></script>
+    <script src="/tools/paper-review/paid-tool-landing.js" defer></script>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -135,6 +135,8 @@
       ]
     }
     </script>
+    <link rel="stylesheet" href="/buddy-chat/chat.css">
+    <script src="/buddy-chat/loader.js" defer></script>
 </head>
   <body>
 
@@ -170,7 +172,7 @@
           <a class="btn btn-primary" id="trial-download" href="/.netlify/functions/outbound-veil-download?trial=1">Try it free for 7 days</a>
           <button type="button" class="btn btn-ghost pr-checkout-btn" id="checkout-btn" data-product="outbound-veil">Buy Outbound Veil</button>
         </div>
-        <p class="buy-assurance">Refunded if you email within 14 days of purchase. Updates are included forever.</p>
+        <p class="buy-assurance">Checkout shows the price in your local currency, and you can switch back to US dollars. Refunded if you email within 14 days of purchase. Updates are included forever.</p>
         <p class="tool-status" id="checkout-status" aria-live="polite"></p>
         <form class="trial-remind" data-ov-trial-signup hidden novalidate>
           <p class="trial-remind-head" id="ov-remind-head">Your download has started. Want the setup guide by email, and one reminder before the trial ends?</p>
@@ -298,7 +300,9 @@
           <tr><th scope="row">Chrome text areas</th><td>Word by word in a plain text area. In the ChatGPT and claude.ai prompts the whole field is outlined instead.</td></tr>
         </tbody>
       </table>
-      <p class="specs-more">Some apps do not expose their text fields to macOS, and Outbound Veil cannot read those. The menu bar says so when it happens. Apple Mail&rsquo;s compose window is one. Safari, Slack, VS Code and most other apps have not been tested yet. The <a href="/outbound-veil/works-in/">full table of apps and fields</a> says which are which, and how to check your own app during the free trial.</p>
+      <p class="specs-more">Some apps do not expose their text fields to macOS, and Outbound Veil cannot read those. The menu bar says so when it happens. In Apple Mail it reads the body of a new message and highlights what it finds, and you edit those details by hand; it never rewrites a Mail message. Safari, Slack, VS Code and most other apps have not been tested yet. The <a href="/outbound-veil/works-in/">full table of apps and fields</a> says which are which, and how to check your own app during the free trial.</p>
+      <h3>A Social Security number in an email</h3>
+      <p class="specs-more">If you type or paste a Social Security number into a new Apple Mail message, Outbound Veil highlights it before you send, so you can take it out. In Microsoft Word, Notes, Messages and Chrome text areas you can also redact it to a placeholder. It will miss some things and it is not a compliance product.</p>
       <p class="specs-more">Comparing it with other ways to keep personal details out of AI chats? See <a href="/guides/best-pii-redaction-tools-for-chatgpt/">the comparison of redaction tools for ChatGPT and other AI chats</a>, which says plainly where a competitor is the better choice. Using Apple Mail? See <a href="/guides/stop-sending-email-to-the-wrong-person-mac/">what Apple Mail can and cannot catch</a>.</p>
     </section>
 
@@ -426,6 +430,7 @@
           </a>
           <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
           <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
         </div>
         <nav class="footer-col" aria-label="Products">
           <p class="footer-head">Products</p>
@@ -496,6 +501,6 @@
     </footer>
 
   <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
-      <script src="/analytics.js?v=e11921f8d6" defer></script>
+      <script src="/analytics.js" defer></script>
 </body>
 </html>

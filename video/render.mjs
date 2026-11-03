@@ -64,6 +64,7 @@ fs.rmSync(pub, { recursive: true, force: true });
 for (const d of ["fonts", "brand", "media", "audio"]) fs.mkdirSync(path.join(pub, d), { recursive: true });
 for (const f of Object.values(brand.fonts)) fs.copyFileSync(path.resolve(ROOT, f.file), path.join(pub, "fonts", path.basename(f.file)));
 fs.copyFileSync(path.resolve(ROOT, brand.logo), path.join(pub, "brand", "logo.png"));
+fs.copyFileSync(path.resolve(ROOT, brand.wordmark), path.join(pub, "brand", "wordmark.png"));
 fs.cpSync(path.join(ROOT, ".cache", storyboard.id, "audio"), path.join(pub, "audio", storyboard.id), { recursive: true });
 
 const probe = (f) => {

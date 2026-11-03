@@ -1,0 +1,48 @@
+{
+ "id": "howto-check-if-paper-retracted-doi",
+ "app": "scholar-utility-belt",
+ "title": "Retracted paper not marked in Google Scholar on Mac (check the DOI in Terminal)",
+ "short_title": "About to cite a paper? Check it was not retracted, in one command",
+ "url": "purplelink.llc/scholar-utility-belt",
+ "page": "https://purplelink.llc/scholar-utility-belt/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://libanswers.southernct.edu/faq/366082",
+  "https://community.crossref.org/t/deprecating-retraction-watch-annotations-in-the-labs-api/15884",
+  "https://mclibrary.duke.edu/news/identifying-retracted-journal-articles"
+ ],
+ "verify": {
+  "runs": [
+   {"cmd": "curl -s https://api.crossref.org/works/10.1021/am300292v | grep -c '\"type\":\"retraction\"'", "output": "1"},
+   {"cmd": "curl -s https://api.crossref.org/works/10.1093/comjnl/27.2.97 | grep -c '\"type\":\"retraction\"'", "output": "0"},
+   {"cmd": "curl -s https://api.crossref.org/works/10.1021/am300292v | grep -o '\"type\":\"retraction\",\"label\":\"Retraction\",\"source\":\"[a-z-]*\"'", "output": "\"type\":\"retraction\",\"label\":\"Retraction\",\"source\":\"retraction-watch\""}
+  ],
+  "docs": [
+   "https://www.crossref.org/documentation/retrieve-metadata/retraction-watch/",
+   "https://www.crossref.org/documentation/retrieve-metadata/rest-api/"
+  ],
+  "notes": "Run 2026-10-31 on the Mac mini with /usr/bin/curl and PATH=/usr/bin:/bin. 10.1021/am300292v (ACS Applied Materials and Interfaces, 2012) is the retracted DOI Crossref itself uses as its example in the community post; its Crossref record carries an updated-by entry with type retraction and source retraction-watch, while its title has no RETRACTED prefix. 10.1093/comjnl/27.2.97 (Knuth, Literate Programming) has no updated-by entry, so the count is 0. Crossref's documentation states that retractions from the Retraction Watch database are in the REST API with source retraction-watch. grep -c counts matching lines, and the response is one line, so the result is 1 or 0. The Scholar Utility Belt page states it shows a visible warning on results that have been retracted, before you cite them, and that retraction warnings are in the free core; the app scene claims only that."
+ },
+ "scenes": [
+  {"type": "hook", "short": true, "kicker": "Before you cite it", "title": "Has this paper been retracted?", "sub": "Google Scholar often lists it with no warning.",
+   "narration": "A paper can be retracted years after you first saved it, and Google Scholar often lists it with no warning at all. Here is how to check any paper from Terminal on a Mac."},
+  {"type": "cause", "text": "Retraction notices are recorded against the paper's DOI, not in the search result.",
+   "narration": "When a journal retracts a paper, the notice is linked to the paper's D O I. Crossref, the registry behind most D O Is, now includes the Retraction Watch database, so one free lookup tells you whether a retraction is on record."},
+  {"type": "steps", "short": true, "label": "Terminal",
+   "lines": ["$ curl -s https://api.crossref.org/works/10.1021/am300292v | grep -c '\"type\":\"retraction\"'"],
+   "ui": "Put your paper's DOI after works/. No account or key needed.",
+   "narration": "Open Terminal. Ask the Crossref A P I for the paper's record, with its D O I after works, and count the lines that mention a retraction."},
+  {"type": "check", "short": true, "label": "Terminal", "ok": "1 means retracted",
+   "lines": ["$ curl -s https://api.crossref.org/works/10.1021/am300292v | grep -c '\"type\":\"retraction\"'", "1"],
+   "narration": "It prints one, so a retraction is on record. A paper with none prints zero. If you see one, open the notice on the publisher's page."},
+  {"type": "app", "name": "Scholar Utility Belt", "line": "Shows a visible warning on Google Scholar results that have been retracted, before you cite them.",
+   "url": "purplelink.llc/scholar-utility-belt", "img": "site/assets/scholar-utility-belt-profile.webp", "icon": "site/assets/scholar-utility-belt-icon.webp",
+   "narration": "If you search with Google Scholar, Scholar Utility Belt is a Chrome extension that shows a visible warning on results that have been retracted, before you cite them. Retraction warnings are part of its free core."}
+ ],
+ "thumbs": {
+  "A": {"kind": "error", "pill": "Google Scholar", "msg": "Has this paper been retracted?"},
+  "B": {"kind": "long", "pill": "Before you cite", "msg": "Check the DOI for a retraction", "n": 1, "unit": "command", "sub": "1 means retracted"},
+  "C": {"kind": "product", "name": "Scholar Utility Belt", "line": "Retraction warnings in Google Scholar", "img": "site/assets/scholar-utility-belt-profile.webp", "icon": "site/assets/scholar-utility-belt-icon.webp", "zoom": 1.3, "pos": "30% 30%"}
+ }
+}

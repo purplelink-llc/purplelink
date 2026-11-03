@@ -111,12 +111,14 @@
     <meta name="theme-color" content="#19141d">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <script src="/theme.js?v=f0ab0f06a1"></script>
-    <link rel="stylesheet" href="/styles.css?v=f29b65c694">
-    <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
-    <script src="/site.js?v=b053086227" defer></script>
-    <script src="/motion.js?v=d35f4b4ee4" defer></script>
-    <link rel="stylesheet" href="/tools/paper-review/paper-review.css?v=7c9fc6f1f1">
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/motion.css">
+    <script src="/site.js" defer></script>
+    <script src="/motion.js" defer></script>
+    <link rel="stylesheet" href="/tools/paper-review/paper-review.css">
+    <link rel="stylesheet" href="/buddy-chat/chat.css">
+    <script src="/buddy-chat/loader.js" defer></script>
 </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -138,6 +140,7 @@
       <div class="tools-hero tools-hero-split">
         <p class="tools-kicker">Paper Review</p>
         <h1>Pre-submission manuscript review by four AI reviewers</h1>
+        <p class="aff-disclosure">Some links on this page are affiliate links. If you buy through one, Purplelink may earn a commission at no extra cost to you. It does not change which products we mention or what we say about them.</p>
         <p>Four AI reviewers read your manuscript the way a journal panel would. They quote the passages they question, so you can fix what a reviewer would flag before you submit. A standard review is usually ready in 4 to 8 minutes. Deep Review takes 10 to 15. Three tiers, $9 to $15, one-time payment, no subscription.</p>
         <p class="pr-who"><strong>Who runs this.</strong> Built by <a href="/about/">Benjamin Ampel</a>, assistant professor of computer information systems at Georgia State University, with publications in MIS Quarterly and JMIS.</p>
         <p class="pr-proof"><strong>Tested on retracted papers.</strong> In my own test on 23 open-access papers later retracted for a documented error, the review pointed at that problem in 14, partly in 4, and missed 5. Run against reports written for unrelated papers, the same judge said yes in 2 of 46 cases. One model judged, and the counts may move on a rerun. <a href="/guides/retracted-papers-paper-review-test/">Read the method and the limits</a>.</p>
@@ -314,10 +317,9 @@
           <li>A coherence check: the places where your sections disagree with each other (a hypothesis stated but never reported, an abstract number the tables no longer match, a term defined two ways), each with the sentences quoted. It catches plain disagreements reliably. It finds subtler ones (a claim that partly outruns its evidence) less often, so a short list is not proof that none remain.</li>
           <li>A Markdown report and an annotated PDF with comments on the pages they refer to.</li>
           <li>Standard reviews are usually ready in 4-8 minutes, Deep Review in 10-15, on a status page that updates itself.</li>
+          <li>Not included: language editing. The reviewers comment on the argument, methods and citations, not on grammar or English. For that, your university's writing centre is often free, and <a href="https://wordvice.com/?aff=benjamin" rel="sponsored nofollow noopener" data-aff="wordvice">Wordvice</a><span class="aff-label">(paid link)</span> is one academic editing service with published per-word pricing. We have not used it ourselves, so read its confidentiality terms before you upload a file.</li>
         </ul>
       </section>
-
-      <p class="pr-grant-note">Reviewing a grant proposal instead of a paper? <a href="/grant-review/">Grant Review</a> is an idea for NSF and NIH proposals, and the waitlist measures interest.</p>
 
       <section class="deadline-remind" aria-labelledby="deadline-h">
         <form class="deadline-form" data-deadline-signup novalidate>
@@ -386,9 +388,9 @@
         </ul>
       </nav>
 
-      <script src="/tools/tools.js?v=c172db6add"></script>
-      <script src="/tools/paper-review/paper-review.js?v=d4578076af" defer></script>
-      <script src="/tools/paper-review/preview.js?v=3bca162f62" defer></script>
+      <script src="/tools/tools.js"></script>
+      <script src="/tools/paper-review/paper-review.js" defer></script>
+      <script src="/tools/paper-review/preview.js" defer></script>
     <div class="sticky-cta" data-sticky-cta data-hide-when="#choose-tier, .pr-checkout-row, .pr-preview, .deadline-remind, .footer" hidden>
       <span class="sticky-cta-text"><strong>Paper Review</strong> from $9, ready in minutes</span>
       <a class="btn btn-primary" href="#choose-tier" data-track="sticky_cta" data-track-meta="paper-review">Choose a tier</a>
@@ -404,6 +406,7 @@
           </a>
           <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
           <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
         </div>
         <nav class="footer-col" aria-label="Products">
           <p class="footer-head">Products</p>
@@ -473,6 +476,6 @@
       </div>
     </footer>
   <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
-      <script src="/analytics.js?v=e11921f8d6" defer></script>
+      <script src="/analytics.js" defer></script>
 </body>
 </html>

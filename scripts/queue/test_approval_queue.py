@@ -136,8 +136,29 @@ aq.main(["approve", du])
 aq.main(["done", du, "--result", "listed", "--url", "https://dir.example/moderntex"])
 dfm = aq.find_item(du)["fm"]
 check(dfm.get("placement_url") == "https://dir.example/moderntex" and dfm.get("live") == TODAY.isoformat(), f"done --url {dfm}")
+# a bad --url is refused on an approved item, and the item stays approved
+_, fb, bb = item(target="Done With Bad Url")
+aq.main(["new", write("db.md", aq.join_item(fb, bb)), "--offline"])
+db = [i for i in aq.all_items() if i["fm"].get("target") == "Done With Bad Url"][0]["fm"]["id"]
+aq.main(["approve", db])
 try:
-    aq.main(["done", du, "--url", "not a url"]); check(False, "bad --url should exit")
-except SystemExit:
-    pass
+    aq.main(["done", db, "--url", "not a url"]); check(False, "bad --url should exit")
+except SystemExit as e:
+    check("http" in str(e), f"bad --url message {e}")
+check(aq.find_item(db)["folder"] == "approved", "a refused done leaves the item approved")
+
+# placement tags: more edges of the rule
+f, b = tagged("https://purplelink.llc/keyfeel/?utm_source=somedir")
+c, p = aq.lint(f, b, offline=True, others=[], today=LATER)
+check(c.get("placement_tags") == "fail", f"utm_source without utm_content fails {p}")
+f, b = tagged("https://example.com/somewhere and https://www.purplelink.llc/keyfeel/?utm_source=x&utm_content=keyfeel-directory-261025")
+c, p = aq.lint(f, b, offline=True, others=[], today=LATER)
+check(c.get("placement_tags") == "pass", f"links to other sites are not linted; www.purplelink.llc is {p}")
+rejected = {"fm": {"id": "q-rej"}, "folder": "rejected", "body": "## Draft\nhttps://purplelink.llc/moderntex/?utm_source=x&utm_content=moderntex-directory-261025\n"}
+f, b = tagged("https://purplelink.llc/moderntex/?utm_source=somedir&utm_content=moderntex-directory-261025")
+c, p = aq.lint(f, b, offline=True, others=[rejected], today=LATER)
+check(c.get("placement_tags") == "pass", f"a rejected item's tag can be reused {p}")
+f, b = tagged("https://purplelink.llc/moderntex/", kind="pr")
+c, p = aq.lint(f, b, offline=True, others=[], today=LATER)
+check("placement_tags" not in c, "non-outward kinds (pr) are not linted for tags")
 print("approval queue tests ok")

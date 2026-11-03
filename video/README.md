@@ -207,8 +207,30 @@ research and writing; everything else is scripted. Ben chose fully automatic pub
    `utm_source=youtube&utm_medium=video|short&utm_campaign=howto-link-test&utm_content=<slug>`; from 2026-10-20 odd
    US Eastern days put the tracked link on the description's first line (arm B), even days keep it after the app
    paragraph (arm A); the arm is recorded in the ledger (`link_arm`). See the `howto-link-placement` experiment. `--dry-run` prints the titles and descriptions.
+   Each cut has its own `utm_content`, issued by the marketing hub (`scripts/hub/hub.py make_utm`, checked against every
+   tag in use): the long video `<slug>`, the Short `<slug>-short` (`utm_medium=short`) and the Instagram Reel
+   `<slug>-reel`, with `-2`, `-3` ... if a name is taken. The ledger records `link_utm_content` (long),
+   `short_utm_content` and `instagram.utm_content`; `site-tests/test_howto_link_placement.py` fails if two of them match.
 
 Kill switch: create `~/.purplelink/howto/PAUSE` and nothing publishes. Gate rules: no prices, emoji, em dashes or
 hype words; no destructive commands; `sudo` only for `tlmgr` with tug.org/ctan.org docs. Tests:
 `site-tests/test_howto_gate.py`. `node_modules` lives at `/Volumes/Extreme SSD/_node/purplelink-video/node_modules`
 (symlink it into a fresh worktree).
+
+## ModernTex Reddit video ads
+
+Square (1200x1200) and 4:5 (1200x1500) cuts at 30 fps, the sizes Reddit's Video Ad Specifications recommend for mobile
+(read 2026-10-31; 5 to 30 s recommended, 1 GB and 30 fps maximum). No voice-over: the headline captions carry the story,
+so it reads with the sound off; a synthwave bed (the Circled Hoops mixer) and Keyfeel key clicks timed to the typing frames.
+
+```
+~/.purplelink/nightq/heavy mt-reddit-ad -- node build-moderntex-ad.mjs storyboards/moderntex-reddit-30.json   # and -15
+node build-moderntex-ad.mjs storyboards/moderntex-reddit-30.json --no-video --stills 0,9.5,13.6,20   # review frames
+```
+
+Every app screen is a frame sequence of the real app (`MT_CAPTURES`, default `PurplelinkVideos/moderntex-reddit-ads/captures`,
+not in git): a throwaway-id copy of ModernTex launched in the background on an invented sample paper, text entered with
+AX `AXSelectedText`, buttons pressed with `AXPress`, each step captured with `screencapture -l` and timed in
+`frames.json`. A scene plays its sequence from `from` at `rate` and crops into `focus` (fractions of the window),
+optionally panning to `focusTo`; `rings` draw a marker loop on a region. The first scene's caption is on screen from
+frame 0. Output goes to `MT_OUT` (default `PurplelinkVideos/moderntex-reddit-ads/`). Nothing is uploaded.

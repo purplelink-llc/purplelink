@@ -1,0 +1,24 @@
+/* Free Mac wallpaper page (/photography/wallpapers/). Builds on shop.css and the site tokens in /styles.css. */
+.wp-packs { padding: 16px 18px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); margin: 0 0 clamp(18px, 2.4vw, 28px); max-width: 46rem; }
+.wp-packs h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.3rem; margin: 0 0 12px; letter-spacing: -0.01em; }
+.wp-pack-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.wp-packs .waitlist-fine-print, .wp-news .waitlist-fine-print { margin: 12px 0 0; text-align: left; }
+
+.wp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: clamp(14px, 2vw, 22px); padding: 0 0 clamp(8px, 2vw, 20px); }
+.wp-card { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--panel); display: flex; flex-direction: column; }
+.wp-card > img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; background: var(--purple-xlight); }
+.wp-card-body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.wp-card h3 { margin: 0; font-size: 1.1rem; }
+.wp-card .hub-fact { margin: 0; }
+.wp-links { display: flex; flex-wrap: wrap; gap: 8px; margin: auto 0 0; padding-top: 6px; }
+.wp-size { color: var(--muted); font-weight: 400; margin-left: 4px; }
+
+.wp-news { max-width: 46rem; padding-top: clamp(24px, 4vw, 48px); }
+.wp-news h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.5rem; margin: 0 0 10px; }
+.wp-news > p { margin: 0 0 14px; line-height: 1.6; }
+.wp-form { display: grid; gap: 8px; max-width: 30rem; }
+.wp-form label { font-weight: 600; font-size: 0.92rem; }
+.wp-form-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.wp-form-row input[type="email"] { flex: 1 1 220px; min-height: 44px; padding: 0 14px; border: 1.5px solid var(--field-line); border-radius: 100px; background: var(--bg); color: var(--ink); font: inherit; }
+.wp-status { margin: 4px 0 0; color: var(--ink); }
+.wp-form.is-done .wp-form-row, .wp-form.is-done > label { display: none; }

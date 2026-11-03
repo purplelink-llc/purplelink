@@ -145,3 +145,8 @@ Terms ask a refunded buyer to stop using it. Suite buyers get a Keyfeel key too.
 `issueKeyfeelLicense(email)`.
 
 The app also accepts `keyfeel://license/<key>`.
+
+## Mac App Store
+
+Listing copy, in-app purchases, privacy answers, review notes and the screenshot plan for the App Store edition:
+`mac-app-store-listings-2026-10.md`.

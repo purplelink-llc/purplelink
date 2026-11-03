@@ -41,6 +41,13 @@ the site owner (Ben) explicitly re-authorized it and said this specific
 policy may be violated for AdSense. Do not silently revert this again — if a
 future audit flags it, surface this note rather than reverting.
 
+**Reddit pixel exception (owner decision, 2026-10-29):** Ben chose Reddit's own pixel over a server-side
+Conversions API for the ModernTex Reddit ads. `site/reddit-pixel.js` loads `https://www.redditstatic.com/ads/pixel.js`
+only for visitors whose first arrival was a Reddit ad click (`rdt_cid`, or first-touch channel `paid:reddit`) and never
+under Do Not Track; the CSP allows `www.redditstatic.com` (script) and `alb.reddit.com` / `pixel-config.reddit.com`
+(connect, img), and the privacy policy says so under "Analytics, advertising and cookies". Do not revert it as a
+"third-party load"; surface this note instead.
+
 Invoke design work with the impeccable skill (e.g. `/impeccable critique
 /tools/word-counter/`, `/impeccable audit`, `/impeccable polish`).
 
@@ -69,9 +76,12 @@ new guide straight to `main` and broke Site tests (no social card; a shared-foot
 
 1. Work on a branch off `origin/main` and open a pull request with `gh pr create`.
 2. Before opening it, for a new page: run `python3 scripts/gen_og_cards.py --only <section>/<slug>` (its social card),
-   `python3 scripts/gen_search_index.py`, `python3 scripts/gen_llms_full.py` and `python3 scripts/fingerprint_assets.py`,
    then the tests CI runs: `python3 -m pytest -q site-tests` and
    `node --experimental-test-module-mocks --test netlify/tests/*.test.mjs`. Fix every failure.
+   Build output is not committed (docs/designs/generated-files-at-build.md): `site/search-index.json` and
+   `site/llms-full.txt` are git-ignored, so never `git add` them, and the pages carry no `?v=` asset stamps, which the
+   Netlify build adds. Do not run `fingerprint_assets.py`; if a page arrives stamped (copied from an old branch), run
+   `python3 scripts/fingerprint_assets.py --strip`. CI and the pre-commit hook reject stamped pages.
 3. Wait for the PR's checks (`gh pr checks <n> --watch`). Squash-merge only when every check passes; if one fails,
    fix it on the branch or leave the PR open and say so in the run's summary. Never merge red, never bypass checks.
 4. Add files by path, never `git add -A`; never add `Outreach/`, `docs/growth-briefs/` or other private paths.
@@ -188,7 +198,10 @@ longer posts (detection library only). See `docs/social-posting.md`.
 goes to the Purplelink Instagram (@purplelink.llc) as a Reel, and every LinkedIn company-page post also gets an Instagram
 post with a branded image. `backend/socialpost/instagram` builds, vets and queues both under
 `approved_by: "ben (standing, 2026-10-23)"` (Instagram only, its own items only; run by the social-daily wrapper,
-posted by `run-due`). Never RubbleFront's Instagram (same Meta account; the adapter refuses it by name). Nothing else
+posted by `run-due`). Never RubbleFront's Instagram (same Meta account; the adapter refuses it by name). Since 2026-10-28 Instagram publishes through the new
+**Purplelink LLC Facebook Page** (id 61595915854939; `social.py setup facebook`), because Instagram's web login loops for
+this account; Ben approved the Page the same day ("drive it so it can also get out posts"), so the daily ranked post
+also goes to the Page. Nothing else
 changes: no posts as Ben, Reddit stays manual. Needs Ben's Meta app and token first (`social.py setup instagram`).
 See `docs/social-posting.md`, "Instagram".
 

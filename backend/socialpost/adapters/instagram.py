@@ -13,11 +13,12 @@ from __future__ import annotations
 import time
 
 from .. import media, sysutil
-from ..errors import Ambiguous, Refused, SocialError
+from ..errors import Ambiguous, Disabled, Refused, SocialError
 from ..items import Item, _resolve, image_path
 from .base import Adapter, Result
 
 API = "https://graph.instagram.com"
+FB_API = "https://graph.facebook.com/v23.0"   # "facebook" mode: the same calls through the connected Facebook Page
 # Accounts that must never receive Purplelink posts, checked before the pinned identity.
 NEVER = ("rubblefront",)
 
@@ -29,11 +30,25 @@ class Instagram(Adapter):
     def __init__(self, cfg: dict, http=None, secret=None, sleep=time.sleep, video_client=None):
         super().__init__(cfg, http, secret, sleep)
         self.video_client = video_client  # tests inject a fake S3 client factory
+        self.via_page = cfg.get("api") == "facebook"
+        self.api = FB_API if self.via_page else API
 
     def _auth(self) -> dict:
+        if self.via_page:  # the Purplelink LLC Page's token (keychain purplelink-social-facebook/page_token)
+            tok = self._secret("facebook", "page_token")
+            if not tok:
+                raise Disabled("instagram: no Facebook Page token in the keychain; run: social.py setup facebook")
+            return {"Authorization": f"Bearer {tok}"}
         return {"Authorization": f"Bearer {self.secret('access_token')}"}
 
     def whoami(self) -> dict:
+        if self.via_page:
+            uid = str(self.expected().get("user_id") or "")
+            if not uid:
+                raise SocialError("instagram: no Instagram account id pinned; run: social.py setup facebook")
+            r = self.ok(self.http.request("GET", f"{self.api}/{uid}?fields=id,username", self._auth()), "account")
+            j = r.json() or {}
+            return {"user_id": str(j.get("id") or ""), "username": j.get("username"), "account_type": "BUSINESS"}
         r = self.ok(self.http.request("GET", f"{API}/me?fields=user_id,username,account_type", self._auth()), "me")
         j = r.json() or {}
         return {"user_id": str(j.get("user_id") or ""), "username": j.get("username"),
@@ -55,7 +70,10 @@ class Instagram(Adapter):
         return got
 
     def refresh(self) -> None:
-        """Renew the long-lived token (allowed once it is 24 hours old and before it expires)."""
+        """Renew the long-lived token (allowed once it is 24 hours old and before it expires). Through the Page there is
+        nothing to renew: a Page token made from a long-lived user token does not expire."""
+        if self.via_page:
+            return
         r = self.ok(self.http.request("GET", f"{API}/refresh_access_token?grant_type=ig_refresh_token", self._auth()),
                     "token refresh")
         new = (r.json() or {}).get("access_token")
@@ -64,7 +82,7 @@ class Instagram(Adapter):
         sysutil.keychain_set("instagram", "access_token", new)
 
     def _create(self, uid: str, params: dict) -> str:
-        r = self.ok(self.http.request("POST", f"{API}/{uid}/media", self._auth(), form=params), "create container")
+        r = self.ok(self.http.request("POST", f"{self.api}/{uid}/media", self._auth(), form=params), "create container")
         cid = (r.json() or {}).get("id")
         if not cid:
             raise SocialError("instagram: container answered without an id")
@@ -72,7 +90,7 @@ class Instagram(Adapter):
 
     def _wait(self, cid: str, tries: int, every: int) -> None:
         for _ in range(tries):
-            r = self.ok(self.http.request("GET", f"{API}/{cid}?fields=status_code,status", self._auth()),
+            r = self.ok(self.http.request("GET", f"{self.api}/{cid}?fields=status_code,status", self._auth()),
                         "container status")
             j = r.json() or {}
             st = j.get("status_code")
@@ -110,7 +128,7 @@ class Instagram(Adapter):
             else:
                 raise SocialError("instagram: nothing to post (no image and no Reel)")
             self.check_identity()  # again, right before it becomes public
-            r = self.http.request("POST", f"{API}/{uid}/media_publish", self._auth(), form={"creation_id": cid})
+            r = self.http.request("POST", f"{self.api}/{uid}/media_publish", self._auth(), form={"creation_id": cid})
             if r.status == 0 or r.status >= 500:
                 raise Ambiguous(f"instagram: publish answered {r.status}; the post may be live, check the account")
             self.ok(r, "publish")
@@ -123,7 +141,7 @@ class Instagram(Adapter):
         # From here the post is public. Nothing below may raise: a retry would post it twice.
         link = None
         try:
-            p = self.http.request("GET", f"{API}/{mid}?fields=permalink", self._auth())
+            p = self.http.request("GET", f"{self.api}/{mid}?fields=permalink", self._auth())
             link = (p.json() or {}).get("permalink") if p.status == 200 else None
         except Exception:
             pass

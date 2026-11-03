@@ -13,6 +13,7 @@ Usage:
 from __future__ import annotations
 
 import html
+import os
 import json
 import re
 from pathlib import Path
@@ -21,7 +22,9 @@ ROOT = Path(__file__).resolve().parent.parent
 SITE = ROOT / "site"
 OUT = SITE / "search-index.json"
 
-EXCLUDE_PREFIXES = ("blog/digest", "assets", "search")
+# /de/, /fr/, /pt-br/, /ja/ and /zh-cn/ are translations. /search/ is an English page with an English index, so a German
+# title would match nothing a reader types there; the trailing slash keeps /desk/ in the index.
+EXCLUDE_PREFIXES = ("blog/digest", "assets", "search", "de/", "fr/", "pt-br/", "ja/", "zh-cn/")
 NOINDEX_RE = re.compile(r'<meta[^>]+name=["\']robots["\'][^>]*noindex', re.I)
 TITLE_RE = re.compile(r"<title>(.*?)</title>", re.S)
 DESC_RE = re.compile(r'<meta\s+name="description"\s+content="([^"]*)"', re.S)
@@ -79,7 +82,11 @@ def main() -> int:
             "s": section_for(rel),
             "h": heads,
         })
-    OUT.write_text(json.dumps(entries, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    # Written to a per-process temp file and renamed, because test files running in parallel each regenerate it
+    # (netlify/tests/_generated.mjs) and must never read a half-written copy.
+    tmp = OUT.with_name(f".{OUT.name}.{os.getpid()}.tmp")
+    tmp.write_text(json.dumps(entries, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    os.replace(tmp, OUT)
     print(f"search index: {len(entries)} pages, {OUT.stat().st_size // 1024} KB")
     return 0
 

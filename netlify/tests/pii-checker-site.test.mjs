@@ -5,11 +5,13 @@
 //
 // Run with: node --test netlify/tests/pii-checker-site.test.mjs
 
+import "./_generated.mjs"; // builds search-index.json and llms-full.txt first
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, statSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { STAMP } from "./_stamp.mjs";
 
 const SITE = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "site");
 const read = (p) => readFileSync(join(SITE, p), "utf8");
@@ -205,7 +207,7 @@ test("share image and tool card images exist and are not empty", () => {
 });
 
 test("the page's local assets exist and carry a content hash", () => {
-  const refs = [...html.matchAll(/(?:src|href)="(\/tools\/pii-checker\/[^"?]+)\?v=([0-9a-f]{10})"/g)];
+  const refs = [...html.matchAll(new RegExp(`(?:src|href)="(/tools/pii-checker/[^"?]+)${STAMP}"`, "g"))];
   assert.equal(refs.length, 4);
   for (const m of refs) assert.ok(existsSync(join(SITE, m[1])), m[1]);
   assert.doesNotMatch(html, /\?v=0000000000/);

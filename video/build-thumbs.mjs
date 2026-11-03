@@ -40,7 +40,7 @@ function stage(src) {
   fs.copyFileSync(abs, path.join(pub, "img", name));
   return `img/${name}`;
 }
-const props = specs.map((s) => ({ ...s, img: stage(s.img), icon: stage(s.icon), icons: s.icons?.map(stage) }));
+const props = specs.map((s) => ({ ...s, img: stage(s.img), icon: stage(s.icon), lockup: stage(s.lockup), icons: s.icons?.map(stage) }));
 
 const OUT = path.resolve(ROOT, opt("out", path.join("out", "thumbs")));
 fs.mkdirSync(OUT, { recursive: true });

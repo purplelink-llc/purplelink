@@ -24,14 +24,14 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <script src="/theme.js?v=f0ab0f06a1"></script>
-    <link rel="stylesheet" href="/styles.css?v=f29b65c694">
-    <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
-    <link rel="stylesheet" href="/photography/hubs.css?v=4fcf94c42e">
-    <link rel="stylesheet" href="/photography/shop.css?v=4d9f10563e">
-    <script src="/site.js?v=b053086227" defer></script>
-    <script src="/motion.js?v=d35f4b4ee4" defer></script>
-    <script src="/photography/shop.js?v=760a97e18c" defer></script>
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/motion.css">
+    <link rel="stylesheet" href="/photography/hubs.css">
+    <link rel="stylesheet" href="/photography/shop.css">
+    <script src="/site.js" defer></script>
+    <script src="/motion.js" defer></script>
+    <script src="/photography/shop.js" defer></script>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -101,7 +101,7 @@
         <h2 id="cal-sets-h" class="visually-hidden">The seven calendars</h2>
         <div class="cal-grid">
 
-          <article class="cal-card">
+          <article class="cal-card" id="cal-iceland">
             <img src="/assets/photography/calendars/iceland-cover.jpg" alt="Cover of the 2027 Iceland calendar" width="800" height="618" loading="lazy" decoding="async">
             <div class="cal-card-body">
               <h3>Iceland</h3>
@@ -116,7 +116,7 @@
             </div>
           </article>
 
-          <article class="cal-card">
+          <article class="cal-card" id="cal-japan">
             <img src="/assets/photography/calendars/japan-cover.jpg" alt="Cover of the 2027 Japan calendar" width="800" height="618" loading="lazy" decoding="async">
             <div class="cal-card-body">
               <h3>Japan</h3>
@@ -131,7 +131,7 @@
             </div>
           </article>
 
-          <article class="cal-card">
+          <article class="cal-card" id="cal-switzerland">
             <img src="/assets/photography/calendars/switzerland-cover.jpg" alt="Cover of the 2027 Switzerland calendar" width="800" height="618" loading="lazy" decoding="async">
             <div class="cal-card-body">
               <h3>Switzerland</h3>
@@ -146,7 +146,7 @@
             </div>
           </article>
 
-          <article class="cal-card">
+          <article class="cal-card" id="cal-european-cities">
             <img src="/assets/photography/calendars/european-cities-cover.jpg" alt="Cover of the 2027 European cities calendar" width="800" height="618" loading="lazy" decoding="async">
             <div class="cal-card-body">
               <h3>European cities</h3>
@@ -161,7 +161,7 @@
             </div>
           </article>
 
-          <article class="cal-card">
+          <article class="cal-card" id="cal-arizona-desert">
             <img src="/assets/photography/calendars/arizona-desert-cover.jpg" alt="Cover of the 2027 Arizona desert calendar" width="800" height="618" loading="lazy" decoding="async">
             <div class="cal-card-body">
               <h3>Arizona desert</h3>
@@ -176,7 +176,7 @@
             </div>
           </article>
 
-          <article class="cal-card">
+          <article class="cal-card" id="cal-hawaii">
             <img src="/assets/photography/calendars/hawaii-cover.jpg" alt="Cover of the 2027 Hawaii calendar" width="800" height="618" loading="lazy" decoding="async">
             <div class="cal-card-body">
               <h3>Hawaii</h3>
@@ -191,7 +191,7 @@
             </div>
           </article>
 
-          <article class="cal-card">
+          <article class="cal-card" id="cal-best-of">
             <img src="/assets/photography/calendars/best-of-cover.jpg" alt="Cover of the 2027 Best of calendar" width="800" height="618" loading="lazy" decoding="async">
             <div class="cal-card-body">
               <h3>Best of</h3>
@@ -229,6 +229,7 @@
           </a>
           <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
           <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
         </div>
         <nav class="footer-col" aria-label="Products">
           <p class="footer-head">Products</p>

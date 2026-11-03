@@ -1,4 +1,8 @@
 #!/bin/bash
+# RETIRED 2026-10-28: every step had stopped doing anything (LinkedIn templates used up and against the
+# 2026-10-14 no-LinkedIn-automation decision, email and Bluesky without credentials, TeX.SE 0 candidates on every run),
+# and it ran daily because it never reached exit 0. launchd job llc.purplelink.outreach is unloaded; its plist is kept as
+# ~/Library/LaunchAgents/llc.purplelink.outreach.plist.retired-2026-10-28. outreach.py still works by hand.
 # Weekly outreach runner (Outreach/WEEKLY-PLAN.md), fired by launchd
 # llc.purplelink.outreach Tue/Wed/Thu 08:30. One successful pass per ISO week;
 # a failed pass (usually a LinkedIn browser hiccup) retries the next morning.

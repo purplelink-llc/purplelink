@@ -47,7 +47,8 @@
    "https://email.esm.psu.edu/pipermail/macosx-tex/2025-December/059165.html",
    "https://email.esm.psu.edu/pipermail/macosx-tex/2019-December/056853.html",
    "https://snorriheim.atlassian.net/wiki/spaces/TechnicalNotes/pages/528121857/Xelatex"
-  ]
+  ],
+  "short_utm_content": "howto-fontspec-requires-xetex-or-luatex-short"
  },
  {
   "slug": "howto-gaps-between-tiled-windows",
@@ -71,7 +72,8 @@
     "video_id": "2ptmnUyf-nk",
     "caption_id": "AUieDaYNnFt0_DZt8WqsnWJpxJFvWmk5wOdxE_BXOhU6F9au0-3IZuiv"
    }
-  }
+  },
+  "short_utm_content": "howto-gaps-between-tiled-windows-short"
  },
  {
   "slug": "howto-spotlight-not-finding-files-external-drive",
@@ -95,7 +97,8 @@
     "video_id": "NAN6uPThskU",
     "caption_id": "AUieDaYk3QqC8vW7UO1msSqKCmcdaGIblzmTFTjxQdEJNdt_x_TKccMS"
    }
-  }
+  },
+  "short_utm_content": "howto-spotlight-not-finding-files-external-drive-short"
  },
  {
   "slug": "howto-scanned-pdf-not-searchable",
@@ -123,7 +126,8 @@
   "instagram": {
    "ok": true
   },
-  "note": "Long video uploaded public by howto-publish.py. Thumbnail A was set and the A/B/C Test & Compare was started on 2026-10-24 after a rebuild. The Short was uploaded separately after the run stopped; its custom thumbnail had not reached the public image at last check."
+  "note": "Long video uploaded public by howto-publish.py. Thumbnail A was set and the A/B/C Test & Compare was started on 2026-10-24 after a rebuild. The Short was uploaded separately after the run stopped; its custom thumbnail had not reached the public image at last check.",
+  "short_utm_content": "howto-scanned-pdf-not-searchable-short"
  },
  {
   "slug": "howto-pdflatex-command-not-found-after-mactex",
@@ -149,7 +153,8 @@
   },
   "instagram": {
    "ok": true
-  }
+  },
+  "short_utm_content": "howto-pdflatex-command-not-found-after-mactex-short"
  },
  {
   "slug": "howto-mac-keyboard-no-click-sound",
@@ -176,7 +181,8 @@
   "instagram": {
    "ok": true
   },
-  "note": "Long video uploaded public by howto-publish.py; thumbnail A was set afterwards with yt-thumbnail.py (live); the A/B/C Test & Compare was not started. Short, captions, ledger and rotation done by hand."
+  "note": "Long video uploaded public by howto-publish.py; thumbnail A was set afterwards with yt-thumbnail.py (live); the A/B/C Test & Compare was not started. Short, captions, ledger and rotation done by hand.",
+  "short_utm_content": "howto-mac-keyboard-no-click-sound-short"
  },
  {
   "slug": "howto-battery-percentage-not-showing-menu-bar",
@@ -204,7 +210,8 @@
   },
   "instagram": {
    "ok": true
-  }
+  },
+  "short_utm_content": "howto-battery-percentage-not-showing-menu-bar-short"
  },
  {
   "slug": "howto-bibtex-from-doi-no-acceptable-resource",
@@ -232,6 +239,154 @@
   },
   "instagram": {
    "ok": true
+  },
+  "short_utm_content": "howto-bibtex-from-doi-no-acceptable-resource-short"
+ },
+ {
+  "slug": "howto-unicode-character-not-set-up-for-latex",
+  "app": "moderntex",
+  "date": "2026-10-29",
+  "title": "Unicode character (U+200B) not set up for use with LaTeX on Mac (remove the hidden character)",
+  "long_id": "ticLxRICj90",
+  "short_id": "Mk4dlSORdqU",
+  "link_arm": "B",
+  "link_utm_content": "howto-unicode-character-not-set-up-for-latex",
+  "short_utm_content": "howto-unicode-character-not-set-up-for-latex-short",
+  "sources": [
+   "https://forum.posit.co/t/r-markdown-r-latex-error-unicode-character-u-200b-not-set-up-for-use-with-latex/177596",
+   "https://www.texifier.com/docs/apps/typesetting/further-topics/bad-unicode-characters"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "ticLxRICj90",
+    "caption_id": "AUieDaZ9wd7Hz501tGClovKzhvDxSYB_uJfGBjdfCLzHN9tmlEAmESGl"
+   },
+   "short": {
+    "video_id": "Mk4dlSORdqU",
+    "caption_id": "AUieDab3Q-ctgkyPtFpfHH6cH10S4WtZfHgIqk7l1jxSmf4WbhWtMHbM"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-unicode-character-not-set-up-for-latex-reel"
+  }
+ },
+ {
+  "slug": "howto-author-name-in-pdf-properties-double-blind",
+  "app": "paper-review",
+  "date": "2026-10-30",
+  "title": "Your name in the PDF Author field on Mac (hide it for double-blind review in LaTeX)",
+  "long_id": "tVAoA_afgls",
+  "short_id": "1MiQNOcVxC4",
+  "link_arm": "A",
+  "link_utm_content": "howto-author-name-in-pdf-properties-double-blind",
+  "short_utm_content": "howto-author-name-in-pdf-properties-double-blind-short",
+  "sources": [
+   "https://www.conftool.net/ctforum/index.php/topic,152.0.html",
+   "https://www.openlibhums.org/site/anonreview/",
+   "https://journals.ed.ac.uk/lithicstudies/about/submissions/blindreview"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "tVAoA_afgls",
+    "caption_id": "AUieDaZPp_BM1JbrDkc1Syld62nZBgldcWGGAvao4glpq9JVABVryZkP"
+   },
+   "short": {
+    "video_id": "1MiQNOcVxC4",
+    "caption_id": "AUieDabGPqVh66AHTEHDr5oTr2zdj5H-600-6DD2d_G2mUu2Vy1ln6OU"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-author-name-in-pdf-properties-double-blind-reel"
+  }
+ },
+ {
+  "slug": "howto-check-if-paper-retracted-doi",
+  "app": "scholar-utility-belt",
+  "date": "2026-10-31",
+  "title": "Retracted paper not marked in Google Scholar on Mac (check the DOI in Terminal)",
+  "long_id": "_AMeBjgwf4w",
+  "short_id": "a9TkdGB9bog",
+  "link_arm": "B",
+  "link_utm_content": "howto-check-if-paper-retracted-doi",
+  "short_utm_content": "howto-check-if-paper-retracted-doi-short",
+  "sources": [
+   "https://libanswers.southernct.edu/faq/366082",
+   "https://community.crossref.org/t/deprecating-retraction-watch-annotations-in-the-labs-api/15884",
+   "https://mclibrary.duke.edu/news/identifying-retracted-journal-articles"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "_AMeBjgwf4w",
+    "caption_id": "AUieDaZ4jPmye3lfhm8KmO7kE-pWWmeo8Y5HQaPCgjKPg70Wh9m7OO4c"
+   },
+   "short": {
+    "video_id": "a9TkdGB9bog",
+    "caption_id": "AUieDaYLG-NfUS-feQQtZnZps6gdd4SVRgga2jyqU7kZTO7hVkWGgIU8"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-check-if-paper-retracted-doi-reel"
+  }
+ },
+ {
+  "slug": "howto-option-clash-for-package-hyperref",
+  "app": "moderntex",
+  "date": "2026-11-01",
+  "title": "Option clash for package hyperref on Mac (use \\hypersetup instead)",
+  "long_id": "48PnbsZGIcQ",
+  "short_id": "UelyAzVUPrk",
+  "link_arm": "B",
+  "link_utm_content": "howto-option-clash-for-package-hyperref",
+  "short_utm_content": "howto-option-clash-for-package-hyperref-short",
+  "sources": [
+   "https://github.com/jgm/pandoc/issues/6652",
+   "https://gist.github.com/csgordon/11ea047e60013b2a8afda50820b5623d"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "48PnbsZGIcQ",
+    "caption_id": "AUieDaYVrSkR24WkALuCYY1L6Ay6yY7VxOrL8yxkuV-HtSw7YgTuEJhY"
+   },
+   "short": {
+    "video_id": "UelyAzVUPrk",
+    "caption_id": "AUieDaZsz5fL-2S0qFb2HTtZF998Yy-3lSKyL1dJWesTvgR8a3nLGnHq"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-option-clash-for-package-hyperref-reel"
+  }
+ },
+ {
+  "slug": "howto-xcode-simulators-taking-up-space",
+  "app": "legroom",
+  "date": "2026-11-02",
+  "title": "CoreSimulator folder taking up space on Mac (delete old Xcode simulators)",
+  "long_id": "8_ijlb_hbS8",
+  "short_id": "i4TwA7ONRGU",
+  "link_arm": "A",
+  "link_utm_content": "howto-xcode-simulators-taking-up-space",
+  "short_utm_content": "howto-xcode-simulators-taking-up-space-short",
+  "sources": [
+   "https://developer.apple.com/forums/thread/773153",
+   "https://developer.apple.com/forums/thread/758703"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "8_ijlb_hbS8",
+    "caption_id": "AUieDaZWU97QxUMeCT38gfOjIJk_SPSVVvipHlol6FEio6Ft9JPLJ-K8"
+   },
+   "short": {
+    "video_id": "i4TwA7ONRGU",
+    "caption_id": "AUieDabPv51fb1Hi6i5KpF-RzaeWMEOKMyH4351vlQOXGB1oEd-gKE68"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-xcode-simulators-taking-up-space-reel"
   }
  }
 ]

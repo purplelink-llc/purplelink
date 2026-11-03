@@ -26,14 +26,15 @@ TOPIC_TAGS = [
     (r"privacy|tracking|on-device", "privacy"), (r"storage|disk|space", "macstorage"),
     (r"research|phd|academic|grant", "academiclife"), (r"keyboard|typing", "mechanicalkeyboard"),
 ]
-APP_TAGS = {"moderntex": "latex", "legroom": "macstorage", "outbound-veil": "dataprivacy", "panely": "windowmanagement",
+APP_TAGS = {"latex-errors": "latex", "paper-review": "academicwriting", "globepin": "travel",
+            "scholar-utility-belt": "googlescholar", "moderntex": "latex", "legroom": "macstorage", "outbound-veil": "dataprivacy", "panely": "windowmanagement",
             "summonly": "spotlight", "tapefolio": "transcription", "keyfeel": "typingsounds", "batterymeter": "macbattery",
             "vitae": "academiclife"}
 
 
 def app_tags_for_link(link: str) -> list[str]:
     """The app's own tag when the link is its product page (https://purplelink.llc/<app>/...)."""
-    m = re.match(r"https://(?:www\.)?purplelink\.llc/([a-z0-9-]+)/", link or "")
+    m = re.match(r"https://(?:www\.)?purplelink\.llc/(?:tools/)?([a-z0-9-]+)/", link or "")
     return [APP_TAGS[m.group(1)]] if m and m.group(1) in APP_TAGS else []
 
 

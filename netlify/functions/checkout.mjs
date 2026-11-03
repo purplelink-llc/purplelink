@@ -33,6 +33,7 @@
  *   STRIPE_SECRET_KEY (shared, sk_test_… or sk_live_…)
  */
 
+import { readAttrCookie, touchFromCookie } from "../lib/attr-cookie.mjs";
 import { MAX_SEATS, parseSeats, seatUnitCents } from "../lib/seats.mjs";
 import { BUNDLES, parseBundleParts, partsSentence } from "../lib/bundles.mjs";
 import { createHash } from "node:crypto";
@@ -128,6 +129,8 @@ const REFUND_TEXT = {
   "legroom": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's license key is no longer licensed for use.`,
   "keyfeel": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "tapefolio": `${REFUND_EMAIL} the full $29.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
+  "lenscrib": `${REFUND_EMAIL} the full $19.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
+  "aka": `${REFUND_EMAIL} the full $14.99 to the original payment method. You don't need to give a reason. A refunded purchase's license key is no longer licensed for use.`,
   "panely": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "summonly": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "app-suite": `${REFUND_EMAIL} the full amount you paid to the original payment method. You don't need to give a reason. A refunded Suite's download links stop working, and its ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely and Summonly license keys and its Vitae Plus key are no longer licensed for use.`,
@@ -197,6 +200,16 @@ const PRODUCT_CATALOG = {
   // Delivery is the session-gated DMG from the tapefolio-files Blobs store; see tapefolio-download.mjs.
   // Product page and success page: /tapefolio/ and /tapefolio/success/. See docs/products/tapefolio.md.
   "tapefolio":               { amount: 2999, name: "Tapefolio for macOS", successPath: "/tapefolio/success/" },
+  // Lenscrib for macOS: $19.99 one-time, priced inline (no Stripe Price to create), like Tapefolio. Sold on its own:
+  // not in the Mac Suite or the custom bundles. Delivery is the session-gated DMG from the lenscrib-files Blobs store;
+  // see lenscrib-download.mjs. Product page and success page: /lenscrib/ and /lenscrib/success/. See docs/products/lenscrib.md.
+  "lenscrib":                { amount: 1999, name: "Lenscrib for macOS", successPath: "/lenscrib/success/" },
+  // AKA for macOS: $14.99 one-time, priced inline (no Stripe Price to create), like Lenscrib. Licensed with the shared
+  // PurplelinkLicenseV1 scheme (AKA1 keys, netlify/lib/license.mjs). Sold on its own: not in the custom bundles, and not in the
+  // Mac Suite until the `inSuite` launch gate in license.mjs is flipped. Delivery is the session-gated DMG from the
+  // aka-files Blobs store; see aka-download.mjs. Product page and success page: /aka/ and /aka/success/.
+  // See docs/products/aka.md.
+  "aka":                { amount: 1499, name: "AKA for macOS", successPath: "/aka/success/" },
   // Panely (window manager) and Summonly (launcher and file search): $9.99 one-time each, priced inline like Keyfeel.
   // Delivery is the session-gated DMG from the panely-files / summonly-files Blobs stores. Pages: /panely/ and /summonly/.
   "panely":                { amount: 999, name: "Panely for macOS", successPath: "/panely/success/" },
@@ -296,6 +309,11 @@ const ATTR_FIELDS = { s: 60, m: 40, c: 80, r: 80, l: 120, d: 10, t: 60 };
 // the JSON would be a little over, so the landing path (the least useful field)
 // is shortened first, then the campaign, until it fits.
 const ATTR_MAX = 500;
+// True when a cleaned touch (JSON string from cleanTouch) names a real source: a campaign source, referrer or ad flag.
+function touchHasSource(json) {
+  if (!json) return false;
+  try { const t = JSON.parse(json); return !!(t.s || t.r || t.g); } catch { return false; }
+}
 function cleanTouch(t) {
   if (!t || typeof t !== "object") return null;
   const out = {};
@@ -348,11 +366,24 @@ export default async function handler(request) {
   // opaque string, validated server-side against referral_dict, not used
   // for anything here.
   const referralCode = typeof body?.ref === "string" ? body.ref.trim().slice(0, 32) : "";
-  const attrFirst = cleanTouch(body?.attr?.first);
+  let attrFirst = cleanTouch(body?.attr?.first);
   const attrLast = cleanTouch(body?.attr?.last);
+  // The pl_attr cookie (set by moderntex-download at trial download, see netlify/lib/attr-cookie.mjs) fills in what the
+  // page could not send: a browser that dropped its stored attribution before a buyer returned after the trial.
+  // Anything the page did send wins; the cookie only fills a first touch with no source, referrer or ad flag.
+  const cookieAttr = readAttrCookie(request);
+  if (cookieAttr && !touchHasSource(attrFirst)) attrFirst = cleanTouch(touchFromCookie(cookieAttr));
   // ModernTex Buy page opened from the app's expired-trial screen: trial day and utm_source, as metadata.
   const trialDay = product === "moderntex" ? cleanTrialDay(body?.td) : "";
   const appSource = product === "moderntex" ? cleanAppSource(body?.src) : "";
+  // Reddit ad signal: present only for ModernTex products; a click id is a short opaque token or dropped.
+  const isMtx = product === "moderntex" || product === "moderntex-seats";
+  const bodyRdt = !!body?.rdt && typeof body.rdt === "object" && !Array.isArray(body.rdt);
+  // No `rdt` in the body: fall back to the pl_attr cookie (a Reddit click id, or a first-touch channel of paid:reddit).
+  const cookieRdt = !bodyRdt && !!cookieAttr && (!!cookieAttr.rdt || cookieAttr.channel === "paid:reddit");
+  const redditAd = isMtx && (bodyRdt || cookieRdt);
+  const bodyClick = bodyRdt && typeof body.rdt.c === "string" && /^[\w.\-:=]{1,128}$/.test(body.rdt.c) ? body.rdt.c : "";
+  const redditClick = redditAd ? (bodyClick || (cookieAttr ? cookieAttr.rdt : "")) : "";
   // Photograph licenses need the photo; anything else ignores it.
   const photo = entry.photo && typeof body?.photo === "string" && PHOTO_RE.test(body.photo) ? body.photo : "";
   if (entry.photo && !photo) {
@@ -414,7 +445,7 @@ export default async function handler(request) {
   const managed = managedPaymentsOn(product, Netlify.env.get("STRIPE_MANAGED_PAYMENTS"));
   const timeBucket = Math.floor(Date.now() / IDEMPOTENCY_WINDOW_MS);
   const idempotencyKey = createHash("sha256")
-    .update(`v6:${managed ? "mp:" : ""}${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${trialDay}:${appSource}:${photo}:${seats}:${bundleParts.join("+")}`)
+    .update(`v6:${managed ? "mp:" : ""}${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${trialDay}:${appSource}:${redditAd ? "r" + redditClick : ""}:${photo}:${seats}:${bundleParts.join("+")}`)
     .digest("hex");
 
   // Attach the product key as Stripe metadata so the webhook can route
@@ -498,6 +529,12 @@ export default async function handler(request) {
   if (appSource) params["metadata[app_source]"] = appSource;
   if (attrFirst) params["metadata[attr_first]"] = attrFirst;
   if (attrLast) params["metadata[attr_last]"] = attrLast;
+  // ModernTex sale from a Reddit ad (the browser sends `rdt` only for that visitor and never under Do Not Track):
+  // the webhook reads these two to send Reddit's server-side Purchase event. See netlify/lib/reddit-capi.mjs.
+  if (redditAd) {
+    params["metadata[reddit_ad]"] = "1";
+    if (redditClick) params["metadata[reddit_click_id]"] = redditClick;
+  }
   if (mode === "subscription") {
     // Copy the product key onto the Subscription too, so customer.subscription.*
     // events and the dashboard can tell a Vitae Plus subscription from a digest one.

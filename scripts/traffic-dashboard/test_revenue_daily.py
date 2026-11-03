@@ -45,6 +45,25 @@ class Archive(unittest.TestCase):
         self.assertEqual(h["revenueDaily"]["2026-10-18"], {td.SRC_TIKTOK: {"received": 0, "estimated": 396},
                                                           "App Store": {"received": 120, "estimated": 0}})
 
+    def test_a_running_month_total_is_archived_once_not_on_every_day(self):
+        # AdMob gives month totals only; the running month's row is dated the day of the run. Archived day after day,
+        # each day kept the month-to-date total, so October's $1.36 summed to $7.73 in the archive (2026-10-29).
+        h = {}
+        for day, usd in (("2026-10-20", 0.2), ("2026-10-25", 1.30), ("2026-10-28", 1.36)):
+            rows = td.admob_month_rows({"globepin": {"monthly": {"2026-09": 0.45, "2026-10": usd}}},
+                                       dt.date.fromisoformat(day))
+            td.archive_revenue_daily(h, rows)
+        ads = {d: v[td.SRC_ADS]["estimated"] for d, v in h["revenueDaily"].items() if td.SRC_ADS in v}
+        self.assertEqual(ads, {"2026-09-30": 45, "2026-10-28": 136})
+
+    def test_month_total_rows_repair_days_already_archived(self):
+        h = {"revenueDaily": {d: {td.SRC_ADS: {"received": 0, "estimated": c}, "App Store": {"received": 100, "estimated": 0}}
+                              for d, c in (("2026-10-20", 20), ("2026-10-25", 130), ("2026-10-27", 136))}}
+        td.archive_revenue_daily(h, td.admob_month_rows({"globepin": {"monthly": {"2026-10": 1.36}}}, dt.date(2026, 10, 28)))
+        a = h["revenueDaily"]
+        self.assertEqual({d for d, v in a.items() if td.SRC_ADS in v}, {"2026-10-28"})
+        self.assertEqual(a["2026-10-20"], {"App Store": {"received": 100, "estimated": 0}})
+
     def test_csv(self):
         a = {"2026-10-19": {"Photo licensing": {"received": 200, "estimated": 0}, td.SRC_TIKTOK: {"received": 0, "estimated": 298}}}
         f = Path(TMP) / "revenue_daily.csv"

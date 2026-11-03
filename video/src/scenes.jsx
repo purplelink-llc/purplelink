@@ -1,7 +1,7 @@
 import React from "react";
 import { AbsoluteFill, Img, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { C, FONT_BODY, FONT_DISPLAY, brand, camOut, clamp01, reveal } from "./theme.js";
-import { CameraFrame, LogoTile, Mark, Row, Words } from "./parts.jsx";
+import { CameraFrame, Mark, Row, Words } from "./parts.jsx";
 import { Captions } from "./Captions.jsx";
 import { cueFrame } from "./timeline.js";
 
@@ -19,7 +19,7 @@ export function TitleScene({ sc, row, fmt }) {
   const bar = reveal(frame, 14, 40);
   return (
     <AbsoluteFill style={{ background: C.purple }}>
-      <Mark frame={frame} color={C.onPurple} x={box.x} y={box.y} size={fmt.type.mark} />
+      <Mark frame={frame} x={box.x} y={box.y + box.h - 77} />
       <div style={{ position: "absolute", left: box.x, top: box.y, width: box.w, height: box.h, display: "flex", flexDirection: "column", justifyContent: "center" }}>
         <div style={{ height: 8, width: 120 * bar, background: C.purpleLight, borderRadius: 4, marginBottom: 44 }} />
         <Words text={sc.text} frame={frame} start={row.leadFrames} size={fmt.type.hero} color={C.onPurple} weight={500} stagger={6} />
@@ -129,16 +129,12 @@ export function EndCardScene({ sc, row, fmt }) {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const { box } = fmt;
-  const logo = reveal(frame, 0, 26);
   const url = reveal(frame, 30, 26);
   const lines = sc.lines || [];
   return (
     <AbsoluteFill style={{ background: C.ink }}>
+      <Mark frame={frame} x={box.x} y={box.y + box.h - 77} />
       <div style={{ position: "absolute", left: box.x, top: box.y, width: box.w, height: box.h, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: fmt.vertical ? "flex-start" : "flex-start", gap: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 24, opacity: logo, transform: `translateY(${(1 - logo) * 22}px)`, fontFamily: FONT_BODY, fontWeight: 600, fontSize: fmt.type.body - 6, color: C.purpleLight }}>
-          <LogoTile size={104} />
-          <span>{brand.wordmark}</span>
-        </div>
         <div style={{ marginTop: 44 }}>
           <Words text={sc.text} frame={frame} start={8} size={fmt.type.hero + 24} color={C.onPurple} weight={500} />
         </div>

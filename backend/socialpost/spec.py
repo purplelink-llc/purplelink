@@ -1,7 +1,7 @@
 """Per-platform limits. Verified against primary docs on 2026-10-18; see docs/social-posting.md for sources."""
 from __future__ import annotations
 
-PLATFORMS = ("linkedin", "bluesky", "threads", "mastodon", "x", "instagram")
+PLATFORMS = ("linkedin", "bluesky", "threads", "mastodon", "x", "instagram", "facebook")
 IMAGE_EXT = {".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".gif": "image/gif", ".webp": "image/webp"}
 MB = 1024 * 1024
 URL_WEIGHT = 23  # X and Mastodon count every link as 23 characters
@@ -24,6 +24,11 @@ SPEC = {
     "instagram": {"text": 2200, "count": "chars", "images": 1, "image_bytes": 8 * MB,
                   "formats": (".jpg", ".jpeg"), "alt": 1000, "document": False, "hashtags": 5},
 }
+
+# The Purplelink LLC Facebook Page (created 2026-10-28), through the Pages API with a Page token. A post is text with
+# its link (Facebook draws the preview) or one photo with the text as its caption.
+SPEC["facebook"] = {"text": 5000, "count": "chars", "images": 1, "image_bytes": 8 * MB,
+                    "formats": (".png", ".jpg", ".jpeg"), "alt": 1000, "document": False}
 
 # Reels through the API: MP4 (H.264, AAC), 3 seconds to 15 minutes, 9:16 recommended. This pipeline keeps a Reel to
 # 3 minutes (Instagram's in-app Reel length) and re-encodes every file to 1080x1920 so the container never fails on

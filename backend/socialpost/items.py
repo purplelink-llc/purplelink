@@ -20,7 +20,9 @@ from .text import link_errors, text_limit_errors, utm_link
 # daily/vet.py. X is not covered. Only socialpost.daily writes the approval, and only for an item it built with
 # `source: social-daily`.
 STANDING_BY = "ben (standing, 2026-10-18)"
-STANDING_PLATFORMS = ("linkedin", "bluesky", "threads", "mastodon")
+# The Purplelink LLC Facebook Page joined on 2026-10-28, when Ben had the Page created: "you can have a facebook page
+# for the company, drive it so it can also get out posts".
+STANDING_PLATFORMS = ("linkedin", "bluesky", "threads", "mastodon", "facebook")
 STANDING_SOURCE = "social-daily"
 
 # Ben's second standing approval (2026-10-23): every video on the Purplelink YouTube channel also goes to the Purplelink
@@ -28,10 +30,19 @@ STANDING_SOURCE = "social-daily"
 # feed post with a branded image. Only socialpost.instagram writes it, only for the items it built, only for Instagram.
 # Never RubbleFront's account (the adapter refuses it by name as well as by the pinned identity).
 IG_STANDING_BY = "ben (standing, 2026-10-23)"
-IG_STANDING_PLATFORMS = ("instagram",)
+# Facebook stays in this tuple only so Reels approved under this label before 2026-11-01 still post; new Facebook
+# Reels carry the Page approval below.
+IG_STANDING_PLATFORMS = ("instagram", "facebook")
 IG_STANDING_SOURCES = ("instagram-reel", "instagram-companion")
+# The Facebook Page approval (2026-10-28): "back fill my instagram and facebook reels with our youtube shorts". Ben
+# confirmed on 2026-11-01 that a Facebook Reel of every Purplelink YouTube video falls under it. Reels only.
+FB_STANDING_BY = "ben (standing, 2026-10-28)"
+FB_STANDING_PLATFORMS = ("facebook",)
+FB_STANDING_SOURCES = ("instagram-reel",)
 STANDING = {STANDING_BY: (STANDING_PLATFORMS, (STANDING_SOURCE,)),
-            IG_STANDING_BY: (IG_STANDING_PLATFORMS, IG_STANDING_SOURCES)}
+            IG_STANDING_BY: (IG_STANDING_PLATFORMS, IG_STANDING_SOURCES),
+            FB_STANDING_BY: (FB_STANDING_PLATFORMS, FB_STANDING_SOURCES)}
+FB_REEL_MAX_S = 90.0   # Facebook Reels through the API: 3 to 90 seconds
 HASHTAG_RE = re.compile(r"(?<![\w&])#\w+")
 
 STATUSES = ("draft", "approved", "posted", "failed", "cancelled", "stale")
@@ -111,10 +122,16 @@ class Item:
             return text.replace("{link}", "").strip()
         if not self.link:
             return text
-        url = utm_link(self.link, platform, self.campaign)
+        url = utm_link(self.link, platform, self.campaign, self.utm_content(platform))
         if "{link}" in text:
             return text.replace("{link}", url)
         return f"{text}\n\n{url}" if text else url
+
+    def utm_content(self, platform: str) -> str:
+        """This post's own tag on `platform` (utm_contents, made by the marketing hub before approval); a Reel's older
+        single `utm_content` field still counts for Instagram."""
+        tags = self.meta.get("utm_contents") or {}
+        return str(tags.get(platform) or (self.meta.get("utm_content") if platform == "instagram" else "") or "")
 
     # -- approval
     def content_hash(self) -> str:
@@ -136,6 +153,8 @@ class Item:
             h.update(json.dumps(d, sort_keys=True).encode())
             h.update(hashlib.sha256(f.read_bytes()).digest() if f.is_file() else b"missing")
         h.update(str(self.meta.get("scheduled_at")).encode())
+        if self.meta.get("utm_contents"):   # only when set, so items approved before tags existed stay valid
+            h.update(json.dumps(self.meta["utm_contents"], sort_keys=True).encode())
         return h.hexdigest()
 
     def approval_valid(self) -> tuple[bool, str]:
@@ -220,8 +239,12 @@ def validate(item: Item, cfg: dict) -> tuple[list[str], list[str]]:
             errors += _image_errors(p, im, item)
         if p == "instagram":
             errors += _instagram_errors(item, imgs)
-    if item.video() and item.platforms != ["instagram"]:
-        errors.append("video (a Reel) is Instagram only; put it in an item whose only platform is instagram")
+        if p == "facebook" and item.video():
+            errors += _video_errors(item, "facebook", FB_REEL_MAX_S)
+            if imgs:
+                errors.append("facebook: a post is either one image or one Reel, not both")
+    if item.video() and item.platforms not in (["instagram"], ["facebook"]):
+        errors.append("video (a Reel) needs an item whose only platform is instagram or facebook")
     d = item.document()
     if d:
         f = _resolve(d.get("path", ""), item.path.parent)
@@ -249,29 +272,40 @@ def _instagram_errors(item: Item, imgs: list[dict]) -> list[str]:
     if not v and not imgs:
         out.append("instagram: needs one image or a Reel (Instagram has no text-only post)")
     if v:
-        f = _resolve(v.get("path", ""), item.path.parent)
-        tag = f"instagram: video {v.get('path')!r}"
-        if f.suffix.lower() != ".mp4" or not f.is_file():
-            out.append(f"{tag} must be an existing .mp4")
-        else:
-            if f.stat().st_size > REEL["max_bytes"]:
-                out.append(f"{tag} is over {REEL['max_bytes'] // MB} MB")
-            if f.open("rb").read(12)[4:8] != b"ftyp":
-                out.append(f"{tag} is not really an MP4 file")
-        try:
-            dur = float(v.get("duration") or 0)
-        except (TypeError, ValueError):
-            dur = 0.0
-        if not REEL["min_s"] <= dur <= REEL["max_s"]:
-            out.append(f"{tag} is {dur:.1f} s; a Reel here is {REEL['min_s']:.0f} to {REEL['max_s']:.0f} s")
-        if (v.get("width"), v.get("height")) != (REEL["width"], REEL["height"]):
-            out.append(f"{tag} is {v.get('width')}x{v.get('height')}, not {REEL['width']}x{REEL['height']} (9:16)")
-        if not str(v.get("alt") or "").strip():
-            out.append(f"{tag} has no description (kept as the Reel's alt text record; the API takes none)")
-        if v.get("cover"):
-            c = _resolve(v["cover"], item.path.parent)
-            if c.suffix.lower() not in (".jpg", ".jpeg") or not c.is_file():
-                out.append(f"instagram: cover {v['cover']!r} must be an existing JPEG")
+        out += _video_errors(item, "instagram")
+    return out
+
+
+def _video_errors(item: Item, platform: str, max_s: float | None = None) -> list[str]:
+    """A Reel's file and shape: MP4, size, 3 s to the platform's maximum, 1080x1920, a description, an optional JPEG
+    cover."""
+    from .spec import REEL
+    max_s = max_s or REEL["max_s"]
+    v = item.video()
+    out: list[str] = []
+    f = _resolve(v.get("path", ""), item.path.parent)
+    tag = f"{platform}: video {v.get('path')!r}"
+    if f.suffix.lower() != ".mp4" or not f.is_file():
+        out.append(f"{tag} must be an existing .mp4")
+    else:
+        if f.stat().st_size > REEL["max_bytes"]:
+            out.append(f"{tag} is over {REEL['max_bytes'] // MB} MB")
+        if f.open("rb").read(12)[4:8] != b"ftyp":
+            out.append(f"{tag} is not really an MP4 file")
+    try:
+        dur = float(v.get("duration") or 0)
+    except (TypeError, ValueError):
+        dur = 0.0
+    if not REEL["min_s"] <= dur <= max_s:
+        out.append(f"{tag} is {dur:.1f} s; a Reel here is {REEL['min_s']:.0f} to {max_s:.0f} s")
+    if (v.get("width"), v.get("height")) != (REEL["width"], REEL["height"]):
+        out.append(f"{tag} is {v.get('width')}x{v.get('height')}, not {REEL['width']}x{REEL['height']} (9:16)")
+    if not str(v.get("alt") or "").strip():
+        out.append(f"{tag} has no description (kept as the Reel's alt text record; the API takes none)")
+    if v.get("cover"):
+        c = _resolve(v["cover"], item.path.parent)
+        if c.suffix.lower() not in (".jpg", ".jpeg") or not c.is_file():
+            out.append(f"{platform}: cover {v['cover']!r} must be an existing JPEG")
     return out
 
 
@@ -398,8 +432,14 @@ def approve_standing(item: Item, cfg: dict) -> None:
 
 def approve_instagram_standing(item: Item, cfg: dict) -> None:
     """Approve an Instagram item under Ben's 2026-10-23 standing approval: Instagram only, and only items built by
-    socialpost.instagram (a Reel of a Purplelink YouTube video, or the companion of a posted LinkedIn company post)."""
-    bad = [p for p in item.platforms if p not in IG_STANDING_PLATFORMS]
+    socialpost.instagram (a Reel of a Purplelink YouTube video, or the companion of a posted LinkedIn company post).
+    A Facebook-only Reel gets the 2026-10-28 Facebook Page approval instead."""
+    if item.platforms == ["facebook"]:
+        if item.meta.get("source") not in FB_STANDING_SOURCES:
+            raise ValueError("the Facebook Page standing approval only covers Reels built by socialpost.instagram")
+        approve(item, cfg, FB_STANDING_BY)
+        return
+    bad = [p for p in item.platforms if p not in ("instagram",)]
     if bad:
         raise ValueError(f"the Instagram standing approval does not cover {', '.join(bad)}")
     if item.meta.get("source") not in IG_STANDING_SOURCES:

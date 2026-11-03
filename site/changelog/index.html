@@ -24,11 +24,11 @@
     <link rel="manifest" href="/manifest.json">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <script src="/theme.js?v=f0ab0f06a1"></script>
-    <link rel="stylesheet" href="/styles.css?v=f29b65c694">
-    <link rel="stylesheet" href="/motion.css?v=2cd9cf1f62">
-    <script src="/site.js?v=b053086227" defer></script>
-    <script src="/motion.js?v=d35f4b4ee4" defer></script>
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/motion.css">
+    <script src="/site.js" defer></script>
+    <script src="/motion.js" defer></script>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -67,6 +67,78 @@
 
     <div class="changelog-layout">
     <div class="changelog-list">
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 31, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
+          <h2>Buddy 0.10.1</h2>
+          <p>Auto and Continue now stop typing the moment the Claude app leaves the front or the Mac locks, even partway through the word. Before, those checks ran only before typing started, so switching apps mid-word could send the rest of "continue", and the Return, to the app you switched to. Buddy also presses Return only when the chat's message box holds exactly "continue": if you typed into that box while Buddy was typing, it used to send your text along with it, and now it leaves the box alone and tries again later. <a href="/buddy/">Buddy</a>.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 31, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
+          <h2>Legroom 1.10.0</h2>
+          <p>Developer leftovers lists three more kinds of space: AI models that tools such as Hugging Face, Ollama, LM Studio and Whisper downloaded; Android SDK system images and emulators; and build folders, one line per project your project scan rules cover. You tick what goes, and nothing in these lists is cleared by a rule or by Clean Now. Where your space went now uses the name macOS gives this space, System Data, and says what Legroom cannot measure even with Full Disk Access. The Space Map says what each item is and whether it comes back by itself, and Legroom is now available in German, Japanese and Simplified Chinese, in beta. <a href="/legroom/">Legroom</a>.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 31, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
+          <h2>GlobePin 1.5.1</h2>
+          <p>Your places now sync through your own iCloud account even when iCloud Drive is turned off. Settings &gt; About says where your data is kept. On place pages the Apple Maps credit no longer sits under the place name, and on Travel Reels the distance now reads &ldquo;miles between stops&rdquo;, with the Reel card at the top of the Cards tab. <a href="https://apps.apple.com/us/app/globepin/id6762313540">GlobePin on the App Store</a>.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 31, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
+          <h2>Tapefolio 1.2.1</h2>
+          <p>Fixes a crash when opening or finishing a transcript in the direct download. Versions 1.1.0 to 1.2.0 looked for their name-detection files in the wrong place inside the app, so they could quit as soon as they read a transcript. Nothing else changes, and transcripts, recordings and settings are untouched. <a href="/tapefolio/">Tapefolio</a> offers the update on its own.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 30, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
+          <h2>ModernTex 2.0.3</h2>
+          <p>New from Template and the equation editor no longer crash. ModernTex looked for its bundled templates and equation editor files in the wrong place inside the app, so opening either one quit the app on most Macs. Both open normally again. <a href="/moderntex/">ModernTex</a> offers the update on its own.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 30, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
+          <h2>ModernTex 2.0.2</h2>
+          <p>In Review mode the PDF pane can now be dragged to any split, including an even one, and keeps the width you choose. The divider used to stop at a fixed width, so on a wide display the PDF could not reach half the window. <a href="/moderntex/">ModernTex</a></p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 29, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
+          <h2>GlobePin 1.5</h2>
+          <p>The 3D globe spins and zooms smoothly, even with a big map. A new Feedback section in Settings lets you email ideas, bugs or questions straight to the developer, and you can rate GlobePin on the App Store from Settings. <a href="https://apps.apple.com/us/app/globepin/id6762313540">GlobePin on the App Store</a>.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 28, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
+          <h2>Legroom 1.9.0</h2>
+          <p>A new rule removes finished Git worktrees, such as the ones Claude Code leaves in a project's .claude/worktrees folder. Legroom offers a worktree only when its work is on the main branch, every commit is pushed, nothing in it is uncommitted or in use, and nothing in it has changed for the idle time you set. It removes each one with git's own worktree remove command, so the branch stays and the worktree can be added back. The Space Map also builds about three times faster on folders with many files. <a href="/legroom/">Legroom</a>.</p>
+        </div>
+      </div>
 
       <div class="changelog-entry">
         <span class="changelog-date">October 28, 2026</span>
@@ -146,6 +218,15 @@
           <span class="changelog-tag tag-update">Update</span>
           <h2>Buddy 0.10.0</h2>
           <p>Auto and Continue now could open the Claude app's file picker instead of typing "continue". When another app had left a synthetic Command key held down, every key Buddy typed was sent as a shortcut, so "continue" became Cmd-C, Cmd-O, Cmd-N and so on, and Cmd-U opened the file picker. Buddy now sends each key with exactly the modifiers it means, releases a stuck modifier first, and stops if the first letter doesn't show up; "sent" now means the chat itself reported the new message, and the Send fallback presses the chat's own Send button. Buddy also types with the Claude app in front again, and only after the app reports that chat's own message box as focused, because typing in the background (0.9.0) couldn't control which box got the keys: with two chats side by side, "continue" could land in the other one. It finds a chat's box from the chat's own title and still puts you back in the app you were using. Settings opens shorter, at 460 × 560, can be resized to any size, and remembers its size and place. <a href="/buddy/">Buddy</a>.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 26, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
+          <h2>GlobePin 1.4</h2>
+          <p>Lock Screen widgets show your country count, your last trip and what you were doing on this day. Rebuild from Photos now suggests how you got between places (flights, drives and trains, out from home and back); you can change or skip any of them before adding, and your miles flown and routes fill in. The map is now ad-free for everyone, and GlobePin no longer asks to track you: the ads in the free version are never personalized. GlobePin Pro is now $9.99, still one purchase with no subscription, and you can share it with your family. <a href="https://apps.apple.com/us/app/globepin/id6762313540">GlobePin on the App Store</a>.</p>
         </div>
       </div>
 
@@ -281,6 +362,15 @@
           <span class="changelog-tag tag-update">Update</span>
           <h2>BatteryMeter 1.4.1</h2>
           <p>Menu items use consistent capitalization, the hour chart is hidden from VoiceOver because it only repeats the numbers beside it, and counts read correctly in the singular and plural. <a href="/batterymeter/">BatteryMeter</a>.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">October 24, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
+          <h2>GlobePin 1.3</h2>
+          <p><strong>Rebuild from Photos</strong> reads where and when your photos were taken (never the pictures), groups them into trips, and shows you each one to review before anything is added. Find it under + on the map or in Settings. It works out where you lived over the years, so ordinary weeks at home don&rsquo;t show up as trips and visits back to an old hometown do. Places already on your map, one-photo layovers, short drives near home and repeat visits to the same city start unchecked. City names roll up the way you&rsquo;d expect: Tokyo instead of Shinjuku, Copenhagen instead of K&oslash;benhavn K. <a href="https://apps.apple.com/us/app/globepin/id6762313540">GlobePin on the App Store</a>.</p>
         </div>
       </div>
 
@@ -1462,7 +1552,7 @@
         </a>
         <a class="changelog-app" href="/globepin/">
           <img src="/assets/globepin-icon.webp" alt="" width="48" height="48" loading="lazy">
-          <span><strong>GlobePin 1.2</strong><span>Travel map for iPhone · free</span></span>
+          <span><strong>GlobePin 1.5.1</strong><span>Travel map for iPhone · free</span></span>
         </a>
         <p class="changelog-aside-note">Updates arrive through each app's own update check. <a href="/products/">All products</a></p>
       </aside>
@@ -1477,6 +1567,7 @@
           </a>
           <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
           <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
         </div>
         <nav class="footer-col" aria-label="Products">
           <p class="footer-head">Products</p>
@@ -1547,6 +1638,6 @@
     </footer>
 
   <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
-      <script src="/analytics.js?v=e11921f8d6" defer></script>
+      <script src="/analytics.js" defer></script>
 </body>
 </html>

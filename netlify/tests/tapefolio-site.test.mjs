@@ -5,6 +5,7 @@
 //
 // Run with: node --test netlify/tests/tapefolio-site.test.mjs
 
+import "./_generated.mjs"; // builds search-index.json and llms-full.txt first
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
@@ -72,9 +73,9 @@ test("the page has every section the brief asks for", () => {
 test("LAUNCHED: launch.js ships live with valid facts, and the static page already says the live wording", () => {
   const src = read("tapefolio/launch.js");
   assert.match(src, /live: true,/);
-  assert.match(src, /version: "1\.2\.0",/);
+  assert.match(src, /version: "1\.2\.1",/);
   assert.match(src, /sizeMb: "44",/);
-  assert.match(src, /released: "2026-10-28"/);
+  assert.match(src, /released: "2026-10-31"/);
   const cfg = JSON.parse(src.match(/window\.TAPEFOLIO_LAUNCH = (\{[\s\S]*?\});/)[1].replace(/(\w+):/g, '"$1":'));
   assert.equal(cfg.live, true);
   assert.match(cfg.version, /^\d+\.\d+\.\d+$/);
@@ -91,14 +92,14 @@ test("LAUNCHED: launch.js ships live with valid facts, and the static page alrea
   assert.match(html, /id="checkout-btn" data-product="tapefolio"[^>]*>Buy Tapefolio<\/button>/);
   assert.doesNotMatch(html, /Not released yet|opens at release|are listed here when|data-tf-pre-only/);
   assert.doesNotMatch(html, /data-tf-live-only hidden/);
-  assert.match(html, /<span data-tf-facts>Version 1\.2\.0, released October 28, 2026\. 44 MB disk image\.<\/span>/);
+  assert.match(html, /<span data-tf-facts>Version 1\.2\.1, released October 31, 2026\. 44 MB disk image\.<\/span>/);
   assert.equal([...html.matchAll(/>Try it free for 7 days<\/a>/g)].length, 2);
   // What launch.js would write into the page is exactly what the static page already says.
-  assert.equal(`Version ${cfg.version}, released October 28, 2026. ${cfg.sizeMb} MB disk image.`, "Version 1.2.0, released October 28, 2026. 44 MB disk image.");
-  // The size is the published DMG's: 1.2.0 is 43,735,675 bytes, 44 MB to the nearest whole megabyte.
-  assert.equal(Math.round(43735675 / 1e6), Number(cfg.sizeMb));
+  assert.equal(`Version ${cfg.version}, released October 31, 2026. ${cfg.sizeMb} MB disk image.`, "Version 1.2.1, released October 31, 2026. 44 MB disk image.");
+  // The size is the published DMG's: 1.2.1 is 43,736,728 bytes, 44 MB to the nearest whole megabyte.
+  assert.equal(Math.round(43736728 / 1e6), Number(cfg.sizeMb));
   const llms = read("llms.txt");
-  assert.match(llms.slice(llms.indexOf("### Tapefolio")), /\*\*Status:\*\* Shipping, version 1\.2\.0/);
+  assert.match(llms.slice(llms.indexOf("### Tapefolio")), /\*\*Status:\*\* Shipping, version 1\.2\.1/);
   assert.doesNotMatch(llms, /Not yet released/);
   const log = read("changelog/index.html");
   assert.match(log, /<span class="changelog-date">October 20, 2026<\/span>\s*<div class="changelog-content">\s*<span class="changelog-tag tag-update">Update<\/span>\s*<h2>Tapefolio 1\.1\.0<\/h2>/);
@@ -260,7 +261,7 @@ test("every image on the page exists, has a size and alt text, and none is an in
     const html = read(p);
     for (const [tag, src] of [...html.matchAll(/<img\b[^>]*src="([^"]+)"[^>]*>/g)].map((m) => [m[0], m[1]])) {
       assert.ok(src.startsWith("/"), `${src} is not a local path`);
-      assert.ok(existsSync(join(SITE, src)), `${src} is missing`);
+      assert.ok(existsSync(join(SITE, src.split("?")[0])), `${src} is missing`);
       assert.match(tag, /\swidth="\d+"/);
       assert.match(tag, /\sheight="\d+"/);
       assert.match(tag, /\salt="[^"]*"/);
@@ -397,7 +398,7 @@ test("the Terms carry Tapefolio's own section: price, refund, two Macs, drafts, 
   assert.match(section, /does not anonymize a transcript/);
   assert.match(section, /Consent/);
   assert.match(section, /Liability cap for Tapefolio/);
-  assert.match(html, /the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely and Summonly Mac apps/);
+  assert.match(html, /the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Lenscrib, AKA, Panely and Summonly Mac apps/);
 });
 
 test("the Privacy page says what Tapefolio sends and does not send, and names its trial emails and recovery", () => {
@@ -405,7 +406,7 @@ test("the Privacy page says what Tapefolio sends and does not send, and names it
   assert.match(html, /<strong>Tapefolio<\/strong> has no account and no analytics/);
   assert.match(html, /does not upload your recordings, transcripts, images or key files/);
   assert.match(html, /Tapefolio trial emails<\/strong>/);
-  assert.match(html, /Keyfeel, Tapefolio, Panely, Summonly, Mac Suite and kit purchases/);
+  assert.match(html, /Keyfeel, Tapefolio, Lenscrib, AKA, Panely, Summonly, Mac Suite and kit purchases/);
 });
 
 // ---- the success page's script, against a fake DOM ---------------------------------------

@@ -139,6 +139,20 @@ def test_one_post_per_platform_per_day(denv):
     assert res["status"] == "queued" and res["platforms"] == ["threads", "mastodon"]
 
 
+
+def test_reels_and_instagram_companions_do_not_take_the_daily_slot(denv):
+    """A Facebook Reel or an Instagram post is its own stream: it must not stop the ranked daily post reaching that
+    platform (2026-10-29: three Facebook Reels a day kept the daily post off the Page entirely)."""
+    when = items.iso(TEN)
+    for source, plats in (("instagram-reel", ["facebook"]), ("instagram-companion", ["instagram"]),
+                          ("social-daily", ["linkedin"]), ("", ["bluesky"])):
+        it = items.create(f"used-{source or 'hand'}", plats, when=when, text="x")
+        it.meta.update(status="posted", source=source)
+        it.save()
+    used = pipeline.platforms_used_today(TEN.astimezone(dt.timezone(dt.timedelta(hours=-4))).date(),
+                                         "America/New_York")
+    assert used == {"linkedin", "bluesky"}
+
 def test_mastodon_is_in_the_daily_run_in_ben_voice(denv):
     res, _ = go(denv)
     t = res["texts"]["mastodon"]

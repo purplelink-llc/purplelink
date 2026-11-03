@@ -41,7 +41,7 @@ class BuddyPage(unittest.TestCase):
     def test_json_ld(self):
         app = [d for d in self.nodes if d.get("@type") == "SoftwareApplication"][0]
         self.assertEqual(float(app["offers"]["price"]), 0)
-        self.assertEqual(app["softwareVersion"], "0.10.0")
+        self.assertEqual(app["softwareVersion"], "0.10.1")
         self.assertEqual(app["operatingSystem"], "macOS 14.0 or later")
         self.assertEqual(app["downloadUrl"], ZIP)
         self.assertIn("BreadcrumbList", {d.get("@type") for d in self.nodes})
@@ -65,7 +65,7 @@ class BuddyPage(unittest.TestCase):
             self.assertIn(s, body)
 
     def test_images_exist(self):
-        srcs = re.findall(r'(?:src|srcset)="(/(?:buddy/img|assets)/[^"\s,]+)', self.text)
+        srcs = re.findall(r'(?:src|srcset)="(/(?:buddy/img|assets)/[^"\s,?]+)', self.text)
         self.assertTrue(srcs)
         for src in srcs:
             self.assertTrue((SITE / src.lstrip("/")).is_file(), src)

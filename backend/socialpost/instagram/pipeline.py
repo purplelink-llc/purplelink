@@ -26,7 +26,7 @@ from zoneinfo import ZoneInfo
 
 from .. import config as cfgmod
 from .. import items as itemsmod
-from .. import paths, sysutil
+from .. import hubtags, paths, sysutil
 from ..daily import vet as vetmod
 from ..items import Item, iso
 from ..text import utm_link
@@ -54,7 +54,7 @@ def read_state() -> dict:
         s = json.loads(state_file().read_text(encoding="utf-8"))
     except (OSError, ValueError):
         s = {}
-    for k, v in (("reels", {}), ("companions", {}), ("hashes", []), ("warned", []), ("log", [])):
+    for k, v in (("reels", {}), ("fb_reels", {}), ("companions", {}), ("hashes", []), ("warned", []), ("log", [])):
         s.setdefault(k, v)
     return s
 
@@ -90,9 +90,32 @@ def inbox() -> list[dict]:
     return out
 
 
+def hub_tag(link: str, asset: str, hub=None, channel: str = "instagram", campaign: str = "ig-reel",
+            preferred: str | None = None) -> str:
+    """A utm_content no other placement uses, from the marketing hub, for one Reel or post on `channel`. "" when the
+    link is not on purplelink.llc (a YouTube fallback is not tagged) or the hub is unavailable (the gate then rejects a
+    site link without a tag). `hub` lets tests pass a fake hub module."""
+    pref = f"{asset}-reel" if preferred is None and channel == "instagram" else (preferred or "")
+    try:
+        if hub is not None:
+            if not hub.site_path(link):
+                return ""
+            url = hub.make_utm(hub.paths(), link, asset, channel, source=channel, medium="social",
+                               campaign=campaign, content=pref)
+            m = re.search(r"utm_content=([\w.\-]+)", url)
+            return m.group(1) if m else ""
+        return hubtags.tag(link, asset, channel, campaign, preferred=pref)
+    except (Exception, SystemExit) as e:
+        sysutil.log(f"instagram: no hub tag for {link} ({type(e).__name__})")
+        return ""
+
+
 def reel_add(video: Path, youtube_id: str, title: str, description: str = "", link: str = "",
-             also: list[str] | None = None, run=subprocess.run, when: dt.datetime | None = None) -> dict:
-    """Make the Reel for one Purplelink YouTube video and put it in the inbox. Idempotent per YouTube id."""
+             also: list[str] | None = None, run=subprocess.run, when: dt.datetime | None = None,
+             utm_content: str = "", hub=None, backfill: str = "") -> dict:
+    """Make the Reel for one Purplelink YouTube video and put it in the inbox. Idempotent per YouTube id.
+    backfill: the video's YouTube publish date (YYYY-MM-DD) for an older video added later; such an entry never
+    expires from the queue and backfill entries go out oldest first, after any new video."""
     if not re.fullmatch(r"[\w-]{11}", youtube_id or ""):
         raise ValueError("--youtube-id must be an 11-character YouTube video id")
     d = reels_dir() / youtube_id
@@ -107,7 +130,9 @@ def reel_add(video: Path, youtube_id: str, title: str, description: str = "", li
                        run=run)
     entry = {"youtube_id": youtube_id, "also": [a for a in (also or []) if a], "title": cap.clean_title(title),
              "description": description, "link": link, "source": str(video),
-             "added": iso(when or dt.datetime.now(dt.timezone.utc)), **meta}
+             "added": iso(when or dt.datetime.now(dt.timezone.utc)),
+             "utm_content": utm_content or (hub_tag(link, youtube_id, hub) if link else ""),
+             **({"backfill": backfill} if backfill else {}), **meta}
     ent.write_text(json.dumps(entry, indent=1), encoding="utf-8")
     sysutil.log(f"instagram: Reel ready for {youtube_id} ({meta['duration']} s, framed={meta['framed']}, "
                 f"trimmed={meta['trimmed']})")
@@ -137,9 +162,27 @@ def reel_item(entry: dict, when_iso: str) -> Item:
         "experiment_note": "Instagram Reel of a Purplelink YouTube video; compared with the same video's YouTube views",
         "results": {}, "source": SOURCE_REEL,
         "instagram": {"kind": "reel", "youtube_id": ytid, "title": entry["title"]},
+        **({"utm_content": entry["utm_content"]} if entry.get("utm_content") else {}),
+        "utm_contents": {"instagram": entry.get("utm_content") or hub_tag(entry.get("link", ""), ytid)},
     }
     return Item(_item_path(iid), meta, {"instagram": text},
                 f"Built by socialpost.instagram from YouTube {ytid}; Reel {entry['duration']} s.")
+
+
+def fb_reel_item(entry: dict, when_iso: str) -> Item:
+    """The same Reel for the Purplelink LLC Facebook Page: the Instagram caption with the tagged link where Instagram
+    says "Link in bio." (Ben, 2026-10-28: "back fill my instagram and facebook reels with our youtube shorts")."""
+    ig = reel_item(entry, when_iso)
+    text = ig.sections["instagram"].replace(cap.BIO, "{link}")
+    iid = ig.id.replace("-ig-reel-", "-fb-reel-")
+    meta = dict(ig.meta, id=iid, platforms=["facebook"], campaign="fb-reel",
+                experiment_note="Facebook Reel of a Purplelink YouTube Short; compared with the same video's YouTube views")
+    meta["instagram"] = dict(meta["instagram"], kind="fb-reel")
+    meta.pop("utm_content", None)
+    meta["utm_contents"] = {"facebook": hub_tag(meta["link"], entry["youtube_id"], channel="facebook",
+                                                campaign="fb-reel", preferred=f"{entry['youtube_id']}-fb-reel")}
+    return Item(_item_path(iid), meta, {"facebook": text}, f"Built by socialpost.instagram from YouTube "
+                f"{entry['youtube_id']}; Facebook Reel {entry['duration']} s.")
 
 
 def companion_item(li: Item, card_path: Path, words: dict, when_iso: str) -> Item:
@@ -154,6 +197,9 @@ def companion_item(li: Item, card_path: Path, words: dict, when_iso: str) -> Ite
         "experiment_note": f"Instagram companion of LinkedIn post {li.id}",
         "results": {}, "source": SOURCE_COMPANION,
         "instagram": {"kind": "companion", "of": str(li.id), "title": words["title"]},
+        "utm_contents": {"instagram": hub_tag(li.link, str((li.meta.get("daily") or {}).get("candidate") or li.id)
+                                              .split(":", 1)[-1], channel="instagram",
+                                              campaign=li.campaign or "ig-companion", preferred="")},
     }
     return Item(_item_path(iid), meta, {"instagram": text}, f"Built by socialpost.instagram from {li.id}.")
 
@@ -175,11 +221,19 @@ def linkedin_posted(li: Item) -> dt.datetime | None:
 
 
 # ---------------------------------------------------------------- gate
+def tag_problems(item: Item) -> list[str]:
+    """Every post whose link is on purplelink.llc carries its own utm_content (the marketing hub's), so it can be
+    measured; the bio link for Instagram, the caption link for Facebook."""
+    return [f"utm: {p} has no utm_content for its purplelink.llc link (unmeasurable)" for p in item.platforms
+            if hubtags.on_site(item.link) and not item.utm_content(p)]
+
+
 def vet(item: Item, source: str, http, state: dict, today: dt.date, cfg: dict, s: dict,
         link_check: bool = True) -> list[str]:
     """Reasons the item may not go out; empty means it passes."""
     reasons: list[str] = []
-    text = item.render("instagram")
+    plat = item.platforms[0]
+    text = item.render(plat)
     body = itemsmod.HASHTAG_RE.sub(" ", text)
     for why in vetmod.voice_problems(text):
         reasons.append(f"voice: {why}")
@@ -193,10 +247,11 @@ def vet(item: Item, source: str, http, state: dict, today: dt.date, cfg: dict, s
         reasons.append(f"alt: {why}")
     errors, _ = itemsmod.validate(item, cfg)
     reasons += [f"limits: {e}" for e in errors]
+    reasons += tag_problems(item)
     h = vetmod.text_hash(body)
     for old in state["hashes"]:
         age = (today - dt.date.fromisoformat(old["date"])).days
-        if old["hash"] == h and age < s["dup_days"]:
+        if old["hash"] == h and old.get("platform", "instagram") == plat and age < s["dup_days"]:
             reasons.append(f"duplicate: the same caption went out {age} days ago")
     if link_check and item.link:
         reasons += [f"link: {why}" for why in vetmod.link_problems(http, item.link)]
@@ -204,11 +259,11 @@ def vet(item: Item, source: str, http, state: dict, today: dt.date, cfg: dict, s
 
 
 # ---------------------------------------------------------------- scheduling
-def ig_items_on(day: dt.date, cfg: dict) -> list[Item]:
+def ig_items_on(day: dt.date, cfg: dict, platform: str = "instagram") -> list[Item]:
     tz = ZoneInfo(cfg.get("timezone", "America/New_York"))
     out = []
     for it in itemsmod.list_items():
-        if "instagram" not in it.platforms or it.status not in ("approved", "posted"):
+        if platform not in it.platforms or it.status not in ("approved", "posted"):
             continue
         try:
             t = it.scheduled()
@@ -219,10 +274,12 @@ def ig_items_on(day: dt.date, cfg: dict) -> list[Item]:
     return out
 
 
-def next_slot(cfg: dict, s: dict, when: dt.datetime) -> dt.datetime | None:
-    """When the next Instagram post may go out today, or None when today's quota is used."""
+def next_slot(cfg: dict, s: dict, when: dt.datetime, platform: str = "instagram") -> dt.datetime | None:
+    """When the next post on `platform` may go out today, or None when today's quota is used. Facebook Reels count
+    against the Page's own quota; the daily ranked text post there is not counted."""
     today = local(cfg, when).date()
-    taken = ig_items_on(today, cfg)
+    taken = [it for it in ig_items_on(today, cfg, platform)
+             if platform == "instagram" or str(it.meta.get("source", "")).startswith("instagram")]
     if len(taken) >= s["max_per_day"]:
         return None
     t = when + dt.timedelta(minutes=2)
@@ -242,22 +299,28 @@ def pending(cfg: dict, when: dt.datetime, state: dict, s: dict) -> list[tuple[st
         if str(li.id) in state["companions"] or (when - t).days >= s["companion_days"]:
             continue
         work.append(("companion", li))
-    for e in inbox():
-        if e["youtube_id"] in state["reels"]:
-            continue
+    fb_on = cfgmod.platform_cfg(cfg, "facebook").get("enabled")
+    # new videos first (in the order they were added), then backfilled older ones (oldest YouTube date first)
+    for e in sorted(inbox(), key=lambda e: (bool(e.get("backfill")), e.get("backfill") or "",
+                                           "" if e.get("backfill") else e.get("added", ""))):
         try:
             age = (when - itemsmod.parse_time(e["added"])).days
         except (KeyError, ValueError):
             continue
-        if age < s["reel_days"]:
+        if age >= s["reel_days"] and not e.get("backfill"):
+            continue
+        if e["youtube_id"] not in state["reels"]:
             work.append(("reel", e))
+        if fb_on and e["youtube_id"] not in state["fb_reels"] and e.get("duration", 0) <= itemsmod.FB_REEL_MAX_S:
+            work.append(("fb_reel", e))
     return work
 
 
 def build(kind: str, obj, slot: dt.datetime, render_card=render.card) -> tuple[Item, str, str]:
     """(item, source text for the facts check, state key) for one piece of work."""
-    if kind == "reel":
-        return reel_item(obj, iso(slot)), f"{obj['title']} {obj.get('description', '')}", obj["youtube_id"]
+    if kind in ("reel", "fb_reel"):
+        make = reel_item if kind == "reel" else fb_reel_item
+        return make(obj, iso(slot)), f"{obj['title']} {obj.get('description', '')}", obj["youtube_id"]
     words = cap.card_words(obj.raw_text("linkedin"))
     card_path = ig_dir() / "cards" / f"{obj.id}.jpg"
     render_card(card_path, words["title"], words["kicker"], words["sub"], "", words["bg"])
@@ -280,11 +343,15 @@ def run(http, cfg: dict | None = None, when: dt.datetime | None = None, dry_run:
     state = read_state()
     today = local(cfg, when).date()
 
+    full: set[str] = set()
     for kind, obj in pending(cfg, when, state, s):
-        slot = next_slot(cfg, s, when) if not dry_run else when + dt.timedelta(minutes=2)
+        plat = "facebook" if kind == "fb_reel" else "instagram"
+        slot = next_slot(cfg, s, when, plat) if not dry_run else when + dt.timedelta(minutes=2)
         if slot is None:
-            say(f"instagram: today's {s['max_per_day']} posts are queued; the rest wait for tomorrow")
-            break
+            if plat not in full:
+                say(f"{plat}: today's {s['max_per_day']} posts are queued; the rest wait for tomorrow")
+                full.add(plat)
+            continue
         try:
             item, source, key = build(kind, obj, slot, render_card)
         except Exception as e:
@@ -310,12 +377,12 @@ def run(http, cfg: dict | None = None, when: dt.datetime | None = None, dry_run:
         item.save()
         itemsmod.approve_instagram_standing(item, cfg)
         state[f"{kind}s"][key] = item.id
-        state["hashes"].append({"date": today.isoformat(), "hash": vetmod.text_hash(
-            itemsmod.HASHTAG_RE.sub(" ", item.render("instagram")))})
+        state["hashes"].append({"date": today.isoformat(), "platform": plat, "hash": vetmod.text_hash(
+            itemsmod.HASHTAG_RE.sub(" ", item.render(plat)))})
         state["log"].append({"at": iso(when), "item": item.id, "queued_for": item.meta["scheduled_at"]})
         out["queued"].append(item.id)
         sysutil.log(f"instagram: queued {item.id} for {item.meta['scheduled_at']}; approved by standing approval "
-                    f"{itemsmod.IG_STANDING_BY}")
+                    f"{item.meta['approved_by']}")
     if not dry_run:
         write_state(state)
         sync_links(cfg, say)
@@ -332,7 +399,8 @@ def links(cfg: dict, n: int) -> list[dict]:
             continue
         ig = it.meta.get("instagram") or {}
         rows.append({"title": str(ig.get("title") or it.id)[:140], "kind": ig.get("kind", ""),
-                     "url": utm_link(it.link, "instagram", it.campaign), "date": str(r.get("posted_at", ""))[:10],
+                     "url": utm_link(it.link, "instagram", it.campaign, it.utm_content("instagram")),
+                     "date": str(r.get("posted_at", ""))[:10],
                      "at": str(r.get("posted_at", ""))})
     rows.sort(key=lambda x: x["at"], reverse=True)
     return [{k: v for k, v in r.items() if k != "at"} for r in rows[:n]]
@@ -436,5 +504,5 @@ def copy_preview(item: Item, out_dir: Path) -> list[Path]:
         shutil.copyfile(src, dst)
         got.append(dst)
     cap_file = out_dir / f"{item.id}-caption.txt"
-    cap_file.write_text(item.render("instagram") + "\n", encoding="utf-8")
+    cap_file.write_text(item.render(item.platforms[0]) + "\n", encoding="utf-8")
     return got + [cap_file]

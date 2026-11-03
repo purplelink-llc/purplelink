@@ -361,6 +361,8 @@
   const onMac = /Macintosh/.test(ua) && !/iPhone|iPad|iPod/.test(ua) && !(navigator.maxTouchPoints > 1);
   document.querySelectorAll('a[href*="moderntex-download?trial=1"]').forEach((a) => {
     a.addEventListener("click", (e) => {
+      // On a page with "Send to my Mac", site/send-to-mac.js handles a non-Mac visitor's click instead.
+      if (a.getAttribute("data-s2m-intercept") === "1") return;
       const scope = a.closest("section, .app-hero-copy") || document;
       const form = scope.querySelector("[data-trial-signup]") || forms[0];
       form.hidden = false;
@@ -929,6 +931,7 @@
     const path = location.pathname;
     if (/^\/checklist(\/|$)/.test(path) || /^\/blog\/digest(\/|$)/.test(path)) return;
     if (/(^|\/)(waitlist|success)(\/|\.html|$)/.test(path)) return;
+    if (document.body.hasAttribute("data-no-list-signup")) return;  // pages written for another audience
     const robots = document.querySelector('meta[name="robots"]');
     if (robots && /noindex/i.test(robots.getAttribute("content") || "")) return;
     if (signedUp()) return;

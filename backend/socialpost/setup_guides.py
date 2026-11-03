@@ -60,14 +60,18 @@ Instagram (official API with Instagram Login, graph.instagram.com). One-time set
 The account is @purplelink.llc (a Business account). Never RubbleFront's: both sit in the same Meta account, so check
 which profile Instagram is signed in as at every step. This tool refuses a token for any account named rubblefront.
 
-1. https://developers.facebook.com/apps  ->  Create app  ->  use case "Manage messaging & content on Instagram".
-   Make it a new app; leave the Threads app as it is. The app can stay in Development mode: an account that has a
-   role on the app can publish without App Review.
+1. Use the existing Instagram app (the one BallSim's accounts use, "Ball Bouncer Poster"; an Instagram Login token
+   belongs to one account, so purplelink.llc needs its own token from it). No new app is needed. The app can stay
+   in Development mode: an account that has a role on the app can publish without App Review.
 2. App dashboard -> Use cases -> Instagram API -> "API setup with Instagram login".
    Permissions: instagram_business_basic and instagram_business_content_publish (the others are not used).
 3. "Generate access tokens" -> Add account -> sign in to Instagram as purplelink.llc. If it asks you to accept a
    tester invite: Instagram app, signed in as purplelink.llc -> Settings -> Website permissions -> Apps and websites
    -> Tester invites -> Accept. Then press Generate token next to purplelink.llc and copy it (valid 60 days).
+   If Generate token keeps asking you to log in and never shows a token (it did in Safari and Chrome on 2026-10-28),
+   press Enter at the token prompt below instead: this tool then signs in through Instagram's own page (it needs the
+   Instagram app ID and secret from step 3 "Set up Instagram business login", and https://purplelink.llc/instagram/
+   added there as an OAuth redirect URI).
 4. Paste the token below and press Enter at the app secret prompt (the dashboard token is already long-lived).
    This tool shows which account it belongs to and pins it only if you type yes. run-due renews it at 30 days.
 5. Link in bio (only the Instagram app can set it): Edit profile -> Links -> Add external link ->
@@ -77,4 +81,17 @@ Images are served from https://purplelink.llc/social-media/ (JPEG). Reels are pu
 media.video.env_file in ~/.config/purplelink/social.json for the minutes Meta needs to fetch them, then deleted.
 """
 
-GUIDES = {"instagram": INSTAGRAM, "threads": THREADS, "mastodon": MASTODON, "x": X, "bluesky": BLUESKY}
+FACEBOOK = """\
+Facebook Page "Purplelink LLC" (created 2026-10-28), through the Pages API. Its Page token also publishes to Instagram
+@purplelink.llc, which is connected to the Page (Instagram's own web login loops for this account).
+
+1. https://developers.facebook.com/tools/explorer/  ->  Meta App: the app with "Manage everything on your Page" and the
+   Instagram use case (Ball Bouncer Poster; instagram_basic and instagram_content_publish were added 2026-10-28).
+2. User or Page: User Token. Permissions: pages_show_list, pages_read_engagement, pages_manage_posts,
+   business_management, instagram_basic, instagram_content_publish.
+3. Generate Access Token, approve as yourself, include the Purplelink LLC Page and @purplelink.llc, copy the token.
+4. Paste it below with the App ID, and the App secret (App settings -> Basic) so the token is made long-lived; the
+   Page token taken from it then does not expire. Type yes when it shows Purplelink LLC and @purplelink.llc.
+"""
+
+GUIDES = {"facebook": FACEBOOK, "instagram": INSTAGRAM, "threads": THREADS, "mastodon": MASTODON, "x": X, "bluesky": BLUESKY}

@@ -35,6 +35,7 @@ import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import { bundleHasPart } from "../lib/bundles.mjs";
 import { revocationFor, REVOKED_DETAIL } from "../lib/refunds.mjs";
+import { trialCookieFor } from "../lib/attr-cookie.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 const FILE_STORE = "moderntex-files";
@@ -191,7 +192,13 @@ export default async function handler(request) {
     await rl.set(key, String(n + 1));
     const name = await trialDmgName(store);
     if (!name) return json(404, { error: "no_trial", detail: "No trial build is available right now." });
-    return streamBlob(store, name, "application/x-apple-diskimage", `attachment; filename="${name}"`);
+    const res = await streamBlob(store, name, "application/x-apple-diskimage", `attachment; filename="${name}"`);
+    // Ad attribution that survives the trial: see netlify/lib/attr-cookie.mjs. Never allowed to break the download.
+    if (res.ok) {
+      const cookie = trialCookieFor(request, url);
+      if (cookie) { try { res.headers.append("Set-Cookie", cookie); } catch { /* the download still goes out */ } }
+    }
+    return res;
   }
 
   // --- Update channel (Sparkle) -------------------------------------------------
@@ -229,7 +236,7 @@ export default async function handler(request) {
   if (!/^cs_[A-Za-z0-9_]{10,200}$/.test(sessionId)) {
     return json(400, { error: "bad_session_id", detail: "Missing or malformed session_id." });
   }
-  const { error } = await loadSession(sessionId);
+  const { error, session } = await loadSession(sessionId);
   if (error) return error;
 
   const latest = await latestDmgName(store);
@@ -239,6 +246,8 @@ export default async function handler(request) {
     const version = latest.match(/\d+\.\d+\.\d+/)[0];
     return json(200, {
       product: PRODUCT_KEY,
+      // The success page reads this to tell the Reddit pixel about the sale (the page cannot read the pl_attr cookie).
+      reddit_ad: session.metadata?.reddit_ad === "1",
       files: [{
         key: latest,
         label: `ModernTex ${version} for macOS (disk image)`,

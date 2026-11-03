@@ -17,6 +17,7 @@
     "body": { "family": "Plus Jakarta Sans", "file": "../site/assets/fonts/plus-jakarta-sans-latin.woff2", "weight": "200 800" }
   },
   "logo": "../site/assets/purplelink-logo.png",
-  "wordmark": "Purplelink",
+  "lockup": "../site/assets/purplelink-lockup-light.png",
+  "wordmark": "../site/assets/purplelink-wordmark-dark.png",
   "fps": 30
 }

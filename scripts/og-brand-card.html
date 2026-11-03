@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow">
+<!-- The two generic brand cards (site/assets/og/brand.png, purplelink-card.png), built around the primary lockup.
+     Rendered by scripts/gen_og_cards.py --brand. Query: k (eyebrow), s (line), f (footer note). -->
+<style>
+  @font-face { font-family: 'Plus Jakarta Sans'; font-weight: 400 700; src: url('/site/assets/fonts/plus-jakarta-sans-latin.woff2') format('woff2'); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; background: #1a1124; }
+  .card { width: 1200px; height: 630px; position: relative; color: oklch(95% 0.01 310);
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif; display: grid; grid-template-columns: 430px 1fr;
+    align-items: center; gap: 70px; padding: 0 90px;
+    background:
+      radial-gradient(900px 520px at 88% -8%, oklch(42% 0.16 305 / .85), transparent 62%),
+      radial-gradient(700px 420px at -6% 112%, oklch(34% 0.12 305 / .75), transparent 60%),
+      oklch(19% 0.03 310); }
+  .lockup { width: 430px; }
+  .text { display: flex; flex-direction: column; gap: 26px; }
+  .eyebrow { font-size: 21px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: oklch(84% 0.12 310); }
+  .line { font-size: 38px; font-weight: 500; line-height: 1.28; color: oklch(93% 0.015 310); }
+  .bottom { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+  .url { font-size: 27px; font-weight: 600; color: oklch(82% 0.12 310); }
+  .foot { font-size: 21px; font-weight: 500; color: oklch(78% 0.03 300); }
+</style></head>
+<body><div class="card">
+  <img class="lockup" src="/site/assets/purplelink-lockup-dark.svg" alt="">
+  <div class="text">
+    <span class="eyebrow" id="k"></span>
+    <p class="line" id="s"></p>
+    <div class="bottom"><span class="url">purplelink.llc</span><span class="foot" id="f"></span></div>
+  </div>
+</div>
+<script>
+  const q = new URLSearchParams(location.search);
+  for (const id of ['k', 's', 'f']) document.getElementById(id).textContent = q.get(id) || '';
+</script></body></html>
