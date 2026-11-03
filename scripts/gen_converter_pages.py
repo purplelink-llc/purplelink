@@ -1709,7 +1709,15 @@ def main_html(p: dict) -> str:
 # trial back to the page: utm_content names the converter.
 SUBTITLES = ("tapefolio", "Tapefolio", "To make subtitles from an interview or meeting recording, ",
              ", our Mac app, transcribes it on your Mac and exports SRT and VTT. Free for 7 days.")
+NEE_IMAGES = ("nee", "Née", "To convert images in Finder instead, ",
+              ", our Mac app, converts the files you drag onto a ring at the pointer and saves each copy next to the "
+              "original. Free for 7 days.")
+NEE_ICONS = ("nee", "Née", "To make icons in Finder instead, ",
+             ", our Mac app, builds an .icns file, an Xcode icon set and web favicons from one image you drag onto a "
+             "ring at the pointer. Free for 7 days.")
 APP_LINKS = {
+    "heic-to-jpg": NEE_IMAGES, "webp-to-png": NEE_IMAGES, "avif-to-jpg": NEE_IMAGES, "png-to-jpg": NEE_IMAGES,
+    "tiff-to-jpg": NEE_IMAGES, "png-to-icns": NEE_ICONS, "png-to-ico": NEE_ICONS,
     "xlsx-to-latex": ("moderntex", "ModernTex", "To write the paper itself on a Mac, ",
                       " is our LaTeX editor, with a synced PDF preview and BibTeX autocomplete. Free for 7 days."),
     "jpg-to-pdf": ("moderntex", "ModernTex", "If you write papers or slides in LaTeX on a Mac, ",
@@ -1724,14 +1732,23 @@ APP_LINKS = {
 }
 
 
+def suite_html(p: dict) -> str:
+    """A line that convert-shell.js shows after the first file converts, naming the Mac Suite."""
+    href = (f"/suite/?utm_source=purplelink&amp;utm_medium=tool&amp;utm_campaign=suite-placement"
+            f"&amp;utm_content=converter-done-{p['slug']}")
+    return (f'      <p class="cv-app-link" id="cv-suite" hidden>Our nine Mac apps are also sold together in the '
+            f'<a href="{href}" data-track="offer_click" data-track-meta="suite">Mac Suite</a>, $59.99 once. Each has '
+            f'a free trial or a free version.</p>\n')
+
+
 def app_link_html(p: dict) -> str:
     if p["slug"] not in APP_LINKS:
-        return ""
+        return suite_html(p)
     app, name, before, after = APP_LINKS[p["slug"]]
     href = (f"/{app}/?utm_source=purplelink&amp;utm_medium=tool&amp;utm_campaign=converter-crosslink"
             f"&amp;utm_content={p['slug']}")
     return (f'      <p class="cv-app-link">{e(before)}<a href="{href}" data-track="offer_click" '
-            f'data-track-meta="{app}">{e(name)}</a>{e(after)}</p>\n')
+            f'data-track-meta="{app}">{e(name)}</a>{e(after)}</p>\n') + suite_html(p)
 
 
 PRIVACY = ("Files are read and converted in this tab, in a background worker. The only requests the page makes are for "

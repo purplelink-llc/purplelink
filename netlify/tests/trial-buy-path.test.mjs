@@ -165,7 +165,7 @@ test("the Suite sentence sits right under the ModernTex buy buttons and uses the
   assert.ok(sentence, "buy-suite paragraph present");
   assert.ok(html.indexOf('class="buy-suite"') > at && html.indexOf('class="buy-suite"') - at < 800, "directly under the buttons");
   assert.ok(sentence[1].includes(`${suitePrice} once`), `says ${suitePrice}`);
-  assert.ok(sentence[1].includes('href="/suite/"'));
+  assert.ok(sentence[1].includes('href="/suite/?utm_source=purplelink'));
 });
 
 test("the ModernTex success page and buy page name the Suite at the catalog price", () => {

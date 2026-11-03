@@ -516,6 +516,8 @@
   function syncBar() {
     var ok = items.filter(function (i) { return i.state === "done"; }).length;
     $("cv-all").hidden = ok < 2;
+    // The Mac Suite line appears once a file has converted, and stays until the page is reloaded.
+    if (ok && $("cv-suite")) $("cv-suite").hidden = false;
     if ($("cv-one")) $("cv-one").hidden = ok < 2 || running;
   }
 
