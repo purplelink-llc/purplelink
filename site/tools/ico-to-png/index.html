@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>ICO to PNG Converter That Runs in Your Browser | Purplelink</title>
+    <meta name="description" content="Get PNG images out of a favicon or Windows .ico icon in your browser: the largest size, or every size as a zip. Nothing is uploaded. Free.">
+    <link rel="canonical" href="https://purplelink.llc/tools/ico-to-png/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="ICO to PNG, converted in your browser">
+    <meta property="og:description" content="Get PNG images out of a favicon or Windows .ico icon in your browser: the largest size, or every size as a zip. Nothing is uploaded. Free.">
+    <meta property="og:url" content="https://purplelink.llc/tools/ico-to-png/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/tools-ico-to-png.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ICO to PNG, converted in your browser">
+    <meta name="twitter:description" content="Get PNG images out of a favicon or Windows .ico icon in your browser: the largest size, or every size as a zip. Nothing is uploaded. Free.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/tools-ico-to-png.jpg">
+    <meta name="twitter:image:alt" content="ICO to PNG, converted in your browser">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "ICO to PNG Converter",
+      "url": "https://purplelink.llc/tools/ico-to-png/",
+      "description": "Get PNG images out of a favicon or Windows .ico icon in your browser: the largest size, or every size as a zip. Nothing is uploaded. Free.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Any",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "featureList": [
+        "Extract PNG images from .ico favicons, Windows icons and .cur cursors",
+        "The largest size, or every size as a zip",
+        "PNG sizes copied out unchanged",
+        "1, 4, 8, 24 and 32-bit bitmap sizes decoded with their masks",
+        "Read in the browser; icons are never uploaded"
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "How to convert ICO to PNG",
+      "tool": [
+        {
+          "@type": "HowToTool",
+          "name": "A current web browser"
+        }
+      ],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Pick the sizes",
+          "text": "The largest size gives one PNG; Every size gives a zip with one PNG per size."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Add the icons",
+          "text": "Drop the .ico or .cur files on the box, click it to choose them, or paste one."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Check the row",
+          "text": "Each row shows the size saved, or how many, and notes any size that could not be read."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "name": "Download",
+          "text": "Download each PNG or zip from its row, or use Download all as .zip."
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Are my files uploaded?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The page reads each icon with your browser and converts it in a background worker in this tab. There is no server step. The meter under the drop zone counts the bytes the page and its worker send while they work, so you can check this yourself. The only things the page downloads are its own scripts."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I get a site's favicon?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Most sites serve it at /favicon.ico, so open https://example.com/favicon.ico in your browser and save it. Then drop the file here to get its sizes as PNG."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does my icon have several sizes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Windows picks the size that fits where the icon is shown, from 16 pixels in a list to 256 on a large desktop. Choose Every size to get them all, or The largest size for the sharpest one."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is transparency kept?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. PNG sizes keep their own transparency, and bitmap sizes get theirs from the icon's mask, applied the way Windows applies it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. There is no account, no watermark and no limit beyond the sizes above."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "https://purplelink.llc/tools/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "ICO to PNG",
+          "item": "https://purplelink.llc/tools/ico-to-png/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/motion.css">
+    <script src="/site.js" defer></script>
+    <script src="/motion.js" defer></script>
+    <script src="/assets/vendor/jszip/jszip.min.js" defer></script>
+    <link rel="stylesheet" href="/tools/convert/convert.css">
+    <link rel="prefetch" as="script" data-convert-worker href="/tools/convert/convert-worker.js">
+    <script src="/tools/convert/convert-core.js" defer></script>
+    <script src="/tools/convert/convert-shell.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">← All tools</a>
+      <div class="tools-hero">
+        <p class="eyebrow">Free web tool</p>
+        <h1>ICO to PNG</h1>
+        <p>Get the PNG images out of a favicon, a Windows icon or a cursor (.ico, .cur): the largest size, or every size in a zip, with transparency kept. The icon is read on your device. <strong>Nothing is uploaded.</strong></p>
+      </div>
+
+      <div class="tool-app cv-app" data-convert="ico-to-png">
+        <input id="cv-file" class="sr-only cv-file" type="file" multiple accept=".ico,.cur,image/x-icon,image/vnd.microsoft.icon">
+        <label class="cv-drop" id="cv-drop" for="cv-file">
+          <svg class="cv-drop-icon" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true" focusable="false"><rect x="6" y="9" width="36" height="30" rx="3" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M24 31V18m-6 6 6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="cv-drop-label"><strong>Drop ICO icons here</strong></span>
+          <span class="btn btn-primary cv-small cv-drop-button">Choose files</span>
+          <span class="cv-hint">ICO and CUR, up to 20 MB each. You can also paste a file with Ctrl or Cmd V.</span>
+        </label>
+        <fieldset class="cv-opts">
+          <legend>Options</legend>
+          <input type="hidden" data-opt="output" value="png">
+          <div class="cv-field"><span id="cv-icons-label">Sizes</span><span class="cv-choice" role="radiogroup" aria-labelledby="cv-icons-label"><label><input type="radio" name="cv-icons" data-opt="icons" value="largest" checked> The largest size</label><label><input type="radio" name="cv-icons" data-opt="icons" value="all"> Every size, as a zip</label></span></div>
+        </fieldset>
+        <p class="cv-net" id="cv-net"><span class="cv-net-dot" aria-hidden="true"></span><span id="cv-net-text">Bytes of your files sent anywhere: 0</span></p>
+        <p class="cv-status" id="cv-status" role="status" aria-live="polite"></p>
+        <ul class="cv-list" id="cv-list" aria-label="Files"></ul>
+        <div class="cv-bar" id="cv-bar" hidden>
+          <button type="button" class="btn btn-primary" id="cv-all" hidden>Download all as .zip</button>
+          <button type="button" class="btn btn-ghost" id="cv-clear">Clear</button>
+        </div>
+        <p class="tool-privacy">Files are read and converted in this tab, in a background worker. The only requests the page makes are for its own scripts. Your files are never sent anywhere.</p>
+      </div>
+
+      <section class="tool-prose cv-how" aria-labelledby="cv-how-h">
+        <h2 id="cv-how-h">How it works</h2>
+        <p>An .ico file holds the same picture at several sizes, often 16, 32, 48 and 256 pixels. Each size is either a PNG, copied out byte for byte, or a Windows bitmap, which the page decodes in a background worker.</p>
+        <p>Bitmap sizes carry a second, 1-bit image called the mask that marks the transparent pixels. The page applies it the way Windows does, including for 32-bit sizes whose own transparency is left empty, so icons that look right on Windows look right as PNG.</p>
+        <p>When one size is stored at several color depths, the deepest is kept. Every size can come out in one zip, named by its real width and height.</p>
+      </section>
+
+      <section class="tool-howto">
+        <h2>How to convert ICO to PNG</h2>
+        <ol>
+          <li><strong>Pick the sizes.</strong> The largest size gives one PNG; Every size gives a zip with one PNG per size.</li>
+          <li><strong>Add the icons.</strong> Drop the .ico or .cur files on the box, click it to choose them, or paste one.</li>
+          <li><strong>Check the row.</strong> Each row shows the size saved, or how many, and notes any size that could not be read.</li>
+          <li><strong>Download.</strong> Download each PNG or zip from its row, or use Download all as .zip.</li>
+        </ol>
+      </section>
+
+      <section class="tool-prose" aria-labelledby="cv-limits-h">
+        <h2 id="cv-limits-h">Limits</h2>
+        <ul class="cv-limits">
+          <li>Up to 20 MB an icon and 1024 by 1024 pixels a size.</li>
+          <li>16-bit and compressed bitmap sizes, which are rare, are left out, and the row says so.</li>
+          <li>A cursor&#x27;s hotspot is not kept in the PNG.</li>
+        </ul>
+      </section>
+
+      <section class="tool-faq">
+        <h2>Questions</h2>
+        <details><summary>Are my files uploaded?</summary><div class="faq-body">No. The page reads each icon with your browser and converts it in a background worker in this tab. There is no server step. The meter under the drop zone counts the bytes the page and its worker send while they work, so you can check this yourself. The only things the page downloads are its own scripts.</div></details>
+        <details><summary>How do I get a site&#x27;s favicon?</summary><div class="faq-body">Most sites serve it at /favicon.ico, so open https://example.com/favicon.ico in your browser and save it. Then drop the file here to get its sizes as PNG.</div></details>
+        <details><summary>Why does my icon have several sizes?</summary><div class="faq-body">Windows picks the size that fits where the icon is shown, from 16 pixels in a list to 256 on a large desktop. Choose Every size to get them all, or The largest size for the sharpest one.</div></details>
+        <details><summary>Is transparency kept?</summary><div class="faq-body">Yes. PNG sizes keep their own transparency, and bitmap sizes get theirs from the icon&#x27;s mask, applied the way Windows applies it.</div></details>
+        <details><summary>Is it free?</summary><div class="faq-body">Yes. There is no account, no watermark and no limit beyond the sizes above.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools">
+        <h2>More free tools</h2>
+        <ul>
+          <li><a href="/tools/png-to-ico/">PNG to ICO</a></li>
+          <li><a href="/tools/icns-to-png/">ICNS to PNG</a></li>
+          <li><a href="/tools/png-to-icns/">PNG to ICNS</a></li>
+          <li><a href="/tools/png-to-jpg/">PNG to JPG</a></li>
+          <li><a href="/tools/">All tools</a></li>
+        </ul>
+      </nav>
+
+      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a>. It helps keep these tools free and online.</p>
+    </main>
+
+
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/nee/">Née</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/suite/">Mac Suite</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+    <script src="/analytics.js" defer></script>
+  </body>
+</html>

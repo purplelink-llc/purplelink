@@ -35,17 +35,22 @@
     // A workbook's sheet XML unpacks to many times the file, and JSON.parse holds the whole tree, hence 50 MB.
     "xlsx-to-csv": { label: "XLSX", accepts: ["xlsx"], outputs: ["csv"], output: "csv", work: "unsheet", maxBytes: 50 * 1024 * 1024 },
     "json-to-csv": { label: "JSON", accepts: ["json"], outputs: ["csv", "xlsx"], output: "csv", work: "json", maxBytes: 50 * 1024 * 1024 },
-    "tiff-to-jpg": { label: "TIFF", accepts: ["tiff"], outputs: ["jpg", "png"], output: "jpg", work: "tiff", canvas: true, maxPixels: 40e6 }
+    "tiff-to-jpg": { label: "TIFF", accepts: ["tiff"], outputs: ["jpg", "png"], output: "jpg", work: "tiff", canvas: true, maxPixels: 40e6 },
+    "csv-to-json": { label: "CSV", accepts: ["csv"], outputs: ["json", "jsonl"], output: "json", work: "csvjson", maxBytes: 50 * 1024 * 1024 },
+    // No canvas flag: PNG entries are copied out, so the worker checks for OffscreenCanvas only when it must draw.
+    "icns-to-png": { label: "ICNS", accepts: ["icns"], outputs: ["png"], output: "png", work: "icns", maxBytes: 50 * 1024 * 1024 },
+    "ico-to-png": { label: "ICO", accepts: ["ico"], outputs: ["png"], output: "png", work: "ico", maxBytes: 20 * 1024 * 1024 }
   };
   // A PDF with more pages than this is refused rather than drawn for minutes.
   const MAX_PDF_PAGES = 500;
 
   const MIME = {
     jpg: "image/jpeg", png: "image/png", icns: "image/icns", ico: "image/x-icon", pdf: "application/pdf",
-    xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", zip: "application/zip", csv: "text/csv"
+    xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", zip: "application/zip", csv: "text/csv",
+    json: "application/json", jsonl: "application/x-ndjson"
   };
   const KIND_NAMES = { heic: "HEIC", avif: "AVIF", webp: "WebP", png: "PNG", jpeg: "JPEG", gif: "GIF", csv: "CSV", pdf: "PDF", bmp: "BMP", svg: "SVG",
-    xlsx: "XLSX", xls: "XLS", json: "JSON", tiff: "TIFF", bigtiff: "BigTIFF" };
+    xlsx: "XLSX", xls: "XLS", json: "JSON", tiff: "TIFF", bigtiff: "BigTIFF", icns: "ICNS", ico: "ICO" };
 
   function ascii(b, s, e) {
     let out = "";
@@ -80,6 +85,17 @@
       for (let i = 16; i + 4 <= end; i += 4) brands.push(ascii(b, i, i + 4));
       if (brands.some(function (x) { return AVIF_BRANDS.indexOf(x) !== -1; })) return "avif";
       if (brands.some(function (x) { return HEIF_BRANDS.indexOf(x) !== -1; })) return "heic";
+    }
+    // ICNS: the magic, a total of at least 16, and a first entry that fits inside it.
+    if (ascii(b, 0, 4) === "icns") {
+      const total = ((b[4] << 24) | (b[5] << 16) | (b[6] << 8) | b[7]) >>> 0, first = ((b[12] << 24) | (b[13] << 16) | (b[14] << 8) | b[15]) >>> 0;
+      if (total >= 16 && first >= 8 && first <= total - 8) return "icns";
+    }
+    // ICO and CUR: 0 0 1 0 or 0 0 2 0 and a count of 1 to 255. Checked after the ftyp branch, since a HEIC or AVIF
+    // ftyp box of 256 or 512 bytes starts with the same four bytes.
+    if (b[0] === 0 && b[1] === 0 && (b[2] === 1 || b[2] === 2) && b[3] === 0 && ascii(b, 4, 8) !== "ftyp") {
+      const n = b[4] | (b[5] << 8);
+      if (n >= 1 && n <= 255 && b[6 + 12] !== undefined) return "ico";
     }
     return "";
   }
@@ -124,7 +140,7 @@
   }
 
   // "an SVG", "an AVIF", "a PNG": by how the name is said, not how it is spelled.
-  function article(name) { return (/^(AVIF|SVG|XLS)\b/.test(name) ? "an " : "a ") + name; }
+  function article(name) { return (/^(AVIF|SVG|XLS|ICNS|ICO)\b/.test(name) ? "an " : "a ") + name; }
 
   /** The message for a file this page cannot take, or "" when it can. */
   function refuse(pair, kind, size) {
@@ -1120,6 +1136,328 @@
   }
 
 
+  // ---------- CSV to JSON ----------
+  const JSON_CAP = 200 * 1024 * 1024;
+  /** Keys for n columns: the header cells, "column N" where one is empty or missing, every key made unique in one
+      pass (" (2)", " (3)", until free). */
+  function jsonKeys(header, n) {
+    const seen = Object.create(null), out = [];
+    for (let i = 0; i < n; i++) {
+      const raw = header && i < header.length && header[i] !== "" ? header[i] : "column " + (i + 1);
+      let k = raw, c = 2;
+      while (seen[k]) k = raw + " (" + c++ + ")";
+      seen[k] = 1;
+      out.push(k);
+    }
+    return out;
+  }
+  /** What each column holds: "number" when every non-empty cell is a number that writes back exactly as typed,
+      "boolean" when every non-empty cell is true or false (any case), else "string". */
+  function columnTypes(rows, n, delim) {
+    const types = [];
+    for (let c = 0; c < n; c++) {
+      let num = true, bool = true, any = false;
+      for (let r = 0; r < rows.length && (num || bool); r++) {
+        const t = rows[r][c];
+        if (t === undefined || t === "") continue;
+        any = true;
+        if (bool && !/^(true|false)$/i.test(t)) bool = false;
+        if (num) {
+          const norm = delim === ";" && DECIMAL_COMMA.test(t) ? t.replace(",", ".") : t;
+          const v = cellNumber(t, delim);
+          if (v === null || String(v) !== norm) num = false;
+        }
+      }
+      types.push(!any ? "string" : num ? "number" : bool ? "boolean" : "string");
+    }
+    return types;
+  }
+  function jsonValue(t, type, typed, delim) {
+    if (t === undefined || t === "") return typed ? "null" : '""';
+    if (typed && type === "number") return delim === ";" && DECIMAL_COMMA.test(t) ? t.replace(",", ".") : t;
+    if (typed && type === "boolean") return t.toLowerCase();
+    return JSON.stringify(t);
+  }
+  /** With unflatten, an ordered tree of key paths: [[name, child or column]]. Keys with an empty part stay flat, and
+      so does a key that is also the parent of another (a and a.b), so nothing is lost. */
+  function keyTree(keys) {
+    const paths = keys.map(function (k) { const p = k.split("."); return p.length > 1 && p.every(Boolean) ? p : null; });
+    const whole = Object.create(null);
+    keys.forEach(function (k) { whole[k] = 1; });
+    const flat = keys.map(function () { return false; });
+    let clash = false;
+    paths.forEach(function (p, i) {
+      if (!p) return;
+      for (let j = 1; j < p.length; j++) {
+        const pre = p.slice(0, j).join(".");
+        if (whole[pre]) { flat[i] = true; flat[keys.indexOf(pre)] = true; clash = true; }
+      }
+    });
+    const root = [];
+    keys.forEach(function (k, i) {
+      const p = !flat[i] && paths[i] ? paths[i] : [k];
+      let node = root;
+      for (let j = 0; j < p.length - 1; j++) {
+        let next = null;
+        for (let e = 0; e < node.length; e++) if (node[e][0] === p[j] && Array.isArray(node[e][1])) { next = node[e][1]; break; }
+        if (!next) { next = []; node.push([p[j], next]); }
+        node = next;
+      }
+      node.push([p[p.length - 1], i]);
+    });
+    return { tree: root, clash: clash };
+  }
+  /** CSV rows (from parseCsv) to JSON text in parts of about 2 MB: { parts, rows, cols, notes }. opts: header,
+      types, unflatten, lines (JSON Lines), delimiter. Objects are written as text in header order, since JavaScript
+      would put integer-like keys such as "2024" first. */
+  function csvToJson(allRows, opts) {
+    const d = opts.delimiter || ",";
+    const rows = allRows.filter(function (r) { return !(r.length === 1 && r[0] === ""); }); // blank lines
+    const header = opts.header ? rows.shift() || [] : null;
+    let n = header ? header.length : 0;
+    rows.forEach(function (r) { if (r.length > n) n = r.length; });
+    if (rows.length * n > MAX_CELLS) throw new Error("This file has " + (rows.length * n).toLocaleString("en-US") + " cells, more than this page builds in a browser tab (" + (MAX_CELLS / 1e6) + " million).");
+    const keys = header ? jsonKeys(header, n) : null;
+    const types = columnTypes(rows, n, d);
+    const typed = opts.types !== false;
+    const notes = [];
+    let tree = null;
+    if (keys && opts.unflatten) {
+      const t = keyTree(keys);
+      tree = t.tree;
+      if (t.clash) notes.push("Some headers are both a value and the parent of others (such as a and a.b), so those stay as flat keys.");
+    } else if (keys) tree = keys.map(function (k, i) { return [k, i]; });
+    // Estimate before writing: every key repeated on every row, plus the cell text and a little punctuation.
+    let est = 2;
+    const keyLen = keys ? keys.reduce(function (s, k) { return s + k.length + 4; }, 0) : 0;
+    rows.forEach(function (r) { est += keyLen + 4 + n * 4; for (let c = 0; c < r.length; c++) est += r[c].length; });
+    if (!opts.lines) est += rows.length * (n * 6 + 6);
+    if (est > JSON_CAP) throw new Error("The JSON would be about " + Math.round(est / 1048576) + " MB, more than this page writes in a browser tab. Choose JSON Lines, or split the CSV.");
+    const parts = [];
+    let cur = [], curLen = 0;
+    const put = function (s) { cur.push(s); curLen += s.length; if (curLen > 2e6) { parts.push(cur.join("")); cur = []; curLen = 0; } };
+    const pretty = !opts.lines;
+    const emit = function (node, row, depth) {
+      const pad = pretty ? "\n" + "  ".repeat(depth + 1) : "";
+      let s = "{";
+      node.forEach(function (e, i) {
+        s += (i ? "," : "") + pad + JSON.stringify(e[0]) + (pretty ? ": " : ":");
+        s += Array.isArray(e[1]) ? emit(e[1], row, depth + 1) : jsonValue(row[e[1]], types[e[1]], typed, d);
+      });
+      return s + (pretty && node.length ? "\n" + "  ".repeat(depth) : "") + "}";
+    };
+    const arr = function (row) {
+      let s = "[";
+      for (let c = 0; c < n; c++) s += (c ? (pretty ? ", " : ",") : "") + jsonValue(row[c], types[c], typed, d);
+      return s + "]";
+    };
+    if (pretty) put("[");
+    rows.forEach(function (row, i) {
+      const one = tree ? emit(tree, row, pretty ? 1 : 0) : arr(row);
+      if (pretty) put((i ? "," : "") + "\n  " + one);
+      else put(one + "\n");
+    });
+    if (pretty) put(rows.length ? "\n]\n" : "]\n");
+    if (cur.length) parts.push(cur.join(""));
+    return { parts: parts, rows: rows.length, cols: n, notes: notes };
+  }
+
+  // ---------- ICNS to PNG ----------
+  // Each type's iconset slot (the names iconutil writes), its pixel size, and how it is stored. When two entries share
+  // a slot, a PNG wins over ARGB, and ARGB over legacy RLE.
+  const ICNS_SLOTS = {
+    icp4: ["icon_16x16", 16, "png"], icp5: ["icon_32x32", 32, "png"], icp6: ["icon_48x48", 48, "png"],
+    ic07: ["icon_128x128", 128, "png"], ic08: ["icon_256x256", 256, "png"], ic09: ["icon_512x512", 512, "png"],
+    ic10: ["icon_512x512@2x", 1024, "png"], ic11: ["icon_16x16@2x", 32, "png"], ic12: ["icon_32x32@2x", 64, "png"],
+    ic13: ["icon_128x128@2x", 256, "png"], ic14: ["icon_256x256@2x", 512, "png"],
+    icsB: ["icon_18x18@2x", 36, "png"], sb24: ["icon_24x24", 24, "png"], SB24: ["icon_24x24@2x", 48, "png"],
+    ic04: ["icon_16x16", 16, "argb"], ic05: ["icon_32x32", 32, "argb"], icsb: ["icon_18x18", 18, "argb"],
+    is32: ["icon_16x16", 16, "rle"], il32: ["icon_32x32", 32, "rle"], ih32: ["icon_48x48", 48, "rle"], it32: ["icon_128x128", 128, "rle"]
+  };
+  const ICNS_MASKS = { is32: "s8mk", il32: "l8mk", ih32: "h8mk", it32: "t8mk" };
+  const ICNS_RANK = { png: 0, argb: 1, rle: 2 };
+
+  /** The images in an ICNS, one per iconset slot, largest first: { images, skipped }. images[i] is { type, slot,
+      width, height, format: "png" | "argb" | "rle", data, mask }; skipped lists the sizes held as JPEG 2000. */
+  function readIcns(b) {
+    if (!b || b.length < 16 || ascii(b, 0, 4) !== "icns") throw new Error("This is not an ICNS file, or it is damaged.");
+    const u32 = function (o) { return ((b[o] << 24) | (b[o + 1] << 16) | (b[o + 2] << 8) | b[o + 3]) >>> 0; };
+    const total = u32(4);
+    if (total > b.length) throw new Error("This ICNS is cut short: its header says " + total + " bytes, and the file has " + b.length + ".");
+    const entries = Object.create(null);
+    for (let at = 8, count = 0; at + 8 <= total; count++) {
+      if (count >= 200) throw new Error("This ICNS has more than 200 entries, so it is likely damaged.");
+      const type = ascii(b, at, at + 4), len = u32(at + 4);
+      if (len < 8 || at + len > total) throw new Error("This ICNS is damaged: an entry runs past the end of the file.");
+      if (!entries[type]) entries[type] = b.subarray(at + 8, at + len);
+      at += len;
+    }
+    const best = Object.create(null), skipped = [];
+    Object.keys(entries).forEach(function (type) {
+      const slot = ICNS_SLOTS[type];
+      if (!slot) return;
+      const data = entries[type];
+      let format = slot[2], w = slot[1], h = slot[1];
+      const isPng = data.length > 8 && data[0] === 0x89 && ascii(data, 1, 4) === "PNG";
+      const isJp2 = data.length > 12 && ((ascii(data, 4, 8) === "jP  ") || (data[0] === 0xff && data[1] === 0x4f && data[2] === 0xff && data[3] === 0x51));
+      if (isJp2) { skipped.push(slot[1]); return; }
+      if (format === "png") {
+        if (!isPng) return;
+        const s = pngSize(data);
+        if (s) { w = s.width; h = s.height; }
+      } else if (format === "argb" && ascii(data, 0, 4) !== "ARGB") {
+        if (!isPng) return; // an icsb or ic04 can hold a PNG too
+        format = "png";
+      }
+      const cand = { type: type, slot: slot[0], width: w, height: h, format: format, data: data, mask: ICNS_MASKS[type] ? entries[ICNS_MASKS[type]] || null : null };
+      const was = best[slot[0]];
+      if (!was || ICNS_RANK[format] < ICNS_RANK[was.format]) best[slot[0]] = cand;
+    });
+    const images = Object.keys(best).map(function (k) { return best[k]; }).sort(function (a, z) { return z.width * z.height - a.width * a.height; });
+    return { images: images, skipped: skipped.filter(function (s, i, a) { return a.indexOf(s) === i; }).sort(function (a, z) { return z - a; }) };
+  }
+
+  /** Apple's icon RLE (a PackBits variant): a byte under 128 copies the next n+1 bytes, 128 and up repeats the next
+      byte n-125 times. Unpacks to exactly need bytes, or returns null when the data runs out first. */
+  function icnsRle(src, need) {
+    const out = new Uint8Array(need);
+    let i = 0, o = 0;
+    while (o < need && i < src.length) {
+      const n = src[i++];
+      if (n < 128) { for (let k = 0; k <= n && o < need && i < src.length; k++) out[o++] = src[i++]; }
+      else { const v = src[i++], c = n - 125; for (let k = 0; k < c && o < need; k++) out[o++] = v; }
+    }
+    return o === need ? out : null;
+  }
+
+  /** An ARGB or legacy RLE image as RGBA, or null when its data is short. ARGB colors are stored premultiplied. */
+  function icnsRGBA(img) {
+    const w = img.width, area = w * img.height, out = new Uint8ClampedArray(area * 4);
+    if (img.format === "argb") {
+      const planes = icnsRle(img.data.subarray(4), area * 4);
+      if (!planes) return null;
+      // The color planes are premultiplied by alpha (iconutil's output confirms it), so they are divided back out.
+      for (let i = 0; i < area; i++) {
+        const al = planes[i], k = al ? 255 / al : 0;
+        out[i * 4] = Math.round(planes[area + i] * k); out[i * 4 + 1] = Math.round(planes[2 * area + i] * k);
+        out[i * 4 + 2] = Math.round(planes[3 * area + i] * k); out[i * 4 + 3] = al;
+      }
+      return out;
+    }
+    const src = img.type === "it32" ? img.data.subarray(4) : img.data;
+    const planes = icnsRle(src, area * 3);
+    if (!planes) return null;
+    const mask = img.mask && img.mask.length >= area ? img.mask : null;
+    for (let i = 0; i < area; i++) { out[i * 4] = planes[i]; out[i * 4 + 1] = planes[area + i]; out[i * 4 + 2] = planes[2 * area + i]; out[i * 4 + 3] = mask ? mask[i] : 255; }
+    return out;
+  }
+
+  // ---------- ICO to PNG ----------
+  /** The images in an ICO or CUR: { images, problems }. images[i] is { width, height, depth, format: "png" | "bmp",
+      data }; one per size, the deepest kept, largest first. Lenient about gaps and order, unlike parseIco. */
+  function readIco(b) {
+    if (!b || b.length < 6 || b[0] || b[1] || (b[2] !== 1 && b[2] !== 2) || b[3]) throw new Error("This is not an ICO file, or it is damaged.");
+    const u16 = function (o) { return b[o] | (b[o + 1] << 8); };
+    const u32 = function (o) { return (b[o] | (b[o + 1] << 8) | (b[o + 2] << 16) | (b[o + 3] << 24)) >>> 0; };
+    const i32 = function (o) { return b[o] | (b[o + 1] << 8) | (b[o + 2] << 16) | (b[o + 3] << 24); };
+    const count = u16(4);
+    if (!count || count > 255 || 6 + count * 16 > b.length) throw new Error("This ICO is damaged: its list of sizes does not fit in the file.");
+    const best = Object.create(null), problems = [];
+    for (let i = 0; i < count; i++) {
+      const e = 6 + i * 16, size = u32(e + 8), off = u32(e + 12);
+      if (!size || off + size > b.length) { problems.push("One size runs past the end of the file and was left out."); continue; }
+      const data = b.subarray(off, off + size);
+      let img;
+      if (data.length > 8 && data[0] === 0x89 && ascii(data, 1, 4) === "PNG") {
+        const s = pngSize(data);
+        if (!s) { problems.push("One PNG size is damaged and was left out."); continue; }
+        const ct = data[25], bitDepth = data[24];
+        img = { width: s.width, height: s.height, depth: bitDepth * ({ 0: 1, 2: 3, 3: 1, 4: 2, 6: 4 }[ct] || 1), format: "png", data: data };
+      } else {
+        if (data.length < 40 || u32(off) < 40) { problems.push("One size is not a PNG or a bitmap this page reads and was left out."); continue; }
+        const w = i32(off + 4), hh = i32(off + 8), bpp = u16(off + 14), comp = u32(off + 16);
+        const h = Math.abs(hh) / 2;
+        if (w < 1 || w > 1024 || h < 1 || h > 1024 || h !== Math.floor(h)) { problems.push("One bitmap size has an impossible width or height and was left out."); continue; }
+        if (comp !== 0 || [1, 4, 8, 24, 32].indexOf(bpp) === -1) { problems.push("One " + w + " by " + h + " size uses " + (comp ? "a compressed bitmap" : bpp + "-bit color") + ", which this page cannot read, and was left out."); continue; }
+        const colors = bpp <= 8 ? (u32(off + 32) || (1 << bpp)) : 0;
+        const stride = Math.ceil(w * bpp / 32) * 4;
+        const need = u32(off) + colors * 4 + stride * h;
+        if (need > data.length) { problems.push("One " + w + " by " + h + " bitmap is cut short and was left out."); continue; }
+        img = { width: w, height: h, depth: bpp, format: "bmp", data: data, topDown: hh < 0, colors: colors, header: u32(off) };
+      }
+      const key = img.width + "x" + img.height;
+      if (!best[key] || img.depth > best[key].depth) best[key] = img;
+    }
+    const images = Object.keys(best).map(function (k) { return best[k]; }).sort(function (a, z) { return z.width * z.height - a.width * a.height || z.depth - a.depth; });
+    return { images: images, problems: problems.filter(function (p, i, a) { return a.indexOf(p) === i; }) };
+  }
+
+  /** A BMP entry of an ICO as RGBA. The AND mask (1 bit a pixel, rows padded to 4 bytes, bottom-up) makes pixels
+      transparent when the image has no alpha of its own, as for a 32-bit entry whose alpha is all 0 (Windows does
+      this; Pillow does not). A missing or short mask means opaque. */
+  function icoBmp(img) {
+    const d = img.data, w = img.width, h = img.height, bpp = img.depth;
+    const pal = img.header, px = pal + img.colors * 4;
+    const stride = Math.ceil(w * bpp / 32) * 4, mstride = Math.ceil(w / 32) * 4, moff = px + stride * h;
+    const out = new Uint8ClampedArray(w * h * 4);
+    let anyAlpha = false;
+    for (let y = 0; y < h; y++) {
+      const row = px + (img.topDown ? y : h - 1 - y) * stride;
+      for (let x = 0; x < w; x++) {
+        const q = (y * w + x) * 4;
+        if (bpp === 32) { const o = row + x * 4; out[q] = d[o + 2]; out[q + 1] = d[o + 1]; out[q + 2] = d[o]; out[q + 3] = d[o + 3]; if (d[o + 3]) anyAlpha = true; }
+        else if (bpp === 24) { const o = row + x * 3; out[q] = d[o + 2]; out[q + 1] = d[o + 1]; out[q + 2] = d[o]; out[q + 3] = 255; }
+        else {
+          const bit = x * bpp, v = (d[row + (bit >> 3)] >> (8 - bpp - (bit & 7))) & ((1 << bpp) - 1);
+          const p = pal + Math.min(v, img.colors - 1) * 4;
+          out[q] = d[p + 2]; out[q + 1] = d[p + 1]; out[q + 2] = d[p]; out[q + 3] = 255;
+        }
+      }
+    }
+    if ((bpp < 32 || !anyAlpha) && moff + mstride * h <= d.length) {
+      for (let y = 0; y < h; y++) {
+        const row = moff + (img.topDown ? y : h - 1 - y) * mstride;
+        for (let x = 0; x < w; x++) {
+          const q = (y * w + x) * 4;
+          if ((d[row + (x >> 3)] >> (7 - (x & 7))) & 1) out[q + 3] = 0;
+          else if (bpp === 32) out[q + 3] = 255;
+        }
+      }
+    } else if (bpp === 32 && !anyAlpha) for (let q = 3; q < out.length; q += 4) out[q] = 255;
+    return out;
+  }
+
+  // ---------- PNG writer, for pixels that must come out exactly (icon sizes decoded here) ----------
+  // A canvas stores premultiplied alpha, which changes the color of faint pixels; this writes RGBA as it is. deflate
+  // is the caller's zlib compressor (CompressionStream in the worker, zlib in Node).
+  let CRC_TABLE = null;
+  function crc32(b) {
+    if (!CRC_TABLE) { CRC_TABLE = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; CRC_TABLE[n] = c >>> 0; } }
+    let c = 0xffffffff;
+    for (let i = 0; i < b.length; i++) c = CRC_TABLE[(c ^ b[i]) & 255] ^ (c >>> 8);
+    return (c ^ 0xffffffff) >>> 0;
+  }
+  async function pngEncode(rgba, w, h, deflate) {
+    const raw = new Uint8Array((w * 4 + 1) * h);
+    for (let y = 0; y < h; y++) raw.set(rgba.subarray(y * w * 4, (y + 1) * w * 4), y * (w * 4 + 1) + 1); // filter 0
+    const z = await deflate(raw);
+    const chunk = function (type, data) {
+      const out = new Uint8Array(12 + data.length), dv = new DataView(out.buffer);
+      dv.setUint32(0, data.length);
+      for (let i = 0; i < 4; i++) out[4 + i] = type.charCodeAt(i);
+      out.set(data, 8);
+      dv.setUint32(8 + data.length, crc32(out.subarray(4, 8 + data.length)));
+      return out;
+    };
+    const ihdr = new Uint8Array(13), dv = new DataView(ihdr.buffer);
+    dv.setUint32(0, w); dv.setUint32(4, h); ihdr[8] = 8; ihdr[9] = 6; // 8-bit RGBA
+    const parts = [new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), chunk("IHDR", ihdr), chunk("IDAT", z), chunk("IEND", new Uint8Array(0))];
+    const out = new Uint8Array(parts.reduce(function (n, x) { return n + x.length; }, 0));
+    let at = 0;
+    parts.forEach(function (x) { out.set(x, at); at += x.length; });
+    return out;
+  }
+
   // ---------- PDF to JPG ----------
   const DPIS = { "72": 72, "150": 150, "300": 300 };
 
@@ -1273,7 +1611,10 @@
       bom: bool(raw.bom),
       nested: raw.nested === "json" ? "json" : "columns",
       safe: raw.safe === undefined ? true : bool(raw.safe),
-      tiffpages: raw.tiffpages === "all" ? "all" : "first"
+      tiffpages: raw.tiffpages === "all" ? "all" : "first",
+      types: raw.types === undefined ? true : bool(raw.types),
+      unflatten: bool(raw.unflatten),
+      icons: raw.icons === "all" ? "all" : "largest"
     };
   }
 
@@ -1296,7 +1637,8 @@
     colIndex: colIndex, sheetRows: sheetRows, toCsv: toCsv, jsonRecords: jsonRecords, flattenRecords: flattenRecords,
     safeText: safeText, sheetFileName: sheetFileName, protectBigInts: protectBigInts, readTiff: readTiff,
     unpackBits: unpackBits, tiffUnpredict: tiffUnpredict, tiffRGBA: tiffRGBA, tiffRowBytes: tiffRowBytes,
-    orientTransform: orientTransform, tiffJpeg: tiffJpeg, tiffDecodeRaw: tiffDecodeRaw, tiffProblem: tiffProblem, MAX_TIFF_PAGES: MAX_TIFF_PAGES, TIFF_COMPRESSIONS: TIFF_COMPRESSIONS, svgSize: svgSize, svgWithSize: svgWithSize, svgNotes: svgNotes, svgOutSize: svgOutSize
+    orientTransform: orientTransform, tiffJpeg: tiffJpeg, tiffDecodeRaw: tiffDecodeRaw, tiffProblem: tiffProblem, csvToJson: csvToJson, jsonKeys: jsonKeys, columnTypes: columnTypes,
+    readIcns: readIcns, icnsRle: icnsRle, icnsRGBA: icnsRGBA, readIco: readIco, icoBmp: icoBmp, pngEncode: pngEncode, crc32: crc32, ICNS_SLOTS: ICNS_SLOTS, MAX_TIFF_PAGES: MAX_TIFF_PAGES, TIFF_COMPRESSIONS: TIFF_COMPRESSIONS, svgSize: svgSize, svgWithSize: svgWithSize, svgNotes: svgNotes, svgOutSize: svgOutSize
   };
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.Convert = api;

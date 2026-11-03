@@ -23,7 +23,15 @@ TEMPLATE = SITE / "tools" / "metadata-cleaner" / "index.html"
 BASE = "https://purplelink.llc"
 
 NO_UPLOAD = "Are my files uploaded?"
-# Options shared by the pages that write CSV (XLSX to CSV, JSON to CSV).
+# Options shared by the pages that write CSV (XLSX to CSV, JSON to CSV), read CSV (CSV to JSON), or unpack icons.
+CSV_DELIM = ("select", "delimiter", "Separator", [("auto", "Detect"), ("comma", "Comma"), ("semicolon", "Semicolon"),
+                                                ("tab", "Tab"), ("pipe", "Pipe")])
+CSV_ENC = ("select", "encoding", "Text encoding", [("auto", "Detect"), ("utf-8", "UTF-8"),
+                                                  ("windows-1252", "Windows-1252 (Western)"),
+                                                  ("iso-8859-2", "ISO-8859-2 (Central European)"),
+                                                  ("shift_jis", "Shift JIS (Japanese)"),
+                                                  ("gb18030", "GB18030 (Chinese)"), ("utf-16le", "UTF-16")])
+ICONS = ("radio", "icons", "Sizes", [("largest", "The largest size"), ("all", "Every size, as a zip")])
 SAFE = ("check", "safe", "Keep text that starts with = + - @ from running as a formula in Excel", True)
 BOM = ("check", "bom", "Add a byte-order mark, so Excel on Windows shows accented letters", False)
 SEP = ("select", "delimiter", "Separator", [("comma", "Comma"), ("semicolon", "Semicolon"), ("tab", "Tab")])
@@ -233,7 +241,7 @@ PAGES = [
             ("Is it free?",
              "Yes. There is no account and no watermark."),
         ],
-        "related": [("/tools/png-to-ico/", "PNG to ICO"), ("/tools/heic-to-jpg/", "HEIC to JPG"),
+        "related": [("/tools/icns-to-png/", "ICNS to PNG"), ("/tools/png-to-ico/", "PNG to ICO"), ("/tools/heic-to-jpg/", "HEIC to JPG"),
                     ("/tools/webp-to-png/", "WebP to PNG")],
     },
     {
@@ -297,7 +305,7 @@ PAGES = [
             ("Is it free?",
              "Yes. There is no account and no watermark."),
         ],
-        "related": [("/tools/png-to-icns/", "PNG to ICNS"), ("/tools/photo-to-logo/", "Photo to Logo"),
+        "related": [("/tools/ico-to-png/", "ICO to PNG"), ("/tools/png-to-icns/", "PNG to ICNS"), ("/tools/photo-to-logo/", "Photo to Logo"),
                     ("/tools/webp-to-png/", "WebP to PNG"), ("/tools/heic-to-jpg/", "HEIC to JPG")],
     },
     {
@@ -516,7 +524,7 @@ PAGES = [
             ("Is it free?",
              "Yes. There is no account, no watermark and no limit beyond the sizes above."),
         ],
-        "related": [("/tools/xlsx-to-csv/", "XLSX to CSV"), ("/tools/json-to-csv/", "JSON to CSV"),
+        "related": [("/tools/csv-to-json/", "CSV to JSON"), ("/tools/xlsx-to-csv/", "XLSX to CSV"), ("/tools/json-to-csv/", "JSON to CSV"),
                     ("/tools/jpg-to-pdf/", "JPG to PDF"), ("/tools/pdf-tools/", "PDF Tools"),
                     ("/tools/metadata-cleaner/", "Metadata Cleaner")],
     },
@@ -870,7 +878,7 @@ PAGES = [
             ("Is it free?",
              "Yes. There is no account, no watermark and no limit beyond the sizes above."),
         ],
-        "related": [("/tools/csv-to-xlsx/", "CSV to XLSX"), ("/tools/xlsx-to-csv/", "XLSX to CSV"),
+        "related": [("/tools/csv-to-json/", "CSV to JSON"), ("/tools/csv-to-xlsx/", "CSV to XLSX"), ("/tools/xlsx-to-csv/", "XLSX to CSV"),
                     ("/tools/file-to-markdown/", "File to Markdown"), ("/tools/pii-checker/", "PII Checker")],
     },
     {
@@ -943,6 +951,201 @@ PAGES = [
         ],
         "related": [("/tools/png-to-jpg/", "PNG to JPG"), ("/tools/pdf-to-jpg/", "PDF to JPG"),
                     ("/tools/jpg-to-pdf/", "JPG to PDF"), ("/tools/heic-to-jpg/", "HEIC to JPG")],
+    },
+
+    {
+        "slug": "csv-to-json",
+        "name": "CSV to JSON",
+        "title": "CSV to JSON Converter That Runs in Your Browser | Purplelink",
+        "og_title": "CSV to JSON, converted in your browser",
+        "description": "Convert CSV files to JSON or JSON Lines in your browser. Numbers are typed only when a whole "
+                       "column is numeric, so IDs keep their zeros. Nothing is uploaded.",
+        "hero": "Convert CSV and TSV files to JSON, or to JSON Lines. The header row gives the keys, columns that hold "
+                "only numbers become numbers, and everything else stays exactly as typed. The file is read on your "
+                "device.",
+        "accept": ".csv,.tsv,.txt,.tab,text/csv,text/tab-separated-values,text/plain",
+        "drop": "Drop CSV files here",
+        "hint": "CSV, TSV and TXT, up to 50 MB each. You can also paste a file with Ctrl or Cmd V.",
+        "outputs": [("json", "JSON"), ("jsonl", "JSON Lines")],
+        "opts": ["output", ("check", "header", "The first row is the header", True),
+                 ("check", "types", "Write numbers and true or false as JSON values", True),
+                 ("check", "unflatten", "Turn headers like user.name into nested objects", False, "header=true"),
+                 CSV_DELIM, CSV_ENC],
+        "category": "DeveloperApplication",
+        "features": ["Convert CSV and TSV files to JSON or JSON Lines",
+                     "Numbers and true or false typed per column, only when every value fits",
+                     "Keys in header order, repeated headers made unique",
+                     "Optional nesting of a.b headers into objects",
+                     "Converted in the browser; files are never uploaded"],
+        "how": [
+            "The page reads the file's encoding and separator, splits it into rows the way a spreadsheet would, with "
+            "quoted fields, commas and line breaks inside quotes, and writes one JSON object per row, using the header "
+            "row for the keys.",
+            "Types are decided per column. A column becomes numbers only if every value in it is a plain number that "
+            "writes back exactly as typed, so 3.50, 02134 and version numbers like 1.10 stay strings, and a column with "
+            "one ZIP code that starts with 0 stays all strings. A column of only true and false becomes booleans, and an "
+            "empty cell becomes null.",
+            "Keys keep the order of the header, even keys like 2024 that JavaScript would normally sort first. With the "
+            "nesting option, user.name and user.age become one user object, which undoes what JSON to CSV does to "
+            "nested data.",
+        ],
+        "steps": [
+            ("Pick JSON or JSON Lines", "JSON gives one array; JSON Lines gives one object per line, which suits big files and tools like jq and BigQuery."),
+            ("Check the options", "Keep the header and types on for most files. Turn types off to get every value as a string."),
+            ("Add the files", "Drop the CSV files on the box, click it to choose them, or paste one."),
+            ("Download", "Download each JSON file from its row, or use Download all as .zip."),
+        ],
+        "limits": [
+            "Up to 50 MB a file and 5 million cells, and up to about 200 MB of JSON. JSON Lines output is smaller.",
+            "A column is typed as numbers only when every value in it is a number written the plain way. Values such as "
+            "1e5, 3.50 or -0 keep the whole column as strings, which never loses a digit.",
+            "Dates stay strings, since JSON has no date type.",
+            "A file whose first character is [ or { is read as JSON, not CSV; use JSON to CSV for those.",
+        ],
+        "faq": [
+            ("Are my files uploaded?",
+             "No. The page reads each file with your browser and converts it in a background worker in this tab. There "
+             "is no server step. The meter under the drop zone counts the bytes the page and its worker send while they "
+             "work, so you can check this yourself. The only things the page downloads are its own scripts."),
+            ("Will my ZIP codes and IDs keep their leading zeros?",
+             "Yes. A column becomes numbers only if every value in it is a plain number, so a ZIP code column with "
+             "02134 in it stays strings, and every ZIP keeps its zeros. Long IDs of 12 digits or more always stay strings."),
+            ("Should I choose JSON or JSON Lines?",
+             "JSON for a file you will load in one go in JavaScript or Python. JSON Lines, one object per line, for big "
+             "files, log tools, jq, BigQuery and anything that reads records one at a time."),
+            ("What happens to empty cells and repeated headers?",
+             "An empty cell becomes null, or an empty string if you turn types off. A repeated header gets (2) after it, "
+             "and a missing one is called column 3 and so on, so no value is lost."),
+            ("Can it make nested objects?",
+             "Yes. With the nesting option, headers like user.name and user.age become {\"user\": {\"name\": ..., \"age\": "
+             "...}}. A header that is both a value and a parent, such as a next to a.b, stays flat so nothing is overwritten."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the sizes above."),
+        ],
+        "related": [("/tools/json-to-csv/", "JSON to CSV"), ("/tools/csv-to-xlsx/", "CSV to XLSX"),
+                    ("/tools/xlsx-to-csv/", "XLSX to CSV"), ("/tools/pii-checker/", "PII Checker")],
+    },
+    {
+        "slug": "icns-to-png",
+        "name": "ICNS to PNG",
+        "title": "ICNS to PNG Converter, in Your Browser | Purplelink",
+        "og_title": "ICNS to PNG, converted in your browser",
+        "description": "Get PNG images out of a macOS .icns icon in your browser: the largest size, or every size as an "
+                       ".iconset folder. Nothing is uploaded. Free.",
+        "hero": "Get the PNG images out of a macOS app icon (.icns): the largest size, or every size as an .iconset "
+                "folder that iconutil can turn back into an icon. The icon is read on your device.",
+        "accept": ".icns,image/icns",
+        "drop": "Drop ICNS icons here",
+        "hint": "ICNS, up to 50 MB each. App icons are inside an app: right-click it, Show Package Contents, then Contents, Resources.",
+        "outputs": [("png", "PNG")],
+        "opts": [ICONS],
+        "features": ["Extract PNG images from macOS .icns icons",
+                     "The largest size, or every size as an .iconset folder",
+                     "Modern PNG sizes copied out unchanged",
+                     "Older ARGB and RLE sizes decoded with their masks",
+                     "Read in the browser; icons are never uploaded"],
+        "how": [
+            "An .icns file is a list of the same picture at several sizes, from 16 to 1024 pixels. Modern icons store "
+            "most sizes as PNG files inside, and this page copies those out byte for byte, so nothing is recompressed.",
+            "The small sizes in many icons, and every size in icons from before macOS 10.7, use Apple's older formats: "
+            "colors and an 8-bit mask packed with run-length coding. The page unpacks those in a background worker and "
+            "writes them as PNG with their transparency.",
+            "Every size can come out as an .iconset folder with the names Apple's iconutil uses (icon_16x16.png, "
+            "icon_16x16@2x.png and so on), so you can edit the images and run iconutil -c icns to build the icon again. "
+            "PNG to ICNS does that step in the browser too.",
+        ],
+        "steps": [
+            ("Find the icon", "For an app, right-click it in Finder, choose Show Package Contents, and open Contents, then Resources. The icon is the .icns file there."),
+            ("Pick the sizes", "The largest size gives one PNG; Every size gives an .iconset folder in a zip."),
+            ("Add the icon", "Drop the .icns file on the box, or click it to choose it."),
+            ("Download", "Download the PNG, or the zip with the .iconset folder."),
+        ],
+        "limits": [
+            "Up to 50 MB an icon.",
+            "Sizes stored as JPEG 2000, which some icons from macOS 10.5 and 10.6 use for 256 and 512 pixels, are left "
+            "out, since only Safari decodes JPEG 2000. The row says which sizes were skipped.",
+            "Old black-and-white and 16-color icon types from the classic Mac OS are not read.",
+            "Icons in Assets.car catalogs, which newer apps use beside or instead of an .icns file, are a different "
+            "format and are not read.",
+        ],
+        "faq": [
+            ("Are my files uploaded?",
+             "No. The page reads each icon with your browser and converts it in a background worker in this tab. There is "
+             "no server step. The meter under the drop zone counts the bytes the page and its worker send while they "
+             "work, so you can check this yourself. The only things the page downloads are its own scripts."),
+            ("Where do I find an app's icon file?",
+             "Right-click the app in Finder, choose Show Package Contents, and open Contents, then Resources. The icon is "
+             "usually AppIcon.icns or named after the app. Copy it somewhere first rather than moving it."),
+            ("Are the PNGs the same quality as the icon?",
+             "Yes. Sizes stored as PNG inside the icon are copied out unchanged. Older sizes are unpacked exactly, pixel "
+             "for pixel, with their transparency."),
+            ("What is an .iconset folder?",
+             "A folder of PNGs with fixed names, such as icon_32x32.png and icon_32x32@2x.png, that Apple's iconutil "
+             "turns into an .icns file. Edit the PNGs, then run iconutil -c icns on the folder, or use PNG to ICNS."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the size above."),
+        ],
+        "related": [("/tools/png-to-icns/", "PNG to ICNS"), ("/tools/ico-to-png/", "ICO to PNG"),
+                    ("/tools/png-to-ico/", "PNG to ICO"), ("/tools/svg-to-png/", "SVG to PNG")],
+    },
+    {
+        "slug": "ico-to-png",
+        "name": "ICO to PNG",
+        "title": "ICO to PNG Converter That Runs in Your Browser | Purplelink",
+        "og_title": "ICO to PNG, converted in your browser",
+        "description": "Get PNG images out of a favicon or Windows .ico icon in your browser: the largest size, or every "
+                       "size as a zip. Nothing is uploaded. Free.",
+        "hero": "Get the PNG images out of a favicon, a Windows icon or a cursor (.ico, .cur): the largest size, or "
+                "every size in a zip, with transparency kept. The icon is read on your device.",
+        "accept": ".ico,.cur,image/x-icon,image/vnd.microsoft.icon",
+        "drop": "Drop ICO icons here",
+        "hint": "ICO and CUR, up to 20 MB each. You can also paste a file with Ctrl or Cmd V.",
+        "outputs": [("png", "PNG")],
+        "opts": [ICONS],
+        "features": ["Extract PNG images from .ico favicons, Windows icons and .cur cursors",
+                     "The largest size, or every size as a zip",
+                     "PNG sizes copied out unchanged",
+                     "1, 4, 8, 24 and 32-bit bitmap sizes decoded with their masks",
+                     "Read in the browser; icons are never uploaded"],
+        "how": [
+            "An .ico file holds the same picture at several sizes, often 16, 32, 48 and 256 pixels. Each size is "
+            "either a PNG, copied out byte for byte, or a Windows bitmap, which the page decodes in a background worker.",
+            "Bitmap sizes carry a second, 1-bit image called the mask that marks the transparent pixels. The page "
+            "applies it the way Windows does, including for 32-bit sizes whose own transparency is left empty, so "
+            "icons that look right on Windows look right as PNG.",
+            "When one size is stored at several color depths, the deepest is kept. Every size can come out in one zip, "
+            "named by its real width and height.",
+        ],
+        "steps": [
+            ("Pick the sizes", "The largest size gives one PNG; Every size gives a zip with one PNG per size."),
+            ("Add the icons", "Drop the .ico or .cur files on the box, click it to choose them, or paste one."),
+            ("Check the row", "Each row shows the size saved, or how many, and notes any size that could not be read."),
+            ("Download", "Download each PNG or zip from its row, or use Download all as .zip."),
+        ],
+        "limits": [
+            "Up to 20 MB an icon and 1024 by 1024 pixels a size.",
+            "16-bit and compressed bitmap sizes, which are rare, are left out, and the row says so.",
+            "A cursor's hotspot is not kept in the PNG.",
+        ],
+        "faq": [
+            ("Are my files uploaded?",
+             "No. The page reads each icon with your browser and converts it in a background worker in this tab. There is "
+             "no server step. The meter under the drop zone counts the bytes the page and its worker send while they "
+             "work, so you can check this yourself. The only things the page downloads are its own scripts."),
+            ("How do I get a site's favicon?",
+             "Most sites serve it at /favicon.ico, so open https://example.com/favicon.ico in your browser and save it. "
+             "Then drop the file here to get its sizes as PNG."),
+            ("Why does my icon have several sizes?",
+             "Windows picks the size that fits where the icon is shown, from 16 pixels in a list to 256 on a large "
+             "desktop. Choose Every size to get them all, or The largest size for the sharpest one."),
+            ("Is transparency kept?",
+             "Yes. PNG sizes keep their own transparency, and bitmap sizes get theirs from the icon's mask, applied the "
+             "way Windows applies it."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the sizes above."),
+        ],
+        "related": [("/tools/png-to-ico/", "PNG to ICO"), ("/tools/icns-to-png/", "ICNS to PNG"),
+                    ("/tools/png-to-icns/", "PNG to ICNS"), ("/tools/png-to-jpg/", "PNG to JPG")],
     },
 
 ]

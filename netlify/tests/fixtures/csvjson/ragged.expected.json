@@ -1,0 +1,6 @@
+{
+ "default": "[{\"a\":1,\"b\":2,\"column 3\":3,\"column 4\":4},{\"a\":5,\"b\":null,\"column 3\":null,\"column 4\":null},{\"a\":6,\"b\":7,\"column 3\":null,\"column 4\":null}]",
+ "strings": "[{\"a\":\"1\",\"b\":\"2\",\"column 3\":\"3\",\"column 4\":\"4\"},{\"a\":\"5\",\"b\":\"\",\"column 3\":\"\",\"column 4\":\"\"},{\"a\":\"6\",\"b\":\"7\",\"column 3\":\"\",\"column 4\":\"\"}]",
+ "noheader": "[[\"a\",\"b\",null,null],[\"1\",\"2\",3,4],[\"5\",null,null,null],[\"6\",\"7\",null,null]]",
+ "unflatten": "[{\"a\":1,\"b\":2,\"column 3\":3,\"column 4\":4},{\"a\":5,\"b\":null,\"column 3\":null,\"column 4\":null},{\"a\":6,\"b\":7,\"column 3\":null,\"column 4\":null}]"
+}
