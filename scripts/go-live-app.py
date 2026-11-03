@@ -16,7 +16,7 @@ from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SLUGS = ("panely", "summonly", "aka")
+SLUGS = ("panely", "summonly", "nee")
 
 def main(argv):
     if len(argv) != 5 or argv[1] not in SLUGS:
@@ -37,7 +37,7 @@ def main(argv):
     h = h.replace('"availability": "https://schema.org/PreOrder"', '"availability": "https://schema.org/InStock"')
     h = re.sub(r"<!-- LAUNCH CHECKLIST.*?-->\n", "", h, count=1, flags=re.S)
     # The static HTML goes live too, so the page is right with scripts off. The tags below are the ones launch.js switches.
-    pf = {"panely": "pf", "summonly": "lf", "aka": "aka"}[slug]
+    pf = {"panely": "pf", "summonly": "lf", "nee": "nee"}[slug]
     def gated(m):
         tag = m.group(0)
         href = re.search(rf'data-{pf}-href="([^"]+)"', tag).group(1)
