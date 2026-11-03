@@ -263,7 +263,7 @@ the meta.
   from a `.cjs` copy of the vendored file with `wasmBinary` read from disk. The fixture is
   `netlify/tests/fixtures/convert-64x48-red-blue.heic`.
 - Pages are written by `scripts/gen_converter_pages.py` (data in `PAGES`, template head and footer from
-  `/tools/metadata-cleaner/`), then `apply_layout.py` and `fingerprint_assets.py`, as for any page.
+  `/tools/metadata-cleaner/`), then `apply_layout.py`, as for any page (the build adds the `?v=` stamps).
 - Browser check before the PR, served by a local server that sends the production CSP from `netlify.toml` (a plain
   static server sends none, which would not exercise `'wasm-unsafe-eval'`): a 12 MP HEIC and a small one converted
   in 0.4 s including the decoder load, pixel colors checked on the JPG and PNG outputs, WebP transparency kept in PNG

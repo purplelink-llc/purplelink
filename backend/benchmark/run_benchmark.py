@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # backend/benchmark/run_benchmark.py
 """Citation Gap benchmark runner — produces an original, defensible
-statistic ("N% of a real arXiv sample had at least one confirmed-real
-missing citation") for future marketing/content use.
+statistic ("N% of a real arXiv sample had at least one suggested
+citation that exists and the paper does not cite").
 
 THIS SCRIPT COSTS REAL MONEY WHEN RUN. It calls the same Anthropic API
 Citation Gap uses in production, once per paper in the sample. It is NOT
@@ -66,30 +66,69 @@ def _estimate_cost_usd(n_papers: int) -> float:
     return round(per_paper * n_papers, 2)
 
 
-async def _run_one(client, arxiv_paper):
+# CrossRef throttles bursts (the 2026-11-02 run got 102 HTTP 429s from
+# run_citation_gap's parallel lookups). Production shows those gaps as
+# unverified; the benchmark retries them one at a time so a rate limit does
+# not decide whether a gap counts.
+_CROSSREF_RETRY_STATUSES = {"crossref_unavailable", "network_error"}
+_CROSSREF_RETRIES = 3
+
+
+async def _retry_unverified(client, gaps: list[dict]) -> list[dict]:
+    from latextools.paperreview_extras import _verify_gap_candidate
+
+    out = []
+    for gap in gaps:
+        for attempt in range(_CROSSREF_RETRIES):
+            if (gap.get("verification") or {}).get("status") not in _CROSSREF_RETRY_STATUSES:
+                break
+            await asyncio.sleep(2 * (attempt + 1))
+            retried = await _verify_gap_candidate(client, {k: v for k, v in gap.items() if k != "verification"})
+            gap = {**retried, "verification": {**retried["verification"], "retried": attempt + 1}}
+        out.append(gap)
+    return out
+
+
+def _page_text(page_texts: list) -> str:
+    return "\n".join(text or "" for _, text in page_texts)
+
+
+async def _run_one(client, arxiv_paper, text_dir: Path):
     from benchmark.arxiv_corpus import fetch_pdf
     from benchmark.aggregate import PaperResult
+    from benchmark.cited_check import apply_cited_check
     from latextools import papercheck
     from latextools.paperreview_extras import run_citation_gap
 
     pdf_bytes = await fetch_pdf(client, arxiv_paper.arxiv_id)
     if pdf_bytes is None:
-        return PaperResult(arxiv_paper.arxiv_id, arxiv_paper.title, status="error")
+        return PaperResult(arxiv_paper.arxiv_id, arxiv_paper.title, status="error"), None
 
+    page_texts: list = []
     try:
-        structure = papercheck.extract_paper(pdf_bytes)
+        structure = papercheck.extract_paper(pdf_bytes, page_texts=page_texts)
     except Exception:
         logger.exception("extraction failed for %s", arxiv_paper.arxiv_id)
-        return PaperResult(arxiv_paper.arxiv_id, arxiv_paper.title, status="extraction_failed")
+        return PaperResult(arxiv_paper.arxiv_id, arxiv_paper.title, status="extraction_failed"), None
+
+    full_text = _page_text(page_texts)
+    # Kept outside the repo with the rest of the output so the cited check
+    # can be re-run (benchmark/rescore.py) without paying for the model again.
+    (text_dir / f"{arxiv_paper.arxiv_id}.txt").write_text(full_text, encoding="utf-8")
+    references = [r.to_dict() for r in structure.references]
+    extra = {
+        "n_references": len(references),
+        "n_references_total": structure.n_references_total,
+        "references": references,
+    }
 
     result = await run_citation_gap(client, structure)
     if result.get("status") == "error":
-        return PaperResult(arxiv_paper.arxiv_id, arxiv_paper.title, status="error")
+        return PaperResult(arxiv_paper.arxiv_id, arxiv_paper.title, status="error"), extra
 
-    return PaperResult(
-        arxiv_paper.arxiv_id, arxiv_paper.title,
-        status="ok", gaps=result.get("gaps", []),
-    )
+    gaps = await _retry_unverified(client, result.get("gaps", []))
+    gaps = apply_cited_check(gaps, full_text, references)
+    return PaperResult(arxiv_paper.arxiv_id, arxiv_paper.title, status="ok", gaps=gaps), extra
 
 
 async def main_async(args):
@@ -98,8 +137,16 @@ async def main_async(args):
     from benchmark.aggregate import summarize
 
     categories = args.categories or DEFAULT_CATEGORIES
+    out_dir = Path(args.output_dir).expanduser()
+    out_dir.mkdir(parents=True, exist_ok=True)
+    run_id = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    text_dir = out_dir / f"texts-{run_id}"
+    text_dir.mkdir(exist_ok=True)
 
-    async with httpx.AsyncClient() as client:
+    # Same read timeout as production (backend/app.py): a Citation Gap call takes
+    # well over httpx's 5 s default, which made every paper fail with ReadTimeout.
+    timeout = httpx.Timeout(connect=10.0, read=180.0, write=10.0, pool=10.0)
+    async with httpx.AsyncClient(timeout=timeout, follow_redirects=True) as client:
         logger.info("fetching corpus: categories=%s sample_size=%d", categories, args.sample_size)
         papers = await fetch_corpus(client, categories=categories, max_results=args.sample_size)
         if not papers:
@@ -107,23 +154,22 @@ async def main_async(args):
             return 1
         logger.info("fetched %d real arXiv papers", len(papers))
 
-        results = []
+        results, extras = [], []
         for i, paper in enumerate(papers, 1):
             logger.info("[%d/%d] %s — %s", i, len(papers), paper.arxiv_id, paper.title[:80])
-            results.append(await _run_one(client, paper))
+            result, extra = await _run_one(client, paper, text_dir)
+            results.append(result)
+            extras.append(extra or {})
 
     summary = summarize(results)
 
-    out_dir = Path(args.output_dir)
-    out_dir.mkdir(parents=True, exist_ok=True)
-    run_id = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-
     raw_path = out_dir / f"citation-gap-benchmark-{run_id}.jsonl"
     with raw_path.open("w", encoding="utf-8") as fh:
-        for r in results:
+        for paper, r, extra in zip(papers, results, extras):
             fh.write(json.dumps({
                 "arxiv_id": r.arxiv_id, "title": r.title,
-                "status": r.status, "gaps": r.gaps,
+                "published": paper.published, "categories": paper.categories,
+                "status": r.status, "gaps": r.gaps, **extra,
             }) + "\n")
 
     report_path = out_dir / f"citation-gap-benchmark-{run_id}.md"
@@ -131,8 +177,9 @@ async def main_async(args):
 
     logger.info("wrote %s", raw_path)
     logger.info("wrote %s", report_path)
-    print(f"\n{summary.pct_with_confirmed_gap}% of {summary.n_papers_ok} papers "
-          f"had at least one CrossRef-confirmed missing citation.")
+    print(f"\n{summary.pct_with_uncited_gap}% of {summary.n_papers_ok} papers had at least one "
+          f"suggested citation that CrossRef found and the paper does not cite "
+          f"({summary.pct_with_confirmed_gap}% before the already-cited check).")
     return 0
 
 
@@ -148,12 +195,20 @@ receive it — the same `run_citation_gap()` function, same model, same
 CrossRef verification step. Every arXiv ID here is real and independently
 checkable.
 
-**Headline statistic:** {summary.pct_with_confirmed_gap}% of the
-{summary.n_papers_ok} successfully-analyzed papers had at least one
-citation gap that Citation Gap flagged AND CrossRef independently
-confirmed corresponds to a real, existing paper (`verification.status ==
-"confirmed_exists"`). This excludes qualitative/unverified gaps on
-purpose — see aggregate.py's summarize() docstring for why.
+**Headline statistic:** {summary.pct_with_uncited_gap}% of the
+{summary.n_papers_ok} successfully-analyzed papers ({summary.n_papers_with_uncited_gap})
+had at least one citation gap where (a) CrossRef matched the suggested
+title to a real paper (`verification.status == "confirmed_exists"`) and
+(b) CrossRef's title is the work the model named (at least 80% word
+overlap, cited_check.strictly_exists), and (c) neither that title, its
+DOI, nor any title in the model's hint appears
+anywhere in the paper's text or extracted references (cited_check.py).
+
+**Before the already-cited check:** {summary.pct_with_confirmed_gap}% of papers
+({summary.n_papers_with_confirmed_gap}) had a gap CrossRef matched. Of
+{summary.n_confirmed_gaps} matched gaps, {summary.n_strict_gaps} passed the strict title test,
+{summary.n_confirmed_gaps_already_cited}
+were already in the paper and {summary.n_counted_gaps} were counted.
 
 **Sample size:** {summary.n_papers_attempted} attempted, {summary.n_papers_ok} successfully analyzed
 (the rest failed PDF download or text extraction — this is expected for a
@@ -180,7 +235,10 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--sample-size", type=int, default=50, help="Number of papers to pull (max 100 per arXiv API call).")
     parser.add_argument("--categories", nargs="*", default=None, help="arXiv category codes, e.g. cs.CR cs.AI. Defaults to Purplelink's research-focus categories.")
-    parser.add_argument("--output-dir", default="backend/benchmark/output", help="Where to write the raw .jsonl and .md report.")
+    parser.add_argument(
+        "--output-dir", default="~/.purplelink/benchmark",
+        help="Where to write the raw .jsonl, .md report and page texts. Outside the repo on purpose: the repo is public.",
+    )
     parser.add_argument(
         "--confirm-cost", action="store_true",
         help="Required to actually run. Without it, prints the cost estimate and exits.",

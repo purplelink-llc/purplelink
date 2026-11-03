@@ -33,9 +33,9 @@ place" and makes the key the single paywall.
 - Key text: `<PREFIX>-` + Crockford-Base32( nonce[4] ‖ Ed25519 signature[64] ) in groups of 5, joined by `-`.
   The body is 109 characters (21 groups of 5, then a group of 4).
   Prefixes: Outbound Veil `OV1`, Legroom `LG1`.
-  Formring (store side built 2026-11-02, still hidden) joins the scheme with prefix `FR1` and slug `formring`; its `LICENSED_PRODUCTS`
+  AKA (store side built 2026-11-02, still hidden) joins the scheme with prefix `AKA1` and slug `aka`; its `LICENSED_PRODUCTS`
   entry carries `inSuite: false`, so `licensedSlugsFor("app-suite")` does not give it to Mac Suite buyers until Ben flips the gate
-  (see `formring.md`, "Licensing: the shared scheme, and the Suite gate").
+  (see `aka.md`, "Licensing: the shared scheme, and the Suite gate").
 - Signed message: UTF-8 `PurplelinkLicenseV1|<slug>|` followed by the 4 nonce bytes.
   Slugs: `outbound-veil`, `legroom`. A key for one product never verifies for another.
 - One shared PUBLIC key, embedded in every app (raw 32 bytes, base64):

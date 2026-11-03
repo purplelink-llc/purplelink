@@ -7,7 +7,7 @@ The topbar, footer and head boilerplate are copied from /tools/metadata-cleaner/
 them. Design: docs/designs/browser-file-converters.md.
 
   python3 scripts/gen_converter_pages.py      # write the pages
-  python3 scripts/apply_layout.py && python3 scripts/fingerprint_assets.py   # then, as for any page
+  python3 scripts/apply_layout.py   # then, as for any page (the build adds the ?v= stamps)
 """
 from __future__ import annotations
 

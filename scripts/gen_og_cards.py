@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Per-page social cards (1200x630 JPEG) for the pages that share a generic card.
 
-Pages covered: /format/references-for-*/, the guides, the blog posts and the /tools/ pages whose og:image is still
+Pages covered: /format/references-for-*/, the guides, the blog posts, the /research/ pages and the /tools/ pages whose og:image is still
 assets/og/purplelink-card.png or assets/og/brand.png. Each gets site/assets/og/cards/<section>-<slug>.jpg: a
 background from site/assets/og/bg/ (made with ChatGPT, no text in the image), the page title in Fraunces, and the
 brand mark. The page's og:image and twitter:image tags are rewritten to point at it.
@@ -40,15 +40,16 @@ BLOG_BG = {
 FOOT = {"format": "Reference formats for journals and conferences", "guides": "Free guides for academic authors",
         "blog": "Notes from a one-person software studio",
         "tools": "Tools for researchers and Mac users",
+        "research": "Original data from Purplelink",
         "de/guides": "Kostenlose Anleitungen für Forschende",
         "fr/guides": "Guides gratuits pour les chercheurs",
         "pt-br/guides": "Guias gratuitos para pesquisadores", "ja/guides": "研究者のための無料ガイド",
         "zh-cn/guides": "为研究者准备的免费指南"}
-KICKER = {"format": "Reference format", "guides": "Guide", "blog": "Blog", "tools": "Tool",
+KICKER = {"format": "Reference format", "guides": "Guide", "blog": "Blog", "tools": "Tool", "research": "Research",
           "de/guides": "Anleitung", "fr/guides": "Guide", "pt-br/guides": "Guia", "ja/guides": "ガイド", "zh-cn/guides": "指南"}
 # Localized guides (2026-10-29). Their cards are named de-guides-<slug>.jpg, and the template draws CJK text with
 # the system fonts, since Fraunces and Plus Jakarta Sans are Latin subsets.
-SECTIONS = ("format", "guides", "blog", "tools", "de/guides", "fr/guides", "pt-br/guides", "ja/guides", "zh-cn/guides")
+SECTIONS = ("format", "guides", "blog", "tools", "research", "de/guides", "fr/guides", "pt-br/guides", "ja/guides", "zh-cn/guides")
 
 
 def meta(t, prop):

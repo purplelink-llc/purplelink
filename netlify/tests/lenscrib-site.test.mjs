@@ -250,7 +250,7 @@ test("the success page is noindex, loads its script and has the download and key
 test("the Terms carry Lenscrib's own section: price, refund, two Macs, drafts, liability cap, not in the Suite", () => {
   const html = read("terms/index.html");
   assert.match(html, /<h2>Lenscrib: additional terms<\/h2>/);
-  const section = html.slice(html.indexOf("<h2>Lenscrib: additional terms</h2>"), html.indexOf("<h2>Formring: additional terms</h2>"));
+  const section = html.slice(html.indexOf("<h2>Lenscrib: additional terms</h2>"), html.indexOf("<h2>AKA: additional terms</h2>"));
   assert.match(section, /\$19\.99 USD, once/);
   assert.match(section, /within 14 days of purchase/);
   assert.match(section, /full \$19\.99/);
@@ -258,7 +258,7 @@ test("the Terms carry Lenscrib's own section: price, refund, two Macs, drafts, l
   assert.match(section, /Descriptions are drafts/);
   assert.match(section, /not part of the Mac Suite/);
   assert.match(section, /Liability cap for Lenscrib/);
-  assert.match(html, /Tapefolio, Lenscrib, Formring, Panely and Summonly Mac apps/);
+  assert.match(html, /Tapefolio, Lenscrib, AKA, Panely and Summonly Mac apps/);
 });
 
 test("the Privacy page says what Lenscrib sends and does not send, and names its trial emails and recovery", () => {
@@ -266,7 +266,7 @@ test("the Privacy page says what Lenscrib sends and does not send, and names its
   assert.match(html, /<strong>Lenscrib<\/strong> has no account and no analytics/);
   assert.match(html, /does not upload your photos, their metadata or their locations/);
   assert.match(html, /Lenscrib trial emails<\/strong>/);
-  assert.match(html, /Tapefolio, Lenscrib, Formring, Panely, Summonly, Mac Suite and kit purchases/);
+  assert.match(html, /Tapefolio, Lenscrib, AKA, Panely, Summonly, Mac Suite and kit purchases/);
 });
 
 test("nothing links to /lenscrib/ yet: no nav, footer, home, products, pricing, sitemap, search index or llms file", () => {
