@@ -1,9 +1,9 @@
-// The AKA pages, checked as files: the offer in the structured data, the release gate
+// The Née pages, checked as files: the offer in the structured data, the release gate
 // (launch.js is switched on and the static page says the same), the
 // copy rules (what the page may and may not claim), and the success page's script run against
 // a small fake DOM.
 //
-// Run with: node --test netlify/tests/aka-site.test.mjs
+// Run with: node --test netlify/tests/nee-site.test.mjs
 
 import "./_generated.mjs"; // builds search-index.json and llms-full.txt first
 import { test } from "node:test";
@@ -29,10 +29,10 @@ const visibleText = (html) =>
 
 // ---- product page --------------------------------------------------------------------
 
-test("the AKA page offers the app at $14.99 once, with a 14-day refund, for macOS 14, in valid JSON-LD", () => {
-  const nodes = jsonLd(read("aka/index.html"));
+test("the Née page offers the app at $14.99 once, with a 14-day refund, for macOS 14, in valid JSON-LD", () => {
+  const nodes = jsonLd(read("nee/index.html"));
   const app = nodes.find((n) => n["@type"] === "SoftwareApplication");
-  assert.equal(app.name, "AKA");
+  assert.equal(app.name, "Née");
   assert.equal(app.offers.price, "14.99");
   assert.equal(app.offers.priceCurrency, "USD");
   assert.equal(app.offers.hasMerchantReturnPolicy.merchantReturnDays, 14);
@@ -44,20 +44,20 @@ test("the AKA page offers the app at $14.99 once, with a 14-day refund, for macO
 });
 
 test("the page is wired to the delivery and checkout functions and carries the shared head tags", () => {
-  const html = read("aka/index.html");
-  assert.match(html, /data-aka-href="\/\.netlify\/functions\/aka-download\?trial=1"/);
-  assert.match(html, /id="checkout-btn" data-product="aka"/);
-  assert.match(html, /<video controls preload="none"[^>]*poster="\/assets\/video\/aka-poster\.webp"/, "the demo video does not load until played");
+  const html = read("nee/index.html");
+  assert.match(html, /data-nee-href="\/\.netlify\/functions\/nee-download\?trial=1"/);
+  assert.match(html, /id="checkout-btn" data-product="nee"/);
+  assert.match(html, /<video controls preload="none"[^>]*poster="\/assets\/video\/nee-poster\.webp"/, "the demo video does not load until played");
   assert.match(html, /paid-tool-landing\.js/);
-  assert.match(html, /\/aka\/launch\.js/);
+  assert.match(html, /\/nee\/launch\.js/);
   assert.match(html, /\/trial-reminder\.js/);
-  assert.match(html, /<link rel="canonical" href="https:\/\/purplelink\.llc\/aka\/">/);
+  assert.match(html, /<link rel="canonical" href="https:\/\/purplelink\.llc\/nee\/">/);
   assert.match(html, /\/theme\.js/);
-  assert.match(html, /<link rel="stylesheet" href="\/aka\/aka\.css/);
+  assert.match(html, /<link rel="stylesheet" href="\/nee\/nee\.css/);
 });
 
 test("the page has every section the brief asks for", () => {
-  const html = read("aka/index.html");
+  const html = read("nee/index.html");
   for (const id of ["how-h", "tour-h", "does-h", "shots-h", "not-h", "privacy-h", "price-h", "req-h", "faq-heading"]) {
     assert.match(html, new RegExp(`id="${id}"`), id);
   }
@@ -70,36 +70,36 @@ test("the page has every section the brief asks for", () => {
 // ---- the release gate ------------------------------------------------------------------
 
 test("LAUNCHED: launch.js ships live with valid facts, and the static page already says the live wording", () => {
-  const src = read("aka/launch.js");
-  const cfg = JSON.parse(src.match(/window\.AKA_LAUNCH = (\{[\s\S]*?\});/)[1].replace(/(\w+):/g, '"$1":'));
+  const src = read("nee/launch.js");
+  const cfg = JSON.parse(src.match(/window\.NEE_LAUNCH = (\{[\s\S]*?\});/)[1].replace(/(\w+):/g, '"$1":'));
   assert.equal(cfg.live, true);
   assert.match(cfg.version, /^\d+\.\d+\.\d+$/);
   assert.match(cfg.sizeMb, /^\d{1,4}$/);
   assert.match(cfg.released, /^\d{4}-\d{2}-\d{2}$/);
   // The staged 1.0.0 disk image is 5,060,892 bytes, 5 MB to the nearest whole megabyte.
   if (cfg.version === "1.0.0") assert.equal(Math.round(5060892 / 1e6), Number(cfg.sizeMb));
-  const html = read("aka/index.html");
-  const gated = [...html.matchAll(/<a\b[^>]*data-aka-gated[^>]*>/g)].map((m) => m[0]);
+  const html = read("nee/index.html");
+  const gated = [...html.matchAll(/<a\b[^>]*data-nee-gated[^>]*>/g)].map((m) => m[0]);
   assert.ok(gated.length >= 2);
   for (const tag of gated) {
-    assert.match(tag, /\shref="\/\.netlify\/functions\/aka-download\?trial=1"/);
+    assert.match(tag, /\shref="\/\.netlify\/functions\/nee-download\?trial=1"/);
     assert.doesNotMatch(tag, /aria-disabled/);
   }
   assert.doesNotMatch(html, /<button\b[^>]*id="checkout-btn"[^>]*\sdisabled/);
-  assert.match(html, /id="checkout-btn" data-product="aka"[^>]*>Buy AKA<\/button>/);
-  assert.doesNotMatch(html, /Not released yet|opens at release|are listed here when|data-aka-pre-only/);
-  assert.doesNotMatch(html, /data-aka-live-only hidden/);
+  assert.match(html, /id="checkout-btn" data-product="nee"[^>]*>Buy Née<\/button>/);
+  assert.doesNotMatch(html, /Not released yet|opens at release|are listed here when|data-nee-pre-only/);
+  assert.doesNotMatch(html, /data-nee-live-only hidden/);
   assert.equal([...html.matchAll(/>Try it free for 7 days<\/a>/g)].length, 2);
   // What launch.js would write into the page is exactly what the static page already says.
   const nice = new Date(cfg.released + "T00:00:00Z").toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
   const facts = `Version ${cfg.version}, released ${nice}. ${cfg.sizeMb} MB disk image.`;
-  assert.ok(html.includes(`<span data-aka-facts>${facts}</span>`), "the static facts match launch.js");
+  assert.ok(html.includes(`<span data-nee-facts>${facts}</span>`), "the static facts match launch.js");
   assert.match(html, /<meta name="robots" content="index, follow">/);
   const llms = read("llms.txt");
-  assert.ok(llms.slice(llms.indexOf("### AKA (macOS)")).includes(`**Status:** Shipping, version ${cfg.version}`));
-  const sm = read("sitemap.xml").match(/<loc>https:\/\/purplelink\.llc\/aka\/<\/loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/);
-  assert.ok(sm, "aka is listed in the sitemap with a lastmod");
-  assert.ok(sm[1] >= "2026-11-02", `aka lastmod ${sm[1]} is on or after the launch day`);
+  assert.ok(llms.slice(llms.indexOf("### Née (macOS)")).includes(`**Status:** Shipping, version ${cfg.version}`));
+  const sm = read("sitemap.xml").match(/<loc>https:\/\/purplelink\.llc\/nee\/<\/loc>\s*<lastmod>(\d{4}-\d{2}-\d{2})<\/lastmod>/);
+  assert.ok(sm, "nee is listed in the sitemap with a lastmod");
+  assert.ok(sm[1] >= "2026-11-02", `nee lastmod ${sm[1]} is on or after the launch day`);
 });
 
 class FakeEl {
@@ -117,14 +117,14 @@ class FakeEl {
 
 function runLaunch(config) {
   const els = {
-    pre: new FakeEl({ "data-aka-pre-only": "" }),
-    live: new FakeEl({ "data-aka-live-only": "", hidden: "" }),
-    trial: new FakeEl({ "data-aka-gated": "", "data-aka-href": "/.netlify/functions/aka-download?trial=1", "data-aka-live-text": "Try it free for 7 days", "aria-disabled": "true", __text: "Free trial opens at release" }),
-    buy: new FakeEl({ "data-aka-gated": "", "data-aka-live-text": "Buy AKA", disabled: "", __text: "Buying opens at release" }),
-    facts: new FakeEl({ "data-aka-facts": "", __text: "placeholder" }),
-    sticky: new FakeEl({ "data-aka-sticky": "" }),
+    pre: new FakeEl({ "data-nee-pre-only": "" }),
+    live: new FakeEl({ "data-nee-live-only": "", hidden: "" }),
+    trial: new FakeEl({ "data-nee-gated": "", "data-nee-href": "/.netlify/functions/nee-download?trial=1", "data-nee-live-text": "Try it free for 7 days", "aria-disabled": "true", __text: "Free trial opens at release" }),
+    buy: new FakeEl({ "data-nee-gated": "", "data-nee-live-text": "Buy Née", disabled: "", __text: "Buying opens at release" }),
+    facts: new FakeEl({ "data-nee-facts": "", __text: "placeholder" }),
+    sticky: new FakeEl({ "data-nee-sticky": "" }),
   };
-  const by = { "[data-aka-pre-only]": [els.pre], "[data-aka-live-only]": [els.live], "[data-aka-gated]": [els.trial, els.buy], "[data-aka-facts]": [els.facts], "[data-aka-sticky]": [els.sticky] };
+  const by = { "[data-nee-pre-only]": [els.pre], "[data-nee-live-only]": [els.live], "[data-nee-gated]": [els.trial, els.buy], "[data-nee-facts]": [els.facts], "[data-nee-sticky]": [els.sticky] };
   const warnings = [];
   const ctx = {
     window: { console: { warn: (m) => warnings.push(m) } },
@@ -132,8 +132,8 @@ function runLaunch(config) {
     console: { warn: (m) => warnings.push(m) },
     Date, String, Array,
   };
-  ctx.window.AKA_LAUNCH = undefined;
-  const src = read("aka/launch.js").replace(/window\.AKA_LAUNCH = \{[\s\S]*?\};/, `window.AKA_LAUNCH = ${JSON.stringify(config)};`);
+  ctx.window.NEE_LAUNCH = undefined;
+  const src = read("nee/launch.js").replace(/window\.NEE_LAUNCH = \{[\s\S]*?\};/, `window.NEE_LAUNCH = ${JSON.stringify(config)};`);
   vm.runInNewContext(src, ctx);
   return { els, warnings };
 }
@@ -149,11 +149,11 @@ test("with live false the gated controls stay dead and the sticky bar is removed
 
 test("live true with every fact valid enables the trial link and Buy button and fills in the facts", () => {
   const { els } = runLaunch({ live: true, version: "1.0.0", sizeMb: "140", released: "2026-10-20" });
-  assert.equal(els.trial.getAttribute("href"), "/.netlify/functions/aka-download?trial=1");
+  assert.equal(els.trial.getAttribute("href"), "/.netlify/functions/nee-download?trial=1");
   assert.equal(els.trial.getAttribute("aria-disabled"), null);
   assert.equal(els.trial.textContent, "Try it free for 7 days");
   assert.equal(els.buy.disabled, false);
-  assert.equal(els.buy.textContent, "Buy AKA");
+  assert.equal(els.buy.textContent, "Buy Née");
   assert.equal(els.live.hidden, false);
   assert.equal(els.pre.hidden, true);
   assert.equal(els.facts.textContent, "Version 1.0.0, released October 20, 2026. 140 MB disk image.");
@@ -179,8 +179,8 @@ test("live true with a missing or malformed fact stays switched off and says why
 
 // ---- copy rules ------------------------------------------------------------------------
 
-test("the AKA pages have no inline styles, em or en dashes or emoji", () => {
-  for (const p of ["aka/index.html", "aka/success/index.html", "aka/launch.js", "aka/success.js", "aka/aka.css"]) {
+test("the Née pages have no inline styles, em or en dashes or emoji", () => {
+  for (const p of ["nee/index.html", "nee/success/index.html", "nee/launch.js", "nee/success.js", "nee/nee.css"]) {
     const src = read(p);
     if (p.endsWith(".html")) assert.doesNotMatch(src, /<[a-z][^>]*\sstyle\s*=/i, `${p} has an inline style`);
     assert.doesNotMatch(src, /[–—]/, `${p} has an em or en dash`);
@@ -189,11 +189,11 @@ test("the AKA pages have no inline styles, em or en dashes or emoji", () => {
 });
 
 test("the page says what it cannot do, in plain words", () => {
-  const text = visibleText(read("aka/index.html")).toLowerCase();
+  const text = visibleText(read("nee/index.html")).toLowerCase();
   assert.match(text, /the page layout is not kept/);
   assert.match(text, /background removal is poor on some images/);
   assert.match(text, /depend on what the mac supports/);
-  assert.match(text, /nothing you drop on aka is uploaded/);
+  assert.match(text, /nothing you drop on née is uploaded/);
   assert.match(text, /renames the originals/);
   assert.match(text, /macos 14/);
   assert.match(text, /apple silicon or intel/);
@@ -204,7 +204,7 @@ test("the page says what it cannot do, in plain words", () => {
 });
 
 test("the page claims nothing the app does not do, and uses none of the banned words", () => {
-  const html = read("aka/index.html");
+  const html = read("nee/index.html");
   const text = visibleText(html);
   assert.doesNotMatch(text, /guarantee|certified|100% (private|accurate|secure)|always accurate|never (wrong|misses)/i);
   assert.doesNotMatch(text, /seamless|supercharge|streamline|world-class|cutting-edge|revolutionary|effortless|AI-powered|game-chang|magic|blazing|lightning|powerful|best-in-class/i);
@@ -217,15 +217,15 @@ test("the page claims nothing the app does not do, and uses none of the banned w
   assert.match(text, /51 actions/);
 });
 
-test("the page says AKA is in the Mac Suite, links the Suite, and no longer says it is sold on its own", () => {
-  const html = read("aka/index.html");
+test("the page says Née is in the Mac Suite, links the Suite, and no longer says it is sold on its own", () => {
+  const html = read("nee/index.html");
   const main = html.slice(html.indexOf("<main"), html.indexOf("</main>"));
-  assert.match(main, /Also in the <a href="\/suite\/">Mac Suite<\/a>: [^<]*\bAKA\b[^<]*\$59\.99 once/);
+  assert.match(main, /Also in the <a href="\/suite\/">Mac Suite<\/a>: [^<]*\bNée[^<]*\$59\.99 once/);
   assert.doesNotMatch(visibleText(html), /sold on its own|not (part of|in) the (Mac )?Suite/i);
 });
 
 test("every image on the page exists, has a size and alt text, and none is an invented screenshot", () => {
-  for (const p of ["aka/index.html", "aka/success/index.html"]) {
+  for (const p of ["nee/index.html", "nee/success/index.html"]) {
     const html = read(p);
     for (const [tag, src] of [...html.matchAll(/<img\b[^>]*src="([^"]+)"[^>]*>/g)].map((m) => [m[0], m[1]])) {
       assert.ok(src.startsWith("/"), `${src} is not a local path`);
@@ -235,26 +235,26 @@ test("every image on the page exists, has a size and alt text, and none is an in
       assert.match(tag, /\salt="[^"]*"/);
     }
   }
-  const page = read("aka/index.html");
-  assert.match(page, /<meta property="og:image" content="https:\/\/purplelink\.llc\/assets\/og\/aka\.png">/);
-  assert.match(page, /<meta name="twitter:image" content="https:\/\/purplelink\.llc\/assets\/og\/aka\.png">/);
+  const page = read("nee/index.html");
+  assert.match(page, /<meta property="og:image" content="https:\/\/purplelink\.llc\/assets\/og\/nee\.png">/);
+  assert.match(page, /<meta name="twitter:image" content="https:\/\/purplelink\.llc\/assets\/og\/nee\.png">/);
   assert.match(page, /<meta name="twitter:card" content="summary_large_image">/);
-  const card = readFileSync(join(SITE, "assets/og/aka.png"));
+  const card = readFileSync(join(SITE, "assets/og/nee.png"));
   assert.equal(card.readUInt32BE(16), 1200);
   assert.equal(card.readUInt32BE(20), 630);
 });
 
 test("the demo video and its poster exist, and the page describes the video in text", () => {
-  const html = read("aka/index.html");
+  const html = read("nee/index.html");
   const src = html.match(/<source src="([^"]+)" type="video\/mp4">/)[1];
   assert.ok(existsSync(join(SITE, src)), `${src} is missing`);
-  assert.ok(existsSync(join(SITE, "assets/video/aka-poster.webp")));
-  assert.match(html, /aria-describedby="aka-video-desc"/);
+  assert.ok(existsSync(join(SITE, "assets/video/nee-poster.webp")));
+  assert.match(html, /aria-describedby="nee-video-desc"/);
   assert.match(visibleText(html), /The video is silent and has its own captions/);
 });
 
 test("the stylesheets, scripts and fonts the pages load all exist", () => {
-  for (const p of ["aka/index.html", "aka/success/index.html"]) {
+  for (const p of ["nee/index.html", "nee/success/index.html"]) {
     const html = read(p);
     const refs = [...html.matchAll(/<(?:link|script)\b[^>]*?(?:href|src)="(\/[^"?#]+\.(?:css|js|woff2|json|svg|png))(?:\?[^"]*)?"/g)].map((m) => m[1]);
     assert.ok(refs.length >= 5, `${p} loads ${refs.length} files`);
@@ -263,9 +263,9 @@ test("the stylesheets, scripts and fonts the pages load all exist", () => {
 });
 
 test("the success page is noindex, loads its script and has the download and key boxes", () => {
-  const html = read("aka/success/index.html");
+  const html = read("nee/success/index.html");
   assert.match(html, /<meta name="robots" content="noindex, nofollow">/);
-  assert.match(html, /src="\/aka\/success\.js/);
+  assert.match(html, /src="\/nee\/success\.js/);
   assert.match(html, /id="downloads"/);
   assert.match(html, /macOS 14/);
   assert.match(html, /data-license-keys/);
@@ -274,36 +274,36 @@ test("the success page is noindex, loads its script and has the download and key
 
 // ---- Terms and Privacy ------------------------------------------------------------------
 
-test("the Terms carry AKA's own section: price, refund, two Macs, new files, liability cap", () => {
+test("the Terms carry Née's own section: price, refund, two Macs, new files, liability cap", () => {
   const html = read("terms/index.html");
-  assert.match(html, /<h2>AKA: additional terms<\/h2>/);
-  const section = html.slice(html.indexOf("<h2>AKA: additional terms</h2>"), html.indexOf("<h2>Panely: additional terms</h2>"));
+  assert.match(html, /<h2>Née: additional terms<\/h2>/);
+  const section = html.slice(html.indexOf("<h2>Née: additional terms</h2>"), html.indexOf("<h2>Panely: additional terms</h2>"));
   assert.match(section, /\$14\.99 USD, once/);
   assert.match(section, /within 14 days of purchase/);
   assert.match(section, /full \$14\.99/);
   assert.match(section, /up to two of your own Macs/);
   assert.match(section, /Results are new files/);
-  assert.match(section, /Liability cap for AKA/);
-  assert.match(html, /Tapefolio, Lenscrib, AKA, Panely and Summonly Mac apps/);
+  assert.match(section, /Liability cap for Née/);
+  assert.match(html, /Tapefolio, Lenscrib, Née, Panely and Summonly Mac apps/);
 });
 
-test("the Privacy page says what AKA sends and does not send, and names its trial emails and recovery", () => {
+test("the Privacy page says what Née sends and does not send, and names its trial emails and recovery", () => {
   const html = read("privacy/index.html");
-  assert.match(html, /<strong>AKA<\/strong> has no account and no analytics/);
+  assert.match(html, /<strong>Née<\/strong> has no account and no analytics/);
   assert.match(html, /does not upload your files, their contents or their names/);
-  assert.match(html, /AKA trial emails<\/strong>/);
-  assert.match(html, /Lenscrib, AKA, Panely, Summonly, Mac Suite and kit purchases/);
+  assert.match(html, /Née trial emails<\/strong>/);
+  assert.match(html, /Lenscrib, Née, Panely, Summonly, Mac Suite and kit purchases/);
 });
 
-test("AKA is linked where the other live Mac apps are: nav, footer, home, products, pricing, Suite, sitemap, search index, llms files", () => {
+test("Née is linked where the other live Mac apps are: nav, footer, home, products, pricing, Suite, sitemap, search index, llms files", () => {
   for (const p of ["index.html", "products/index.html", "pricing/index.html", "suite/index.html", "sitemap.xml", "llms.txt", "pricing.md", "legroom/index.html", "404.html"]) {
-    assert.match(read(p), /\/aka\//, `${p} does not link /aka/`);
+    assert.match(read(p), /\/nee\//, `${p} does not link /nee/`);
   }
-  assert.match(read("site.js"), /\/aka\//);
-  assert.match(read("analytics.js"), /aka-download\?trial=1[\s\S]{0,120}aka_trial_download/);
-  assert.match(read("analytics.js"), /\|aka_trial_download\|/);
-  assert.match(read("llms-full.txt"), /https:\/\/purplelink\.llc\/aka\//);
-  assert.match(read("search-index.json"), /\/aka\//);
+  assert.match(read("site.js"), /\/nee\//);
+  assert.match(read("analytics.js"), /nee-download\?trial=1[\s\S]{0,120}nee_trial_download/);
+  assert.match(read("analytics.js"), /\|nee_trial_download\|/);
+  assert.match(read("llms-full.txt"), /https:\/\/purplelink\.llc\/nee\//);
+  assert.match(read("search-index.json"), /\/nee\//);
 });
 
 // ---- the success page's script, against a fake DOM ---------------------------------------
@@ -325,25 +325,25 @@ function runSuccess({ search, fetchImpl }) {
     fetch: (url) => { fetched.push(url); return fetchImpl(url); },
     Promise,
   };
-  vm.runInNewContext(readFileSync(join(SITE, "aka/success.js"), "utf8"), ctx);
+  vm.runInNewContext(readFileSync(join(SITE, "nee/success.js"), "utf8"), ctx);
   return { nodes, fetched };
 }
 const reply = (status, body) => Promise.resolve({ ok: status < 400, status, json: () => Promise.resolve(body) });
 const tick = () => new Promise((r) => setTimeout(r, 20));
 const SID = "cs_live_abcdefghij1234";
 
-test("/aka/success/ asks aka-download for the session and shows a download button", async () => {
+test("/nee/success/ asks nee-download for the session and shows a download button", async () => {
   const { nodes, fetched } = runSuccess({
     search: `?session_id=${SID}`,
-    fetchImpl: () => reply(200, { files: [{ key: "AKA-1.0.0.dmg", label: "AKA 1.0.0 for macOS (disk image)", url: "/.netlify/functions/aka-download?session_id=x&file=AKA-1.0.0.dmg" }] }),
+    fetchImpl: () => reply(200, { files: [{ key: "Nee-1.0.0.dmg", label: "Née 1.0.0 for macOS (disk image)", url: "/.netlify/functions/nee-download?session_id=x&file=Nee-1.0.0.dmg" }] }),
   });
   await tick();
-  assert.deepEqual(fetched, [`/.netlify/functions/aka-download?session_id=${SID}`]);
-  assert.match(nodes.downloads.innerHTML, /Download: AKA 1\.0\.0 for macOS/);
-  assert.match(nodes.downloads.innerHTML, /aka-download\?session_id=x&amp;file=AKA-1\.0\.0\.dmg/);
+  assert.deepEqual(fetched, [`/.netlify/functions/nee-download?session_id=${SID}`]);
+  assert.match(nodes.downloads.innerHTML, /Download: Née 1\.0\.0 for macOS/);
+  assert.match(nodes.downloads.innerHTML, /nee-download\?session_id=x&amp;file=Nee-1\.0\.0\.dmg/);
 });
 
-test("/aka/success/ shows the server's reason when refused, and never fetches for a bad id", async () => {
+test("/nee/success/ shows the server's reason when refused, and never fetches for a bad id", async () => {
   const refused = runSuccess({ search: `?session_id=${SID}`, fetchImpl: () => reply(403, { error: "not_entitled", detail: "This order is for a different product." }) });
   await tick();
   assert.match(refused.nodes.downloads.innerHTML, /This order is for a different product\./);
@@ -351,4 +351,19 @@ test("/aka/success/ shows the server's reason when refused, and never fetches fo
   await tick();
   assert.equal(bad.fetched.length, 0);
   assert.match(bad.nodes.downloads.innerHTML, /receipt email/);
+});
+
+// ---- spelling: "Née" for people, ASCII "nee" for machines (Ben, 2026-11-02) ------------------
+test("the product name reads Née, and every URL, id and file name uses ASCII nee", () => {
+  for (const p of ["nee/index.html", "nee/success/index.html", "guides/free-offline-file-converters-mac/index.html", "suite/index.html"]) {
+    const html = read(p);
+    const text = visibleText(html);
+    assert.match(text, /Née/, `${p}: the name is shown as Née`);
+    assert.doesNotMatch(text, /\bNee\b(?!-\d)/, `${p}: no unaccented "Nee" in visible text (file names like Nee-1.0.0.dmg are ASCII on purpose)`);
+    assert.doesNotMatch(text, /\bAKA\b/, `${p}: the old name is gone`);
+    for (const m of html.matchAll(/(?:href|src|action|content)="([^"]*)"/g)) {
+      if (/^(https?:\/\/purplelink\.llc)?\//.test(m[1])) assert.doesNotMatch(m[1], /[éÉ]|%C3%A9/i, `${p}: URL ${m[1]} is ASCII`);
+    }
+  }
+  assert.ok(existsSync(join(SITE, "nee", "index.html")) && !existsSync(join(SITE, "aka")), "the page lives at /nee/, not /aka/");
 });

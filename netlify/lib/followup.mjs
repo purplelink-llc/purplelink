@@ -33,7 +33,7 @@ export const FOLLOWUP_PRODUCTS = {
   keyfeel: "Keyfeel",
   tapefolio: "Tapefolio",
   lenscrib: "Lenscrib",
-  aka: "AKA",
+  nee: "Née",
   panely: "Panely",
   summonly: "Summonly",
   "app-suite": "the Mac Suite",

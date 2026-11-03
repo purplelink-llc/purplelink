@@ -1,6 +1,6 @@
-"""The guide "Free offline file converters for Mac" is listed since the AKA launch (2026-11-02).
+"""The guide "Free offline file converters for Mac" is listed since the Née launch (2026-11-02).
 
-It is indexable, in the sitemap and the guides index, and links /aka/ once, in one short section that says AKA is
+It is indexable, in the sitemap and the guides index, and links /nee/ once, in one short section that says Née is
 available for $14.99 after a 7-day trial.
 """
 import html
@@ -36,18 +36,18 @@ class ConvertersGuide(unittest.TestCase):
         src = (ROOT / "scripts" / "gen_llms_full.py").read_text(encoding="utf-8")
         self.assertIn(f'"guides/{SLUG}/"', src)
 
-    # ---- the AKA section
-    def test_launch_marker_gone_and_aka_linked_once(self):
+    # ---- the Née section
+    def test_launch_marker_gone_and_nee_linked_once(self):
         self.assertNotIn("launch: link", self.text)
         article = re.search(r"<article.*?</article>", self.text, re.S).group(0)
-        self.assertEqual(len(re.findall(r'href="/aka/"', article)), 1)
+        self.assertEqual(len(re.findall(r'href="/nee/"', article)), 1)
 
-    def test_aka_named_in_one_section_only(self):
+    def test_nee_named_in_one_section_only(self):
         body = re.search(r"<article.*?</article>", self.text, re.S).group(0)
         sections = re.split(r"(?=<h2>)", body)
-        with_aka = [sec for sec in sections if "AKA" in strip_tags(sec)]
-        self.assertEqual(len(with_aka), 1)
-        text = " ".join(strip_tags(with_aka[0]).split())
+        with_nee = [sec for sec in sections if "Née" in strip_tags(sec)]
+        self.assertEqual(len(with_nee), 1)
+        text = " ".join(strip_tags(with_nee[0]).split())
         self.assertIn("$14.99", text)
         self.assertIn("7-day trial", text)
         self.assertIn("available", text)

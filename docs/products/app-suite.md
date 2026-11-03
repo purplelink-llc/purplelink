@@ -6,15 +6,15 @@ price went to $54 on the `keyfeel-store` branch (2026-10-07, see `keyfeel.md`); 
 price ends in .99, so the Suite became $59.99 (Outbound Veil $29.99, Legroom $9.99); Tapefolio joined on 2026-10-09 with
 the price left at $59.99 by the owner's decision (see "Tapefolio joined" below and `tapefolio.md`).
 
-## AKA joins (2026-11-02, with the AKA launch PR), price unchanged
-AKA ($14.99, `aka.md`) is the eighth Mac app, so the Suite is eight apps and Vitae Plus: nine parts in custom bundles, and
+## Née joins (2026-11-02, with the Née launch PR), price unchanged
+Née ($14.99, `nee.md`) is the eighth Mac app, so the Suite is eight apps and Vitae Plus: nine parts in custom bundles, and
 it stays $59.99 (Ben decided yes on 2026-11-02; the pick-2 $34.99 and pick-3 $44.99 prices are unchanged too). The parts
 come to $158.91 the first year (ModernTex $19.99, Outbound Veil $29.99, Legroom $9.99, Keyfeel $9.99, Tapefolio $29.99,
-Panely $9.99, Summonly $9.99, AKA $14.99, Vitae Plus $23.99); the Suite and products pages round that to $159.
-`legroom-site.test.mjs` checks the rows against the shown total. Past Suite buyers get AKA at no charge: their
-`app-suite` session unlocks `aka-download` and an `AKA1` key (derived from the session id, so the success page, receipt
-and `/recover/` agree). `inSuite` was removed from the `aka` entry in `netlify/lib/license.mjs` (the switch itself still
-works for the next hidden app). A custom bundle that names AKA is entitled through `bundleHasPart` in `aka-download.mjs`.
+Panely $9.99, Summonly $9.99, Née $14.99, Vitae Plus $23.99); the Suite and products pages round that to $159.
+`legroom-site.test.mjs` checks the rows against the shown total. Past Suite buyers get Née at no charge: their
+`app-suite` session unlocks `nee-download` and an `NEE1` key (derived from the session id, so the success page, receipt
+and `/recover/` agree). `inSuite` was removed from the `nee` entry in `netlify/lib/license.mjs` (the switch itself still
+works for the next hidden app). A custom bundle that names Née is entitled through `bundleHasPart` in `nee-download.mjs`.
 
 ## Panely and Summonly joined (2026-10-12, prepared, not live), price unchanged
 Panely ($9.99, `panely.md`) and Summonly ($9.99, `summonly.md`) are the sixth and seventh apps, so the Suite is seven apps and Vitae Plus, eight

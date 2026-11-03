@@ -1,5 +1,5 @@
-# python3 aka-spot-bed.py out/aka/aka-spot-bed.wav  (then node build-aka-spot.mjs muxes it into aka-spot-music.mp4)
-# 120 BPM synth bed for the AKA spot, 18 s, laid on the cut grid: intro 4 beats, cuts 22 beats, strobe 2, end 8.
+# python3 nee-spot-bed.py out/nee/nee-spot-bed.wav  (then node build-nee-spot.mjs muxes it into nee-spot-music.mp4)
+# 120 BPM synth bed for the Née spot, 18 s, laid on the cut grid: intro 4 beats, cuts 22 beats, strobe 2, end 8.
 import numpy as np, wave, sys
 SR=48000; BPM=120; B=60/BPM; TOTAL=52*B
 O=12  # problem beats before the old intro; cuts run beats O+4..O+30, strobe to O+32, end card from O+32
@@ -34,7 +34,7 @@ chords=[[57,60,64],[53,57,60],[48,52,55],[55,59,62]]  # Am F C G
 roots=[45,41,48,43]
 pump=np.ones(n)
 beats=int(TOTAL/B)
-# The problem: a ticking clock over a low drone, a riser into the fold, a hit when AKA appears.
+# The problem: a ticking clock over a low drone, a riser into the fold, a hit when Née appears.
 for b in range(8):
     for h in range(2): add(hat(0.03),b*B+h*B/2,pan=-0.2,g=0.35 if h else 0.6)
 add(pad([nf(m) for m in [45,52,57]],8*B)*0.7,0)

@@ -1,22 +1,22 @@
 /**
- * Netlify Function — AKA delivery. One private Blobs store, three doors: purchase, trial, update channel.
- * Part of the Mac Suite and the custom bundles: a Suite session or a bundle that names AKA unlocks the same download.
+ * Netlify Function — Née delivery. One private Blobs store, three doors: purchase, trial, update channel.
+ * Part of the Mac Suite and the custom bundles: a Suite session or a bundle that names Née unlocks the same download.
  *
  *   Purchase (browser, after Stripe Checkout):
- *     GET /.netlify/functions/aka-download?session_id=cs_…            -> JSON {files:[…]}
- *     GET /.netlify/functions/aka-download?session_id=cs_…&file=<dmg> -> the DMG
+ *     GET /.netlify/functions/nee-download?session_id=cs_…            -> JSON {files:[…]}
+ *     GET /.netlify/functions/nee-download?session_id=cs_…&file=<dmg> -> the DMG
  *
- *   Free trial (public, no session). There is ONE app: it runs free for 7 days and a license key (AKA1-…, the shared
+ *   Free trial (public, no session). There is ONE app: it runs free for 7 days and a license key (NEE1-…, the shared
  *   PurplelinkLicenseV1 scheme in netlify/lib/license.mjs) keeps it unlocked, so the trial door serves the same
  *   newest build buyers get:
- *     GET /.netlify/functions/aka-download?trial=1                      -> newest AKA-x.y.z.dmg
+ *     GET /.netlify/functions/nee-download?trial=1                      -> newest Nee-x.y.z.dmg
  *     While nothing is launched there is no DMG in the store, so this door answers 404 and stays closed.
  *
  *   Updates (Sparkle inside the app, never a browser):
- *     GET /.netlify/functions/aka-download?feed=1                       -> appcast.xml
- *     GET /.netlify/functions/aka-download?update=<dmg>                 -> the DMG
- *     GET /.netlify/functions/aka-download?stats=1                      -> download counts (JSON)
- *     All three require the header  X-AKA-Channel: <AKA_UPDATE_TOKEN>,
+ *     GET /.netlify/functions/nee-download?feed=1                       -> appcast.xml
+ *     GET /.netlify/functions/nee-download?update=<dmg>                 -> the DMG
+ *     GET /.netlify/functions/nee-download?stats=1                      -> download counts (JSON)
+ *     All three require the header  X-Nee-Channel: <NEE_UPDATE_TOKEN>,
  *     which build.sh compiles into the app and UpdaterService sends on every
  *     Sparkle request. The token is a shared secret in a shipped binary, so it
  *     keeps the update channel off the open web rather than defeating a
@@ -26,10 +26,10 @@
  *     anything the app itself calls.
  *
  * The DMGs and appcast are NOT part of the published site. They live only in the
- * private `aka-files` Blobs store (the release script in the AKA repo
- * uploads them; see docs/products/aka.md). Responses stream straight from Blobs, which keeps a 13 MB disk
+ * private `nee-files` Blobs store (the release script in the Née repo
+ * uploads them; see docs/products/nee.md). Responses stream straight from Blobs, which keeps a 13 MB disk
  * image clear of the 6 MB buffered-response limit. Each served `update=<dmg>` also
- * increments a plain counter in the `aka-stats` store (see `stats=1` above) —
+ * increments a plain counter in the `nee-stats` store (see `stats=1` above) —
  * counts requests, not confirmed completions or unique machines.
  */
 import { createHash } from "node:crypto";
@@ -38,11 +38,11 @@ import { bundleHasPart } from "../lib/bundles.mjs";
 import { revocationFor, REVOKED_DETAIL } from "../lib/refunds.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
-const FILE_STORE = "aka-files";
-const STATS_STORE = "aka-stats";
-const PRODUCT_KEY = "aka";
+const FILE_STORE = "nee-files";
+const STATS_STORE = "nee-stats";
+const PRODUCT_KEY = "nee";
 const SUITE_KEY = "app-suite";
-const DMG_NAME = /^AKA-\d+\.\d+\.\d+\.dmg$/;
+const DMG_NAME = /^Nee-\d+\.\d+\.\d+\.dmg$/;
 const TRIAL_DAILY_LIMIT = 20;
 
 /** Durable per-file download count, in the same Blobs-as-counter style already used
@@ -77,7 +77,7 @@ async function loadSession(sessionId) {
       headers: { Authorization: `Bearer ${secretKey}` },
     });
   } catch (err) {
-    console.error("aka-download: stripe request failed:", err?.name, err?.message);
+    console.error("nee-download: stripe request failed:", err?.name, err?.message);
     return { error: json(502, { error: "stripe_unreachable", detail: "Could not reach the payment processor. Try again in a minute." }) };
   }
   if (!resp.ok) return { error: json(403, { error: "session_not_found", detail: "That download link is not valid for this store." }) };
@@ -87,7 +87,7 @@ async function loadSession(sessionId) {
   if (await revocationFor(session)) return { error: json(403, { error: "refunded", detail: REVOKED_DETAIL }) };
   // The Mac Suite, and a custom bundle that names this app, include it, so their sessions unlock the same download.
   const bought = session.metadata?.product || "";
-  if (bought !== PRODUCT_KEY && bought !== SUITE_KEY && !bundleHasPart(bought, session.metadata, "aka")) {
+  if (bought !== PRODUCT_KEY && bought !== SUITE_KEY && !bundleHasPart(bought, session.metadata, "nee")) {
     return { error: json(403, { error: "not_entitled", detail: "This order is for a different product." }) };
   }
   return { session };
@@ -129,7 +129,7 @@ async function streamBlob(store, key, type, disposition) {
  *
  * Sparkle's `generate_appcast --download-url-prefix` resolves each filename as a
  * relative URL against the prefix, so a prefix carrying a query string
- * (`…/aka-download?update=`) collapses to `…/functions/AKA-1.0.0.dmg`,
+ * (`…/nee-download?update=`) collapses to `…/functions/Nee-1.0.0.dmg`,
  * which 404s and breaks in-app updates. publish-release.sh now post-processes its own
  * output, but the feed is rewritten here too so a stale or hand-uploaded appcast
  * in the store can never ship a dead download link to installed copies.
@@ -150,8 +150,8 @@ async function serveFeed(store) {
   const fixed = xml.includes("<!-- sparkle-signatures:")
     ? xml
     : xml.replace(
-        /url="[^"]*\/(AKA-\d+\.\d+\.\d+\.dmg)"/g,
-        (_m, name) => `url="https://purplelink.llc/.netlify/functions/aka-download?update=${name}"`,
+        /url="[^"]*\/(Nee-\d+\.\d+\.\d+\.dmg)"/g,
+        (_m, name) => `url="https://purplelink.llc/.netlify/functions/nee-download?update=${name}"`,
       );
   return new Response(fixed, {
     status: 200,
@@ -189,10 +189,10 @@ export default async function handler(request) {
   const updateFile = url.searchParams.get("update") || "";
   const wantsStats = url.searchParams.get("stats") === "1";
   if (wantsFeed || updateFile || wantsStats) {
-    const expected = Netlify.env.get("AKA_UPDATE_TOKEN") || "";
-    const presented = request.headers.get("x-aka-channel") || "";
+    const expected = Netlify.env.get("NEE_UPDATE_TOKEN") || "";
+    const presented = request.headers.get("x-nee-channel") || "";
     if (!expected || !timingSafeEqual(presented, expected)) {
-      return json(403, { error: "forbidden", detail: "Updates are delivered inside AKA." });
+      return json(403, { error: "forbidden", detail: "Updates are delivered inside Née." });
     }
     if (wantsFeed) return serveFeed(store);
     if (wantsStats) {
@@ -231,8 +231,8 @@ export default async function handler(request) {
       product: PRODUCT_KEY,
       files: [{
         key: latest,
-        label: `AKA ${version} for macOS (disk image)`,
-        url: `/.netlify/functions/aka-download?session_id=${encodeURIComponent(sessionId)}&file=${encodeURIComponent(latest)}`,
+        label: `Née ${version} for macOS (disk image)`,
+        url: `/.netlify/functions/nee-download?session_id=${encodeURIComponent(sessionId)}&file=${encodeURIComponent(latest)}`,
       }],
     });
   }

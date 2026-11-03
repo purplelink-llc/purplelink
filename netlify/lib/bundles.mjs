@@ -18,7 +18,7 @@ export const BUNDLE_PARTS = [
   { slug: "tapefolio",     label: "Tapefolio" },
   { slug: "panely",      label: "Panely" },
   { slug: "summonly",      label: "Summonly" },
-  { slug: "aka",           label: "AKA" },
+  { slug: "nee",           label: "Née" },
   { slug: "vitae-plus",    label: "Vitae Plus for life" },
 ];
 export const BUNDLE_SLUGS = BUNDLE_PARTS.map((p) => p.slug);
