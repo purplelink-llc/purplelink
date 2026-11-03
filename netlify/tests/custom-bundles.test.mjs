@@ -65,13 +65,13 @@ const bundle = (product, apps, over = {}) => ({ id: SID, status: "complete", pay
 
 // ---- the price table and the helper ----
 
-test("two prices, below the Suite, above the dearest single app, and the eight parts are the Suite's eight", () => {
+test("two prices, below the Suite, above the dearest single app, and the nine parts are the Suite's nine", () => {
   assert.deepEqual(lib.BUNDLES, { "bundle-2": { count: 2, cents: 3499 }, "bundle-3": { count: 3, cents: 4499 } });
   const dearestSingle = 2999;
   assert.ok(lib.BUNDLES["bundle-2"].cents > dearestSingle, "pick 2 costs more than any single app");
   assert.ok(lib.BUNDLES["bundle-2"].cents < lib.BUNDLES["bundle-3"].cents);
   assert.ok(lib.BUNDLES["bundle-3"].cents < 5999, "pick 3 stays under the Suite");
-  assert.deepEqual(lib.BUNDLE_SLUGS, ["moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "panely", "summonly", "vitae-plus"]);
+  assert.deepEqual(lib.BUNDLE_SLUGS, ["moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "panely", "summonly", "nee", "vitae-plus"]);
 });
 
 test("the page's price tables are the server's", () => {
@@ -101,8 +101,8 @@ test("parsing: exactly the right number of different, known parts, in the canoni
   assert.equal(lib.parseBundleParts(["moderntex", "moderntex", "legroom"], 3), null, "a duplicate cannot pad the count");
 });
 
-test("entitlements: the Suite is all eight, a bundle its parts, a single app itself, a mismatched bundle nothing", () => {
-  assert.equal(lib.entitledParts("app-suite", {}).size, 8);
+test("entitlements: the Suite is all nine, a bundle its parts, a single app itself, a mismatched bundle nothing", () => {
+  assert.equal(lib.entitledParts("app-suite", {}).size, 9);
   assert.deepEqual([...lib.entitledParts("bundle-2", { apps: "legroom,keyfeel" })], ["legroom", "keyfeel"]);
   assert.deepEqual([...lib.entitledParts("legroom", {})], ["legroom"]);
   assert.deepEqual([...lib.entitledParts("moderntex-seats", {})], ["moderntex"]);
@@ -234,7 +234,7 @@ test("purchase-license returns a bundle's keys and its parts, and the Suite's ke
   session = { id: SID, payment_status: "paid", metadata: { product: "app-suite" } };
   body = await (await ask()).json();
   assert.equal(body.parts, undefined);
-  assert.equal(body.keys.length, 3);
+  assert.equal(body.keys.length, 4, "ModernTex, Outbound Veil, Legroom and Née");
   session = bundle("bundle-2", "moderntex,legroom,keyfeel");
   assert.equal((await ask()).status, 403, "a bundle with a bad parts list is refused");
 });

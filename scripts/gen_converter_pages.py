@@ -7,7 +7,7 @@ The topbar, footer and head boilerplate are copied from /tools/metadata-cleaner/
 them. Design: docs/designs/browser-file-converters.md.
 
   python3 scripts/gen_converter_pages.py      # write the pages
-  python3 scripts/apply_layout.py && python3 scripts/fingerprint_assets.py   # then, as for any page
+  python3 scripts/apply_layout.py   # then, as for any page (the build adds the ?v= stamps)
 """
 from __future__ import annotations
 
@@ -290,8 +290,8 @@ PAGES = [
             ("Is it free?",
              "Yes. There is no account and no watermark."),
         ],
-        "related": [("/tools/png-to-icns/", "PNG to ICNS"), ("/tools/webp-to-png/", "WebP to PNG"),
-                    ("/tools/heic-to-jpg/", "HEIC to JPG")],
+        "related": [("/tools/png-to-icns/", "PNG to ICNS"), ("/tools/photo-to-logo/", "Photo to Logo"),
+                    ("/tools/webp-to-png/", "WebP to PNG"), ("/tools/heic-to-jpg/", "HEIC to JPG")],
     },
     {
         "slug": "jpg-to-pdf",

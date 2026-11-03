@@ -13,4 +13,7 @@ One module per item: `test_m1_*` (latex-errors and templates link the editors gu
 `test_facts_consistency`, `test_intl_moderntex` (hreflang across the six ModernTex pages, no Google on /zh-cn/, sitemap alternates).
 
 `scripts/verify_roadmap_live.py` is the live counterpart (needs the network and Ben's Mac); it is not run in CI.
+Locally the pages are bare (no `?v=` stamps). CI stamps its checkout first, as the Netlify build does, so tests that
+check a stamp use `common.STAMP`, which requires it only under `CI=true`.
+
 The Node tests run with `node --experimental-test-module-mocks --test netlify/tests/*.test.mjs`.

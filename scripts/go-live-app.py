@@ -4,20 +4,19 @@
     python3 scripts/go-live-app.py panely 1.0.0 4 2026-10-20
 
 Run it AFTER the release is published to the app's Blobs store (scripts/publish-release.sh in the app repo) and the
-update token and license key secrets are set on Netlify. It does the five things that make the page real:
+update token and license key secrets are set on Netlify. It does the four things that make the page real:
   1. site/<slug>/launch.js: live true, with the version, the disk image size in whole MB and the release date;
   2. site/<slug>/index.html: robots "index, follow", and the offer availability InStock;
   3. site/sitemap.xml: lists /<slug>/ (success pages are never listed);
-  4. restamps asset versions (scripts/fingerprint_assets.py);
-  5. prints the checks to run next.
+  4. prints the checks to run next. (Asset ?v= stamps are added by the build, not committed.)
 Idempotent. It does not touch checkout, the webhook or the Suite: those are in the launch-day commit it ships with.
 """
-import re, subprocess, sys
+import re, sys
 from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SLUGS = ("panely", "summonly")
+SLUGS = ("panely", "summonly", "nee")
 
 def main(argv):
     if len(argv) != 5 or argv[1] not in SLUGS:
@@ -38,7 +37,7 @@ def main(argv):
     h = h.replace('"availability": "https://schema.org/PreOrder"', '"availability": "https://schema.org/InStock"')
     h = re.sub(r"<!-- LAUNCH CHECKLIST.*?-->\n", "", h, count=1, flags=re.S)
     # The static HTML goes live too, so the page is right with scripts off. The tags below are the ones launch.js switches.
-    pf = {"panely": "pf", "summonly": "lf"}[slug]
+    pf = {"panely": "pf", "summonly": "lf", "nee": "nee"}[slug]
     def gated(m):
         tag = m.group(0)
         href = re.search(rf'data-{pf}-href="([^"]+)"', tag).group(1)
@@ -46,11 +45,15 @@ def main(argv):
         tag = tag.replace(' aria-disabled="true"', f' href="{href}"')
         return re.sub(r">[^<]*</a>$", f">{text}</a>", tag)
     h = re.sub(rf'<a\b[^>]*data-{pf}-gated[^>]*>[^<]*</a>', gated, h)
-    h = re.sub(r'(<button\b[^>]*id="checkout-btn"[^>]*?) disabled', r"\1", h)
+    def btn(m):
+        tag = m.group(0).replace(" disabled", "", 1)
+        text = re.search(rf'data-{pf}-live-text="([^"]+)"', tag)
+        return re.sub(r">[^<]*</button>$", f">{text.group(1)}</button>", tag) if text else tag
+    h = re.sub(r'<button\b[^>]*id="checkout-btn"[^>]*>[^<]*</button>', btn, h)
     h = re.sub(rf'\s*<span class="product-status product-status-soon" data-{pf}-pre-only>[^<]*</span>', "", h)
     h = re.sub(rf'(data-{pf}-live-only) hidden', r"\1", h)
     nice = date.fromisoformat(released).strftime("%B %-d, %Y")
-    h = re.sub(rf'(data-{pf}-facts>)[^<]*(</p>)', lambda m: f'{m.group(1)}Version {version}, released {nice}. {size} MB disk image.{m.group(2)}', h)    # also replaces an older version's text
+    h = re.sub(rf'(data-{pf}-facts>)[^<]*(</(?:p|span)>)', lambda m: f'{m.group(1)}Version {version}, released {nice}. {size} MB disk image.{m.group(2)}', h)    # also replaces an older version's text
     page.write_text(h)
 
     sm = site / "sitemap.xml"; x = sm.read_text()
@@ -59,7 +62,6 @@ def main(argv):
         x = x.replace("</urlset>", entry + "</urlset>", 1) if "</urlset>" in x else sys.exit("no </urlset> in sitemap.xml")
         sm.write_text(x)
 
-    subprocess.run([sys.executable, str(ROOT / "scripts" / "fingerprint_assets.py")], check=True)
     print(f"{slug} {version} is switched on in the files. Next: node --experimental-test-module-mocks --test netlify/tests/*.test.mjs; "
           f"python3 -m unittest discover -s site-tests; then merge, and verify https://purplelink.llc/{slug}/ and a 100%-off test purchase.")
 

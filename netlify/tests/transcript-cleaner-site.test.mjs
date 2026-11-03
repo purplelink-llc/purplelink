@@ -11,6 +11,7 @@ import assert from "node:assert/strict";
 import { readFileSync, statSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { STAMP } from "./_stamp.mjs";
 
 const SITE = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "site");
 const read = (p) => readFileSync(join(SITE, p), "utf8");
@@ -163,10 +164,10 @@ test("share image and tool card images exist and are not empty", () => {
 });
 
 test("the page's local assets exist and carry a content hash", () => {
-  for (const m of html.matchAll(/(?:src|href)="(\/tools\/transcript-cleaner\/[^"?]+)\?v=([0-9a-f]{10})"/g)) {
+  for (const m of html.matchAll(new RegExp(`(?:src|href)="(/tools/transcript-cleaner/[^"?]+)${STAMP}"`, "g"))) {
     assert.ok(existsSync(join(SITE, m[1])), m[1]);
   }
-  assert.match(html, /transcript-cleaner-core\.js\?v=[0-9a-f]{10}/);
+  assert.match(html, new RegExp(`transcript-cleaner-core\\.js${STAMP}"`));
 });
 
 test("NVivo and MAXQDA output: a keyboard-usable radio group, plain copy that does not claim an import test", () => {

@@ -78,3 +78,5 @@ def _isolate_durable_volume(monkeypatch):
         store = getattr(backend_app, name, None)
         if hasattr(store, "_volume"):
             monkeypatch.setattr(store, "_volume", MemVolume())
+    # Stores built per call (_buddy_claims) read the module's volume.
+    monkeypatch.setattr(backend_app, "durable_volume", MemVolume())

@@ -72,11 +72,11 @@ test("checkout sells Panely and Summonly at $9.99 each, with their own success p
   }
 });
 
-test("the Suite line names all seven apps and stays $59.99", async () => {
+test("the Suite line names all eight apps and stays $59.99", async () => {
   await post({ product: "app-suite" });
   const p = stripeParams();
   assert.equal(p.get("line_items[0][price_data][unit_amount]"), "5999");
-  assert.match(p.get("line_items[0][price_data][product_data][name]"), /Tapefolio, Panely, Summonly and Vitae Plus for life/);
+  assert.match(p.get("line_items[0][price_data][product_data][name]"), /Tapefolio, Panely, Summonly, Née and Vitae Plus for life/);
 });
 
 test("a custom bundle can hold the two new apps, priced by count", async () => {

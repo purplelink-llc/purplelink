@@ -96,13 +96,13 @@ export const BLOB_DELIVERED_PRODUCTS = new Map([
   ["keyfeel",           { name: "Keyfeel for macOS",                 successPath: "/keyfeel/success/" }],
   ["tapefolio",         { name: "Tapefolio for macOS",               successPath: "/tapefolio/success/" }],
   ["lenscrib",          { name: "Lenscrib for macOS",                successPath: "/lenscrib/success/" }],
-  ["aka",          { name: "AKA for macOS",                successPath: "/aka/success/" }],
+  ["nee",          { name: "Née for macOS",                successPath: "/nee/success/" }],
   ["panely",          { name: "Panely for macOS",                successPath: "/panely/success/" }],
   ["summonly",          { name: "Summonly for macOS",                successPath: "/summonly/success/" }],
-  // Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Panely + Summonly + Vitae Plus for life. /suite/success/
-  // lists all seven downloads and asks vitae-license.mjs for the lifetime Vitae Plus key.
+  // Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Panely + Summonly + Née + Vitae Plus for life. /suite/success/
+  // lists all eight downloads and asks vitae-license.mjs for the lifetime Vitae Plus key.
   ["app-suite",         { name: "the Purplelink Mac Suite",          successPath: "/suite/success/" }],
-  // Custom bundles: any 2 or any 3 of the eight Suite parts, one fixed price (netlify/lib/bundles.mjs). The same page
+  // Custom bundles: any 2 or any 3 of the nine Suite parts, one fixed price (netlify/lib/bundles.mjs). The same page
   // lists only the chosen parts; each download function and vitae-license.mjs read metadata.apps back.
   ["bundle-2",          { name: "the Purplelink Mac Suite custom bundle", successPath: "/suite/success/" }],
   ["bundle-3",          { name: "the Purplelink Mac Suite custom bundle", successPath: "/suite/success/" }],
@@ -323,7 +323,7 @@ export function paperReviewOffer(productKey, nowMs = Date.now()) {
 // when a calendar stops being a sensible gift. Ben approved this exact text on 2026-10-31 (photo-arm plan, idea 3).
 // Stop rule: no calendar sale by December 10 means this line comes out early.
 export const CALENDAR_LINE_LAST_DAY_MS = Date.UTC(2027, 0, 15, 23, 59, 59);
-const CALENDAR_LINE_PRODUCTS = new Set(["moderntex", "moderntex-seats", "outbound-veil", "legroom", "keyfeel", "tapefolio", "lenscrib", "aka",
+const CALENDAR_LINE_PRODUCTS = new Set(["moderntex", "moderntex-seats", "outbound-veil", "legroom", "keyfeel", "tapefolio", "lenscrib", "nee",
   "panely", "summonly", "app-suite", "bundle-2", "bundle-3"]);
 
 export function calendarOffer(productKey, nowMs = Date.now()) {
@@ -393,11 +393,11 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
   const reviewHtmlBlock = reviewApp ? `<p>${reviewAsk}</p>` : "";
   // Mac Suite: say what is on the page, since one link carries six things.
   const suiteText = isSuite
-    ? `That page has eight things: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely and Summonly downloads, and your Vitae Plus key ` +
+    ? `That page has nine things: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Née downloads, and your Vitae Plus key ` +
       `(for life; in Vitae open Settings, then Vitae Plus, paste it and click Activate). Vitae itself is a free download from the same page.\n\n`
     : "";
   const suiteHtml = isSuite
-    ? `<p>That page has eight things: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely and Summonly downloads, and your Vitae Plus key ` +
+    ? `<p>That page has nine things: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Née downloads, and your Vitae Plus key ` +
       `(for life; in Vitae open Settings, then Vitae Plus, paste it and click Activate). Vitae itself is a free download from the same page.</p>`
     : "";
   // Custom bundle: name the chosen parts, and say that the page lists those and nothing else.
@@ -491,13 +491,14 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     "so read every field before you save.";
   const lenscribText = lenscribKey.text + (isLenscrib ? lenscribNote + "\n\n" : "");
   const lenscribHtml = lenscribKey.html + (isLenscrib ? `<p>${lenscribNote}</p>` : "");
-  // AKA is sold on its own and its key is in the generic keys block above (shared PurplelinkLicenseV1 scheme), so this
-  // is only the one practical note: how the ring opens and what it asks for.
-  const isAKA = productKey === "aka";
-  const akaNote = "AKA needs macOS 14 or later. Start dragging files in Finder, then hold Option: the ring opens at the pointer, and a drop on a slice saves the result next to the original. " +
+  // Née's key is in the generic keys block above (shared PurplelinkLicenseV1 scheme), so this is only the one practical
+  // note: how the ring opens and what it asks for. It goes to anyone whose purchase includes Née: the app itself, the
+  // Suite, or a custom bundle that has it.
+  const isNee = productKey === "nee" || parts.has("nee");
+  const neeNote = "Née needs macOS 14 or later. Start dragging files in Finder, then hold Option: the ring opens at the pointer, and a drop on a slice saves the result next to the original. " +
     "It needs no Accessibility or Input Monitoring permission. Transcription asks for Speech Recognition permission the first time, and runs on your Mac. Your files are not uploaded.";
-  const akaText = isAKA ? akaNote + "\n\n" : "";
-  const akaHtml = isAKA ? `<p>${akaNote}</p>` : "";
+  const neeText = isNee ? neeNote + "\n\n" : "";
+  const neeHtml = isNee ? `<p>${neeNote}</p>` : "";
   const text =
     `Thanks for buying ${entry.name}.\n\n` +
     `Your download page:\n${link}\n\n` +
@@ -507,7 +508,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     keyfeelText +
     tapefolioText +
     lenscribText +
-    akaText +
+    neeText +
     panelyText +
     summonlyText +
     licenseTextBlock +
@@ -527,7 +528,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     keyfeelHtml +
     tapefolioHtml +
     lenscribHtml +
-    akaHtml +
+    neeHtml +
     panelyHtml +
     summonlyHtml +
     licenseHtmlBlock +

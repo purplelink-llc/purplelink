@@ -29,9 +29,18 @@
 .suite-rows li:last-child { border-bottom: 0; padding-bottom: 0; }
 .suite-row-price { color: var(--muted); font-variant-numeric: tabular-nums; }
 .suite-sum { margin: 0; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; color: var(--muted); }
+/* The separate price, crossed out by one thick diagonal slash. "+" because Vitae Plus renews every year. */
 .suite-sum-amount {
-  font-variant-numeric: tabular-nums; font-size: 1.15rem;
-  background: linear-gradient(currentColor, currentColor) no-repeat 0 58% / 100% 2px;
+  position: relative; display: inline-block; padding: 0 0.12em;
+  font-family: var(--font-display); font-size: clamp(2.2rem, 5vw, 2.8rem); line-height: 1; color: var(--muted);
+  font-variant-numeric: tabular-nums; text-decoration: none;
+}
+.suite-sum-amount::after {
+  content: ""; position: absolute; left: -6%; right: -6%; top: 50%; height: 5px; margin-top: -2.5px;
+  border-radius: 3px; background: var(--purple); transform: rotate(-14deg); transform-origin: center;
+}
+.suite-save {
+  margin: 0; justify-self: end; font-weight: 800; font-size: 1.3rem; letter-spacing: 0.01em; color: var(--purple);
 }
 .suite-deal {
   margin: 0; display: grid; grid-template-columns: auto 1fr auto; gap: 4px 14px; align-items: baseline;
@@ -67,12 +76,13 @@
   .suite-rows li:nth-child(5) { animation-delay: 0.65s; }
   .suite-rows li:nth-child(6) { animation-delay: 0.75s; }
   .suite-sum { animation: suite-row 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.9s both; }
-  .suite-sum-amount { animation: suite-strike 0.5s ease-out 1.3s both; }
+  .suite-sum-amount::after { animation: suite-strike 0.45s cubic-bezier(0.16, 1, 0.3, 1) 1.3s both; }
+  .suite-save { animation: suite-row 0.5s cubic-bezier(0.16, 1, 0.3, 1) 1.55s both; }
   .suite-deal { animation: suite-deal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 1.6s both; }
 }
 @keyframes suite-pop { from { opacity: 0; transform: translateY(10px) scale(0.92); } to { opacity: 1; transform: none; } }
 @keyframes suite-row { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
-@keyframes suite-strike { from { background-size: 0% 2px; } to { background-size: 100% 2px; } }
+@keyframes suite-strike { from { transform: rotate(-14deg) scaleX(0); } to { transform: rotate(-14deg) scaleX(1); } }
 @keyframes suite-deal { 0% { opacity: 0; transform: translateY(8px) scale(0.98); box-shadow: 0 0 0 0 var(--purple); } 60% { opacity: 1; transform: none; box-shadow: 0 0 0 0 var(--purple); } 100% { opacity: 1; transform: none; box-shadow: 0 0 0 10px transparent; } }
 
 .suite-hero-copy .waitlist-fine-print { text-align: left; margin: 16px 0 0; max-width: 56ch; }

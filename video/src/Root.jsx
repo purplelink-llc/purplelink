@@ -17,7 +17,8 @@ import { ChainDay } from "./Chain.jsx";
 import { build as buildChain } from "./chain/plan.js";
 import { build as buildLatexFix } from "./latexfix/plan.js";
 import { bumperTotal, BUMPER } from "./Bumper.jsx";
-import { AKADemo, TOTAL_FRAMES as AKA_FRAMES } from "./aka/AKADemo.jsx";
+import { NeeDemo, TOTAL_FRAMES as NEE_FRAMES } from "./nee/NeeDemo.jsx";
+import { NeeSpot, SPOT_FRAMES } from "./nee/NeeSpot.jsx";
 import { FORMATS, brand } from "./theme.js";
 import { buildTimeline, totalFrames } from "./timeline.js";
 
@@ -67,7 +68,9 @@ export const Root = () => (
     <Composition id="StillHero" component={StillHero} fps={brand.fps} width={1920} height={1080} durationInFrames={240}
       defaultProps={{ id: "vitae-promo", timing: { scenes: [] } }}
       calculateMetadata={({ props }) => ({ durationInFrames: Math.round((props.timing.scenes.length ? PRODUCTS[props.id].build(props.timing).hero.T : 8) * brand.fps) })} />
-    <Composition id="AKADemo" component={AKADemo} fps={brand.fps} width={1920} height={1080} durationInFrames={AKA_FRAMES} />
+    <Composition id="NeeDemo" component={NeeDemo} fps={brand.fps} width={1920} height={1080} durationInFrames={NEE_FRAMES} />
+    <Composition id="NeeSpot" component={NeeSpot} fps={brand.fps} width={1920} height={1080} durationInFrames={SPOT_FRAMES} />
+    <Composition id="NeeSpotTall" component={NeeSpot} fps={brand.fps} width={1080} height={1920} durationInFrames={SPOT_FRAMES} defaultProps={{ tall: true }} />
     <Composition id="PanelyShot" component={PanelyShot} fps={brand.fps} width={1280} height={800} durationInFrames={1} defaultProps={{ shot: "layout-halves" }} />
     <Composition id="HeroV2" component={HeroV2} fps={brand.fps} width={1920} height={1080} durationInFrames={240} defaultProps={{ timing: { scenes: [] } }} />
     <Composition

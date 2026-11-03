@@ -25,7 +25,6 @@ Skipped:
 """
 from __future__ import annotations
 
-import hashlib
 import re
 import sys
 from pathlib import Path
@@ -50,7 +49,7 @@ SKIP_PATHS = {
 # footer ("Daily games" under Free tools, "Blog" and "Changelog" under Learn),
 # so pages in those sections simply have no highlighted header item.
 NAV = [
-    ("Products", "/products/", ("products/", "moderntex/", "outbound-veil/", "suite/", "pricing/", "legroom/", "keyfeel/", "tapefolio/", "lenscrib/", "aka/", "panely/", "summonly/", "batterymeter/", "buddy/", "vitae/", "globepin/", "circled-hoops/",
+    ("Products", "/products/", ("products/", "moderntex/", "outbound-veil/", "suite/", "pricing/", "legroom/", "keyfeel/", "tapefolio/", "lenscrib/", "nee/", "panely/", "summonly/", "batterymeter/", "buddy/", "vitae/", "globepin/", "circled-hoops/",
                                 "haea/", "binnacle/", "kits/", "sheets/", "scholar-utility-belt/", "labs/", "recover/")),
     ("Tools", "/tools/", ("tools/", "format/")),
     ("Guides", "/guides/", ("guides/", "templates/", "latex-errors/")),
@@ -67,6 +66,7 @@ FOOTER_COLUMNS = [
         ("Tapefolio", "/tapefolio/"),
         ("Panely", "/panely/"),
         ("Summonly", "/summonly/"),
+        ("Née", "/nee/"),
         ("BatteryMeter", "/batterymeter/"),
         ("Paper Review", "/tools/paper-review/"),
         ("Scholar Utility Belt", "/scholar-utility-belt/"),
@@ -239,10 +239,14 @@ def nav_html(rel: str, inline: bool, indent: str) -> str:
 
 
 def mark_src() -> str:
-    """The mark with the same ?v stamp fingerprint_assets.py gives it, so the two scripts agree and a new mark
-    reaches returning visitors instead of hiding behind the 30-day /assets/* cache."""
-    digest = hashlib.sha256((SITE / "assets" / "purplelink-mark.svg").read_bytes()).hexdigest()[:10]
-    return f"/assets/purplelink-mark.svg?v={digest}"
+    """The bare mark path. The committed pages carry no ?v= stamps (docs/designs/generated-files-at-build.md, phase 2);
+    fingerprint_assets.py stamps this reference in the build, after this script runs, so a new mark still reaches
+    returning visitors instead of hiding behind the 30-day /assets/* cache."""
+    return "/assets/purplelink-mark.svg"
+
+
+# --check compares with stamps removed, so it passes on the bare committed tree and on a stamped build checkout (CI).
+_STAMP = re.compile(r"\?v=[0-9a-f]+(?=\")")
 
 
 def footer_html(indent: str, code: str | None = None) -> str:
@@ -375,7 +379,7 @@ def main() -> int:
     for rel, f in pages():
         html = f.read_text(encoding="utf-8")
         new = render(rel, html)
-        if new != html:
+        if (_STAMP.sub("", new) != _STAMP.sub("", html)) if check else (new != html):
             stale += 1
             if not check:
                 f.write_text(new, encoding="utf-8")
