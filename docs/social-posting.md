@@ -95,6 +95,30 @@ with its numbers in `~/.purplelink/social/daily/learned.json`, lasts 30 days, th
 **Pause:** `social.py pause` (creates `~/.purplelink/social/PAUSE`; nothing queues or posts) and `social.py resume`.
 `launchctl bootout gui/$(id -u)/com.purplelink.social-daily` stops the pick job.
 
+## Studio notes (2026-11-03, NOT under a standing approval)
+
+Ben adopted four ideas from Adam Robinson's founder-led playbook on 2026-11-03, adapted to the rule that nothing posts on
+his personal LinkedIn. One of them is a weekly "from the studio" story post: first person, unnamed, about one real thing
+from that week (a bug, a request, a number, a decision), story first, no hard call to action in most weeks. It goes to the
+company LinkedIn page, Bluesky and Mastodon (Mastodon in Ben's voice, the same gate rules as the daily Mastodon text).
+
+It is a new kind of post, so the 2026-10-18 standing approval does not cover it. Each note needs Ben's yes in chat.
+
+- **Drafts only.** `social.py studio material [--days 7] [--out FILE]` lists the week's merged PRs and logged changes.
+  After a note is written (front matter `slug`, `asset`, `link`, `cta`, then `## linkedin`, `## bluesky`, `## mastodon`),
+  `social.py studio queue FILE [--dry-run]` runs the gate (house voice, Ben's voice on Mastodon, unnamed on the other two,
+  no hard call to action unless `cta: hard`, platform limits), tags each platform's link through the marketing hub
+  (`studio-note-<yymmdd>-<platform>`, campaign `studio-note`), and writes two things: a `social.py` item with status
+  `draft` scheduled for 10:30 ET the next day, and an approval-queue item with `needs_ben: true` (`backend/socialpost/studio.py`).
+- **Only Ben unlocks it.** `approval_queue.py approve` refuses an item with `needs_ben: true` unless `--by-ben` is passed,
+  so the 07:30 auto-approver cannot pass it. After Ben says yes in chat, a session runs `approve <id> --by-ben` and
+  `social.py approve <item id>`; `run-due` posts it.
+- **Replaces one daily post.** The daily pipeline skips a platform that already has an approved item that day. Approve
+  before the 09:30 ET pick and the note takes that day's slot; later, both go out.
+- **Weekly.** The scheduled task `weekly-studio-note` (Mondays 08:00 local) writes the brief and the draft and queues them.
+- **Measure.** Clicks per `utm_campaign=studio-note` post against the automated daily posts of the same week (the hub tags
+  tell them apart). The test is tone, not reach.
+
 ## Instagram (standing approval, 2026-10-23)
 
 Ben asked on 2026-10-23 that every video on the Purplelink YouTube channel also goes to the Purplelink Instagram as a

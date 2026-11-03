@@ -161,4 +161,17 @@ check(c.get("placement_tags") == "pass", f"a rejected item's tag can be reused {
 f, b = tagged("https://purplelink.llc/moderntex/", kind="pr")
 c, p = aq.lint(f, b, offline=True, others=[], today=LATER)
 check("placement_tags" not in c, "non-outward kinds (pr) are not linted for tags")
+
+# needs_ben: the daily dispatcher (no --by-ben) cannot approve; Ben's own yes (--by-ben) can
+_, fn, bn = item(kind="post", target="studio note needs ben", executor="ben", needs_ben="true")
+aq.main(["new", write("nb.md", aq.join_item(fn, bn)), "--offline"])
+nid = [aq.split_item(p.read_text())[0]["id"] for p in (aq.ROOT / "pending").glob("*.md") if "needs_ben" in p.read_text()]
+check(nid, "needs_ben item is pending")
+try:
+    aq.main(["approve", nid[0], "--note", "standing approval"]); check(False, "approve without --by-ben should exit")
+except SystemExit as e:
+    check("needs Ben" in str(e.code), f"needs_ben refusal message {e.code}")
+check(any(nid[0] in p.read_text() for p in (aq.ROOT / "pending").glob("*.md")), "still pending after refusal")
+aq.main(["approve", nid[0], "--by-ben", "--note", "Ben said yes in chat"])
+check(any(nid[0] in p.read_text() for p in (aq.ROOT / "approved").glob("*.md")), "--by-ben approves")
 print("approval queue tests ok")

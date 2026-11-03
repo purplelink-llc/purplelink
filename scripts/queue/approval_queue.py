@@ -10,7 +10,7 @@ approved/. Stdlib only.
   approval_queue.py lint ID_OR_FILE [--offline]
   approval_queue.py list [--status pending] [--json]
   approval_queue.py digest [--max 7] [--write]
-  approval_queue.py approve ID [--note TEXT]
+  approval_queue.py approve ID [--note TEXT] [--by-ben]   --by-ben: required for items with needs_ben: true
   approval_queue.py reject ID --reason CODE [--text TEXT]
   approval_queue.py edit ID --file NEWDRAFT.md   store the edit as a diff, status edited
   approval_queue.py snooze ID YYYY-MM-DD
@@ -545,6 +545,11 @@ def cmd_approve(a):
     hard = [p for p in problems if "expired" in p or "outward" in p]
     if hard:
         sys.exit("cannot approve: " + "; ".join(hard))
+    # needs_ben: the item is outside every standing approval (a studio note, an academic reply). The daily
+    # queue-auto-approve-dispatch task calls approve without --by-ben, so it cannot pass one; Ben's own yes in chat can.
+    if str(it["fm"].get("needs_ben", "")).lower() in ("true", "yes", "1") and not a.by_ben:
+        sys.exit(f"{it['fm'].get('id')} needs Ben's own yes (needs_ben: true); standing approvals do not cover it. "
+                 "Run with --by-ben only after he said yes in chat.")
     decide(it, "approved", "approved", note=a.note)
     print(f"approved {it['fm']['id']}: executor {it['fm'].get('executor')}")
 
@@ -692,7 +697,7 @@ def main(argv=None) -> int:
     p = sub.add_parser("lint"); p.add_argument("item"); p.add_argument("--offline", action="store_true")
     p = sub.add_parser("list"); p.add_argument("--status"); p.add_argument("--json", action="store_true")
     p = sub.add_parser("digest"); p.add_argument("--max", type=int, default=7); p.add_argument("--write", action="store_true")
-    p = sub.add_parser("approve"); p.add_argument("item"); p.add_argument("--note")
+    p = sub.add_parser("approve"); p.add_argument("item"); p.add_argument("--note"); p.add_argument("--by-ben", action="store_true")
     p = sub.add_parser("reject"); p.add_argument("item"); p.add_argument("--reason", required=True); p.add_argument("--text")
     p = sub.add_parser("edit"); p.add_argument("item"); p.add_argument("--file", required=True)
     p = sub.add_parser("snooze"); p.add_argument("item"); p.add_argument("date")
