@@ -219,6 +219,7 @@
    "fee_usd": 0,
    "fee_text": "free (2 images)",
    "images": 2,
+   "taken_from": "2025-01-01",
    "prize_usd": 0,
    "prize_text": "no cash: top-100 lists, diplomas, a catalogue",
    "us_eligible": true,
