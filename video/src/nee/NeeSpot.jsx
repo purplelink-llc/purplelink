@@ -6,10 +6,10 @@ import { BEAT, PROBLEM, LENGTHS, INTRO, STROBE, END, STARTS as starts, STROBE_AT
 
 export { SPOT_FRAMES } from "./spot-stills.mjs";
 
-// A fast product spot for AKA: a file is dragged, the ring opens at the pointer, the pointer sweeps to a slice, the
+// A fast product spot for Née: a file is dragged, the ring opens at the pointer, the pointer sweeps to a slice, the
 // file drops, the converted copy appears. Eight file types, quicker as it goes, then the end card. Cut on a 120 BPM
 // grid (one beat = 15 frames) so a music bed lines up. Every ring frame is the app's own drawing
-// (`AKA --render-spot`, backgrounds cut out), in video/assets/aka/spot/. 1920 x 1080, or 1080 x 1920 with `tall`, 30 fps.
+// (`Née --render-spot`, backgrounds cut out), in video/assets/nee/spot/. 1920 x 1080, or 1080 x 1920 with `tall`, 30 fps.
 
 const INK = "oklch(97% 0.01 310)";
 const ACCENT = "oklch(70% 0.19 310)";
@@ -162,7 +162,7 @@ function Cut({ cut, len }) {
         fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: L.word.size, color: INK,
         letterSpacing: -2, lineHeight: 1, opacity: wordIn, transform: `translateY(${(1 - wordIn) * 18}px)`,
       }}>{word}</div>
-      <Img src={staticFile(`aka/spot/ring-${set}-${highlighted}.png`)} style={{
+      <Img src={staticFile(`nee/spot/ring-${set}-${highlighted}.png`)} style={{
         position: "absolute", left: CX - RING / 2, top: CY - RING / 2, width: RING, height: RING,
         opacity: bloom * (1 - drop), transform: `scale(${ringScale})`,
       }} />
@@ -182,7 +182,7 @@ function Cut({ cut, len }) {
   );
 }
 
-// The problem: everyday conversions, an app downloaded for each, and all of them folding into AKA.
+// The problem: everyday conversions, an app downloaded for each, and all of them folding into Née.
 const CHORES = ["HEIC to JPEG.", "Shrink a PDF.", "A clip as a GIF.", "The words in a recording."];
 const APPS = [["HEIC Converter", 30], ["PDF Shrinker", 25], ["GIF Maker", 250], ["Transcriber", 340],
   ["Markdown to PDF", 150], ["Word to PDF", 260], ["Unarchiver", 70], ["Font Converter", 290]];
@@ -239,7 +239,7 @@ function Problem() {
       })}
       {icon > 0 && (
         <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
-          <Img src={staticFile("aka/icon.png")} style={{ width: 260, height: 260, opacity: icon, transform: `scale(${lerp(0.6, 1, icon)})` }} />
+          <Img src={staticFile("nee/icon.png")} style={{ width: 260, height: 260, opacity: icon, transform: `scale(${lerp(0.6, 1, icon)})` }} />
           <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: L.oneApp, color: INK, marginTop: 20, letterSpacing: -1, opacity: line, textAlign: "center" }}>Or one app for all of it.</div>
         </AbsoluteFill>
       )}
@@ -271,7 +271,7 @@ function Strobe() {
   const per = Math.max(1, Math.floor(STROBE / sets.length));
   const i = Math.min(sets.length - 1, Math.floor(frame / per));
   return (
-    <Img src={staticFile(`aka/spot/ring-${sets[i]}-none.png`)} style={{
+    <Img src={staticFile(`nee/spot/ring-${sets[i]}-none.png`)} style={{
       position: "absolute", left: mid[0] - RING / 2, top: mid[1] - RING / 2, width: RING, height: RING,
     }} />
   );
@@ -284,15 +284,15 @@ function End() {
   const c = expoOut(clamp01((frame - 24) / 16));
   return (
     <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
-      <Img src={staticFile("aka/icon.png")} style={{ width: 230, height: 230, opacity: a, transform: `scale(${lerp(0.9, 1, a)})` }} />
-      <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 150, color: INK, marginTop: 6, letterSpacing: -2, lineHeight: 1.05, opacity: a }}>AKA</div>
+      <Img src={staticFile("nee/icon.png")} style={{ width: 230, height: 230, opacity: a, transform: `scale(${lerp(0.9, 1, a)})` }} />
+      <div style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: 150, color: INK, marginTop: 6, letterSpacing: -2, lineHeight: 1.05, opacity: a }}>Née</div>
       <div style={{ fontFamily: FONT_BODY, fontWeight: 500, fontSize: 50, color: INK, marginTop: 12, opacity: b }}>51 actions. All on your Mac.</div>
-      <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 36, color: ACCENT, marginTop: 30, opacity: c }}>purplelink.llc/aka</div>
+      <div style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: 36, color: ACCENT, marginTop: 30, opacity: c }}>purplelink.llc/nee</div>
     </AbsoluteFill>
   );
 }
 
-export function AKASpot({ tall = false }) {
+export function NeeSpot({ tall = false }) {
   useFonts();
   return (
     <Layout.Provider value={tall ? LAYOUTS.tall : LAYOUTS.wide}>

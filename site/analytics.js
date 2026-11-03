@@ -162,7 +162,7 @@
   window.plAttribution = function () {
     return { ft: channel(), fc: contentTag(), rdt: rdtClick || "" };
   };
-  var FUNNEL = /^(checkout_click|send_to_mac|trial_download|ov_trial_download|lg_trial_download|kf_trial_download|tf_trial_download|pn_trial_download|sm_trial_download|aka_trial_download|guide_mtx_trial)$/;
+  var FUNNEL = /^(checkout_click|send_to_mac|trial_download|ov_trial_download|lg_trial_download|kf_trial_download|tf_trial_download|pn_trial_download|sm_trial_download|nee_trial_download|guide_mtx_trial)$/;
 
   function send(payload) {
     try {
@@ -346,8 +346,8 @@
       if (a && /summonly-download\?(download|trial)=1/.test(a.getAttribute("href"))) {
         window.plTrack("sm_trial_download", "summonly" + nm);
       }
-      if (a && a.getAttribute("href").indexOf("aka-download?trial=1") !== -1) {
-        window.plTrack("aka_trial_download", "aka" + nm);
+      if (a && a.getAttribute("href").indexOf("nee-download?trial=1") !== -1) {
+        window.plTrack("nee_trial_download", "nee" + nm);
       }
       countAffiliate(ev);
       // Anything else marked data-track="<event>" (optional data-track-meta):

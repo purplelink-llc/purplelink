@@ -71,7 +71,7 @@ test("two prices, below the Suite, above the dearest single app, and the nine pa
   assert.ok(lib.BUNDLES["bundle-2"].cents > dearestSingle, "pick 2 costs more than any single app");
   assert.ok(lib.BUNDLES["bundle-2"].cents < lib.BUNDLES["bundle-3"].cents);
   assert.ok(lib.BUNDLES["bundle-3"].cents < 5999, "pick 3 stays under the Suite");
-  assert.deepEqual(lib.BUNDLE_SLUGS, ["moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "panely", "summonly", "aka", "vitae-plus"]);
+  assert.deepEqual(lib.BUNDLE_SLUGS, ["moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "panely", "summonly", "nee", "vitae-plus"]);
 });
 
 test("the page's price tables are the server's", () => {
@@ -234,7 +234,7 @@ test("purchase-license returns a bundle's keys and its parts, and the Suite's ke
   session = { id: SID, payment_status: "paid", metadata: { product: "app-suite" } };
   body = await (await ask()).json();
   assert.equal(body.parts, undefined);
-  assert.equal(body.keys.length, 4, "ModernTex, Outbound Veil, Legroom and AKA");
+  assert.equal(body.keys.length, 4, "ModernTex, Outbound Veil, Legroom and Née");
   session = bundle("bundle-2", "moderntex,legroom,keyfeel");
   assert.equal((await ask()).status, 403, "a bundle with a bad parts list is refused");
 });

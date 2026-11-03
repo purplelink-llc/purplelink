@@ -130,10 +130,10 @@ const REFUND_TEXT = {
   "keyfeel": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "tapefolio": `${REFUND_EMAIL} the full $29.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "lenscrib": `${REFUND_EMAIL} the full $19.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
-  "aka": `${REFUND_EMAIL} the full $14.99 to the original payment method. You don't need to give a reason. A refunded purchase's license key is no longer licensed for use.`,
+  "nee": `${REFUND_EMAIL} the full $14.99 to the original payment method. You don't need to give a reason. A refunded purchase's license key is no longer licensed for use.`,
   "panely": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "summonly": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
-  "app-suite": `${REFUND_EMAIL} the full amount you paid to the original payment method. You don't need to give a reason. A refunded Suite's download links stop working, and its ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and AKA license keys and its Vitae Plus key are no longer licensed for use.`,
+  "app-suite": `${REFUND_EMAIL} the full amount you paid to the original payment method. You don't need to give a reason. A refunded Suite's download links stop working, and its ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Née license keys and its Vitae Plus key are no longer licensed for use.`,
 };
 
 // Defense-in-depth: cap how many Checkout Sessions one IP can spin up per
@@ -204,23 +204,23 @@ const PRODUCT_CATALOG = {
   // not in the Mac Suite or the custom bundles. Delivery is the session-gated DMG from the lenscrib-files Blobs store;
   // see lenscrib-download.mjs. Product page and success page: /lenscrib/ and /lenscrib/success/. See docs/products/lenscrib.md.
   "lenscrib":                { amount: 1999, name: "Lenscrib for macOS", successPath: "/lenscrib/success/" },
-  // AKA for macOS: $14.99 one-time, priced inline (no Stripe Price to create), like Lenscrib. Licensed with the shared
-  // PurplelinkLicenseV1 scheme (AKA1 keys, netlify/lib/license.mjs). Part of the Mac Suite and the custom bundles
+  // Née for macOS: $14.99 one-time, priced inline (no Stripe Price to create), like Lenscrib. Licensed with the shared
+  // PurplelinkLicenseV1 scheme (NEE1 keys, netlify/lib/license.mjs). Part of the Mac Suite and the custom bundles
   // (Ben, 2026-11-02; the `inSuite` gate in license.mjs is open). Delivery is the session-gated DMG from the
-  // aka-files Blobs store; see aka-download.mjs. Product page and success page: /aka/ and /aka/success/.
-  // See docs/products/aka.md.
-  "aka":                { amount: 1499, name: "AKA for macOS", successPath: "/aka/success/" },
+  // nee-files Blobs store; see nee-download.mjs. Product page and success page: /nee/ and /nee/success/.
+  // See docs/products/nee.md.
+  "nee":                { amount: 1499, name: "Née for macOS", successPath: "/nee/success/" },
   // Panely (window manager) and Summonly (launcher and file search): $9.99 one-time each, priced inline like Keyfeel.
   // Delivery is the session-gated DMG from the panely-files / summonly-files Blobs stores. Pages: /panely/ and /summonly/.
   "panely":                { amount: 999, name: "Panely for macOS", successPath: "/panely/success/" },
   "summonly":                { amount: 999, name: "Summonly for macOS", successPath: "/summonly/success/" },
-  // Purplelink Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Panely + Summonly + AKA + Vitae Plus for life,
+  // Purplelink Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Panely + Summonly + Née + Vitae Plus for life,
   // $59.99 one-time (was $54.99 until 2026-10-12 and $54 until 2026-10-07; $49 with four apps, $39 before Legroom; Tapefolio
-  // joined 2026-10-09 at the same price, Panely and Summonly joined 2026-10-12 and AKA at launch, all with this price). Priced inline (no Stripe
+  // joined 2026-10-09 at the same price, Panely and Summonly joined 2026-10-12 and Née at launch, all with this price). Priced inline (no Stripe
   // Price to create). One session unlocks all nine: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and
-  // AKA download functions accept it, and vitae-license.mjs signs a 100-year Vitae Plus key from it. See
+  // Née download functions accept it, and vitae-license.mjs signs a 100-year Vitae Plus key from it. See
   // docs/products/app-suite.md.
-  "app-suite":               { amount: 5999, name: "Purplelink Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, AKA and Vitae Plus for life", successPath: "/suite/success/" },
+  "app-suite":               { amount: 5999, name: "Purplelink Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and Vitae Plus for life", successPath: "/suite/success/" },
   // Custom bundles of the Mac Suite: pick any 2 for $34.99 or any 3 for $44.99, the same price whichever parts are
   // chosen (the nine parts are the eight apps and a lifetime Vitae Plus key; all nine is the Suite above). The client sends
   // only `apps`; the price is the table in netlify/lib/bundles.mjs. Delivery reuses /suite/success/ and the per-app
