@@ -23,6 +23,9 @@ TEMPLATE = SITE / "tools" / "metadata-cleaner" / "index.html"
 BASE = "https://purplelink.llc"
 
 NO_UPLOAD = "Are my files uploaded?"
+# PDF to JPG and SVG to PNG draw on the page, not in the converter worker, so their privacy line says so.
+PAGE_PRIVACY = ("Files are read and drawn in this tab. The only requests the page makes are for its own scripts and the "
+                "files they need. Your files are never sent anywhere.")
 
 
 def faq_uploaded(what: str, extra: str) -> tuple[str, str]:
@@ -161,7 +164,7 @@ PAGES = [
             ("Is it free?",
              "Yes. There is no account, no watermark and no limit beyond the file sizes above."),
         ],
-        "related": [("/tools/avif-to-jpg/", "AVIF to JPG"), ("/tools/heic-to-jpg/", "HEIC to JPG"),
+        "related": [("/tools/png-to-jpg/", "PNG to JPG"), ("/tools/avif-to-jpg/", "AVIF to JPG"), ("/tools/heic-to-jpg/", "HEIC to JPG"),
                     ("/tools/png-to-icns/", "PNG to ICNS"), ("/tools/latex-to-pdf/", "LaTeX to PDF")],
     },
     {
@@ -367,7 +370,7 @@ PAGES = [
             ("Is it free?",
              "Yes. There is no account, no watermark and no page limit beyond the sizes above."),
         ],
-        "related": [("/tools/pdf-tools/", "PDF Tools"), ("/tools/heic-to-jpg/", "HEIC to JPG"),
+        "related": [("/tools/pdf-to-jpg/", "PDF to JPG"), ("/tools/pdf-tools/", "PDF Tools"), ("/tools/heic-to-jpg/", "HEIC to JPG"),
                     ("/tools/webp-to-png/", "WebP to PNG"), ("/tools/metadata-cleaner/", "Metadata Cleaner")],
     },
     {
@@ -512,6 +515,214 @@ PAGES = [
         "related": [("/tools/jpg-to-pdf/", "JPG to PDF"), ("/tools/pdf-tools/", "PDF Tools"),
                     ("/tools/metadata-cleaner/", "Metadata Cleaner")],
     },
+
+    {
+        "slug": "pdf-to-jpg",
+        "name": "PDF to JPG",
+        "title": "PDF to JPG Converter That Runs in Your Browser | Purplelink",
+        "og_title": "PDF to JPG, converted in your browser",
+        "description": "Turn PDF pages into JPG or PNG images in your browser, at 72, 150 or 300 dpi. The PDF is read on "
+                       "your device and never uploaded. Free, no sign-up.",
+        "hero": "Turn the pages of a PDF into JPG or PNG images, at screen, standard or print resolution. Pick all the "
+                "pages or a range. Each page is drawn on your device, in this browser tab.",
+        "accept": ".pdf,application/pdf",
+        "drop": "Drop PDF files here",
+        "hint": "PDF, up to 100 MB each and 500 pages at a time.",
+        "outputs": [("jpg", "JPG"), ("png", "PNG")],
+        "opts": ["output", "quality",
+                 ("radio", "dpi", "Resolution", [("150", "150 dpi"), ("300", "300 dpi, for print"), ("72", "72 dpi, for screens")]),
+                 ("text", "pages", "Pages", "All", None, "Leave empty for every page, or enter pages like 1-3, 8.", True)],
+        "libs": ["pdfjs", "pdfjs-worker"],
+        "privacy": PAGE_PRIVACY,
+        "features": ["Turn PDF pages into JPG or PNG images",
+                     "72, 150 or 300 dpi, all pages or a range",
+                     "Includes pdf.js's decoders for JBIG2 and JPEG 2000 scans",
+                     "Many pages download as one zip",
+                     "Drawn in the browser with pdf.js; PDFs are never uploaded"],
+        "how": [
+            "A PDF page is a set of drawing instructions: text in its fonts, lines, and the pictures inside it. To make "
+            "a JPG, something has to carry out those instructions at a chosen resolution. This page uses pdf.js, the "
+            "open-source PDF reader built into Firefox, served from this site and loaded when you add your first PDF.",
+            "pdf.js reads the file in a background worker and draws each page on a canvas in this tab, with the fonts "
+            "embedded in the PDF. The browser then writes the canvas as a JPG or PNG.",
+            "Resolution is in dots per inch of the page. A US Letter page at 150 dpi is 1275 by 1650 pixels, enough for "
+            "a screen or a slide; 300 dpi is 2550 by 3300, for printing or reading small print.",
+            "On a Mac, Née, our file converter, does this from Finder: hold Option while dragging a PDF and drop it on "
+            "the action for its pages. Née saves the pages as PNG.",
+        ],
+        "steps": [
+            ("Pick the format and resolution", "JPG for a smaller file, PNG for sharp text and line art. 150 dpi suits screens and slides, 300 dpi printing."),
+            ("Choose the pages", "Leave Pages empty for the whole PDF, or enter a range such as 1-3, 8."),
+            ("Add the PDF", "Drop the PDF on the box, or click it to choose it."),
+            ("Download", "A one-page result downloads as a picture; more pages download together as a zip."),
+        ],
+        "limits": [
+            "Up to 100 MB a PDF, 200 PDFs at a time, and 500 pages a PDF per run. For a longer PDF, convert it in ranges.",
+            "A page that would be larger than about 40 megapixels at the chosen resolution, such as a poster at 300 dpi, is "
+            "drawn at a lower resolution, and the row says which. On a phone the cap is about 16.7 megapixels.",
+            "A PDF locked with a password to open cannot be read. A PDF that only restricts printing or copying converts.",
+            "Form fields show the values saved in the file. Links, comments in a side panel and attached files are not part of the picture.",
+            "The images inside a PDF are drawn as part of the page, not saved one by one at their own resolution.",
+            "Needs a current version of Chrome, Edge, Firefox or Safari.",
+        ],
+        "faq": [
+            (NO_UPLOAD,
+             "No. pdf.js reads the PDF in a background worker in this tab and the page draws it on a canvas. There is no "
+             "server step. The meter under the drop zone counts the bytes the page sends while it works, so you can check "
+             "this yourself. The page downloads only its own scripts, and the fonts and decoders pdf.js needs from this site."),
+            ("Should I choose JPG or PNG?",
+             "JPG for pages with photos, and when the file size matters. PNG for pages of text, charts and diagrams: it "
+             "keeps the edges of letters sharp, though the file is larger."),
+            ("Which resolution should I use?",
+             "150 dpi for a screen, a slide or an upload form. 300 dpi to print the image or to zoom into small text. 72 "
+             "dpi gives small previews. The pixel size of each page shows in its row."),
+            ("How do I convert only some pages?",
+             "Type them under Pages before you add the PDF: 3 for one page, 2-5 for a range, 1, 4, 9-12 for a mix, or 10- "
+             "for page 10 to the end. Leave it empty for every page."),
+            ("Will scanned PDFs look right?",
+             "Yes, in most cases. Office scanners often store black-and-white pages as JBIG2 and some archives use JPEG "
+             "2000; this page includes pdf.js's decoders for both. The text in a scan stays part of the picture."),
+            ("Why did my PDF fail?",
+             "The page checks that the file starts as a PDF. One that is damaged or cut short in a download cannot be "
+             "opened, and one locked with a password needs that password removed first. If a single page fails to draw, "
+             "the others are kept and the row names the missing page."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the sizes above."),
+        ],
+        "related": [("/tools/jpg-to-pdf/", "JPG to PDF"), ("/tools/pdf-tools/", "PDF Tools"),
+                    ("/tools/png-to-jpg/", "PNG to JPG"), ("/nee/", "Née, a Mac converter")],
+    },
+    {
+        "slug": "svg-to-png",
+        "name": "SVG to PNG",
+        "title": "SVG to PNG Converter, in Your Browser | Purplelink",
+        "og_title": "SVG to PNG, converted in your browser",
+        "description": "Convert SVG drawings to PNG or JPG at 1x, 2x, 4x or any width, in your browser. Transparency is "
+                       "kept, and nothing is uploaded. Free, no sign-up.",
+        "hero": "Convert SVG drawings, figures and icons to PNG, or to JPG, at the size you need. The drawing is scaled as a "
+                "vector, so a 4x PNG is sharp, not enlarged. Your browser draws each file on your device.",
+        "accept": ".svg,.svgz,image/svg+xml",
+        "drop": "Drop SVG files here",
+        "hint": "SVG and SVGZ, up to 10 MB each. You can also paste a file with Ctrl or Cmd V.",
+        "outputs": [("png", "PNG"), ("jpg", "JPG")],
+        "opts": ["output", "quality", "background",
+                 ("radio", "scale", "Size", [("2", "2x"), ("1", "1x"), ("4", "4x"), ("width", "Width in pixels")]),
+                 ("number", "width", "Width", (1920, 16, 16384), "scale=width")],
+        "privacy": PAGE_PRIVACY,
+        "features": ["Convert SVG and SVGZ files to PNG or JPG",
+                     "1x, 2x, 4x or an exact width, scaled as a vector",
+                     "Transparency kept in PNG",
+                     "Drawn by the browser itself; files are never uploaded"],
+        "how": [
+            "SVG describes a drawing as shapes rather than pixels, so it stays sharp at any size. Many places still want "
+            "pixels: pdfLaTeX's \\includegraphics reads PNG, JPG and PDF but not SVG, and some slide tools, upload forms "
+            "and older versions of Word do not take it either.",
+            "This page reads the SVG's own size (its width and height in pixels, points, millimeters or inches, or its "
+            "viewBox), sets the size you chose, and lets your browser draw it on a canvas. The PNG keeps transparent "
+            "areas; a JPG fills them with the color you pick.",
+            "A browser draws an SVG as a picture in a sealed mode: scripts in the file do not run, and nothing it links "
+            "to is fetched. That is safer, and it is also why linked images and web fonts do not appear.",
+        ],
+        "steps": [
+            ("Pick the format and size", "PNG to keep transparency, JPG for a solid background. 2x suits most screens and slides; set a width for an exact size."),
+            ("Add the drawings", "Drop the SVG files on the box, click it to choose them, or paste a file you copied."),
+            ("Wait for each row", "Each drawing is drawn in turn and the row shows its pixel size."),
+            ("Download", "Download each picture from its row, or use Download all as .zip."),
+        ],
+        "limits": [
+            "Up to 10 MB a file (unpacked, for SVGZ) and 200 files at a time.",
+            "The result can be up to about 40 megapixels, such as 8000 by 5000 pixels; 16.7 megapixels on a phone.",
+            "Images the SVG links to on the web and web fonts it asks for are not loaded. Text uses the fonts installed on "
+            "this device, so convert text to outlines in your drawing app if the exact font matters.",
+            "Animations and scripts are not run; the PNG shows the drawing as it first appears.",
+            "Needs Chrome or Edge 69, Firefox 105 or Safari 16.4, or later.",
+        ],
+        "faq": [
+            (NO_UPLOAD,
+             "No. Your browser reads each SVG and draws it on a canvas in this tab. There is no server step. The meter "
+             "under the drop zone counts the bytes the page sends while it works, so you can check this yourself."),
+            ("What size will the PNG be?",
+             "The SVG's own size times the factor you pick. An icon that is 24 by 24 at 1x is 48 by 48 at 2x and 96 by 96 "
+             "at 4x. Width in pixels sets the width exactly and keeps the proportions. An SVG with no size at all is drawn "
+             "at 300 by 150, the size browsers use, and the row says so."),
+            ("Is the PNG sharp at 4x?",
+             "Yes. The size is set on the SVG before it is drawn, so the shapes are drawn at the new size rather than "
+             "drawn small and then enlarged."),
+            ("How do I use an SVG figure in LaTeX?",
+             "pdfLaTeX cannot include an SVG. Convert it to PNG at 4x, or at the width in pixels your column needs at 300 "
+             "dpi (about 1000 pixels for a single column), and include the PNG. For a figure that stays vector, export a PDF "
+             "from the drawing app instead."),
+            ("Why is the text in a different font?",
+             "An SVG drawn as a picture can only use fonts installed on this device or embedded in the file. If it names a "
+             "web font, the browser substitutes another. Converting the text to outlines in the drawing app avoids that."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the sizes above."),
+        ],
+        "related": [("/tools/png-to-icns/", "PNG to ICNS"), ("/tools/png-to-ico/", "PNG to ICO"),
+                    ("/tools/png-to-jpg/", "PNG to JPG"), ("/tools/equation-renderer/", "Equation Renderer")],
+    },
+    {
+        "slug": "png-to-jpg",
+        "name": "PNG to JPG",
+        "title": "PNG to JPG Converter That Runs in Your Browser | Purplelink",
+        "og_title": "PNG to JPG, converted in your browser",
+        "description": "Convert PNG, GIF and BMP images to JPG in your browser, with the quality and background you choose. "
+                       "Nothing is uploaded. Free, no sign-up, batches as a zip.",
+        "hero": "Convert PNG images to JPG, usually a much smaller file. GIF and BMP work too. Pick the quality and the color "
+                "that fills transparent areas. Your browser converts each image on your device.",
+        "accept": ".png,.gif,.bmp,image/png,image/gif,image/bmp",
+        "drop": "Drop PNG images here",
+        "hint": "PNG, GIF and BMP, up to 100 MB each. You can also paste an image with Ctrl or Cmd V.",
+        "outputs": [("jpg", "JPG")],
+        "opts": ["quality", "background"],
+        "features": ["Convert PNG, GIF and BMP images to JPG",
+                     "Choose the JPEG quality and the fill for transparent areas",
+                     "Batches of up to 200 images, downloadable as one zip",
+                     "Converted by the browser itself; images are never uploaded"],
+        "how": [
+            "PNG stores every pixel exactly, which is right for screenshots and diagrams but makes photos large. JPG "
+            "stores photos in a fraction of the space by dropping detail the eye barely sees, which is why upload forms "
+            "with a size limit often ask for it.",
+            "Your browser already reads PNG, GIF and BMP. This page asks it to decode each file in a background worker, "
+            "draws it on an off-screen canvas over the fill color you pick, and writes a JPG at the quality you set.",
+            "JPG has no transparency, so transparent areas become the fill color, white unless you change it. Text and "
+            "sharp lines can show faint ripples in a JPG; keep those images as PNG, or use quality 95 or more.",
+            "On a Mac, Née, our file converter, makes JPEG copies from Finder: hold Option while dragging the images and "
+            "drop them on the action you want.",
+        ],
+        "steps": [
+            ("Set the quality and fill", "92 suits most images; lower it for a smaller file. Pick the color for transparent areas."),
+            ("Add the images", "Drop the PNG, GIF or BMP files on the box, click it to choose them, or paste an image you copied."),
+            ("Wait for each row", "Each image is converted in turn and the row shows the old and new size."),
+            ("Download", "Download each JPG from its row, or use Download all as .zip."),
+        ],
+        "limits": [
+            "Up to 100 MB a file and 200 files at a time.",
+            "An animated PNG or GIF gives one JPG of its first frame, and the row says so.",
+            "Text notes stored in a PNG and any EXIF data are not copied into the JPG.",
+            "On an iPhone or iPad, the browser can draw at most about 16.7 megapixels.",
+            "Needs Chrome or Edge 69, Firefox 105 or Safari 16.4, or later.",
+        ],
+        "faq": [
+            faq_uploaded("image", "The only things the page downloads are its own scripts."),
+            ("How much smaller will the JPG be?",
+             "For a photo saved as PNG, often five to ten times smaller at the default quality. For a screenshot or "
+             "diagram with large flat areas, the PNG may already be small, and the JPG can even be larger. The row shows "
+             "both sizes."),
+            ("What happens to a transparent background?",
+             "JPG cannot store transparency, so those areas are filled with the color you choose, white by default. To keep "
+             "transparency, stay with PNG, or use WebP to PNG and HEIC to JPG for those formats."),
+            ("Which quality should I pick?",
+             "92, the default, looks the same as the original to most eyes. 80 to 85 gives a smaller file for the web. "
+             "95 and above keeps text and edges cleaner at a larger size."),
+            ("Does it work with GIF and BMP?",
+             "Yes. A GIF gives its first frame, and a BMP converts like a PNG. Both usually get much smaller as JPG."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the file sizes above."),
+        ],
+        "related": [("/tools/webp-to-png/", "WebP to PNG"), ("/tools/heic-to-jpg/", "HEIC to JPG"),
+                    ("/tools/pdf-to-jpg/", "PDF to JPG"), ("/nee/", "Née, a Mac converter")],
+    },
 ]
 
 DROP_ICON = ('<svg class="cv-drop-icon" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true" focusable="false">'
@@ -555,7 +766,8 @@ def jsonld(p: dict) -> str:
 def option_html(p: dict, spec) -> str:
     """One control. "output", "quality" and "background" are the image options; tuples describe the others:
     ("radio", key, label, [(value, text)], show) with the first value checked, ("check", key, label, default, show),
-    ("select", key, label, [(value, text)], show). show is "key=a,b" or None."""
+    ("select", key, label, [(value, text)], show), ("text", key, label, placeholder, show, hint, nostore) and
+    ("number", key, label, (default, min, max), show). show is "key=a,b" or None."""
     if spec == "output":
         spec = ("radio", "output", "Save as", p["outputs"], None)
     if spec == "quality":
@@ -579,6 +791,18 @@ def option_html(p: dict, spec) -> str:
     if kind == "check":
         return (f'<label class="cv-field"{when}><input type="checkbox" id="cv-{key}" data-opt="{key}"'
                 f'{" checked" if spec[3] else ""}> {e(label)}</label>')
+    if kind == "text":
+        hint = spec[5] if len(spec) > 5 else ""
+        nostore = " data-nostore" if len(spec) > 6 and spec[6] else ""
+        described = f' aria-describedby="cv-{key}-hint"' if hint else ""
+        hint_html = f' <span class="cv-hint" id="cv-{key}-hint">{e(hint)}</span>' if hint else ""
+        return (f'<label class="cv-field cv-text"{when}>{e(label)} <input type="text" id="cv-{key}" data-opt="{key}"'
+                f' placeholder="{e(spec[3])}" autocomplete="off" spellcheck="false" inputmode="text"{described}{nostore}>'
+                f'</label>{hint_html}')
+    if kind == "number":
+        default, lo, hi = spec[3]
+        return (f'<label class="cv-field"{when}>{e(label)} <input type="number" id="cv-{key}" data-opt="{key}"'
+                f' value="{default}" min="{lo}" max="{hi}" step="1" inputmode="numeric"></label>')
     if kind == "select":
         opts = "".join(f'<option value="{v}">{e(lab)}</option>' for v, lab in spec[3])
         return f'<label class="cv-field"{when}>{e(label)} <select id="cv-{key}" data-opt="{key}">{opts}</select></label>'
@@ -589,6 +813,9 @@ def options_html(p: dict) -> str:
     rows = [option_html(p, o) for o in p.get("opts", []) if not (o == "output" and len(p["outputs"]) < 2)]
     if not rows:
         return ""
+    if len(p["outputs"]) < 2:
+        # The quality and fill controls show only while output=jpg, so a page with one output still names it.
+        rows.insert(0, f'<input type="hidden" data-opt="output" value="{p["outputs"][0][0]}">')
     return ('        <fieldset class="cv-opts">\n          <legend>Options</legend>\n          '
             + "\n          ".join(rows) + "\n        </fieldset>\n")
 
@@ -629,7 +856,7 @@ def main_html(p: dict) -> str:
 {one_html(p)}          <button type="button" class="btn btn-primary" id="cv-all" hidden>Download all as .zip</button>
           <button type="button" class="btn btn-ghost" id="cv-clear">Clear</button>
         </div>
-        <p class="tool-privacy">Files are read and converted in this tab, in a background worker. The only requests the page makes are for its own scripts. Your files are never sent anywhere.</p>
+        <p class="tool-privacy">{e(p.get("privacy", PRIVACY))}</p>
       </div>
 
       <section class="tool-prose cv-how" aria-labelledby="cv-how-h">
@@ -668,12 +895,16 @@ def main_html(p: dict) -> str:
 """
 
 
-LIBS = {"pdf": "/assets/vendor/pdf-lib.min.js"}
+PRIVACY = ("Files are read and converted in this tab, in a background worker. The only requests the page makes are for "
+           "its own scripts. Your files are never sent anywhere.")
+PDFJS = "/assets/vendor/pdfjs-6.4.299/"
+LIBS = {"pdf": "/assets/vendor/pdf-lib.min.js", "pdfjs": PDFJS + "pdf.min.mjs", "pdfjs-worker": PDFJS + "pdf.worker.min.mjs"}
 
 
 def libs_html(p: dict) -> str:
-    """Libraries the worker loads with importScripts. A link tag gets them a ?v= stamp from fingerprint_assets.py,
-    which the page hands to the worker; JSZip is already on every page as a script tag."""
+    """Libraries the worker loads with importScripts, or the page with import(). A .js link gets a ?v= stamp from
+    fingerprint_assets.py, which the page hands to the worker; JSZip is already on every page as a script tag. The
+    pdf.js .mjs files are not stamped (the script stamps .js and .css only): their folder carries the version."""
     return "".join(f'    <link rel="prefetch" as="script" data-convert-lib="{k}" href="{LIBS[k]}">\n' for k in p.get("libs", []))
 
 

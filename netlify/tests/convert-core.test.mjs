@@ -83,8 +83,18 @@ test("outName and uniqueNames", () => {
 test("options: clamps and defaults", () => {
   assert.deepEqual(plain(C.options("heic-to-jpg", {})), {
     output: "jpg", quality: 0.92, background: "#ffffff", iconset: false, mobile: false,
-    sizes: "all", page: "a4", margin: false, delimiter: "auto", encoding: "auto", header: true, text: false
+    sizes: "all", page: "a4", margin: false, delimiter: "auto", encoding: "auto", header: true, text: false,
+    dpi: 150, pages: "", scale: "2", width: 1920
   });
+  assert.equal(C.options("pdf-to-jpg", { dpi: "300" }).dpi, 300);
+  assert.equal(C.options("pdf-to-jpg", { dpi: "600" }).dpi, 150);
+  assert.equal(C.options("pdf-to-jpg", { pages: "x".repeat(500) }).pages.length, 200);
+  assert.equal(C.options("svg-to-png", { scale: "4" }).scale, "4");
+  assert.equal(C.options("svg-to-png", { scale: "3" }).scale, "2");
+  assert.equal(C.options("svg-to-png", { width: "99999" }).width, 16384);
+  assert.equal(C.options("svg-to-png", { width: "" }).width, 1920);
+  assert.equal(C.options("svg-to-png", { width: "4" }).width, 16);
+  assert.equal(C.options("png-to-jpg", { output: "png" }).output, "jpg");
   // The slider sends 50 to 100; remembered choices from the first pages store it as a string.
   assert.equal(C.options("heic-to-jpg", { quality: "80" }).quality, 0.8);
   assert.equal(C.options("png-to-ico", { sizes: "favicon" }).sizes, "favicon");
@@ -389,4 +399,112 @@ test("buildXlsxParts: cells, header, widths, limits; JSZip packs a readable work
   assert.deepEqual(Object.keys(back.files).filter((n) => !n.endsWith("/")),
     ["[Content_Types].xml", "_rels/.rels", "docProps/app.xml", "xl/workbook.xml", "xl/_rels/workbook.xml.rels", "xl/styles.xml", "xl/worksheets/sheet1.xml"]);
   assert.equal(await back.file("xl/worksheets/sheet1.xml").async("string"), sheet);
+});
+
+// ---------- third set: PDF to JPG, SVG to PNG, PNG to JPG ----------
+const utf8 = (t) => new TextEncoder().encode(t);
+
+test("sniff and kindOf: PDF, BMP, SVG and SVGZ", () => {
+  assert.equal(C.sniff(utf8("%PDF-1.7\n%\xe2\xe3\n1 0 obj")), "pdf");
+  assert.equal(C.sniff(utf8("junk from a gateway\r\n%PDF-1.4\n")), "pdf", "the header may sit anywhere in the first 1 KB");
+  assert.equal(C.sniff(utf8(" ".repeat(1100) + "%PDF-1.4")), "");
+  const bmp = new Uint8Array(54); bmp[0] = 0x42; bmp[1] = 0x4d; bmp[14] = 40;
+  assert.equal(C.sniff(bmp), "bmp");
+  bmp[14] = 41;
+  assert.equal(C.sniff(bmp), "", "BM followed by an unknown header size is not a BMP");
+  const svg = '<?xml version="1.0" encoding="UTF-8"?>\n<!-- made by hand -->\n<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "x">\n<svg xmlns="http://www.w3.org/2000/svg"/>';
+  assert.equal(C.kindOf(utf8(svg), "drawing.svg"), "svg");
+  assert.equal(C.kindOf(utf8(svg), "no-extension"), "svg", "SVG is known by its content");
+  assert.equal(C.kindOf(utf8("\ufeff<svg:svg xmlns:svg='http://www.w3.org/2000/svg'/>"), "a.svg"), "svg");
+  assert.equal(C.kindOf(utf8("<html><body><svg></svg></body></html>"), "page.svg"), "", "an HTML page is not an SVG");
+  assert.equal(C.kindOf(new Uint8Array([0x1f, 0x8b, 8, 0, 0, 0]), "logo.svgz"), "svg");
+  assert.equal(C.kindOf(new Uint8Array([0x1f, 0x8b, 8, 0, 0, 0]), "logo.gz"), "");
+  assert.equal(C.kindOf(utf8("a,b\n1,2\n"), "data.csv"), "csv", "CSV detection is unchanged");
+});
+
+test("refuse: the new pairs name what they take", () => {
+  assert.equal(C.refuse("pdf-to-jpg", "pdf", 1000), "");
+  assert.equal(C.refuse("pdf-to-jpg", "png", 1000), "This is a PNG file, not PDF.");
+  assert.equal(C.refuse("png-to-jpg", "jpeg", 1000), "This is a JPEG file, not PNG, GIF or BMP.");
+  assert.equal(C.refuse("png-to-jpg", "bmp", 1000), "");
+  assert.equal(C.refuse("svg-to-png", "svg", 11 * 1048576), "That file is over 10 MB.");
+  assert.equal(C.refuse("svg-to-png", "", 100), "This is not an SVG file, or it is damaged.");
+  assert.equal(C.refuse("png-to-jpg", "svg", 100), "This is an SVG file, not PNG, GIF or BMP.");
+});
+
+test("parsePages: ranges, open ends, duplicates and the messages", () => {
+  assert.deepEqual(plain(C.parsePages("", 3)), { pages: [1, 2, 3] });
+  assert.deepEqual(plain(C.parsePages("  ", 2)), { pages: [1, 2] });
+  assert.deepEqual(plain(C.parsePages("8, 1-3, 2", 10)), { pages: [1, 2, 3, 8] });
+  assert.deepEqual(plain(C.parsePages("4-", 6)), { pages: [4, 5, 6] });
+  assert.deepEqual(plain(C.parsePages("2\u20134; 6", 9)), { pages: [2, 3, 4, 6] }, "en dash and semicolon");
+  assert.deepEqual(plain(C.parsePages("5-99", 7)), { pages: [5, 6, 7] }, "a range past the end stops at the last page");
+  assert.deepEqual(plain(C.parsePages("1,,3,", 3)), { pages: [1, 3] });
+  assert.equal(C.parsePages("9", 3).error, "This PDF has 3 pages, so there is no page 9.");
+  assert.equal(C.parsePages("2", 1).error, "This PDF has 1 page, so there is no page 2.");
+  assert.equal(C.parsePages("5-2", 9).error, "\u201c5-2\u201d is not a range of pages.");
+  assert.equal(C.parsePages("0", 9).error, "\u201c0\u201d is not a range of pages.");
+  assert.match(C.parsePages("one", 9).error, /^Pages should look like 1-3, 8\. \u201cone\u201d is not a page or a range\.$/);
+});
+
+test("pageRaster and pageName", () => {
+  assert.deepEqual(plain(C.pageRaster(612, 792, 150, false)), { width: 1275, height: 1650, scale: 150 / 72, dpi: 150 });
+  assert.deepEqual(plain(C.pageRaster(612, 792, 300, false)).width, 2550);
+  const poster = C.pageRaster(2384, 3370, 300, false); // A0 at 300 dpi is 93 MP
+  assert.ok(poster.width * poster.height <= C.MAX_PIXELS_PAGE);
+  assert.ok(poster.dpi < 300 && poster.dpi > 100, String(poster.dpi));
+  const phone = C.pageRaster(612, 792, 300, true);
+  assert.ok(phone.width * phone.height <= C.MAX_PIXELS_MOBILE);
+  assert.equal(C.pageName("Report.PDF", 3, 12, "jpg"), "Report-p003.jpg");
+  assert.equal(C.pageName("big.pdf", 7, 1200, "png"), "big-p0007.png");
+});
+
+test("svgSize: units, viewBox fallback and the browser default", () => {
+  const size = (t) => plain(C.svgSize(t));
+  assert.deepEqual(size('<svg width="24" height="12"/>'), { width: 24, height: 12, viewBox: null, from: "size" });
+  assert.deepEqual(size("<svg height='2in' width='1in'></svg>"), { width: 96, height: 192, viewBox: null, from: "size" });
+  assert.equal(C.svgSize('<svg width="72pt" height="6pc"/>').height, 96);
+  assert.equal(Math.round(C.svgSize('<svg width="25.4mm" height="2.54cm"/>').width), 96);
+  assert.deepEqual(size('<svg width="100%" height="100%" viewBox="0 0 40 20"/>'), { width: 40, height: 20, viewBox: [0, 0, 40, 20], from: "viewBox" });
+  assert.deepEqual(size('<svg viewBox="-5,-5 10,30"/>').viewBox, [-5, -5, 10, 30]);
+  assert.deepEqual(size('<svg width="80" viewBox="0 0 40 20"/>'), { width: 80, height: 40, viewBox: [0, 0, 40, 20], from: "size" });
+  assert.deepEqual(size("<svg/>"), { width: 300, height: 150, viewBox: null, from: "default" });
+  assert.equal(C.svgSize('<!-- <svg width="1" height="1"> -->\n<svg width="50" height="5"/>').width, 50, "a commented-out root is skipped");
+  assert.equal(C.svgSize('<svg:svg xmlns:svg="x" width="7" height="3"/>').width, 7);
+  assert.equal(C.svgSize("<html/>"), null);
+});
+
+test("svgWithSize: sets the pixel size and keeps or adds a viewBox, so the drawing scales as a vector", () => {
+  assert.equal(C.svgWithSize('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="12"><path/></svg>', 96, 48),
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 12" width="96" height="48"><path/></svg>');
+  assert.equal(C.svgWithSize('<svg viewBox="0 0 40 20"/>', 80, 40), '<svg viewBox="0 0 40 20" width="80" height="40"/>');
+  assert.equal(C.svgWithSize("<svg height='5' viewBox='0 0 2 1' width='10'>", 20, 10), "<svg viewBox='0 0 2 1' width=\"20\" height=\"10\">");
+  const pre = '<?xml version="1.0"?>\n<!-- <svg width="9"> -->\n';
+  assert.equal(C.svgWithSize(pre + '<svg width="10mm" height="5mm"/>', 76, 38), pre + '<svg viewBox="0 0 37.7953 18.8976" width="76" height="38"/>');
+  assert.equal(C.svgWithSize("not svg", 1, 1), "not svg");
+});
+
+test("svgOutSize, svgNotes and svgDecode", () => {
+  assert.deepEqual(plain(C.svgOutSize(24, 12, "2")), { width: 48, height: 24 });
+  assert.deepEqual(plain(C.svgOutSize(24, 12, "4")), { width: 96, height: 48 });
+  assert.deepEqual(plain(C.svgOutSize(300, 150, "width", 1000)), { width: 1000, height: 500 });
+  assert.equal(C.svgNotes('<svg><image href="https://example.org/a.png"/></svg>').length, 1);
+  assert.equal(C.svgNotes('<svg><image xlink:href="data:image/png;base64,AAAA"/></svg>').length, 0, "embedded images are fine");
+  assert.equal(C.svgNotes('<svg><image xlink:href="http://example.org/a.png"/></svg>').length, 1);
+  assert.equal(C.svgNotes("<svg><style>@import url(https://fonts.example/x.css);</style></svg>").length, 1);
+  assert.equal(C.svgDecode(utf8("<svg>\u00e9</svg>")), "<svg>\u00e9</svg>");
+  assert.equal(C.svgDecode(new Uint8Array([...utf8('<?xml version="1.0" encoding="ISO-8859-1"?><svg>'), 0xe9, ...utf8("</svg>")])).slice(-7), "\u00e9</svg>");
+  assert.equal(C.svgDecode(new Uint8Array([0xff, 0xfe, 0x3c, 0, 0x73, 0])), "<s");
+});
+
+test("vendored pdf.js is the version its folder names, with the module and worker from the same build", () => {
+  // The browser build does not run under Node (it asks for pdf.js's legacy build), so drawing is checked in the
+  // browser runs; here the module and its worker must agree, since pdf.js refuses a worker of another version.
+  const dir = join(SITE, "assets/vendor/pdfjs-6.4.299");
+  for (const f of ["pdf.min.mjs", "pdf.worker.min.mjs"]) {
+    const src = readFileSync(join(dir, f), "utf8");
+    assert.ok(src.includes('"6.4.299"'), f + " is 6.4.299");
+  }
+  const shell = readFileSync(join(SITE, "tools/convert/convert-shell.js"), "utf8");
+  for (const k of ["wasmUrl", "cMapUrl", "standardFontDataUrl", "iccUrl", "useWorkerFetch: false"]) assert.ok(shell.includes(k), k);
 });

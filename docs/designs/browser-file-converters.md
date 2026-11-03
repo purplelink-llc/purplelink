@@ -427,6 +427,141 @@ are drawn to an 8-bit sRGB canvas, which the limits state.
 - **Picking which PNG sizes go into an ICO.** Not offered.
 - **BMP entries in ICO** for Windows XP, older resource compilers and some installers. The limits say so.
 
+## Third set: PDF to JPG, SVG to PNG, PNG to JPG
+
+Ben, 2026-11-03: "ship the top 3 first, the rest after". All seven ranked pairs above are live, and the examples in
+the request (images to PDF, PDF merge and split, CSV to XLSX, Markdown to PDF) already exist on the site, so the next
+three were ranked again on who ranks, fit and browser fit. No volume figures were looked up for this set; the volume
+column is relative, from the size of the sites that hold the head terms:
+
+| Pair | Est. volume | Difficulty | Fit | Browser fit | Rank |
+|---|---|---|---|---|---|
+| PDF to JPG (and PNG) | Very high | Very high head, long tail ("without uploading", "on Mac", "high resolution") reachable | Figures and pages for slides, forms to upload as images | pdf.js, already used by two site tools | 1 |
+| SVG to PNG (and JPG) | Medium | Medium | Researchers: pdfLaTeX, Word and many slide tools do not take SVG figures | Native SVG drawing | 2 |
+| PNG to JPG | Very high | Very high head; tail "keep quality", "transparent background" | Smaller files for upload limits | Native, existing image path | 3 |
+| JPG to PNG | high | Very high | Weak (a JPG gains nothing as PNG) | Native | Not now |
+| XLSX to CSV | Medium | Medium | Research data | Needs a zip reader and shared strings | Next |
+| TIFF to JPG | Medium | Medium | Microscopy and scans | Needs a TIFF decoder (only Safari reads TIFF) | Next |
+
+| Pair | Accepts | Where the work runs | Outputs |
+|---|---|---|---|
+| `pdf-to-jpg` | PDF (`%PDF-` in the first 1 KB) | pdf.js draws each page on a canvas on the page; pdf.js parses in its own worker | JPG or PNG per page; one file for a one-page PDF, a zip of the pages otherwise |
+| `svg-to-png` | SVG, SVGZ (`<svg` root in the first 4 KB of text, or gzip with a .svgz name) | The browser draws the SVG on a canvas on the page | PNG or JPG |
+| `png-to-jpg` | PNG, GIF, BMP | The existing worker image path | JPG |
+
+**Why two pairs draw on the page.** pdf.js's canvas and font loading use `document`, so drawing pages in a worker
+would need a custom canvas factory and font handling; pdf.js already parses and decodes in its own worker, and only
+the drawing runs on the page. Browsers do not decode an SVG from a Blob in a worker (`createImageBitmap` rejects it
+in Chrome and Firefox), and a worker has no `Image`. So the page draws: pdf.js renders a page into a canvas, and the
+SVG is drawn from an `<img>` whose source is a `data:` URL (the CSP allows `img-src data:`, not `blob:`, so no CSP
+change). The canvas is encoded with `canvas.toBlob`, which Chrome and Firefox run off the main thread, with the same
+check `encode()` makes (empty blob or wrong type is an error). There is no new worker message. In `convert()` the
+shell branches on `CONV.work`: `"pdfpages"` and `"svg"` return `{ blobs, notes, summary, partsLabel }` and fill
+`item.blobs` directly; everything else goes to the worker as before. Progress is set on the item page-side
+(`paintProgress`), and `pump()` counts the run for `tool_use` as for every pair.
+
+**Single-output pages.** `options_html` drops the Save as radio when there is one output, which left the quality
+and fill controls (`data-show-when="output=jpg"`) hidden for good. Every page with one output now carries
+`<input type="hidden" data-opt="output" value="...">`.
+
+**PDF to JPG.**
+- pdf.js 6.4.299, copied from the pdfjs-dist package already installed in the ScholarReader repo (no new download):
+  `pdf.min.mjs`, `pdf.worker.min.mjs`, and `wasm/jbig2.wasm`, `wasm/openjpeg.wasm`, `wasm/qcms_bg.wasm` with their
+  licenses, in `site/assets/vendor/pdfjs-6.4.299/`. Without the wasm decoders, JBIG2 (black-and-white office scans)
+  and JPEG 2000 images come out blank; `/assets/vendor/pdfjs/` (6.3.289, the two checkers) has no wasm. A versioned
+  folder because pdf.js fetches the wasm files by name without a `?v=` stamp, and `/assets/vendor/*` is cached as
+  immutable for a year. Moving the two checkers to it and removing 6.3.289 is a follow-up.
+- Also vendored from the same package, loaded only when a PDF needs them: `cmaps/` (packed CMaps for CJK and other
+  non-embedded Type0 fonts), `standard_fonts/` (Foxit and Liberation fonts for the 14 standard PDF fonts, so text in
+  non-embedded Helvetica or Times looks the same on every system) and `iccs/`. 4.6 MB on the server in all.
+- The URLs come from `<link rel="prefetch" as="script" data-convert-lib="pdfjs" href=".../pdf.min.mjs">` and
+  `data-convert-lib="pdfjs-worker"` (prefetch, as for pdf-lib, so nothing loads at full priority before a PDF is
+  added; `modulepreload` would). `fingerprint_assets.py`
+  stamps only `.css` and `.js`, so these stay bare; the versioned folder makes that safe, as for libheif. The shell
+  reads them page-side; the site test checks the key and the bare versioned path.
+- `GlobalWorkerOptions.workerSrc` is set once; one `PDFWorker` is reused across files. Per file:
+  `getDocument({ data, worker, wasmUrl, cMapUrl, cMapPacked: true, standardFontDataUrl, iccUrl, useWorkerFetch: false,
+  verbosity: 0 })`, every URL derived from the folder of the module link. `useWorkerFetch: false` keeps those loads
+  on the page, where the meter counts them (GETs of this site's files with no body). Per page: `getPage`,
+  `render({ canvasContext, canvas, viewport, background: "#ffffff" })`, `page.cleanup()`; after the row,
+  `doc.destroy()`. Scripting and XFA stay off (the defaults for `getDocument`), and links in the PDF are never
+  opened: the output is pixels. Embedded fonts load through `FontFace` from bytes, which `font-src 'self'` does not
+  block; the browser run checks a PDF with embedded fonts for CSP errors.
+- If `import()` fails (a browser too old for pdf.js 6), the row says "This browser could not load the PDF reader.
+  Use a current version of Chrome, Edge, Firefox or Safari."
+- Options, as `data-opt` keys validated in `Convert.options`: `output` "jpg" (default) or "png"; `dpi` "72", "150"
+  (default) or "300"; `pages`, text, trimmed, at most 200 characters, default "" (all pages). The Pages field has a
+  visible label and a hint linked with `aria-describedby`, and carries `data-nostore` so a range is not remembered
+  for the next visit. Pages are always opaque white (`background`), so there is no fill option.
+- `Convert.parsePages(text, count)` returns `{ pages }` (sorted, without duplicates) or `{ error }`. Grammar: numbers
+  and ranges separated by commas or semicolons; `4-` means 4 to the end; an en dash works as a hyphen. Errors:
+  "Pages should look like 1-3, 8. "x" is not a page or a range.", ""5-2" is not a range of pages.", "This PDF has 3
+  pages, so there is no page 9." A range running past the end stops at the last page.
+- `Convert.pageRaster(w, h, dpi, mobile)` gives the canvas size: dpi/72 times the page in points, shrunk to 40 MP
+  (16.7 MP on phones) when larger, since the canvas lives in the page. When any page was shrunk, one row note: "Some
+  pages are too large to draw at N dpi here, so they were drawn at M dpi."
+- At most 500 pages per run, checked after the document opens: "This PDF has N pages. This page draws up to 500 at
+  a time, so enter a range under Pages, such as 1-500."
+- Results stop at 1 GB in all (the zip cap): the pages done so far are kept and the row says "Stopped after page N:
+  the pages so far add up to 1 GB, the most this tab can zip. Enter a range under Pages for the rest." A page that
+  fails to draw is skipped with a note naming it; the rest go on.
+- Output names: `report.jpg` for a one-page selection (a normal download button); otherwise `report-pages/report-p001.jpg`
+  and so on (digits enough for the page count, at least three), shown as one button "Download the 12 pages (.zip)"
+  (`partsLabel`), zipped as `report-pages.zip` with the folder inside. Download all as .zip takes every row's files
+  flat, as for ICNS. The row text: "12 pages at 150 dpi, 9.8 MB".
+- Errors from pdf.js: `PasswordException` gives "This PDF is locked with a password. Open it in a PDF reader, save a
+  copy without the password, and add that." (a PDF with only owner restrictions opens without one and converts);
+  `InvalidPDFException` gives "This file could not be read as a PDF. It may be damaged or cut short."; anything else
+  gives "This PDF could not be opened (the reader said: ...)."
+
+**SVG to PNG.**
+- The text is decoded as UTF-8, or with the encoding its XML declaration names. `Convert.svgRoot` finds the root
+  start tag with a regex that skips the XML declaration, comments and a doctype, and takes `svg` or `svg:svg`;
+  attributes may come in any order. The `<img>` still parses the whole file, so malformed XML is caught there.
+- `Convert.svgSize(text)` reads the root `<svg>`: `width` and `height` in px (1), pt (4/3), pc (16), mm, cm, in (96
+  per inch) or unitless; a percentage or a missing value falls back to the `viewBox`, then to 300 by 150 (the browser
+  default, with a row note).
+  `Convert.svgWithSize(text, w, h)` rewrites the root's width and height to the output pixels and adds a `viewBox`
+  from the old size when there is none, so the drawing scales as a vector instead of being enlarged as pixels, and
+  Firefox, which will not draw an SVG without a size, gets one. Both are tested in Node.
+- Options: `output` "png" (default) or "jpg" (with quality and fill color, as the other image pages); `scale` "1",
+  "2" (default), "4" or "width", and `width`, a number from 16 to 16384 shown only for "width" (default 1920). The
+  output size is checked against the 40 MP page-side cap (16.7 MP on phones) before the canvas is made. PNG keeps
+  transparency.
+- An SVG drawn as an image cannot run scripts or load anything, which is also why external images and web fonts do
+  not appear. The row says so when the file references `http` images or `@import`s fonts. Safari refuses to export a
+  canvas with an SVG `<foreignObject>` (a tainted canvas): `toBlob` throws a `SecurityError`, and the row says "This
+  browser will not export this SVG because it contains HTML (a foreignObject). Try Chrome or Firefox." An `<img>`
+  that fails to load says "This browser could not draw this SVG. The file may not be valid XML."
+- Up to 10 MB of SVG, because the drawing goes through a `data:` URL that some browsers cap. An SVGZ (gzip, named
+  .svgz) is unpacked with `DecompressionStream` and stopped once the text passes 10 MB, so a small file cannot unpack
+  to gigabytes. Without `DecompressionStream`: "This browser cannot unpack .svgz files. Save the drawing as .svg."
+
+**PNG to JPG.** `work: "image"`, JPG only, the quality slider and fill color (shown through the hidden `output`). GIF and BMP are accepted (sniffed `GIF8`,
+and `BM` with a known header size) because the question is the same: a lossless picture made smaller. An animated
+PNG (`acTL` chunk) or GIF (a `NETSCAPE2.0` block) gets the first-frame note.
+
+**Pages and links.**
+- `/tools/` group "Convert files": ten cards and a count of 10; `ItemList` positions 29 to 31 after CSV to XLSX, and
+  Photo to Logo moves to 32.
+- PDF to JPG and PNG to JPG name Née in their How it works text and list it under More free tools ("Née, a Mac
+  converter"): it does both from Finder (its PDF pages come out as PNG).
+- The three slugs go into `TOOL_SLUGS` (`netlify/lib/tool-counts.mjs`, sorted) and the "apps" background tuple in
+  `gen_og_cards.py`; each card is rendered with `--only tools/<slug>`. Buddy's links come from the sitemap.
+- The page-side pairs override the privacy line and the "Are my files uploaded?" answer, which otherwise say "in a
+  background worker".
+
+**Build and tests.** Branch `tools-converters-3`, worktree `converters-3`, one PR, squash-merged when green, no
+`[deploy now]`. Node tests: `parsePages`, `pageRaster`, `pageName`, `svgSize`, `svgWithSize` (units, percentage,
+viewBox fallback, default, existing viewBox, `svg:svg`, comments and doctype first), `isSvgText` and `kindOf` for
+pdf, svg, svgz, bmp, the new `options()` keys, and the new refusals. Site test: the pdfjs links and vendor folder
+(files, licenses, README hashes), the hidden `output` on single-output pages, `data-nostore` on Pages. Browser runs in
+WebKit and Firefox under the production CSP, with every output opened: a multi-page PDF with embedded fonts, a JBIG2
+scan, a password PDF, SVGs with mm sizes and with only a viewBox, an SVGZ, an animated GIF, a BMP.
+
+**Not in this set.** JPG to PNG, XLSX to CSV and TIFF to JPG (above). Extracting the images embedded in a PDF
+unchanged (a different job from drawing pages). Choosing a background for SVG PNGs (they keep transparency).
+
 ## Open questions
 
 0. **Safari 16.4 and Firefox.** The browser check ran in Chromium. Worker plus Emscripten plus `OffscreenCanvas` is
@@ -492,3 +627,21 @@ changed:
 - **Open: a hash check of the vendored copies in tests.** Not added. pdf-lib and JSZip were already live, and a swap
   breaks the Node tests that run them.
 
+Third set, two Goldfish reviewers on Sonnet (design, implementation readiness), zero context, 2026-11-03. What
+changed:
+
+- **pdf.js `.mjs` links** would not have been stamped, and the site test would have rejected them. Now bare,
+  versioned, and tested as such.
+- **PNG to JPG's quality and fill** would have stayed hidden on a page with one output. A hidden `output` field fixes
+  every single-output page.
+- **Encoding** moved from a new worker message to `canvas.toBlob` on the page, which drops a second full-size copy of
+  every page.
+- **Memory**: page-side canvases capped at 40 MP, one canvas reused, `page.cleanup()` and `doc.destroy()`, a 1 GB
+  stop that keeps the pages done, one failed page skipped instead of failing the file.
+- **Fonts**: CMaps and standard fonts vendored, and `useWorkerFetch: false` so the meter sees their loads.
+- **SVG**: a 10 MB limit (the `data:` route), the SVGZ limit applied while unpacking, the pixel cap before drawing,
+  messages for a failed load and a tainted canvas.
+- **Specified**: option keys and defaults, the `parsePages` grammar and messages, the pdf.js error map, the row text
+  and zip naming, the ItemList positions, the copy overrides, tests and build order.
+- **Kept**: the regex root edit for SVG instead of `DOMParser`, so the size rules run in the Node tests; the `<img>`
+  still parses the whole file. A Cancel button is not added (no converter has one; Clear removes waiting rows).

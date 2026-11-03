@@ -664,7 +664,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/guides/best-keyboard-sound-apps-for-mac/</loc>
-    <lastmod>2026-11-02</lastmod>
+    <lastmod>2026-11-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -1854,6 +1854,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://purplelink.llc/tools/pdf-to-jpg/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://purplelink.llc/tools/pdf-tools/</loc>
     <lastmod>2026-11-02</lastmod>
     <priority>0.7</priority>
@@ -1876,6 +1881,11 @@
   <url>
     <loc>https://purplelink.llc/tools/png-to-ico/</loc>
     <lastmod>2026-11-02</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://purplelink.llc/tools/png-to-jpg/</loc>
+    <lastmod>2026-11-03</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
@@ -1916,6 +1926,11 @@
   <url>
     <loc>https://purplelink.llc/tools/submission-checklist/</loc>
     <lastmod>2026-11-02</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://purplelink.llc/tools/svg-to-png/</loc>
+    <lastmod>2026-11-03</lastmod>
     <priority>0.7</priority>
   </url>
   <url>

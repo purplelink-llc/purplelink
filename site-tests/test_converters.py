@@ -3,6 +3,7 @@
 The JSON-LD has to say what the page shows (HowTo steps, FAQ), every page carries the shared shell and its worker
 link, the slugs are counted, the index lists them, and the CSP gains 'wasm-unsafe-eval' and nothing broader.
 Design: docs/designs/browser-file-converters.md."""
+import hashlib
 import html
 import json
 import re
@@ -93,13 +94,33 @@ class ConverterPages(unittest.TestCase):
             for when in re.findall(r'data-show-when="([^"]+)"', page):
                 key = when.split("=")[0]
                 self.assertIn(f'data-opt="{key}"', page, f"{p['slug']}: shows on an option it does not have")
-            libs = re.findall(r'<link rel="prefetch" as="script" data-convert-lib="(\w+)" href="([^"]+)">', page)
+            libs = re.findall(r'<link rel="prefetch" as="script" data-convert-lib="([\w-]+)" href="([^"]+)">', page)
             self.assertEqual([k for k, _ in libs], p.get("libs", []), p["slug"])
             for _, href in libs:
-                self.assertRegex(href, r"^/assets/vendor/.+\.js" + STAMP + r"$", "stamped, so the worker never loads a stale copy")
+                if href.endswith(".mjs"):
+                    # fingerprint_assets.py stamps .js and .css only; the folder name carries pdf.js's version instead.
+                    self.assertRegex(href, r"^/assets/vendor/pdfjs-\d+\.\d+\.\d+/[\w.]+\.mjs$")
+                else:
+                    self.assertRegex(href, r"^/assets/vendor/.+\.js" + STAMP + r"$", "stamped, so the worker never loads a stale copy")
                 self.assertTrue((SITE / href.split("?")[0].lstrip("/")).is_file(), href)
+            if len(p["outputs"]) == 1 and "<fieldset" in page:
+                # the quality and fill controls show only while output=jpg, so a one-output page still names it
+                self.assertIn(f'<input type="hidden" data-opt="output" value="{p["outputs"][0][0]}">', page, p["slug"])
             self.assertEqual('id="cv-one"' in page, bool(p.get("combine")), p["slug"])
             self.assertRegex(page, r'<script src="/assets/vendor/jszip/jszip\.min\.js' + STAMP + r'" defer>', "the worker's JSZip URL comes from this tag")
+
+    def test_page_range_is_not_remembered(self):
+        page = read_site("tools/pdf-to-jpg/index.html")
+        field = re.search(r'<input type="text" id="cv-pages"[^>]*>', page).group(0)
+        self.assertIn("data-nostore", field)
+        self.assertIn('aria-describedby="cv-pages-hint"', field)
+        self.assertIn('id="cv-pages-hint"', page)
+        self.assertIn('data-show-when="scale=width"', read_site("tools/svg-to-png/index.html"))
+
+    def test_page_side_pairs_do_not_claim_a_worker(self):
+        for slug in ("pdf-to-jpg", "svg-to-png"):
+            privacy = re.search(r'<p class="tool-privacy">(.*?)</p>', read_site(f"tools/{slug}/index.html")).group(1)
+            self.assertNotIn("worker", privacy, slug)
 
     def test_csp_allows_wasm_and_nothing_broader(self):
         conf = tomllib.loads((ROOT / "netlify.toml").read_text())
@@ -115,6 +136,18 @@ class ConverterPages(unittest.TestCase):
             self.assertTrue((d / f).is_file(), f)
         self.assertIn("GNU LESSER GENERAL PUBLIC LICENSE", (d / "LICENSE").read_text())
         self.assertIn("/assets/vendor/libheif-1.23.5/", read_site("tools/convert/convert-worker.js"))
+
+    def test_vendored_pdfjs_is_complete(self):
+        d = SITE / "assets" / "vendor" / "pdfjs-6.4.299"
+        for f in ("pdf.min.mjs", "pdf.worker.min.mjs", "LICENSE", "README.txt", "wasm/jbig2.wasm", "wasm/openjpeg.wasm",
+                  "wasm/qcms_bg.wasm", "wasm/LICENSE_JBIG2", "wasm/LICENSE_OPENJPEG", "wasm/LICENSE_QCMS",
+                  "cmaps/LICENSE", "standard_fonts/LICENSE_FOXIT", "standard_fonts/LICENSE_LIBERATION", "iccs/LICENSE"):
+            self.assertTrue((d / f).is_file(), f)
+        self.assertIn("Apache License", (d / "LICENSE").read_text())
+        readme = (d / "README.txt").read_text()
+        for f in ("pdf.min.mjs", "pdf.worker.min.mjs", "wasm/jbig2.wasm", "wasm/openjpeg.wasm", "wasm/qcms_bg.wasm"):
+            self.assertIn(hashlib.sha256((d / f).read_bytes()).hexdigest() + "  " + f, readme, f"{f} differs from the README hash")
+        self.assertTrue(any((d / "cmaps").glob("*.bcmap")))
 
 
 if __name__ == "__main__":

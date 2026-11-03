@@ -103,11 +103,34 @@ async function decodeNative(bytes, kind, opts, maxPixels) {
   // An animated WebP has an ANIM chunk, an animated AVIF the avis brand; the browser hands over the first frame only.
   if (kind === "webp" && hasChunk(bytes, "ANIM")) notes.push("This WebP is animated. Only the first frame was converted.");
   if (kind === "avif" && isAvis(bytes)) notes.push("This AVIF is animated. Only the first frame was converted.");
+  // An animated PNG has an acTL chunk before its image data; an animated GIF a NETSCAPE2.0 looping block.
+  if (kind === "png" && hasPngChunk(bytes, "acTL")) notes.push("This PNG is animated. Only the first frame was converted.");
+  if (kind === "gif" && hasAscii(bytes, "NETSCAPE2.0", 65536)) notes.push("This GIF is animated. Only the first frame was converted.");
   return { bitmap: bmp, width: bmp.width, height: bmp.height, notes: notes };
 }
 
 function isAvis(b) {
   for (var i = 8; i + 4 <= Math.min(b.length, 64); i += 4) if (String.fromCharCode(b[i], b[i + 1], b[i + 2], b[i + 3]) === "avis") return true;
+  return false;
+}
+
+function hasPngChunk(b, id) {
+  for (var at = 8; at + 8 <= b.length;) {
+    var len = ((b[at] << 24) | (b[at + 1] << 16) | (b[at + 2] << 8) | b[at + 3]) >>> 0;
+    var name = String.fromCharCode(b[at + 4], b[at + 5], b[at + 6], b[at + 7]);
+    if (name === id) return true;
+    if (name === "IDAT" || name === "IEND") return false;
+    at += 12 + len;
+  }
+  return false;
+}
+
+function hasAscii(b, text, limit) {
+  var end = Math.min(b.length, limit) - text.length;
+  outer: for (var i = 0; i <= end; i++) {
+    for (var j = 0; j < text.length; j++) if (b[i + j] !== text.charCodeAt(j)) continue outer;
+    return true;
+  }
   return false;
 }
 

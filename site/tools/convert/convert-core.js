@@ -10,6 +10,8 @@
   // canvas and the encoded copy. Phones get the iOS Safari canvas limit (4096 x 4096).
   const MAX_PIXELS = 100e6;
   const MAX_PIXELS_MOBILE = 16777216;
+  // PDF pages and SVGs are drawn on a canvas in the page itself, not in the worker, so they get a lower cap.
+  const MAX_PIXELS_PAGE = 40e6;
   // "Download all" stops above this; past it a zip built in memory can take the tab down.
   const MAX_ZIP_BYTES = 1024 * 1024 * 1024;
 
@@ -25,14 +27,20 @@
     "jpg-to-pdf": { label: "JPG", accepts: ["jpeg", "png"], outputs: ["pdf"], output: "pdf", work: "pdf", combine: true, maxPixels: 25e6 },
     "avif-to-jpg": { label: "AVIF", accepts: ["avif"], outputs: ["jpg", "png"], output: "jpg", work: "image", canvas: true },
     // The sheet is built in worker memory as XML several times the size of the CSV, hence the lower cap.
-    "csv-to-xlsx": { label: "CSV", accepts: ["csv"], outputs: ["xlsx"], output: "xlsx", work: "sheet", maxBytes: 50 * 1024 * 1024 }
+    "csv-to-xlsx": { label: "CSV", accepts: ["csv"], outputs: ["xlsx"], output: "xlsx", work: "sheet", maxBytes: 50 * 1024 * 1024 },
+    // pdfpages and svg are drawn by the page (pdf.js and <img> cannot run in this worker); the worker encodes the pixels.
+    "pdf-to-jpg": { label: "PDF", accepts: ["pdf"], outputs: ["jpg", "png"], output: "jpg", work: "pdfpages" },
+    "svg-to-png": { label: "SVG", accepts: ["svg"], outputs: ["png", "jpg"], output: "png", work: "svg", maxBytes: 10 * 1024 * 1024 },
+    "png-to-jpg": { label: "PNG", accepts: ["png", "gif", "bmp"], outputs: ["jpg"], output: "jpg", work: "image", canvas: true }
   };
+  // A PDF with more pages than this is refused rather than drawn for minutes.
+  const MAX_PDF_PAGES = 500;
 
   const MIME = {
     jpg: "image/jpeg", png: "image/png", icns: "image/icns", ico: "image/x-icon", pdf: "application/pdf",
     xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", zip: "application/zip"
   };
-  const KIND_NAMES = { heic: "HEIC", avif: "AVIF", webp: "WebP", png: "PNG", jpeg: "JPEG", gif: "GIF", csv: "CSV" };
+  const KIND_NAMES = { heic: "HEIC", avif: "AVIF", webp: "WebP", png: "PNG", jpeg: "JPEG", gif: "GIF", csv: "CSV", pdf: "PDF", bmp: "BMP", svg: "SVG" };
 
   function ascii(b, s, e) {
     let out = "";
@@ -44,13 +52,17 @@
   const HEIF_BRANDS = ["heic", "heix", "heim", "heis", "hevc", "hevx", "hevm", "hevs", "mif1", "msf1", "mif2"];
   const AVIF_BRANDS = ["avif", "avis"];
 
-  /** What a file is, from its first bytes: "heic", "avif", "webp", "png", "jpeg", "gif" or "". */
+  /** What a file is, from its first bytes: "heic", "avif", "webp", "png", "jpeg", "gif", "bmp", "pdf" or "". */
   function sniff(b) {
     if (!b || b.length < 12) return "";
     if (b[0] === 0x89 && ascii(b, 1, 4) === "PNG") return "png";
     if (b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return "jpeg";
     if (ascii(b, 0, 4) === "RIFF" && ascii(b, 8, 12) === "WEBP") return "webp";
     if (ascii(b, 0, 4) === "GIF8") return "gif";
+    // BMP: "BM", then a DIB header whose size is one of the known versions (OS/2 1, Windows 3 to 5, and the two v2/v3).
+    if (b[0] === 0x42 && b[1] === 0x4d && b.length >= 18 && [12, 40, 52, 56, 64, 108, 124].indexOf(b[14] | (b[15] << 8) | (b[16] << 16) | (b[17] << 24)) !== -1) return "bmp";
+    // PDF readers accept the header anywhere in the first 1 KB (some files start with junk from a mail gateway).
+    if (ascii(b, 0, Math.min(b.length, 1024)).indexOf("%PDF-") !== -1) return "pdf";
     if (ascii(b, 4, 8) === "ftyp") {
       const size = ((b[0] << 24) | (b[1] << 16) | (b[2] << 8) | b[3]) >>> 0;
       const end = Math.min(size >= 16 ? size : 16, b.length, 256);
@@ -62,14 +74,31 @@
     return "";
   }
 
-  /** Like sniff, plus "csv" for a text file named .csv, .tsv or .txt: no NUL byte in the head, or a UTF-16 BOM. */
+  /** Like sniff, plus "svg" for SVG text (or gzip named .svgz) and "csv" for a text file named .csv, .tsv or .txt:
+      no NUL byte in the head, or a UTF-16 BOM. */
   function kindOf(b, name) {
     const k = sniff(b);
-    if (k || !/\.(csv|tsv|txt|tab)$/i.test(String(name || ""))) return k;
+    if (k) return k;
+    if (b && b.length > 2 && b[0] === 0x1f && b[1] === 0x8b && /\.svgz$/i.test(String(name || ""))) return "svg";
+    if (isSvgText(b)) return "svg";
+    if (!/\.(csv|tsv|txt|tab)$/i.test(String(name || ""))) return k;
     if (b && b.length >= 2 && ((b[0] === 0xff && b[1] === 0xfe) || (b[0] === 0xfe && b[1] === 0xff))) return "csv";
     for (let i = 0; b && i < b.length && i < 4096; i++) if (b[i] === 0) return "";
     return b && b.length ? "csv" : "";
   }
+
+  /** True when the head of a file is SVG text: an <svg element before any other element, after an optional BOM,
+      XML declaration, comments and doctype. */
+  function isSvgText(b) {
+    if (!b || b.length < 5) return false;
+    let t = "";
+    for (let i = 0; i < b.length && i < 4096; i++) { if (b[i] === 0) return false; t += String.fromCharCode(b[i]); }
+    t = t.replace(/^\xef\xbb\xbf/, "").replace(/<\?xml[\s\S]*?\?>|<!--[\s\S]*?-->|<!DOCTYPE[^>[]*(\[[\s\S]*?\])?\s*>/gi, "").replace(/^\s+/, "");
+    return /^<(svg:)?svg[\s>/]/i.test(t);
+  }
+
+  // "an SVG", "an AVIF", "a PNG": by how the name is said, not how it is spelled.
+  function article(name) { return (/^(AVIF|SVG)\b/.test(name) ? "an " : "a ") + name; }
 
   /** The message for a file this page cannot take, or "" when it can. */
   function refuse(pair, kind, size) {
@@ -80,7 +109,7 @@
     if (size > max) return "That file is over " + (max / 1048576) + " MB.";
     if (c.accepts.indexOf(kind) !== -1) return "";
     const want = c.accepts.map(function (k) { return KIND_NAMES[k]; }).join(", ").replace(/, ([^,]*)$/, " or $1");
-    return kind ? "This is a " + KIND_NAMES[kind] + " file, not " + want + "." : "This is not a " + want + " file, or it is damaged.";
+    return kind ? "This is " + article(KIND_NAMES[kind]) + " file, not " + want + "." : "This is not " + article(want) + " file, or it is damaged.";
   }
 
   /** The message for a picture too large to decode here, or "". */
@@ -543,6 +572,134 @@
   }
 
   /** Options as the page sends them, cleaned. */
+  // ---------- PDF to JPG ----------
+  const DPIS = { "72": 72, "150": 150, "300": 300 };
+
+  /** "1-3, 8" -> [1, 2, 3, 8] for a PDF of count pages. Empty means every page. Returns { pages } or { error }. */
+  function parsePages(text, count) {
+    const t = String(text == null ? "" : text).trim();
+    const all = [];
+    if (!t) { for (let i = 1; i <= count; i++) all.push(i); return { pages: all }; }
+    const seen = {};
+    const parts = t.split(/\s*[,;]\s*/).filter(Boolean);
+    for (let i = 0; i < parts.length; i++) {
+      const m = /^(\d+)(?:\s*[-\u2013]\s*(\d*))?$/.exec(parts[i]);
+      if (!m) return { error: "Pages should look like 1-3, 8. \u201c" + parts[i] + "\u201d is not a page or a range." };
+      const a = Number(m[1]);
+      const b = m[2] === undefined ? a : m[2] === "" ? count : Number(m[2]);
+      if (a < 1 || b < a) return { error: "\u201c" + parts[i] + "\u201d is not a range of pages." };
+      if (a > count) return { error: "This PDF has " + count + " page" + (count === 1 ? "" : "s") + ", so there is no page " + a + "." };
+      for (let p = a; p <= Math.min(b, count); p++) if (!seen[p]) { seen[p] = 1; all.push(p); }
+    }
+    all.sort(function (x, y) { return x - y; });
+    return { pages: all };
+  }
+
+  /** Pixel size of a page of w by h points drawn at dpi, shrunk to fit the page-side cap. dpi is what was used. */
+  function pageRaster(w, h, dpi, mobile) {
+    const cap = mobile ? MAX_PIXELS_MOBILE : MAX_PIXELS_PAGE;
+    let k = dpi / 72;
+    if (w * k * h * k > cap) k = Math.sqrt(cap / (w * h));
+    return { width: Math.max(1, Math.floor(w * k)), height: Math.max(1, Math.floor(h * k)), scale: k, dpi: Math.round(k * 72) };
+  }
+
+  /** report.pdf, page 3 of 12 -> report-p003.jpg (digits enough for the page count, at least 3). */
+  function pageName(name, page, count, ext) {
+    const base = outName(name, ext).replace(/\.[^.]+$/, "");
+    const digits = Math.max(3, String(count).length);
+    return base + "-p" + String(page).padStart(digits, "0") + "." + ext;
+  }
+
+  // ---------- SVG to PNG ----------
+  // CSS absolute units in px (96 per inch).
+  const SVG_UNITS = { "": 1, px: 1, pt: 96 / 72, pc: 16, mm: 96 / 25.4, cm: 96 / 2.54, in: 96 };
+
+  /** The root <svg ...> start tag, with where it starts and ends in text, or null. Skips comments and the prolog. */
+  function svgRoot(text) {
+    const re = /<!--[\s\S]*?-->|<\?[\s\S]*?\?>|<!DOCTYPE[^>[]*(\[[\s\S]*?\])?\s*>|<((?:svg:)?svg)(\s[^>]*?)?(\/?)>/gi;
+    let m;
+    while ((m = re.exec(text))) {
+      if (m[2]) return { start: m.index, end: re.lastIndex, name: m[2], attrs: m[3] || "", selfClose: m[4] === "/" };
+    }
+    return null;
+  }
+
+  function svgAttr(attrs, name) {
+    const m = new RegExp("(?:^|\\s)" + name + "\\s*=\\s*(\"([^\"]*)\"|'([^']*)')", "i").exec(attrs);
+    return m ? (m[2] !== undefined ? m[2] : m[3]) : null;
+  }
+
+  function svgLength(v) {
+    if (v == null) return 0;
+    const m = /^\s*([0-9]*\.?[0-9]+(?:e[-+]?\d+)?)\s*(px|pt|pc|mm|cm|in)?\s*$/i.exec(v);
+    if (!m) return 0; // percentages, em and the like fall back to the viewBox
+    return Number(m[1]) * SVG_UNITS[(m[2] || "").toLowerCase()];
+  }
+
+  /** SVG bytes to text: a BOM wins, then the encoding the XML declaration names, then UTF-8. */
+  function svgDecode(b) {
+    let label = "utf-8";
+    if (b.length >= 2 && b[0] === 0xff && b[1] === 0xfe) label = "utf-16le";
+    else if (b.length >= 2 && b[0] === 0xfe && b[1] === 0xff) label = "utf-16be";
+    else if (!(b.length >= 3 && b[0] === 0xef && b[1] === 0xbb && b[2] === 0xbf)) {
+      const m = /^\s*<\?xml[^>]*?encoding\s*=\s*["']([A-Za-z0-9._-]+)["']/.exec(ascii(b, 0, 200));
+      if (m) label = m[1].toLowerCase();
+    }
+    try { return new TextDecoder(label).decode(b); } catch (e) { return new TextDecoder("utf-8").decode(b); }
+  }
+
+  /** The size an SVG asks to be drawn at, in CSS px: { width, height, viewBox, from } or null when there is no root. */
+  function svgSize(text) {
+    const r = svgRoot(text);
+    if (!r) return null;
+    const vbRaw = svgAttr(r.attrs, "viewBox");
+    let vb = null;
+    if (vbRaw) {
+      const n = vbRaw.trim().split(/[\s,]+/).map(Number);
+      if (n.length === 4 && n.every(isFinite) && n[2] > 0 && n[3] > 0) vb = n;
+    }
+    let w = svgLength(svgAttr(r.attrs, "width")), h = svgLength(svgAttr(r.attrs, "height"));
+    let from = "size";
+    if (w && !h) h = vb ? w * vb[3] / vb[2] : 150;
+    else if (h && !w) w = vb ? h * vb[2] / vb[3] : 300;
+    else if (!w && !h) {
+      if (vb) { w = vb[2]; h = vb[3]; from = "viewBox"; } else { w = 300; h = 150; from = "default"; }
+    }
+    return { width: w, height: h, viewBox: vb, from: from };
+  }
+
+  /** The SVG text with its root width and height set to w by h pixels and a viewBox kept or added, so the drawing
+      scales as a vector. */
+  function svgWithSize(text, w, h) {
+    const r = svgRoot(text);
+    if (!r) return text;
+    const size = svgSize(text);
+    let attrs = r.attrs.replace(/(^|\s)(width|height)\s*=\s*("[^"]*"|'[^']*')/gi, "");
+    if (!size.viewBox) attrs += ' viewBox="0 0 ' + round4(size.width) + " " + round4(size.height) + '"';
+    attrs += ' width="' + w + '" height="' + h + '"';
+    const tag = "<" + r.name + " " + attrs.replace(/^\s+/, "") + (r.selfClose ? "/>" : ">");
+    return text.slice(0, r.start) + tag + text.slice(r.end);
+  }
+  function round4(n) { return Math.round(n * 1e4) / 1e4; }
+
+  /** Notes for things an SVG drawn as an image cannot show: images from the web and web fonts. */
+  function svgNotes(text) {
+    const notes = [];
+    if (/[\s:]href\s*=\s*["']\s*(https?:)?\/\//i.test(text)) notes.push("This SVG links to images on the web. A browser does not load those when it draws an SVG as a picture, so they are missing.");
+    if (/@import|@font-face[^}]*url\(\s*["']?\s*(https?:)?\/\//i.test(text)) notes.push("This SVG asks for web fonts, which are not loaded when it is drawn as a picture. Its text uses fonts installed on this device.");
+    return notes;
+  }
+
+  /** Output pixel size for an SVG of w by h CSS px: scale "1", "2", "4", or "width" with a width in pixels. */
+  function svgOutSize(w, h, scale, width) {
+    if (scale === "width") {
+      const W = Math.round(width);
+      return { width: W, height: Math.max(1, Math.round(h * W / w)) };
+    }
+    const k = Number(scale) || 2;
+    return { width: Math.max(1, Math.round(w * k)), height: Math.max(1, Math.round(h * k)) };
+  }
+
   function options(pair, raw) {
     const c = CONVERSIONS[pair];
     raw = raw || {};
@@ -559,7 +716,11 @@
       delimiter: DELIMS[raw.delimiter] ? raw.delimiter : "auto",
       encoding: ENCODINGS[raw.encoding] ? raw.encoding : "auto",
       header: raw.header === undefined ? true : bool(raw.header),
-      text: bool(raw.text)
+      text: bool(raw.text),
+      dpi: DPIS[raw.dpi] || 150,
+      pages: String(raw.pages == null ? "" : raw.pages).slice(0, 200),
+      scale: ["1", "2", "4", "width"].indexOf(String(raw.scale)) !== -1 ? String(raw.scale) : "2",
+      width: Math.min(16384, Math.max(16, Math.round(Number(raw.width)) || 1920))
     };
   }
 
@@ -575,7 +736,9 @@
     kindOf: kindOf, ICO_SETS: ICO_SETS, buildIco: buildIco, parseIco: parseIco,
     jpegInfo: jpegInfo, displaySize: displaySize, pdfMatrix: pdfMatrix, pageLayout: pageLayout, PAGES: PAGES,
     decodeText: decodeText, ENCODINGS: ENCODINGS, DELIMS: DELIMS, MAX_CELLS: MAX_CELLS, detectDelimiter: detectDelimiter, parseCsv: parseCsv, cellNumber: cellNumber,
-    colName: colName, sheetName: sheetName, buildXlsxParts: buildXlsxParts
+    colName: colName, sheetName: sheetName, buildXlsxParts: buildXlsxParts,
+    MAX_PDF_PAGES: MAX_PDF_PAGES, MAX_PIXELS_PAGE: MAX_PIXELS_PAGE, svgRoot: svgRoot, DPIS: DPIS, parsePages: parsePages, pageRaster: pageRaster, pageName: pageName,
+    isSvgText: isSvgText, svgDecode: svgDecode, svgSize: svgSize, svgWithSize: svgWithSize, svgNotes: svgNotes, svgOutSize: svgOutSize
   };
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.Convert = api;
