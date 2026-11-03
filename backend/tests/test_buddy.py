@@ -245,7 +245,9 @@ def test_chat_refuses_other_origins_and_bad_bodies(app_client):
 def test_session_needs_a_solved_unused_challenge(app_client):
     c, _, _ = app_client
     s = c.post("/buddy/status", json={}, headers=ORIGIN).json()
-    assert c.post("/buddy/session", json={"challenge": s["challenge"], "nonce": "nope"}, headers=ORIGIN).status_code == 400
+    # At the test difficulty (8 bits) any fixed nonce solves 1 challenge in 256, so pick one that does not solve this one.
+    wrong = next(w for w in ("nope", "nah", "no", "x", "y") if not buddy.pow_solved(s["challenge"], w, s["bits"]))
+    assert c.post("/buddy/session", json={"challenge": s["challenge"], "nonce": wrong}, headers=ORIGIN).status_code == 400
     good = {"challenge": s["challenge"], "nonce": _solve(s["challenge"], s["bits"])}
     assert c.post("/buddy/session", json=good, headers=ORIGIN).json()["session"]
     assert c.post("/buddy/session", json=good, headers=ORIGIN).status_code == 400       # replayed

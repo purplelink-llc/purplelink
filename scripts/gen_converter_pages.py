@@ -23,6 +23,21 @@ TEMPLATE = SITE / "tools" / "metadata-cleaner" / "index.html"
 BASE = "https://purplelink.llc"
 
 NO_UPLOAD = "Are my files uploaded?"
+# Options shared by the pages that write CSV (XLSX to CSV, JSON to CSV), read CSV (CSV to JSON), or unpack icons.
+CSV_DELIM = ("select", "delimiter", "Separator", [("auto", "Detect"), ("comma", "Comma"), ("semicolon", "Semicolon"),
+                                                ("tab", "Tab"), ("pipe", "Pipe")])
+CSV_ENC = ("select", "encoding", "Text encoding", [("auto", "Detect"), ("utf-8", "UTF-8"),
+                                                  ("windows-1252", "Windows-1252 (Western)"),
+                                                  ("iso-8859-2", "ISO-8859-2 (Central European)"),
+                                                  ("shift_jis", "Shift JIS (Japanese)"),
+                                                  ("gb18030", "GB18030 (Chinese)"), ("utf-16le", "UTF-16")])
+ICONS = ("radio", "icons", "Sizes", [("largest", "The largest size"), ("all", "Every size, as a zip")])
+SAFE = ("check", "safe", "Keep text that starts with = + - @ from running as a formula in Excel", True)
+BOM = ("check", "bom", "Add a byte-order mark, so Excel on Windows shows accented letters", False)
+SEP = ("select", "delimiter", "Separator", [("comma", "Comma"), ("semicolon", "Semicolon"), ("tab", "Tab")])
+# PDF to JPG and SVG to PNG draw on the page, not in the converter worker, so their privacy line says so.
+PAGE_PRIVACY = ("Files are read and drawn in this tab. The only requests the page makes are for its own scripts and the "
+                "files they need. Your files are never sent anywhere.")
 
 
 def faq_uploaded(what: str, extra: str) -> tuple[str, str]:
@@ -161,7 +176,7 @@ PAGES = [
             ("Is it free?",
              "Yes. There is no account, no watermark and no limit beyond the file sizes above."),
         ],
-        "related": [("/tools/avif-to-jpg/", "AVIF to JPG"), ("/tools/heic-to-jpg/", "HEIC to JPG"),
+        "related": [("/tools/png-to-jpg/", "PNG to JPG"), ("/tools/avif-to-jpg/", "AVIF to JPG"), ("/tools/heic-to-jpg/", "HEIC to JPG"),
                     ("/tools/png-to-icns/", "PNG to ICNS"), ("/tools/latex-to-pdf/", "LaTeX to PDF")],
     },
     {
@@ -226,7 +241,7 @@ PAGES = [
             ("Is it free?",
              "Yes. There is no account and no watermark."),
         ],
-        "related": [("/tools/png-to-ico/", "PNG to ICO"), ("/tools/heic-to-jpg/", "HEIC to JPG"),
+        "related": [("/tools/icns-to-png/", "ICNS to PNG"), ("/tools/png-to-ico/", "PNG to ICO"), ("/tools/heic-to-jpg/", "HEIC to JPG"),
                     ("/tools/webp-to-png/", "WebP to PNG")],
     },
     {
@@ -290,7 +305,7 @@ PAGES = [
             ("Is it free?",
              "Yes. There is no account and no watermark."),
         ],
-        "related": [("/tools/png-to-icns/", "PNG to ICNS"), ("/tools/photo-to-logo/", "Photo to Logo"),
+        "related": [("/tools/ico-to-png/", "ICO to PNG"), ("/tools/png-to-icns/", "PNG to ICNS"), ("/tools/photo-to-logo/", "Photo to Logo"),
                     ("/tools/webp-to-png/", "WebP to PNG"), ("/tools/heic-to-jpg/", "HEIC to JPG")],
     },
     {
@@ -367,7 +382,7 @@ PAGES = [
             ("Is it free?",
              "Yes. There is no account, no watermark and no page limit beyond the sizes above."),
         ],
-        "related": [("/tools/pdf-tools/", "PDF Tools"), ("/tools/heic-to-jpg/", "HEIC to JPG"),
+        "related": [("/tools/pdf-to-jpg/", "PDF to JPG"), ("/tools/pdf-tools/", "PDF Tools"), ("/tools/heic-to-jpg/", "HEIC to JPG"),
                     ("/tools/webp-to-png/", "WebP to PNG"), ("/tools/metadata-cleaner/", "Metadata Cleaner")],
     },
     {
@@ -509,9 +524,630 @@ PAGES = [
             ("Is it free?",
              "Yes. There is no account, no watermark and no limit beyond the sizes above."),
         ],
-        "related": [("/tools/jpg-to-pdf/", "JPG to PDF"), ("/tools/pdf-tools/", "PDF Tools"),
+        "related": [("/tools/csv-to-json/", "CSV to JSON"), ("/tools/xlsx-to-csv/", "XLSX to CSV"), ("/tools/json-to-csv/", "JSON to CSV"),
+                    ("/tools/jpg-to-pdf/", "JPG to PDF"), ("/tools/pdf-tools/", "PDF Tools"),
                     ("/tools/metadata-cleaner/", "Metadata Cleaner")],
     },
+
+    {
+        "slug": "pdf-to-jpg",
+        "name": "PDF to JPG",
+        "title": "PDF to JPG Converter That Runs in Your Browser | Purplelink",
+        "og_title": "PDF to JPG, converted in your browser",
+        "description": "Turn PDF pages into JPG or PNG images in your browser, at 72, 150 or 300 dpi. The PDF is read on "
+                       "your device and never uploaded. Free, no sign-up.",
+        "hero": "Turn the pages of a PDF into JPG or PNG images, at screen, standard or print resolution. Pick all the "
+                "pages or a range. Each page is drawn on your device, in this browser tab.",
+        "accept": ".pdf,application/pdf",
+        "drop": "Drop PDF files here",
+        "hint": "PDF, up to 100 MB each and 500 pages at a time.",
+        "outputs": [("jpg", "JPG"), ("png", "PNG")],
+        "opts": ["output", "quality",
+                 ("radio", "dpi", "Resolution", [("150", "150 dpi"), ("300", "300 dpi, for print"), ("72", "72 dpi, for screens")]),
+                 ("text", "pages", "Pages", "All", None, "Leave empty for every page, or enter pages like 1-3, 8.", True)],
+        "libs": ["pdfjs", "pdfjs-worker"],
+        "privacy": PAGE_PRIVACY,
+        "features": ["Turn PDF pages into JPG or PNG images",
+                     "72, 150 or 300 dpi, all pages or a range",
+                     "Includes pdf.js's decoders for JBIG2 and JPEG 2000 scans",
+                     "Many pages download as one zip",
+                     "Drawn in the browser with pdf.js; PDFs are never uploaded"],
+        "how": [
+            "A PDF page is a set of drawing instructions: text in its fonts, lines, and the pictures inside it. To make "
+            "a JPG, something has to carry out those instructions at a chosen resolution. This page uses pdf.js, the "
+            "open-source PDF reader built into Firefox, served from this site and loaded when you add your first PDF.",
+            "pdf.js reads the file in a background worker and draws each page on a canvas in this tab, with the fonts "
+            "embedded in the PDF. The browser then writes the canvas as a JPG or PNG.",
+            "Resolution is in dots per inch of the page. A US Letter page at 150 dpi is 1275 by 1650 pixels, enough for "
+            "a screen or a slide; 300 dpi is 2550 by 3300, for printing or reading small print.",
+            "On a Mac, Née, our file converter, does this from Finder: hold Option while dragging a PDF and drop it on "
+            "the action for its pages. Née saves the pages as PNG.",
+        ],
+        "steps": [
+            ("Pick the format and resolution", "JPG for a smaller file, PNG for sharp text and line art. 150 dpi suits screens and slides, 300 dpi printing."),
+            ("Choose the pages", "Leave Pages empty for the whole PDF, or enter a range such as 1-3, 8."),
+            ("Add the PDF", "Drop the PDF on the box, or click it to choose it."),
+            ("Download", "A one-page result downloads as a picture; more pages download together as a zip."),
+        ],
+        "limits": [
+            "Up to 100 MB a PDF, 200 PDFs at a time, and 500 pages a PDF per run. For a longer PDF, convert it in ranges.",
+            "A page that would be larger than about 40 megapixels at the chosen resolution, such as a poster at 300 dpi, is "
+            "drawn at a lower resolution, and the row says which. On a phone the cap is about 16.7 megapixels.",
+            "A PDF locked with a password to open cannot be read. A PDF that only restricts printing or copying converts.",
+            "Form fields show the values saved in the file. Links, comments in a side panel and attached files are not part of the picture.",
+            "The images inside a PDF are drawn as part of the page, not saved one by one at their own resolution.",
+            "Needs a current version of Chrome, Edge, Firefox or Safari.",
+        ],
+        "faq": [
+            (NO_UPLOAD,
+             "No. pdf.js reads the PDF in a background worker in this tab and the page draws it on a canvas. There is no "
+             "server step. The meter under the drop zone counts the bytes the page sends while it works, so you can check "
+             "this yourself. The page downloads only its own scripts, and the fonts and decoders pdf.js needs from this site."),
+            ("Should I choose JPG or PNG?",
+             "JPG for pages with photos, and when the file size matters. PNG for pages of text, charts and diagrams: it "
+             "keeps the edges of letters sharp, though the file is larger."),
+            ("Which resolution should I use?",
+             "150 dpi for a screen, a slide or an upload form. 300 dpi to print the image or to zoom into small text. 72 "
+             "dpi gives small previews. The pixel size of each page shows in its row."),
+            ("How do I convert only some pages?",
+             "Type them under Pages before you add the PDF: 3 for one page, 2-5 for a range, 1, 4, 9-12 for a mix, or 10- "
+             "for page 10 to the end. Leave it empty for every page."),
+            ("Will scanned PDFs look right?",
+             "Yes, in most cases. Office scanners often store black-and-white pages as JBIG2 and some archives use JPEG "
+             "2000; this page includes pdf.js's decoders for both. The text in a scan stays part of the picture."),
+            ("Why did my PDF fail?",
+             "The page checks that the file starts as a PDF. One that is damaged or cut short in a download cannot be "
+             "opened, and one locked with a password needs that password removed first. If a single page fails to draw, "
+             "the others are kept and the row names the missing page."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the sizes above."),
+        ],
+        "related": [("/tools/jpg-to-pdf/", "JPG to PDF"), ("/tools/pdf-tools/", "PDF Tools"),
+                    ("/tools/png-to-jpg/", "PNG to JPG"), ("/nee/", "Née, a Mac converter")],
+    },
+    {
+        "slug": "svg-to-png",
+        "name": "SVG to PNG",
+        "title": "SVG to PNG Converter, in Your Browser | Purplelink",
+        "og_title": "SVG to PNG, converted in your browser",
+        "description": "Convert SVG drawings to PNG or JPG at 1x, 2x, 4x or any width, in your browser. Transparency is "
+                       "kept, and nothing is uploaded. Free, no sign-up.",
+        "hero": "Convert SVG drawings, figures and icons to PNG, or to JPG, at the size you need. The drawing is scaled as a "
+                "vector, so a 4x PNG is sharp, not enlarged. Your browser draws each file on your device.",
+        "accept": ".svg,.svgz,image/svg+xml",
+        "drop": "Drop SVG files here",
+        "hint": "SVG and SVGZ, up to 10 MB each. You can also paste a file with Ctrl or Cmd V.",
+        "outputs": [("png", "PNG"), ("jpg", "JPG")],
+        "opts": ["output", "quality", "background",
+                 ("radio", "scale", "Size", [("2", "2x"), ("1", "1x"), ("4", "4x"), ("width", "Width in pixels")]),
+                 ("number", "width", "Width", (1920, 16, 16384), "scale=width")],
+        "privacy": PAGE_PRIVACY,
+        "features": ["Convert SVG and SVGZ files to PNG or JPG",
+                     "1x, 2x, 4x or an exact width, scaled as a vector",
+                     "Transparency kept in PNG",
+                     "Drawn by the browser itself; files are never uploaded"],
+        "how": [
+            "SVG describes a drawing as shapes rather than pixels, so it stays sharp at any size. Many places still want "
+            "pixels: pdfLaTeX's \\includegraphics reads PNG, JPG and PDF but not SVG, and some slide tools, upload forms "
+            "and older versions of Word do not take it either.",
+            "This page reads the SVG's own size (its width and height in pixels, points, millimeters or inches, or its "
+            "viewBox), sets the size you chose, and lets your browser draw it on a canvas. The PNG keeps transparent "
+            "areas; a JPG fills them with the color you pick.",
+            "A browser draws an SVG as a picture in a sealed mode: scripts in the file do not run, and nothing it links "
+            "to is fetched. That is safer, and it is also why linked images and web fonts do not appear.",
+        ],
+        "steps": [
+            ("Pick the format and size", "PNG to keep transparency, JPG for a solid background. 2x suits most screens and slides; set a width for an exact size."),
+            ("Add the drawings", "Drop the SVG files on the box, click it to choose them, or paste a file you copied."),
+            ("Wait for each row", "Each drawing is drawn in turn and the row shows its pixel size."),
+            ("Download", "Download each picture from its row, or use Download all as .zip."),
+        ],
+        "limits": [
+            "Up to 10 MB a file (unpacked, for SVGZ) and 200 files at a time.",
+            "The result can be up to about 40 megapixels, such as 8000 by 5000 pixels; 16.7 megapixels on a phone.",
+            "Images the SVG links to on the web and web fonts it asks for are not loaded. Text uses the fonts installed on "
+            "this device, so convert text to outlines in your drawing app if the exact font matters.",
+            "Animations and scripts are not run; the PNG shows the drawing as it first appears.",
+            "Needs Chrome or Edge 69, Firefox 105 or Safari 16.4, or later.",
+        ],
+        "faq": [
+            (NO_UPLOAD,
+             "No. Your browser reads each SVG and draws it on a canvas in this tab. There is no server step. The meter "
+             "under the drop zone counts the bytes the page sends while it works, so you can check this yourself."),
+            ("What size will the PNG be?",
+             "The SVG's own size times the factor you pick. An icon that is 24 by 24 at 1x is 48 by 48 at 2x and 96 by 96 "
+             "at 4x. Width in pixels sets the width exactly and keeps the proportions. An SVG with no size at all is drawn "
+             "at 300 by 150, the size browsers use, and the row says so."),
+            ("Is the PNG sharp at 4x?",
+             "Yes. The size is set on the SVG before it is drawn, so the shapes are drawn at the new size rather than "
+             "drawn small and then enlarged."),
+            ("How do I use an SVG figure in LaTeX?",
+             "pdfLaTeX cannot include an SVG. Convert it to PNG at 4x, or at the width in pixels your column needs at 300 "
+             "dpi (about 1000 pixels for a single column), and include the PNG. For a figure that stays vector, export a PDF "
+             "from the drawing app instead."),
+            ("Why is the text in a different font?",
+             "An SVG drawn as a picture can only use fonts installed on this device or embedded in the file. If it names a "
+             "web font, the browser substitutes another. Converting the text to outlines in the drawing app avoids that."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the sizes above."),
+        ],
+        "related": [("/tools/png-to-icns/", "PNG to ICNS"), ("/tools/png-to-ico/", "PNG to ICO"),
+                    ("/tools/png-to-jpg/", "PNG to JPG"), ("/tools/equation-renderer/", "Equation Renderer")],
+    },
+    {
+        "slug": "png-to-jpg",
+        "name": "PNG to JPG",
+        "title": "PNG to JPG Converter That Runs in Your Browser | Purplelink",
+        "og_title": "PNG to JPG, converted in your browser",
+        "description": "Convert PNG, GIF and BMP images to JPG in your browser, with the quality and background you choose. "
+                       "Nothing is uploaded. Free, no sign-up, batches as a zip.",
+        "hero": "Convert PNG images to JPG, usually a much smaller file. GIF and BMP work too. Pick the quality and the color "
+                "that fills transparent areas. Your browser converts each image on your device.",
+        "accept": ".png,.gif,.bmp,image/png,image/gif,image/bmp",
+        "drop": "Drop PNG images here",
+        "hint": "PNG, GIF and BMP, up to 100 MB each. You can also paste an image with Ctrl or Cmd V.",
+        "outputs": [("jpg", "JPG")],
+        "opts": ["quality", "background"],
+        "features": ["Convert PNG, GIF and BMP images to JPG",
+                     "Choose the JPEG quality and the fill for transparent areas",
+                     "Batches of up to 200 images, downloadable as one zip",
+                     "Converted by the browser itself; images are never uploaded"],
+        "how": [
+            "PNG stores every pixel exactly, which is right for screenshots and diagrams but makes photos large. JPG "
+            "stores photos in a fraction of the space by dropping detail the eye barely sees, which is why upload forms "
+            "with a size limit often ask for it.",
+            "Your browser already reads PNG, GIF and BMP. This page asks it to decode each file in a background worker, "
+            "draws it on an off-screen canvas over the fill color you pick, and writes a JPG at the quality you set.",
+            "JPG has no transparency, so transparent areas become the fill color, white unless you change it. Text and "
+            "sharp lines can show faint ripples in a JPG; keep those images as PNG, or use quality 95 or more.",
+            "On a Mac, Née, our file converter, makes JPEG copies from Finder: hold Option while dragging the images and "
+            "drop them on the action you want.",
+        ],
+        "steps": [
+            ("Set the quality and fill", "92 suits most images; lower it for a smaller file. Pick the color for transparent areas."),
+            ("Add the images", "Drop the PNG, GIF or BMP files on the box, click it to choose them, or paste an image you copied."),
+            ("Wait for each row", "Each image is converted in turn and the row shows the old and new size."),
+            ("Download", "Download each JPG from its row, or use Download all as .zip."),
+        ],
+        "limits": [
+            "Up to 100 MB a file and 200 files at a time.",
+            "An animated PNG or GIF gives one JPG of its first frame, and the row says so.",
+            "Text notes stored in a PNG and any EXIF data are not copied into the JPG.",
+            "On an iPhone or iPad, the browser can draw at most about 16.7 megapixels.",
+            "Needs Chrome or Edge 69, Firefox 105 or Safari 16.4, or later.",
+        ],
+        "faq": [
+            faq_uploaded("image", "The only things the page downloads are its own scripts."),
+            ("How much smaller will the JPG be?",
+             "For a photo saved as PNG, often five to ten times smaller at the default quality. For a screenshot or "
+             "diagram with large flat areas, the PNG may already be small, and the JPG can even be larger. The row shows "
+             "both sizes."),
+            ("What happens to a transparent background?",
+             "JPG cannot store transparency, so those areas are filled with the color you choose, white by default. To keep "
+             "transparency, stay with PNG, or use WebP to PNG and HEIC to JPG for those formats."),
+            ("Which quality should I pick?",
+             "92, the default, looks the same as the original to most eyes. 80 to 85 gives a smaller file for the web. "
+             "95 and above keeps text and edges cleaner at a larger size."),
+            ("Does it work with GIF and BMP?",
+             "Yes. A GIF gives its first frame, and a BMP converts like a PNG. Both usually get much smaller as JPG."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the file sizes above."),
+        ],
+        "related": [("/tools/webp-to-png/", "WebP to PNG"), ("/tools/heic-to-jpg/", "HEIC to JPG"),
+                    ("/tools/tiff-to-jpg/", "TIFF to JPG"), ("/tools/pdf-to-jpg/", "PDF to JPG"), ("/nee/", "Née, a Mac converter")],
+    },
+    {
+        "slug": "xlsx-to-csv",
+        "name": "XLSX to CSV",
+        "title": "XLSX to CSV Converter That Runs in Your Browser | Purplelink",
+        "og_title": "XLSX to CSV, converted in your browser",
+        "description": "Convert Excel workbooks to CSV in your browser, one sheet or all of them. Dates stay dates, and "
+                       "nothing is uploaded. Free, no sign-up.",
+        "hero": "Convert Excel workbooks (.xlsx) to CSV files, the first sheet or every sheet. Dates come out as dates, "
+                "formulas as their results, and text exactly as typed. The workbook is read on your device.",
+        "accept": ".xlsx,.xlsm,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "drop": "Drop Excel workbooks here",
+        "hint": "XLSX and XLSM, up to 50 MB each.",
+        "outputs": [("csv", "CSV")],
+        "opts": [("radio", "sheets", "Sheets", [("first", "First sheet"), ("all", "All sheets, as a zip")]), SEP, SAFE, BOM],
+        "category": "BusinessApplication",
+        "features": ["Convert Excel .xlsx and .xlsm workbooks to CSV",
+                     "The first sheet, or every sheet as its own CSV in a zip",
+                     "Dates written as ISO dates; formulas as their saved results",
+                     "Comma, semicolon or tab separated",
+                     "Read in the browser; workbooks are never uploaded"],
+        "how": [
+            "An .xlsx file is a zip of XML files: one lists the sheets, one holds the text that cells share, one the "
+            "cell styles, and one each sheet's cells. This page opens the zip with JSZip, served from this site, and "
+            "reads those parts in a background worker in this tab.",
+            "Each cell is written as the workbook stores it. Dates are stored as day counts and shown as dates only "
+            "through their format, so the page reads the format and writes 2026-11-03 rather than 46329. A formula "
+            "gives the result Excel saved with the file. Empty cells and rows stay empty, so columns line up.",
+            "Text that starts with =, +, - or @ was harmless in the workbook but can run as a formula when Excel opens "
+            "a CSV. With the first option on, such text gets an apostrophe in front, which Excel hides. Numbers are "
+            "never changed, so -5 stays -5.",
+        ],
+        "steps": [
+            ("Pick the sheets and separator", "First sheet for a one-sheet export, All sheets for a zip with one CSV per sheet. Comma suits most tools; semicolon suits Excel where a comma is the decimal mark."),
+            ("Add the workbooks", "Drop the .xlsx files on the box, or click it to choose them."),
+            ("Check the row", "Each row says how many rows were read and notes hidden sheets or formulas without a saved result."),
+            ("Download", "Download each CSV from its row, or use Download all as .zip."),
+        ],
+        "limits": [
+            "Up to 50 MB a workbook, 100 MB of data in a sheet once unpacked, and 5 million cells.",
+            "Numbers are written as stored, not as displayed: a cell shown as 12% is written 0.12, and currency signs "
+            "and thousands separators are left out. An ID typed as a number with more than 15 digits has already been "
+            "rounded inside the workbook.",
+            "The older .xls format and workbooks protected with a password cannot be read. Save them as an unprotected "
+            ".xlsx first.",
+            "Charts, images, comments and cell colors are not part of a CSV.",
+            "The CSV is UTF-8. Excel on Windows needs the byte-order mark option to show accented letters correctly; "
+            "R, Python and most other tools read it either way.",
+        ],
+        "faq": [
+            ("Are my files uploaded?",
+             "No. The page reads each workbook with your browser and converts it in a background worker in this tab. "
+             "There is no server step. The meter under the drop zone counts the bytes the page and its worker send "
+             "while they work, so you can check this yourself. The only things the page downloads are its own scripts."),
+            ("How are dates written?",
+             "As ISO 8601: 2026-11-03 for a date, 2026-11-03 14:05:00 for a date and time, 14:05:00 for a time. Excel "
+             "stores dates as day counts, and the page reads each cell's format to tell a date from a number. Workbooks "
+             "from old Mac Excel that count from 1904 are read correctly too."),
+            ("What happens to formulas?",
+             "Each formula gives the result Excel saved in the file, as Excel's own Save as CSV does. A workbook made by a "
+             "program that writes formulas without results has empty cells there; the row says how many. Opening it in "
+             "Excel and saving it once stores the results."),
+            ("Why does some text start with an apostrophe?",
+             "Text that starts with =, +, - or @ can run as a formula when Excel opens a CSV, which is how malicious "
+             "spreadsheets spread. The apostrophe makes Excel show it as text. Turn the option off if the CSV is for R, "
+             "Python or a database, which do not run formulas."),
+            ("Can I convert every sheet?",
+             "Yes. Choose All sheets and each sheet becomes its own CSV, named after the sheet, in one zip. Hidden sheets "
+             "are included, and the row names them. Chart sheets have no cells and are skipped."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the sizes above."),
+        ],
+        "related": [("/tools/csv-to-xlsx/", "CSV to XLSX"), ("/tools/json-to-csv/", "JSON to CSV"),
+                    ("/tools/pdf-tools/", "PDF Tools"), ("/tools/metadata-cleaner/", "Metadata Cleaner")],
+    },
+    {
+        "slug": "json-to-csv",
+        "name": "JSON to CSV",
+        "title": "JSON to CSV Converter That Runs in Your Browser | Purplelink",
+        "og_title": "JSON to CSV, converted in your browser",
+        "description": "Convert JSON and JSON Lines to CSV or Excel in your browser. Nested objects become columns, and "
+                       "long IDs stay exact. Nothing is uploaded. Free.",
+        "hero": "Convert JSON from an API, a survey tool or a database export to a CSV file or an Excel workbook. Nested "
+                "objects become columns, every key gets a column, and long numeric IDs are kept digit for digit. The "
+                "file is read on your device.",
+        "accept": ".json,.jsonl,.ndjson,.geojson,.txt,application/json",
+        "drop": "Drop JSON files here",
+        "hint": "JSON, JSON Lines and NDJSON, up to 50 MB each.",
+        "outputs": [("csv", "CSV"), ("xlsx", "XLSX")],
+        "opts": ["output", ("radio", "nested", "Nested objects", [("columns", "As columns (a.b)"), ("json", "As JSON text")]),
+                 SEP + ("output=csv",), SAFE + ("output=csv",), BOM + ("output=csv",)],
+        "category": "DeveloperApplication",
+        "features": ["Convert JSON arrays, API replies and JSON Lines to CSV or XLSX",
+                     "Nested objects flattened into a.b columns, or kept as JSON text",
+                     "A column for every key, in the order they first appear",
+                     "Integers longer than 15 digits kept exactly",
+                     "Converted in the browser; files are never uploaded"],
+        "how": [
+            "The page looks for the rows in your file. A JSON array is the rows. An API reply such as {\"data\": [...]} "
+            "uses its largest list of objects, and the row says which key that was. A file with one JSON value per "
+            "line is read as JSON Lines.",
+            "Every key becomes a column, in the order the keys first appear, so records with different fields still "
+            "line up. A nested object such as {\"user\": {\"name\": \"Ada\"}} becomes a column user.name. Lists stay "
+            "as JSON text in one cell, since they have no fixed width.",
+            "Browsers round integers past 9,007,199,254,740,991 when they read JSON, which quietly breaks long IDs. "
+            "This page reads those numbers as text before parsing, so a 19-digit ID comes out exactly as written.",
+        ],
+        "steps": [
+            ("Pick CSV or XLSX", "CSV for scripts and databases, XLSX to open in Excel with long IDs kept as text."),
+            ("Choose how nested objects are written", "As columns gives one column per nested field; As JSON text keeps each object in one cell."),
+            ("Add the files", "Drop the JSON files on the box, or click it to choose them."),
+            ("Download", "Download each result from its row, or use Download all as .zip."),
+        ],
+        "limits": [
+            "Up to 50 MB a file and 5 million cells.",
+            "Lists inside a record are written as JSON text, not spread over columns.",
+            "When an API reply holds several lists, the largest is used and the row names the others.",
+            "In XLSX output, a value that looks like a number, such as the text \"42\", becomes a number cell; leading "
+            "zeros and long IDs stay text.",
+            "The CSV is UTF-8. Excel on Windows needs the byte-order mark option to show accented letters correctly.",
+        ],
+        "faq": [
+            ("Are my files uploaded?",
+             "No. The page reads each file with your browser and converts it in a background worker in this tab. There "
+             "is no server step. The meter under the drop zone counts the bytes the page and its worker send while they "
+             "work, so you can check this yourself. The only things the page downloads are its own scripts."),
+            ("What JSON shapes does it read?",
+             "An array of objects, an object that holds such an array (common in API replies), a single object, an "
+             "array of plain values, and JSON Lines with one value per line. Records do not need the same keys."),
+            ("How are nested objects handled?",
+             "With As columns, {\"user\": {\"name\": \"Ada\", \"age\": 36}} gives the columns user.name and user.age. "
+             "With As JSON text, the whole object goes in one user column. Lists are always kept as JSON text. If a "
+             "record already has a key named user.name, the flattened one becomes user.name (2)."),
+            ("Will my long IDs survive?",
+             "Yes. Integers of 16 digits or more, such as social media post IDs, are read as text before the browser "
+             "parses the file, so they are written exactly. In Excel output they are text cells, so Excel cannot round "
+             "them either."),
+            ("Why does some text start with an apostrophe?",
+             "Text that starts with =, +, - or @ can run as a formula when Excel opens a CSV. The apostrophe makes Excel "
+             "treat it as text. Numbers are never changed. Turn the option off for CSVs meant for scripts."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the sizes above."),
+        ],
+        "related": [("/tools/csv-to-json/", "CSV to JSON"), ("/tools/csv-to-xlsx/", "CSV to XLSX"), ("/tools/xlsx-to-csv/", "XLSX to CSV"),
+                    ("/tools/file-to-markdown/", "File to Markdown"), ("/tools/pii-checker/", "PII Checker")],
+    },
+    {
+        "slug": "tiff-to-jpg",
+        "name": "TIFF to JPG",
+        "title": "TIFF to JPG Converter That Runs in Your Browser | Purplelink",
+        "og_title": "TIFF to JPG, converted in your browser",
+        "description": "Convert TIFF scans and images to JPG or PNG in your browser, including multi-page, 16-bit and "
+                       "fax TIFFs. Nothing is uploaded. Free, no sign-up.",
+        "hero": "Convert TIFF scans, microscope images and archive files to JPG, or to PNG. Multi-page TIFFs give one "
+                "picture per page. Each file is decoded on your device, in this browser tab.",
+        "accept": ".tif,.tiff,image/tiff",
+        "drop": "Drop TIFF files here",
+        "hint": "TIFF, up to 100 MB each. You can also paste a file with Ctrl or Cmd V.",
+        "outputs": [("jpg", "JPG"), ("png", "PNG")],
+        "opts": ["output", "quality", "background",
+                 ("radio", "tiffpages", "Pages", [("first", "First page"), ("all", "All pages, as a zip")])],
+        "libs": ["pako", "utif"],
+        "features": ["Convert TIFF files to JPG or PNG",
+                     "Multi-page TIFFs, one picture per page",
+                     "LZW, Deflate, PackBits, CCITT fax and JPEG compression",
+                     "8 and 16-bit gray and color, palette and CMYK",
+                     "Decoded in the browser; files are never uploaded"],
+        "how": [
+            "TIFF is the format of scanners, microscopes, archives and print shops. Only Safari opens it in a web page, "
+            "and many upload forms refuse it. This page reads the TIFF itself: it walks the file's list of pages, "
+            "decompresses each strip or tile, and turns the samples into pixels in a background worker.",
+            "The LZW and fax decoders come from UTIF.js, an open-source TIFF library, and the Deflate one from pako, "
+            "both served from this site and loaded when you add a TIFF that needs them. JPEG-compressed TIFFs are "
+            "decoded by the browser's own JPEG decoder.",
+            "16-bit images, common from microscopes and film scanners, are reduced to 8 bits for the JPG or PNG. "
+            "Nothing is brightened, so a dim image stays dim; adjust it in Fiji or Photoshop first if it needs it. "
+            "Scanner thumbnails stored inside the file are skipped, and the orientation the file records is applied.",
+        ],
+        "steps": [
+            ("Pick the format and pages", "JPG for photos and scans you will share, PNG to keep every pixel. First page or All pages for a multi-page TIFF."),
+            ("Add the TIFFs", "Drop the files on the box, click it to choose them, or paste one."),
+            ("Wait for each row", "The row shows the pixel size, or the number of pages, and any notes."),
+            ("Download", "Download each picture from its row, a multi-page TIFF as one zip, or everything with Download all as .zip."),
+        ],
+        "limits": [
+            "Up to 100 MB a file, 40 megapixels a page (16.7 on a phone), and 500 pages at a time.",
+            "BigTIFF files, floating-point samples, files with each color in a separate plane, and old-style JPEG "
+            "compression are refused with a message that says so.",
+            "16 bits per sample are reduced to 8; nothing is stretched or brightened.",
+            "Layers, extra channels beyond alpha, and the TIFF's metadata are not copied over.",
+            "Needs Chrome or Edge 69, Firefox 105 or Safari 16.4, or later.",
+        ],
+        "faq": [
+            ("Are my files uploaded?",
+             "No. The page reads each TIFF with your browser and converts it in a background worker in this tab. There "
+             "is no server step. The meter under the drop zone counts the bytes the page and its worker send while they "
+             "work, so you can check this yourself. The only things the page downloads are its own scripts and the "
+             "TIFF decoder."),
+            ("Does it handle multi-page TIFFs?",
+             "Yes. Choose All pages and each page becomes its own JPG or PNG, numbered in a zip. With First page, the row "
+             "says how many pages the file has. Small preview images that scanners store next to the real pages are skipped."),
+            ("Why is my microscope image dark?",
+             "Many cameras store 12 bits of data in a 16-bit TIFF, so the brightest pixel is far below the 16-bit maximum. "
+             "Reduced to 8 bits, the picture looks dark. The page does not stretch it, so measurements are not changed "
+             "silently; set the display range in Fiji or ImageJ and export from there if you need a brighter picture."),
+            ("Which compressions work?",
+             "Uncompressed, LZW, Deflate, PackBits, CCITT Group 3 and Group 4 (fax and black-and-white scans) and JPEG. "
+             "A TIFF in a compression the page cannot read gets a message naming it."),
+            ("Should I choose JPG or PNG?",
+             "JPG for photos and color scans, where it is far smaller. PNG for black-and-white documents, line art and "
+             "anything you will measure, since it keeps every pixel exactly."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the file sizes above."),
+        ],
+        "related": [("/tools/png-to-jpg/", "PNG to JPG"), ("/tools/pdf-to-jpg/", "PDF to JPG"),
+                    ("/tools/jpg-to-pdf/", "JPG to PDF"), ("/tools/heic-to-jpg/", "HEIC to JPG")],
+    },
+
+    {
+        "slug": "csv-to-json",
+        "name": "CSV to JSON",
+        "title": "CSV to JSON Converter That Runs in Your Browser | Purplelink",
+        "og_title": "CSV to JSON, converted in your browser",
+        "description": "Convert CSV files to JSON or JSON Lines in your browser. Numbers are typed only when a whole "
+                       "column is numeric, so IDs keep their zeros. Nothing is uploaded.",
+        "hero": "Convert CSV and TSV files to JSON, or to JSON Lines. The header row gives the keys, columns that hold "
+                "only numbers become numbers, and everything else stays exactly as typed. The file is read on your "
+                "device.",
+        "accept": ".csv,.tsv,.txt,.tab,text/csv,text/tab-separated-values,text/plain",
+        "drop": "Drop CSV files here",
+        "hint": "CSV, TSV and TXT, up to 50 MB each. You can also paste a file with Ctrl or Cmd V.",
+        "outputs": [("json", "JSON"), ("jsonl", "JSON Lines")],
+        "opts": ["output", ("check", "header", "The first row is the header", True),
+                 ("check", "types", "Write numbers and true or false as JSON values", True),
+                 ("check", "unflatten", "Turn headers like user.name into nested objects", False, "header=true"),
+                 CSV_DELIM, CSV_ENC],
+        "category": "DeveloperApplication",
+        "features": ["Convert CSV and TSV files to JSON or JSON Lines",
+                     "Numbers and true or false typed per column, only when every value fits",
+                     "Keys in header order, repeated headers made unique",
+                     "Optional nesting of a.b headers into objects",
+                     "Converted in the browser; files are never uploaded"],
+        "how": [
+            "The page reads the file's encoding and separator, splits it into rows the way a spreadsheet would, with "
+            "quoted fields, commas and line breaks inside quotes, and writes one JSON object per row, using the header "
+            "row for the keys.",
+            "Types are decided per column. A column becomes numbers only if every value in it is a plain number that "
+            "writes back exactly as typed, so 3.50, 02134 and version numbers like 1.10 stay strings, and a column with "
+            "one ZIP code that starts with 0 stays all strings. A column of only true and false becomes booleans, and an "
+            "empty cell becomes null.",
+            "Keys keep the order of the header, even keys like 2024 that JavaScript would normally sort first. With the "
+            "nesting option, user.name and user.age become one user object, which undoes what JSON to CSV does to "
+            "nested data.",
+        ],
+        "steps": [
+            ("Pick JSON or JSON Lines", "JSON gives one array; JSON Lines gives one object per line, which suits big files and tools like jq and BigQuery."),
+            ("Check the options", "Keep the header and types on for most files. Turn types off to get every value as a string."),
+            ("Add the files", "Drop the CSV files on the box, click it to choose them, or paste one."),
+            ("Download", "Download each JSON file from its row, or use Download all as .zip."),
+        ],
+        "limits": [
+            "Up to 50 MB a file and 5 million cells, and up to about 200 MB of JSON. JSON Lines output is smaller.",
+            "A column is typed as numbers only when every value in it is a number written the plain way. Values such as "
+            "1e5, 3.50 or -0 keep the whole column as strings, which never loses a digit.",
+            "Dates stay strings, since JSON has no date type.",
+            "A file whose first character is [ or { is read as JSON, not CSV; use JSON to CSV for those.",
+        ],
+        "faq": [
+            ("Are my files uploaded?",
+             "No. The page reads each file with your browser and converts it in a background worker in this tab. There "
+             "is no server step. The meter under the drop zone counts the bytes the page and its worker send while they "
+             "work, so you can check this yourself. The only things the page downloads are its own scripts."),
+            ("Will my ZIP codes and IDs keep their leading zeros?",
+             "Yes. A column becomes numbers only if every value in it is a plain number, so a ZIP code column with "
+             "02134 in it stays strings, and every ZIP keeps its zeros. Long IDs of 12 digits or more always stay strings."),
+            ("Should I choose JSON or JSON Lines?",
+             "JSON for a file you will load in one go in JavaScript or Python. JSON Lines, one object per line, for big "
+             "files, log tools, jq, BigQuery and anything that reads records one at a time."),
+            ("What happens to empty cells and repeated headers?",
+             "An empty cell becomes null, or an empty string if you turn types off. A repeated header gets (2) after it, "
+             "and a missing one is called column 3 and so on, so no value is lost."),
+            ("Can it make nested objects?",
+             "Yes. With the nesting option, headers like user.name and user.age become {\"user\": {\"name\": ..., \"age\": "
+             "...}}. A header that is both a value and a parent, such as a next to a.b, stays flat so nothing is overwritten."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the sizes above."),
+        ],
+        "related": [("/tools/json-to-csv/", "JSON to CSV"), ("/tools/csv-to-xlsx/", "CSV to XLSX"),
+                    ("/tools/xlsx-to-csv/", "XLSX to CSV"), ("/tools/pii-checker/", "PII Checker")],
+    },
+    {
+        "slug": "icns-to-png",
+        "name": "ICNS to PNG",
+        "title": "ICNS to PNG Converter, in Your Browser | Purplelink",
+        "og_title": "ICNS to PNG, converted in your browser",
+        "description": "Get PNG images out of a macOS .icns icon in your browser: the largest size, or every size as an "
+                       ".iconset folder. Nothing is uploaded. Free.",
+        "hero": "Get the PNG images out of a macOS app icon (.icns): the largest size, or every size as an .iconset "
+                "folder that iconutil can turn back into an icon. The icon is read on your device.",
+        "accept": ".icns,image/icns",
+        "drop": "Drop ICNS icons here",
+        "hint": "ICNS, up to 50 MB each. App icons are inside an app: right-click it, Show Package Contents, then Contents, Resources.",
+        "outputs": [("png", "PNG")],
+        "opts": [ICONS],
+        "features": ["Extract PNG images from macOS .icns icons",
+                     "The largest size, or every size as an .iconset folder",
+                     "Modern PNG sizes copied out unchanged",
+                     "Older ARGB and RLE sizes decoded with their masks",
+                     "Read in the browser; icons are never uploaded"],
+        "how": [
+            "An .icns file is a list of the same picture at several sizes, from 16 to 1024 pixels. Modern icons store "
+            "most sizes as PNG files inside, and this page copies those out byte for byte, so nothing is recompressed.",
+            "The small sizes in many icons, and every size in icons from before macOS 10.7, use Apple's older formats: "
+            "colors and an 8-bit mask packed with run-length coding. The page unpacks those in a background worker and "
+            "writes them as PNG with their transparency.",
+            "Every size can come out as an .iconset folder with the names Apple's iconutil uses (icon_16x16.png, "
+            "icon_16x16@2x.png and so on), so you can edit the images and run iconutil -c icns to build the icon again. "
+            "PNG to ICNS does that step in the browser too.",
+        ],
+        "steps": [
+            ("Find the icon", "For an app, right-click it in Finder, choose Show Package Contents, and open Contents, then Resources. The icon is the .icns file there."),
+            ("Pick the sizes", "The largest size gives one PNG; Every size gives an .iconset folder in a zip."),
+            ("Add the icon", "Drop the .icns file on the box, or click it to choose it."),
+            ("Download", "Download the PNG, or the zip with the .iconset folder."),
+        ],
+        "limits": [
+            "Up to 50 MB an icon.",
+            "Sizes stored as JPEG 2000, which some icons from macOS 10.5 and 10.6 use for 256 and 512 pixels, are left "
+            "out, since only Safari decodes JPEG 2000. The row says which sizes were skipped.",
+            "Old black-and-white and 16-color icon types from the classic Mac OS are not read.",
+            "Icons in Assets.car catalogs, which newer apps use beside or instead of an .icns file, are a different "
+            "format and are not read.",
+        ],
+        "faq": [
+            ("Are my files uploaded?",
+             "No. The page reads each icon with your browser and converts it in a background worker in this tab. There is "
+             "no server step. The meter under the drop zone counts the bytes the page and its worker send while they "
+             "work, so you can check this yourself. The only things the page downloads are its own scripts."),
+            ("Where do I find an app's icon file?",
+             "Right-click the app in Finder, choose Show Package Contents, and open Contents, then Resources. The icon is "
+             "usually AppIcon.icns or named after the app. Copy it somewhere first rather than moving it."),
+            ("Are the PNGs the same quality as the icon?",
+             "Yes. Sizes stored as PNG inside the icon are copied out unchanged. Older sizes are unpacked exactly, pixel "
+             "for pixel, with their transparency."),
+            ("What is an .iconset folder?",
+             "A folder of PNGs with fixed names, such as icon_32x32.png and icon_32x32@2x.png, that Apple's iconutil "
+             "turns into an .icns file. Edit the PNGs, then run iconutil -c icns on the folder, or use PNG to ICNS."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the size above."),
+        ],
+        "related": [("/tools/png-to-icns/", "PNG to ICNS"), ("/tools/ico-to-png/", "ICO to PNG"),
+                    ("/tools/png-to-ico/", "PNG to ICO"), ("/tools/svg-to-png/", "SVG to PNG")],
+    },
+    {
+        "slug": "ico-to-png",
+        "name": "ICO to PNG",
+        "title": "ICO to PNG Converter That Runs in Your Browser | Purplelink",
+        "og_title": "ICO to PNG, converted in your browser",
+        "description": "Get PNG images out of a favicon or Windows .ico icon in your browser: the largest size, or every "
+                       "size as a zip. Nothing is uploaded. Free.",
+        "hero": "Get the PNG images out of a favicon, a Windows icon or a cursor (.ico, .cur): the largest size, or "
+                "every size in a zip, with transparency kept. The icon is read on your device.",
+        "accept": ".ico,.cur,image/x-icon,image/vnd.microsoft.icon",
+        "drop": "Drop ICO icons here",
+        "hint": "ICO and CUR, up to 20 MB each. You can also paste a file with Ctrl or Cmd V.",
+        "outputs": [("png", "PNG")],
+        "opts": [ICONS],
+        "features": ["Extract PNG images from .ico favicons, Windows icons and .cur cursors",
+                     "The largest size, or every size as a zip",
+                     "PNG sizes copied out unchanged",
+                     "1, 4, 8, 24 and 32-bit bitmap sizes decoded with their masks",
+                     "Read in the browser; icons are never uploaded"],
+        "how": [
+            "An .ico file holds the same picture at several sizes, often 16, 32, 48 and 256 pixels. Each size is "
+            "either a PNG, copied out byte for byte, or a Windows bitmap, which the page decodes in a background worker.",
+            "Bitmap sizes carry a second, 1-bit image called the mask that marks the transparent pixels. The page "
+            "applies it the way Windows does, including for 32-bit sizes whose own transparency is left empty, so "
+            "icons that look right on Windows look right as PNG.",
+            "When one size is stored at several color depths, the deepest is kept. Every size can come out in one zip, "
+            "named by its real width and height.",
+        ],
+        "steps": [
+            ("Pick the sizes", "The largest size gives one PNG; Every size gives a zip with one PNG per size."),
+            ("Add the icons", "Drop the .ico or .cur files on the box, click it to choose them, or paste one."),
+            ("Check the row", "Each row shows the size saved, or how many, and notes any size that could not be read."),
+            ("Download", "Download each PNG or zip from its row, or use Download all as .zip."),
+        ],
+        "limits": [
+            "Up to 20 MB an icon and 1024 by 1024 pixels a size.",
+            "16-bit and compressed bitmap sizes, which are rare, are left out, and the row says so.",
+            "A cursor's hotspot is not kept in the PNG.",
+        ],
+        "faq": [
+            ("Are my files uploaded?",
+             "No. The page reads each icon with your browser and converts it in a background worker in this tab. There is "
+             "no server step. The meter under the drop zone counts the bytes the page and its worker send while they "
+             "work, so you can check this yourself. The only things the page downloads are its own scripts."),
+            ("How do I get a site's favicon?",
+             "Most sites serve it at /favicon.ico, so open https://example.com/favicon.ico in your browser and save it. "
+             "Then drop the file here to get its sizes as PNG."),
+            ("Why does my icon have several sizes?",
+             "Windows picks the size that fits where the icon is shown, from 16 pixels in a list to 256 on a large "
+             "desktop. Choose Every size to get them all, or The largest size for the sharpest one."),
+            ("Is transparency kept?",
+             "Yes. PNG sizes keep their own transparency, and bitmap sizes get theirs from the icon's mask, applied the "
+             "way Windows applies it."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the sizes above."),
+        ],
+        "related": [("/tools/png-to-ico/", "PNG to ICO"), ("/tools/icns-to-png/", "ICNS to PNG"),
+                    ("/tools/png-to-icns/", "PNG to ICNS"), ("/tools/png-to-jpg/", "PNG to JPG")],
+    },
+
 ]
 
 DROP_ICON = ('<svg class="cv-drop-icon" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true" focusable="false">'
@@ -555,7 +1191,8 @@ def jsonld(p: dict) -> str:
 def option_html(p: dict, spec) -> str:
     """One control. "output", "quality" and "background" are the image options; tuples describe the others:
     ("radio", key, label, [(value, text)], show) with the first value checked, ("check", key, label, default, show),
-    ("select", key, label, [(value, text)], show). show is "key=a,b" or None."""
+    ("select", key, label, [(value, text)], show), ("text", key, label, placeholder, show, hint, nostore) and
+    ("number", key, label, (default, min, max), show). show is "key=a,b" or None."""
     if spec == "output":
         spec = ("radio", "output", "Save as", p["outputs"], None)
     if spec == "quality":
@@ -579,6 +1216,18 @@ def option_html(p: dict, spec) -> str:
     if kind == "check":
         return (f'<label class="cv-field"{when}><input type="checkbox" id="cv-{key}" data-opt="{key}"'
                 f'{" checked" if spec[3] else ""}> {e(label)}</label>')
+    if kind == "text":
+        hint = spec[5] if len(spec) > 5 else ""
+        nostore = " data-nostore" if len(spec) > 6 and spec[6] else ""
+        described = f' aria-describedby="cv-{key}-hint"' if hint else ""
+        hint_html = f' <span class="cv-hint" id="cv-{key}-hint">{e(hint)}</span>' if hint else ""
+        return (f'<label class="cv-field cv-text"{when}>{e(label)} <input type="text" id="cv-{key}" data-opt="{key}"'
+                f' placeholder="{e(spec[3])}" autocomplete="off" spellcheck="false" inputmode="text"{described}{nostore}>'
+                f'</label>{hint_html}')
+    if kind == "number":
+        default, lo, hi = spec[3]
+        return (f'<label class="cv-field"{when}>{e(label)} <input type="number" id="cv-{key}" data-opt="{key}"'
+                f' value="{default}" min="{lo}" max="{hi}" step="1" inputmode="numeric"></label>')
     if kind == "select":
         opts = "".join(f'<option value="{v}">{e(lab)}</option>' for v, lab in spec[3])
         return f'<label class="cv-field"{when}>{e(label)} <select id="cv-{key}" data-opt="{key}">{opts}</select></label>'
@@ -589,6 +1238,9 @@ def options_html(p: dict) -> str:
     rows = [option_html(p, o) for o in p.get("opts", []) if not (o == "output" and len(p["outputs"]) < 2)]
     if not rows:
         return ""
+    if len(p["outputs"]) < 2:
+        # The quality and fill controls show only while output=jpg, so a page with one output still names it.
+        rows.insert(0, f'<input type="hidden" data-opt="output" value="{p["outputs"][0][0]}">')
     return ('        <fieldset class="cv-opts">\n          <legend>Options</legend>\n          '
             + "\n          ".join(rows) + "\n        </fieldset>\n")
 
@@ -629,7 +1281,7 @@ def main_html(p: dict) -> str:
 {one_html(p)}          <button type="button" class="btn btn-primary" id="cv-all" hidden>Download all as .zip</button>
           <button type="button" class="btn btn-ghost" id="cv-clear">Clear</button>
         </div>
-        <p class="tool-privacy">Files are read and converted in this tab, in a background worker. The only requests the page makes are for its own scripts. Your files are never sent anywhere.</p>
+        <p class="tool-privacy">{e(p.get("privacy", PRIVACY))}</p>
       </div>
 
       <section class="tool-prose cv-how" aria-labelledby="cv-how-h">
@@ -668,12 +1320,18 @@ def main_html(p: dict) -> str:
 """
 
 
-LIBS = {"pdf": "/assets/vendor/pdf-lib.min.js"}
+PRIVACY = ("Files are read and converted in this tab, in a background worker. The only requests the page makes are for "
+           "its own scripts. Your files are never sent anywhere.")
+PDFJS = "/assets/vendor/pdfjs-6.4.299/"
+UTIF = "/assets/vendor/utif-3.1.0/"
+LIBS = {"pdf": "/assets/vendor/pdf-lib.min.js", "pdfjs": PDFJS + "pdf.min.mjs", "pdfjs-worker": PDFJS + "pdf.worker.min.mjs",
+        "pako": UTIF + "pako_inflate.min.js", "utif": UTIF + "UTIF.js"}
 
 
 def libs_html(p: dict) -> str:
-    """Libraries the worker loads with importScripts. A link tag gets them a ?v= stamp from fingerprint_assets.py,
-    which the page hands to the worker; JSZip is already on every page as a script tag."""
+    """Libraries the worker loads with importScripts, or the page with import(). A .js link gets a ?v= stamp from
+    fingerprint_assets.py, which the page hands to the worker; JSZip is already on every page as a script tag. The
+    pdf.js .mjs files are not stamped (the script stamps .js and .css only): their folder carries the version."""
     return "".join(f'    <link rel="prefetch" as="script" data-convert-lib="{k}" href="{LIBS[k]}">\n' for k in p.get("libs", []))
 
 

@@ -828,6 +828,19 @@
   status = 301
   force = true
 
+# AKA was renamed Née on 2026-11-02, before any sale (docs/products/nee.md). The old URLs point at the new page.
+[[redirects]]
+  from = "/aka/"
+  to = "/nee/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/aka/*"
+  to = "/nee/:splat"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "/*"
   to = "/404.html"

@@ -388,5 +388,35 @@
    "ok": true,
    "utm_content": "howto-xcode-simulators-taking-up-space-reel"
   }
+ },
+ {
+  "slug": "howto-find-card-numbers-in-text-before-sending",
+  "app": "outbound-veil",
+  "date": "2026-11-03",
+  "title": "Find credit card numbers in a note on Mac before you send it (grep fix)",
+  "long_id": "c06HYFFS-TE",
+  "short_id": "Tnrg6UvC_h8",
+  "link_arm": "B",
+  "link_utm_content": "howto-find-card-numbers-in-text-before-sending",
+  "short_utm_content": "howto-find-card-numbers-in-text-before-sending-short",
+  "sources": [
+   "https://www.forensicfocus.com/forums/general/finding-credit-card-numbers-zero-results/",
+   "https://learn.microsoft.com/en-us/answers/questions/1021319/powershell-script-ssn-and-cc",
+   "https://teamtreehouse.com/community/regular-expression-for-credit-cards"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "c06HYFFS-TE",
+    "caption_id": "AUieDaY-Uq_u9WopH5rccP35aOeFQE--10P0KiQA2-550NISFb_VEUrE"
+   },
+   "short": {
+    "video_id": "Tnrg6UvC_h8",
+    "caption_id": "AUieDaZSqVaxcFCaEiEEP3G3M6IHE8xnf8_cSciuULilbSX-aFk3m33P"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-find-card-numbers-in-text-before-sending-reel"
+  }
  }
 ]

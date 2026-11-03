@@ -2,7 +2,7 @@
 
 By Benjamin Ampel · November 2, 2026
 
-Status: unlisted until the AKA launch (noindex; not linked from the guides index, sitemap or search).
+Status: listed at the Née launch (indexable, linked from the guides index and the sitemap).
 
 Most file conversions on a Mac need no upload and no paid app. macOS converts images, audio, video, text documents and archives with built-in tools, and a few free Purplelink browser tools handle the rest inside the tab. This guide goes job by job: the free built-in way first, then the matching browser tool where one exists, then free open-source apps.
 
@@ -201,11 +201,9 @@ I confirmed that command writes one channel at 16000 Hz. Purplelink's [Tapefolio
 | Archives | Finder Compress, ditto, bsdtar | None | Keka |
 | Audio to text | Voice Memos transcript | None | whisper.cpp, Tapefolio (paid) |
 
-## One more thing coming
+## Née, a Mac app for these conversions
 
-Purplelink is building a Mac app called AKA. Hold Option and drag files, and a ring of 51 conversions opens at the pointer; drop a file on one and it converts on your Mac. It is not released yet. The planned price is $14.99 after a 7-day trial. Everything above works without it.
-
-<!-- launch: link /aka/ here -->
+Purplelink makes a Mac app called [Née](/nee/) that does many of the conversions above from one place. Hold Option while you drag files, and a ring of actions opens at the pointer; drop the files on one and the result is saved next to the original, converted on your Mac. Née is available now: $14.99 once, after a free 7-day trial. Everything above still works without it.
 
 ## Questions
 

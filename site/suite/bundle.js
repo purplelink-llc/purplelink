@@ -4,7 +4,7 @@
 (function () {
   var BUNDLE_PRICING = {"2":3499,"3":4499,"suite":5999};
   // What each part costs on its own today (Vitae Plus is its first year, as in the Suite's own price stack).
-  var PART_PRICE = {"moderntex":1999,"outbound-veil":2999,"legroom":999,"keyfeel":999,"tapefolio":2999,"panely":999,"summonly":999,"vitae-plus":2399};
+  var PART_PRICE = {"moderntex":1999,"outbound-veil":2999,"legroom":999,"keyfeel":999,"tapefolio":2999,"panely":999,"summonly":999,"nee":1499,"vitae-plus":2399};
 
   var form = document.getElementById("bundle-form");
   if (!form) return;
@@ -30,7 +30,7 @@
     if (n === 0) return { text: "Choose two or three parts.", product: null, label: "Choose your parts" };
     if (n === 1) return { text: "Choose one more. A single app is cheaper on its own, from its own page.", product: null, label: "Choose one more" };
     if (n >= 4) {
-      return { text: "Four or more cost more than the Suite, which has all eight for " + money(BUNDLE_PRICING.suite) + ". The Suite is the better buy.",
+      return { text: "Four or more cost more than the Suite, which has all nine for " + money(BUNDLE_PRICING.suite) + ". The Suite is the better buy.",
                product: "app-suite", label: "Buy the Suite, " + money(BUNDLE_PRICING.suite) };
     }
     var price = BUNDLE_PRICING[String(n)];

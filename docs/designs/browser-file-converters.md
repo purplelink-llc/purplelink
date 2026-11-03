@@ -427,6 +427,432 @@ are drawn to an 8-bit sRGB canvas, which the limits state.
 - **Picking which PNG sizes go into an ICO.** Not offered.
 - **BMP entries in ICO** for Windows XP, older resource compilers and some installers. The limits say so.
 
+## Third set: PDF to JPG, SVG to PNG, PNG to JPG
+
+Ben, 2026-11-03: "ship the top 3 first, the rest after". All seven ranked pairs above are live, and the examples in
+the request (images to PDF, PDF merge and split, CSV to XLSX, Markdown to PDF) already exist on the site, so the next
+three were ranked again on who ranks, fit and browser fit. No volume figures were looked up for this set; the volume
+column is relative, from the size of the sites that hold the head terms:
+
+| Pair | Est. volume | Difficulty | Fit | Browser fit | Rank |
+|---|---|---|---|---|---|
+| PDF to JPG (and PNG) | Very high | Very high head, long tail ("without uploading", "on Mac", "high resolution") reachable | Figures and pages for slides, forms to upload as images | pdf.js, already used by two site tools | 1 |
+| SVG to PNG (and JPG) | Medium | Medium | Researchers: pdfLaTeX, Word and many slide tools do not take SVG figures | Native SVG drawing | 2 |
+| PNG to JPG | Very high | Very high head; tail "keep quality", "transparent background" | Smaller files for upload limits | Native, existing image path | 3 |
+| JPG to PNG | high | Very high | Weak (a JPG gains nothing as PNG) | Native | Not now |
+| XLSX to CSV | Medium | Medium | Research data | Needs a zip reader and shared strings | Next |
+| TIFF to JPG | Medium | Medium | Microscopy and scans | Needs a TIFF decoder (only Safari reads TIFF) | Next |
+
+| Pair | Accepts | Where the work runs | Outputs |
+|---|---|---|---|
+| `pdf-to-jpg` | PDF (`%PDF-` in the first 1 KB) | pdf.js draws each page on a canvas on the page; pdf.js parses in its own worker | JPG or PNG per page; one file for a one-page PDF, a zip of the pages otherwise |
+| `svg-to-png` | SVG, SVGZ (`<svg` root in the first 4 KB of text, or gzip with a .svgz name) | The browser draws the SVG on a canvas on the page | PNG or JPG |
+| `png-to-jpg` | PNG, GIF, BMP | The existing worker image path | JPG |
+
+**Why two pairs draw on the page.** pdf.js's canvas and font loading use `document`, so drawing pages in a worker
+would need a custom canvas factory and font handling; pdf.js already parses and decodes in its own worker, and only
+the drawing runs on the page. Browsers do not decode an SVG from a Blob in a worker (`createImageBitmap` rejects it
+in Chrome and Firefox), and a worker has no `Image`. So the page draws: pdf.js renders a page into a canvas, and the
+SVG is drawn from an `<img>` whose source is a `data:` URL (the CSP allows `img-src data:`, not `blob:`, so no CSP
+change). The canvas is encoded with `canvas.toBlob`, which Chrome and Firefox run off the main thread, with the same
+check `encode()` makes (empty blob or wrong type is an error). There is no new worker message. In `convert()` the
+shell branches on `CONV.work`: `"pdfpages"` and `"svg"` return `{ blobs, notes, summary, partsLabel }` and fill
+`item.blobs` directly; everything else goes to the worker as before. Progress is set on the item page-side
+(`paintProgress`), and `pump()` counts the run for `tool_use` as for every pair.
+
+**Single-output pages.** `options_html` drops the Save as radio when there is one output, which left the quality
+and fill controls (`data-show-when="output=jpg"`) hidden for good. Every page with one output now carries
+`<input type="hidden" data-opt="output" value="...">`.
+
+**PDF to JPG.**
+- pdf.js 6.4.299, copied from the pdfjs-dist package already installed in the ScholarReader repo (no new download):
+  `pdf.min.mjs`, `pdf.worker.min.mjs`, and `wasm/jbig2.wasm`, `wasm/openjpeg.wasm`, `wasm/qcms_bg.wasm` with their
+  licenses, in `site/assets/vendor/pdfjs-6.4.299/`. Without the wasm decoders, JBIG2 (black-and-white office scans)
+  and JPEG 2000 images come out blank. A versioned folder because pdf.js fetches the wasm files by name without a
+  `?v=` stamp, and `/assets/vendor/*` is cached as immutable for a year.
+- The Thesis Format Checker and the Camera-Ready Checker moved to this folder in the same PR, and the old
+  `/assets/vendor/pdfjs/` (6.3.289) was removed. pdf.js 6.4 no longer sends a font's name to the page unless
+  `getDocument` is given `fontExtraProperties: true`, so both checkers now pass it; without it their font lists showed
+  internal ids (`g_d0_f1`). Their reports were compared on six PDFs (two real papers, 7 and 36 pages) under 6.3.289
+  and 6.4.299, in WebKit and Firefox: all 24 identical.
+- Also vendored from the same package, loaded only when a PDF needs them: `cmaps/` (packed CMaps for CJK and other
+  non-embedded Type0 fonts), `standard_fonts/` (Foxit and Liberation fonts for the 14 standard PDF fonts, so text in
+  non-embedded Helvetica or Times looks the same on every system) and `iccs/`. 4.6 MB on the server in all.
+- The URLs come from `<link rel="prefetch" as="script" data-convert-lib="pdfjs" href=".../pdf.min.mjs">` and
+  `data-convert-lib="pdfjs-worker"` (prefetch, as for pdf-lib, so nothing loads at full priority before a PDF is
+  added; `modulepreload` would). `fingerprint_assets.py`
+  stamps only `.css` and `.js`, so these stay bare; the versioned folder makes that safe, as for libheif. The shell
+  reads them page-side; the site test checks the key and the bare versioned path.
+- `GlobalWorkerOptions.workerSrc` is set once; one `PDFWorker` is reused across files. Per file:
+  `getDocument({ data, worker, wasmUrl, cMapUrl, cMapPacked: true, standardFontDataUrl, iccUrl, useWorkerFetch: false,
+  verbosity: 0 })`, every URL derived from the folder of the module link. `useWorkerFetch: false` keeps those loads
+  on the page, where the meter counts them (GETs of this site's files with no body). Per page: `getPage`,
+  `render({ canvasContext, canvas, viewport, background: "#ffffff" })`, `page.cleanup()`; after the row,
+  `doc.destroy()`. Scripting and XFA stay off (the defaults for `getDocument`), and links in the PDF are never
+  opened: the output is pixels. Embedded fonts load through `FontFace` from bytes, which `font-src 'self'` does not
+  block; the browser run checks a PDF with embedded fonts for CSP errors.
+- If `import()` fails (a browser too old for pdf.js 6), the row says "This browser could not load the PDF reader.
+  Use a current version of Chrome, Edge, Firefox or Safari."
+- Options, as `data-opt` keys validated in `Convert.options`: `output` "jpg" (default) or "png"; `dpi` "72", "150"
+  (default) or "300"; `pages`, text, trimmed, at most 200 characters, default "" (all pages). The Pages field has a
+  visible label and a hint linked with `aria-describedby`, and carries `data-nostore` so a range is not remembered
+  for the next visit. Pages are always opaque white (`background`), so there is no fill option.
+- `Convert.parsePages(text, count)` returns `{ pages }` (sorted, without duplicates) or `{ error }`. Grammar: numbers
+  and ranges separated by commas or semicolons; `4-` means 4 to the end; an en dash works as a hyphen. Errors:
+  "Pages should look like 1-3, 8. "x" is not a page or a range.", ""5-2" is not a range of pages.", "This PDF has 3
+  pages, so there is no page 9." A range running past the end stops at the last page.
+- `Convert.pageRaster(w, h, dpi, mobile)` gives the canvas size: dpi/72 times the page in points, shrunk to 40 MP
+  (16.7 MP on phones) when larger, since the canvas lives in the page. When any page was shrunk, one row note: "Some
+  pages are too large to draw at N dpi here, so they were drawn at M dpi."
+- At most 500 pages per run, checked after the document opens: "This PDF has N pages. This page draws up to 500 at
+  a time, so enter a range under Pages, such as 1-500."
+- Results stop at 1 GB in all (the zip cap): the pages done so far are kept and the row says "Stopped after page N:
+  the pages so far add up to 1 GB, the most this tab can zip. Enter a range under Pages for the rest." A page that
+  fails to draw is skipped with a note naming it; the rest go on.
+- Output names: `report.jpg` for a one-page selection (a normal download button); otherwise `report-pages/report-p001.jpg`
+  and so on (digits enough for the page count, at least three), shown as one button "Download the 12 pages (.zip)"
+  (`partsLabel`), zipped as `report-pages.zip` with the folder inside. Download all as .zip takes every row's files
+  flat, as for ICNS. The row text: "12 pages at 150 dpi, 9.8 MB".
+- Errors from pdf.js: `PasswordException` gives "This PDF is locked with a password. Open it in a PDF reader, save a
+  copy without the password, and add that." (a PDF with only owner restrictions opens without one and converts);
+  `InvalidPDFException` gives "This file could not be read as a PDF. It may be damaged or cut short."; anything else
+  gives "This PDF could not be opened (the reader said: ...)."
+
+**SVG to PNG.**
+- The text is decoded as UTF-8, or with the encoding its XML declaration names. `Convert.svgRoot` finds the root
+  start tag with a regex that skips the XML declaration, comments and a doctype, and takes `svg` or `svg:svg`;
+  attributes may come in any order. The `<img>` still parses the whole file, so malformed XML is caught there.
+- `Convert.svgSize(text)` reads the root `<svg>`: `width` and `height` in px (1), pt (4/3), pc (16), mm, cm, in (96
+  per inch) or unitless; a percentage or a missing value falls back to the `viewBox`, then to 300 by 150 (the browser
+  default, with a row note).
+  `Convert.svgWithSize(text, w, h)` rewrites the root's width and height to the output pixels and adds a `viewBox`
+  from the old size when there is none, so the drawing scales as a vector instead of being enlarged as pixels, and
+  Firefox, which will not draw an SVG without a size, gets one. Both are tested in Node.
+- Options: `output` "png" (default) or "jpg" (with quality and fill color, as the other image pages); `scale` "1",
+  "2" (default), "4" or "width", and `width`, a number from 16 to 16384 shown only for "width" (default 1920). The
+  output size is checked against the 40 MP page-side cap (16.7 MP on phones) before the canvas is made. PNG keeps
+  transparency.
+- An SVG drawn as an image cannot run scripts or load anything, which is also why external images and web fonts do
+  not appear. The row says so when the file references `http` images or `@import`s fonts. Safari refuses to export a
+  canvas with an SVG `<foreignObject>` (a tainted canvas): `toBlob` throws a `SecurityError`, and the row says "This
+  browser will not export this SVG because it contains HTML (a foreignObject). Try Chrome or Firefox." An `<img>`
+  that fails to load says "This browser could not draw this SVG. The file may not be valid XML."
+- Up to 10 MB of SVG, because the drawing goes through a `data:` URL that some browsers cap. An SVGZ (gzip, named
+  .svgz) is unpacked with `DecompressionStream` and stopped once the text passes 10 MB, so a small file cannot unpack
+  to gigabytes. Without `DecompressionStream`: "This browser cannot unpack .svgz files. Save the drawing as .svg."
+
+**PNG to JPG.** `work: "image"`, JPG only, the quality slider and fill color (shown through the hidden `output`). GIF and BMP are accepted (sniffed `GIF8`,
+and `BM` with a known header size) because the question is the same: a lossless picture made smaller. An animated
+PNG (`acTL` chunk) or GIF (a `NETSCAPE2.0` block) gets the first-frame note.
+
+**Pages and links.**
+- `/tools/` group "Convert files": ten cards and a count of 10; `ItemList` positions 29 to 31 after CSV to XLSX, and
+  Photo to Logo moves to 32.
+- PDF to JPG and PNG to JPG name Née in their How it works text and list it under More free tools ("Née, a Mac
+  converter"): it does both from Finder (its PDF pages come out as PNG).
+- The three slugs go into `TOOL_SLUGS` (`netlify/lib/tool-counts.mjs`, sorted) and the "apps" background tuple in
+  `gen_og_cards.py`; each card is rendered with `--only tools/<slug>`. Buddy's links come from the sitemap.
+- The page-side pairs override the privacy line and the "Are my files uploaded?" answer, which otherwise say "in a
+  background worker".
+
+**Build and tests.** Branch `tools-converters-3`, worktree `converters-3`, one PR, squash-merged when green, no
+`[deploy now]`. Node tests: `parsePages`, `pageRaster`, `pageName`, `svgSize`, `svgWithSize` (units, percentage,
+viewBox fallback, default, existing viewBox, `svg:svg`, comments and doctype first), `isSvgText` and `kindOf` for
+pdf, svg, svgz, bmp, the new `options()` keys, and the new refusals. Site test: the pdfjs links and vendor folder
+(files, licenses, README hashes), the hidden `output` on single-output pages, `data-nostore` on Pages. Browser runs in
+WebKit and Firefox under the production CSP, with every output opened: a multi-page PDF with embedded fonts, a JBIG2
+scan, a password PDF, SVGs with mm sizes and with only a viewBox, an SVGZ, an animated GIF, a BMP.
+
+**Not in this set.** JPG to PNG, XLSX to CSV and TIFF to JPG (above). Extracting the images embedded in a PDF
+unchanged (a different job from drawing pages). Choosing a background for SVG PNGs (they keep transparency).
+
+## Fourth set: XLSX to CSV, JSON to CSV, TIFF to JPG
+
+Ben, 2026-11-03: "build the next three converters". XLSX to CSV and TIFF to JPG were ranked "Next" in the third set.
+The third slot goes to JSON to CSV (research data from APIs and survey tools, the same readers as CSV to XLSX, pure
+JavaScript) rather than JPG to PNG, which ranked weak on fit, or a WebP encoder, which Safari's canvas cannot do.
+
+| Pair | Accepts | Work (worker) | Outputs |
+|---|---|---|---|
+| `xlsx-to-csv` | XLSX and XLSM (`PK\x03\x04` and the name); a legacy .xls (`D0 CF 11 E0`) is refused with its own message | JSZip reads the parts; a cell reader in `convert-core.js` | .csv for the first sheet, or one per sheet in a zip |
+| `json-to-csv` | .json, .jsonl, .ndjson, or text whose first character is `[` or `{` | `JSON.parse`, flatten, the CSV writer; XLSX through `buildXlsxParts` | .csv or .xlsx |
+| `tiff-to-jpg` | TIFF (`II*\0` or `MM\0*`); BigTIFF (`II+\0`) is refused | UTIF.js decodes, `toRGBA8`, then the existing `encode()` | JPG or PNG, one per page; a zip for several |
+
+**XLSX to CSV.**
+- The worker has no `DOMParser`, so the XML is read with small regex readers in the core, tested in Node:
+  `parseWorkbook` (sheet names, order, hidden state, `date1904`), `parseRels`, `parseSharedStrings` (every `<t>` of
+  an `<si>`, rich-text runs joined, phonetic `<rPh>` left out, `_x000D_` escapes decoded), `parseStyles` (which
+  `cellXfs` index is a date or time format), and `sheetRows` (cells by their `r` reference, so skipped cells and
+  rows stay empty; types `s`, `str`, `inlineStr`, `b`, `e`, `n`).
+- Values: the cached result of each formula (a formula with none is empty, and the row counts them); `TRUE` and
+  `FALSE`; error text such as `#N/A`; numbers as stored, through `String(Number(v))`. Date and time formats
+  (built-in ids 14 to 22, 27 to 36, 45 to 47, 50 to 58, and custom codes with d, m, y, h or s outside quotes and
+  brackets) become ISO 8601: `2026-11-03`, `2026-11-03 14:05:00`, or `14:05:00`. Serials use the 1900 system with
+  Excel's leap-year bug (serial 60 and later minus one day) or the 1904 system when the workbook says so. Other
+  formats (currency, percent) give the plain number, so `12%` is `0.12`; the limits say so.
+- `Convert.toCsv(rows, delimiter)`: RFC 4180 quoting (fields with the separator, a quote, CR or LF), CRLF line ends,
+  trailing empty columns trimmed per sheet. Options: `delimiter` comma (default), semicolon or tab; `sheets` "first"
+  (default) or "all"; `bom`, a checkbox, default off ("Add a byte-order mark for Excel on Windows"), because R and
+  some scripts read the mark into the first column name.
+- "All sheets" writes `book-sheets/<sheet name>.csv` in `book-sheets.zip`; hidden sheets are included and named in
+  a note; chart sheets have no cells and are skipped. Caps: 50 MB file, 300 MB of sheet XML unpacked (checked from
+  the zip's directory before inflating), 5 million cells (the CSV to XLSX cap).
+
+**JSON to CSV.**
+- `Convert.jsonRecords(text)`: a top-level array is the rows; an object whose largest array holds objects uses that
+  array (the row note names the key, for API replies such as `{"data": [...]}`); any other object is one row; if the
+  whole text does not parse but every non-empty line does, it is JSON Lines.
+- `Convert.flattenRecords(records, nested)`: columns are the union of keys in first-seen order. `nested` "columns"
+  (default) turns `{"a": {"b": 1}}` into a column `a.b`; arrays, and everything under "json", are written as JSON
+  text. `null` is empty, booleans are `true` and `false`. An array of plain values gives one column, `value`.
+- Large integers: `JSON.parse` rounds integers past 2^53 (tweet and order IDs). Where the browser passes the source
+  text to a reviver (`context.source`; Chrome 114 and Firefox 135 have it, and the page tests for it at run time), those numbers are kept exactly as
+  written; elsewhere the row notes how many were rounded.
+- Options: `output` csv (default) or xlsx; `delimiter` and `bom` as above, CSV only; `nested` "columns" or "json".
+  XLSX goes through `buildXlsxParts`, so leading zeros and long IDs stay text there as well. Cap: 50 MB.
+
+**TIFF to JPG.**
+- UTIF.js 3.1.0 (Photopea, MIT), downloaded with Ben's approval on 2026-11-03 from the npm registry and checked
+  against its sha512, and pako 1.0.11's `pako_inflate.min.js` (MIT and Zlib), copied from a local npm install, in
+  `site/assets/vendor/utif-3.1.0/`. UTIF decodes uncompressed, PackBits, LZW, Deflate (through pako), CCITT G3 and
+  G4, and JPEG-compressed TIFF, at 1 to 16 bits per channel, gray, RGB, palette and CMYK. Its `<img>`-replacing
+  helpers, the only code using `document` or XHR, are never called. UTIF reads `self.pako` when it loads, so the
+  worker loads pako first. Both are stamped `.js` prefetch links, like pdf-lib.
+- The worker reads the directory (`UTIF.decode`), skips reduced-resolution subfiles (bit 0 of tag 254, the
+  thumbnails scanners add), checks each page's size against the pixel cap before decoding, then `decodeImage`,
+  `toRGBA8`, `ImageData`, and the existing `encode()`.
+- Options: `output` jpg (default, with quality and fill) or png; `pages` "first" (default) or "all". Several pages
+  are named like PDF to JPG's (`scan-pages/scan-p001.jpg`, `Download the 4 pages (.zip)`).
+- Notes: 16 bits per channel reduced to 8 (dim scientific images can stay dark; nothing is stretched); an
+  orientation tag that is not upright is not applied; layers and alpha in other channels are left out.
+
+**Shared.** The three pages use the worker, so the privacy line and the first FAQ are the standard ones. Index: 13
+cards in "Convert files", ItemList positions 32 to 34, Photo to Logo to 35. Social cards, `TOOL_SLUGS`, sitemap and
+Buddy as before. CSV to XLSX links to XLSX to CSV and JSON to CSV; PNG to JPG and PDF to JPG to TIFF to JPG. Branch
+`tools-converters-4`, worktree `converters-4`, one PR, squash-merged when green, no `[deploy now]`. Browser runs in
+WebKit and Firefox under the production CSP, every output opened: a workbook with shared and inline strings, dates
+in both systems, a formula, a hidden sheet and a Japanese sheet name; JSON as an array, an object holding an array,
+JSON Lines, nested objects and a 19-digit ID; TIFFs in LZW, Deflate, PackBits, G4, JPEG, 16-bit gray, CMYK,
+palette, and a multi-page scan with a thumbnail.
+
+**Resolved after review (two Goldfish reviewers on Sonnet, 2026-11-03).** These replace the text above where they
+differ.
+
+- **TIFF reading is ours; only UTIF's decompressors are used.** Running UTIF on Pillow-made and hand-made fixtures in
+  Node showed `UTIF.decode` looping without end on a TIFF whose next-directory pointer points back (out of memory),
+  PackBits strips copied raw when their compressed length happens to equal the raw length, and `toRGBA8` wrong for
+  gray with alpha, 1, 2 and 4-bit palettes, planar files and JPEG-in-TIFF. So the core reads the TIFF itself:
+  `Convert.readTiff(bytes)` walks the directory chain with a visited set and a cap of 1,000 directories, checks
+  every strip and tile against the file length, and returns the pages with their tags. The worker decompresses each
+  strip or tile with the core's PackBits, pako (8 and 32946, which is the same zlib stream), or UTIF's
+  `_decodeLZW`, `_decodeG3` and `_decodeG4`; `Convert.tiffUnpredict` undoes predictor 2 for 8 and 16 bits; and
+  `Convert.tiffRGBA` converts gray and WhiteIsZero (1, 2, 4, 8, 16 bits, with or without alpha), RGB and RGBA (8
+  and 16, associated alpha un-premultiplied), palette (1, 2, 4, 8) and CMYK (8 and 16), reading 16-bit samples in the
+  file's byte order. JPEG-in-TIFF (compression 7) is decoded by the browser: each strip or tile becomes a JPEG
+  (`JPEGTables` spliced in after SOI) for `createImageBitmap`, drawn at its place. When the TIFF says the JPEG data is RGB (photometric 2), an Adobe APP14 segment with transform 0 goes in too: the browser run showed WebKit reading such strips as YCbCr (red came out green), while Chrome goes by the component ids. Anything else (planar
+  configuration 2, floating point, CIELab, old-style JPEG, other compressions) is refused with "This TIFF uses
+  <what> that this page cannot read." Every decoder is checked against Pillow's pixels for the same file in Node.
+- **TIFF memory and pages.** `maxPixels` 40 MP per page (checked from tags 256 and 257 before anything is
+  allocated); one page decoded, encoded and released at a time; 500 pages a run; the 1 GB stop of PDF to JPG; a page
+  that fails is skipped with a note. "First page" is the first full-resolution page (thumbnails skipped); when there
+  are more, the row says "This TIFF has N pages. The first was converted; choose All pages for the rest." The
+  orientation tag is applied (`Convert.orientTransform`), and `ImageData` goes through `createImageBitmap` before
+  `encode()`.
+- **Formula protection.** A text value that starts with `=`, `+`, `-`, `@`, a tab or a carriage return can run as a
+  formula when a CSV opens in Excel, even though it was harmless text in the workbook or the JSON. Option `safe`,
+  default on, labelled "Keep text that starts with = + - @ from running as a formula in Excel", puts a `'` in front
+  of such text cells only: numbers, dates and booleans are never touched, so `-5` stays `-5`. The limits say so.
+- **Long integers in JSON.** `Convert.protectBigInts(text)` runs before `JSON.parse` in every browser: a scanner that
+  skips strings marks integer literals of 16 digits or more, which then reach the CSV exactly as written. The
+  reviver and its feature test are dropped.
+- **Kinds, in order.** `sniff` gains `tiff`, `bigtiff` and `xls` (OLE). `kindOf` then: svgz and svg as before; a zip
+  is `xlsx` only when named .xlsx or .xlsm (a .docx stays ""); .json, .jsonl, .ndjson and .geojson are `json`, and so
+  is a .txt whose first character after a BOM and spaces is `[` or `{`; the CSV-family names as before. The OLE
+  refusal says "This is an older Excel workbook (.xls), or an .xlsx protected with a password. Save it as an
+  unprotected .xlsx and add that."
+- **Option keys.** `delimiter` reuses the CSV to XLSX key; for the writers "auto" means comma. New keys: `sheets`
+  ("first" or "all"), `bom` (false), `nested` ("columns" or "json"), `safe` (true), `tiffpages` ("first" or "all"),
+  so the PDF page range keeps `pages`. On JSON to CSV, `delimiter` and `bom` show only for `output=csv`.
+- **Numbers from a workbook** are written as stored (the cell's own text), not as Excel shows them: `12%` is `0.12`,
+  and a 17-digit ID typed as a number has already lost digits inside the workbook. The limits say so.
+- **XLSX memory.** Each sheet's XML is read through JSZip's `internalStream`, counting bytes as they inflate, and
+  stopped past 100 MB ("This sheet is over 100 MB of data, more than this page reads in a browser tab"), so a size
+  field that lies does not matter. Cells stop at 5 million, in `sheetRows` and in `flattenRecords`.
+- **Names.** Sheet file names have `\ / : * ? " < > |` and control characters replaced, leading and trailing dots and
+  spaces trimmed, and duplicates numbered; JSON Lines and GeoJSON names lose their whole extension.
+- **JSON shapes.** The largest array of objects wins, and the note names it and any other candidates. A literal key
+  `a.b` next to a nested `a.b` gets the column `a.b (2)`. Column bookkeeping uses `Object.create(null)`, so a key
+  named `__proto__` is an ordinary column. XLSX output goes through `buildXlsxParts` with the CSV to XLSX number
+  rule, so a JSON string "42" becomes a number cell there; the limits say so.
+- **Messages** for every failure named by the review are in the code and its tests; the Node tests cover the kinds,
+  refusals, options, every reader and writer, date rules (serial 60, 1904, rounding to the second), the TIFF
+  decoders against Pillow, a looping directory chain and an oversized page.
+- **Not done:** a Safari-native TIFF path (UTIF plus the core decode works in every browser, one path is simpler).
+
+## Fifth set: CSV to JSON, ICNS to PNG, ICO to PNG
+
+The parent session, 2026-11-03, after the fourth set merged: "pick the next converter set from the demand ranking in
+your design doc and start it, with the same tests against reference outputs." Every ranked pair is now built except
+JPG to PNG (weak fit), so the set was ranked again on fit, browser fit, and whether a trusted tool on this Mac can
+produce the reference output each test compares against. No new library is needed.
+
+| Pair | Volume (relative) | Fit | Browser fit | Reference for the tests | Rank |
+|---|---|---|---|---|---|
+| CSV to JSON | Medium to high | The reverse of JSON to CSV, for the same data readers | The CSV to XLSX reader, a JSON writer | Python's `csv` and `json` with the same rules | 1 |
+| ICNS to PNG | Low, little competition | Mac developers, the reverse of PNG to ICNS | PNG entries are copied out unchanged; old RLE entries decoded | Apple's `iconutil -c iconset` | 2 |
+| ICO to PNG | Medium | Favicons and Windows icons | PNG entries copied out; BMP entries decoded in the core | Pillow's ICO reader | 3 |
+| JPG to PNG | Very high | Weak (a JPG gains nothing as PNG) | Native | | Not now |
+
+| Pair | Accepts | Work (worker) | Outputs |
+|---|---|---|---|
+| `csv-to-json` | CSV, TSV, TXT (the CSV to XLSX kinds) | `decodeText`, `detectDelimiter`, `parseCsv`, then `Convert.csvToJson` | .json, or .jsonl |
+| `icns-to-png` | ICNS (`icns` and a length that matches the file) | `Convert.readIcns`, then PNG entries as they are and the rest drawn | .png, the largest; or every size in a zip |
+| `ico-to-png` | ICO and CUR (`00 00 01 00` or `00 00 02 00`, a sane count and directory) | `Convert.readIco`, then PNG entries as they are and BMP entries decoded | .png, the largest; or every size in a zip |
+
+**CSV to JSON.**
+- Options: `output` "json" (default, an array, indented two spaces) or "jsonl" (one object per line); `header`
+  (default on: the first row gives the keys, otherwise each row is an array); `types` (default on: numbers by the
+  CSV to XLSX rule, so ZIP codes, phone numbers and long IDs stay strings, `true` and `false` as booleans, empty cells
+  as `null`; off: every value a string, empty cells `""`); `nest` (default off: `a.b` headers become nested objects,
+  the reverse of JSON to CSV); `delimiter` and `encoding` as on CSV to XLSX.
+- Keys: an empty header becomes `column N`; a repeated header gets ` (2)`; a row longer than the header gets
+  `column N` keys; a shorter one leaves the missing keys out (JSON Lines) or `null` (array), so every object has
+  the same keys in the array output. With `nest`, a header that is both a value and a parent (`a` and `a.b`) keeps
+  the flat key for the value and the row note says so.
+- Numbers are written by JSON.stringify of the parsed value, so `3.50` becomes `3.5`; a value the number rule keeps
+  as a string stays exactly as typed. Decimal commas (`3,50`) are read only for semicolon files, as on CSV to XLSX.
+- Caps: 50 MB and 5 million cells. The JSON is built as an array of chunks, as the XLSX sheet XML is.
+
+**ICNS to PNG.**
+- `Convert.readIcns(bytes)`: the header length must equal the file length (or be no longer); entries are walked
+  with a cap of 200 and every length checked. Each entry is classified by its type and first bytes: PNG
+  (`\x89PNG`), JPEG 2000 (`\0\0\0\x0cjP`), ARGB RLE (`ARGB`, ic04 and ic05), legacy 24-bit RLE (is32, il32, ih32,
+  it32, the last with four zero bytes first) with its 8-bit mask (s8mk, l8mk, h8mk, t8mk), and the rest (TOC,
+  icnV, name, info, and the old 1 and 4-bit types) ignored.
+- Size and scale come from the type: ic07 128, ic08 256, ic09 512, ic10 1024 (512@2x), ic11 32 (16@2x), ic12 64
+  (32@2x), ic13 256 (128@2x), ic14 512 (256@2x), icp4 16, icp5 32, icp6 48 (as `iconutil` reads it), ic04 16,
+  ic05 32, is32 16, il32 32, ih32 48, it32 128. The PNG's own IHDR size wins when it differs.
+- PNG entries are written out byte for byte. RLE entries are unpacked in the core (`Convert.icnsRle`, the PackBits
+  variant Apple uses: 0 to 127 means copy n+1, 128 and up means repeat n-125), combined with their mask, and drawn
+  to PNG by the worker. JPEG 2000 entries (icons from Mac OS X 10.5 to 10.6) are left out with a note, since only
+  Safari decodes JPEG 2000.
+- Options: `icons` "largest" (default) or "all". All gives `name.iconset/icon_16x16.png` and the other `iconutil`
+  names in `name-icons.zip` (an `.iconset` folder `iconutil -c icns` can turn back into an ICNS); duplicate sizes
+  keep the first.
+
+**ICO to PNG.**
+- `Convert.readIco(bytes)`: the 6-byte header (reserved 0, type 1 or 2, a count of 1 to 255), 16-byte directory
+  entries, each offset and length checked against the file. A width or height byte of 0 means 256. The entry's
+  own data decides its size: a PNG's IHDR, or a BMP header's width and half its height.
+- BMP entries (`Convert.icoBmp`): BITMAPINFOHEADER, 1, 4 and 8-bit with their palette, 24-bit, and 32-bit with
+  alpha; rows bottom-up and padded to four bytes; then the 1-bit AND mask, applied when the image has no alpha of its
+  own (a 32-bit entry with every alpha 0 uses the mask too). Compressed BMP entries are refused with a note.
+- Options: `icons` as for ICNS. All gives `name-16x16.png`, `name-32x32.png` and so on in `name-icons.zip`; two
+  entries of one size at different color depths keep the deepest.
+- A cursor (.cur) is read the same way; its hotspot is not kept.
+
+**Shared.** Worker pages with the standard privacy line and first FAQ. Index: 16 cards, `ItemList` 35 to 37, Photo
+to Logo to 38; social cards, `TOOL_SLUGS`, sitemap, Buddy. Sibling links: JSON to CSV and CSV to XLSX to CSV to JSON;
+PNG to ICNS to ICNS to PNG; PNG to ICO to ICO to PNG. Branch `tools-converters-5`, one PR, squash-merged when green,
+no `[deploy now]`.
+
+**Tests against reference outputs.**
+- CSV to JSON: fixtures (quoted fields, embedded newlines, a BOM, Windows-1252, semicolons with decimal commas, ZIP
+  codes, long IDs, empty and repeated headers, ragged rows) are converted by a Python script that applies the same
+  rules with `csv` and `json`; the page's output must parse to the same value in Node and in both browsers.
+- ICNS to PNG: real ICNS files from `/System/Applications` and `/System/Library/CoreServices` (PNG, ARGB and legacy
+  RLE entries), plus the page's own PNG to ICNS output; `iconutil -c iconset` gives the reference PNGs, compared
+  pixel for pixel.
+- ICO to PNG: ICOs written by Pillow (PNG entries) and by hand (1, 4, 8, 24 and 32-bit BMP entries, with and without
+  an AND mask), plus real favicons on disk; Pillow's decode of each entry is the reference, compared pixel for pixel.
+- Node tests for every reader and the refusals, as in the earlier sets; browser runs in WebKit and Firefox under the
+  production CSP, every output opened.
+
+**Resolved after review (two Goldfish reviewers on Sonnet, 2026-11-03).** These replace the text above where they
+differ.
+
+- **Kinds.** `sniff` gains `icns` (`icns`, a header length of at least 16, and a first entry of at least 8 bytes that
+  fits inside it) and `ico` (`00 00 01 00` or `00 00 02 00`, a count of 1 to 255, and not `ftyp` at bytes 4 to 8,
+  since a HEIC or AVIF `ftyp` box of 256 or 512 bytes starts the same way), checked after the `ftyp` branch. A .cur
+  file is kind `ico`. `KIND_NAMES` and `article` ("an ICNS", "an ICO") learn both. The length check against the whole
+  file lives in `readIcns`, since `kindOf` sees only 4 KB.
+- **Table rows.** `csv-to-json`: accepts `csv`, outputs json (default) and jsonl, `work: "csvjson"`, 50 MB.
+  `icns-to-png`: accepts `icns`, output png, `work: "icns"`, 50 MB. `ico-to-png`: accepts `ico`, output png,
+  `work: "ico"`, 20 MB. No `canvas` flag on the icon pairs: PNG entries need no drawing, so the worker checks for
+  `OffscreenCanvas` only when an entry has to be drawn. `MIME` gains `json` and `jsonl`.
+- **Option keys.** `header` (existing, default on), `types` (new, default on), `unflatten` (new, default off; named
+  apart from JSON to CSV's `nested`), `icons` ("largest", the default, or "all"), plus `delimiter` and `encoding`.
+- **Types are inferred per column, and only when they round-trip.** A column is numbers only if every non-empty cell
+  passes the CSV to XLSX rule and `String(Number(t)) === t` (after a decimal comma becomes a point in semicolon
+  files), so `3.50`, `10.00`, `-0`, `1.5e-400`, `90210` beside `02134`, and versions like `1.10` all stay strings
+  as typed. A column is booleans only if every non-empty cell is `true` or `false` in any case. Empty cells are
+  `null` with types on and `""` with them off; a cell of spaces is text. The page no longer claims ZIP codes or phone
+  numbers stay text in general: the rule is per column, and the limits say so.
+- **JSON is written by hand, in header order.** JavaScript orders integer-like keys first (`2023` before `name`), so
+  no objects are built: each row is written as text, keys in header order, and the text goes into Blob parts every
+  2 MB. The output size is estimated first (keys times rows plus cell text) and refused past 200 MB with "The JSON
+  would be about N MB, more than this page writes in a browser tab. Choose JSON Lines, or split the CSV."
+- **Keys.** Empty headers become `column N`, extra cells in long rows `column N`, and every key is then made unique
+  in one pass (` (2)`, ` (3)`, until free), so a real header named `column 3` or `a (2)` cannot collide. Blank lines
+  are skipped. Missing cells in short rows are empty cells in both outputs. An unclosed quote gives the CSV to XLSX
+  note. With `unflatten`, `a.b` becomes `{"a": {"b": ...}}`; a key with an empty part (`a..b`, `.a`, `a.`) stays
+  flat; a prefix that is also a value (`a` and `a.b`) keeps both flat, with a note. Arrays written by JSON to CSV as
+  JSON text stay text; the page does not claim a perfect round trip. With `header` off, each row is an array, in
+  both outputs.
+- **ICNS names by type.** Each type has one iconset slot, the names `iconutil` writes:
+
+  | Type | Slot | | Type | Slot |
+  |---|---|---|---|---|
+  | icp4, ic04, is32 | icon_16x16 | | ic11 | icon_16x16@2x |
+  | icp5, ic05, il32 | icon_32x32 | | ic12 | icon_32x32@2x |
+  | icp6, ih32 | icon_48x48 | | ic13 | icon_128x128@2x |
+  | ic07, it32 | icon_128x128 | | ic14 | icon_256x256@2x |
+  | ic08 | icon_256x256 | | ic10 | icon_512x512@2x |
+  | ic09 | icon_512x512 | | icsb / icsB | icon_18x18 / @2x |
+  | sb24 / SB24 | icon_24x24 / @2x | | | |
+
+  When two entries share a slot, a PNG wins over ARGB, and ARGB over legacy RLE. `icp6` is 48 px: `iconutil` writes
+  an icp6 entry to icon_48x48 and scales a 64 px PNG in it down to 48 (checked 2026-11-03; it also wrote a plain
+  48 px icp6 PNG as a transparent image, so `iconutil` is not the reference for icp6, and the PNG is copied as it is). Real icons also carry
+  `icsb`, `icsB`, `sb24` and `SB24` (sidebar sizes), found in a survey of 393 system ICNS files.
+- **ICNS decoding.** ARGB (ic04, ic05, icsb): after `ARGB`, one RLE stream that unpacks to 4 x w x h bytes, the A,
+  R, G and B planes in turn. The color planes are premultiplied by alpha, so they are divided back out (found by comparing
+  Siri's 16 px icon with `iconutil`'s output: pixels at alpha 3 to 30 differed until then). Legacy (is32, il32, ih32, it32, the last after four zero bytes): RLE to 3 x w x h, the R,
+  G and B planes; the mask (s8mk, l8mk, h8mk, t8mk) is w x h raw bytes, and without one the icon is opaque. An entry
+  that unpacks short is skipped with a note. JPEG 2000 entries are skipped, and "largest" means largest readable: the
+  row says "This icon also holds a 512 by 512 size in JPEG 2000, which only Safari reads, so 128 by 128 was saved."
+  With nothing readable: "This ICNS holds no size this page can read." The header length may be shorter than the
+  file (trailing bytes are ignored) but not longer.
+- **ICO decoding.** `readIco` is lenient, unlike `parseIco`, which stays strict for checking PNG to ICO's own output:
+  entries may have gaps, trailing bytes or any order; each must lie inside the file. PNG entries are copied out.
+  BMP entries: header size 40 or more (V4 and V5 too), width up to 1024 and height up to 2048 (doubled for the mask),
+  checked before anything is allocated; 1, 4 and 8-bit with `biClrUsed` colors (0 meaning 2^bits), 24 and 32-bit;
+  rows bottom-up (a negative height is top-down) padded to 4 bytes; then the AND mask, 1 bit a pixel, rows padded to 4
+  bytes, applied when the entry has no alpha of its own, including a 32-bit entry whose alpha is all 0 (what Windows
+  does; Pillow leaves such an entry transparent, so that fixture is checked against its known pixels, not Pillow). A
+  short or missing mask means opaque. 16-bit, BI_BITFIELDS and other compressions are skipped with a note. Depth for
+  "keep the deepest" comes from the BMP header or the PNG's IHDR, never from the directory (a .cur keeps its hotspot
+  there).
+- **Names and summaries.** Largest: `name.png`, with "512 by 512 pixels, the largest of 10 sizes". All: ICNS as
+  `name.iconset/icon_16x16.png` and so on in `name-icons.zip`; ICO as `name-icons/name-16x16.png` (real width and
+  height); both with "Download the 10 sizes (.zip)". CSV to JSON: "N rows and M columns".
+- **Fixtures and references, committed.** System icons are Apple's and are not committed. The committed ICNS
+  fixtures are synthesized by a Python script with an independent RLE encoder over known pixels: legacy is32 with
+  s8mk, ARGB ic04, a PNG ic07, and a JPEG 2000 placeholder; their expected pixels are asserted in Node. Real icons
+  (393 surveyed; Siri, Music, Mail sidebar, NetAuthAgent's it32 and ih32, a JPEG 2000 iPhone icon) are compared in
+  the session with `iconutil -c iconset` as the reference and Pillow as a second one for RLE. ICO fixtures (1, 4, 8,
+  24 and 32-bit BMP entries, with and without masks, the zero-alpha case, and a Pillow ICO with PNG entries) are
+  committed with their expected pixels; Pillow's decode was the reference when they were made, and real ICOs from
+  disk (Lightroom's installer icon, Apache's favicon) are compared in the session. CSV fixtures are committed next
+  to the JSON a Python reference script wrote for them.
+- **Build order:** core kinds, table, options and tests; readers with fixture tests; worker routes; generator pages;
+  index, slugs, cards, sitemap, Buddy; site tests; browser runs.
+- **Decoded icon sizes are written by the core's own PNG writer** (`Convert.pngEncode`: filter 0 rows, zlib from
+  `CompressionStream`, CRC-checked chunks), not a canvas. The first browser run drew them through a canvas, which
+  stores premultiplied alpha and moved the color of faint pixels by up to 20 against `iconutil` and Pillow; with the
+  writer, all 29 compared images match their references exactly in WebKit and Firefox. "Every size" for an icon with a
+  single size gives the plain PNG, not a one-file zip.
+
 ## Open questions
 
 0. **Safari 16.4 and Firefox.** The browser check ran in Chromium. Worker plus Emscripten plus `OffscreenCanvas` is
@@ -492,3 +918,37 @@ changed:
 - **Open: a hash check of the vendored copies in tests.** Not added. pdf-lib and JSZip were already live, and a swap
   breaks the Node tests that run them.
 
+Third set, two Goldfish reviewers on Sonnet (design, implementation readiness), zero context, 2026-11-03. What
+changed:
+
+- **pdf.js `.mjs` links** would not have been stamped, and the site test would have rejected them. Now bare,
+  versioned, and tested as such.
+- **PNG to JPG's quality and fill** would have stayed hidden on a page with one output. A hidden `output` field fixes
+  every single-output page.
+- **Encoding** moved from a new worker message to `canvas.toBlob` on the page, which drops a second full-size copy of
+  every page.
+- **Memory**: page-side canvases capped at 40 MP, one canvas reused, `page.cleanup()` and `doc.destroy()`, a 1 GB
+  stop that keeps the pages done, one failed page skipped instead of failing the file.
+- **Fonts**: CMaps and standard fonts vendored, and `useWorkerFetch: false` so the meter sees their loads.
+- **SVG**: a 10 MB limit (the `data:` route), the SVGZ limit applied while unpacking, the pixel cap before drawing,
+  messages for a failed load and a tainted canvas.
+- **Specified**: option keys and defaults, the `parsePages` grammar and messages, the pdf.js error map, the row text
+  and zip naming, the ItemList positions, the copy overrides, tests and build order.
+- **Kept**: the regex root edit for SVG instead of `DOMParser`, so the size rules run in the Node tests; the `<img>`
+  still parses the whole file. A Cancel button is not added (no converter has one; Clear removes waiting rows).
+
+Fourth set, two Goldfish reviewers on Sonnet (design, implementation readiness), zero context, 2026-11-03. What
+changed: the TIFF reader became the core's own after the reviewers' UTIF findings were confirmed on fixtures
+(looping directory chain, PackBits copied raw, `toRGBA8` gaps); formula protection added, on by default for text
+cells; the long-integer reviver replaced by a pre-pass that works in every browser; option keys, kind order,
+caps, names and messages specified; tests named. The browser runs then found two more: formulas saved with an empty
+`<v>` were not counted, and RGB JPEG-in-TIFF needed the Adobe marker in WebKit. Both fixed with tests.
+
+
+Fifth set, two Goldfish reviewers on Sonnet (design, implementation readiness), zero context, 2026-11-03. What
+changed: types inferred per column with a round-trip test (the first draft would have typed 90210 but not 02134 in
+one column, and turned 3.50 into 3.5); JSON written by hand in header order; an output-size cap; one key
+uniquifier; ICNS names by type, with ARGB, mask and JPEG 2000 rules; a lenient ICO reader with bounds checked before
+allocation and the Windows mask rule; kinds placed after the ftyp branch; option names kept apart from the existing
+ones; committed fixtures with independent references. The reference runs then found ARGB colors stored
+premultiplied, and the canvas rounding that the PNG writer removed.

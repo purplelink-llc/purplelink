@@ -1,5 +1,5 @@
-// /suite/success/ — turn a paid Mac Suite (or custom bundle) session into its things; the Suite is six: the ModernTex download,
-// the Outbound Veil download, the Legroom download, the Keyfeel, Tapefolio, Panely and Summonly downloads, and a lifetime Vitae Plus key. Each is its own request, so one
+// /suite/success/ — turn a paid Mac Suite (or custom bundle) session into its things; the Suite is nine: the ModernTex download,
+// the Outbound Veil download, the Legroom download, the Keyfeel, Tapefolio, Panely, Summonly and Née downloads, and a lifetime Vitae Plus key. Each is its own request, so one
 // slow or failed part never hides the others. Everything is built with textContent or an
 // escaped attribute; nothing from a response is parsed as HTML.
 (function () {
@@ -12,9 +12,10 @@
     tf: document.getElementById("dl-tf"),
     pf: document.getElementById("dl-pf"),
     lf: document.getElementById("dl-lf"),
+    nee: document.getElementById("dl-nee"),
     key: document.getElementById("license"),
   };
-  if (!boxes.mtx || !boxes.ov || !boxes.lg || !boxes.kf || !boxes.tf || !boxes.pf || !boxes.lf || !boxes.key) return;
+  if (!boxes.mtx || !boxes.ov || !boxes.lg || !boxes.kf || !boxes.tf || !boxes.pf || !boxes.lf || !boxes.nee || !boxes.key) return;
 
   var FALLBACK = "We could not prepare this part. Email the address on your receipt and we will send it directly.";
 
@@ -47,7 +48,7 @@
   if (!/^cs_[A-Za-z0-9_]{10,200}$/.test(sessionId)) {
     showHero();
     var msg = "If you just completed a purchase, use the link in your receipt email. If this looks wrong, email the address on your receipt and we will help.";
-    note(boxes.mtx, msg); note(boxes.ov, msg); note(boxes.lg, msg); note(boxes.kf, msg); note(boxes.tf, msg); note(boxes.pf, msg); note(boxes.lf, msg); note(boxes.key, msg);
+    note(boxes.mtx, msg); note(boxes.ov, msg); note(boxes.lg, msg); note(boxes.kf, msg); note(boxes.tf, msg); note(boxes.pf, msg); note(boxes.lf, msg); note(boxes.nee, msg); note(boxes.key, msg);
     return;
   }
 
@@ -156,15 +157,15 @@
   }
 
   // A custom bundle holds only the parts that were chosen. purchase-license reads them from Stripe's own record
-  // and returns `parts` for a bundle; the whole Suite (and any failure to ask) shows all eight.
+  // and returns `parts` for a bundle; the whole Suite (and any failure to ask) shows all nine.
   function start(parts) {
     var keep = function (slug) { return !parts || parts.indexOf(slug) !== -1; };
-    ["moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "panely", "summonly", "vitae-plus"].forEach(function (slug) {
+    ["moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "panely", "summonly", "nee", "vitae-plus"].forEach(function (slug) {
       var section = document.getElementById("part-" + slug);
       if (section && !keep(slug)) section.hidden = true;
     });
     var keys = document.getElementById("part-keys");
-    if (keys && !(keep("moderntex") || keep("outbound-veil") || keep("legroom"))) keys.hidden = true;
+    if (keys && !(keep("moderntex") || keep("outbound-veil") || keep("legroom") || keep("nee"))) keys.hidden = true;
     if (parts) {
       if (heroTitle) heroTitle.textContent = "Your bundle is ready";
       if (heroLead) heroLead.textContent = "Everything you chose is below: the downloads and license keys for your parts. We have also emailed this page to the address on your receipt.";
@@ -177,6 +178,7 @@
     if (keep("tapefolio")) files(boxes.tf, "tapefolio-download", "Tapefolio");
     if (keep("panely")) files(boxes.pf, "panely-download", "Panely");
     if (keep("summonly")) files(boxes.lf, "summonly-download", "Summonly");
+    if (keep("nee")) files(boxes.nee, "nee-download");
     if (keep("vitae-plus")) loadKey();
   }
   fetch("/.netlify/functions/purchase-license?session_id=" + encodeURIComponent(sessionId))
