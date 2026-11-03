@@ -689,6 +689,170 @@ differ.
   decoders against Pillow, a looping directory chain and an oversized page.
 - **Not done:** a Safari-native TIFF path (UTIF plus the core decode works in every browser, one path is simpler).
 
+## Fifth set: CSV to JSON, ICNS to PNG, ICO to PNG
+
+The parent session, 2026-11-03, after the fourth set merged: "pick the next converter set from the demand ranking in
+your design doc and start it, with the same tests against reference outputs." Every ranked pair is now built except
+JPG to PNG (weak fit), so the set was ranked again on fit, browser fit, and whether a trusted tool on this Mac can
+produce the reference output each test compares against. No new library is needed.
+
+| Pair | Volume (relative) | Fit | Browser fit | Reference for the tests | Rank |
+|---|---|---|---|---|---|
+| CSV to JSON | Medium to high | The reverse of JSON to CSV, for the same data readers | The CSV to XLSX reader, a JSON writer | Python's `csv` and `json` with the same rules | 1 |
+| ICNS to PNG | Low, little competition | Mac developers, the reverse of PNG to ICNS | PNG entries are copied out unchanged; old RLE entries decoded | Apple's `iconutil -c iconset` | 2 |
+| ICO to PNG | Medium | Favicons and Windows icons | PNG entries copied out; BMP entries decoded in the core | Pillow's ICO reader | 3 |
+| JPG to PNG | Very high | Weak (a JPG gains nothing as PNG) | Native | | Not now |
+
+| Pair | Accepts | Work (worker) | Outputs |
+|---|---|---|---|
+| `csv-to-json` | CSV, TSV, TXT (the CSV to XLSX kinds) | `decodeText`, `detectDelimiter`, `parseCsv`, then `Convert.csvToJson` | .json, or .jsonl |
+| `icns-to-png` | ICNS (`icns` and a length that matches the file) | `Convert.readIcns`, then PNG entries as they are and the rest drawn | .png, the largest; or every size in a zip |
+| `ico-to-png` | ICO and CUR (`00 00 01 00` or `00 00 02 00`, a sane count and directory) | `Convert.readIco`, then PNG entries as they are and BMP entries decoded | .png, the largest; or every size in a zip |
+
+**CSV to JSON.**
+- Options: `output` "json" (default, an array, indented two spaces) or "jsonl" (one object per line); `header`
+  (default on: the first row gives the keys, otherwise each row is an array); `types` (default on: numbers by the
+  CSV to XLSX rule, so ZIP codes, phone numbers and long IDs stay strings, `true` and `false` as booleans, empty cells
+  as `null`; off: every value a string, empty cells `""`); `nest` (default off: `a.b` headers become nested objects,
+  the reverse of JSON to CSV); `delimiter` and `encoding` as on CSV to XLSX.
+- Keys: an empty header becomes `column N`; a repeated header gets ` (2)`; a row longer than the header gets
+  `column N` keys; a shorter one leaves the missing keys out (JSON Lines) or `null` (array), so every object has
+  the same keys in the array output. With `nest`, a header that is both a value and a parent (`a` and `a.b`) keeps
+  the flat key for the value and the row note says so.
+- Numbers are written by JSON.stringify of the parsed value, so `3.50` becomes `3.5`; a value the number rule keeps
+  as a string stays exactly as typed. Decimal commas (`3,50`) are read only for semicolon files, as on CSV to XLSX.
+- Caps: 50 MB and 5 million cells. The JSON is built as an array of chunks, as the XLSX sheet XML is.
+
+**ICNS to PNG.**
+- `Convert.readIcns(bytes)`: the header length must equal the file length (or be no longer); entries are walked
+  with a cap of 200 and every length checked. Each entry is classified by its type and first bytes: PNG
+  (`\x89PNG`), JPEG 2000 (`\0\0\0\x0cjP`), ARGB RLE (`ARGB`, ic04 and ic05), legacy 24-bit RLE (is32, il32, ih32,
+  it32, the last with four zero bytes first) with its 8-bit mask (s8mk, l8mk, h8mk, t8mk), and the rest (TOC,
+  icnV, name, info, and the old 1 and 4-bit types) ignored.
+- Size and scale come from the type: ic07 128, ic08 256, ic09 512, ic10 1024 (512@2x), ic11 32 (16@2x), ic12 64
+  (32@2x), ic13 256 (128@2x), ic14 512 (256@2x), icp4 16, icp5 32, icp6 48 (as `iconutil` reads it), ic04 16,
+  ic05 32, is32 16, il32 32, ih32 48, it32 128. The PNG's own IHDR size wins when it differs.
+- PNG entries are written out byte for byte. RLE entries are unpacked in the core (`Convert.icnsRle`, the PackBits
+  variant Apple uses: 0 to 127 means copy n+1, 128 and up means repeat n-125), combined with their mask, and drawn
+  to PNG by the worker. JPEG 2000 entries (icons from Mac OS X 10.5 to 10.6) are left out with a note, since only
+  Safari decodes JPEG 2000.
+- Options: `icons` "largest" (default) or "all". All gives `name.iconset/icon_16x16.png` and the other `iconutil`
+  names in `name-icons.zip` (an `.iconset` folder `iconutil -c icns` can turn back into an ICNS); duplicate sizes
+  keep the first.
+
+**ICO to PNG.**
+- `Convert.readIco(bytes)`: the 6-byte header (reserved 0, type 1 or 2, a count of 1 to 255), 16-byte directory
+  entries, each offset and length checked against the file. A width or height byte of 0 means 256. The entry's
+  own data decides its size: a PNG's IHDR, or a BMP header's width and half its height.
+- BMP entries (`Convert.icoBmp`): BITMAPINFOHEADER, 1, 4 and 8-bit with their palette, 24-bit, and 32-bit with
+  alpha; rows bottom-up and padded to four bytes; then the 1-bit AND mask, applied when the image has no alpha of its
+  own (a 32-bit entry with every alpha 0 uses the mask too). Compressed BMP entries are refused with a note.
+- Options: `icons` as for ICNS. All gives `name-16x16.png`, `name-32x32.png` and so on in `name-icons.zip`; two
+  entries of one size at different color depths keep the deepest.
+- A cursor (.cur) is read the same way; its hotspot is not kept.
+
+**Shared.** Worker pages with the standard privacy line and first FAQ. Index: 16 cards, `ItemList` 35 to 37, Photo
+to Logo to 38; social cards, `TOOL_SLUGS`, sitemap, Buddy. Sibling links: JSON to CSV and CSV to XLSX to CSV to JSON;
+PNG to ICNS to ICNS to PNG; PNG to ICO to ICO to PNG. Branch `tools-converters-5`, one PR, squash-merged when green,
+no `[deploy now]`.
+
+**Tests against reference outputs.**
+- CSV to JSON: fixtures (quoted fields, embedded newlines, a BOM, Windows-1252, semicolons with decimal commas, ZIP
+  codes, long IDs, empty and repeated headers, ragged rows) are converted by a Python script that applies the same
+  rules with `csv` and `json`; the page's output must parse to the same value in Node and in both browsers.
+- ICNS to PNG: real ICNS files from `/System/Applications` and `/System/Library/CoreServices` (PNG, ARGB and legacy
+  RLE entries), plus the page's own PNG to ICNS output; `iconutil -c iconset` gives the reference PNGs, compared
+  pixel for pixel.
+- ICO to PNG: ICOs written by Pillow (PNG entries) and by hand (1, 4, 8, 24 and 32-bit BMP entries, with and without
+  an AND mask), plus real favicons on disk; Pillow's decode of each entry is the reference, compared pixel for pixel.
+- Node tests for every reader and the refusals, as in the earlier sets; browser runs in WebKit and Firefox under the
+  production CSP, every output opened.
+
+**Resolved after review (two Goldfish reviewers on Sonnet, 2026-11-03).** These replace the text above where they
+differ.
+
+- **Kinds.** `sniff` gains `icns` (`icns`, a header length of at least 16, and a first entry of at least 8 bytes that
+  fits inside it) and `ico` (`00 00 01 00` or `00 00 02 00`, a count of 1 to 255, and not `ftyp` at bytes 4 to 8,
+  since a HEIC or AVIF `ftyp` box of 256 or 512 bytes starts the same way), checked after the `ftyp` branch. A .cur
+  file is kind `ico`. `KIND_NAMES` and `article` ("an ICNS", "an ICO") learn both. The length check against the whole
+  file lives in `readIcns`, since `kindOf` sees only 4 KB.
+- **Table rows.** `csv-to-json`: accepts `csv`, outputs json (default) and jsonl, `work: "csvjson"`, 50 MB.
+  `icns-to-png`: accepts `icns`, output png, `work: "icns"`, 50 MB. `ico-to-png`: accepts `ico`, output png,
+  `work: "ico"`, 20 MB. No `canvas` flag on the icon pairs: PNG entries need no drawing, so the worker checks for
+  `OffscreenCanvas` only when an entry has to be drawn. `MIME` gains `json` and `jsonl`.
+- **Option keys.** `header` (existing, default on), `types` (new, default on), `unflatten` (new, default off; named
+  apart from JSON to CSV's `nested`), `icons` ("largest", the default, or "all"), plus `delimiter` and `encoding`.
+- **Types are inferred per column, and only when they round-trip.** A column is numbers only if every non-empty cell
+  passes the CSV to XLSX rule and `String(Number(t)) === t` (after a decimal comma becomes a point in semicolon
+  files), so `3.50`, `10.00`, `-0`, `1.5e-400`, `90210` beside `02134`, and versions like `1.10` all stay strings
+  as typed. A column is booleans only if every non-empty cell is `true` or `false` in any case. Empty cells are
+  `null` with types on and `""` with them off; a cell of spaces is text. The page no longer claims ZIP codes or phone
+  numbers stay text in general: the rule is per column, and the limits say so.
+- **JSON is written by hand, in header order.** JavaScript orders integer-like keys first (`2023` before `name`), so
+  no objects are built: each row is written as text, keys in header order, and the text goes into Blob parts every
+  2 MB. The output size is estimated first (keys times rows plus cell text) and refused past 200 MB with "The JSON
+  would be about N MB, more than this page writes in a browser tab. Choose JSON Lines, or split the CSV."
+- **Keys.** Empty headers become `column N`, extra cells in long rows `column N`, and every key is then made unique
+  in one pass (` (2)`, ` (3)`, until free), so a real header named `column 3` or `a (2)` cannot collide. Blank lines
+  are skipped. Missing cells in short rows are empty cells in both outputs. An unclosed quote gives the CSV to XLSX
+  note. With `unflatten`, `a.b` becomes `{"a": {"b": ...}}`; a key with an empty part (`a..b`, `.a`, `a.`) stays
+  flat; a prefix that is also a value (`a` and `a.b`) keeps both flat, with a note. Arrays written by JSON to CSV as
+  JSON text stay text; the page does not claim a perfect round trip. With `header` off, each row is an array, in
+  both outputs.
+- **ICNS names by type.** Each type has one iconset slot, the names `iconutil` writes:
+
+  | Type | Slot | | Type | Slot |
+  |---|---|---|---|---|
+  | icp4, ic04, is32 | icon_16x16 | | ic11 | icon_16x16@2x |
+  | icp5, ic05, il32 | icon_32x32 | | ic12 | icon_32x32@2x |
+  | icp6, ih32 | icon_48x48 | | ic13 | icon_128x128@2x |
+  | ic07, it32 | icon_128x128 | | ic14 | icon_256x256@2x |
+  | ic08 | icon_256x256 | | ic10 | icon_512x512@2x |
+  | ic09 | icon_512x512 | | icsb / icsB | icon_18x18 / @2x |
+  | sb24 / SB24 | icon_24x24 / @2x | | | |
+
+  When two entries share a slot, a PNG wins over ARGB, and ARGB over legacy RLE. `icp6` is 48 px: `iconutil` writes
+  an icp6 entry to icon_48x48 and scales a 64 px PNG in it down to 48 (checked 2026-11-03; it also wrote a plain
+  48 px icp6 PNG as a transparent image, so `iconutil` is not the reference for icp6, and the PNG is copied as it is). Real icons also carry
+  `icsb`, `icsB`, `sb24` and `SB24` (sidebar sizes), found in a survey of 393 system ICNS files.
+- **ICNS decoding.** ARGB (ic04, ic05, icsb): after `ARGB`, one RLE stream that unpacks to 4 x w x h bytes, the A,
+  R, G and B planes in turn. The color planes are premultiplied by alpha, so they are divided back out (found by comparing
+  Siri's 16 px icon with `iconutil`'s output: pixels at alpha 3 to 30 differed until then). Legacy (is32, il32, ih32, it32, the last after four zero bytes): RLE to 3 x w x h, the R,
+  G and B planes; the mask (s8mk, l8mk, h8mk, t8mk) is w x h raw bytes, and without one the icon is opaque. An entry
+  that unpacks short is skipped with a note. JPEG 2000 entries are skipped, and "largest" means largest readable: the
+  row says "This icon also holds a 512 by 512 size in JPEG 2000, which only Safari reads, so 128 by 128 was saved."
+  With nothing readable: "This ICNS holds no size this page can read." The header length may be shorter than the
+  file (trailing bytes are ignored) but not longer.
+- **ICO decoding.** `readIco` is lenient, unlike `parseIco`, which stays strict for checking PNG to ICO's own output:
+  entries may have gaps, trailing bytes or any order; each must lie inside the file. PNG entries are copied out.
+  BMP entries: header size 40 or more (V4 and V5 too), width up to 1024 and height up to 2048 (doubled for the mask),
+  checked before anything is allocated; 1, 4 and 8-bit with `biClrUsed` colors (0 meaning 2^bits), 24 and 32-bit;
+  rows bottom-up (a negative height is top-down) padded to 4 bytes; then the AND mask, 1 bit a pixel, rows padded to 4
+  bytes, applied when the entry has no alpha of its own, including a 32-bit entry whose alpha is all 0 (what Windows
+  does; Pillow leaves such an entry transparent, so that fixture is checked against its known pixels, not Pillow). A
+  short or missing mask means opaque. 16-bit, BI_BITFIELDS and other compressions are skipped with a note. Depth for
+  "keep the deepest" comes from the BMP header or the PNG's IHDR, never from the directory (a .cur keeps its hotspot
+  there).
+- **Names and summaries.** Largest: `name.png`, with "512 by 512 pixels, the largest of 10 sizes". All: ICNS as
+  `name.iconset/icon_16x16.png` and so on in `name-icons.zip`; ICO as `name-icons/name-16x16.png` (real width and
+  height); both with "Download the 10 sizes (.zip)". CSV to JSON: "N rows and M columns".
+- **Fixtures and references, committed.** System icons are Apple's and are not committed. The committed ICNS
+  fixtures are synthesized by a Python script with an independent RLE encoder over known pixels: legacy is32 with
+  s8mk, ARGB ic04, a PNG ic07, and a JPEG 2000 placeholder; their expected pixels are asserted in Node. Real icons
+  (393 surveyed; Siri, Music, Mail sidebar, NetAuthAgent's it32 and ih32, a JPEG 2000 iPhone icon) are compared in
+  the session with `iconutil -c iconset` as the reference and Pillow as a second one for RLE. ICO fixtures (1, 4, 8,
+  24 and 32-bit BMP entries, with and without masks, the zero-alpha case, and a Pillow ICO with PNG entries) are
+  committed with their expected pixels; Pillow's decode was the reference when they were made, and real ICOs from
+  disk (Lightroom's installer icon, Apache's favicon) are compared in the session. CSV fixtures are committed next
+  to the JSON a Python reference script wrote for them.
+- **Build order:** core kinds, table, options and tests; readers with fixture tests; worker routes; generator pages;
+  index, slugs, cards, sitemap, Buddy; site tests; browser runs.
+- **Decoded icon sizes are written by the core's own PNG writer** (`Convert.pngEncode`: filter 0 rows, zlib from
+  `CompressionStream`, CRC-checked chunks), not a canvas. The first browser run drew them through a canvas, which
+  stores premultiplied alpha and moved the color of faint pixels by up to 20 against `iconutil` and Pillow; with the
+  writer, all 29 compared images match their references exactly in WebKit and Firefox. "Every size" for an icon with a
+  single size gives the plain PNG, not a one-file zip.
+
 ## Open questions
 
 0. **Safari 16.4 and Firefox.** The browser check ran in Chromium. Worker plus Emscripten plus `OffscreenCanvas` is
@@ -779,3 +943,12 @@ changed: the TIFF reader became the core's own after the reviewers' UTIF finding
 cells; the long-integer reviver replaced by a pre-pass that works in every browser; option keys, kind order,
 caps, names and messages specified; tests named. The browser runs then found two more: formulas saved with an empty
 `<v>` were not counted, and RGB JPEG-in-TIFF needed the Adobe marker in WebKit. Both fixed with tests.
+
+
+Fifth set, two Goldfish reviewers on Sonnet (design, implementation readiness), zero context, 2026-11-03. What
+changed: types inferred per column with a round-trip test (the first draft would have typed 90210 but not 02134 in
+one column, and turned 3.50 into 3.5); JSON written by hand in header order; an output-size cap; one key
+uniquifier; ICNS names by type, with ARGB, mask and JPEG 2000 rules; a lenient ICO reader with bounds checked before
+allocation and the Windows mask rule; kinds placed after the ftyp branch; option names kept apart from the existing
+ones; committed fixtures with independent references. The reference runs then found ARGB colors stored
+premultiplied, and the canvas rounding that the PNG writer removed.
