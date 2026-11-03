@@ -58,8 +58,8 @@ test("crockford round trip", () => {
   assert.deepEqual(crockfordDecode(crockfordEncode(bytes)).subarray(0, 68), bytes);
 });
 
-test("the suite entitles all three licensed apps; a single app only itself", () => {
-  assert.deepEqual(licensedSlugsFor("app-suite").sort(), ["legroom", "outbound-veil"]);
+test("the suite entitles all three licensed apps (Outbound Veil, Legroom and AKA); a single app only itself", () => {
+  assert.deepEqual(licensedSlugsFor("app-suite").sort(), ["aka", "legroom", "outbound-veil"]);
   assert.deepEqual(licensedSlugsFor("legroom"), ["legroom"]);
   assert.deepEqual(licensedSlugsFor("moderntex"), []);
 });

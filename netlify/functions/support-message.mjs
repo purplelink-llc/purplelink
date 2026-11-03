@@ -56,6 +56,7 @@ export const TOPICS = {
   tapefolio: "Tapefolio",
   panely: "Panely",
   summonly: "Summonly",
+  aka: "AKA",
   vitae: "Vitae",
   batterymeter: "BatteryMeter",
   haea: "haea",
