@@ -31,16 +31,21 @@
     // pdfpages and svg are drawn by the page (pdf.js and <img> cannot run in this worker); the worker encodes the pixels.
     "pdf-to-jpg": { label: "PDF", accepts: ["pdf"], outputs: ["jpg", "png"], output: "jpg", work: "pdfpages" },
     "svg-to-png": { label: "SVG", accepts: ["svg"], outputs: ["png", "jpg"], output: "png", work: "svg", maxBytes: 10 * 1024 * 1024 },
-    "png-to-jpg": { label: "PNG", accepts: ["png", "gif", "bmp"], outputs: ["jpg"], output: "jpg", work: "image", canvas: true }
+    "png-to-jpg": { label: "PNG", accepts: ["png", "gif", "bmp"], outputs: ["jpg"], output: "jpg", work: "image", canvas: true },
+    // A workbook's sheet XML unpacks to many times the file, and JSON.parse holds the whole tree, hence 50 MB.
+    "xlsx-to-csv": { label: "XLSX", accepts: ["xlsx"], outputs: ["csv"], output: "csv", work: "unsheet", maxBytes: 50 * 1024 * 1024 },
+    "json-to-csv": { label: "JSON", accepts: ["json"], outputs: ["csv", "xlsx"], output: "csv", work: "json", maxBytes: 50 * 1024 * 1024 },
+    "tiff-to-jpg": { label: "TIFF", accepts: ["tiff"], outputs: ["jpg", "png"], output: "jpg", work: "tiff", canvas: true, maxPixels: 40e6 }
   };
   // A PDF with more pages than this is refused rather than drawn for minutes.
   const MAX_PDF_PAGES = 500;
 
   const MIME = {
     jpg: "image/jpeg", png: "image/png", icns: "image/icns", ico: "image/x-icon", pdf: "application/pdf",
-    xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", zip: "application/zip"
+    xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", zip: "application/zip", csv: "text/csv"
   };
-  const KIND_NAMES = { heic: "HEIC", avif: "AVIF", webp: "WebP", png: "PNG", jpeg: "JPEG", gif: "GIF", csv: "CSV", pdf: "PDF", bmp: "BMP", svg: "SVG" };
+  const KIND_NAMES = { heic: "HEIC", avif: "AVIF", webp: "WebP", png: "PNG", jpeg: "JPEG", gif: "GIF", csv: "CSV", pdf: "PDF", bmp: "BMP", svg: "SVG",
+    xlsx: "XLSX", xls: "XLS", json: "JSON", tiff: "TIFF", bigtiff: "BigTIFF" };
 
   function ascii(b, s, e) {
     let out = "";
@@ -52,13 +57,18 @@
   const HEIF_BRANDS = ["heic", "heix", "heim", "heis", "hevc", "hevx", "hevm", "hevs", "mif1", "msf1", "mif2"];
   const AVIF_BRANDS = ["avif", "avis"];
 
-  /** What a file is, from its first bytes: "heic", "avif", "webp", "png", "jpeg", "gif", "bmp", "pdf" or "". */
+  /** What a file is, from its first bytes: "heic", "avif", "webp", "png", "jpeg", "gif", "bmp", "pdf", "tiff",
+      "bigtiff", "xls" or "". */
   function sniff(b) {
     if (!b || b.length < 12) return "";
     if (b[0] === 0x89 && ascii(b, 1, 4) === "PNG") return "png";
     if (b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return "jpeg";
     if (ascii(b, 0, 4) === "RIFF" && ascii(b, 8, 12) === "WEBP") return "webp";
     if (ascii(b, 0, 4) === "GIF8") return "gif";
+    if ((b[0] === 0x49 && b[1] === 0x49 && b[2] === 0x2a && b[3] === 0) || (b[0] === 0x4d && b[1] === 0x4d && b[2] === 0 && b[3] === 0x2a)) return "tiff";
+    if ((b[0] === 0x49 && b[1] === 0x49 && b[2] === 0x2b && b[3] === 0) || (b[0] === 0x4d && b[1] === 0x4d && b[2] === 0 && b[3] === 0x2b)) return "bigtiff";
+    // An OLE compound file: the legacy .xls (and .doc) format.
+    if (b[0] === 0xd0 && b[1] === 0xcf && b[2] === 0x11 && b[3] === 0xe0 && b[4] === 0xa1 && b[5] === 0xb1 && b[6] === 0x1a && b[7] === 0xe1) return "xls";
     // BMP: "BM", then a DIB header whose size is one of the known versions (OS/2 1, Windows 3 to 5, and the two v2/v3).
     if (b[0] === 0x42 && b[1] === 0x4d && b.length >= 18 && [12, 40, 52, 56, 64, 108, 124].indexOf(b[14] | (b[15] << 8) | (b[16] << 16) | (b[17] << 24)) !== -1) return "bmp";
     // PDF readers accept the header anywhere in the first 1 KB (some files start with junk from a mail gateway).
@@ -81,7 +91,14 @@
     if (k) return k;
     if (b && b.length > 2 && b[0] === 0x1f && b[1] === 0x8b && /\.svgz$/i.test(String(name || ""))) return "svg";
     if (isSvgText(b)) return "svg";
-    if (!/\.(csv|tsv|txt|tab)$/i.test(String(name || ""))) return k;
+    const n = String(name || "");
+    // A workbook is a zip; its first entry name varies, so the extension decides between XLSX and other zips.
+    if (b && b.length >= 4 && b[0] === 0x50 && b[1] === 0x4b && b[2] === 3 && b[3] === 4) return /\.xls[xm]$/i.test(n) ? "xlsx" : "";
+    if (/\.(json|jsonl|ndjson|geojson)$/i.test(n) || (/\.txt$/i.test(n) && /^(\ufeff|\xef\xbb\xbf)?\s*[[{]/.test(ascii(b || [], 0, 64)))) {
+      for (let i = 0; b && i < b.length && i < 4096; i++) if (b[i] === 0) return "";
+      return b && b.length ? "json" : "";
+    }
+    if (!/\.(csv|tsv|txt|tab)$/i.test(n)) return k;
     if (b && b.length >= 2 && ((b[0] === 0xff && b[1] === 0xfe) || (b[0] === 0xfe && b[1] === 0xff))) return "csv";
     for (let i = 0; b && i < b.length && i < 4096; i++) if (b[i] === 0) return "";
     return b && b.length ? "csv" : "";
@@ -107,12 +124,14 @@
   }
 
   // "an SVG", "an AVIF", "a PNG": by how the name is said, not how it is spelled.
-  function article(name) { return (/^(AVIF|SVG)\b/.test(name) ? "an " : "a ") + name; }
+  function article(name) { return (/^(AVIF|SVG|XLS)\b/.test(name) ? "an " : "a ") + name; }
 
   /** The message for a file this page cannot take, or "" when it can. */
   function refuse(pair, kind, size) {
     const c = CONVERSIONS[pair];
     if (!c) return "This page does not know that conversion.";
+    if (kind === "xls" && c.accepts.indexOf("xlsx") !== -1) return "This is an older Excel workbook (.xls), or an .xlsx protected with a password. Save it as an unprotected .xlsx in Excel, Numbers or LibreOffice, and add that.";
+    if (kind === "bigtiff" && c.accepts.indexOf("tiff") !== -1) return "This is a BigTIFF, a variant for files over 4 GB that this page cannot read.";
     const max = c.maxBytes || MAX_BYTES;
     if (size === 0) return "That file is empty.";
     if (size > max) return "That file is over " + (max / 1048576) + " MB.";
@@ -555,7 +574,7 @@
         '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>' +
         '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>' +
         "</Relationships>",
-      "docProps/app.xml": head + '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"><Application>Purplelink CSV to XLSX</Application></Properties>',
+      "docProps/app.xml": head + '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"><Application>' + xml(opts.app || "Purplelink CSV to XLSX") + '</Application></Properties>',
       "xl/workbook.xml": head + "<workbook " + NS + " " + R + '><sheets><sheet name="' + xml(sheetName(fileName)) + '" sheetId="1" r:id="rId1"/></sheets></workbook>',
       "xl/_rels/workbook.xml.rels": head + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
         '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>' +
@@ -581,6 +600,526 @@
   }
 
   /** Options as the page sends them, cleaned. */
+  // ---------- XLSX to CSV: readers for the parts of a workbook (a worker has no DOMParser) ----------
+  const XML_ENT = { lt: "<", gt: ">", amp: "&", quot: '"', apos: "'" };
+  /** XML text to a string: entities, character references, and Excel's _xHHHH_ escapes for control characters. */
+  function xmlText(t) {
+    return String(t)
+      .replace(/&(#x[0-9a-f]+|#\d+|lt|gt|amp|quot|apos);/gi, function (m, e) {
+        if (e[0] !== "#") return XML_ENT[e.toLowerCase()];
+        const n = e[1] === "x" || e[1] === "X" ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10);
+        return n > 0 && n <= 0x10ffff ? String.fromCodePoint(n) : m;
+      })
+      .replace(/_x([0-9A-Fa-f]{4})_/g, function (m, h) { return String.fromCharCode(parseInt(h, 16)); });
+  }
+  function xmlAttr(tag, name) {
+    const m = new RegExp("\\s" + name + "\\s*=\\s*(?:\"([^\"]*)\"|'([^']*)')").exec(tag);
+    return m ? xmlText(m[1] !== undefined ? m[1] : m[2]) : null;
+  }
+
+  /** xl/workbook.xml: the sheets in tab order and whether dates count from 1904. */
+  function parseWorkbook(xml) {
+    const sheets = [];
+    const re = /<(?:\w+:)?sheet\b[^>]*\/?>/g;
+    let m;
+    while ((m = re.exec(xml))) {
+      const t = m[0];
+      sheets.push({ name: xmlAttr(t, "name") || "Sheet" + (sheets.length + 1), rid: xmlAttr(t, "r:id") || xmlAttr(t, "[\\w]+:id"), state: xmlAttr(t, "state") || "visible" });
+    }
+    const pr = /<(?:\w+:)?workbookPr\b[^>]*>/.exec(xml);
+    const d = pr ? xmlAttr(pr[0], "date1904") : null;
+    return { sheets: sheets, date1904: d === "1" || d === "true" };
+  }
+
+  /** A .rels part: id -> { target, type }. Targets are resolved against base ("xl/"). */
+  function parseRels(xml, base) {
+    const out = {};
+    const re = /<Relationship\b[^>]*\/?>/g;
+    let m;
+    while ((m = re.exec(xml))) {
+      const id = xmlAttr(m[0], "Id"), target = xmlAttr(m[0], "Target") || "";
+      if (!id) continue;
+      out[id] = { target: target[0] === "/" ? target.slice(1) : normPath((base || "") + target), type: (xmlAttr(m[0], "Type") || "").split("/").pop() };
+    }
+    return out;
+  }
+  function normPath(p) {
+    const out = [];
+    p.split("/").forEach(function (seg) { if (seg === "..") out.pop(); else if (seg && seg !== ".") out.push(seg); });
+    return out.join("/");
+  }
+
+  /** xl/sharedStrings.xml: the strings in order. Rich-text runs are joined; phonetic guides (rPh) are left out. */
+  function parseSharedStrings(xml) {
+    const out = [];
+    const re = /<(?:\w+:)?si\b[^>]*>([\s\S]*?)<\/(?:\w+:)?si>|<(?:\w+:)?si\b[^>]*\/>/g;
+    let m;
+    while ((m = re.exec(xml))) out.push(m[1] ? siText(m[1]) : "");
+    return out;
+  }
+  function siText(inner) {
+    const body = inner.replace(/<(?:\w+:)?rPh\b[\s\S]*?<\/(?:\w+:)?rPh>/g, "");
+    let t = "";
+    const re = /<(?:\w+:)?t\b[^>]*>([\s\S]*?)<\/(?:\w+:)?t>|<(?:\w+:)?t\b[^>]*\/>/g;
+    let m;
+    while ((m = re.exec(body))) t += m[1] ? xmlText(m[1]) : "";
+    return t;
+  }
+
+  // Built-in number formats that show a date or a time (ECMA-376 18.8.30, plus the East Asian date ids).
+  const DATE_FMT_IDS = [14, 15, 16, 17, 18, 19, 20, 21, 22, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 45, 46, 47, 50, 51, 52, 53, 54, 55, 56, 57, 58];
+  const TIME_ONLY_IDS = [18, 19, 20, 21, 45, 46, 47];
+  /** What a number format code shows: "date", "datetime", "time" or "" (a plain number). */
+  function fmtKind(code) {
+    // Leave out quoted text, escaped characters and bracketed parts ([Red], [$-409]); elapsed [h] stays a duration.
+    if (/\[[hms]+\]/i.test(code)) return "";
+    const c = String(code).replace(/"[^"]*"|\\.|\[[^\]]*\]|_.|\*./g, "").split(";")[0];
+    const date = /[dy]/i.test(c) || /m/i.test(c.replace(/h[^dy]*?m|m[^dy]*?s/gi, "")) && /[dy]/i.test(c);
+    const time = /[hs]/i.test(c) || /AM\/PM|A\/P/i.test(c);
+    return date && time ? "datetime" : date ? "date" : time ? "time" : "";
+  }
+  /** xl/styles.xml: for each cell style index (the s attribute), "date", "datetime", "time" or "". */
+  function parseStyles(xml) {
+    const custom = {};
+    let m;
+    const fre = /<(?:\w+:)?numFmt\b[^>]*\/?>/g;
+    while ((m = fre.exec(xml))) custom[xmlAttr(m[0], "numFmtId")] = xmlAttr(m[0], "formatCode") || "";
+    const xfs = /<(?:\w+:)?cellXfs\b[^>]*>([\s\S]*?)<\/(?:\w+:)?cellXfs>/.exec(xml);
+    const out = [];
+    if (!xfs) return out;
+    const xre = /<(?:\w+:)?xf\b[^>]*>/g;
+    while ((m = xre.exec(xfs[1]))) {
+      const id = Number(xmlAttr(m[0], "numFmtId") || 0);
+      if (custom[id] !== undefined) out.push(fmtKind(custom[id]));
+      else out.push(DATE_FMT_IDS.indexOf(id) === -1 ? "" : TIME_ONLY_IDS.indexOf(id) !== -1 ? "time" : id === 22 ? "datetime" : "date");
+    }
+    return out;
+  }
+
+  /** An Excel date serial as ISO 8601. kind is "date", "datetime" or "time". */
+  function excelDate(serial, kind, date1904) {
+    if (!isFinite(serial)) return String(serial);
+    let days = Math.floor(serial);
+    let secs = Math.round((serial - days) * 86400);
+    if (secs >= 86400) { days += 1; secs -= 86400; }
+    const hms = pad2(Math.floor(secs / 3600)) + ":" + pad2(Math.floor(secs / 60) % 60) + ":" + pad2(secs % 60);
+    if (kind === "time") return hms;
+    // 1900 system: serial 1 is 1900-01-01, and Excel counts a 29 February 1900 that never was (serial 60).
+    let ms;
+    if (date1904) ms = Date.UTC(1904, 0, 1) + days * 864e5;
+    else {
+      if (days === 60) return kind === "datetime" ? "1900-02-29 " + hms : "1900-02-29";
+      ms = Date.UTC(1899, 11, 31) + (days > 60 ? days - 1 : days) * 864e5;
+    }
+    const d = new Date(ms);
+    if (isNaN(d.getTime())) return String(serial);
+    const iso = d.getUTCFullYear() + "-" + pad2(d.getUTCMonth() + 1) + "-" + pad2(d.getUTCDate());
+    return kind === "datetime" ? iso + " " + hms : iso;
+  }
+  function pad2(n) { return (n < 10 ? "0" : "") + n; }
+
+  /** "C7" -> 2 (zero-based column), or -1. */
+  function colIndex(ref) {
+    const m = /^([A-Z]+)/i.exec(ref || "");
+    if (!m) return -1;
+    let n = 0;
+    for (let i = 0; i < m[1].length; i++) n = n * 26 + (m[1].toUpperCase().charCodeAt(i) - 64);
+    return n - 1;
+  }
+
+  /** A worksheet's XML to rows of strings. Cells and rows are placed by their references, so gaps stay empty.
+      Returns { rows, formulasWithoutValue, cells }. Stops with an error past maxCells. */
+  function sheetRows(xml, shared, styles, date1904, maxCells, safe) {
+    const rows = [];
+    let lostFormulas = 0, cells = 0, nextRow = 0;
+    const cap = maxCells || MAX_CELLS;
+    const data = /<(?:\w+:)?sheetData\b[^>]*>([\s\S]*)<\/(?:\w+:)?sheetData>/.exec(xml);
+    if (!data) return { rows: rows, formulasWithoutValue: 0, cells: 0 };
+    const rre = /<(?:\w+:)?row\b([^>]*?)(?:\/>|>([\s\S]*?)<\/(?:\w+:)?row>)/g;
+    let rm;
+    while ((rm = rre.exec(data[1]))) {
+      const rAttr = xmlAttr(rm[1] || "", "r");
+      const ri = rAttr ? Number(rAttr) - 1 : nextRow;
+      nextRow = ri + 1;
+      const row = [];
+      let nextCol = 0;
+      const cre = /<(?:\w+:)?c\b([^>]*?)(?:\/>|>([\s\S]*?)<\/(?:\w+:)?c>)/g;
+      let cm;
+      while ((cm = cre.exec(rm[2] || ""))) {
+        const attrs = cm[1] || "", inner = cm[2] || "";
+        const ref = xmlAttr(attrs, "r");
+        const ci = ref ? colIndex(ref) : nextCol;
+        nextCol = ci + 1;
+        const type = xmlAttr(attrs, "t") || "n";
+        const v = /<(?:\w+:)?v\b[^>]*>([\s\S]*?)<\/(?:\w+:)?v>/.exec(inner);
+        let out = "";
+        if (type === "inlineStr") {
+          const is = /<(?:\w+:)?is\b[^>]*>([\s\S]*?)<\/(?:\w+:)?is>/.exec(inner);
+          out = is ? siText(is[1]) : "";
+        } else if (!v || (v[1].trim() === "" && type !== "str" && type !== "s")) {
+          // No cached result: either no <v>, or an empty one, as openpyxl and some exporters write.
+          if (/<(?:\w+:)?f\b/.test(inner)) lostFormulas++;
+        } else if (type === "s") out = safeText(shared[Number(v[1])] || "", safe);
+        else if (type === "b") out = v[1].trim() === "1" ? "TRUE" : "FALSE";
+        else if (type === "str") out = safeText(xmlText(v[1]), safe);
+        else if (type === "e") out = xmlText(v[1]);
+        else if (type === "d") out = xmlText(v[1]).replace("T", " ").replace(/Z$/, "");
+        else {
+          // A number is written as the workbook stores it, not as Excel would display it.
+          const raw = v[1].trim(), num = Number(raw);
+          const kind = styles[Number(xmlAttr(attrs, "s") || 0)] || "";
+          out = kind && isFinite(num) && raw !== "" ? excelDate(num, kind, date1904) : raw;
+        }
+        if (type === "inlineStr") out = safeText(out, safe);
+        if (out === "") continue;
+        if (++cells > cap) throw new Error("This sheet has more than " + (cap / 1e6) + " million cells, more than this page reads in a browser tab.");
+        while (row.length < ci) row.push("");
+        row[ci] = out;
+      }
+      while (rows.length < ri) rows.push([]);
+      rows[ri] = row;
+    }
+    return { rows: rows, formulasWithoutValue: lostFormulas, cells: cells };
+  }
+
+  /** Text that Excel would run as a formula when it opens a CSV gets a leading apostrophe (when safe is on). */
+  function safeText(v, safe) { return safe && /^[=+\-@\t\r]/.test(v) ? "'" + v : v; }
+
+  /** A sheet name as a file name: characters file systems refuse replaced, dots and spaces trimmed at the ends. */
+  function sheetFileName(name) {
+    const t = String(name || "").replace(/[\\/:*?"<>|\u0000-\u001f]+/g, "_").replace(/^[\s.]+|[\s.]+$/g, "");
+    return (t || "Sheet").slice(0, 120);
+  }
+
+  /** Rows of strings to CSV text: RFC 4180 quoting, CRLF line ends, empty trailing rows and columns dropped. */
+  function toCsv(rows, delimiter) {
+    const d = delimiter || ",";
+    let end = rows.length;
+    while (end > 0 && !rows[end - 1].some(function (x) { return x !== "" && x != null; })) end--;
+    let cols = 0;
+    for (let r = 0; r < end; r++) for (let c = rows[r].length - 1; c >= cols; c--) if (rows[r][c] !== "" && rows[r][c] != null) { cols = c + 1; break; }
+    const lines = new Array(end);
+    for (let r = 0; r < end; r++) {
+      const row = rows[r], out = new Array(cols);
+      for (let c = 0; c < cols; c++) out[c] = csvField(row[c] == null ? "" : String(row[c]), d);
+      lines[r] = out.join(d);
+    }
+    return end ? lines.join("\r\n") + "\r\n" : "";
+  }
+  function csvField(v, d) {
+    return v.indexOf(d) !== -1 || v.indexOf('"') !== -1 || v.indexOf("\n") !== -1 || v.indexOf("\r") !== -1 ? '"' + v.replace(/"/g, '""') + '"' : v;
+  }
+
+  // ---------- JSON to CSV ----------
+  /** JSON text with every integer literal of 16 digits or more turned into a marked string, outside strings only.
+      JSON.parse rounds integers past 2^53 (tweet and order IDs); a string that starts with a NUL, which JSON text
+      cannot otherwise produce unescaped here, carries the digits through and is written back as the number. */
+  function protectBigInts(text) {
+    const t = String(text);
+    let out = null, last = 0, i = 0;
+    const n = t.length;
+    while (i < n) {
+      const ch = t.charCodeAt(i);
+      if (ch === 34) { // a string: skip to its closing quote
+        i++;
+        while (i < n) { const c = t.charCodeAt(i); if (c === 92) i += 2; else if (c === 34) break; else i++; }
+        i++;
+        continue;
+      }
+      if (ch === 45 || (ch >= 48 && ch <= 57)) {
+        let k = i + (ch === 45 ? 1 : 0);
+        const d0 = k;
+        while (k < n && t.charCodeAt(k) >= 48 && t.charCodeAt(k) <= 57) k++;
+        const c = k < n ? t.charCodeAt(k) : 0;
+        if (c !== 46 && c !== 101 && c !== 69 && k - d0 >= 16) { // an integer: no fraction, no exponent
+          (out = out || []).push(t.slice(last, i), '"\\u0000' + t.slice(i, k) + '"');
+          last = k;
+        }
+        i = k;
+        while (i < n && /[0-9.eE+\-]/.test(t[i])) i++;
+        continue;
+      }
+      i++;
+    }
+    return out ? out.join("") + t.slice(last) : t;
+  }
+  function isBig(v) { return typeof v === "string" && v.charCodeAt(0) === 0; }
+
+  /** The rows in a JSON file: { records, from, others, lines }. from names the key an array was found under, others
+      any other keys that held arrays of objects. */
+  function jsonRecords(text) {
+    const t = protectBigInts(String(text).replace(/^\ufeff/, ""));
+    let data, lines = false;
+    try { data = JSON.parse(t); } catch (e) {
+      const parts = t.split(/\r?\n/).filter(function (l) { return l.trim(); });
+      if (parts.length < 2) throw new Error("This is not valid JSON (" + e.message + ").");
+      data = [];
+      for (let i = 0; i < parts.length; i++) {
+        try { data.push(JSON.parse(parts[i])); } catch (e2) {
+          if (i === 0) throw new Error("This is not valid JSON (" + e.message + ").");
+          throw new Error("This is not valid JSON, and line " + (i + 1) + " is not a JSON value either, so it is not JSON Lines.");
+        }
+      }
+      lines = true;
+    }
+    let from = "", others = [];
+    if (!Array.isArray(data) && data && typeof data === "object") {
+      const keys = Object.keys(data).filter(function (k) {
+        const v = data[k];
+        return Array.isArray(v) && v.some(function (x) { return x && typeof x === "object" && !Array.isArray(x); });
+      }).sort(function (a, b) { return data[b].length - data[a].length; });
+      if (keys.length) { from = keys[0]; others = keys.slice(1); data = data[from]; } else data = [data];
+    } else if (!Array.isArray(data)) data = [data];
+    return { records: data, from: from, others: others, lines: lines };
+  }
+
+  /** Records to rows: a header of every key in first-seen order, then one row per record. nested is "columns"
+      (objects become a.b columns; arrays stay JSON text) or "json" (every object or array is JSON text). A literal
+      key that clashes with a flattened one gets " (2)". safe guards text cells as in safeText. */
+  function flattenRecords(records, nested, safe, maxCells) {
+    const cols = [], index = Object.create(null);
+    const cap = maxCells || MAX_CELLS;
+    const flat = records.map(function (rec) {
+      const out = Object.create(null);
+      if (rec === null || typeof rec !== "object" || Array.isArray(rec)) out.value = cellValue(rec, safe);
+      else walk(rec, "", out, nested !== "json", safe);
+      for (const k in out) if (index[k] === undefined) { index[k] = cols.length; cols.push(k); }
+      return out;
+    });
+    if (cols.length * flat.length > cap) {
+      throw new Error("This file makes " + (cols.length * flat.length).toLocaleString("en-US") + " cells (" + flat.length.toLocaleString("en-US") +
+        " rows by " + cols.length.toLocaleString("en-US") + " columns), more than this page builds in a browser tab (" + (cap / 1e6) + " million).");
+    }
+    const rows = [cols.slice()];
+    flat.forEach(function (o) { rows.push(cols.map(function (k) { return o[k] === undefined ? "" : o[k]; })); });
+    return { rows: rows, columns: cols.length };
+  }
+  function walk(obj, prefix, out, deep, safe) {
+    Object.keys(obj).forEach(function (k) {
+      const v = obj[k];
+      let key = prefix + k;
+      if (deep && v && typeof v === "object" && !Array.isArray(v) && Object.keys(v).length) { walk(v, key + ".", out, deep, safe); return; }
+      if (out[key] !== undefined) { let n = 2; while (out[key + " (" + n + ")"] !== undefined) n++; key = key + " (" + n + ")"; }
+      out[key] = cellValue(v, safe);
+    });
+  }
+  function cellValue(v, safe) {
+    if (v === null || v === undefined) return "";
+    if (isBig(v)) return v.slice(1);
+    if (typeof v === "string") return safeText(v, safe);
+    if (typeof v === "object") return safeText(JSON.stringify(v).replace(/"\\u0000(-?\d+)"/g, "$1"), safe);
+    return String(v);
+  }
+
+  // ---------- TIFF to JPG: the file is read here, so it can be bounded and tested ----------
+  const TIFF_TYPE_SIZE = [0, 1, 1, 2, 4, 8, 1, 1, 2, 4, 8, 4, 8];
+  const TIFF_MAX_IFDS = 1000;
+  const MAX_TIFF_PAGES = 500;
+  const TIFF_COMPRESSIONS = { 1: "none", 3: "CCITT Group 3", 4: "CCITT Group 4", 5: "LZW", 7: "JPEG", 8: "Deflate", 32773: "PackBits", 32946: "Deflate" };
+
+  /** The pages of a TIFF: { pages, le }. Walks the directory chain once, stopping where it points back on itself,
+      with a cap, and checks every strip and tile against the file length. Throws a message it cannot read. */
+  function readTiff(b) {
+    if (!b || b.length < 8) throw new Error("This TIFF is empty or cut short.");
+    const le = b[0] === 0x49;
+    const u16 = function (o) { return le ? b[o] | (b[o + 1] << 8) : (b[o] << 8) | b[o + 1]; };
+    const u32 = function (o) { return (le ? (b[o] | (b[o + 1] << 8) | (b[o + 2] << 16) | (b[o + 3] << 24)) : ((b[o] << 24) | (b[o + 1] << 16) | (b[o + 2] << 8) | b[o + 3])) >>> 0; };
+    if (u16(2) === 43) throw new Error("This is a BigTIFF, a variant for files over 4 GB that this page cannot read.");
+    if (u16(2) !== 42) throw new Error("This is not a TIFF file, or it is damaged.");
+    const seen = Object.create(null);
+    const pages = [];
+    let off = u32(4);
+    while (off) {
+      if (seen[off]) break;
+      seen[off] = 1;
+      if (pages.length >= TIFF_MAX_IFDS) throw new Error("This TIFF has more than " + TIFF_MAX_IFDS + " directories, so it is likely damaged.");
+      if (off + 2 > b.length) throw new Error("This TIFF is damaged or cut short.");
+      const n = u16(off);
+      if (off + 2 + n * 12 + 4 > b.length) throw new Error("This TIFF is damaged or cut short.");
+      const tags = {};
+      for (let i = 0; i < n; i++) {
+        const e = off + 2 + i * 12;
+        const tag = u16(e), type = u16(e + 2), count = u32(e + 4);
+        const size = TIFF_TYPE_SIZE[type] || 0;
+        if (!size || count > 1e7) continue;
+        const bytes = size * count;
+        const at = bytes <= 4 ? e + 8 : u32(e + 8);
+        if (at + bytes > b.length) continue;
+        if (size === 1) { tags[tag] = b.subarray(at, at + count); continue; }
+        const vals = new Array(count);
+        for (let k = 0; k < count; k++) {
+          const o = at + k * size;
+          vals[k] = size === 2 ? u16(o) : size === 4 ? u32(o) : u32(o) / (u32(o + 4) || 1);
+        }
+        tags[tag] = vals;
+      }
+      pages.push(tiffPage(tags, b.length, le));
+      off = u32(off + 2 + n * 12);
+    }
+    if (!pages.length) throw new Error("This TIFF has no pages.");
+    return { pages: pages, le: le };
+  }
+  function tag0(t, k, d) { const v = t[k]; return v && v.length ? v[0] : d; }
+  function tiffPage(t, length, le) {
+    const p = {
+      width: tag0(t, 256, 0), height: tag0(t, 257, 0), bps: t[258] ? Array.from(t[258]) : [1],
+      spp: tag0(t, 277, t[258] ? t[258].length : 1), compression: tag0(t, 259, 1), photometric: tag0(t, 262, -1),
+      fillOrder: tag0(t, 266, 1), orientation: tag0(t, 274, 1), planar: tag0(t, 284, 1), predictor: tag0(t, 317, 1),
+      subfile: tag0(t, 254, 0), extra: t[338] ? Array.from(t[338]) : [], sampleFormat: tag0(t, 339, 1),
+      colorMap: t[320] || null, jpegTables: t[347] || null, le: le, tiled: !!t[322],
+      tileWidth: tag0(t, 322, 0), tileHeight: tag0(t, 323, 0), rowsPerStrip: tag0(t, 278, 0)
+    };
+    p.offsets = (p.tiled ? t[324] : t[273]) || [];
+    p.counts = (p.tiled ? t[325] : t[279]) || [];
+    if (!p.rowsPerStrip || p.rowsPerStrip > p.height) p.rowsPerStrip = p.height;
+    p.thumbnail = (p.subfile & 1) === 1;
+    p.problem = tiffProblem(p, length);
+    return p;
+  }
+  /** What makes a page unreadable here, or "". */
+  function tiffProblem(p, length) {
+    if (!p.width || !p.height) return "This TIFF page has no size, so it is likely damaged.";
+    if (!TIFF_COMPRESSIONS[p.compression]) return "This TIFF uses a compression (number " + p.compression + ") that this page cannot read.";
+    if (p.planar !== 1 && p.spp > 1) return "This TIFF stores each color as a separate plane, which this page cannot read.";
+    if (p.sampleFormat === 3) return "This TIFF stores floating-point samples, which this page cannot read.";
+    if ([0, 1, 2, 3, 5, 6].indexOf(p.photometric) === -1) return "This TIFF uses a color model (number " + p.photometric + ") that this page cannot read.";
+    if (p.photometric === 6 && p.compression !== 7) return "This TIFF stores YCbCr without JPEG compression, which this page cannot read.";
+    const bits = p.bps[0];
+    if (p.compression !== 7) {
+      const ok = p.photometric === 3 ? [1, 2, 4, 8].indexOf(bits) !== -1 : p.photometric <= 1 ? [1, 2, 4, 8, 16].indexOf(bits) !== -1 : [8, 16].indexOf(bits) !== -1;
+      if (!ok || p.bps.some(function (x) { return x !== bits; })) return "This TIFF uses " + p.bps.join("/") + " bits per sample, which this page cannot read.";
+      if (p.photometric === 2 && p.spp < 3) return "This TIFF is marked as color but has fewer than three samples per pixel.";
+      if (p.photometric === 5 && p.spp < 4) return "This TIFF is marked as CMYK but has fewer than four samples per pixel.";
+      if (p.photometric === 3 && (!p.colorMap || p.colorMap.length < 3 * (1 << bits))) return "This TIFF has a palette that is missing or too short.";
+      if (p.predictor !== 1 && p.predictor !== 2) return "This TIFF uses a predictor this page cannot undo.";
+    }
+    if (p.tiled && (!p.tileWidth || !p.tileHeight)) return "This TIFF has tiles without a size, so it is likely damaged.";
+    if (!p.offsets.length || p.offsets.length !== p.counts.length) return "This TIFF page has no image data, so it is likely damaged.";
+    for (let i = 0; i < p.offsets.length; i++) if (p.offsets[i] + p.counts[i] > length) return "This TIFF is damaged or cut short.";
+    return "";
+  }
+
+  /** Bytes per row of width pixels, chunky samples, padded to a byte. */
+  function tiffRowBytes(p, width) { return Math.ceil(width * p.bps[0] * p.spp / 8); }
+
+  /** PackBits (compression 32773) into out. Returns the bytes written. */
+  function unpackBits(src, out) {
+    let i = 0, o = 0;
+    while (i < src.length && o < out.length) {
+      const n = src[i++];
+      if (n < 128) { const end = Math.min(i + n + 1, src.length); while (i < end && o < out.length) out[o++] = src[i++]; }
+      else if (n > 128) { const v = src[i++], c = 257 - n; for (let k = 0; k < c && o < out.length; k++) out[o++] = v; }
+    }
+    return o;
+  }
+
+  /** Undo predictor 2 (horizontal differencing) in place, for 8 or 16-bit samples, row by row. */
+  function tiffUnpredict(buf, p, width, rows) {
+    const spp = p.spp, rb = tiffRowBytes(p, width);
+    if (p.bps[0] === 8) {
+      for (let r = 0; r < rows; r++) { const o = r * rb; for (let i = spp; i < width * spp; i++) buf[o + i] = (buf[o + i] + buf[o + i - spp]) & 255; }
+    } else if (p.bps[0] === 16) {
+      const le = p.le;
+      const get = function (o) { return le ? buf[o] | (buf[o + 1] << 8) : (buf[o] << 8) | buf[o + 1]; };
+      const put = function (o, v) { if (le) { buf[o] = v & 255; buf[o + 1] = v >>> 8; } else { buf[o] = v >>> 8; buf[o + 1] = v & 255; } };
+      for (let r = 0; r < rows; r++) { const o = r * rb; for (let i = spp; i < width * spp; i++) put(o + 2 * i, (get(o + 2 * i) + get(o + 2 * (i - spp))) & 65535); }
+    }
+  }
+
+  /** Decoded samples (chunky, rows padded to a byte) to RGBA, for every layout tiffProblem lets through. 16-bit
+      samples keep their high byte, in the file's byte order. */
+  function tiffRGBA(raw, p) {
+    const w = p.width, h = p.height, spp = p.spp, bits = p.bps[0], le = p.le, rb = tiffRowBytes(p, w);
+    const out = new Uint8ClampedArray(w * h * 4);
+    const sample = bits === 8 ? function (r, s) { return raw[r + s]; }
+      : bits === 16 ? function (r, s) { const o = r + 2 * s; return le ? raw[o + 1] : raw[o]; }
+      : function (r, s) { const bit = s * bits; return (raw[r + (bit >> 3)] >> (8 - bits - (bit & 7))) & ((1 << bits) - 1); };
+    const scale = bits >= 8 || p.photometric === 3 ? 1 : 255 / ((1 << bits) - 1);
+    const alphaAt = p.photometric === 2 ? 3 : p.photometric === 5 ? 4 : p.photometric <= 1 ? 1 : -1;
+    const hasAlpha = alphaAt > 0 && spp > alphaAt;
+    const premultiplied = hasAlpha && p.extra[0] === 1;
+    const map = p.colorMap, mapN = 1 << bits;
+    for (let y = 0; y < h; y++) {
+      const row = y * rb;
+      for (let x = 0; x < w; x++) {
+        const s0 = x * spp, q = (y * w + x) * 4;
+        let r, g, bl;
+        if (p.photometric <= 1) { let v = sample(row, s0) * scale; if (p.photometric === 0) v = 255 - v; r = g = bl = v; }
+        else if (p.photometric === 2) { r = sample(row, s0); g = sample(row, s0 + 1); bl = sample(row, s0 + 2); }
+        else if (p.photometric === 3) { const i = sample(row, s0); r = map[i] >> 8; g = map[mapN + i] >> 8; bl = map[2 * mapN + i] >> 8; }
+        else {
+          const c = sample(row, s0), m = sample(row, s0 + 1), yy = sample(row, s0 + 2), k = sample(row, s0 + 3);
+          r = (255 - c) * (255 - k) / 255; g = (255 - m) * (255 - k) / 255; bl = (255 - yy) * (255 - k) / 255;
+        }
+        const a = hasAlpha ? sample(row, s0 + alphaAt) * (bits >= 8 ? 1 : scale) : 255;
+        if (premultiplied && a > 0 && a < 255) { r = r * 255 / a; g = g * 255 / a; bl = bl * 255 / a; }
+        out[q] = r; out[q + 1] = g; out[q + 2] = bl; out[q + 3] = a;
+      }
+    }
+    return out;
+  }
+
+  /** A page's samples as one buffer (chunky, rows padded to a byte), for every compression but JPEG. libs carries
+      pako (Deflate) and UTIF (LZW and CCITT); the rest is done here. */
+  function tiffDecodeRaw(bytes, p, libs) {
+    const rb = tiffRowBytes(p, p.width), raw = new Uint8Array(rb * p.height);
+    const cw = p.tiled ? p.tileWidth : p.width, ch = p.tiled ? p.tileHeight : p.rowsPerStrip;
+    const crb = tiffRowBytes(p, cw), across = p.tiled ? Math.ceil(p.width / cw) : 1;
+    for (let k = 0; k < p.offsets.length; k++) {
+      const rows = p.tiled ? ch : Math.min(ch, p.height - k * ch);
+      if (rows <= 0) break;
+      const chunk = new Uint8Array(crb * rows);
+      const src = bytes.subarray(p.offsets[k], p.offsets[k] + p.counts[k]);
+      if (p.compression === 1) chunk.set(src.subarray(0, Math.min(src.length, chunk.length)));
+      else if (p.compression === 32773) unpackBits(src, chunk);
+      else if (p.compression === 8 || p.compression === 32946) { const inf = libs.pako.inflate(src); chunk.set(inf.subarray(0, Math.min(inf.length, chunk.length))); }
+      else if (p.compression === 5) libs.UTIF.decode._decodeLZW(bytes, p.offsets[k], chunk, 0);
+      else if (p.compression === 3) libs.UTIF.decode._decodeG3(bytes, p.offsets[k], p.counts[k], chunk, 0, cw, p.fillOrder);
+      else if (p.compression === 4) libs.UTIF.decode._decodeG4(bytes, p.offsets[k], p.counts[k], chunk, 0, cw, p.fillOrder);
+      if (p.predictor === 2) tiffUnpredict(chunk, p, cw, rows);
+      if (!p.tiled) raw.set(chunk.subarray(0, Math.min(chunk.length, raw.length - k * ch * rb)), k * ch * rb);
+      else {
+        const x0 = (k % across) * cw, y0 = Math.floor(k / across) * ch;
+        const xb = tiffRowBytes(p, x0), copy = Math.min(crb, rb - xb);
+        for (let y = 0; y < ch && y0 + y < p.height; y++) raw.set(chunk.subarray(y * crb, y * crb + copy), (y0 + y) * rb + xb);
+      }
+    }
+    return raw;
+  }
+
+  /** Canvas size and transform (for setTransform) that show a w by h picture upright, for orientation tags 1 to 8. */
+  function orientTransform(o, w, h) {
+    switch (o) {
+      case 2: return { width: w, height: h, m: [-1, 0, 0, 1, w, 0] };
+      case 3: return { width: w, height: h, m: [-1, 0, 0, -1, w, h] };
+      case 4: return { width: w, height: h, m: [1, 0, 0, -1, 0, h] };
+      case 5: return { width: h, height: w, m: [0, 1, 1, 0, 0, 0] };
+      case 6: return { width: h, height: w, m: [0, 1, -1, 0, h, 0] };
+      case 7: return { width: h, height: w, m: [0, -1, -1, 0, h, w] };
+      case 8: return { width: h, height: w, m: [0, -1, 1, 0, 0, w] };
+      default: return { width: w, height: h, m: [1, 0, 0, 1, 0, 0] };
+    }
+  }
+
+  // Adobe's APP14 segment with transform 0: "these three components are RGB, do not convert from YCbCr".
+  const ADOBE_RGB = [0xff, 0xee, 0, 14, 0x41, 0x64, 0x6f, 0x62, 0x65, 0, 100, 0, 0, 0, 0, 0];
+  /** A JPEG-compressed strip or tile as a standalone JPEG: the JPEGTables (without their SOI and EOI) go in right
+      after the strip's own SOI. When the TIFF says the JPEG data is RGB (photometric 2), an Adobe marker says so
+      too, since decoders otherwise read three components as YCbCr (WebKit does; Chrome goes by component ids). */
+  function tiffJpeg(strip, tables, rgb) {
+    let t = new Uint8Array(0);
+    if (tables && tables.length >= 4) {
+      const end = tables[tables.length - 2] === 0xff && tables[tables.length - 1] === 0xd9 ? tables.length - 2 : tables.length;
+      t = tables.subarray(2, end);
+    }
+    const mark = rgb ? ADOBE_RGB : [];
+    if (!t.length && !mark.length) return strip;
+    const out = new Uint8Array(strip.length + mark.length + t.length);
+    out.set(strip.subarray(0, 2), 0); out.set(mark, 2); out.set(t, 2 + mark.length); out.set(strip.subarray(2), 2 + mark.length + t.length);
+    return out;
+  }
+
+
   // ---------- PDF to JPG ----------
   const DPIS = { "72": 72, "150": 150, "300": 300 };
 
@@ -729,7 +1268,12 @@
       dpi: DPIS[raw.dpi] || 150,
       pages: String(raw.pages == null ? "" : raw.pages).slice(0, 200),
       scale: ["1", "2", "4", "width"].indexOf(String(raw.scale)) !== -1 ? String(raw.scale) : "2",
-      width: Math.min(16384, Math.max(16, Math.round(Number(raw.width)) || 1920))
+      width: Math.min(16384, Math.max(16, Math.round(Number(raw.width)) || 1920)),
+      sheets: raw.sheets === "all" ? "all" : "first",
+      bom: bool(raw.bom),
+      nested: raw.nested === "json" ? "json" : "columns",
+      safe: raw.safe === undefined ? true : bool(raw.safe),
+      tiffpages: raw.tiffpages === "all" ? "all" : "first"
     };
   }
 
@@ -747,7 +1291,12 @@
     decodeText: decodeText, ENCODINGS: ENCODINGS, DELIMS: DELIMS, MAX_CELLS: MAX_CELLS, detectDelimiter: detectDelimiter, parseCsv: parseCsv, cellNumber: cellNumber,
     colName: colName, sheetName: sheetName, buildXlsxParts: buildXlsxParts,
     MAX_PDF_PAGES: MAX_PDF_PAGES, MAX_PIXELS_PAGE: MAX_PIXELS_PAGE, svgRoot: svgRoot, DPIS: DPIS, parsePages: parsePages, pageRaster: pageRaster, pageName: pageName,
-    isSvgText: isSvgText, svgDecode: svgDecode, svgSize: svgSize, svgWithSize: svgWithSize, svgNotes: svgNotes, svgOutSize: svgOutSize
+    isSvgText: isSvgText, svgDecode: svgDecode, xmlText: xmlText, parseWorkbook: parseWorkbook, parseRels: parseRels,
+    parseSharedStrings: parseSharedStrings, fmtKind: fmtKind, parseStyles: parseStyles, excelDate: excelDate,
+    colIndex: colIndex, sheetRows: sheetRows, toCsv: toCsv, jsonRecords: jsonRecords, flattenRecords: flattenRecords,
+    safeText: safeText, sheetFileName: sheetFileName, protectBigInts: protectBigInts, readTiff: readTiff,
+    unpackBits: unpackBits, tiffUnpredict: tiffUnpredict, tiffRGBA: tiffRGBA, tiffRowBytes: tiffRowBytes,
+    orientTransform: orientTransform, tiffJpeg: tiffJpeg, tiffDecodeRaw: tiffDecodeRaw, tiffProblem: tiffProblem, MAX_TIFF_PAGES: MAX_TIFF_PAGES, TIFF_COMPRESSIONS: TIFF_COMPRESSIONS, svgSize: svgSize, svgWithSize: svgWithSize, svgNotes: svgNotes, svgOutSize: svgOutSize
   };
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.Convert = api;

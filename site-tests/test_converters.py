@@ -149,6 +149,18 @@ class ConverterPages(unittest.TestCase):
             self.assertIn(hashlib.sha256((d / f).read_bytes()).hexdigest() + "  " + f, readme, f"{f} differs from the README hash")
         self.assertTrue(any((d / "cmaps").glob("*.bcmap")))
 
+    def test_vendored_tiff_decoder(self):
+        d = SITE / "assets" / "vendor" / "utif-3.1.0"
+        for f in ("UTIF.js", "pako_inflate.min.js", "LICENSE-UTIF", "LICENSE-pako", "README.txt"):
+            self.assertTrue((d / f).is_file(), f)
+        readme = (d / "README.txt").read_text()
+        for f in ("UTIF.js", "pako_inflate.min.js"):
+            self.assertIn(hashlib.sha256((d / f).read_bytes()).hexdigest() + "  " + f, readme, f"{f} differs from the README hash")
+        page = read_site("tools/tiff-to-jpg/index.html")
+        # UTIF reads self.pako when it loads, so the page names pako first and the worker loads them in that order.
+        self.assertLess(page.index('data-convert-lib="pako"'), page.index('data-convert-lib="utif"'))
+        self.assertIn('libs.pako = loadLib("pako", "pako");', read_site("tools/convert/convert-worker.js"))
+
     def test_pdf_checkers_use_the_same_pdfjs(self):
         # One copy of pdf.js on the site; 6.4 sends font names to the page only with fontExtraProperties.
         self.assertFalse((SITE / "assets" / "vendor" / "pdfjs").exists(), "the 6.3.289 copy was removed")

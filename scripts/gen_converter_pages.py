@@ -23,6 +23,10 @@ TEMPLATE = SITE / "tools" / "metadata-cleaner" / "index.html"
 BASE = "https://purplelink.llc"
 
 NO_UPLOAD = "Are my files uploaded?"
+# Options shared by the pages that write CSV (XLSX to CSV, JSON to CSV).
+SAFE = ("check", "safe", "Keep text that starts with = + - @ from running as a formula in Excel", True)
+BOM = ("check", "bom", "Add a byte-order mark, so Excel on Windows shows accented letters", False)
+SEP = ("select", "delimiter", "Separator", [("comma", "Comma"), ("semicolon", "Semicolon"), ("tab", "Tab")])
 # PDF to JPG and SVG to PNG draw on the page, not in the converter worker, so their privacy line says so.
 PAGE_PRIVACY = ("Files are read and drawn in this tab. The only requests the page makes are for its own scripts and the "
                 "files they need. Your files are never sent anywhere.")
@@ -512,7 +516,8 @@ PAGES = [
             ("Is it free?",
              "Yes. There is no account, no watermark and no limit beyond the sizes above."),
         ],
-        "related": [("/tools/jpg-to-pdf/", "JPG to PDF"), ("/tools/pdf-tools/", "PDF Tools"),
+        "related": [("/tools/xlsx-to-csv/", "XLSX to CSV"), ("/tools/json-to-csv/", "JSON to CSV"),
+                    ("/tools/jpg-to-pdf/", "JPG to PDF"), ("/tools/pdf-tools/", "PDF Tools"),
                     ("/tools/metadata-cleaner/", "Metadata Cleaner")],
     },
 
@@ -721,8 +726,225 @@ PAGES = [
              "Yes. There is no account, no watermark and no limit beyond the file sizes above."),
         ],
         "related": [("/tools/webp-to-png/", "WebP to PNG"), ("/tools/heic-to-jpg/", "HEIC to JPG"),
-                    ("/tools/pdf-to-jpg/", "PDF to JPG"), ("/nee/", "Née, a Mac converter")],
+                    ("/tools/tiff-to-jpg/", "TIFF to JPG"), ("/tools/pdf-to-jpg/", "PDF to JPG"), ("/nee/", "Née, a Mac converter")],
     },
+    {
+        "slug": "xlsx-to-csv",
+        "name": "XLSX to CSV",
+        "title": "XLSX to CSV Converter That Runs in Your Browser | Purplelink",
+        "og_title": "XLSX to CSV, converted in your browser",
+        "description": "Convert Excel workbooks to CSV in your browser, one sheet or all of them. Dates stay dates, and "
+                       "nothing is uploaded. Free, no sign-up.",
+        "hero": "Convert Excel workbooks (.xlsx) to CSV files, the first sheet or every sheet. Dates come out as dates, "
+                "formulas as their results, and text exactly as typed. The workbook is read on your device.",
+        "accept": ".xlsx,.xlsm,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "drop": "Drop Excel workbooks here",
+        "hint": "XLSX and XLSM, up to 50 MB each.",
+        "outputs": [("csv", "CSV")],
+        "opts": [("radio", "sheets", "Sheets", [("first", "First sheet"), ("all", "All sheets, as a zip")]), SEP, SAFE, BOM],
+        "category": "BusinessApplication",
+        "features": ["Convert Excel .xlsx and .xlsm workbooks to CSV",
+                     "The first sheet, or every sheet as its own CSV in a zip",
+                     "Dates written as ISO dates; formulas as their saved results",
+                     "Comma, semicolon or tab separated",
+                     "Read in the browser; workbooks are never uploaded"],
+        "how": [
+            "An .xlsx file is a zip of XML files: one lists the sheets, one holds the text that cells share, one the "
+            "cell styles, and one each sheet's cells. This page opens the zip with JSZip, served from this site, and "
+            "reads those parts in a background worker in this tab.",
+            "Each cell is written as the workbook stores it. Dates are stored as day counts and shown as dates only "
+            "through their format, so the page reads the format and writes 2026-11-03 rather than 46329. A formula "
+            "gives the result Excel saved with the file. Empty cells and rows stay empty, so columns line up.",
+            "Text that starts with =, +, - or @ was harmless in the workbook but can run as a formula when Excel opens "
+            "a CSV. With the first option on, such text gets an apostrophe in front, which Excel hides. Numbers are "
+            "never changed, so -5 stays -5.",
+        ],
+        "steps": [
+            ("Pick the sheets and separator", "First sheet for a one-sheet export, All sheets for a zip with one CSV per sheet. Comma suits most tools; semicolon suits Excel where a comma is the decimal mark."),
+            ("Add the workbooks", "Drop the .xlsx files on the box, or click it to choose them."),
+            ("Check the row", "Each row says how many rows were read and notes hidden sheets or formulas without a saved result."),
+            ("Download", "Download each CSV from its row, or use Download all as .zip."),
+        ],
+        "limits": [
+            "Up to 50 MB a workbook, 100 MB of data in a sheet once unpacked, and 5 million cells.",
+            "Numbers are written as stored, not as displayed: a cell shown as 12% is written 0.12, and currency signs "
+            "and thousands separators are left out. An ID typed as a number with more than 15 digits has already been "
+            "rounded inside the workbook.",
+            "The older .xls format and workbooks protected with a password cannot be read. Save them as an unprotected "
+            ".xlsx first.",
+            "Charts, images, comments and cell colors are not part of a CSV.",
+            "The CSV is UTF-8. Excel on Windows needs the byte-order mark option to show accented letters correctly; "
+            "R, Python and most other tools read it either way.",
+        ],
+        "faq": [
+            ("Are my files uploaded?",
+             "No. The page reads each workbook with your browser and converts it in a background worker in this tab. "
+             "There is no server step. The meter under the drop zone counts the bytes the page and its worker send "
+             "while they work, so you can check this yourself. The only things the page downloads are its own scripts."),
+            ("How are dates written?",
+             "As ISO 8601: 2026-11-03 for a date, 2026-11-03 14:05:00 for a date and time, 14:05:00 for a time. Excel "
+             "stores dates as day counts, and the page reads each cell's format to tell a date from a number. Workbooks "
+             "from old Mac Excel that count from 1904 are read correctly too."),
+            ("What happens to formulas?",
+             "Each formula gives the result Excel saved in the file, as Excel's own Save as CSV does. A workbook made by a "
+             "program that writes formulas without results has empty cells there; the row says how many. Opening it in "
+             "Excel and saving it once stores the results."),
+            ("Why does some text start with an apostrophe?",
+             "Text that starts with =, +, - or @ can run as a formula when Excel opens a CSV, which is how malicious "
+             "spreadsheets spread. The apostrophe makes Excel show it as text. Turn the option off if the CSV is for R, "
+             "Python or a database, which do not run formulas."),
+            ("Can I convert every sheet?",
+             "Yes. Choose All sheets and each sheet becomes its own CSV, named after the sheet, in one zip. Hidden sheets "
+             "are included, and the row names them. Chart sheets have no cells and are skipped."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the sizes above."),
+        ],
+        "related": [("/tools/csv-to-xlsx/", "CSV to XLSX"), ("/tools/json-to-csv/", "JSON to CSV"),
+                    ("/tools/pdf-tools/", "PDF Tools"), ("/tools/metadata-cleaner/", "Metadata Cleaner")],
+    },
+    {
+        "slug": "json-to-csv",
+        "name": "JSON to CSV",
+        "title": "JSON to CSV Converter That Runs in Your Browser | Purplelink",
+        "og_title": "JSON to CSV, converted in your browser",
+        "description": "Convert JSON and JSON Lines to CSV or Excel in your browser. Nested objects become columns, and "
+                       "long IDs stay exact. Nothing is uploaded. Free.",
+        "hero": "Convert JSON from an API, a survey tool or a database export to a CSV file or an Excel workbook. Nested "
+                "objects become columns, every key gets a column, and long numeric IDs are kept digit for digit. The "
+                "file is read on your device.",
+        "accept": ".json,.jsonl,.ndjson,.geojson,.txt,application/json",
+        "drop": "Drop JSON files here",
+        "hint": "JSON, JSON Lines and NDJSON, up to 50 MB each.",
+        "outputs": [("csv", "CSV"), ("xlsx", "XLSX")],
+        "opts": ["output", ("radio", "nested", "Nested objects", [("columns", "As columns (a.b)"), ("json", "As JSON text")]),
+                 SEP + ("output=csv",), SAFE + ("output=csv",), BOM + ("output=csv",)],
+        "category": "DeveloperApplication",
+        "features": ["Convert JSON arrays, API replies and JSON Lines to CSV or XLSX",
+                     "Nested objects flattened into a.b columns, or kept as JSON text",
+                     "A column for every key, in the order they first appear",
+                     "Integers longer than 15 digits kept exactly",
+                     "Converted in the browser; files are never uploaded"],
+        "how": [
+            "The page looks for the rows in your file. A JSON array is the rows. An API reply such as {\"data\": [...]} "
+            "uses its largest list of objects, and the row says which key that was. A file with one JSON value per "
+            "line is read as JSON Lines.",
+            "Every key becomes a column, in the order the keys first appear, so records with different fields still "
+            "line up. A nested object such as {\"user\": {\"name\": \"Ada\"}} becomes a column user.name. Lists stay "
+            "as JSON text in one cell, since they have no fixed width.",
+            "Browsers round integers past 9,007,199,254,740,991 when they read JSON, which quietly breaks long IDs. "
+            "This page reads those numbers as text before parsing, so a 19-digit ID comes out exactly as written.",
+        ],
+        "steps": [
+            ("Pick CSV or XLSX", "CSV for scripts and databases, XLSX to open in Excel with long IDs kept as text."),
+            ("Choose how nested objects are written", "As columns gives one column per nested field; As JSON text keeps each object in one cell."),
+            ("Add the files", "Drop the JSON files on the box, or click it to choose them."),
+            ("Download", "Download each result from its row, or use Download all as .zip."),
+        ],
+        "limits": [
+            "Up to 50 MB a file and 5 million cells.",
+            "Lists inside a record are written as JSON text, not spread over columns.",
+            "When an API reply holds several lists, the largest is used and the row names the others.",
+            "In XLSX output, a value that looks like a number, such as the text \"42\", becomes a number cell; leading "
+            "zeros and long IDs stay text.",
+            "The CSV is UTF-8. Excel on Windows needs the byte-order mark option to show accented letters correctly.",
+        ],
+        "faq": [
+            ("Are my files uploaded?",
+             "No. The page reads each file with your browser and converts it in a background worker in this tab. There "
+             "is no server step. The meter under the drop zone counts the bytes the page and its worker send while they "
+             "work, so you can check this yourself. The only things the page downloads are its own scripts."),
+            ("What JSON shapes does it read?",
+             "An array of objects, an object that holds such an array (common in API replies), a single object, an "
+             "array of plain values, and JSON Lines with one value per line. Records do not need the same keys."),
+            ("How are nested objects handled?",
+             "With As columns, {\"user\": {\"name\": \"Ada\", \"age\": 36}} gives the columns user.name and user.age. "
+             "With As JSON text, the whole object goes in one user column. Lists are always kept as JSON text. If a "
+             "record already has a key named user.name, the flattened one becomes user.name (2)."),
+            ("Will my long IDs survive?",
+             "Yes. Integers of 16 digits or more, such as social media post IDs, are read as text before the browser "
+             "parses the file, so they are written exactly. In Excel output they are text cells, so Excel cannot round "
+             "them either."),
+            ("Why does some text start with an apostrophe?",
+             "Text that starts with =, +, - or @ can run as a formula when Excel opens a CSV. The apostrophe makes Excel "
+             "treat it as text. Numbers are never changed. Turn the option off for CSVs meant for scripts."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the sizes above."),
+        ],
+        "related": [("/tools/csv-to-xlsx/", "CSV to XLSX"), ("/tools/xlsx-to-csv/", "XLSX to CSV"),
+                    ("/tools/file-to-markdown/", "File to Markdown"), ("/tools/pii-checker/", "PII Checker")],
+    },
+    {
+        "slug": "tiff-to-jpg",
+        "name": "TIFF to JPG",
+        "title": "TIFF to JPG Converter That Runs in Your Browser | Purplelink",
+        "og_title": "TIFF to JPG, converted in your browser",
+        "description": "Convert TIFF scans and images to JPG or PNG in your browser, including multi-page, 16-bit and "
+                       "fax TIFFs. Nothing is uploaded. Free, no sign-up.",
+        "hero": "Convert TIFF scans, microscope images and archive files to JPG, or to PNG. Multi-page TIFFs give one "
+                "picture per page. Each file is decoded on your device, in this browser tab.",
+        "accept": ".tif,.tiff,image/tiff",
+        "drop": "Drop TIFF files here",
+        "hint": "TIFF, up to 100 MB each. You can also paste a file with Ctrl or Cmd V.",
+        "outputs": [("jpg", "JPG"), ("png", "PNG")],
+        "opts": ["output", "quality", "background",
+                 ("radio", "tiffpages", "Pages", [("first", "First page"), ("all", "All pages, as a zip")])],
+        "libs": ["pako", "utif"],
+        "features": ["Convert TIFF files to JPG or PNG",
+                     "Multi-page TIFFs, one picture per page",
+                     "LZW, Deflate, PackBits, CCITT fax and JPEG compression",
+                     "8 and 16-bit gray and color, palette and CMYK",
+                     "Decoded in the browser; files are never uploaded"],
+        "how": [
+            "TIFF is the format of scanners, microscopes, archives and print shops. Only Safari opens it in a web page, "
+            "and many upload forms refuse it. This page reads the TIFF itself: it walks the file's list of pages, "
+            "decompresses each strip or tile, and turns the samples into pixels in a background worker.",
+            "The LZW and fax decoders come from UTIF.js, an open-source TIFF library, and the Deflate one from pako, "
+            "both served from this site and loaded when you add a TIFF that needs them. JPEG-compressed TIFFs are "
+            "decoded by the browser's own JPEG decoder.",
+            "16-bit images, common from microscopes and film scanners, are reduced to 8 bits for the JPG or PNG. "
+            "Nothing is brightened, so a dim image stays dim; adjust it in Fiji or Photoshop first if it needs it. "
+            "Scanner thumbnails stored inside the file are skipped, and the orientation the file records is applied.",
+        ],
+        "steps": [
+            ("Pick the format and pages", "JPG for photos and scans you will share, PNG to keep every pixel. First page or All pages for a multi-page TIFF."),
+            ("Add the TIFFs", "Drop the files on the box, click it to choose them, or paste one."),
+            ("Wait for each row", "The row shows the pixel size, or the number of pages, and any notes."),
+            ("Download", "Download each picture from its row, a multi-page TIFF as one zip, or everything with Download all as .zip."),
+        ],
+        "limits": [
+            "Up to 100 MB a file, 40 megapixels a page (16.7 on a phone), and 500 pages at a time.",
+            "BigTIFF files, floating-point samples, files with each color in a separate plane, and old-style JPEG "
+            "compression are refused with a message that says so.",
+            "16 bits per sample are reduced to 8; nothing is stretched or brightened.",
+            "Layers, extra channels beyond alpha, and the TIFF's metadata are not copied over.",
+            "Needs Chrome or Edge 69, Firefox 105 or Safari 16.4, or later.",
+        ],
+        "faq": [
+            ("Are my files uploaded?",
+             "No. The page reads each TIFF with your browser and converts it in a background worker in this tab. There "
+             "is no server step. The meter under the drop zone counts the bytes the page and its worker send while they "
+             "work, so you can check this yourself. The only things the page downloads are its own scripts and the "
+             "TIFF decoder."),
+            ("Does it handle multi-page TIFFs?",
+             "Yes. Choose All pages and each page becomes its own JPG or PNG, numbered in a zip. With First page, the row "
+             "says how many pages the file has. Small preview images that scanners store next to the real pages are skipped."),
+            ("Why is my microscope image dark?",
+             "Many cameras store 12 bits of data in a 16-bit TIFF, so the brightest pixel is far below the 16-bit maximum. "
+             "Reduced to 8 bits, the picture looks dark. The page does not stretch it, so measurements are not changed "
+             "silently; set the display range in Fiji or ImageJ and export from there if you need a brighter picture."),
+            ("Which compressions work?",
+             "Uncompressed, LZW, Deflate, PackBits, CCITT Group 3 and Group 4 (fax and black-and-white scans) and JPEG. "
+             "A TIFF in a compression the page cannot read gets a message naming it."),
+            ("Should I choose JPG or PNG?",
+             "JPG for photos and color scans, where it is far smaller. PNG for black-and-white documents, line art and "
+             "anything you will measure, since it keeps every pixel exactly."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the file sizes above."),
+        ],
+        "related": [("/tools/png-to-jpg/", "PNG to JPG"), ("/tools/pdf-to-jpg/", "PDF to JPG"),
+                    ("/tools/jpg-to-pdf/", "JPG to PDF"), ("/tools/heic-to-jpg/", "HEIC to JPG")],
+    },
+
 ]
 
 DROP_ICON = ('<svg class="cv-drop-icon" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true" focusable="false">'
@@ -898,7 +1120,9 @@ def main_html(p: dict) -> str:
 PRIVACY = ("Files are read and converted in this tab, in a background worker. The only requests the page makes are for "
            "its own scripts. Your files are never sent anywhere.")
 PDFJS = "/assets/vendor/pdfjs-6.4.299/"
-LIBS = {"pdf": "/assets/vendor/pdf-lib.min.js", "pdfjs": PDFJS + "pdf.min.mjs", "pdfjs-worker": PDFJS + "pdf.worker.min.mjs"}
+UTIF = "/assets/vendor/utif-3.1.0/"
+LIBS = {"pdf": "/assets/vendor/pdf-lib.min.js", "pdfjs": PDFJS + "pdf.min.mjs", "pdfjs-worker": PDFJS + "pdf.worker.min.mjs",
+        "pako": UTIF + "pako_inflate.min.js", "utif": UTIF + "UTIF.js"}
 
 
 def libs_html(p: dict) -> str:
