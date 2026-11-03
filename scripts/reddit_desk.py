@@ -11,7 +11,12 @@ Outreach/reddit-desk/desk.json in the main checkout (git-ignored, never added):
 
   {"posts": [{"id": "q-20261103-rd01", "sub": "MacOSApps", "flair": "Utilities", "slot": "2026-11-03T18:10",
               "kind": "post", "app": "keyfeel", "images": ["images/keyfeel-collage.png"], "note": "..."},
-             {"id": "q-...", "sub": "iosapps", "kind": "comment", "thread": "https://www.reddit.com/r/...", ...}]}
+             {"id": "q-...", "sub": "iosapps", "kind": "comment", "thread": "https://www.reddit.com/r/...", ...},
+             {"id": "acad-8-months", "queue": "q-...", "file": "replies/....md", "sub": "AskAcademia", "kind": "comment", ...}]}
+
+"queue" names the queue item when the schedule id differs from it; "file" takes the text from a reply file instead of the
+item's Draft block (a second, unlinked reply kept in one queue item). A queue item marked needs_ben: true is approved with
+--by-ben when Ben records his own post, since posting it himself is his yes.
 
   reddit_desk.py status                    the schedule: posted, due, waiting
   reddit_desk.py next [--force] [--no-open]
@@ -118,6 +123,17 @@ def text_of(item_id: str) -> tuple[str, str, dict]:
     return title, "\n".join(lines).strip() + "\n", it
 
 
+def text_for(p: dict) -> tuple[str, str, dict]:
+    """(title, body, queue item) for a schedule entry: its reply file, or its queue item's Draft block."""
+    qid = p.get("queue", p["id"])
+    if not p.get("file"):
+        return text_of(qid)
+    path = desk_dir() / p["file"]
+    if not path.is_file():
+        sys.exit(f"missing reply file: {path}")
+    return "", path.read_text().strip() + "\n", queue().find_item(qid)
+
+
 def utm_content(body: str) -> str:
     m = re.search(r"utm_content=([\w.\-]+)", body)
     return m.group(1) if m else ""
@@ -153,8 +169,10 @@ def last_post_time(st: dict) -> dt.datetime | None:
 
 
 def posted_today_in(st: dict, sub: str, day: dt.date) -> str | None:
+    """A linked (promotional) post or reply already made in this subreddit today. Unlinked replies do not count."""
     for pid, v in st["posted"].items():
-        if v.get("sub", "").lower() == sub.lower() and dt.datetime.fromisoformat(v["at"]).date() == day:
+        if (v.get("utm_content") and v.get("sub", "").lower() == sub.lower()
+                and dt.datetime.fromisoformat(v["at"]).date() == day):
             return pid
     return None
 
@@ -196,12 +214,13 @@ def cmd_next(a) -> None:
     last = last_post_time(st)
     if last and (t - last).total_seconds() < MIN_GAP * 60 and not a.force:
         sys.exit(f"last post was {last:%H:%M}; wait until {(last + dt.timedelta(minutes=MIN_GAP)):%H:%M} (--force overrides)")
-    clash = posted_today_in(st, p["sub"], t.date())
+    title, body, it = text_for(p)
+    clash = posted_today_in(st, p["sub"], t.date()) if utm_content(body) else None
     if clash:
         sys.exit(f"r/{p['sub']} already had {clash} today; move {p['id']} to another day in desk.json")
-    title, body, it = text_of(p["id"])
-    if it["folder"] not in ("pending", "approved"):
-        sys.exit(f"{p['id']} is in {it['folder']}/, not pending or approved")
+    ok = ("pending", "approved", "done") if p.get("file") else ("pending", "approved")
+    if it["folder"] not in ok:
+        sys.exit(f"{it['fm'].get('id')} is in {it['folder']}/, not {' or '.join(ok)}")
     kind = p.get("kind", "post")
     images = image_paths(p)
     url = p["thread"] if kind == "comment" else submit_url(p["sub"], title, bool(images))
@@ -220,9 +239,11 @@ def cmd_next(a) -> None:
         print("Images (shown in Finder; drag them onto the page" + (" first, then paste the body into the body text box):" if kind == "post" else "):"))
         for x in images:
             print(f"  {x}")
-    else:
+    elif kind == "post":
         print("No image for this post yet: every post should carry a screenshot or collage (add 'images' in desk.json).")
     print(f"Body: on the clipboard ({len(body.split())} words). utm_content={utm_content(body) or 'none'}")
+    if str(it["fm"].get("needs_ben", "")).lower() in ("true", "yes", "1"):
+        print("This item is outside every standing approval: post it only if you want it out (your post is the yes).")
     if p.get("note"):
         print(f"Check first: {p['note']}")
     print("Read the rules panel on the page before posting. Paste, pick the flair, click Post yourself.")
@@ -230,7 +251,8 @@ def cmd_next(a) -> None:
 
 
 def cmd_title(a) -> None:
-    title, _, _ = text_of(a.id)
+    p = {x["id"]: x for x in schedule()}.get(a.id) or {"id": a.id}
+    title, _, _ = text_for(p)
     pbcopy(title)
     print(f"title on the clipboard: {title}")
 
@@ -268,13 +290,19 @@ def cmd_done(a) -> None:
     st = state()
     if a.id in st["posted"]:
         sys.exit(f"{a.id} is already recorded: {st['posted'][a.id]['url']}")
-    title, body, it = text_of(a.id)
+    title, body, it = text_for(p)
+    qid = it["fm"].get("id")
     aq = [sys.executable, str(HERE / "queue" / "approval_queue.py")]
     if it["folder"] == "pending":
-        subprocess.run(aq + ["approve", a.id, "--note", "Ben posted it by hand from the Reddit desk; his post is the approval"], check=True)
-    subprocess.run(aq + ["done", a.id, "--url", a.url, "--result", f"posted by Ben in r/{p['sub']}"], check=True)
+        by_ben = ["--by-ben"] if str(it["fm"].get("needs_ben", "")).lower() in ("true", "yes", "1") else []
+        subprocess.run(aq + ["approve", qid, "--note", "Ben posted it by hand from the Reddit desk; his post is the approval"]
+                       + by_ben, check=True)
+    if it["folder"] != "done":  # a second reply from an item already done adds a tally row only
+        subprocess.run(aq + ["done", qid, "--url", a.url, "--result", f"posted by Ben in r/{p['sub']}"], check=True)
     t = now()
     tag = utm_content(body)
+    if not title:
+        title = "(comment) " + " ".join(body.split())[:70]
     st["posted"][a.id] = {"at": t.isoformat(timespec="minutes"), "sub": p["sub"], "url": a.url, "reddit_id": m.group(2),
                           "utm_content": tag, "title": title}
     write_json(desk_dir() / "state.json", st)
