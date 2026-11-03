@@ -1,0 +1,28 @@
+Key sounds used by the Buddy chat, from Keyfeel's Tactile pack (trimmed, re-encoded).
+All CC0 1.0. Full list: https://purplelink.llc/keyfeel/sound-credits/
+
+- **keyboard tactile 1** by stavsounds. CC0 1.0. <https://freesound.org/s/766625/>
+- **keyboard tactile 10** by stavsounds. CC0 1.0. <https://freesound.org/s/766626/>
+- **keyboard tactile 11** by stavsounds. CC0 1.0. <https://freesound.org/s/766627/>
+- **keyboard tactile 12** by stavsounds. CC0 1.0. <https://freesound.org/s/766628/>
+- **keyboard tactile 13** by stavsounds. CC0 1.0. <https://freesound.org/s/766629/>
+- **keyboard tactile 14** by stavsounds. CC0 1.0. <https://freesound.org/s/766630/>
+- **keyboard tactile 15** by stavsounds. CC0 1.0. <https://freesound.org/s/766631/>
+- **keyboard tactile 2** by stavsounds. CC0 1.0. <https://freesound.org/s/766632/>
+- **keyboard tactile 3** by stavsounds. CC0 1.0. <https://freesound.org/s/766633/>
+- **keyboard tactile 4** by stavsounds. CC0 1.0. <https://freesound.org/s/766634/>
+- **keyboard tactile 5** by stavsounds. CC0 1.0. <https://freesound.org/s/766635/>
+- **keyboard tactile 6** by stavsounds. CC0 1.0. <https://freesound.org/s/766637/>
+- **keyboard tactile 7** by stavsounds. CC0 1.0. <https://freesound.org/s/766638/>
+- **keyboard tactile 8** by stavsounds. CC0 1.0. <https://freesound.org/s/766639/>
+- **keyboard tactile 9** by stavsounds. CC0 1.0. <https://freesound.org/s/766640/>
+- **tiny soft lay down wood table 12** by joao_janz. CC0 1.0. <https://freesound.org/s/551921/>
+- **hit wooden 06** by anthousai. CC0 1.0. <https://freesound.org/s/406276/>
+- **hit wooden spoon dropped onto counter 02** by anthousai. CC0 1.0. <https://freesound.org/s/406279/>
+- **tap on wooden table** by zembacraftworks. CC0 1.0. <https://freesound.org/s/427393/>
+- **mouse click sound** by pixeliota. CC0 1.0. <https://freesound.org/s/678248/>
+- **paintbrush hairbrush soft brush** by vrymaa. CC0 1.0. <https://freesound.org/s/753283/>
+- **writing pencil on paper mono** by y_ltr27. CC0 1.0. <https://freesound.org/s/556400/>
+- **pouring rice on a clay pot** by kessir. CC0 1.0. <https://freesound.org/s/264123/>
+- **salt pour** by xenognosis. CC0 1.0. <https://freesound.org/s/137259/>
+

@@ -25,7 +25,6 @@ Skipped:
 """
 from __future__ import annotations
 
-import hashlib
 import re
 import sys
 from pathlib import Path
@@ -240,10 +239,14 @@ def nav_html(rel: str, inline: bool, indent: str) -> str:
 
 
 def mark_src() -> str:
-    """The mark with the same ?v stamp fingerprint_assets.py gives it, so the two scripts agree and a new mark
-    reaches returning visitors instead of hiding behind the 30-day /assets/* cache."""
-    digest = hashlib.sha256((SITE / "assets" / "purplelink-mark.svg").read_bytes()).hexdigest()[:10]
-    return f"/assets/purplelink-mark.svg?v={digest}"
+    """The bare mark path. The committed pages carry no ?v= stamps (docs/designs/generated-files-at-build.md, phase 2);
+    fingerprint_assets.py stamps this reference in the build, after this script runs, so a new mark still reaches
+    returning visitors instead of hiding behind the 30-day /assets/* cache."""
+    return "/assets/purplelink-mark.svg"
+
+
+# --check compares with stamps removed, so it passes on the bare committed tree and on a stamped build checkout (CI).
+_STAMP = re.compile(r"\?v=[0-9a-f]+(?=\")")
 
 
 def footer_html(indent: str, code: str | None = None) -> str:
@@ -325,6 +328,31 @@ def with_motion(html: str) -> str:
                   lambda m: m.group(1) + MOTION_JS, out, count=1) if "motion.js" not in out else out
 
 
+# Buddy, the site chat (docs/designs/buddy-chat.md): only these pages get the launcher for its first test.
+CHAT_PAGES = {f"{p}/index.html" for p in (
+    "tools/paper-review", "tools/paper-review/revision", "tools/citation-gap", "tools/anonymity-check",
+    "tools/cover-letter", "tools/response-review", "tools/resume-review",
+    "moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "panely", "summonly", "lenscrib", "suite",
+    "buddy", "vitae",
+)}
+CHAT_TAGS = ('    <link rel="stylesheet" href="/buddy-chat/chat.css">\n'
+             '    <script src="/buddy-chat/loader.js" defer></script>\n')
+
+
+def with_chat(rel: str, html: str) -> str:
+    """Add the chat launcher to CHAT_PAGES and take it off any other page. Pages that already carry it
+    (with or without the ?v hash fingerprint_assets stamps) are left alone, as with_motion does."""
+    has = "/buddy-chat/loader.js" in html
+    if rel in CHAT_PAGES:
+        if has or "</head>" not in html:
+            return html
+        return re.sub(r"([ \t]*)</head>", lambda m: CHAT_TAGS + m.group(0), html, count=1)
+    if not has:
+        return html
+    return re.sub(r'[ \t]*<link rel="stylesheet" href="/buddy-chat/chat\.css[^"]*">\n'
+                  r'[ \t]*<script src="/buddy-chat/loader\.js[^"]*" defer></script>\n', "", html)
+
+
 def render(rel: str, html: str) -> str:
     def nav_sub(m: re.Match) -> str:
         inline = "\n" not in m.group(2)
@@ -334,7 +362,7 @@ def render(rel: str, html: str) -> str:
 
     out = NAV_RE.sub(nav_sub, html, count=1)
     out = FOOTER_RE.sub(lambda m: footer_html(m.group(1), locale_of(rel)), out, count=1)
-    return with_theme(with_motion(out))
+    return with_chat(rel, with_theme(with_motion(out)))
 
 
 def pages():
@@ -351,7 +379,7 @@ def main() -> int:
     for rel, f in pages():
         html = f.read_text(encoding="utf-8")
         new = render(rel, html)
-        if new != html:
+        if (_STAMP.sub("", new) != _STAMP.sub("", html)) if check else (new != html):
             stale += 1
             if not check:
                 f.write_text(new, encoding="utf-8")

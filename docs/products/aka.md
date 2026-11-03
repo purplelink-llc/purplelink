@@ -210,7 +210,7 @@ changed there; "manual" means a person does it, in this order, on launch day.
 | 5 | Launch commit: `launch.js` live (1.0.0, 5 MB), static wording, robots `index, follow`, share card `site/assets/og/aka.png` (and a refreshed `mac-suite.png`), PRE-LAUNCH GUARD test replaced by LAUNCHED | **In the PR**. The release date in `launch.js`, the sitemap, the changelog entry and the static facts is the day the PR was prepared: if launch is on another day, run `python3 scripts/go-live-app.py aka 1.0.0 5 YYYY-MM-DD` (idempotent) and change the changelog date |
 | 6 | Launch-day links: footer, home dock tile and price ladder, products card and chooser, pricing row and `pricing.md`, sitemap, `llms.txt` block and the `gen_llms_full.py` page list, changelog entry, support-box topic, house promo card in `site.js` | **In the PR**. Not done on purpose: the `/li/aka`-style social short links (the social engine's `PRODUCTS` list and its tests change with them, and posting is an outward action) |
 | 7 | Click counter in `site/analytics.js` (`aka-download?trial=1` fires `aka_trial_download`, also in `FUNNEL`) | **In the PR** |
-| 8 | `apply_layout.py --check`, `fingerprint_assets.py`, `check_content.py --strict`, both test suites | Run, green |
+| 8 | `apply_layout.py --check`, `check_content.py --strict`, both test suites (the build adds the `?v=` stamps; committed pages stay bare) | Run, green |
 | 9 | Terms and Privacy wording confirmed against the shipped app | **Manual**: Ben reads the AKA sections once more against the app's behavior |
 | 10 | Guide "Free offline file converters for Mac" listed and linked to `/aka/` | **In the PR** |
 

@@ -8,15 +8,23 @@ asset a new URL and lets the assets themselves be cached hard and forever. The
 HTML is revalidated on each load (max-age=0, must-revalidate), so a deploy
 reaches people as soon as they load a page.
 
-Idempotent: unchanged assets produce identical output, so it is safe to run on
-every deploy. Run from anywhere; paths resolve against the repo root.
+The committed tree is bare: since 2026-11-02 (docs/designs/generated-files-at-build.md, phase 2) the pages in git
+carry no ?v= stamps, so two branches that touch styles.css no longer conflict on the stamp line of 400 pages. The
+stamps are added only in throwaway build checkouts: the Netlify build (NETLIFY=true), GitHub Actions (CI=true) and
+scripts/deploy.sh (--force-in-place, which restores site/ afterwards). Stamping anywhere else exits 2.
 
-  python3 scripts/fingerprint_assets.py           # rewrite in place
-  python3 scripts/fingerprint_assets.py --check   # exit 1 if anything is stale
+Idempotent: unchanged assets produce identical output. Run from anywhere; paths resolve against the repo root.
+
+  python3 scripts/fingerprint_assets.py                  # stamp in place (build checkouts only)
+  python3 scripts/fingerprint_assets.py --force-in-place # stamp in place anyway (deploy.sh)
+  python3 scripts/fingerprint_assets.py --check          # exit 1 if any stamp is missing or stale (a built tree)
+  python3 scripts/fingerprint_assets.py --strip          # remove every stamp (the committed form)
+  python3 scripts/fingerprint_assets.py --check-bare [FILE ...]  # exit 1 if a file carries a stamp (CI, pre-commit)
 """
 from __future__ import annotations
 
 import hashlib
+import os
 import re
 import sys
 from pathlib import Path
@@ -108,12 +116,74 @@ def process_css(css_file: Path, write: bool) -> int:
     return 1
 
 
+BARE_HELP = """The committed tree carries no ?v= stamps; the Netlify build adds them (docs/designs/generated-files-at-build.md).
+To fix: python3 scripts/fingerprint_assets.py --strip, then commit. When merging origin/main into an old branch,
+take main's side for stamp-only lines and run --strip."""
+
+STAMP_Q = re.compile(r"\?v=[0-9a-f]+$")
+
+
+def strip_text(text: str, css: bool) -> str:
+    """The text with ?v=<hash> removed from every reference the stamper writes (local ones only)."""
+    def sub(m: re.Match) -> str:
+        head, url, query, close = m.groups()
+        if url.startswith(EXTERNAL) or not query or not STAMP_Q.fullmatch(query):
+            return m.group(0)
+        return f"{head}{url}{close}"
+    return (CSS_REF if css else REF).sub(sub, text)
+
+
+def targets(args: list[str]) -> tuple[list[Path], list[Path]]:
+    """(html, css) files to look at: the named files under site/, or the whole tree."""
+    if args:
+        paths = [(ROOT / a).resolve() for a in args]
+        paths = [p for p in paths if p.is_file() and SITE.resolve() in p.parents]
+        html = [p for p in paths if p.suffix == ".html"]
+        css = [p for p in paths if p.suffix == ".css" and p.parent == SITE.resolve()]
+    else:
+        html = sorted(SITE.rglob("*.html"))
+        css = sorted(SITE.glob("*.css"))
+    return [f for f in html if not any(d.resolve() in f.parents for d in SKIP_DIRS)], css
+
+
+def strip_or_check_bare(write: bool, args: list[str]) -> int:
+    html, css = targets(args)
+    stamped = []
+    for f in css + html:
+        text = f.read_text()
+        bare = strip_text(text, css=f.suffix == ".css")
+        if bare != text:
+            stamped.append(f)
+            if write:
+                f.write_text(bare)
+    if write:
+        print(f"fingerprint: stripped stamps from {len(stamped)} of {len(html) + len(css)} files")
+        return 0
+    if stamped:
+        for f in stamped[:20]:
+            print(f"  stamped: {f.relative_to(ROOT)}", file=sys.stderr)
+        if len(stamped) > 20:
+            print(f"  ... and {len(stamped) - 20} more", file=sys.stderr)
+        print(BARE_HELP, file=sys.stderr)
+        return 1
+    print(f"fingerprint: {len(html) + len(css)} files bare")
+    return 0
+
+
 def main() -> int:
-    check = "--check" in sys.argv
+    args = sys.argv[1:]
+    if "--strip" in args or "--check-bare" in args:
+        return strip_or_check_bare(write="--strip" in args, args=[a for a in args if not a.startswith("--")])
+    check = "--check" in args
+    in_build = os.environ.get("NETLIFY") == "true" or os.environ.get("CI") == "true" or "--force-in-place" in args
+    if not check and not in_build:
+        print("fingerprint: not stamping a working tree. " + BARE_HELP.split("\n", 1)[0] + "\n"
+              "Stamping happens in the Netlify build and CI; scripts/deploy.sh passes --force-in-place.", file=sys.stderr)
+        return 2
     # One-time escape hatch for the backfill that first stamped the pages the
     # cron had already written. backend/digest/publisher.py stamps everything it
     # writes from now on, so routine deploys should never need this.
-    if "--include-digest" in sys.argv:
+    if "--include-digest" in args:
         SKIP_DIRS.clear()
     files = [f for f in sorted(SITE.rglob("*.html"))
              if not any(d in f.parents for d in SKIP_DIRS)]

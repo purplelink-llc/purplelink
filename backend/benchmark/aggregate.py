@@ -11,21 +11,29 @@ from __future__ import annotations
 from collections import Counter
 from dataclasses import dataclass, field
 
+from benchmark.cited_check import is_counted_gap, strictly_exists
+
 
 @dataclass
 class PaperResult:
     arxiv_id: str
     title: str
     status: str                 # "ok" | "error" | "extraction_failed"
-    gaps: list[dict] = field(default_factory=list)
+    gaps: list[dict] = field(default_factory=list)  # each may carry "already_cited" (cited_check.check_gap)
 
 
 @dataclass
 class BenchmarkSummary:
     n_papers_attempted: int
     n_papers_ok: int
-    n_papers_with_confirmed_gap: int
+    n_papers_with_confirmed_gap: int     # CrossRef found the suggested work (may already be cited)
     pct_with_confirmed_gap: float
+    n_papers_with_uncited_gap: int       # headline: found AND not already cited
+    pct_with_uncited_gap: float
+    n_confirmed_gaps: int                # production's "confirmed_exists"
+    n_strict_gaps: int                   # ... whose CrossRef title is the work named (cited_check.strictly_exists)
+    n_confirmed_gaps_already_cited: int
+    n_counted_gaps: int
     median_gaps_per_paper: float
     gap_type_counts: dict
     verification_status_counts: dict
@@ -47,35 +55,97 @@ def summarize(results: list[PaperResult]) -> BenchmarkSummary:
     manuscript didn't cite. Gaps that are "qualitative_gap" or
     "not_searched"/"not_found"/"weak_match" are excluded from the headline
     percentage on purpose: the point of this benchmark is a defensible
-    statistic, not the largest possible number."""
+    statistic, not the largest possible number.
+
+    "confirmed_exists" alone only proves the suggested paper exists. The
+    headline (pct_with_uncited_gap) also requires CrossRef's title to be the
+    work the model named (strictly_exists) and cited_check to have found no
+    trace of that work in the paper; a gap that was never checked
+    (no "already_cited" key) does not count."""
     ok_results = [r for r in results if r.status == "ok"]
 
     gap_type_counts: Counter = Counter()
     verification_counts: Counter = Counter()
     gaps_per_paper: list[float] = []
     n_with_confirmed = 0
+    n_with_uncited = 0
+    n_confirmed_gaps = 0
+    n_strict = 0
+    n_already_cited = 0
+    n_counted = 0
 
     for r in ok_results:
         confirmed_this_paper = 0
+        counted_this_paper = 0
         for gap in r.gaps:
             gap_type_counts[gap.get("gap_type", "unknown")] += 1
             v_status = (gap.get("verification") or {}).get("status", "not_searched")
             verification_counts[v_status] += 1
             if v_status == "confirmed_exists":
                 confirmed_this_paper += 1
+                if (gap.get("already_cited") or {}).get("cited"):
+                    n_already_cited += 1
+            if strictly_exists(gap):
+                n_strict += 1
+            if is_counted_gap(gap):
+                counted_this_paper += 1
         gaps_per_paper.append(len(r.gaps))
         if confirmed_this_paper > 0:
             n_with_confirmed += 1
+        if counted_this_paper > 0:
+            n_with_uncited += 1
+        n_confirmed_gaps += confirmed_this_paper
+        n_counted += counted_this_paper
 
     n_ok = len(ok_results)
     pct = (n_with_confirmed / n_ok * 100) if n_ok else 0.0
+    pct_uncited = (n_with_uncited / n_ok * 100) if n_ok else 0.0
 
     return BenchmarkSummary(
         n_papers_attempted=len(results),
         n_papers_ok=n_ok,
         n_papers_with_confirmed_gap=n_with_confirmed,
         pct_with_confirmed_gap=round(pct, 1),
+        n_papers_with_uncited_gap=n_with_uncited,
+        pct_with_uncited_gap=round(pct_uncited, 1),
+        n_confirmed_gaps=n_confirmed_gaps,
+        n_strict_gaps=n_strict,
+        n_confirmed_gaps_already_cited=n_already_cited,
+        n_counted_gaps=n_counted,
         median_gaps_per_paper=_median(gaps_per_paper),
         gap_type_counts=dict(gap_type_counts),
         verification_status_counts=dict(verification_counts),
     )
+
+
+CSV_FIELDS = [
+    "arxiv_id", "title", "published", "primary_category", "status",
+    "n_gaps_flagged", "n_confirmed_exists", "n_counted_gaps",
+    "counted_gap_titles", "counted_gap_dois",
+]
+
+
+def csv_rows(results: list[PaperResult], meta: dict | None = None) -> list[dict]:
+    """One row per paper for the public CSV. `meta` maps arxiv_id to
+    {"published", "primary_category"}. Counted gaps are the CrossRef-matched
+    titles and DOIs, joined with " | "."""
+    meta = meta or {}
+    rows = []
+    for r in results:
+        counted = [g for g in r.gaps if is_counted_gap(g)]
+        m = meta.get(r.arxiv_id, {})
+        rows.append({
+            "arxiv_id": r.arxiv_id,
+            "title": r.title,
+            "published": m.get("published", ""),
+            "primary_category": m.get("primary_category", ""),
+            "status": r.status,
+            "n_gaps_flagged": len(r.gaps),
+            "n_confirmed_exists": sum(
+                1 for g in r.gaps if (g.get("verification") or {}).get("status") == "confirmed_exists"
+            ),
+            "n_counted_gaps": len(counted),
+            "counted_gap_titles": " | ".join((g["verification"].get("found_title") or "").strip() for g in counted),
+            "counted_gap_dois": " | ".join((g["verification"].get("found_doi") or "").strip() for g in counted),
+        })
+    return rows

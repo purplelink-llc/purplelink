@@ -203,7 +203,7 @@ Do this only after the DMG and appcast are in `tapefolio-files` and both env var
 4. (Done in the launch commit.) Fill in `site/tapefolio/launch.js`, delete the PRE-LAUNCH GUARD test, and update the four static
    fallback strings in `site/tapefolio/index.html` to their live wording, as `keyfeel.md` item 7 describes.
 5. Merge the Suite commit and the link commit together, deploy, and rerun `python3 scripts/apply_layout.py --check`,
-   `python3 scripts/fingerprint_assets.py` and `python3 scripts/check_content.py --strict`.
+   and `python3 scripts/check_content.py --strict` (the build adds the `?v=` stamps).
 6. (Done.) The changelog entry and the sitemap `lastmod` already carry the real release date, 2026-10-09 (it is what the stand-in
    guessed), and the `Status:` line of the Tapefolio block in `site/llms.txt` now says "Shipping, version 1.0.0".
 7. Confirm the Terms and Privacy wording against the shipped app: that the network use is only the optional model downloads, the
