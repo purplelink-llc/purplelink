@@ -1,6 +1,6 @@
 /**
  * Netlify Function — AKA delivery. One private Blobs store, three doors: purchase, trial, update channel.
- * Sold on its own; a Mac Suite session counts only after the `inSuite` launch gate in netlify/lib/license.mjs is flipped.
+ * Part of the Mac Suite and the custom bundles: a Suite session or a bundle that names AKA unlocks the same download.
  *
  *   Purchase (browser, after Stripe Checkout):
  *     GET /.netlify/functions/aka-download?session_id=cs_…            -> JSON {files:[…]}
@@ -34,7 +34,7 @@
  */
 import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
-import { suiteIncludes } from "../lib/license.mjs";
+import { bundleHasPart } from "../lib/bundles.mjs";
 import { revocationFor, REVOKED_DETAIL } from "../lib/refunds.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
@@ -85,11 +85,9 @@ async function loadSession(sessionId) {
   if (session.payment_status !== "paid") return { error: json(403, { error: "not_paid", detail: "This order has not been paid." }) };
   // A fully refunded or disputed order no longer gets the file (netlify/lib/refunds.mjs).
   if (await revocationFor(session)) return { error: json(403, { error: "refunded", detail: REVOKED_DETAIL }) };
-  // AKA is sold on its own. A Mac Suite session unlocks it only once the launch gate in netlify/lib/license.mjs
-  // (`inSuite`) is flipped, the same switch that decides whether Suite buyers are issued an AKA1 key. Custom bundles
-  // never include it (it is not one of the bundle parts in netlify/lib/bundles.mjs).
+  // The Mac Suite, and a custom bundle that names this app, include it, so their sessions unlock the same download.
   const bought = session.metadata?.product || "";
-  if (bought !== PRODUCT_KEY && !(bought === SUITE_KEY && suiteIncludes("aka"))) {
+  if (bought !== PRODUCT_KEY && bought !== SUITE_KEY && !bundleHasPart(bought, session.metadata, "aka")) {
     return { error: json(403, { error: "not_entitled", detail: "This order is for a different product." }) };
   }
   return { session };

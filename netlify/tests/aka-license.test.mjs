@@ -1,6 +1,6 @@
 // AKA uses the shared PurplelinkLicenseV1 scheme (prefix AKA1, slug "aka"), like Outbound Veil and Legroom.
 // This file pins what is specific to it: the key shape, that it is isolated from the other products, and the launch
-// gate that keeps it out of every Mac Suite purchase while the app is hidden.
+// Mac Suite: AKA is in it since launch (Ben, 2026-11-02), and the `inSuite: false` switch still works for a hidden product.
 //
 // Run with: node --test netlify/tests/aka-license.test.mjs
 
@@ -19,7 +19,7 @@ const pair = testPair();
 
 test("AKA is on the shared scheme with prefix AKA1 and its own page", () => {
   assert.equal(LICENSE_SCHEME, "PurplelinkLicenseV1");
-  assert.deepEqual(LICENSED_PRODUCTS.aka, { prefix: "AKA1", label: "AKA", appPath: "/aka/", inSuite: false });
+  assert.deepEqual(LICENSED_PRODUCTS.aka, { prefix: "AKA1", label: "AKA", appPath: "/aka/" });
 });
 
 test("a AKA key has the AKA1 shape, verifies for AKA only, and a key for another product does not unlock it", () => {
@@ -45,29 +45,27 @@ test("with no signing seed there is no key (never a fake one)", () => {
   assert.equal(issueLicense("aka", { sessionId: "cs_x" }), null);
 });
 
-// ---- the launch gate -------------------------------------------------------------------
+// ---- the Suite -------------------------------------------------------------------------
 
-test("LAUNCH GATE: a Mac Suite purchase is not entitled to AKA while it is hidden", () => {
-  assert.equal(suiteIncludes("aka"), false);
-  assert.deepEqual(licensedSlugsFor("app-suite").sort(), ["legroom", "outbound-veil"]);
-  assert.ok(!licensedSlugsFor("app-suite").includes("aka"));
+test("SUITE: a Mac Suite purchase is entitled to AKA, with the other two keyed apps", () => {
+  assert.equal(suiteIncludes("aka"), true);
+  assert.deepEqual(licensedSlugsFor("app-suite").sort(), ["aka", "legroom", "outbound-veil"]);
 });
 
-test("a single AKA purchase is entitled to its own key even while the Suite gate is closed", () => {
+test("a single AKA purchase is entitled to its own key", () => {
   assert.deepEqual(licensedSlugsFor("aka"), ["aka"]);
 });
 
-test("flipping the gate (inSuite true, or the field removed) adds AKA to the Suite and nothing else changes", () => {
+test("`inSuite: false` still keeps a hidden product out of the Suite (the switch is kept for the next launch)", () => {
   const entry = LICENSED_PRODUCTS.aka;
   try {
-    entry.inSuite = true;
-    assert.deepEqual(licensedSlugsFor("app-suite").sort(), ["aka", "legroom", "outbound-veil"]);
-    delete entry.inSuite;
-    assert.deepEqual(licensedSlugsFor("app-suite").sort(), ["aka", "legroom", "outbound-veil"]);
-  } finally {
     entry.inSuite = false;
+    assert.equal(suiteIncludes("aka"), false);
+    assert.deepEqual(licensedSlugsFor("app-suite").sort(), ["legroom", "outbound-veil"]);
+  } finally {
+    delete entry.inSuite;
   }
-  assert.deepEqual(licensedSlugsFor("app-suite").sort(), ["legroom", "outbound-veil"]);
+  assert.deepEqual(licensedSlugsFor("app-suite").sort(), ["aka", "legroom", "outbound-veil"]);
 });
 
 test("Outbound Veil and Legroom behave exactly as before: still in the Suite, keys byte-identical to the pre-AKA code", () => {
