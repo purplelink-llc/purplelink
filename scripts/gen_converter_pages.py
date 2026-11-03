@@ -1667,7 +1667,7 @@ def main_html(p: dict) -> str:
         </div>
         <p class="tool-privacy">{e(p.get("privacy", PRIVACY))}</p>
       </div>
-
+{app_link_html(p)}
       <section class="tool-prose cv-how" aria-labelledby="cv-how-h">
         <h2 id="cv-how-h">How it works</h2>
 {how}
@@ -1702,6 +1702,32 @@ def main_html(p: dict) -> str:
       <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a>. It helps keep these tools free and online.</p>
     </main>
 """
+
+
+# One plain sentence under the converter that names a Purplelink app, only where the app does the next step
+# directly. slug: (app path, app name, text before the link, text after it). The UTM tags let the dashboard tie a
+# trial back to the page: utm_content names the converter.
+SUBTITLES = ("tapefolio", "Tapefolio", "To make subtitles from an interview or meeting recording, ",
+             ", our Mac app, transcribes it on your Mac and exports SRT and VTT. Free for 7 days.")
+APP_LINKS = {
+    "xlsx-to-latex": ("moderntex", "ModernTex", "To write the paper itself on a Mac, ",
+                      " is our LaTeX editor, with a synced PDF preview and BibTeX autocomplete. Free for 7 days."),
+    "pdf-to-text": ("tapefolio", "Tapefolio", "Scanned PDFs have no text for this page to read. ",
+                    ", our Mac app, reads scans with OCR on your Mac and keeps two-column pages in reading order. "
+                    "Free for 7 days."),
+    "srt-to-vtt": SUBTITLES,
+    "vtt-to-srt": SUBTITLES,
+}
+
+
+def app_link_html(p: dict) -> str:
+    if p["slug"] not in APP_LINKS:
+        return ""
+    app, name, before, after = APP_LINKS[p["slug"]]
+    href = (f"/{app}/?utm_source=purplelink&amp;utm_medium=tool&amp;utm_campaign=converter-crosslink"
+            f"&amp;utm_content={p['slug']}")
+    return (f'      <p class="cv-app-link">{e(before)}<a href="{href}" data-track="offer_click" '
+            f'data-track-meta="{app}">{e(name)}</a>{e(after)}</p>\n')
 
 
 PRIVACY = ("Files are read and converted in this tab, in a background worker. The only requests the page makes are for "
