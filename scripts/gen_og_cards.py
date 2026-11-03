@@ -86,8 +86,8 @@ def plan(only=None, refresh=False):
             elif section.endswith("guides"):
                 bg = "latex" if any(w in slug for w in LATEX_WORDS) else "research"
             elif section == "tools":
-                # Image converters (2026-11-02) get the apps background; the rest are research tools.
-                bg = "apps" if slug in ("heic-to-jpg", "webp-to-png", "png-to-icns", "png-to-ico", "avif-to-jpg", "jpg-to-pdf", "csv-to-xlsx") else "research"
+                # Image converters and Photo to Logo (2026-11-02) get the apps background; the rest are research tools.
+                bg = "apps" if slug in ("heic-to-jpg", "webp-to-png", "png-to-icns", "png-to-ico", "avif-to-jpg", "jpg-to-pdf", "csv-to-xlsx", "photo-to-logo") else "research"
             else:
                 bg = BLOG_BG.get(slug, "research")
             jobs.append({"page": p, "section": section, "slug": slug, "title": title, "sub": sub, "bg": bg,
