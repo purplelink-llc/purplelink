@@ -39,7 +39,10 @@
     "csv-to-json": { label: "CSV", accepts: ["csv"], outputs: ["json", "jsonl"], output: "json", work: "csvjson", maxBytes: 50 * 1024 * 1024 },
     // No canvas flag: PNG entries are copied out, so the worker checks for OffscreenCanvas only when it must draw.
     "icns-to-png": { label: "ICNS", accepts: ["icns"], outputs: ["png"], output: "png", work: "icns", maxBytes: 50 * 1024 * 1024 },
-    "ico-to-png": { label: "ICO", accepts: ["ico"], outputs: ["png"], output: "png", work: "ico", maxBytes: 20 * 1024 * 1024 }
+    "ico-to-png": { label: "ICO", accepts: ["ico"], outputs: ["png"], output: "png", work: "ico", maxBytes: 20 * 1024 * 1024 },
+    "xlsx-to-json": { label: "XLSX", accepts: ["xlsx"], outputs: ["json", "jsonl"], output: "json", work: "xlsxread", maxBytes: 50 * 1024 * 1024 },
+    "vtt-to-srt": { label: "WebVTT", accepts: ["vtt"], outputs: ["srt"], output: "srt", work: "subs", maxBytes: 5 * 1024 * 1024 },
+    "srt-to-vtt": { label: "SRT", accepts: ["srt"], outputs: ["vtt"], output: "vtt", work: "subs", maxBytes: 5 * 1024 * 1024 }
   };
   // A PDF with more pages than this is refused rather than drawn for minutes.
   const MAX_PDF_PAGES = 500;
@@ -47,10 +50,11 @@
   const MIME = {
     jpg: "image/jpeg", png: "image/png", icns: "image/icns", ico: "image/x-icon", pdf: "application/pdf",
     xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", zip: "application/zip", csv: "text/csv",
-    json: "application/json", jsonl: "application/x-ndjson"
+    json: "application/json", jsonl: "application/x-ndjson",
+    srt: "application/x-subrip", vtt: "text/vtt"
   };
   const KIND_NAMES = { heic: "HEIC", avif: "AVIF", webp: "WebP", png: "PNG", jpeg: "JPEG", gif: "GIF", csv: "CSV", pdf: "PDF", bmp: "BMP", svg: "SVG",
-    xlsx: "XLSX", xls: "XLS", json: "JSON", tiff: "TIFF", bigtiff: "BigTIFF", icns: "ICNS", ico: "ICO" };
+    xlsx: "XLSX", xls: "XLS", json: "JSON", tiff: "TIFF", bigtiff: "BigTIFF", icns: "ICNS", ico: "ICO", srt: "SRT", vtt: "WebVTT" };
 
   function ascii(b, s, e) {
     let out = "";
@@ -108,6 +112,8 @@
     if (b && b.length > 2 && b[0] === 0x1f && b[1] === 0x8b && /\.svgz$/i.test(String(name || ""))) return "svg";
     if (isSvgText(b)) return "svg";
     const n = String(name || "");
+    const sub = subtitleKind(b, n);
+    if (sub) return sub;
     // A workbook is a zip; its first entry name varies, so the extension decides between XLSX and other zips.
     if (b && b.length >= 4 && b[0] === 0x50 && b[1] === 0x4b && b[2] === 3 && b[3] === 4) return /\.xls[xm]$/i.test(n) ? "xlsx" : "";
     if (/\.(json|jsonl|ndjson|geojson)$/i.test(n) || (/\.txt$/i.test(n) && /^(\ufeff|\xef\xbb\xbf)?\s*[[{]/.test(ascii(b || [], 0, 64)))) {
@@ -140,7 +146,20 @@
   }
 
   // "an SVG", "an AVIF", "a PNG": by how the name is said, not how it is spelled.
-  function article(name) { return (/^(AVIF|SVG|XLS|ICNS|ICO)\b/.test(name) ? "an " : "a ") + name; }
+  function article(name) { return (/^(AVIF|SVG|XLS|ICNS|ICO|SRT)\b/.test(name) ? "an " : "a ") + name; }
+
+  /** "vtt" for text that starts WEBVTT (then a space, tab, line break or the end), "srt" for a .srt name or a head
+      that is a cue number and an SRT timing line, or "". A UTF-16 file named .srt or .vtt takes that kind. */
+  function subtitleKind(b, n) {
+    if (!b || !b.length) return "";
+    const utf16 = b.length >= 2 && ((b[0] === 0xff && b[1] === 0xfe) || (b[0] === 0xfe && b[1] === 0xff));
+    if (utf16) return /\.vtt$/i.test(n) ? "vtt" : /\.srt$/i.test(n) ? "srt" : "";
+    for (let i = 0; i < b.length && i < 4096; i++) if (b[i] === 0) return "";
+    const head = ascii(b, b[0] === 0xef && b[1] === 0xbb && b[2] === 0xbf ? 3 : 0, 400);
+    if (/^WEBVTT(?:[ \t\r\n]|$)/.test(head)) return "vtt";
+    if (/\.srt$/i.test(n) || /^\s*\d+[ \t]*\r?\n[ \t]*(?:\d+:)?\d{1,2}:\d{2}[,.]\d{1,3}[ \t]*-->/.test(head)) return "srt";
+    return "";
+  }
 
   /** The message for a file this page cannot take, or "" when it can. */
   function refuse(pair, kind, size) {
@@ -620,7 +639,8 @@
   const XML_ENT = { lt: "<", gt: ">", amp: "&", quot: '"', apos: "'" };
   /** XML text to a string: entities, character references, and Excel's _xHHHH_ escapes for control characters. */
   function xmlText(t) {
-    return String(t)
+    // XML turns a literal CR LF, or a lone CR, into LF before anything else; an escaped _x000D_ or &#13; stays a CR.
+    return String(t).replace(/\r\n?/g, "\n")
       .replace(/&(#x[0-9a-f]+|#\d+|lt|gt|amp|quot|apos);/gi, function (m, e) {
         if (e[0] !== "#") return XML_ENT[e.toLowerCase()];
         const n = e[1] === "x" || e[1] === "X" ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10);
@@ -668,7 +688,8 @@
   /** xl/sharedStrings.xml: the strings in order. Rich-text runs are joined; phonetic guides (rPh) are left out. */
   function parseSharedStrings(xml) {
     const out = [];
-    const re = /<(?:\w+:)?si\b[^>]*>([\s\S]*?)<\/(?:\w+:)?si>|<(?:\w+:)?si\b[^>]*\/>/g;
+    // The self-closing form goes first: otherwise "<si/>" opens a match that swallows the next string.
+    const re = /<(?:\w+:)?si\b[^>]*?\/>|<(?:\w+:)?si\b[^>]*>([\s\S]*?)<\/(?:\w+:)?si>/g;
     let m;
     while ((m = re.exec(xml))) out.push(m[1] ? siText(m[1]) : "");
     return out;
@@ -676,7 +697,7 @@
   function siText(inner) {
     const body = inner.replace(/<(?:\w+:)?rPh\b[\s\S]*?<\/(?:\w+:)?rPh>/g, "");
     let t = "";
-    const re = /<(?:\w+:)?t\b[^>]*>([\s\S]*?)<\/(?:\w+:)?t>|<(?:\w+:)?t\b[^>]*\/>/g;
+    const re = /<(?:\w+:)?t\b[^>]*?\/>|<(?:\w+:)?t\b[^>]*>([\s\S]*?)<\/(?:\w+:)?t>/g;
     let m;
     while ((m = re.exec(body))) t += m[1] ? xmlText(m[1]) : "";
     return t;
@@ -745,9 +766,9 @@
 
   /** A worksheet's XML to rows of strings. Cells and rows are placed by their references, so gaps stay empty.
       Returns { rows, formulasWithoutValue, cells }. Stops with an error past maxCells. */
-  function sheetRows(xml, shared, styles, date1904, maxCells, safe) {
-    const rows = [];
-    let lostFormulas = 0, cells = 0, nextRow = 0;
+  function sheetRows(xml, shared, styles, date1904, maxCells, safe, withKinds) {
+    const rows = [], kinds = [];
+    let lostFormulas = 0, cells = 0, nextRow = 0, slots = 0;
     const cap = maxCells || MAX_CELLS;
     const data = /<(?:\w+:)?sheetData\b[^>]*>([\s\S]*)<\/(?:\w+:)?sheetData>/.exec(xml);
     if (!data) return { rows: rows, formulasWithoutValue: 0, cells: 0 };
@@ -756,8 +777,10 @@
     while ((rm = rre.exec(data[1]))) {
       const rAttr = xmlAttr(rm[1] || "", "r");
       const ri = rAttr ? Number(rAttr) - 1 : nextRow;
+      if (!(ri >= 0 && ri < 1048576)) throw new Error("This sheet names a row past Excel's last row, so it is likely damaged.");
       nextRow = ri + 1;
       const row = [];
+      let krow = "";
       let nextCol = 0;
       const cre = /<(?:\w+:)?c\b([^>]*?)(?:\/>|>([\s\S]*?)<\/(?:\w+:)?c>)/g;
       let cm;
@@ -765,6 +788,7 @@
         const attrs = cm[1] || "", inner = cm[2] || "";
         const ref = xmlAttr(attrs, "r");
         const ci = ref ? colIndex(ref) : nextCol;
+        if (!(ci >= 0 && ci < 16384)) throw new Error("This sheet names a column past Excel's last column, so it is likely damaged.");
         nextCol = ci + 1;
         const type = xmlAttr(attrs, "t") || "n";
         const v = /<(?:\w+:)?v\b[^>]*>([\s\S]*?)<\/(?:\w+:)?v>/.exec(inner);
@@ -789,13 +813,24 @@
         if (type === "inlineStr") out = safeText(out, safe);
         if (out === "") continue;
         if (++cells > cap) throw new Error("This sheet has more than " + (cap / 1e6) + " million cells, more than this page reads in a browser tab.");
+        // Empty slots before a far-away cell cost memory too, so they count against a looser cap.
+        slots += Math.max(0, ci - row.length) + 1;
+        if (slots > cap * 4) throw new Error("This sheet spreads its cells over too many empty columns for this page to read in a browser tab.");
         while (row.length < ci) row.push("");
         row[ci] = out;
+        if (withKinds) {
+          const k = type === "s" || type === "str" || type === "inlineStr" ? "s" : type === "b" ? "b" : type === "e" ? "e"
+            : type === "d" || (styles[Number(xmlAttr(attrs, "s") || 0)] || "") ? "d" : "n";
+          krow = krow.padEnd(ci, " ") + k;
+        }
       }
-      while (rows.length < ri) rows.push([]);
+      while (rows.length < ri) { rows.push([]); if (withKinds) kinds.push(""); }
       rows[ri] = row;
+      if (withKinds) kinds[ri] = krow;
     }
-    return { rows: rows, formulasWithoutValue: lostFormulas, cells: cells };
+    const res = { rows: rows, formulasWithoutValue: lostFormulas, cells: cells };
+    if (withKinds) res.kinds = kinds;
+    return res;
   }
 
   /** Text that Excel would run as a formula when it opens a CSV gets a leading apostrophe (when safe is on). */
@@ -1207,6 +1242,51 @@
     });
     return { tree: root, clash: clash };
   }
+  /** The JSON text for rows, in parts of about 2 MB, written by hand so keys keep header order. value(row, c) gives a
+      cell's JSON text. keys null means arrays. Shared by CSV to JSON and XLSX to JSON. Returns { parts, notes, est }. */
+  function jsonWrite(rows, n, keys, opts, value) {
+    const notes = [];
+    let tree = null;
+    if (keys && opts.unflatten) {
+      const t = keyTree(keys);
+      tree = t.tree;
+      if (t.clash) notes.push("Some headers are both a value and the parent of others (such as a and a.b), so those stay as flat keys.");
+    } else if (keys) tree = keys.map(function (k, i) { return [k, i]; });
+    let est = 2;
+    const keyLen = keys ? keys.reduce(function (s, k) { return s + k.length + 4; }, 0) : 0;
+    rows.forEach(function (r) { est += keyLen + 4 + n * 4; for (let c = 0; c < r.length; c++) est += String(r[c] == null ? "" : r[c]).length; });
+    if (!opts.lines) est += rows.length * (n * 6 + 6);
+    if (est + (opts.already || 0) > JSON_CAP) throw new Error("The JSON would be about " + Math.round((est + (opts.already || 0)) / 1048576) + " MB, more than this page writes in a browser tab. Choose JSON Lines, or split the file.");
+    const parts = [];
+    let cur = [], curLen = 0;
+    const put = function (s) { cur.push(s); curLen += s.length; if (curLen > 2e6) { parts.push(cur.join("")); cur = []; curLen = 0; } };
+    const pretty = !opts.lines, base = opts.depth || 0;
+    const ind = function (d) { return "  ".repeat(d); };
+    const emit = function (node, row, depth) {
+      let s = "{";
+      node.forEach(function (e, i) {
+        s += (i ? "," : "") + (pretty ? "\n" + ind(depth + 1) : "") + JSON.stringify(e[0]) + (pretty ? ": " : ":");
+        s += Array.isArray(e[1]) ? emit(e[1], row, depth + 1) : value(row, e[1]);
+      });
+      return s + (pretty && node.length ? "\n" + ind(depth) : "") + "}";
+    };
+    const arr = function (row) {
+      let s = "[";
+      for (let c = 0; c < n; c++) s += (c ? (pretty ? ", " : ",") : "") + value(row, c);
+      return s + "]";
+    };
+    if (pretty) put("[");
+    rows.forEach(function (row, i) {
+      const one = tree ? emit(tree, row, pretty ? base + 1 : 0) : arr(row);
+      if (pretty) put((i ? "," : "") + "\n" + ind(base + 1) + one);
+      else put(one + "\n");
+    });
+    if (pretty) put(rows.length ? "\n" + ind(base) + "]" : "]");
+    if (pretty && !base) put("\n");
+    if (cur.length) parts.push(cur.join(""));
+    return { parts: parts, notes: notes, est: est };
+  }
+
   /** CSV rows (from parseCsv) to JSON text in parts of about 2 MB: { parts, rows, cols, notes }. opts: header,
       types, unflatten, lines (JSON Lines), delimiter. Objects are written as text in header order, since JavaScript
       would put integer-like keys such as "2024" first. */
@@ -1220,46 +1300,43 @@
     const keys = header ? jsonKeys(header, n) : null;
     const types = columnTypes(rows, n, d);
     const typed = opts.types !== false;
-    const notes = [];
-    let tree = null;
-    if (keys && opts.unflatten) {
-      const t = keyTree(keys);
-      tree = t.tree;
-      if (t.clash) notes.push("Some headers are both a value and the parent of others (such as a and a.b), so those stay as flat keys.");
-    } else if (keys) tree = keys.map(function (k, i) { return [k, i]; });
-    // Estimate before writing: every key repeated on every row, plus the cell text and a little punctuation.
-    let est = 2;
-    const keyLen = keys ? keys.reduce(function (s, k) { return s + k.length + 4; }, 0) : 0;
-    rows.forEach(function (r) { est += keyLen + 4 + n * 4; for (let c = 0; c < r.length; c++) est += r[c].length; });
-    if (!opts.lines) est += rows.length * (n * 6 + 6);
-    if (est > JSON_CAP) throw new Error("The JSON would be about " + Math.round(est / 1048576) + " MB, more than this page writes in a browser tab. Choose JSON Lines, or split the CSV.");
-    const parts = [];
-    let cur = [], curLen = 0;
-    const put = function (s) { cur.push(s); curLen += s.length; if (curLen > 2e6) { parts.push(cur.join("")); cur = []; curLen = 0; } };
-    const pretty = !opts.lines;
-    const emit = function (node, row, depth) {
-      const pad = pretty ? "\n" + "  ".repeat(depth + 1) : "";
-      let s = "{";
-      node.forEach(function (e, i) {
-        s += (i ? "," : "") + pad + JSON.stringify(e[0]) + (pretty ? ": " : ":");
-        s += Array.isArray(e[1]) ? emit(e[1], row, depth + 1) : jsonValue(row[e[1]], types[e[1]], typed, d);
-      });
-      return s + (pretty && node.length ? "\n" + "  ".repeat(depth) : "") + "}";
+    const w = jsonWrite(rows, n, keys, opts, function (row, c) { return jsonValue(row[c], types[c], typed, d); });
+    return { parts: w.parts, rows: rows.length, cols: n, notes: w.notes };
+  }
+
+  // ---------- XLSX to JSON ----------
+  const JSON_NUMBER = /^-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?$/;
+  /** One sheet's rows (from sheetRows with kinds) as JSON: { parts, rows, cols, notes, est }. Leading and trailing
+      empty rows are trimmed and empty rows inside skipped; with header, the first row left gives the keys. Cells keep
+      the workbook's types: numbers as stored when that text is valid JSON, booleans, dates as ISO strings with T,
+      text and errors as strings, empty cells as null. */
+  function sheetJson(rows, kinds, opts) {
+    const keep = [], kk = [];
+    rows.forEach(function (r, i) { if (r && r.some(function (x) { return x !== "" && x != null; })) { keep.push(r); kk.push(kinds[i] || ""); } });
+    let header = null;
+    if (opts.header && keep.length) { header = keep.shift(); kk.shift(); }
+    let n = header ? header.length : 0;
+    keep.forEach(function (r) { if (r.length > n) n = r.length; });
+    const keys = header ? jsonKeys(header.map(function (h) { return h == null ? "" : String(h); }), n) : null;
+    const at = new Map(keep.map(function (r, i) { return [r, i]; }));
+    let badNumbers = 0;
+    const value = function (row, c) {
+      const t = row[c], k = (kk[at.get(row)] || "")[c] || "s";
+      if (t === undefined || t === "") return "null";
+      if (k === "n") {
+        if (JSON_NUMBER.test(t)) return t;
+        const v = Number(t);
+        if (isFinite(v)) return String(v);
+        badNumbers++;
+        return "null";
+      }
+      if (k === "b") return t === "TRUE" ? "true" : "false";
+      if (k === "d") return JSON.stringify(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/.test(t) ? t.replace(" ", "T") : t);
+      return JSON.stringify(t);
     };
-    const arr = function (row) {
-      let s = "[";
-      for (let c = 0; c < n; c++) s += (c ? (pretty ? ", " : ",") : "") + jsonValue(row[c], types[c], typed, d);
-      return s + "]";
-    };
-    if (pretty) put("[");
-    rows.forEach(function (row, i) {
-      const one = tree ? emit(tree, row, pretty ? 1 : 0) : arr(row);
-      if (pretty) put((i ? "," : "") + "\n  " + one);
-      else put(one + "\n");
-    });
-    if (pretty) put(rows.length ? "\n]\n" : "]\n");
-    if (cur.length) parts.push(cur.join(""));
-    return { parts: parts, rows: rows.length, cols: n, notes: notes };
+    const w = jsonWrite(keep, n, keys, opts, value);
+    if (badNumbers) w.notes.push(badNumbers + " number cell" + (badNumbers === 1 ? " holds" : "s hold") + " text that is not a number, written as null.");
+    return { parts: w.parts, rows: keep.length, cols: n, notes: w.notes, est: w.est };
   }
 
   // ---------- ICNS to PNG ----------
@@ -1458,6 +1535,155 @@
     return out;
   }
 
+  // ---------- SRT to VTT and VTT to SRT ----------
+  const SUB_TIME = /^\s*((?:\d+:)?\d{1,2}:\d{2}[.,]\d{1,3})\s*-->\s*((?:\d+:)?\d{1,2}:\d{2}[.,]\d{1,3})(.*)$/;
+  /** "01:02:03,4" or "02:03.456" to milliseconds, or NaN. */
+  function subMs(t) {
+    const m = /^(?:(\d+):)?(\d{1,2}):(\d{2})[.,](\d{1,3})$/.exec(t.trim());
+    if (!m) return NaN;
+    return ((Number(m[1] || 0) * 60 + Number(m[2])) * 60 + Number(m[3])) * 1000 + Number((m[4] + "00").slice(0, 3));
+  }
+  function subTime(ms, sep) {
+    const h = Math.floor(ms / 3600000), m = Math.floor(ms / 60000) % 60, s = Math.floor(ms / 1000) % 60, t = ms % 1000;
+    return pad2(h) + ":" + pad2(m) + ":" + pad2(s) + sep + String(t).padStart(3, "0");
+  }
+  function subBlocks(text) {
+    return String(text).replace(/^﻿/, "").replace(/\r\n?/g, "\n").split(/\n[ \t]*\n/);
+  }
+  // Entities WebVTT text may use, decoded for SRT, where they are not markup.
+  function subEntities(t) {
+    return t.replace(/&(amp|lt|gt|nbsp|lrm|rlm|quot|apos|#x[0-9a-f]+|#\d+);/gi, function (m, e) {
+      const k = e.toLowerCase();
+      if (k === "amp") return "&"; if (k === "lt") return "<"; if (k === "gt") return ">"; if (k === "nbsp") return " ";
+      if (k === "lrm") return "‎"; if (k === "rlm") return "‏"; if (k === "quot") return '"'; if (k === "apos") return "'";
+      const n = k[1] === "x" ? parseInt(k.slice(2), 16) : parseInt(k.slice(1), 10);
+      return n > 0 && n <= 0x10ffff ? String.fromCodePoint(n) : m;
+    });
+  }
+
+  /** SRT text to cues: [{ id, start, end, text }]. Tolerates a BOM, CRLF, missing or wrong numbers, extra blank lines,
+      "." for ",", and coordinates after the timing. Returns { cues, skipped }. */
+  function parseSrt(text) {
+    const cues = [];
+    let skipped = 0;
+    subBlocks(text).forEach(function (block) {
+      const lines = block.split("\n");
+      let i = 0;
+      while (i < lines.length && lines[i].trim() === "") i++;
+      if (i >= lines.length) return;
+      let id = "";
+      if (!SUB_TIME.test(lines[i]) && i + 1 < lines.length && SUB_TIME.test(lines[i + 1])) { id = lines[i].trim(); i++; }
+      const m = SUB_TIME.exec(lines[i] || "");
+      if (!m) { skipped++; return; }
+      const start = subMs(m[1]), end = subMs(m[2]);
+      if (isNaN(start) || isNaN(end)) { skipped++; return; }
+      cues.push({ id: id, start: start, end: end, text: lines.slice(i + 1).join("\n").replace(/\s+$/, "") });
+    });
+    return { cues: cues, skipped: skipped };
+  }
+
+  /** SRT cue text as WebVTT cue text: b, i and u kept; font tags and ASS overrides ({\an8}) removed; any other <, and
+      every &, escaped, since a WebVTT parser would read them as markup. */
+  function srtTextToVtt(t) {
+    const keep = [];
+    let s = t.replace(/\{\\[^}]*\}/g, "");
+    s = s.replace(/<(\/?)([biu])>/gi, function (m, slash, tag) { keep.push("<" + slash + tag.toLowerCase() + ">"); return "\u0000" + (keep.length - 1) + "\u0000"; });
+    s = s.replace(/<\/?[a-z][a-z0-9]*(?:\s[^<>]*)?>/gi, ""); // font, s, span and other markup: the text stays
+    s = s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    return s.replace(/\u0000(\d+)\u0000/g, function (m, n) { return keep[Number(n)]; });
+  }
+
+  /** Cues to a WebVTT file. Cues are sorted by start time (stable), which WebVTT requires; numbers stay as ids. */
+  function writeVtt(cues) {
+    const sorted = cues.map(function (c, i) { return [c, i]; }).sort(function (a, b) { return a[0].start - b[0].start || a[1] - b[1]; }).map(function (x) { return x[0]; });
+    let out = "WEBVTT\n";
+    sorted.forEach(function (c) {
+      const text = srtTextToVtt(c.text).split("\n").filter(function (l) { return l.trim() !== ""; }).join("\n");
+      out += "\n" + subTime(c.start, ".") + " --> " + subTime(c.end, ".") + "\n" + text + "\n";
+    });
+    return { text: out, reordered: sorted.some(function (c, i) { return c !== cues[i]; }) };
+  }
+
+  /** WebVTT text to cues. Skips the header, NOTE, STYLE and REGION blocks; drops cue settings. Returns
+      { cues, skipped, autoCaptions } where autoCaptions is true when cue text carries inline timestamps. */
+  function parseVtt(text) {
+    const blocks = subBlocks(text);
+    if (!/^WEBVTT(?:[ \t].*)?$/.test((blocks[0] || "").split("\n")[0])) throw new Error("This file does not start with WEBVTT, so it is not a WebVTT file.");
+    const cues = [];
+    let skipped = 0, auto = false;
+    // A line with --> inside a block starts a new cue, so a missing blank line does not merge two cues.
+    const split = [];
+    blocks.slice(1).forEach(function (block) {
+      let cur = [];
+      block.split("\n").forEach(function (l) {
+        const timing = l.indexOf("-->") !== -1;
+        if (timing && cur.some(function (x) { return x.indexOf("-->") !== -1; })) { split.push(cur); cur = []; }
+        cur.push(l);
+      });
+      split.push(cur);
+    });
+    split.forEach(function (lines) {
+      let i = 0;
+      while (i < lines.length && lines[i].trim() === "") i++;
+      if (i >= lines.length) return;
+      if (/^(NOTE|STYLE|REGION)(?:[ \t]|$)/.test(lines[i])) return;
+      let id = "";
+      if (lines[i].indexOf("-->") === -1) { id = lines[i].trim(); i++; }
+      const m = SUB_TIME.exec(lines[i] || "");
+      if (!m) { skipped++; return; }
+      const start = subMs(m[1]), end = subMs(m[2]);
+      if (isNaN(start) || isNaN(end)) { skipped++; return; }
+      const body = lines.slice(i + 1).join("\n");
+      if (/<\d+:\d{2}(?::\d{2})?\.\d{3}>/.test(body)) auto = true;
+      cues.push({ id: id, start: start, end: end, text: body });
+    });
+    return { cues: cues, skipped: skipped, autoCaptions: auto };
+  }
+
+  /** WebVTT cue text as SRT text: b, i and u kept; voice tags become "Name: " (speakers on) or nothing; class, lang,
+      ruby and inline timestamps removed; entities decoded; blank lines dropped. */
+  function vttTextToSrt(t, speakers, state) {
+    state = state || {};
+    let s = t.replace(/<v(?:\.[^\s>]*)?\s+([^>]*)>/g, function (m, name) {
+      const who = subEntities(name.trim());
+      if (!speakers || !who || who === state.speaker) return "";
+      state.speaker = who;
+      return "\u0001" + who + ": ";
+    });
+    s = s.replace(/<\/v>/g, "").replace(/<\d+:\d{2}(?::\d{2})?\.\d{3}>/g, "").replace(/<rt>[\s\S]*?<\/rt>/g, "");
+    s = s.replace(/<(\/?)([biu])(?:\.[^>]*)?>/g, "\u0002$1$2\u0003");
+    s = s.replace(/<\/?(?:c|lang|ruby|rt)(?:[.\s][^>]*)?>/g, "").replace(/<[^>]*>/g, "");
+    s = subEntities(s).replace(/\u0002(\/?)([biu])\u0003/g, "<$1$2>").replace(/\u0001/g, "");
+    return s.split("\n").map(function (l) { return l.replace(/\s+$/, ""); }).filter(function (l) { return l.trim() !== ""; }).join("\n");
+  }
+
+  /** Cues to an SRT file, numbered from 1, CRLF line ends. merge drops a first line that repeats the previous cue's
+      last line (the roll-up of auto-captions) and the cues it leaves empty. Returns { text, merged, cues }. */
+  function writeSrt(cues, opts) {
+    opts = opts || {};
+    const out = [];
+    let prevLast = null, merged = 0;
+    const state = {};
+    const STAMP = /<\d+:\d{2}(?::\d{2})?\.\d{3}>/;
+    let prevEnd = -1;
+    cues.forEach(function (c) {
+      let lines = vttTextToSrt(c.text, opts.speakers !== false, state).split("\n").filter(Boolean);
+      if (opts.merge && prevLast !== null && lines.length && lines[0] === prevLast) {
+        const raw = c.text.split("\n").filter(function (l) { return l.trim() !== ""; });
+        // The flash cue between rolls: one repeated line, 50 ms or less. Or a roll: the repeated line on top, the new
+        // line below it carrying inline timestamps. Two genuine identical captions fit neither.
+        if (lines.length === 1 && c.end - c.start <= 50) { lines = []; merged++; }
+        else if (lines.length >= 2 && raw.slice(1).some(function (l) { return STAMP.test(l); }) && c.start - prevEnd <= 50) { lines = lines.slice(1); merged++; }
+      }
+      if (!lines.length) return;
+      prevLast = lines[lines.length - 1];
+      prevEnd = c.end;
+      out.push({ start: c.start, end: c.end, text: lines.join("\r\n") });
+    });
+    const text = out.map(function (c, i) { return (i + 1) + "\r\n" + subTime(c.start, ",") + " --> " + subTime(c.end, ",") + "\r\n" + c.text + "\r\n"; }).join("\r\n");
+    return { text: text, merged: merged, cues: out.length };
+  }
+
   // ---------- PDF to JPG ----------
   const DPIS = { "72": 72, "150": 150, "300": 300 };
 
@@ -1614,7 +1840,9 @@
       tiffpages: raw.tiffpages === "all" ? "all" : "first",
       types: raw.types === undefined ? true : bool(raw.types),
       unflatten: bool(raw.unflatten),
-      icons: raw.icons === "all" ? "all" : "largest"
+      icons: raw.icons === "all" ? "all" : "largest",
+      speakers: raw.speakers === undefined ? true : bool(raw.speakers),
+      merge: raw.merge === undefined ? true : bool(raw.merge)
     };
   }
 
@@ -1638,7 +1866,8 @@
     safeText: safeText, sheetFileName: sheetFileName, protectBigInts: protectBigInts, readTiff: readTiff,
     unpackBits: unpackBits, tiffUnpredict: tiffUnpredict, tiffRGBA: tiffRGBA, tiffRowBytes: tiffRowBytes,
     orientTransform: orientTransform, tiffJpeg: tiffJpeg, tiffDecodeRaw: tiffDecodeRaw, tiffProblem: tiffProblem, csvToJson: csvToJson, jsonKeys: jsonKeys, columnTypes: columnTypes,
-    readIcns: readIcns, icnsRle: icnsRle, icnsRGBA: icnsRGBA, readIco: readIco, icoBmp: icoBmp, pngEncode: pngEncode, crc32: crc32, ICNS_SLOTS: ICNS_SLOTS, MAX_TIFF_PAGES: MAX_TIFF_PAGES, TIFF_COMPRESSIONS: TIFF_COMPRESSIONS, svgSize: svgSize, svgWithSize: svgWithSize, svgNotes: svgNotes, svgOutSize: svgOutSize
+    readIcns: readIcns, icnsRle: icnsRle, icnsRGBA: icnsRGBA, readIco: readIco, icoBmp: icoBmp, jsonWrite: jsonWrite, sheetJson: sheetJson,
+    parseSrt: parseSrt, writeVtt: writeVtt, parseVtt: parseVtt, writeSrt: writeSrt, subtitleKind: subtitleKind, subMs: subMs, pngEncode: pngEncode, crc32: crc32, ICNS_SLOTS: ICNS_SLOTS, MAX_TIFF_PAGES: MAX_TIFF_PAGES, TIFF_COMPRESSIONS: TIFF_COMPRESSIONS, svgSize: svgSize, svgWithSize: svgWithSize, svgNotes: svgNotes, svgOutSize: svgOutSize
   };
   if (typeof module === "object" && module.exports) module.exports = api;
   else root.Convert = api;

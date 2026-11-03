@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>XLSX to JSON Converter That Runs in Your Browser | Purplelink</title>
+    <meta name="description" content="Convert Excel workbooks to JSON or JSON Lines in your browser. Numbers, true and false and dates keep their Excel types. Nothing is uploaded. Free.">
+    <link rel="canonical" href="https://purplelink.llc/tools/xlsx-to-json/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="XLSX to JSON, converted in your browser">
+    <meta property="og:description" content="Convert Excel workbooks to JSON or JSON Lines in your browser. Numbers, true and false and dates keep their Excel types. Nothing is uploaded. Free.">
+    <meta property="og:url" content="https://purplelink.llc/tools/xlsx-to-json/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/tools-xlsx-to-json.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="XLSX to JSON, converted in your browser">
+    <meta name="twitter:description" content="Convert Excel workbooks to JSON or JSON Lines in your browser. Numbers, true and false and dates keep their Excel types. Nothing is uploaded. Free.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/tools-xlsx-to-json.jpg">
+    <meta name="twitter:image:alt" content="XLSX to JSON, converted in your browser">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "XLSX to JSON Converter",
+      "url": "https://purplelink.llc/tools/xlsx-to-json/",
+      "description": "Convert Excel workbooks to JSON or JSON Lines in your browser. Numbers, true and false and dates keep their Excel types. Nothing is uploaded. Free.",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Any",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "featureList": [
+        "Convert Excel .xlsx and .xlsm workbooks to JSON or JSON Lines",
+        "Numbers, booleans and dates keep their Excel types",
+        "One sheet, or every sheet in one JSON object",
+        "Keys in header order, repeated headers made unique",
+        "Read in the browser; workbooks are never uploaded"
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "How to convert XLSX to JSON",
+      "tool": [
+        {
+          "@type": "HowToTool",
+          "name": "A current web browser"
+        }
+      ],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Pick JSON or JSON Lines",
+          "text": "JSON gives one array, or one object for all sheets; JSON Lines gives one record per line."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Pick the sheets",
+          "text": "First sheet uses the first visible sheet; All sheets includes every sheet, hidden ones too."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Add the workbooks",
+          "text": "Drop the .xlsx files on the box, or click it to choose them."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "name": "Download",
+          "text": "Download each JSON file from its row, or use Download all as .zip."
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Are my files uploaded?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The page reads each workbook with your browser and converts it in a background worker in this tab. There is no server step. The meter under the drop zone counts the bytes the page and its worker send while they work, so you can check this yourself. The only things the page downloads are its own scripts."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How are dates written?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "As ISO 8601 strings: 2026-11-03 for a date, 2026-11-03T14:05:00 for a date and time, 14:05:00 for a time. JSON has no date type, and these strings parse in JavaScript, Python and every database."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does All sheets give me?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "With JSON, one object with a key per sheet, in tab order, each holding that sheet's rows. With JSON Lines, a zip with one .jsonl file per sheet. Hidden sheets are included, and the row names them."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why is this better than saving as CSV first?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A CSV loses the cell types, so a converter has to guess which values are numbers. A workbook knows, so numbers, booleans, dates and text each come out as what they are."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. There is no account, no watermark and no limit beyond the sizes above."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "https://purplelink.llc/tools/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "XLSX to JSON",
+          "item": "https://purplelink.llc/tools/xlsx-to-json/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/motion.css">
+    <script src="/site.js" defer></script>
+    <script src="/motion.js" defer></script>
+    <script src="/assets/vendor/jszip/jszip.min.js" defer></script>
+    <link rel="stylesheet" href="/tools/convert/convert.css">
+    <link rel="prefetch" as="script" data-convert-worker href="/tools/convert/convert-worker.js">
+    <script src="/tools/convert/convert-core.js" defer></script>
+    <script src="/tools/convert/convert-shell.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">← All tools</a>
+      <div class="tools-hero">
+        <p class="eyebrow">Free web tool</p>
+        <h1>XLSX to JSON</h1>
+        <p>Convert Excel workbooks (.xlsx) to JSON, or to JSON Lines, one sheet or all of them. Each cell keeps the type Excel gave it: numbers stay numbers, dates become ISO dates, and text stays exactly as typed. The workbook is read on your device. <strong>Nothing is uploaded.</strong></p>
+      </div>
+
+      <div class="tool-app cv-app" data-convert="xlsx-to-json">
+        <input id="cv-file" class="sr-only cv-file" type="file" multiple accept=".xlsx,.xlsm,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+        <label class="cv-drop" id="cv-drop" for="cv-file">
+          <svg class="cv-drop-icon" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true" focusable="false"><rect x="6" y="9" width="36" height="30" rx="3" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M24 31V18m-6 6 6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="cv-drop-label"><strong>Drop Excel workbooks here</strong></span>
+          <span class="btn btn-primary cv-small cv-drop-button">Choose files</span>
+          <span class="cv-hint">XLSX and XLSM, up to 50 MB each.</span>
+        </label>
+        <fieldset class="cv-opts">
+          <legend>Options</legend>
+          <div class="cv-field"><span id="cv-output-label">Save as</span><span class="cv-choice" role="radiogroup" aria-labelledby="cv-output-label"><label><input type="radio" name="cv-output" data-opt="output" value="json" checked> JSON</label><label><input type="radio" name="cv-output" data-opt="output" value="jsonl"> JSON Lines</label></span></div>
+          <div class="cv-field"><span id="cv-sheets-label">Sheets</span><span class="cv-choice" role="radiogroup" aria-labelledby="cv-sheets-label"><label><input type="radio" name="cv-sheets" data-opt="sheets" value="first" checked> First sheet</label><label><input type="radio" name="cv-sheets" data-opt="sheets" value="all"> All sheets</label></span></div>
+          <label class="cv-field"><input type="checkbox" id="cv-header" data-opt="header" checked> The first row is the header</label>
+          <label class="cv-field" data-show-when="header=true"><input type="checkbox" id="cv-unflatten" data-opt="unflatten"> Turn headers like user.name into nested objects</label>
+        </fieldset>
+        <p class="cv-net" id="cv-net"><span class="cv-net-dot" aria-hidden="true"></span><span id="cv-net-text">Bytes of your files sent anywhere: 0</span></p>
+        <p class="cv-status" id="cv-status" role="status" aria-live="polite"></p>
+        <ul class="cv-list" id="cv-list" aria-label="Files"></ul>
+        <div class="cv-bar" id="cv-bar" hidden>
+          <button type="button" class="btn btn-primary" id="cv-all" hidden>Download all as .zip</button>
+          <button type="button" class="btn btn-ghost" id="cv-clear">Clear</button>
+        </div>
+        <p class="tool-privacy">Files are read and converted in this tab, in a background worker. The only requests the page makes are for its own scripts. Your files are never sent anywhere.</p>
+      </div>
+
+      <section class="tool-prose cv-how" aria-labelledby="cv-how-h">
+        <h2 id="cv-how-h">How it works</h2>
+        <p>An .xlsx file is a zip of XML parts. The page opens it with JSZip, served from this site, and reads the sheets in a background worker in this tab, the same way XLSX to CSV does.</p>
+        <p>Unlike a CSV, a workbook records each cell&#x27;s type, so nothing is guessed: a number cell becomes a JSON number written as Excel stored it, a TRUE or FALSE cell a boolean, a date cell an ISO date such as 2026-11-03 or 2026-11-03T14:05:00, and text a string. Formulas give the result Excel saved with the file.</p>
+        <p>With All sheets, the JSON is one object with a key for each sheet, in tab order. With JSON Lines, each sheet becomes its own .jsonl file in a zip.</p>
+      </section>
+
+      <section class="tool-howto">
+        <h2>How to convert XLSX to JSON</h2>
+        <ol>
+          <li><strong>Pick JSON or JSON Lines.</strong> JSON gives one array, or one object for all sheets; JSON Lines gives one record per line.</li>
+          <li><strong>Pick the sheets.</strong> First sheet uses the first visible sheet; All sheets includes every sheet, hidden ones too.</li>
+          <li><strong>Add the workbooks.</strong> Drop the .xlsx files on the box, or click it to choose them.</li>
+          <li><strong>Download.</strong> Download each JSON file from its row, or use Download all as .zip.</li>
+        </ol>
+      </section>
+
+      <section class="tool-prose" aria-labelledby="cv-limits-h">
+        <h2 id="cv-limits-h">Limits</h2>
+        <ul class="cv-limits">
+          <li>Up to 50 MB a workbook, 100 MB of data in a sheet once unpacked, 5 million cells, and about 200 MB of JSON.</li>
+          <li>Numbers are written as stored, not as displayed: a cell shown as 12% is 0.12. A number typed with more than 15 digits has already been rounded inside the workbook.</li>
+          <li>Dates have no time zone, since Excel stores none. An empty text cell and an empty cell both become null.</li>
+          <li>The older .xls format and workbooks protected with a password cannot be read.</li>
+        </ul>
+      </section>
+
+      <section class="tool-faq">
+        <h2>Questions</h2>
+        <details><summary>Are my files uploaded?</summary><div class="faq-body">No. The page reads each workbook with your browser and converts it in a background worker in this tab. There is no server step. The meter under the drop zone counts the bytes the page and its worker send while they work, so you can check this yourself. The only things the page downloads are its own scripts.</div></details>
+        <details><summary>How are dates written?</summary><div class="faq-body">As ISO 8601 strings: 2026-11-03 for a date, 2026-11-03T14:05:00 for a date and time, 14:05:00 for a time. JSON has no date type, and these strings parse in JavaScript, Python and every database.</div></details>
+        <details><summary>What does All sheets give me?</summary><div class="faq-body">With JSON, one object with a key per sheet, in tab order, each holding that sheet&#x27;s rows. With JSON Lines, a zip with one .jsonl file per sheet. Hidden sheets are included, and the row names them.</div></details>
+        <details><summary>Why is this better than saving as CSV first?</summary><div class="faq-body">A CSV loses the cell types, so a converter has to guess which values are numbers. A workbook knows, so numbers, booleans, dates and text each come out as what they are.</div></details>
+        <details><summary>Is it free?</summary><div class="faq-body">Yes. There is no account, no watermark and no limit beyond the sizes above.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools">
+        <h2>More free tools</h2>
+        <ul>
+          <li><a href="/tools/xlsx-to-csv/">XLSX to CSV</a></li>
+          <li><a href="/tools/csv-to-json/">CSV to JSON</a></li>
+          <li><a href="/tools/json-to-csv/">JSON to CSV</a></li>
+          <li><a href="/tools/csv-to-xlsx/">CSV to XLSX</a></li>
+          <li><a href="/tools/">All tools</a></li>
+        </ul>
+      </nav>
+
+      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a>. It helps keep these tools free and online.</p>
+    </main>
+
+
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/nee/">Née</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/suite/">Mac Suite</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+    <script src="/analytics.js" defer></script>
+  </body>
+</html>

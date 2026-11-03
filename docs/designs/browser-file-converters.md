@@ -853,6 +853,112 @@ differ.
   writer, all 29 compared images match their references exactly in WebKit and Firefox. "Every size" for an icon with a
   single size gives the plain PNG, not a one-file zip.
 
+## Sixth set: XLSX to JSON, SRT to VTT, VTT to SRT
+
+Ben, 2026-11-03: "build the next three converters". Ranked as the fifth set was: fit, browser fit, no new library, and
+a trusted tool on this Mac for the reference outputs.
+
+| Pair | Volume (relative) | Fit | Browser fit | Reference | Rank |
+|---|---|---|---|---|---|
+| XLSX to JSON | Medium | Research and survey data into scripts | The XLSX readers of the fourth set, the JSON writer of the fifth | openpyxl (`data_only=True`) with the same rules | 1 |
+| VTT to SRT | Medium to high | Captions downloaded from YouTube, Zoom and lecture platforms, for editors that want SRT | Text only | `ffmpeg -i x.vtt x.srt` | 2 |
+| SRT to VTT | Medium | Captions for HTML5 video and course sites | Text only | `ffmpeg -i x.srt x.vtt` | 3 |
+| JPG to PNG | Very high | Weak | Native | | Not now |
+
+| Pair | Accepts | Work (worker) | Outputs |
+|---|---|---|---|
+| `xlsx-to-json` | `xlsx` (the fourth set's kind) | `xlsxread`: the same parts as XLSX to CSV, then `Convert.sheetJson` | .json or .jsonl; all sheets as one JSON object, or a zip of .jsonl |
+| `vtt-to-srt` | `vtt`: `WEBVTT` at the start, after a BOM | `Convert.parseVtt`, `Convert.writeSrt` | .srt |
+| `srt-to-vtt` | `srt`: a .srt name, or a head that opens with a cue number and an SRT timing line | `Convert.parseSrt`, `Convert.writeVtt` | .vtt |
+
+**XLSX to JSON.**
+- Excel cells have types, so nothing is guessed: `sheetRows` gains a parallel matrix of cell kinds (`n` number, `b`
+  boolean, `d` date or time, `s` text, `e` error). Numbers are written as the workbook stores them (valid JSON
+  number text, so `0.1` stays `0.1`); booleans as `true` and `false`; dates and times as the ISO strings XLSX to CSV
+  writes; errors and text as strings; empty cells as `null`.
+- Options: `output` "json" (default) or "jsonl"; `header` (default on: the first row gives the keys, with the fifth
+  set's key rules; off: rows as arrays); `sheets` "first" (default) or "all". All with JSON gives one object keyed by
+  sheet name in tab order (`{"Results": [...], "Notes": [...]}`); all with JSON Lines gives one .jsonl per sheet in a
+  zip. `unflatten` as on CSV to JSON.
+- Formula protection does not apply (JSON is not opened by Excel). The XLSX caps and the 200 MB JSON cap apply.
+
+**VTT to SRT.**
+- `parseVtt`: the `WEBVTT` line and its header; NOTE, STYLE and REGION blocks skipped; an optional cue identifier;
+  the timing line in `mm:ss.ttt` or `hh:mm:ss.ttt`, with cue settings after it dropped; the cue text up to a blank
+  line.
+- Text: `<b>`, `<i>` and `<u>` kept (SRT players read them); voice tags `<v Ana>` become the text alone, or
+  `Ana: text` with the "Keep speaker names" option (default on, since lecture and meeting captions use them); class
+  tags (`<c.yellow>`), `<lang>`, `<ruby>` and inline timestamps (`<00:00:01.200>`, used by auto-captions) removed;
+  `&amp;`, `&lt;`, `&gt;`, `&nbsp;` and numeric entities decoded.
+- Auto-captions from YouTube repeat each line in the next cue as it scrolls up. The "Merge repeated caption lines"
+  option (default on) drops a cue's first line when it equals the previous cue's last line and the file has inline
+  timestamps, the mark of those captions. A cue left empty by that is dropped.
+- `writeSrt`: cues numbered from 1, `hh:mm:ss,ttt --> hh:mm:ss,ttt`, CRLF line ends, a blank line between cues.
+
+**SRT to VTT.**
+- `parseSrt`: BOM, CRLF, missing or wrong cue numbers, extra blank lines, a `.` instead of `,` in times, and the
+  `X1:` position coordinates some files carry after the timing are all tolerated. A block without a timing line is
+  skipped with a note.
+- Text: `<b>`, `<i>`, `<u>` kept; `<font>` tags removed and their text kept (VTT has no font tag); `{\an8}`-style ASS
+  tags removed; a literal `<` or `&` escaped.
+- `writeVtt`: `WEBVTT`, a blank line, then each cue as `hh:mm:ss.ttt --> hh:mm:ss.ttt`; cue numbers kept as
+  identifiers, since some players and editors use them.
+
+**Shared.** Kinds `vtt` and `srt` in `kindOf`, before the CSV branch, so a .txt holding SRT is not called CSV. The two
+subtitle pairs use the worker (small files, but one path). Index: 19 cards, positions 38 to 40, Photo to Logo to 41.
+Sibling links between the two subtitle pages, from Transcript Cleaner to both, and from XLSX to CSV and CSV to JSON to
+XLSX to JSON. Branch `tools-converters-6`, one PR, squash-merged when green.
+
+**Tests against reference outputs.**
+- XLSX to JSON: workbooks written with openpyxl (numbers, booleans, dates in both date systems, a formula with a
+  cached value written by LibreOffice-style XML, text, errors, empty cells, a hidden sheet) and the real ABDC list;
+  openpyxl reads each with `data_only=True` and a Python script applies the same rules; the page's JSON must parse to
+  the same values.
+- Subtitles: fixtures with the edge cases above, each converted by ffmpeg; cue starts, ends and text (after the same
+  tag rules, where ffmpeg's differ, as documented) must match. YouTube-style auto-captions are checked against a
+  hand-written expected file, since ffmpeg does not merge repeated lines.
+- Node tests for every reader and writer; browser runs in WebKit and Firefox under the production CSP.
+
+**Resolved after review (two Goldfish reviewers on Sonnet, 2026-11-03).** These replace the text above where they
+differ.
+
+- **Kinds**, checked after the SVG test and before XLSX, JSON and CSV: `vtt` when the head (after a UTF-8 BOM) starts
+  `WEBVTT` followed by a space, tab, line break or the end; `srt` for a .srt name, or a head that is a number line and an
+  SRT timing line. A UTF-16 file (its BOM) named .srt or .vtt takes that kind. `KIND_NAMES` "SRT" and "WebVTT";
+  `article` learns SRT. A .txt holding SRT is now `srt`, so the CSV pages refuse it by name.
+- **Table rows.** `xlsx-to-json`: xlsx, json (default) or jsonl, `work: "xlsxread"`, 50 MB. `vtt-to-srt`: vtt, srt,
+  `work: "subs"`, 5 MB. `srt-to-vtt`: srt, vtt, `work: "subs"`, 5 MB. `MIME` gains `srt` (application/x-subrip) and
+  `vtt` (text/vtt).
+- **Options.** New `speakers` and `merge`, default on; `bom` (SRT output, default off) and `encoding` (subtitle
+  input, Detect by default, through `decodeText`) are reused. VTT output is UTF-8 without a BOM.
+- **The merge rule** acts only in files with inline timestamps (auto-captions), and only in two shapes: a cue whose
+  single line repeats the previous cue's last line and that lasts 50 ms or less (the flash cue YouTube puts between
+  rolls) is dropped; in a cue of two or more lines whose later line carries inline timestamps, a first line that repeats
+  the previous cue's last line is dropped. Lines are compared after tags are removed. Two genuine identical captions
+  ("No." then "No.") fit neither shape. The row says how many lines were merged.
+- **Subtitle text.** Voice tags give "Name: " when the speaker changes, not on every cue; `<rt>` readings are dropped
+  with their tags; `&lrm;` and `&rlm;` are decoded with the rest, once. SRT to VTT keeps `b`, `i` and `u` in any case,
+  removes every other tag (font, s, span and the like) and ASS overrides such as `{\an8}` with a note that positioning
+  was not kept, and escapes every other `<`, `>` and `&`, so `-->` in text cannot end a cue. Cue numbers are not kept
+  as identifiers. A fraction with fewer than three digits is read as a decimal (`,5` is 500 ms; ffmpeg reads 5 ms, a
+  documented difference). In a VTT block, a later line with `-->` starts a new cue, so a missing blank line does not
+  merge two cues. Output names keep the base (`lecture.en.vtt` gives `lecture.en.srt`); the summary is "N cues, the
+  last ending at hh:mm:ss"; no cues gives "This file has no captions."
+- **XLSX to JSON.** `sheetRows(xml, shared, styles, date1904, maxCells, safe, withKinds)`: with `withKinds`, it also
+  returns one string per row with a character per cell (`n` number, `b` boolean, `d` date or time, `s` text, `e`
+  error, space for a gap); XLSX to CSV does not pass it and is unchanged. The worker passes `safe` false. Numbers are
+  written as stored when the text fits the JSON number grammar, else as `String(Number(t))` when finite, else `null`
+  with a note; date-times use `T` (`2026-11-03T14:05:00`), not the CSV space. Leading and trailing empty rows are
+  trimmed and empty rows inside skipped; the header is the first row left. "First sheet" is the first visible sheet.
+  All sheets with JSON give one object keyed by sheet name, written by hand in tab order; with JSON Lines, a zip of
+  `name-sheets/<sheet>.jsonl`. The JSON writer of CSV to JSON is shared (`jsonWrite`), not copied, and its 200 MB
+  estimate covers all sheets together. Workbook opening (zip, index, rels, shared strings, styles, sheet list) moves
+  into one worker helper both XLSX pages use.
+- **Found in passing.** `parseSharedStrings` read a self-closing `<si/>` (and `<t/>`) as the start of a string that
+  swallowed the next one, shifting every later shared string in XLSX to CSV by one cell. Fixed with a test.
+- **Index:** 19 cards, positions 38 to 40, Photo to Logo to 41. Transcript Cleaner's related list links both subtitle
+  pages. **Build order:** core, readers and writers with tests, worker, pages, registration, site tests, browser runs.
+
 ## Open questions
 
 0. **Safari 16.4 and Firefox.** The browser check ran in Chromium. Worker plus Emscripten plus `OffscreenCanvas` is
@@ -952,3 +1058,13 @@ uniquifier; ICNS names by type, with ARGB, mask and JPEG 2000 rules; a lenient I
 allocation and the Windows mask rule; kinds placed after the ftyp branch; option names kept apart from the existing
 ones; committed fixtures with independent references. The reference runs then found ARGB colors stored
 premultiplied, and the canvas rounding that the PNG writer removed.
+
+Sixth set, two Goldfish reviewers on Sonnet (design, implementation readiness), zero context, 2026-11-03. What
+changed: the auto-caption merge narrowed to two shapes so genuine repeats survive; subtitle encodings read through
+`decodeText`; cell kinds opt-in so XLSX to CSV is unchanged; no formula guard in JSON; number text checked against the
+JSON grammar; date-times with T; row and column bounds and a slot cap before padding; kinds, table rows, options,
+messages and names specified. Found while testing against the references: a self-closing `<si/>` shifted every later
+shared string (fixed, affects XLSX to CSV); literal CR LF inside workbook XML was not normalized to LF as XML requires
+(fixed, affects XLSX to CSV). Against openpyxl, the 116,200 cells of the ABDC workbook differ only where empty text
+cells become null (documented) and where openpyxl leaves `_xHHHH_` escapes undecoded (it does not follow the spec).
+
