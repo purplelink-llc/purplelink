@@ -34,6 +34,14 @@
 .cv-field input[type="color"] { width: 44px; height: 32px; padding: 0 2px; border: 1px solid var(--line); border-radius: 7px; background: var(--bg); cursor: pointer; }
 .cv-field input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--purple); }
 .cv-field output { font-variant-numeric: tabular-nums; min-width: 2ch; color: var(--muted); }
+.cv-field input[type="text"], .cv-field input[type="number"] {
+  min-height: 40px; padding: 0 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink);
+  font: inherit; font-size: 0.95rem; max-width: 100%;
+}
+.cv-field input[type="text"] { width: 12rem; }
+.cv-field input[type="number"] { width: 7.5rem; font-variant-numeric: tabular-nums; }
+.cv-field input[type="text"]:focus-visible, .cv-field input[type="number"]:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-color: var(--purple); }
+.cv-opts .cv-hint { flex-basis: 100%; margin-top: -4px; font-size: 0.85rem; }
 
 /* meter and status */
 .cv-net { margin: 0; display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 0.9rem; font-variant-numeric: tabular-nums; }

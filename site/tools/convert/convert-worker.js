@@ -1,5 +1,6 @@
 /* Runs the converters off the main thread so large files do not freeze the page. One file at a time.
-   Loads the same core file as the page, and libheif, pdf-lib or JSZip only when the first file that needs it arrives.
+   Loads the same core file as the page, and libheif, pdf-lib, JSZip or UTIF only when the first file that needs it
+   arrives.
    Every fetch and XHR this worker makes is counted and reported back, so the page's meter covers it too. Library loads
    (importScripts) are not counted: they are GET requests for this site's own files and send nothing. */
 "use strict";
@@ -103,11 +104,34 @@ async function decodeNative(bytes, kind, opts, maxPixels) {
   // An animated WebP has an ANIM chunk, an animated AVIF the avis brand; the browser hands over the first frame only.
   if (kind === "webp" && hasChunk(bytes, "ANIM")) notes.push("This WebP is animated. Only the first frame was converted.");
   if (kind === "avif" && isAvis(bytes)) notes.push("This AVIF is animated. Only the first frame was converted.");
+  // An animated PNG has an acTL chunk before its image data; an animated GIF a NETSCAPE2.0 looping block.
+  if (kind === "png" && hasPngChunk(bytes, "acTL")) notes.push("This PNG is animated. Only the first frame was converted.");
+  if (kind === "gif" && hasAscii(bytes, "NETSCAPE2.0", 65536)) notes.push("This GIF is animated. Only the first frame was converted.");
   return { bitmap: bmp, width: bmp.width, height: bmp.height, notes: notes };
 }
 
 function isAvis(b) {
   for (var i = 8; i + 4 <= Math.min(b.length, 64); i += 4) if (String.fromCharCode(b[i], b[i + 1], b[i + 2], b[i + 3]) === "avis") return true;
+  return false;
+}
+
+function hasPngChunk(b, id) {
+  for (var at = 8; at + 8 <= b.length;) {
+    var len = ((b[at] << 24) | (b[at + 1] << 16) | (b[at + 2] << 8) | b[at + 3]) >>> 0;
+    var name = String.fromCharCode(b[at + 4], b[at + 5], b[at + 6], b[at + 7]);
+    if (name === id) return true;
+    if (name === "IDAT" || name === "IEND") return false;
+    at += 12 + len;
+  }
+  return false;
+}
+
+function hasAscii(b, text, limit) {
+  var end = Math.min(b.length, limit) - text.length;
+  outer: for (var i = 0; i <= end; i++) {
+    for (var j = 0; j < text.length; j++) if (b[i + j] !== text.charCodeAt(j)) continue outer;
+    return true;
+  }
   return false;
 }
 
@@ -295,6 +319,200 @@ async function toXlsx(bytes, name, opts, progress) {
   };
 }
 
+// ---------- XLSX to CSV and JSON to CSV ----------
+var SHEET_XML_CAP = 100 * 1024 * 1024;
+function separator(opts) { return opts.delimiter === "auto" ? "," : Convert.DELIMS[opts.delimiter] || ","; }
+function csvBytes(text, bom) {
+  var b = new TextEncoder().encode(text);
+  if (!bom) return b;
+  var out = new Uint8Array(b.length + 3);
+  out.set([0xef, 0xbb, 0xbf], 0); out.set(b, 3);
+  return out;
+}
+
+// A part of the workbook as text, counting bytes as they inflate, so a size field that lies cannot run the tab out
+// of memory.
+function partText(zip, path, what) {
+  var f = zip.file(path);
+  if (!f) return Promise.resolve(null);
+  return new Promise(function (resolve, reject) {
+    var parts = [], n = 0, stopped = false;
+    var s = f.internalStream("uint8array");
+    s.on("data", function (c) {
+      if (stopped) return;
+      n += c.length;
+      if (n > SHEET_XML_CAP) { stopped = true; s.pause(); reject(new Error(what + " is over 100 MB of data, more than this page reads in a browser tab.")); return; }
+      parts.push(c);
+    }).on("error", function (e) { if (!stopped) { stopped = true; reject(new Error("The workbook could not be read (" + ((e && e.message) || e) + ").")); } })
+      .on("end", function () {
+        if (stopped) return;
+        var all = new Uint8Array(n), at = 0;
+        parts.forEach(function (c) { all.set(c, at); at += c.length; });
+        resolve(new TextDecoder("utf-8").decode(all));
+      }).resume();
+  });
+}
+
+async function xlsxToCsv(bytes, name, opts, progress) {
+  progress(0.1, "Opening the workbook");
+  var Z = loadLib("zip", "JSZip");
+  var zip;
+  try { zip = await Z.loadAsync(bytes); } catch (e) { throw new Error("This file could not be opened as a workbook. It may be damaged, or not really an .xlsx."); }
+  bytes = null;
+  var wbXml = await partText(zip, "xl/workbook.xml", "The workbook index");
+  if (!wbXml) throw new Error("This zip has no xl/workbook.xml, so it is not an Excel workbook.");
+  var wb = Convert.parseWorkbook(wbXml);
+  var rels = Convert.parseRels((await partText(zip, "xl/_rels/workbook.xml.rels", "The workbook index")) || "", "xl/");
+  progress(0.2, "Reading the shared text");
+  var shared = Convert.parseSharedStrings((await partText(zip, "xl/sharedStrings.xml", "The shared text of this workbook")) || "");
+  var styles = Convert.parseStyles((await partText(zip, "xl/styles.xml", "The styles of this workbook")) || "");
+  var sheets = wb.sheets.map(function (s) {
+    var r = rels[s.rid] || {};
+    return { name: s.name, state: s.state, path: r.target, type: r.type };
+  }).filter(function (s) { return s.type === "worksheet" && s.path && zip.file(s.path); });
+  if (!sheets.length) throw new Error("This workbook has no sheets with cells. Chart sheets have none.");
+  var pick = opts.sheets === "all" ? sheets : [sheets[0]];
+  var d = separator(opts), outputs = [], notes = [], rows = 0, lost = 0;
+  var base = Convert.outName(name, "x").replace(/\.x$/, ""), folder = base + "-sheets";
+  var names = Convert.uniqueNames(pick.map(function (s) { return Convert.sheetFileName(s.name) + ".csv"; }));
+  for (var i = 0; i < pick.length; i++) {
+    progress(0.3 + 0.65 * (i / pick.length), "Reading " + pick[i].name);
+    var xml = await partText(zip, pick[i].path, "The sheet “" + pick[i].name + "”");
+    var r = Convert.sheetRows(xml, shared, styles, wb.date1904, Convert.MAX_CELLS, opts.safe);
+    xml = null;
+    rows += r.rows.length; lost += r.formulasWithoutValue;
+    var csv = csvBytes(Convert.toCsv(r.rows, d), opts.bom);
+    outputs.push(pick.length === 1
+      ? { name: Convert.outName(name, "csv"), mime: Convert.MIME.csv, bytes: csv }
+      : { name: folder + "/" + names[i], mime: Convert.MIME.csv, bytes: csv, part: true });
+  }
+  var hidden = pick.filter(function (s) { return s.state !== "visible"; }).map(function (s) { return "“" + s.name + "”"; });
+  if (hidden.length) notes.push("Hidden sheets were included: " + hidden.join(", ") + ".");
+  if (opts.sheets !== "all" && sheets.length > 1) notes.push("This workbook has " + sheets.length + " sheets. The first, “" + sheets[0].name + "”, was converted; choose All sheets for the rest.");
+  if (lost) notes.push(lost + " formula" + (lost === 1 ? " has" : "s have") + " no saved result in the file, so " + (lost === 1 ? "its cell is" : "their cells are") + " empty. Open the workbook in Excel and save it once to store the results.");
+  var res = { outputs: outputs, notes: notes };
+  res.summary = pick.length === 1
+    ? rows.toLocaleString("en-US") + " row" + (rows === 1 ? "" : "s") + " from “" + pick[0].name + "”"
+    : pick.length + " sheets, " + rows.toLocaleString("en-US") + " rows";
+  if (pick.length > 1) { res.partsLabel = "Download the " + pick.length + " sheets (.zip)"; res.zipName = folder + ".zip"; }
+  return res;
+}
+
+async function zipXlsx(Z, built, progress) {
+  var zip = new Z();
+  Object.keys(built.parts).forEach(function (k) {
+    var v = built.parts[k];
+    zip.file(k, Array.isArray(v) ? new Blob(v, { type: "application/xml" }) : v);
+  });
+  built.parts = null;
+  return await zip.generateAsync({ type: "uint8array", compression: "DEFLATE", compressionOptions: { level: 6 } }, function (meta) {
+    progress(0.55 + 0.4 * (meta.percent / 100), "Compressing");
+  });
+}
+
+async function jsonToTable(bytes, name, opts, progress) {
+  progress(0.1, "Reading the JSON");
+  var dec = Convert.decodeText(bytes, "");
+  bytes = null;
+  var r = Convert.jsonRecords(dec.text);
+  dec.text = null;
+  if (!r.records.length) throw new Error("This JSON holds an empty list, so there are no rows to write.");
+  progress(0.35, "Making columns");
+  var csv = opts.output !== "xlsx";
+  var f = Convert.flattenRecords(r.records, opts.nested, csv && opts.safe);
+  r.records = null;
+  var plain = name.replace(/\.(ndjson|geojson|jsonl)$/i, ".json");
+  var notes = [];
+  if (r.from) notes.push("The rows are the list under “" + r.from + "”" + (r.others.length ? "; other lists, " + r.others.map(function (k) { return "“" + k + "”"; }).join(", ") + ", were left out" : "") + ".");
+  if (r.lines) notes.push("Read as JSON Lines: one record per line.");
+  var out;
+  if (csv) out = { name: Convert.outName(plain, "csv"), mime: Convert.MIME.csv, bytes: csvBytes(Convert.toCsv(f.rows, separator(opts)), opts.bom) };
+  else {
+    progress(0.45, "Building the sheet");
+    var built = Convert.buildXlsxParts(f.rows, plain, { header: true, text: false, delimiter: ",", app: "Purplelink JSON to CSV" });
+    notes = notes.concat(built.notes);
+    out = { name: Convert.outName(plain, "xlsx"), mime: Convert.MIME.xlsx, bytes: await zipXlsx(loadLib("zip", "JSZip"), built, progress) };
+  }
+  var n = f.rows.length - 1;
+  return { outputs: [out], notes: notes, summary: n.toLocaleString("en-US") + " row" + (n === 1 ? "" : "s") + " and " + f.columns + " column" + (f.columns === 1 ? "" : "s") };
+}
+
+// ---------- TIFF to JPG ----------
+// The core reads the directories; UTIF supplies the LZW and CCITT decoders, pako the Deflate one.
+async function tiffPageBitmap(bytes, p, libs) {
+  if (p.compression === 7) {
+    var c = canvas(p.width, p.height);
+    var tw = p.tiled ? p.tileWidth : p.width, th = p.tiled ? p.tileHeight : p.rowsPerStrip;
+    var across = p.tiled ? Math.ceil(p.width / tw) : 1;
+    for (var i = 0; i < p.offsets.length; i++) {
+      var jpg = Convert.tiffJpeg(bytes.subarray(p.offsets[i], p.offsets[i] + p.counts[i]), p.jpegTables, p.photometric === 2);
+      var bmp = await createImageBitmap(new Blob([jpg], { type: "image/jpeg" }));
+      c.ctx.drawImage(bmp, (i % across) * tw, Math.floor(i / across) * th);
+      bmp.close && bmp.close();
+    }
+    return c.c.transferToImageBitmap();
+  }
+  var raw = Convert.tiffDecodeRaw(bytes, p, libs);
+  var rgba = Convert.tiffRGBA(raw, p);
+  raw = null;
+  return await createImageBitmap(new ImageData(rgba, p.width, p.height));
+}
+
+async function tiffToImages(bytes, name, opts, maxPixels, progress) {
+  progress(0.08, "Reading the TIFF");
+  var t = Convert.readTiff(bytes);
+  var full = t.pages.filter(function (p) { return !p.thumbnail; });
+  if (!full.length) full = t.pages;
+  var pick = opts.tiffpages === "all" ? full : [full[0]];
+  if (pick.length > Convert.MAX_TIFF_PAGES) throw new Error("This TIFF has " + pick.length + " pages, more than this page converts at a time (" + Convert.MAX_TIFF_PAGES + ").");
+  if (pick.length === 1 && pick[0].problem) throw new Error(pick[0].problem);
+  var libs = {};
+  if (pick.some(function (p) { return [3, 4, 5, 8, 32946].indexOf(p.compression) !== -1; })) {
+    progress(0.12, "Loading the TIFF decoder");
+    libs.pako = loadLib("pako", "pako"); // UTIF reads self.pako when it loads, so pako goes first
+    libs.UTIF = loadLib("utif", "UTIF");
+  }
+  var one = pick.length === 1, base = Convert.outName(name, "x").replace(/\.x$/, ""), folder = base + "-pages";
+  var outputs = [], notes = [], failed = [], total = 0, stopped = 0, deep = false, last = null;
+  for (var i = 0; i < pick.length; i++) {
+    var p = pick[i], n = t.pages.indexOf(p) + 1;
+    progress(0.15 + 0.8 * (i / pick.length), one ? "Decoding " + p.width + " by " + p.height + " pixels" : "Page " + (i + 1) + " of " + pick.length);
+    try {
+      if (p.problem) throw new Error(p.problem);
+      var big = Convert.tooManyPixels(p.width, p.height, opts.mobile, maxPixels);
+      if (big) throw new Error(big);
+      var bmp = await tiffPageBitmap(bytes, p, libs);
+      var o = Convert.orientTransform(p.orientation, p.width, p.height), src = bmp;
+      if (p.orientation > 1 && p.orientation <= 8) {
+        var turned = canvas(o.width, o.height);
+        turned.ctx.setTransform(o.m[0], o.m[1], o.m[2], o.m[3], o.m[4], o.m[5]);
+        turned.ctx.drawImage(bmp, 0, 0);
+        src = turned.c;
+      }
+      var out = await encode(src, o.width, o.height, opts);
+      bmp.close && bmp.close();
+      if (p.bps[0] === 16) deep = true;
+      total += out.length;
+      last = o;
+      outputs.push(one ? { name: Convert.outName(name, opts.output), mime: Convert.MIME[opts.output], bytes: out }
+        : { name: folder + "/" + Convert.pageName(name, i + 1, pick.length, opts.output), mime: Convert.MIME[opts.output], bytes: out, part: true });
+    } catch (e) {
+      if (one) throw e.message ? e : new Error("This TIFF page could not be decoded. It may be damaged.");
+      failed.push(i + 1);
+    }
+    if (total > Convert.MAX_ZIP_BYTES && i < pick.length - 1) { stopped = i + 1; break; }
+  }
+  if (!outputs.length) throw new Error("No page of this TIFF could be converted.");
+  if (deep) notes.push("This TIFF stores 16 bits per sample. It was reduced to 8 bits; nothing is brightened, so a dim scientific image stays dim.");
+  if (!one && failed.length) notes.push((failed.length === 1 ? "Page " + failed[0] + " could not be converted and was left out." : "Pages " + failed.join(", ") + " could not be converted and were left out."));
+  if (stopped) notes.push("Stopped after page " + stopped + ": the pages so far add up to 1 GB, the most this tab can zip.");
+  if (opts.tiffpages !== "all" && full.length > 1) notes.push("This TIFF has " + full.length + " pages. The first was converted; choose All pages for the rest.");
+  var res = { outputs: outputs, notes: notes };
+  if (one) { res.width = last.width; res.height = last.height; }
+  else { res.summary = outputs.length + " pages"; res.partsLabel = "Download the " + outputs.length + " pages (.zip)"; res.zipName = folder + ".zip"; }
+  return res;
+}
+
 self.onmessage = async function (e) {
   var m = e.data;
   var before = { requests: net.requests, bytes: net.bytes };
@@ -318,6 +536,9 @@ self.onmessage = async function (e) {
       m.buffer = null;
       if (pair.work === "pdf") res = await toPdf(bytes, kind, m.name, opts, pair.maxPixels, progress);
       else if (pair.work === "sheet") res = await toXlsx(bytes, m.name, opts, progress);
+      else if (pair.work === "unsheet") res = await xlsxToCsv(bytes, m.name, opts, progress);
+      else if (pair.work === "json") res = await jsonToTable(bytes, m.name, opts, progress);
+      else if (pair.work === "tiff") res = await tiffToImages(bytes, m.name, opts, pair.maxPixels, progress);
       else {
         var pic = kind === "heic" ? await decodeHeif(bytes, opts, progress) : await decodeNative(bytes, kind, opts, pair.maxPixels);
         bytes = null; // the source is no longer needed; let it go before encoding
