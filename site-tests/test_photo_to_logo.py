@@ -6,7 +6,7 @@ import json
 import re
 import unittest
 
-from common import ROOT, SITE, EMOJI, read_site
+from common import ROOT, SITE, EMOJI, STAMP, read_site
 
 SLUG = "photo-to-logo"
 PAGE = f"tools/{SLUG}/index.html"
@@ -47,13 +47,13 @@ class PhotoToLogoPage(unittest.TestCase):
         self.assertEqual(shown, [(q["name"], q["acceptedAnswer"]["text"]) for q in g["FAQPage"]["mainEntity"]])
         self.assertEqual(g["FAQPage"]["mainEntity"][0]["name"], "Is my photo uploaded?")
 
-    def test_worker_and_libraries_are_linked_with_stamps(self):
+    def test_worker_and_libraries_are_linked(self):
         p = self.page
-        self.assertRegex(p, r'<link rel="prefetch" as="script" data-logo-worker href="/tools/photo-to-logo/logo-worker\.js\?v=[0-9a-f]+">')
-        self.assertRegex(p, r'<link rel="prefetch" as="script" data-logo-mask href="/tools/photo-to-logo/logo-mask\.js\?v=[0-9a-f]+">')
-        self.assertRegex(p, r'<script src="/tools/photo-to-logo/logo-geometry\.js\?v=[0-9a-f]+" defer>')
-        self.assertRegex(p, r'<script src="/tools/photo-to-logo/photo-to-logo\.js\?v=[0-9a-f]+" defer>')
-        self.assertRegex(p, r'<link rel="stylesheet" href="/tools/photo-to-logo/photo-to-logo\.css\?v=[0-9a-f]+">')
+        self.assertRegex(p, r'<link rel="prefetch" as="script" data-logo-worker href="/tools/photo-to-logo/logo-worker\.js' + STAMP + r'">')
+        self.assertRegex(p, r'<link rel="prefetch" as="script" data-logo-mask href="/tools/photo-to-logo/logo-mask\.js' + STAMP + r'">')
+        self.assertRegex(p, r'<script src="/tools/photo-to-logo/logo-geometry\.js' + STAMP + r'" defer>')
+        self.assertRegex(p, r'<script src="/tools/photo-to-logo/photo-to-logo\.js' + STAMP + r'" defer>')
+        self.assertRegex(p, r'<link rel="stylesheet" href="/tools/photo-to-logo/photo-to-logo\.css' + STAMP + r'">')
         worker = read_site(f"tools/{SLUG}/logo-worker.js")
         self.assertIn('importScripts("/tools/photo-to-logo/logo-geometry.js?v="', worker)
         self.assertIn('"/tools/photo-to-logo/logo-mask.js?v="', worker)
