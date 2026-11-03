@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>SRT to VTT Converter That Runs in Your Browser | Purplelink</title>
+    <meta name="description" content="Convert SRT subtitles to WebVTT for HTML5 video and course sites, in your browser. Old encodings are read correctly. Nothing is uploaded. Free.">
+    <link rel="canonical" href="https://purplelink.llc/tools/srt-to-vtt/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="SRT to VTT, converted in your browser">
+    <meta property="og:description" content="Convert SRT subtitles to WebVTT for HTML5 video and course sites, in your browser. Old encodings are read correctly. Nothing is uploaded. Free.">
+    <meta property="og:url" content="https://purplelink.llc/tools/srt-to-vtt/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/tools-srt-to-vtt.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SRT to VTT, converted in your browser">
+    <meta name="twitter:description" content="Convert SRT subtitles to WebVTT for HTML5 video and course sites, in your browser. Old encodings are read correctly. Nothing is uploaded. Free.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/tools-srt-to-vtt.jpg">
+    <meta name="twitter:image:alt" content="SRT to VTT, converted in your browser">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "SRT to VTT Converter",
+      "url": "https://purplelink.llc/tools/srt-to-vtt/",
+      "description": "Convert SRT subtitles to WebVTT for HTML5 video and course sites, in your browser. Old encodings are read correctly. Nothing is uploaded. Free.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Any",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "featureList": [
+        "Convert SRT subtitles to WebVTT",
+        "UTF-8, UTF-16 and older Windows encodings detected",
+        "Bold, italic and underline kept; font and position tags removed",
+        "Captions put in time order, as WebVTT requires",
+        "Converted in the browser; files are never uploaded"
+      ]
+    },
+    {
+      "@type": "HowTo",
+      "name": "How to convert SRT to VTT",
+      "tool": [
+        {
+          "@type": "HowToTool",
+          "name": "A current web browser"
+        }
+      ],
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Pick the encoding",
+          "text": "Leave it on Detect unless accented letters come out wrong."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Add the file",
+          "text": "Drop the .srt file on the box, click it to choose it, or paste it."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Check the row",
+          "text": "The row shows the number of captions, when the last one ends, and any notes."
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "name": "Download",
+          "text": "Download the .vtt file from its row."
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Are my files uploaded?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The page reads each file with your browser and converts it in a background worker in this tab. There is no server step. The meter under the drop zone counts the bytes the page and its worker send while they work, so you can check this yourself. The only things the page downloads are its own scripts."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why do accented letters look wrong in my subtitles?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The SRT was saved in an older encoding such as Windows-1252, and something read it as UTF-8. This page detects that, and you can choose the encoding under Options. The VTT it writes is UTF-8, which browsers expect."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I add a VTT file to a video on a web page?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Put it next to the video and add a track element inside the video tag, such as <track src=\"captions.vtt\" kind=\"subtitles\" srclang=\"en\" label=\"English\">."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it keep italics?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Bold, italic and underline tags are kept, since WebVTT supports them. Font colors are removed."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. There is no account, no watermark and no limit beyond the size above."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "https://purplelink.llc/tools/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "SRT to VTT",
+          "item": "https://purplelink.llc/tools/srt-to-vtt/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/motion.css">
+    <script src="/site.js" defer></script>
+    <script src="/motion.js" defer></script>
+    <script src="/assets/vendor/jszip/jszip.min.js" defer></script>
+    <link rel="stylesheet" href="/tools/convert/convert.css">
+    <link rel="prefetch" as="script" data-convert-worker href="/tools/convert/convert-worker.js">
+    <script src="/tools/convert/convert-core.js" defer></script>
+    <script src="/tools/convert/convert-shell.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">← All tools</a>
+      <div class="tools-hero">
+        <p class="eyebrow">Free web tool</p>
+        <h1>SRT to VTT</h1>
+        <p>Convert SRT subtitles to WebVTT (.vtt), the format HTML5 video, YouTube and most course sites use. Files saved in older Windows encodings are read correctly. The file is read on your device. <strong>Nothing is uploaded.</strong></p>
+      </div>
+
+      <div class="tool-app cv-app" data-convert="srt-to-vtt">
+        <input id="cv-file" class="sr-only cv-file" type="file" multiple accept=".srt,application/x-subrip">
+        <label class="cv-drop" id="cv-drop" for="cv-file">
+          <svg class="cv-drop-icon" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true" focusable="false"><rect x="6" y="9" width="36" height="30" rx="3" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M24 31V18m-6 6 6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="cv-drop-label"><strong>Drop SRT files here</strong></span>
+          <span class="btn btn-primary cv-small cv-drop-button">Choose files</span>
+          <span class="cv-hint">SRT, up to 5 MB each. You can also paste a file with Ctrl or Cmd V.</span>
+        </label>
+        <fieldset class="cv-opts">
+          <legend>Options</legend>
+          <input type="hidden" data-opt="output" value="vtt">
+          <label class="cv-field">Text encoding <select id="cv-encoding" data-opt="encoding"><option value="auto">Detect</option><option value="utf-8">UTF-8</option><option value="windows-1252">Windows-1252 (Western)</option><option value="iso-8859-2">ISO-8859-2 (Central European)</option><option value="utf-16le">UTF-16</option></select></label>
+        </fieldset>
+        <p class="cv-net" id="cv-net"><span class="cv-net-dot" aria-hidden="true"></span><span id="cv-net-text">Bytes of your files sent anywhere: 0</span></p>
+        <p class="cv-status" id="cv-status" role="status" aria-live="polite"></p>
+        <ul class="cv-list" id="cv-list" aria-label="Files"></ul>
+        <div class="cv-bar" id="cv-bar" hidden>
+          <button type="button" class="btn btn-primary" id="cv-all" hidden>Download all as .zip</button>
+          <button type="button" class="btn btn-ghost" id="cv-clear">Clear</button>
+        </div>
+        <p class="tool-privacy">Files are read and converted in this tab, in a background worker. The only requests the page makes are for its own scripts. Your files are never sent anywhere.</p>
+      </div>
+
+      <section class="tool-prose cv-how" aria-labelledby="cv-how-h">
+        <h2 id="cv-how-h">How it works</h2>
+        <p>SRT and WebVTT both list captions with times and text. This page reads the SRT file, tolerating missing or wrong caption numbers, extra blank lines and a full stop where SRT uses a comma, and writes a WebVTT file with times like 00:01:02.500.</p>
+        <p>Many SRT files were saved in an older Windows encoding, which shows accented letters as garbage when read as UTF-8. The page tries UTF-8 first and falls back to Windows-1252, and you can pick the encoding yourself. The WebVTT file is always UTF-8.</p>
+        <p>WebVTT reads &lt; and &amp; as markup, so the page escapes them in caption text and keeps only bold, italic and underline. Font colors and {\an8} position codes, which WebVTT does not support, are removed.</p>
+      </section>
+
+      <section class="tool-howto">
+        <h2>How to convert SRT to VTT</h2>
+        <ol>
+          <li><strong>Pick the encoding.</strong> Leave it on Detect unless accented letters come out wrong.</li>
+          <li><strong>Add the file.</strong> Drop the .srt file on the box, click it to choose it, or paste it.</li>
+          <li><strong>Check the row.</strong> The row shows the number of captions, when the last one ends, and any notes.</li>
+          <li><strong>Download.</strong> Download the .vtt file from its row.</li>
+        </ol>
+      </section>
+
+      <section class="tool-prose" aria-labelledby="cv-limits-h">
+        <h2 id="cv-limits-h">Limits</h2>
+        <ul class="cv-limits">
+          <li>Up to 5 MB a file.</li>
+          <li>Font colors and {\an8}-style position codes are removed; WebVTT positioning is not added in their place.</li>
+          <li>Captions are sorted by start time, as WebVTT requires, and the row says when that changed the order.</li>
+        </ul>
+      </section>
+
+      <section class="tool-faq">
+        <h2>Questions</h2>
+        <details><summary>Are my files uploaded?</summary><div class="faq-body">No. The page reads each file with your browser and converts it in a background worker in this tab. There is no server step. The meter under the drop zone counts the bytes the page and its worker send while they work, so you can check this yourself. The only things the page downloads are its own scripts.</div></details>
+        <details><summary>Why do accented letters look wrong in my subtitles?</summary><div class="faq-body">The SRT was saved in an older encoding such as Windows-1252, and something read it as UTF-8. This page detects that, and you can choose the encoding under Options. The VTT it writes is UTF-8, which browsers expect.</div></details>
+        <details><summary>How do I add a VTT file to a video on a web page?</summary><div class="faq-body">Put it next to the video and add a track element inside the video tag, such as &lt;track src=&quot;captions.vtt&quot; kind=&quot;subtitles&quot; srclang=&quot;en&quot; label=&quot;English&quot;&gt;.</div></details>
+        <details><summary>Does it keep italics?</summary><div class="faq-body">Yes. Bold, italic and underline tags are kept, since WebVTT supports them. Font colors are removed.</div></details>
+        <details><summary>Is it free?</summary><div class="faq-body">Yes. There is no account, no watermark and no limit beyond the size above.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools">
+        <h2>More free tools</h2>
+        <ul>
+          <li><a href="/tools/vtt-to-srt/">VTT to SRT</a></li>
+          <li><a href="/tools/transcript-cleaner/">Transcript Cleaner</a></li>
+          <li><a href="/tools/word-counter/">Word Counter</a></li>
+          <li><a href="/tools/">All tools</a></li>
+        </ul>
+      </nav>
+
+      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a>. It helps keep these tools free and online.</p>
+    </main>
+
+
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/nee/">Née</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/suite/">Mac Suite</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+    <script src="/analytics.js" defer></script>
+  </body>
+</html>

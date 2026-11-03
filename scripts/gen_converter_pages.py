@@ -31,6 +31,7 @@ CSV_ENC = ("select", "encoding", "Text encoding", [("auto", "Detect"), ("utf-8",
                                                   ("iso-8859-2", "ISO-8859-2 (Central European)"),
                                                   ("shift_jis", "Shift JIS (Japanese)"),
                                                   ("gb18030", "GB18030 (Chinese)"), ("utf-16le", "UTF-16")])
+SHEETS = ("radio", "sheets", "Sheets", [("first", "First sheet"), ("all", "All sheets")])
 ICONS = ("radio", "icons", "Sizes", [("largest", "The largest size"), ("all", "Every size, as a zip")])
 SAFE = ("check", "safe", "Keep text that starts with = + - @ from running as a formula in Excel", True)
 BOM = ("check", "bom", "Add a byte-order mark, so Excel on Windows shows accented letters", False)
@@ -807,7 +808,7 @@ PAGES = [
             ("Is it free?",
              "Yes. There is no account, no watermark and no limit beyond the sizes above."),
         ],
-        "related": [("/tools/csv-to-xlsx/", "CSV to XLSX"), ("/tools/json-to-csv/", "JSON to CSV"),
+        "related": [("/tools/xlsx-to-json/", "XLSX to JSON"), ("/tools/csv-to-xlsx/", "CSV to XLSX"), ("/tools/json-to-csv/", "JSON to CSV"),
                     ("/tools/pdf-tools/", "PDF Tools"), ("/tools/metadata-cleaner/", "Metadata Cleaner")],
     },
     {
@@ -1022,7 +1023,7 @@ PAGES = [
             ("Is it free?",
              "Yes. There is no account, no watermark and no limit beyond the sizes above."),
         ],
-        "related": [("/tools/json-to-csv/", "JSON to CSV"), ("/tools/csv-to-xlsx/", "CSV to XLSX"),
+        "related": [("/tools/xlsx-to-json/", "XLSX to JSON"), ("/tools/json-to-csv/", "JSON to CSV"), ("/tools/csv-to-xlsx/", "CSV to XLSX"),
                     ("/tools/xlsx-to-csv/", "XLSX to CSV"), ("/tools/pii-checker/", "PII Checker")],
     },
     {
@@ -1146,6 +1147,200 @@ PAGES = [
         ],
         "related": [("/tools/png-to-ico/", "PNG to ICO"), ("/tools/icns-to-png/", "ICNS to PNG"),
                     ("/tools/png-to-icns/", "PNG to ICNS"), ("/tools/png-to-jpg/", "PNG to JPG")],
+    },
+
+    {
+        "slug": "xlsx-to-json",
+        "name": "XLSX to JSON",
+        "title": "XLSX to JSON Converter That Runs in Your Browser | Purplelink",
+        "og_title": "XLSX to JSON, converted in your browser",
+        "description": "Convert Excel workbooks to JSON or JSON Lines in your browser. Numbers, true and false and dates "
+                       "keep their Excel types. Nothing is uploaded. Free.",
+        "hero": "Convert Excel workbooks (.xlsx) to JSON, or to JSON Lines, one sheet or all of them. Each cell keeps the "
+                "type Excel gave it: numbers stay numbers, dates become ISO dates, and text stays exactly as typed. The "
+                "workbook is read on your device.",
+        "accept": ".xlsx,.xlsm,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "drop": "Drop Excel workbooks here",
+        "hint": "XLSX and XLSM, up to 50 MB each.",
+        "outputs": [("json", "JSON"), ("jsonl", "JSON Lines")],
+        "opts": ["output", SHEETS, ("check", "header", "The first row is the header", True),
+                 ("check", "unflatten", "Turn headers like user.name into nested objects", False, "header=true")],
+        "category": "DeveloperApplication",
+        "features": ["Convert Excel .xlsx and .xlsm workbooks to JSON or JSON Lines",
+                     "Numbers, booleans and dates keep their Excel types",
+                     "One sheet, or every sheet in one JSON object",
+                     "Keys in header order, repeated headers made unique",
+                     "Read in the browser; workbooks are never uploaded"],
+        "how": [
+            "An .xlsx file is a zip of XML parts. The page opens it with JSZip, served from this site, and reads the "
+            "sheets in a background worker in this tab, the same way XLSX to CSV does.",
+            "Unlike a CSV, a workbook records each cell's type, so nothing is guessed: a number cell becomes a JSON "
+            "number written as Excel stored it, a TRUE or FALSE cell a boolean, a date cell an ISO date such as "
+            "2026-11-03 or 2026-11-03T14:05:00, and text a string. Formulas give the result Excel saved with the file.",
+            "With All sheets, the JSON is one object with a key for each sheet, in tab order. With JSON Lines, each sheet "
+            "becomes its own .jsonl file in a zip.",
+        ],
+        "steps": [
+            ("Pick JSON or JSON Lines", "JSON gives one array, or one object for all sheets; JSON Lines gives one record per line."),
+            ("Pick the sheets", "First sheet uses the first visible sheet; All sheets includes every sheet, hidden ones too."),
+            ("Add the workbooks", "Drop the .xlsx files on the box, or click it to choose them."),
+            ("Download", "Download each JSON file from its row, or use Download all as .zip."),
+        ],
+        "limits": [
+            "Up to 50 MB a workbook, 100 MB of data in a sheet once unpacked, 5 million cells, and about 200 MB of JSON.",
+            "Numbers are written as stored, not as displayed: a cell shown as 12% is 0.12. A number typed with more than "
+            "15 digits has already been rounded inside the workbook.",
+            "Dates have no time zone, since Excel stores none. An empty text cell and an empty cell both become null.",
+            "The older .xls format and workbooks protected with a password cannot be read.",
+        ],
+        "faq": [
+            ("Are my files uploaded?",
+             "No. The page reads each workbook with your browser and converts it in a background worker in this tab. "
+             "There is no server step. The meter under the drop zone counts the bytes the page and its worker send "
+             "while they work, so you can check this yourself. The only things the page downloads are its own scripts."),
+            ("How are dates written?",
+             "As ISO 8601 strings: 2026-11-03 for a date, 2026-11-03T14:05:00 for a date and time, 14:05:00 for a time. "
+             "JSON has no date type, and these strings parse in JavaScript, Python and every database."),
+            ("What does All sheets give me?",
+             "With JSON, one object with a key per sheet, in tab order, each holding that sheet's rows. With JSON Lines, a "
+             "zip with one .jsonl file per sheet. Hidden sheets are included, and the row names them."),
+            ("Why is this better than saving as CSV first?",
+             "A CSV loses the cell types, so a converter has to guess which values are numbers. A workbook knows, so "
+             "numbers, booleans, dates and text each come out as what they are."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the sizes above."),
+        ],
+        "related": [("/tools/xlsx-to-csv/", "XLSX to CSV"), ("/tools/csv-to-json/", "CSV to JSON"),
+                    ("/tools/json-to-csv/", "JSON to CSV"), ("/tools/csv-to-xlsx/", "CSV to XLSX")],
+    },
+    {
+        "slug": "vtt-to-srt",
+        "name": "VTT to SRT",
+        "title": "VTT to SRT Converter That Runs in Your Browser | Purplelink",
+        "og_title": "VTT to SRT, converted in your browser",
+        "description": "Convert WebVTT captions to SRT in your browser, with speaker names kept and YouTube auto-caption "
+                       "repeats merged. Nothing is uploaded. Free.",
+        "hero": "Convert WebVTT (.vtt) captions from YouTube, Zoom, Teams or a course site to SRT, the format video "
+                "editors and most players take. Speaker names are kept, and the repeated lines of auto-captions are "
+                "merged. The file is read on your device.",
+        "accept": ".vtt,text/vtt",
+        "drop": "Drop VTT files here",
+        "hint": "WebVTT, up to 5 MB each. You can also paste a file with Ctrl or Cmd V.",
+        "outputs": [("srt", "SRT")],
+        "opts": [("check", "speakers", "Keep speaker names (Ana: text)", True),
+                 ("check", "merge", "Merge the repeated lines of auto-captions", True),
+                 ("check", "bom", "Add a byte-order mark, for older players", False),
+                 ("select", "encoding", "Text encoding", [("auto", "Detect"), ("utf-8", "UTF-8"), ("windows-1252", "Windows-1252 (Western)"), ("utf-16le", "UTF-16")])],
+        "category": "MultimediaApplication",
+        "features": ["Convert WebVTT captions to SRT",
+                     "Speaker names from voice tags kept as Name: text",
+                     "The repeated lines of YouTube auto-captions merged",
+                     "Bold, italic and underline kept; styling and timing tags removed",
+                     "Converted in the browser; files are never uploaded"],
+        "how": [
+            "WebVTT and SRT both list captions with a start time, an end time and text. This page reads the WebVTT file, "
+            "skips its header, notes and style blocks, and writes each caption as a numbered SRT block with times like "
+            "00:01:02,500.",
+            "Meeting and lecture captions often name the speaker with a voice tag. With the first option, the page writes "
+            "the name before the text when the speaker changes, since SRT has no voice tags. Styling, colors and the "
+            "word-by-word timing tags of auto-captions are removed; bold, italic and underline stay.",
+            "YouTube's automatic captions scroll: each caption repeats the line above it, with a flash of a few "
+            "milliseconds between them. Converted as they are, every line appears twice. With the second option, the "
+            "page drops those repeats, but only in files that carry auto-caption timing tags, so two real captions that "
+            "say the same thing are kept.",
+        ],
+        "steps": [
+            ("Get the captions", "Download the .vtt file from YouTube Studio, Zoom, Teams or your course site."),
+            ("Check the options", "Keep speaker names and merging on for most files."),
+            ("Add the file", "Drop the .vtt file on the box, click it to choose it, or paste it."),
+            ("Download", "Download the .srt file from its row."),
+        ],
+        "limits": [
+            "Up to 5 MB a file.",
+            "Positions, alignment, regions and colors are not part of SRT, so captions show at the player's default "
+            "place and color.",
+            "SRT has no way to show a literal < followed by a tag name, so such text can look like markup to some players.",
+        ],
+        "faq": [
+            ("Are my files uploaded?",
+             "No. The page reads each file with your browser and converts it in a background worker in this tab. There "
+             "is no server step. The meter under the drop zone counts the bytes the page and its worker send while they "
+             "work, so you can check this yourself. The only things the page downloads are its own scripts."),
+            ("Why does every line appear twice in my YouTube captions?",
+             "YouTube's automatic captions scroll up a line at a time, so each caption repeats the one before it. Keep "
+             "Merge the repeated lines on and each line appears once, at the time it was first said."),
+            ("What happens to speaker names?",
+             "A voice tag such as <v Ana> becomes Ana: before the text, written when the speaker changes. Turn the option "
+             "off to drop the names."),
+            ("Will it work with Zoom and Teams transcripts?",
+             "Yes. Both export WebVTT with speaker names, which the page keeps. For a plain text transcript without "
+             "times, use Transcript Cleaner."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the size above."),
+        ],
+        "related": [("/tools/srt-to-vtt/", "SRT to VTT"), ("/tools/transcript-cleaner/", "Transcript Cleaner"),
+                    ("/tools/word-counter/", "Word Counter")],
+    },
+    {
+        "slug": "srt-to-vtt",
+        "name": "SRT to VTT",
+        "title": "SRT to VTT Converter That Runs in Your Browser | Purplelink",
+        "og_title": "SRT to VTT, converted in your browser",
+        "description": "Convert SRT subtitles to WebVTT for HTML5 video and course sites, in your browser. Old encodings "
+                       "are read correctly. Nothing is uploaded. Free.",
+        "hero": "Convert SRT subtitles to WebVTT (.vtt), the format HTML5 video, YouTube and most course sites use. "
+                "Files saved in older Windows encodings are read correctly. The file is read on your device.",
+        "accept": ".srt,application/x-subrip",
+        "drop": "Drop SRT files here",
+        "hint": "SRT, up to 5 MB each. You can also paste a file with Ctrl or Cmd V.",
+        "outputs": [("vtt", "VTT")],
+        "opts": [("select", "encoding", "Text encoding", [("auto", "Detect"), ("utf-8", "UTF-8"), ("windows-1252", "Windows-1252 (Western)"),
+                                                        ("iso-8859-2", "ISO-8859-2 (Central European)"), ("utf-16le", "UTF-16")])],
+        "category": "MultimediaApplication",
+        "features": ["Convert SRT subtitles to WebVTT",
+                     "UTF-8, UTF-16 and older Windows encodings detected",
+                     "Bold, italic and underline kept; font and position tags removed",
+                     "Captions put in time order, as WebVTT requires",
+                     "Converted in the browser; files are never uploaded"],
+        "how": [
+            "SRT and WebVTT both list captions with times and text. This page reads the SRT file, tolerating missing or "
+            "wrong caption numbers, extra blank lines and a full stop where SRT uses a comma, and writes a WebVTT file "
+            "with times like 00:01:02.500.",
+            "Many SRT files were saved in an older Windows encoding, which shows accented letters as garbage when read as "
+            "UTF-8. The page tries UTF-8 first and falls back to Windows-1252, and you can pick the encoding yourself. "
+            "The WebVTT file is always UTF-8.",
+            "WebVTT reads < and & as markup, so the page escapes them in caption text and keeps only bold, italic and "
+            "underline. Font colors and {\\an8} position codes, which WebVTT does not support, are removed.",
+        ],
+        "steps": [
+            ("Pick the encoding", "Leave it on Detect unless accented letters come out wrong."),
+            ("Add the file", "Drop the .srt file on the box, click it to choose it, or paste it."),
+            ("Check the row", "The row shows the number of captions, when the last one ends, and any notes."),
+            ("Download", "Download the .vtt file from its row."),
+        ],
+        "limits": [
+            "Up to 5 MB a file.",
+            "Font colors and {\\an8}-style position codes are removed; WebVTT positioning is not added in their place.",
+            "Captions are sorted by start time, as WebVTT requires, and the row says when that changed the order.",
+        ],
+        "faq": [
+            ("Are my files uploaded?",
+             "No. The page reads each file with your browser and converts it in a background worker in this tab. There "
+             "is no server step. The meter under the drop zone counts the bytes the page and its worker send while they "
+             "work, so you can check this yourself. The only things the page downloads are its own scripts."),
+            ("Why do accented letters look wrong in my subtitles?",
+             "The SRT was saved in an older encoding such as Windows-1252, and something read it as UTF-8. This page "
+             "detects that, and you can choose the encoding under Options. The VTT it writes is UTF-8, which browsers expect."),
+            ("How do I add a VTT file to a video on a web page?",
+             "Put it next to the video and add a track element inside the video tag, such as <track src=\"captions.vtt\" "
+             "kind=\"subtitles\" srclang=\"en\" label=\"English\">."),
+            ("Does it keep italics?",
+             "Yes. Bold, italic and underline tags are kept, since WebVTT supports them. Font colors are removed."),
+            ("Is it free?",
+             "Yes. There is no account, no watermark and no limit beyond the size above."),
+        ],
+        "related": [("/tools/vtt-to-srt/", "VTT to SRT"), ("/tools/transcript-cleaner/", "Transcript Cleaner"),
+                    ("/tools/word-counter/", "Word Counter")],
     },
 
 ]
