@@ -296,11 +296,15 @@ def mat_tower(assets, src_image, lit=(1.0, 0.72, 0.4), lit2=(0.55, 0.38, 1.0), d
     fz = _math(nt, "FRACT", _math(nt, "DIVIDE", z, win[1]))
     shape = _math(nt, "MULTIPLY", _math(nt, "MULTIPLY", _math(nt, "GREATER_THAN", fu, 0.22), _math(nt, "LESS_THAN", fu, 0.78)),
                   _math(nt, "MULTIPLY", _math(nt, "GREATER_THAN", fz, 0.3), _math(nt, "LESS_THAN", fz, 0.75)))
-    oi = nt.nodes.new("ShaderNodeObjectInfo")
+    # the per-object seed is a custom property set by Kit.place, not Object Info > Random: Random is hashed with the collection
+    # instance, so the copies at 0 and +L would light different windows and the loop would not join
+    oi = nt.nodes.new("ShaderNodeAttribute")
+    oi.attribute_type = "OBJECT"
+    oi.attribute_name = "wseed"
     comb = nt.nodes.new("ShaderNodeCombineXYZ")
     nt.links.new(cu, comb.inputs[0])
     nt.links.new(cz, comb.inputs[1])
-    nt.links.new(_math(nt, "MULTIPLY", oi.outputs["Random"], 97.0), comb.inputs[2])
+    nt.links.new(_math(nt, "MULTIPLY", oi.outputs["Fac"], 0.97), comb.inputs[2])
     wn = nt.nodes.new("ShaderNodeTexWhiteNoise")
     wn.noise_dimensions = "3D"
     nt.links.new(comb.outputs[0], wn.inputs["Vector"])
@@ -417,6 +421,8 @@ class Kit:
         ob.location = loc
         ob.rotation_euler = (0, 0, rot_z)
         ob.scale = (scale, scale, scale)
+        self.placed = getattr(self, "placed", 0) + 1
+        ob["wseed"] = float(self.placed)          # fixed per object, the same in every instanced copy (see the window shader)
         if material is not None:
             ob.material_slots[0].link = "OBJECT"
             ob.material_slots[0].material = material
