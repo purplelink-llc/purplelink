@@ -258,8 +258,9 @@ Where the build differs from the plan above:
 - **Tone map, then sky.** Geometry is tone-mapped with 1 - exp(-x); the sky (gradient, 150 twinkling stars, the planet) is drawn by
   `bgloop.Sky` in display space and composited behind it through the alpha. The haze the fog aims at is the inverse-tone-mapped sky, so
   distant geometry melts into the sky with no seam. Star twinkles use whole cycles per loop, so the sky repeats too.
-- **Checks at pack time.** `bgloop build` refuses a loop whose last frame differs from the first by more than 0.5 % RMS, or whose sky
-  flickers more than 2 % of pixels a frame. The manifest records both, the palette step, the Blender version and each asset's sha256.
+- **Checks at pack time.** `bgloop build` refuses a loop whose last frame differs from the first by more than 0.5 % RMS, or whose open sky
+  (sky with no geometry within the bloom's reach) flickers more than 2 % of pixels a frame; sky beside towers changes as their lit
+  edges pass, which is motion, not dither shimmer. The manifest records both, the palette step, the Blender version and each asset's sha256.
 - **Size and speed.** About 0.45 s a frame on the Mac mini (0.4 to 1.0 s depending on section), so a 901-frame loop takes under 10 minutes.
   The packed loop is about 104 MB in memory per render worker.
 - **The switch.** `longform.build_theme` reads `AMBIENT_BG` once and passes it as `options["bg"]`; a theme built without options (the

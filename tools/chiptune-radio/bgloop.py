@@ -34,7 +34,7 @@ DEFAULT_ROOT = "/Volumes/Extreme SSD/PurplelinkVideos/ambient/_loops"
 PALETTE_SIZE = 40
 DITHER = 0.25                     # ordered dither strength, in palette steps
 SEAM_MAX = 0.005                  # RMS of frame N against frame 0, as a fraction of full scale
-FLICKER_MAX = 0.02                # fraction of sky pixels whose index changes from one frame to the next
+FLICKER_MAX = 0.02                # fraction of open-sky pixels (none of the bloom's reach from geometry) whose index changes a frame
 BLOOM_THRESHOLD, BLOOM_GAIN = 0.9, 0.35
 # today's racer colours, kept in the palette so the craft, rival and speed lines need nothing new
 SEED_COLOURS = [(16, 8, 34), (44, 40, 70), (36, 32, 60), (255, 60, 150), (235, 235, 255), (255, 220, 110), (110, 100, 150), (90, 240, 255),
@@ -253,15 +253,21 @@ def build(frames_dir: Path, name: str) -> dict:
     idx = np.empty((n_all, G.H, G.W), dtype=np.uint8)
     for n in range(n_all):
         idx[n] = quantise(disp[n].astype(np.float64), pal, pal_lab, step)
-    sky_px = (depth[:n_all] == G.DEPTH_SKY) & (np.roll(depth[:n_all], -1, 0) == G.DEPTH_SKY)
-    changed = (idx != np.roll(idx, -1, 0)) & sky_px
-    flicker = float(changed.sum() / max(1, sky_px.sum()))
-    print(f"sky flicker {flicker:.3%}", flush=True)
+    # shimmer is judged on open sky only: sky pixels within the bloom's reach of geometry change as tower edges and lit windows pass,
+    # which is motion, not dither noise (2026-11-04 build: 3.7% of all sky pixels, 1.1% of open sky)
+    sky_px = depth[:n_all] == G.DEPTH_SKY
+    open_px = np.stack([sky_px[n] & (_blur((~sky_px[n]).astype(np.float64), 5.0) < 0.02) for n in range(n_all)])
+    changed = idx != np.roll(idx, -1, 0)
+    both = open_px & np.roll(open_px, -1, 0)
+    flicker = float((changed & both).sum() / max(1, both.sum()))
+    sky_both = sky_px & np.roll(sky_px, -1, 0)
+    flicker_all = float((changed & sky_both).sum() / max(1, sky_both.sum()))
+    print(f"sky flicker {flicker:.3%} of open sky ({flicker_all:.3%} of all sky)", flush=True)
     if flicker > FLICKER_MAX:
         sys.exit(f"the dither shimmers: {flicker:.2%} of sky pixels change each frame (limit {FLICKER_MAX:.0%})")
     rows = [G.road_rows(n) for n in range(n_all)]
     assets = json.loads((HERE / "blender" / "assets.json").read_text())
-    meta = {"seam_rms": round(seam, 6), "sky_flicker": round(flicker, 6), "palette_step": round(step, 2),
+    meta = {"seam_rms": round(seam, 6), "sky_flicker": round(flicker, 6), "sky_flicker_all": round(flicker_all, 6), "palette_step": round(step, 2),
             "blender": os.environ.get("BLENDER_VERSION", "5.2.3"), "scene": "blender/racer_highway.py",
             "assets": [{"path": a["path"], "sha256": a["sha256"]} for a in assets["assets"]]}
     man = write_loop(root() / name, idx, pal, depth[:n_all], np.stack([r[0] for r in rows]), np.stack([r[1] for r in rows]),
