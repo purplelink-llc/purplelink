@@ -158,13 +158,14 @@
 
       <div class="pr-checkout-row">
         <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn">Start a review, $11</button>
+        <p class="pr-renew-note" id="renew-note" hidden>$79 a year, charged again each year until you cancel. 12 Journal reviews per year. Cancel any time before the renewal date from the plan page or the link in any plan email; you keep the reviews you have until the year ends.</p>
         <p class="pr-ref-note" id="ref-note" hidden>A colleague shared this link. Pay with a .edu email address and you each receive a $2 code toward a later review.</p>
         <ol class="pr-steps" data-motion="stagger" aria-label="How it works">
           <li><strong>Pay</strong> through Stripe</li>
           <li><strong>Upload</strong> your manuscript as a PDF or Word (.docx) file, up to 20 MB. The link is also emailed, so you can upload from another device</li>
           <li><strong>Read the report</strong>, usually in 4 to 8 minutes</li>
         </ol>
-        <p class="pr-checkout-meta">Secure checkout via Stripe. One-time payment, no subscription. <a href="#choose-tier">Compare the three tiers, $9 to $15</a>.</p>
+        <p class="pr-checkout-meta">Secure checkout via Stripe. The three single tiers are one-time payments with no subscription. The annual plan renews each year until you cancel. <a href="#choose-tier">Compare the tiers</a>.</p>
         <p class="pr-trust-line"><strong>Report by email, manuscript deleted.</strong> The report is emailed to you as a PDF. Purplelink deletes the manuscript and the online copy within about a day after you first open the result, or within 48 hours if you never do. Anthropic keeps API inputs for up to 30 days and does not train on them. If a result reads as low quality, email within 14 days for a refund. Advisory only: you decide what to change.</p>
         <p class="pr-trust-line">Do not upload a manuscript, proposal or application you are reviewing for someone else, or anything shared with you in confidence.</p>
       </div>
@@ -245,6 +246,13 @@
           <span class="pr-tier-content">
             <span class="pr-tier-head"><strong>Deep Review</strong> · <em>$15</em></span>
             <span class="pr-tier-desc">Two-pass adversarial debate: each persona sees the others' first-round findings and sharpens. Catches what a single pass misses. Journal Pack included.</span>
+          </span>
+        </label>
+        <label class="pr-tier-option">
+          <input type="radio" name="tier" data-remember="pr-tier" value="paper-review-annual">
+          <span class="pr-tier-content">
+            <span class="pr-tier-head"><strong>Annual plan</strong> · <em>$79 a year</em></span>
+            <span class="pr-tier-desc">12 Standard + Journal Pack reviews over one year, for authors with several papers or revisions in progress. Renews each year until you cancel. Use them at any time during the year.</span>
           </span>
         </label>
       </fieldset>
@@ -458,6 +466,7 @@
         <details><summary>How long does it take?</summary><div class="faq-body">Typically 4-8 minutes for a 20-page manuscript. You don't need to keep the tab in the foreground. The status page polls until the review is ready and renders it inline.</div></details>
         <details><summary>What about my privacy? Is the manuscript stored?</summary><div class="faq-body">Your manuscript is sent to Anthropic's Claude API for analysis. Anthropic retains inputs for up to 30 days for abuse monitoring, and does not use them for model training. The report is emailed to you as a PDF when the review finishes. The manuscript and the online copy are deleted within about a day after you first open the result, or within 48 hours if you never open it. The email goes through Resend to the address on your Stripe receipt, or to the one you enter at upload. The manuscript is never attached.</div></details>
         <details id="faq-journals"><summary>Which journals does the Journal Pack check?</summary><div class="faq-body"><p>25 venues. The pack checks word and abstract limits, required sections and reference-style hints against the one you pick at upload.</p><ul class="pr-venue-list"><li><strong>Machine learning:</strong> NeurIPS, ICML, ICLR, AAAI, TMLR, JMLR</li><li><strong>General science:</strong> Nature, Science, Cell, PLOS ONE</li><li><strong>Medicine:</strong> Nature Medicine, JAMA, NEJM, The Lancet, The BMJ</li><li><strong>Psychology and management:</strong> Psychological Science, Journal of Personality and Social Psychology, Cognition, Academy of Management Journal</li><li><strong>Chemistry and materials:</strong> JACS, Angewandte Chemie, Nature Materials, Nature Chemistry, ACS Nano, Advanced Materials</li></ul><p>Not listed? The Standard tier covers everything except this check. <a href="mailto:ben@purplelink.llc?subject=Journal%20Pack%20venue">Email to ask for a venue</a>.</p></div></details>
+        <details id="faq-cancel"><summary>How do I cancel the annual plan?</summary><div class="faq-body">Open the plan page from the link in any plan email, or ask for a new link at <a href="/tools/paper-review/plan/">the plan page</a>, then choose Cancel renewal. You can also reply "cancel" to any plan email and it is cancelled for you. Cancelling stops the next charge; the reviews you have keep working until the year you paid for ends. Changed your mind? The same page turns renewal back on until that date. A refund of the current year is covered by the 14-day refund terms in <a href="/terms/">the terms</a>.</div></details>
         <details><summary>Is there a referral credit?</summary><div class="faq-body">Yes. Every report ends with a link carrying your own code. When a colleague opens it and buys a review with a .edu email address, you each receive a single-use $2 code by email. The link counts for 30 days in the browser that opened it.</div></details>
         <details><summary>What domains does it cover?</summary><div class="faq-body">You pick one of five domain profiles at upload: <a href="/tools/paper-review/machine-learning/">Machine Learning</a>, <a href="/tools/paper-review/biomedicine/">Biomedicine</a>, <a href="/tools/paper-review/psychology/">Psychology and Social Science</a>, <a href="/tools/paper-review/chemistry/">Chemistry and Materials</a>, or General. Each profile tells the reviewers which failure modes matter most in that field, and each link lists them.</div></details>
         <details><summary>How deep is the citation check?</summary><div class="faq-body">Two levels. First, every reference is checked for existence against CrossRef (dead DOIs, hallucinated or weakly-matched titles). Second, for the most load-bearing claims we fetch the cited source's abstract from OpenAlex, Semantic Scholar, or CrossRef and assess whether it supports your claim. This is an abstract-level check: a claim supported only in the full text is marked "not supported by abstract," not wrong. Verify it against the source. When no abstract can be retrieved, the citation is marked "source unavailable" rather than guessed. On citation-heavy papers we audit the most important claims first and tell you how many were not audited.</div></details>

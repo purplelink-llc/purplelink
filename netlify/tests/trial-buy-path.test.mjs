@@ -206,7 +206,7 @@ function termsRefund(heading) {
 }
 const APPS = {
   moderntex: "ModernTex", "outbound-veil": "Outbound Veil", legroom: "Legroom", keyfeel: "Keyfeel",
-  tapefolio: "Tapefolio", panely: "Panely", summonly: "Summonly", "app-suite": "Mac Suite",
+  tapefolio: "Tapefolio", panely: "Panely", summonly: "Summonly", "app-suite": "Mac Suite", "paper-review-annual": "A year of reviews",
 };
 
 let n = 80;

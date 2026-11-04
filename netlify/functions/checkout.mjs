@@ -133,6 +133,8 @@ const REFUND_TEXT = {
   "nee": `${REFUND_EMAIL} the full $14.99 to the original payment method. You don't need to give a reason. A refunded purchase's license key is no longer licensed for use.`,
   "panely": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "summonly": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
+  // The annual Paper Review plan. Mirrors the "Refunds." sentence of its /terms/ auto-renewal section.
+  "paper-review-annual": "Renews at $79 a year on the same date until you cancel. Cancel in one click from any plan email. We email you 30 and 7 days before each renewal. Unused reviews end with the year; cancelling stops the next charge and is not a refund for the current year.",
   "app-suite": `${REFUND_EMAIL} the full amount you paid to the original payment method. You don't need to give a reason. A refunded Suite's download links stop working, and its ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Née license keys and its Vitae Plus key are no longer licensed for use.`,
 };
 
@@ -165,6 +167,9 @@ const PRODUCT_CATALOG = {
   "paper-review-deep":       { envKey: "STRIPE_PRICE_PAPER_REVIEW_DEEP",       successPath: "/tools/paper-review/upload/" },
   "paper-review-pack-5":     { envKey: "STRIPE_PRICE_PAPER_REVIEW_PACK_5",     successPath: "/tools/paper-review/packs/success/" },
   "paper-review-pack-20":    { envKey: "STRIPE_PRICE_PAPER_REVIEW_PACK_20",    successPath: "/tools/paper-review/packs/success/" },
+  // A year of reviews: 12 Journal reviews, $79, renews yearly until cancelled (docs/designs/paper-review-growth.md, Part D).
+  // Uses the Stripe Price in STRIPE_PRICE_PAPER_REVIEW_ANNUAL when set; otherwise the inline amount below.
+  "paper-review-annual":     { envKey: "STRIPE_PRICE_PAPER_REVIEW_ANNUAL", amount: 7900, name: "Paper Review: a year of reviews (12 Journal reviews)", interval: "year", mode: "subscription", successPath: "/tools/paper-review/packs/success/" },
   "cover-letter":            { envKey: "STRIPE_PRICE_COVER_LETTER",            successPath: "/tools/cover-letter/compose/" },
   "anonymity-check":         { envKey: "STRIPE_PRICE_ANONYMITY_CHECK",         successPath: "/tools/anonymity-check/upload/" },
   "citation-gap":            { envKey: "STRIPE_PRICE_CITATION_GAP",            successPath: "/tools/citation-gap/upload/" },
@@ -418,8 +423,11 @@ export default async function handler(request) {
   }
 
   const secretKey = Netlify.env.get("STRIPE_SECRET_KEY");
-  const priceId = entry.amount || entry.seats ? null : Netlify.env.get(entry.envKey);
-  if (!secretKey || (!entry.amount && !entry.seats && !priceId)) {
+  // An entry with an inline amount may also name an env Price; the env Price wins when it is set.
+  const envPrice = entry.envKey ? Netlify.env.get(entry.envKey) : "";
+  const priceId = entry.seats ? null : entry.amount ? (envPrice || null) : envPrice;
+  const inlinePrice = !priceId && (entry.amount || entry.seats);
+  if (!secretKey || (!inlinePrice && !priceId)) {
     return jsonResponse(500, {
       error: "misconfigured",
       detail: `Set STRIPE_SECRET_KEY and ${entry.envKey} on this site.`,
@@ -463,7 +471,7 @@ export default async function handler(request) {
     "payment_method_types[1]": "link",
     // Lets a buyer enter a promotion code created in the Stripe dashboard.
     allow_promotion_codes: "true",
-    ...(entry.amount || entry.seats
+    ...(inlinePrice
       ? {
           "line_items[0][price_data][currency]": "usd",
           "line_items[0][price_data][unit_amount]": String(entry.seats ? seatUnit : entry.amount),
@@ -544,6 +552,9 @@ export default async function handler(request) {
     params["subscription_data[metadata][product]"] = product;
     if (attrFirst) params["subscription_data[metadata][attr_first]"] = attrFirst;
     if (attrLast) params["subscription_data[metadata][attr_last]"] = attrLast;
+    // paper-review-annual: no consent_collection[terms_of_service]. Stripe refuses that parameter until a Terms URL is
+    // set in the dashboard, and Ben chose to change nothing else in Stripe (2026-11-04). The renewal terms are shown
+    // beside the Pay button (REFUND_TEXT) and beside the button on our own page instead.
     if (entry.trialDays) {
       params["subscription_data[trial_period_days]"] = String(entry.trialDays);
     }
