@@ -61,3 +61,6 @@ site/.*.tmp
 
 # Citation Gap benchmark output (raw paper text and model output; the repo is public)
 backend/benchmark/output/
+
+# Buddy chat facts: generated from site/llms.txt by backend/latextools/buddy_build.py at deploy and test time
+backend/latextools/buddy_facts.py

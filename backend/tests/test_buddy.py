@@ -139,6 +139,20 @@ def test_system_prompt_has_rules_and_cached_facts():
     assert blocks[1]["cache_control"] == {"type": "ephemeral"} and "FACTS" in blocks[1]["text"]
 
 
+def test_facts_are_built_from_llms_txt_not_kept_in_git():
+    # Build output (docs/designs/generated-files-at-build.md): app.py writes it on every deploy and test run.
+    import hashlib
+    import importlib
+    from latextools import buddy_build
+    path = buddy_build.write_facts()
+    import latextools.buddy_facts as built
+    importlib.reload(built)
+    text = (ROOT / "site" / "llms.txt").read_text(encoding="utf-8")
+    assert built.SOURCE_SHA256 == hashlib.sha256(text.encode("utf-8")).hexdigest() and built.FACTS == text
+    ignored = subprocess.run(["git", "check-ignore", "-q", str(path)], cwd=ROOT)
+    assert ignored.returncode == 0, "buddy_facts.py must stay git-ignored"
+
+
 def test_generated_assets_are_current():
     r = subprocess.run([sys.executable, str(ROOT / "scripts" / "build_buddy_assets.py"), "--check"],
                        capture_output=True, text=True)
