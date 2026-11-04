@@ -88,12 +88,17 @@
   function safeLink(raw) {
     var u;
     try { u = new URL(raw); } catch (e) { return null; }
+    // Buddy (the Mac app) downloads from its own GitHub repository.
+    if (u.protocol === "https:" && u.hostname === "github.com" && /^\/purplelink-llc\/[A-Za-z0-9._-]+/.test(u.pathname) &&
+        !u.search && !u.username && !u.password) {
+      return { href: u.href, label: "github.com" + u.pathname };
+    }
     if (u.protocol !== "https:" || u.hostname !== "purplelink.llc" || u.search || u.username || u.password) return null;
     var listed = allowed && allowed.get(u.pathname.replace(/\/?$/, "/"));
     return listed ? { href: listed, label: "purplelink.llc" + listed } : null;
   }
   function renderText(node, text) {
-    var re = /https:\/\/purplelink\.llc[^\s<>"')\]]*/g, last = 0, m;
+    var re = /https:\/\/(?:purplelink\.llc|github\.com\/purplelink-llc)[^\s<>"')\]]*/g, last = 0, m;
     while ((m = re.exec(text))) {
       var raw = m[0].replace(/[.,;:!?]+$/, "");
       var link = safeLink(raw);
@@ -196,7 +201,7 @@
       .then(function (res) {
         wait.remove();
         say("buddy", res.reply);
-        if (res.offer === "coupon") couponButtons();
+        if (res.offer === "coupon") couponButtons(); else followUps(res.reply);
         mood("idle");
         busy = false;
         sendBtn.disabled = false;
@@ -205,6 +210,31 @@
   }
 
   // ---- free Citation Gap check (section 6) -----------------------------------------------------------------------
+  // After a reply: buttons for the pages it links (at most two), and "Write to Ben" when Buddy could not answer.
+  function followUps(reply) {
+    var row = el("div", "bc-chips"), seen = {}, n = 0;
+    var re = /https:\/\/purplelink\.llc[^\s<>"')\]]*/g, m;
+    while ((m = re.exec(reply)) && n < 2) {
+      var link = safeLink(m[0].replace(/[.,;:!?]+$/, ""));
+      if (!link || seen[link.href] || link.href === "/support/") continue;
+      seen[link.href] = 1; n++;
+      var seg = link.href.split("/").filter(Boolean);
+      if (seg.length && LOCALES[seg[0]]) seg.shift();
+      var name = seg.length && Object.prototype.hasOwnProperty.call(APPS, seg[0]) ? APPS[seg[0]] : "";
+      row.appendChild(linkChip(name ? "Open " + name.replace(/^the /, "") : "Open this page", link.href, "page"));
+    }
+    if (/^(I only help with|Something went wrong|I could not reach)/.test(reply) || /\b(do not|don't) know\b/i.test(reply)) {
+      row.appendChild(linkChip("Write to Ben", "/support/", "ben"));
+    }
+    if (row.childNodes.length) { log.appendChild(row); log.scrollTop = log.scrollHeight; }
+  }
+  function linkChip(label, href, kind) {
+    var a = el("a", "bc-chip", label);
+    a.href = href;
+    a.addEventListener("click", function () { track("chat_followup", kind); });
+    return a;
+  }
+
   // One small email form for the free check and the emailed code: honeypot, signed form stamp, same checks.
   function emailForm(o) {
     if (panel.querySelector(".bc-form")) { panel.querySelector(".bc-form input").focus(); return; }

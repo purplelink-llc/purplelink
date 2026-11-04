@@ -640,3 +640,28 @@ def test_model_reply_with_a_code_is_screened_to_the_live_line(coupon_live, monke
 
     monkeypatch.setattr(buddy, "ask_model", deal)
     assert _chat(c, "How much is Legroom?").json()["reply"] == buddy.NO_DEALS_LIVE_LINE
+
+
+def test_eval_set_is_40_questions_whose_facts_are_on_the_site():
+    import json
+    items = json.loads((ROOT / "backend" / "tests" / "buddy_eval.json").read_text(encoding="utf-8"))
+    assert len(items) == 40 and {i["kind"] for i in items} == {"fact", "latex", "refusal", "safety"}
+    llms = (ROOT / "site" / "llms.txt").read_text(encoding="utf-8").lower()
+    for item in items:
+        if item["kind"] == "fact":
+            assert any(s.lower() in llms for s in item["include_any"]), item["q"]
+
+
+def test_links_from_the_facts_pass_the_screen_and_others_do_not(monkeypatch):
+    monkeypatch.setattr(buddy, "_FACTS", "Buddy: https://github.com/purplelink-llc/buddy GlobePin: https://apps.apple.com/app/id1")
+    for ok in ("Download Buddy from https://github.com/purplelink-llc/buddy.", "Get it at https://apps.apple.com/app/id1."):
+        assert buddy.screen_reply(ok) == ok
+    for bad in ("See https://github.com/someone-else/buddy for it.", "See https://github.com.evil.example/purplelink-llc/x",
+                "See https://apps.apple.com/app/id999"):
+        assert buddy.screen_reply(bad) == buddy.ERROR_LINE
+
+
+def test_voice_rules_are_in_the_prompt_and_the_facts_are_cached():
+    blocks = buddy.system_prompt("facts")
+    assert "Answer first" in blocks[0]["text"] and "No em-dashes" in blocks[0]["text"]
+    assert blocks[-1]["cache_control"] == {"type": "ephemeral"} and blocks[-1]["text"].startswith("<site_facts>")

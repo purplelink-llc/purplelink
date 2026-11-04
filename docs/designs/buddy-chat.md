@@ -402,3 +402,40 @@ Built in v2's plan and shipped dormant; it switches itself on at 00:00 UTC on 20
   "what's on this site"); "support for an order" contradicted the LaTeX button (now "look up an order"); the deals
   screen could hit honest answers (now tested); localized pages lost the buttons (locale prefix dropped); the Luo
   transfer and the kept avatar are now stated plainly.
+
+## Voice, caching, follow-ups and the answer check (2026-11-04)
+
+Ben asked for "prompt caching, make sure answers are friendlier, but short and do not come off as AI generated (i.e.,
+written with /benampel)", plus the GitHub-link fix, an answer test set, follow-up buttons and a path to a human.
+
+- **Voice.** The prompt now follows Ben's own style rules (the `benampel` skill, tutorial register): answer first
+  with no greeting, praise or restating; two to four sentences of about 10 to 18 words; "you" and plain words; numbers
+  instead of adjectives; no em-dashes, semicolons, exclamation marks or the common AI words; one concrete next step at
+  the end. Warmth comes from directness and a useful next step, not from praise or a persona (Xu, Zhang and Deng 2022
+  on warmth; Schanke et al. 2021 and Crolic et al. 2022 on human-like framing).
+- **Caching.** The facts block already carried `cache_control` (5-minute cache): a visitor's follow-ups read it at a
+  tenth of the price, while a lone question pays 1.25 times to write it. Each call now logs input, cache reads, cache
+  writes, output and cost, so the saving at real traffic can be read before changing the cache length.
+- **Buddy's GitHub links.** Links to `https://github.com/purplelink-llc/...` pass the reply screen and render as links
+  (Buddy, the Mac app, downloads from there). Before, every answer about Buddy that linked its download was replaced
+  by "Something went wrong" and counted as a strike.
+- **Follow-up buttons.** After an answer, up to two buttons for the pages it links ("Open Legroom"), and "Write to
+  Ben" when Buddy refused or did not know (`chat_followup` events).
+- **Answer check.** `backend/tests/buddy_eval.json` holds 40 questions (24 facts, 4 LaTeX, 6 off-topic, 6 attacks).
+  `cd backend && modal run buddy_eval.py` asks them with the real prompt and model and checks facts, refusals, leaks
+  and the voice rules; run it after any change to the prompt or the facts. A CI test keeps the set's facts on the site.
+
+## Weekly transcript review (draft, Ben 2026-11-04: "capture the transcripts from buddy just to see what customers are
+asking so we can fix it once a week, and then delete the transcripts"; "we don't need a notice")
+
+- **Kept:** per conversation, the visitor's messages and Buddy's shown replies, with the time, the page path and
+  whether each reply was screened, refused or not known. Keyed by the session hash; no IP address. Emails, phone
+  numbers and card-like digit runs are masked before saving.
+- **Where and how long:** a new Modal Dict `buddy-transcripts`, each key prefixed by its UTC day; nothing is copied to
+  the durable Volume. Deleted after 7 days by the weekly job, and by the Dict's own 7-day idle expiry as a backstop.
+- **Weekly digest:** a Monday job on Ben's Mac reads the last 7 days through the Modal API and writes
+  `~/.purplelink/buddy/digest-<date>.md` (git-ignored, never in the repo): question counts by topic, every refused,
+  unknown or screened exchange, and follow-up clicks. Then it deletes the keys it read.
+- **No panel notice** (Ben's call). The privacy policy changes, because it now says "we do not keep transcripts":
+  "Chat messages and Buddy's replies are kept for up to 7 days so we can see what people ask and fix weak answers,
+  then deleted. They are stored without your network address, with email addresses and phone numbers masked."
