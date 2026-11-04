@@ -1,9 +1,11 @@
 """Modal app for the purplelink LaTeX tools backend."""
 import datetime
+import hashlib
 import logging
 import os
 import sys
 import re
+import uuid
 
 import modal
 
@@ -144,11 +146,35 @@ paper_token_index_dict = modal.Dict.from_name("paper-review-token-index", create
 #   usage_ledger_dict["<token[:16]>_<finished_at>"] = {
 #       ts, product, tier, status, price_charged_usd,
 #       input_tokens, output_tokens, cost_usd, models,
+#       purchase, sold_as, attempt,   # job -> order link, see _order_link
+#       viewed_at,                    # first time the finished report was served, see /paper-review/status
 #   }
 usage_ledger_dict = DurableDict(
     modal.Dict.from_name("paper-review-usage-ledger", create_if_missing=True),
     durable_volume, "usage-ledger",
 )
+# Daily counts of free-check runs (/paper-review/preview), for the funnel dashboard:
+#   preview_counts_dict["preview:<YYYY-MM-DD>:<ok|error|limited>:<container>"] = n
+# One key per container and day, so two containers never overwrite each other's increments; readers sum the keys
+# that share the "preview:<day>:<outcome>:" prefix. Durable: the counts feed a rate the dashboard shows for weeks.
+preview_counts_dict = DurableDict(
+    modal.Dict.from_name("paper-review-preview-counts", create_if_missing=True),
+    durable_volume, "preview-counts",
+)
+_PREVIEW_CONTAINER = uuid.uuid4().hex[:8]
+
+
+def _count_preview(status_code: int) -> None:
+    """Bump today's counter for one free-check request: 200 ok, 429 limited,
+    anything else error. Never raises: counting must not break the check."""
+    outcome = "ok" if status_code == 200 else ("limited" if status_code == 429 else "error")
+    key = f"preview:{datetime.datetime.utcnow().strftime('%Y-%m-%d')}:{outcome}:{_PREVIEW_CONTAINER}"
+    try:
+        preview_counts_dict[key] = int(preview_counts_dict.get(key, 0) or 0) + 1
+    except Exception:
+        logger.exception("preview counter write failed")
+
+
 # Buddy, the site chat (docs/designs/buddy-chat.md): the on/off flag, spend totals, cap slots, Buddy's last
 # replies per conversation (1 hour), and the free-check claims, all under prefixed keys.
 buddy_dict = modal.Dict.from_name("buddy-chat", create_if_missing=True)
@@ -410,11 +436,34 @@ def _order_cost_ceiling(product_key: str) -> float | None:
     return (amount / 100.0) / max(1, entry.get("qty", 1)) * factor
 
 
-def _write_usage_ledger(token: str, product_key: str, status: str, usage) -> None:
-    """Persist a permanent per-job cost record. `usage` is a
-    papercheck.UsageTracker collected around the job's LLM calls (may have
-    zero records if the job errored before any call). Never raises — a
-    logging failure must not take down the pipeline."""
+def _order_link(token: str) -> dict:
+    """The job -> order link for the funnel dashboard: `purchase` is
+    sha256(session_id)[:16], the same hash netlify/functions/sales.mjs puts on
+    each order; `sold_as` is the product key that was bought (the ledger's own
+    `product_key` is derived from tier and journal, so a pack token logs as
+    standard); `attempt` counts the token's tries (a replacement token issued
+    after a failed job is attempt 2). Empty when the token's session is not
+    found. Never raises."""
+    try:
+        session_id = paper_token_index_dict.get(token)
+        if not session_id:
+            return {}
+        entry = paper_tokens_dict.get(session_id)
+        link = {"purchase": hashlib.sha256(str(session_id).encode("utf-8")).hexdigest()[:16]}
+        if isinstance(entry, dict):
+            link["sold_as"] = entry.get("product_key")
+            link["attempt"] = int((entry.get("attempts") or {}).get(token, 1))
+        return link
+    except Exception:
+        logger.exception("order link lookup failed for token=%s", token[:12])
+        return {}
+
+
+def _write_usage_ledger(token: str, product_key: str, status: str, usage) -> str | None:
+    """Persist a permanent per-job cost record and return its key (None if the
+    write failed). `usage` is a papercheck.UsageTracker collected around the
+    job's LLM calls (may have zero records if the job errored before any
+    call). Never raises — a logging failure must not take down the pipeline."""
     import time as _time
 
     entry = PAID_PRODUCTS.get(product_key, {})
@@ -429,12 +478,16 @@ def _write_usage_ledger(token: str, product_key: str, status: str, usage) -> Non
         "output_tokens": usage.total_output_tokens,
         "cost_usd": round(usage.total_cost_usd, 4),
         "models": usage.models_used(),
+        **_order_link(token),
     }
+    key = f"{token[:16]}_{record['ts']}"
     try:
-        usage_ledger_dict[f"{token[:16]}_{record['ts']}"] = record
+        usage_ledger_dict[key] = record
         logger.info("usage_ledger %s", record)
     except Exception:
         logger.exception("usage_ledger write failed for token=%s", token[:12])
+        return None
+    return key
 
 
 def _prepend_source_note(markdown: str, note: str) -> str:
@@ -485,6 +538,10 @@ def _reissue_token_on_failure(token: str) -> str | None:
         entry["tokens"] = tokens
         # Explicitly NOT added to consumed_tokens — it's redeemable.
         entry["last_reissued_at"] = _time.time()
+        # The replacement is the next attempt at the same purchase (see _order_link).
+        attempts = dict(entry.get("attempts") or {})
+        attempts[new_token] = int(attempts.get(token, 1)) + 1
+        entry["attempts"] = attempts
         paper_tokens_dict[session_id] = entry
         paper_token_index_dict[new_token] = session_id
         return new_token
@@ -685,13 +742,16 @@ def paper_review_pipeline(
                         final["result_md"] += _referral_footer_md(deliver_email)
                     except Exception:
                         logger.exception("referral footer/registration failed for token=%s", token[:12])
+                # Written before the job entry so the entry can carry the ledger key: /paper-review/status uses it
+                # to stamp the first view on the ledger record.
+                ledger_key = _write_usage_ledger(token, product_key, job_status, usage)
                 paper_jobs_dict[token] = {
                     **final,
                     "product": "paper-review",
                     "status": job_status,
+                    **({"ledger_key": ledger_key} if ledger_key else {}),
                     **({"replacement_token": replacement_token} if job_status == "error" else {}),
                 }
-                _write_usage_ledger(token, product_key, job_status, usage)
                 if deliver_email and final.get("result_md"):
                     try:
                         # The email carries the report itself. Only the report:
@@ -738,13 +798,14 @@ def paper_review_pipeline(
             except Exception:
                 logger.exception("paper_review_pipeline failed for token=%s", token[:12])
                 replacement_token = _reissue_token_on_failure(token)
+                ledger_key = _write_usage_ledger(token, product_key, "error", usage)
                 paper_jobs_dict[token] = {
                     "status": "error",
                     "error": "pipeline_failed",
                     "finished_at": _time.time(),
                     "replacement_token": replacement_token,
+                    **({"ledger_key": ledger_key} if ledger_key else {}),
                 }
-                _write_usage_ledger(token, product_key, "error", usage)
 
     _asyncio.run(_run())
 
@@ -3405,6 +3466,16 @@ def web():
                     await paper_jobs_dict.put.aio(token, entry)
                 except Exception:
                     logger.exception("failed to stamp delivered_at for token=%s", token[:12])
+                # First view, for the funnel dashboard: stamp it on the permanent ledger record too. Best effort;
+                # the report is served whatever happens here.
+                try:
+                    _lk = entry.get("ledger_key")
+                    if _lk:
+                        _rec = usage_ledger_dict.get(_lk)
+                        if isinstance(_rec, dict) and not _rec.get("viewed_at"):
+                            usage_ledger_dict[_lk] = {**_rec, "viewed_at": now}
+                except Exception:
+                    logger.exception("failed to stamp viewed_at for token=%s", token[:12])
 
             # Resolve the Stripe session_id server-side so the "Get invoice"
             # button on the status page can work at all. We deliberately
@@ -3466,6 +3537,11 @@ def web():
 
     @api.post("/paper-review/preview")
     async def paper_review_preview(request: Request, file: UploadFile = File(...)):
+        response = await _paper_review_preview(request, file)
+        _count_preview(response.status_code)
+        return response
+
+    async def _paper_review_preview(request: Request, file: UploadFile):
         too_large = "File is too large (max 20 MB)."
         if _too_large(request, core.MAX_PAPER_UPLOAD_BYTES):
             return _preview_error("invalid", too_large, 400)
@@ -4931,7 +5007,7 @@ def lifecycle_email_sweep() -> dict:
     try:
         copied = sum(store.backfill() for store in (
             lifecycle_optout_dict, referral_dict, paper_tokens_dict,
-            customer_lifecycle_dict, usage_ledger_dict, feedback_dict, _buddy_claims(),
+            customer_lifecycle_dict, usage_ledger_dict, preview_counts_dict, feedback_dict, _buddy_claims(),
         ))
         if copied:
             logger.info("durable backfill: copied %s records to the volume", copied)

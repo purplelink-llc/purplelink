@@ -22,6 +22,7 @@ def _isolate_usage_ledger(monkeypatch):
     except Exception:
         return
     monkeypatch.setattr(backend_app, "usage_ledger_dict", {})
+    monkeypatch.setattr(backend_app, "preview_counts_dict", {})
 
 
 class MemVolume:

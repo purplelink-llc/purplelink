@@ -129,6 +129,9 @@ export default async function handler(request) {
   const isOwner = (email) => ownerEmails.has((email || "").toLowerCase());
   // Salted with the stats token so the hash can't be matched against a list of
   // addresses by anyone who only sees the dashboard archive.
+  // Paper Review only: the job ledger (backend/app.py) links a job to its order by this hash of the Stripe session id.
+  const purchaseKey = (id) => createHash("sha256").update(String(id)).digest("hex").slice(0, 16);
+  const isPaperReview = (product) => typeof product === "string" && product.startsWith("paper-review");
   const custKey = (email) => email
     ? createHash("sha256").update(`${expected}:${email.trim().toLowerCase()}`).digest("hex").slice(0, 16)
     : "";
@@ -206,6 +209,11 @@ export default async function handler(request) {
       // was present, never the id itself: the marketing hub needs the flag, and the id stays in Stripe.
       reddit: s.metadata && s.metadata.reddit_ad === "1" ? { ad: true, click: !!s.metadata.reddit_click_id } : null,
       recovered: !!s.recovered_from,
+      // Paper Review: the job-ledger join key, and whether the buyer ran the free check in the last 30 days
+      // (checkout.mjs metadata). Neither identifies anyone.
+      ...(isPaperReview(product)
+        ? { purchase: purchaseKey(s.id), pr_preview: !!(s.metadata && s.metadata.pr_preview === "1") }
+        : {}),
       ...chargeFacts(pi && pi.latest_charge),
     });
   }
@@ -365,8 +373,17 @@ export default async function handler(request) {
       gross: p.amount, fee: p.fee, net: p.net, refunded: p.refunded, disputed: p.disputed,
       cust: custKey(p.email), attr: p.attr, heard: p.heard,
       app: p.app || null, td: p.td || null, recovered: !!p.recovered, reddit: p.reddit || null,
+      ...(p.purchase ? { purchase: p.purchase, pr_preview: !!p.pr_preview } : {}),
     })),
-    comps: { orders: comps.length, note: "Free copies given with a 100%-off code, excluded from every figure above." },
+    comps: {
+      orders: comps.length,
+      note: "Free copies given with a 100%-off code, excluded from every figure above.",
+      // Paper Review comps only, for the funnel's signups and comp-to-paid figures. No emails: `cust` is a salted hash.
+      paperReview: comps.filter((p) => p.purchase).map((p) => ({
+        id: p.id, ts: p.created, product: p.product, cust: custKey(p.email), attr: p.attr,
+        purchase: p.purchase, pr_preview: !!p.pr_preview,
+      })),
+    },
     refunds,
     subscriptions,
     balance,

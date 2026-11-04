@@ -639,3 +639,38 @@ def test_preview_still_refuses_other_files(client, crossref):
     http, backend_app = client
     r = _post_docx(http, b"hello", name="paper.txt")
     assert r.status_code == 400 and ".pdf or .docx" in r.json()["detail"]
+
+
+def _preview_counts(backend_app) -> dict:
+    """Sum preview_counts_dict by outcome, the way the dashboard does."""
+    totals = {}
+    for key, n in backend_app.preview_counts_dict.items():
+        _, _day, outcome, _container = key.split(":")
+        totals[outcome] = totals.get(outcome, 0) + n
+    return totals
+
+
+def test_preview_counts_ok_error_and_limited(client, crossref, monkeypatch):
+    http, backend_app = client
+    assert _post(http, _manuscript_pdf()).status_code == 200
+    assert _post(http, _manuscript_pdf()).status_code == 200
+    assert _post(http, b"not a pdf").status_code == 400
+    monkeypatch.setattr(backend_app, "PREVIEW_HOURLY_LIMIT", 3)
+    assert _post(http, _manuscript_pdf()).status_code == 429
+    assert _preview_counts(backend_app) == {"ok": 2, "error": 1, "limited": 1}
+    # One key per outcome, container and day; the day is UTC.
+    assert all(k.startswith("preview:") for k in backend_app.preview_counts_dict)
+
+
+def test_preview_counter_failure_does_not_break_the_check(client, crossref, monkeypatch):
+    http, backend_app = client
+
+    class _Down:
+        def get(self, *a, **k):
+            raise RuntimeError("counter store unreachable")
+
+        def __setitem__(self, *a):
+            raise RuntimeError("counter store unreachable")
+
+    monkeypatch.setattr(backend_app, "preview_counts_dict", _Down())
+    assert _post(http, _manuscript_pdf()).status_code == 200

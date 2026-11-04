@@ -50,6 +50,14 @@
   var refNote = document.getElementById("ref-note");
   if (referralCode && refNote) refNote.hidden = false;
 
+  // Free check run on this device in the last 30 days (set by preview.js): sent to checkout as a flag, never a time.
+  function ranFreeCheck() {
+    try {
+      var at = Number(localStorage.getItem("pl_pr_preview_at"));
+      return at > 0 && Date.now() - at < 30 * 86400000;
+    } catch (e) { return false; }
+  }
+
   btn.addEventListener("click", function () {
     var product = (document.querySelector('input[name="tier"]:checked') || {}).value || "paper-review-standard";
     btn.disabled = true;
@@ -57,7 +65,7 @@
     fetch("/.netlify/functions/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ product: product, ref: referralCode }),
+      body: JSON.stringify(ranFreeCheck() ? { product: product, ref: referralCode, pr_preview: 1 } : { product: product, ref: referralCode }),
     })
       .then(function (resp) {
         if (!resp.ok) return resp.json().then(function (p) { throw p; });
