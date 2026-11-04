@@ -9,7 +9,7 @@ The actual review pipeline is a four-layer red team:
        Verifies that referenced papers exist in CrossRef and Semantic Scholar
        and that titles + years + authors match the bibliography. Reuses the
        same client pattern as backend/latextools/bibcheck.py.
-  L3 — Adversarial four-persona debate.
+  L3 — Adversarial seven-persona debate.
        Methodology Critic, Statistical Skeptic, Data Integrity Officer, and
        Editor-in-Chief each red-team the paper in parallel. Their findings
        are merged with a consensus filter to suppress single-persona noise.
