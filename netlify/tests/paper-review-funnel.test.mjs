@@ -31,7 +31,7 @@ async function post(body, ip) {
   const realFetch = globalThis.fetch;
   let captured = null;
   globalThis.fetch = async (url, opts) => {
-    if (String(url).includes("api.stripe.com")) {
+    if (new URL(String(url)).hostname === "api.stripe.com") {
       captured = { body: new URLSearchParams(opts.body), key: opts.headers["Idempotency-Key"] };
       return Response.json({ id: "cs_test_1", url: "https://checkout.stripe.com/pay/cs_test_1" });
     }
