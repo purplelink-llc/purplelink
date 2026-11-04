@@ -50,6 +50,39 @@ class BuddyChatPages(unittest.TestCase):
                      "AI answers from what's on this site. It can be wrong. "):
             self.assertIn(text, chat)
 
+    def test_holdout_schedule_is_the_reproducible_draw(self):
+        # The holdout in loader.js must be the schedule scripts/draw_buddy_schedule.py draws, or all "B" once stopped.
+        import subprocess, sys
+        loader = (SITE / "buddy-chat" / "loader.js").read_text(encoding="utf-8")
+        schedule = re.search(r'var SCHEDULE = "([AB]+)"', loader).group(1)
+        if set(schedule) == {"B"}:
+            return
+        script = SITE.parent / "scripts" / "draw_buddy_schedule.py"
+        done = subprocess.run([sys.executable, str(script), "--check"], capture_output=True, text=True)
+        self.assertEqual(done.returncode, 0, done.stdout + done.stderr)
+
+    def test_holdout_report_reads_pairs_and_applies_the_rule(self):
+        import importlib.util, datetime as dt
+        spec = importlib.util.spec_from_file_location("bhr", SITE.parent / "scripts" / "buddy_holdout_report.py")
+        bhr = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(bhr)
+        start, sched = bhr.schedule()
+
+        def history(b_rate, a_rate, days=len(sched)):
+            by_day = {}
+            for i in range(days):
+                rate = b_rate if sched[i] == "B" else a_rate
+                by_day[(start + dt.timedelta(days=i)).isoformat()] = {"appPageviews": 100, "appConversions": rate}
+            return {"sites": {"purplelink": {"byDay": by_day}}}
+
+        self.assertEqual(bhr.report({})["verdict"], "no data yet")
+        self.assertTrue(bhr.report(history(3, 3, days=10))["verdict"].startswith("running: 5 of 28"))
+        worse = bhr.report(history(1, 4))
+        self.assertLess(worse["mean_diff_b_minus_a"], 0)
+        self.assertTrue(worse["verdict"].startswith("remove or rethink"))
+        self.assertTrue(bhr.report(history(4, 1))["verdict"].startswith("keep Buddy"))
+        self.assertTrue(bhr.report(history(2, 2))["verdict"].startswith("keep Buddy"))
+
 
 if __name__ == "__main__":
     unittest.main()
