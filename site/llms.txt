@@ -292,6 +292,7 @@
 - Find a purchase (lost ModernTex key or kit download): https://purplelink.llc/recover/
 - Pricing (every price on one page): https://purplelink.llc/pricing/
 - Paper Review by field (what each domain profile checks): https://purplelink.llc/tools/paper-review/machine-learning/ , https://purplelink.llc/tools/paper-review/biomedicine/ , https://purplelink.llc/tools/paper-review/psychology/ , https://purplelink.llc/tools/paper-review/chemistry/
+- Paper Review data handling (where a manuscript goes, who sees it, deletion, what is not promised): https://purplelink.llc/tools/paper-review/confidential-manuscript-review/
 - For labs and departments (volume packs, invoices, purchase orders, data handling): https://purplelink.llc/labs/
 - Security and data handling (what each product does with a file, subprocessor table, encryption, deletion timing, breach notice; DPA and HECVAT Lite on request): https://purplelink.llc/security/
 
