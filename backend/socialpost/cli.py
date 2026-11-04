@@ -188,6 +188,54 @@ def cmd_instagram(a, cfg) -> int:
     return run(a, cfg)
 
 
+def cmd_studio(a, cfg) -> int:
+    """Weekly studio note: `studio material` writes the week's brief, `studio queue FILE` validates a drafted note and
+    writes the draft social item plus the needs_ben approval-queue item. It never approves anything."""
+    import tempfile
+    from pathlib import Path
+    from . import studio
+    try:
+        if a.studio_cmd == "material":
+            text = studio.material(a.days)
+            if a.out:
+                Path(a.out).parent.mkdir(parents=True, exist_ok=True)
+                Path(a.out).write_text(text)
+                print(f"wrote {a.out}")
+            else:
+                print(text)
+            return EXIT_OK
+        meta, sections = studio.parse_note(Path(a.file).read_text())
+        if a.dry_run:
+            bad = studio.problems(meta, sections)
+            print("\n".join(bad) if bad else "ok: nothing the gate rejects")
+            return EXIT_FAILED if bad else EXIT_OK
+        it = studio.make_items(meta, sections, auto=a.auto)
+        auto_ok = False
+        if a.auto:
+            try:
+                studio.auto_approve(it, meta)
+                auto_ok = True
+            except studio.NoteError as e:
+                print(e, file=sys.stderr)       # stays a draft; Ben's yes is needed after all
+                it.meta["needs_ben"] = True
+                it.save()
+        why = [w for w in (meta.get("why") or "").split(" | ") if w]
+        with tempfile.NamedTemporaryFile("w", suffix=".md", delete=False) as fh:
+            fh.write(studio.queue_markdown(it, meta, why, auto=auto_ok))
+        out = studio.run_new(fh.name)
+        state = "approved under the standing approval" if auto_ok else "draft"
+        print(f"social item {it.id} ({state}, scheduled {it.meta['scheduled_at']})")
+        print(out)
+        if auto_ok:
+            studio.approve_queue_item(out)
+            sysutil.notify(f"Studio note goes out {it.meta['scheduled_at'][:16]}: " + it.raw_text("bluesky")[:120]
+                           + " To stop it: social.py cancel " + it.id, "Studio note queued")
+        return EXIT_OK
+    except studio.NoteError as e:
+        print(e, file=sys.stderr)
+        return EXIT_FAILED
+
+
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(prog="social.py", description="Purplelink company-account social posting")
     sp = ap.add_subparsers(dest="cmd", required=True)
@@ -243,6 +291,14 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--also", default="", help="reel-add: other YouTube ids this Reel covers (the long cut of a Short)")
     p.add_argument("--dry-run", action="store_true", help="run/preview: build and show, queue nothing")
     p.add_argument("--out", help="preview: folder for the rendered Reel and image")
+    p = add("studio", cmd_studio, "weekly studio note: material | queue FILE (drafts only, never approves)")
+    p.add_argument("studio_cmd", choices=["material", "queue"])
+    p.add_argument("file", nargs="?", help="queue: the drafted note (front matter plus ## linkedin, ## bluesky, ## mastodon)")
+    p.add_argument("--days", type=int, default=7, help="material: how many days back")
+    p.add_argument("--out", help="material: write the brief to this file")
+    p.add_argument("--dry-run", action="store_true", help="queue: run the gate only")
+    p.add_argument("--auto", action="store_true", help="queue: approve under Ben's 2026-11-03 standing approval for "
+                   "studio notes (LinkedIn page, Bluesky, Mastodon); a failed check leaves it a draft for Ben")
     add("pause", cmd_pause, "create the PAUSE file: the scheduler posts nothing")
     add("resume", cmd_resume, "remove the PAUSE file")
     return ap

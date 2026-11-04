@@ -95,6 +95,36 @@ with its numbers in `~/.purplelink/social/daily/learned.json`, lasts 30 days, th
 **Pause:** `social.py pause` (creates `~/.purplelink/social/PAUSE`; nothing queues or posts) and `social.py resume`.
 `launchctl bootout gui/$(id -u)/com.purplelink.social-daily` stops the pick job.
 
+## Studio notes (standing approval, 2026-11-03)
+
+Ben adopted four ideas from Adam Robinson's founder-led playbook on 2026-11-03, adapted to the rule that nothing posts on
+his personal LinkedIn. One is a weekly "from the studio" story post: first person, unnamed, about one real thing from that
+week (a bug, a request, a number, a decision), story first, no hard call to action in most weeks. It goes to the company
+LinkedIn page, Bluesky and Mastodon (Mastodon in Ben's voice, the same gate rules as the daily Mastodon text).
+
+The first note (2026-11-04) Ben approved by hand. Later the same day, asked what the routine should automate, he chose
+"Standing approval for notes": a note that passes the studio gate posts without a per-note yes. Approval label
+`ben (standing, 2026-11-03)`, written only by `socialpost.studio`, only for `source: studio-note`, only for LinkedIn
+(company page), Bluesky and Mastodon (`items.approve_studio_standing`). X, Threads, Facebook, Instagram, Ben's personal
+LinkedIn and any other kind of post are not covered.
+
+- **Drafting.** `social.py studio material [--days 7] [--out FILE]` lists the week's merged PRs and logged changes. A note
+  file has front matter `slug`, `asset`, `link`, `cta`, `why`, `evidence`, then `## linkedin`, `## bluesky`, `## mastodon`.
+  `social.py studio queue FILE [--dry-run]` runs the gate: house voice, Ben's voice on Mastodon, unnamed on the other two, no
+  hard call to action unless `cta: hard`, platform limits, hub tags on every link (`studio-note-<yymmdd>-<platform>`,
+  campaign `studio-note`).
+- **`--auto`.** `studio queue FILE --auto` also checks the link answers 200 and approves under the standing approval, writes
+  the approval-queue item (already approved, for the record) and sends Ben a notification with the text. The post is
+  scheduled for 10:30 ET the next day, so there is a window to stop it: `social.py cancel <id>`, or `social.py pause`. A
+  failed check leaves a draft with `needs_ben: true`, and then Ben's yes is needed. Without `--auto` the note is always a
+  draft with `needs_ben: true`, and `approval_queue.py approve` refuses it unless `--by-ben` is passed.
+- **Replaces one daily post.** The daily pipeline skips a platform that already has an approved item that day, so the note
+  takes that day's slot on those platforms.
+- **Weekly.** The scheduled task `weekly-studio-note` (Mondays 08:00 local) writes the brief, drafts the note and queues it
+  with `--auto`.
+- **Measure.** Clicks per `utm_campaign=studio-note` post against the automated daily posts of the same week. The test is
+  tone, not reach. Registered in `docs/growth-briefs/standing-approvals.md` (private).
+
 ## Instagram (standing approval, 2026-10-23)
 
 Ben asked on 2026-10-23 that every video on the Purplelink YouTube channel also goes to the Purplelink Instagram as a
