@@ -418,5 +418,34 @@
    "ok": true,
    "utm_content": "howto-find-card-numbers-in-text-before-sending-reel"
   }
+ },
+ {
+  "slug": "howto-bibtex-found-no-citation-commands-biblatex",
+  "app": "moderntex",
+  "date": "2026-11-04",
+  "title": "I found no \\citation commands on Mac with biblatex (run biber, not bibtex)",
+  "long_id": "U59qqn29_ng",
+  "short_id": "tJZ_U39x_PU",
+  "link_arm": "A",
+  "link_utm_content": "howto-bibtex-found-no-citation-commands-biblatex",
+  "short_utm_content": "howto-bibtex-found-no-citation-commands-biblatex-short",
+  "sources": [
+   "https://www.dickimaw-books.com/latex/thesis/html/biblatextroubleshooting.html",
+   "https://www.dickimaw-books.com/latex/thesis/html/bibtextroubleshooting.html"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "U59qqn29_ng",
+    "caption_id": "AUieDabXBtw5_68dc8_TDrT0tvK2WlCALdgsjhK02bZBaoKR2j8jW4Ww"
+   },
+   "short": {
+    "video_id": "tJZ_U39x_PU",
+    "caption_id": "AUieDab398hy9LgStIoAedaaX2zq4HcbBMi-AQ8aJaHtBrNnox-ISIEL"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-bibtex-found-no-citation-commands-biblatex-reel"
+  }
  }
 ]
