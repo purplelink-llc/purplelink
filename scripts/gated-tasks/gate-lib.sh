@@ -53,6 +53,13 @@ run_claude() {
   out="$(cd "$wd" && printf '%s' "$prompt" | run_timeout 1800 claude -p --model "$model" --max-turns "$turns" \
         --max-budget-usd "$usd" --permission-mode dontAsk --allowedTools "$@" 2>&1)"
   rc=$?
+  # A rare empty-input failure was seen once (2026-11-04); one retry is cheap because nothing ran.
+  if [ $rc -ne 0 ] && printf '%s' "$out" | grep -q "Input must be provided"; then
+    log "claude ($model) reported empty input, retrying once"
+    out="$(cd "$wd" && printf '%s' "$prompt" | run_timeout 1800 claude -p --model "$model" --max-turns "$turns" \
+          --max-budget-usd "$usd" --permission-mode dontAsk --allowedTools "$@" 2>&1)"
+    rc=$?
+  fi
   log "claude ($model) exit $rc: $(printf '%s' "$out" | tail -c 1500 | tr '\n' ' ')"
   LAST_CLAUDE_OUT="$out"
   return $rc
