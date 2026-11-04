@@ -91,12 +91,33 @@ test("the page names no category the code does not detect, and detects every cat
   const mod = { exports: {} };
   new Function("module", "exports", fs.readFileSync(join(SITE, "tools/pii-checker/pii-checker-core.js"), "utf8"))(mod, mod.exports);
   const P = mod.exports;
-  assert.equal(P.LABELS.length, 9);
+  assert.equal(P.LABELS.length, 10);
   const q = /<summary>What does it find\?<\/summary><div class="faq-body">([^<]*)<\/div>/.exec(html)[1];
-  assert.match(q, /^Nine types\./);
-  for (const w of ["Social Security", "Card numbers", "IBANs", "Email addresses", "Phone numbers", "Dates of birth", "Medical record numbers", "IP and MAC", "Web addresses"]) assert.ok(q.includes(w), w);
-  const sample = "ssn 472-81-0094 card 4111 1111 1111 1111 iban GB82 WEST 1234 5698 7654 32 mail a@b.co call (404) 555-0182 dob 03/14/1981 mrn 4482910 ip 192.168.1.10 link https://x.example/r?t=1";
+  assert.match(q, /^Ten types\./);
+  for (const w of ["Social Security", "Taxpayer IDs", "Card numbers", "IBANs", "Email addresses", "Phone numbers", "Dates of birth", "Medical record numbers", "IP and MAC", "Web addresses"]) assert.ok(q.includes(w), w);
+  const sample = "ssn 472-81-0094 itin 912-70-1234 card 4111 1111 1111 1111 iban GB82 WEST 1234 5698 7654 32 mail a@b.co call (404) 555-0182 dob 03/14/1981 mrn 4482910 ip 192.168.1.10 link https://x.example/r?t=1";
   assert.deepEqual(P.detect(sample).map((s) => s.label).sort(), [...P.LABELS].sort());
+});
+
+test("ITINs and dashed EINs are taxpayer IDs, not Social Security numbers", async () => {
+  const { default: fs } = await import("node:fs");
+  const mod = { exports: {} };
+  new Function("module", "exports", fs.readFileSync(join(SITE, "tools/pii-checker/pii-checker-core.js"), "utf8"))(mod, mod.exports);
+  const P = mod.exports;
+  const labels = (t) => P.detect(t).map((s) => s.label + ":" + s.text);
+  // First digit 9; fourth and fifth digits 50-65, 70-88, 90-92 or 94-99. All numbers made up.
+  for (const ok of ["912501234", "912651234", "912701234", "999881234", "912901234", "912921234", "912941234", "912991234"]) assert.ok(P.isValidITIN(ok), ok);
+  for (const no of ["912931234", "912491234", "912661234", "912891234", "472810094", "91270123"]) assert.ok(!P.isValidITIN(no), no);
+  for (const form of ["912-70-1234", "912 70 1234", "912.70.1234", "912701234", "987-65-4321"]) {
+    assert.deepEqual(labels("client itin " + form + " ok"), ["TAX_ID:" + form], form);
+  }
+  assert.deepEqual(labels("atin 912-93-1234 ok"), [], "group 93 is an ATIN and is not marked");
+  assert.deepEqual(labels("ssn 472-81-0094 ok"), ["SSN:472-81-0094"]);
+  assert.deepEqual(labels("Our EIN is 12-3456789."), ["TAX_ID:12-3456789"]);
+  assert.deepEqual(labels("EIN 91-2701234 ok"), ["TAX_ID:91-2701234"]);
+  assert.deepEqual(labels("ref 00-3456789 ok"), [], "prefix 00 is never issued");
+  assert.equal(P.DISPLAY.TAX_ID, "Taxpayer ID (ITIN or EIN)");
+  assert.equal(P.check("itin 912-70-1234").redacted, "itin [TAX_ID_1]");
 });
 
 test("the sample text on the page is checked as the page says: names untouched, traps not marked", async () => {

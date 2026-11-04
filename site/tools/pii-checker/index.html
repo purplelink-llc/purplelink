@@ -38,7 +38,7 @@
         "@id": "https://purplelink.llc/#organization"
       },
       "featureList": [
-        "Finds Social Security numbers, card numbers, IBANs, email addresses, phone numbers, dates of birth, medical record numbers, IP and MAC addresses and web addresses with a query string, login or token",
+        "Finds Social Security numbers, ITINs and EINs, card numbers, IBANs, email addresses, phone numbers, dates of birth, medical record numbers, IP and MAC addresses and web addresses with a query string, login or token",
         "Marks each finding in the text, with its type",
         "Counts the findings by type",
         "Copies the text with each finding replaced by a placeholder such as [EMAIL_1]",
@@ -90,7 +90,7 @@
           "name": "What does it find?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Nine types. Social Security numbers (nine digits that follow the issuing rules, written with spaces, dots or hyphens or with none). Card numbers (14 to 16 digits that pass the Luhn check). IBANs (the mod 97 check must pass). Email addresses. Phone numbers (North American numbers with an area code, and international numbers that start with +). Dates of birth, only after a cue such as DOB or born on. Medical record numbers, only after a cue such as MRN or patient ID. IP and MAC addresses. Web addresses that carry a query string, a login or a long token, while plain links are left alone."
+            "text": "Ten types. Social Security numbers (nine digits that follow the issuing rules, written with spaces, dots or hyphens or with none). Taxpayer IDs: ITINs (nine digits that start with 9 and follow the IRS ranges, written like a Social Security number) and EINs written as 12-3456789. Card numbers (14 to 16 digits that pass the Luhn check). IBANs (the mod 97 check must pass). Email addresses. Phone numbers (North American numbers with an area code, and international numbers that start with +). Dates of birth, only after a cue such as DOB or born on. Medical record numbers, only after a cue such as MRN or patient ID. IP and MAC addresses. Web addresses that carry a query string, a login or a long token, while plain links are left alone."
           }
         },
         {
@@ -239,11 +239,12 @@
         <h2 id="pc-looks-h">What it looks for and what it does not</h2>
         <ul class="pc-list-plain">
           <li><strong>Social Security numbers.</strong> Nine digits that follow the issuing rules: the first three are not 000, 666 or 900 to 999, the middle two are not 00 and the last four are not 0000. Written as 472-81-0094, 472 81 0094, 472.81.0094 or with no separators.</li>
+          <li><strong>Taxpayer IDs.</strong> ITINs: nine digits that start with 9, with the fourth and fifth digits in 50 to 65, 70 to 88, 90 to 92 or 94 to 99, written the same ways as a Social Security number. EINs written with the hyphen, as 12-3456789. An EIN typed as nine digits with no hyphen is marked as a Social Security number.</li>
           <li><strong>Card numbers and IBANs.</strong> 14 to 16 digits that pass the Luhn check, with spaces, dots or hyphens between them. IBANs of 15 to 34 characters whose mod 97 check passes.</li>
           <li><strong>Email addresses and phone numbers.</strong> Phone numbers are North American numbers with an area code, such as (404) 555-0182, and international numbers that start with +. A bare run of ten digits is not reported, because order numbers and ISBNs look the same.</li>
           <li><strong>Dates of birth and medical record numbers.</strong> Only after a cue word: DOB, date of birth, born on, MRN, medical record number or patient ID. A date or number on its own is left alone.</li>
           <li><strong>IP and MAC addresses, and web addresses that can carry something private.</strong> A web address is marked when it has a query string, a login in front of the host or a long token in its path. Plain links are left alone.</li>
-          <li><strong>Not looked for.</strong> Names, street addresses, passport, driver's license and tax numbers, bank account numbers other than IBANs, and anything that identifies a person only in context.</li>
+          <li><strong>Not looked for.</strong> Names, street addresses, passport and driver's license numbers, tax numbers other than ITINs and EINs, bank account numbers other than IBANs, and anything that identifies a person only in context.</li>
         </ul>
       </section>
 
@@ -261,7 +262,7 @@
         <h2>Questions</h2>
         <p>If you are about to paste notes into an AI chat, <a href="/guides/before-you-paste-client-notes-into-chatgpt/">the checklist before you paste client notes into ChatGPT or Claude</a> covers what to check first, and <a href="/guides/best-pii-redaction-tools-for-chatgpt/">the comparison of PII redaction tools for ChatGPT</a> covers the tools that do it for you.</p>
         <details><summary>Is my text uploaded?</summary><div class="faq-body">No. The page checks the text with your browser, in a background worker on your device. The meter on the page counts the requests the page makes while it works. The only one is an anonymous usage count that says how the text got here (typed, pasted, a file or the sample), never the text itself.</div></details>
-        <details><summary>What does it find?</summary><div class="faq-body">Nine types. Social Security numbers (nine digits that follow the issuing rules, written with spaces, dots or hyphens or with none). Card numbers (14 to 16 digits that pass the Luhn check). IBANs (the mod 97 check must pass). Email addresses. Phone numbers (North American numbers with an area code, and international numbers that start with +). Dates of birth, only after a cue such as DOB or born on. Medical record numbers, only after a cue such as MRN or patient ID. IP and MAC addresses. Web addresses that carry a query string, a login or a long token, while plain links are left alone.</div></details>
+        <details><summary>What does it find?</summary><div class="faq-body">Ten types. Social Security numbers (nine digits that follow the issuing rules, written with spaces, dots or hyphens or with none). Taxpayer IDs: ITINs (nine digits that start with 9 and follow the IRS ranges, written like a Social Security number) and EINs written as 12-3456789. Card numbers (14 to 16 digits that pass the Luhn check). IBANs (the mod 97 check must pass). Email addresses. Phone numbers (North American numbers with an area code, and international numbers that start with +). Dates of birth, only after a cue such as DOB or born on. Medical record numbers, only after a cue such as MRN or patient ID. IP and MAC addresses. Web addresses that carry a query string, a login or a long token, while plain links are left alone.</div></details>
         <details><summary>Why does it not find names?</summary><div class="faq-body">Patterns cannot tell a name from an ordinary word reliably. Many names are also words, places or brands. Outbound Veil, a Mac app I make, uses a model that runs on your Mac to find names, and it still misses some.</div></details>
         <details><summary>Does a clean result mean the text is safe to share?</summary><div class="faq-body">No. A clean result means none of the formats listed above were found. It is not a compliance check and it is not legal advice. Names, street addresses and details that identify someone in context can still be in the text, so read it before you share it.</div></details>
         <details><summary>Why was something marked that is not personal?</summary><div class="faq-body">A nine-digit number that follows the Social Security rules is marked even when it is an order number, and a four-part number such as 10.2.1.4 looks like an IP address. Check each marked item. Numbers that fail a check, such as a 16-digit number that fails Luhn or a number starting 000, are not marked.</div></details>
