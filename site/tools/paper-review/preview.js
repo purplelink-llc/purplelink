@@ -116,7 +116,7 @@
     if (more) results.appendChild(el("p", "pr-preview-note", more));
 
     var upsell = el("div", "pr-preview-upsell");
-    upsell.appendChild(el("p", "", "The full review adds four reviewers on methods, statistics and claims"));
+    upsell.appendChild(el("p", "", "The full review adds seven reviewers on methods, statistics and claims"));
     var start = el("button", "btn btn-primary", startReviewLabel());
     start.type = "button";
     start.id = "pr-preview-start";

@@ -374,7 +374,7 @@
 .tools-hero > .pr-policy-line { margin-top: 0.9rem; font-size: 0.93rem; line-height: 1.55; }
 .pr-policy-line a { color: var(--purple); font-weight: 600; }
 
-/* Who built it, directly under the four reviewer cards. */
+/* Who built it, directly under the seven reviewer cards. */
 .pr-credentials { margin: 0 0 1.4rem; max-width: 70ch; font-size: 0.93rem; color: var(--muted); line-height: 1.55; }
 .pr-credentials a { color: var(--purple); font-weight: 600; }
 

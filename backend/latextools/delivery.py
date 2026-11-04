@@ -218,7 +218,7 @@ _READY_NEXT = {
     ),
     "citation-gap": (
         f'For the full read, <a href="https://purplelink.llc/tools/paper-review/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Paper Review</a> '
-        '($9) puts the manuscript in front of four AI reviewers and checks every reference against CrossRef.'
+        '($9) puts the manuscript in front of seven AI reviewers and checks every reference against CrossRef.'
     ),
     "anonymity-check": (
         f'For the full read, <a href="https://purplelink.llc/tools/paper-review/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Paper Review</a> '
@@ -696,7 +696,7 @@ def html_lifecycle_deadline_week(*, venue: str = "", deadline: str = "", kind: s
     <a href="https://purplelink.llc/tools/bib-validator/?{utm}" {_LINK}>BibTeX Validator</a>
     finds malformed entries, missing fields and DOIs that do not resolve.</li>
     <li><strong>Get a read before a reviewer does.</strong> Paper Review ($9)
-    has four AI reviewers read the manuscript for methods, statistics and
+    has seven AI reviewers read the manuscript for methods, statistics and
     claims the data do not support, and checks every reference against
     CrossRef. It takes a few minutes, which leaves the week for fixing.</li>
   </ol>

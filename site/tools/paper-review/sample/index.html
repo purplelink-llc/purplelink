@@ -68,6 +68,7 @@
     <script src="/theme.js"></script>
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="/motion.css">
+    <link rel="stylesheet" href="/tools/paper-review/pipeline-compare.css">
     <script src="/site.js" defer></script>
     <script src="/motion.js" defer></script>
     <script src="/buddy-chat/loader.js" defer></script>
@@ -109,7 +110,7 @@ statistical power.&quot;<br><span class="sample-lbl">Surfaced by:</span> Statist
 </li>
 </ul>
 </div>
-          <p class="sample-note"><strong>What this section is for.</strong> These are the problems a reviewer is most likely to raise. Each one quotes the passage it is about, names which of the four reviewers raised it, and says what would fix it. Findings raised by more than one reviewer are marked as consensus and listed first.</p>
+          <p class="sample-note"><strong>What this section is for.</strong> These are the problems a reviewer is most likely to raise. Each one quotes the passage it is about, names which of the seven reviewers raised it, and says what would fix it. Findings raised by more than one reviewer are marked as consensus and listed first.</p>
         </section>
         <section class="sample-sec">
           <h2>Data-to-claim contradictions</h2>
@@ -185,6 +186,97 @@ abstract, 1 contradicted, 3 source unavailable.</p>
 <p><em>5 citations with weaker claims were not audited (per-run cap).</em></p>
 </div>
           <p class="sample-note"><strong>What this section is for.</strong> For the claims that lean hardest on a citation, the cited paper&#x27;s abstract is fetched and compared with what you wrote. &quot;Not supported by abstract&quot; means you should check the full text. It does not mean the citation is wrong.</p>
+        </section>
+
+        <section class="prc" aria-labelledby="prc-h">
+          <h2 id="prc-h">How this report was made</h2>
+          <p class="prc-lede">A chat assistant reads your PDF once and answers in one pass. Paper Review looks every reference up in three scholarly databases, recomputes your statistics without a language model, and has seven separate reviewers read the paper before one pass reconciles what they found.</p>
+          <div class="prc-grid">
+            <div class="prc-col prc-chat">
+              <h3 class="prc-col-h">One chat prompt</h3>
+              <p class="prc-col-sub">One model, one pass</p>
+              <ol class="prc-mini" aria-label="What a chat prompt does">
+                <li>Your PDF</li>
+                <li>One model</li>
+                <li>One answer</li>
+              </ol>
+              <ul class="prc-gaps" aria-label="What it does not do">
+                <li>References are not looked up one by one, so a wrong or invented one can pass.</li>
+                <li>Retractions are caught only if the model happens to know them.</li>
+                <li>p-values and means are not recomputed.</li>
+                <li>One point of view, written in one go.</li>
+                <li>No marked-up PDF.</li>
+                <li>Whether the manuscript is kept or used for training depends on your account settings.</li>
+              </ul>
+            </div>
+            <div class="prc-col prc-pipe">
+              <h3 class="prc-col-h">Paper Review</h3>
+              <p class="prc-col-sub">Four stages, many checks, run for every paper</p>
+              <ol class="prc-stages">
+                <li class="prc-stage">
+                  <span class="prc-num" aria-hidden="true">1</span>
+                  <span class="prc-stage-h">Read the paper apart</span>
+                  <p>The PDF is split into text, figures, tables and the reference list.</p>
+                </li>
+                <li class="prc-stage">
+                  <span class="prc-num" aria-hidden="true">2</span>
+                  <span class="prc-stage-h">Check it, in parallel</span>
+                  <ul class="prc-lanes" data-motion="stagger">
+                    <li class="prc-lane">
+                      <span class="prc-lane-tag">Lookups</span>
+                      <span class="prc-lane-h">Every reference</span>
+                      <ul class="prc-chips" aria-label="Databases queried">
+                        <li>CrossRef</li><li>OpenAlex</li><li>Semantic Scholar</li>
+                      </ul>
+                      <ul>
+                        <li>Each reference matched to a real record</li>
+                        <li>Retractions, withdrawals and expressions of concern flagged</li>
+                        <li>Key claims checked against the cited source's abstract</li>
+                      </ul>
+                    </li>
+                    <li class="prc-lane">
+                      <span class="prc-lane-tag">Rule-based, no AI</span>
+                      <span class="prc-lane-h">Numbers and structure</span>
+                      <ul>
+                        <li>p-values recomputed from t, F, chi-square, r and z (statcheck)</li>
+                        <li>Reported means tested for consistency (GRIM)</li>
+                        <li>In-text citations matched to the reference list</li>
+                        <li>Figure and table numbering checked</li>
+                      </ul>
+                    </li>
+                    <li class="prc-lane">
+                      <span class="prc-lane-tag">Vision</span>
+                      <span class="prc-lane-h">Every page and figure</span>
+                      <ul>
+                        <li>Pages rendered and read as images</li>
+                        <li>Figures compared with what the text claims</li>
+                        <li>Missing error bars, broken axes, color-only encoding</li>
+                      </ul>
+                    </li>
+                    <li class="prc-lane">
+                      <span class="prc-lane-tag">Panel</span>
+                      <span class="prc-lane-h">Seven reviewers, separately</span>
+                      <ul class="prc-roles">
+                        <li>Methodology</li><li>Statistics</li><li>Data integrity</li><li>Editor</li>
+                        <li>Equations</li><li>Literature</li><li>Numerical realism</li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+                <li class="prc-stage">
+                  <span class="prc-num" aria-hidden="true">3</span>
+                  <span class="prc-stage-h">Reconcile</span>
+                  <p>Findings are merged, and issues raised by more than one reviewer rank first. A coherence check compares the abstract, hypotheses and results with each other.</p>
+                </li>
+                <li class="prc-stage">
+                  <span class="prc-num" aria-hidden="true">4</span>
+                  <span class="prc-stage-h">Deliver</span>
+                  <p>A report with a fix-first checklist and an annotated PDF, by email. Your files are deleted within about a day.</p>
+                </li>
+              </ol>
+            </div>
+          </div>
+          <p class="prc-foot">The reviewers and the final pass use Claude Opus through Anthropic's API, which does not train on your manuscript.</p>
         </section>
 
         <aside class="closing-cta sample-cta" aria-labelledby="sample-cta-h">

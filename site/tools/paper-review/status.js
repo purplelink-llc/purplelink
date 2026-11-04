@@ -42,7 +42,7 @@
         extracting: "Extracting paper structure…",
         vision: "Scanning figures + verifying citations…",
         citations: "Verifying citations…",
-        panel: "Running adversarial four-persona panel…",
+        panel: "Running adversarial seven-persona panel…",
         rectifying: "Synthesising the final report…",
         done: "Done.",
       },
@@ -270,7 +270,7 @@
       ["/tools/cover-letter/", "$2", "Cover Letter", "A draft from your abstract and the journal name. It never sees the manuscript."],
       ["/tools/paper-review/revision/", "$2", "Revision Review", "After you revise, checks the fixes against this report. Keep the Markdown file: it reads it."]
     ],
-    "citation-gap": [["/tools/paper-review/", "From $9", "Paper Review", "Four AI reviewers on methods, statistics and data, with every reference checked against CrossRef."]],
+    "citation-gap": [["/tools/paper-review/", "From $9", "Paper Review", "Seven AI reviewers on methods, statistics and data, with every reference checked against CrossRef."]],
     "anonymity-check": [["/tools/paper-review/", "From $9", "Paper Review", "The full pre-submission read, with an anonymity scan included."]],
     "cover-letter": [["/tools/paper-review/", "From $9", "Paper Review", "Before you send the letter, a reviewer panel's read of the manuscript itself."]],
     "response-review": [["/tools/paper-review/revision/", "$2", "Revision Review", "Checks the revised manuscript against the findings in your original Paper Review."]],
