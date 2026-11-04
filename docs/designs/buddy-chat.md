@@ -360,20 +360,32 @@ What the evidence says, and how much weight each piece carries:
 - The buttons do not depend on any experiment arm, so they change the ModernTex hero test's level (more questions on
   `/moderntex/` in both arms) but not its comparison. That date goes into the change log.
 
-### 3. Holdout: deferred to 2026-12-28
+### 3. Holdout from 2026-12-28 (Ben, 2026-11-04: "yes, start the holdout on 12-28")
 
-Not built in this pass. The reviewers agreed the v1 plan could not answer its question: the primary metric counted
-every visitor while about 5% would ever open the chat, 28 days per arm at this traffic detects only a very large
-lift, and it overlapped the header-link test (to 2026-12-27) and the ModernTex hero test (to 2026-12-13), one of
-which the new trial button touches. The plan, to confirm with Ben before 2026-12-28:
+Built in v2's plan and shipped dormant; it switches itself on at 00:00 UTC on 2026-12-28.
 
-- Paired-day switchback in `loader.js`, as in `exp-trial-link.js`, starting Monday 2026-12-28 (UTC), after both other
-  tests have ended, for 56 days; one seeded fair coin per pair; the only balance rule is 3 to 5 B days per weekday.
-- Unit and metric: the day; (trial downloads + checkout clicks) per pageview on the ten Mac-app pages above, the
-  pages where the chat is meant to sell. Analysis: the paired difference over the 28 pairs with a randomization test.
-- Decision rule, written now: keep Buddy unless the B-day rate is lower than the A-day rate (harm check). A lift is
-  reported with its interval and is not required. The free-check target stays 10 redemptions in its 28-day read.
-- What it compares is the whole chat (launcher, wording and buttons together), not any one part.
+- **Switch:** `site/buddy-chat/loader.js` holds `START = "2026-12-28"` and a 56-day `SCHEDULE` (to 2027-02-21). On
+  A days it returns before adding the stylesheet or the launcher; on B days, outside the window, with a malformed
+  schedule or on any error in the schedule code it draws the chat as before. The arm is read once per page load from
+  the UTC date and written to `<html data-exp-buddy-chat>` ("A", "B", "off"); nothing is sent or stored.
+- **Draw:** `scripts/draw_buddy_schedule.py`: days 1+2, 3+4, ... are pairs, one `random.Random(seed)` coin per pair
+  (`rng.random() < 0.5` puts B first), seeds from 20261228 up, first draw with 3 to 5 B days on every UTC weekday.
+  Seed 20261228 (the first tried) met it: B days Mon..Sun 3, 5, 3, 5, 5, 3, 4. `--check` fails if the loader holds
+  anything else; a site test runs it (an all-B schedule, meaning stopped, also passes).
+- **Data:** `stats.mjs` adds `appPageviews` and `appConversions` to each `byDay` row: views of the ten Mac-app pages
+  (localized ModernTex included, success and buy pages excluded), and trial downloads plus checkout clicks made on
+  those pages (a "send to my Mac" pointer click, meta ending `-not-mac`, is not a conversion). The daily dashboard
+  archives every numeric `byDay` field into `history.json`, so the series builds itself from the next build on.
+- **Read-out:** `scripts/buddy_holdout_report.py` pairs each A day with its B day, takes B minus A of
+  appConversions / appPageviews per pair, and reports the mean with a two-sided sign-flip randomization test. The
+  rule: "remove or rethink" only if B is lower with p < 0.05; otherwise keep Buddy. A lift is reported, not
+  required. Review date: 2027-02-22.
+- **What it compares** is the whole chat (launcher, wording, buttons) against no chat. The 20% coupon Ben asked for
+  on 2026-11-04 would, if it starts inside the window, become part of the B arm from that day; the coupon design
+  says how that is handled.
+- **Stop or keep for good:** set `SCHEDULE` to all `B`. Tests: `netlify/tests/buddy-holdout.test.mjs` (every day of
+  the window, UTC boundaries, fallbacks, all-B), `netlify/tests/stats-buddy-holdout.test.mjs`, and the schedule and
+  report tests in `site-tests/test_buddy_chat_pages.py`.
 
 ### Review log, conversion pass
 
