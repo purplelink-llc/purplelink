@@ -972,7 +972,7 @@
   try { if (sessionStorage.getItem('pl-promo-hidden') === '1') return; } catch (_) { /* storage blocked: show it */ }
 
   const APPS = [
-    { id: 'moderntex', name: 'ModernTex', href: '/moderntex/', icon: '/assets/moderntex-icon.webp', cta: 'Try it free',
+    { id: 'moderntex', name: 'ModernTex', href: '/moderntex/', icon: '/assets/moderntex-icon-2.webp', cta: 'Try it free',
       text: 'A native LaTeX editor for Mac. Free for 7 days, then $19.99 once, with every update included.', own: ['/moderntex/', '/suite/'] },
     { id: 'outbound-veil', name: 'Outbound Veil', href: '/outbound-veil/', icon: '/assets/outbound-veil-icon.webp', cta: 'Try it free',
       text: 'Checks what you type for personal information before you send it. Free 7-day trial, then $29.99.', own: ['/outbound-veil/', '/suite/'] },
@@ -996,7 +996,7 @@
       text: 'AI reviewers read your manuscript the way a journal would, before you submit. From $9.', own: ['/tools/paper-review/'] },
     { id: 'scholar-utility-belt', name: 'Scholar Utility Belt', href: '/scholar-utility-belt/', icon: '/assets/scholar-utility-belt-icon.webp', cta: 'Add to Chrome',
       text: 'Journal rankings, h-index and retraction alerts inside Google Scholar. A free Chrome extension.', own: ['/scholar-utility-belt/'] },
-    { id: 'mac-suite', name: 'Mac Suite', href: '/suite/', icon: '/assets/moderntex-icon.webp', cta: 'See the bundle',
+    { id: 'mac-suite', name: 'Mac Suite', href: '/suite/', icon: '/assets/moderntex-icon-2.webp', cta: 'See the bundle',
       text: 'ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and Vitae Plus together for $59.99, once.', own: ['/suite/', '/moderntex/', '/outbound-veil/', '/legroom/', '/keyfeel/', '/tapefolio/', '/panely/', '/summonly/', '/nee/', '/vitae/plus/'] },
     { id: 'globepin', name: 'GlobePin', href: '/globepin/', icon: '/assets/globepin-icon.webp', cta: 'Get it free',
       text: 'Mark every place you have been on a map. Free for iPhone.', own: ['/globepin/'] },
