@@ -2,3 +2,6 @@ stream.env
 out*/
 __pycache__/
 .pytest_cache/
+.aurender-bin
+.aurender-bin.tmp
+.aurender-build.lock
