@@ -211,6 +211,8 @@
               if (typeof body === "string") {
                 var parsed = JSON.parse(body) || {};
                 product = parsed.product || "";
+                // A button may name where on the page it sits (for example "preview"), counted as <product>+<src>.
+                if (typeof parsed.src === "string" && /^[a-z0-9_-]{1,20}$/.test(parsed.src)) product += "+" + parsed.src;
                 if (!parsed.rdt && (rdtClick || channel() === "paid:reddit")) {
                   parsed.rdt = rdtClick ? { c: rdtClick } : {};
                   init = Object.assign({}, init, { body: JSON.stringify(parsed) });

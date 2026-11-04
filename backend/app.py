@@ -3026,6 +3026,21 @@ def web():
             f"follow-up emails. No more will be sent to {_html_module.escape(email)}.</p>",
         )
 
+    def _already_used_409(token: str = "", error: str = "already_used") -> JSONResponse:
+        """409 for a token that already started a review. Carries the status
+        page link and a plain sentence so the upload page can send the
+        customer there instead of showing a bare code."""
+        from urllib.parse import quote as _q
+        body = {
+            "error": error,
+            "detail": "A review was already started with this link. Open its status page to follow it or read the report.",
+        }
+        if error == "all_used" and not token:
+            body["detail"] = "Every review in this pack has been started. Open the status link we emailed for each one."
+        if token and isinstance(token, str) and len(token) <= 200:
+            body["status_url"] = f"/tools/paper-review/status/?token={_q(token, safe='')}"
+        return JSONResponse(body, status_code=409)
+
     @api.post("/paper-review/redeem-session")
     async def paper_review_redeem_session(request: Request):
         """Exchange a Stripe session_id (or an already-issued job token) for
@@ -3067,13 +3082,14 @@ def web():
             _expire_token_entry(session_id, entry)
             return JSONResponse({"error": "expired"}, status_code=410)
         if token_lookup and token_lookup in (entry.get("consumed_tokens") or []):
-            return JSONResponse({"error": "already_used"}, status_code=409)
+            return _already_used_409(token_lookup)
 
         tokens: list[str] = entry.get("tokens") or []
         consumed = set(entry.get("consumed_tokens") or [])
         unused = [t for t in tokens if t not in consumed]
         if not unused:
-            return JSONResponse({"error": "all_used"}, status_code=409)
+            resp = _already_used_409(tokens[0] if len(tokens) == 1 else "", error="all_used")
+            return resp
 
         if not entry.get("redeemed"):
             entry["redeemed"] = True
@@ -3222,7 +3238,7 @@ def web():
         if entry is None:
             return JSONResponse({"error": "unknown_token"}, status_code=404)
         if token in (entry.get("consumed_tokens") or []):
-            return JSONResponse({"error": "already_used"}, status_code=409)
+            return _already_used_409(token)
         if entry.get("expires_at", 0) and entry["expires_at"] < _time_module.time():
             # Purge on the app's own clock rather than relying on Modal
             # Dict's inactivity-based TTL (see _expire_token_entry).
@@ -3242,7 +3258,7 @@ def web():
         # the same token can win this CAS, so only one pipeline run is ever
         # spawned per token, no matter how many requests race in.
         if not _claim_token(token):
-            return JSONResponse({"error": "already_used"}, status_code=409)
+            return _already_used_409(token)
 
         async def _reject(detail: str, status_code: int = 400, error: str = "invalid"):
             """Release the claim taken above before refusing the upload, so a customer

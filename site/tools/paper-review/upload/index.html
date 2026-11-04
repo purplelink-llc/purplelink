@@ -38,11 +38,15 @@
       <div class="tools-hero">
         <p class="eyebrow">Step 2 of 3 · Upload</p>
         <h1>Upload your manuscript</h1>
-        <p>Thanks for the payment. Upload your manuscript (PDF or Word .docx) and pick the domain profile that best matches it. The review starts when you click <strong>Submit</strong> and typically takes 4-8 minutes.</p>
+        <p>Thanks for the payment. Upload your manuscript (PDF or Word .docx) and pick the domain profile that best matches it. The review starts when you click <strong>Submit</strong> and typically takes 4 to 8 minutes (Deep takes 10 to 15).</p>
       </div>
 
       <div class="tool-app pr-upload-wrap">
-        <p class="pr-redeem-status" id="redeem-status">Verifying your payment…</p>
+        <p class="pr-resume" id="pr-resume" hidden>Your review is running: <a href="/tools/paper-review/status/">open it</a>.</p>
+        <p class="pr-redeem-status" id="redeem-status" role="status">Verifying your payment…</p>
+        <div class="tool-options" id="redeem-retry" hidden>
+          <button type="button" class="btn btn-secondary" id="redeem-retry-btn">Check again</button>
+        </div>
         <form class="pr-token-form" id="token-form" hidden>
           <label for="token-input" class="pr-field-label">Have a review token from a pack? Paste it here.</label>
           <div class="pr-token-row">
@@ -84,25 +88,35 @@
             </label>
           </div>
 
-          <div class="pr-field-group">
-            <label for="email-field" class="pr-field-label">Send the report to a different address <span class="pr-field-hint">(optional)</span></label>
-            <input type="email" id="email-field" class="pr-input" placeholder="you@example.edu" autocomplete="email">
-            <p class="pr-field-help">When the review finishes, the report is emailed as a PDF to the address on your Stripe receipt, so you don't have to keep the tab open. Enter an address here to send it somewhere else. If this token came from a volume pack, the report is emailed only if you enter an address here.</p>
+          <div class="pr-field-group" id="report-address-group" hidden>
+            <label for="report-email" class="pr-field-label">Where should we send the report?</label>
+            <input type="email" id="report-email" class="pr-input" placeholder="you@example.edu" autocomplete="email" aria-describedby="report-email-echo report-email-error">
+            <p class="pr-field-help" id="report-email-echo" aria-live="polite">The report is emailed to this address as a PDF when the review finishes.</p>
+            <p class="pr-field-error" id="report-email-error" role="alert" hidden></p>
           </div>
 
-          <fieldset class="pr-remind-pick">
-            <legend>When do you expect a decision? <span class="pr-field-hint">(optional)</span></legend>
-            <p class="pr-field-help">We send one email around then to the address that paid for this review, about the tools for answering reviewers. Nothing else.</p>
-            <div class="pr-remind-options">
-              <label><input type="radio" name="remind_weeks" value="" checked> <span>No reminder</span></label>
-              <label><input type="radio" name="remind_weeks" value="4"> <span>In about 4 weeks</span></label>
-              <label><input type="radio" name="remind_weeks" value="8"> <span>In about 8 weeks</span></label>
-              <label><input type="radio" name="remind_weeks" value="12"> <span>In about 12 weeks</span></label>
+          <details class="pr-more-options" id="more-options">
+            <summary>More options</summary>
+            <div class="pr-field-group" id="email-override-group">
+              <label for="email-field" class="pr-field-label">Send the report to a different address <span class="pr-field-hint">(optional)</span></label>
+              <input type="email" id="email-field" class="pr-input" placeholder="you@example.edu" autocomplete="email">
+              <p class="pr-field-help">When the review finishes, the report is emailed as a PDF to the address on your Stripe receipt, so you don't have to keep the tab open. Enter an address here to send it somewhere else.</p>
             </div>
-          </fieldset>
+
+            <fieldset class="pr-remind-pick">
+              <legend>When do you expect a decision? <span class="pr-field-hint">(optional)</span></legend>
+              <p class="pr-field-help">We send one email around then to the address that paid for this review, about the tools for answering reviewers. Nothing else.</p>
+              <div class="pr-remind-options">
+                <label><input type="radio" name="remind_weeks" value="" checked> <span>No reminder</span></label>
+                <label><input type="radio" name="remind_weeks" value="4"> <span>In about 4 weeks</span></label>
+                <label><input type="radio" name="remind_weeks" value="8"> <span>In about 8 weeks</span></label>
+                <label><input type="radio" name="remind_weeks" value="12"> <span>In about 12 weeks</span></label>
+              </div>
+            </fieldset>
+          </details>
 
           <p class="tool-privacy">
-            <strong>Privacy note:</strong> Your manuscript will be sent to Anthropic's Claude API (which retains inputs for 30 days for abuse monitoring and does not use them for training). The report is emailed to you as a PDF. The manuscript is not. Purplelink deletes the manuscript and the online copy within about a day after you first open the result, or within 48 hours if you never do. <a href="/privacy/">Read the privacy policy →</a>
+            <strong>Privacy note:</strong> Your manuscript will be sent to Anthropic's Claude API (which retains inputs for 30 days for abuse monitoring and does not use them for training). The report is emailed to you as a PDF. The manuscript is not. The online copy can be opened again for 30 minutes after you first open it and is deleted within a day. The emailed PDF is yours to keep. <a href="/privacy/">Read the privacy policy →</a>
           </p>
 
           <div class="tool-options u-mt-075">

@@ -621,7 +621,10 @@ def test_redeem_session_by_token_already_used(client):
 
     r = http.post("/paper-review/redeem-session", json={"token": used_token})
     assert r.status_code == 409
-    assert r.json()["error"] == "already_used"
+    body = r.json()
+    assert body["error"] == "already_used"
+    assert body["status_url"] == "/tools/paper-review/status/?token=" + used_token
+    assert body["detail"] and "pack" not in body["detail"].lower()
 
 
 def test_redeem_session_by_unknown_token_is_pending(client):
@@ -823,7 +826,10 @@ def test_submit_already_used_token(client):
         files={"file": ("paper.pdf", io.BytesIO(PDF_BYTES), "application/pdf")},
     )
     assert r.status_code == 409
-    assert r.json()["error"] == "already_used"
+    body = r.json()
+    assert body["error"] == "already_used"
+    assert body["status_url"] == "/tools/paper-review/status/?token=" + token
+    assert body["detail"]
     # Must not have spawned a billable pipeline run.
     assert backend_app.paper_review_pipeline.calls == []
 
