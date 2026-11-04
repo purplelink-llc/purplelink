@@ -6,6 +6,23 @@
   if (window.__buddyChat) return;
   window.__buddyChat = true;
 
+  // Holdout (docs/designs/buddy-chat.md, "Conversion pass", section 3; Ben, 2026-11-04: "start the holdout on 12-28").
+  // Paired-day switchback over 56 UTC days from 2026-12-28 to 2027-02-21, drawn by scripts/draw_buddy_schedule.py:
+  // seed 20261228, the first seed tried; B days per weekday Mon..Sun 3, 5, 3, 5, 5, 3, 4. On A days the launcher is
+  // not drawn. On B days, outside the window, with a malformed schedule, or on any error here, it is drawn as before.
+  // The arm is read from the UTC date when the page loads and kept for the page's life; nothing is sent or stored.
+  // <html data-exp-buddy-chat> says "A", "B" or "off". To stop early, or to keep the chat every day afterwards, set
+  // SCHEDULE to all "B".
+  var START = "2026-12-28";
+  var SCHEDULE = "BAABBABABAABBAABBABABAABBAABBABABAABBABABAABABBABABABABA";
+  var arm = "off";
+  try {
+    var day = Math.floor((Date.now() - Date.parse(START + "T00:00:00Z")) / 86400000);
+    if (/^[AB]+$/.test(SCHEDULE) && day >= 0 && day < SCHEDULE.length) arm = SCHEDULE.charAt(day);
+  } catch (e) { arm = "off"; }
+  try { document.documentElement.dataset.expBuddyChat = arm; } catch (e) {}
+  if (arm === "A") return;
+
   var BASE = "/buddy-chat/";
   var FACE =
     '<svg class="bc-face" viewBox="0 0 100 100" aria-hidden="true" focusable="false">' +

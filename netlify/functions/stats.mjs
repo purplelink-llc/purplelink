@@ -101,6 +101,10 @@ export const PRODUCT_PAGES = ["moderntex", "outbound-veil", "legroom", "keyfeel"
 const PRODUCT_RE = new RegExp(`^/(${PRODUCT_PAGES.join("|")})/`);
 export const entryKind = (path) => (/^\/guides\//.test(path) ? "guide" : /^\/tools\//.test(path) ? "tool" : PRODUCT_RE.test(path) ? "product" : "other");
 export const productOf = (path) => { const m = PRODUCT_RE.exec(path || ""); return m ? m[1] : ""; };
+// The ten paid Mac-app pages where the Buddy chat holdout is read (docs/designs/buddy-chat.md, "Conversion pass",
+// section 3): the page itself, localized or not, and not its success or buy subpages.
+const CHAT_APP_PAGE_RE = /^\/(?:(?:de|fr|ja|pt-br|zh-cn)\/)?(?:moderntex|outbound-veil|legroom|keyfeel|tapefolio|panely|summonly|lenscrib|nee|suite)\/?$/;
+export const isChatAppPage = (path) => CHAT_APP_PAGE_RE.test(path || "");
 /** visits: Map of vid -> [{ ts, path }] for one day. Returns { guide|tool|product|other: { visitors, reachedProduct, byProduct } }. */
 export function journeysOf(visits) {
   const out = {};
@@ -296,7 +300,7 @@ export default async function handler(request) {
   for (const { day, blobs } of listings) {
     if (!blobs) continue;            // preserves the old behaviour: skip the day entirely
     if (!s.byDay[day]) {
-      s.byDay[day] = { pageviews: 0, uniques: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0, lcbTrialDownloads: 0, neeTrialDownloads: 0, pnTrialDownloads: 0, smTrialDownloads: 0, guideTrialClicks: 0, guidePageClicks: 0, sendToMac: 0, trialNotMac: 0 };
+      s.byDay[day] = { pageviews: 0, uniques: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0, lcbTrialDownloads: 0, neeTrialDownloads: 0, pnTrialDownloads: 0, smTrialDownloads: 0, guideTrialClicks: 0, guidePageClicks: 0, sendToMac: 0, trialNotMac: 0, appPageviews: 0, appConversions: 0 };
       if (hostFilter) for (const f of Object.values(HOST_EVENT_FIELDS)) s.byDay[day][f] = 0;
     }
     if (!uniquesPerDay[day]) uniquesPerDay[day] = new Set();
@@ -357,6 +361,15 @@ export default async function handler(request) {
       // definition; trialNotMac lets a reader take them back out, per day.
       if (/_?trial_download$/.test(rec.type) && String(rec.meta || "").endsWith("-not-mac")) {
         s.totals.trialNotMac++; s.byDay[day].trialNotMac++;
+      }
+
+      // Buddy chat holdout: views of the ten Mac-app pages and the trial downloads and checkout clicks made on them, per
+      // UTC day. A "send to my Mac" pointer click (meta ending -not-mac) downloads nothing, so it is not a conversion.
+      if (!hostFilter && isChatAppPage(rec.path)) {
+        if (rec.type === "pageview") s.byDay[day].appPageviews++;
+        else if (rec.type === "checkout_click" || (/_?trial_download$/.test(rec.type) && !String(rec.meta || "").endsWith("-not-mac"))) {
+          s.byDay[day].appConversions++;
+        }
       }
 
       if (rec.type === "pageview") {
