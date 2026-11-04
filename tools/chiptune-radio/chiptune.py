@@ -64,6 +64,8 @@ NEXT_DARK = {
     6: [(2, 3), (0, 3), (5, 2), (3, 1)],
 }
 
+RACER_BPM = (150, 168)      # style="racer": mood 0 to 1 maps across this tempo range (a running cadence sits around 160)
+
 FORMS = [
     [("intro", 4), ("A", 8), ("B", 8), ("A2", 8), ("bridge", 8), ("B2", 8), ("A3", 8), ("outro", 4)],
     [("intro", 4), ("A", 8), ("A2", 8), ("B", 8), ("bridge", 8), ("B2", 8), ("A3", 8), ("outro", 4)],
@@ -215,9 +217,11 @@ def pick_sound(seed: int, era: str | None = None) -> dict:
                 chorus=era != "8bit" and r.random() < 0.8)
 
 
-def plan(seed: int, era: str | None = None, mood: float | None = None, mode_weights: dict | None = None) -> Track:
+def plan(seed: int, era: str | None = None, mood: float | None = None, mode_weights: dict | None = None, style: str | None = None) -> Track:
     """`mode_weights` (mode name -> weight) lets a caller bias the modes, e.g. minor and dorian for an autumn video; the draw still
-    consumes exactly one random number, so only the mode (and what follows from it) changes; without weights nothing changes at all."""
+    consumes exactly one random number, so only the mode (and what follows from it) changes; without weights nothing changes at all.
+    `style="racer"` makes a 16-bit racing track: 150 to 170 BPM, no swing, the "drive" groove (an octave-pumping eighth-note bass, kick on the
+    beat, 16th hats in every drummed section). It is applied after every random draw, so the notes' choices match the plain track of the same seed."""
     r = random.Random(seed * 7919 + 13)
     key = r.choice(list(KEYS))
     mode = r.choices(list(MODES), weights=[mode_weights.get(m, 0) for m in MODES] if mode_weights else [4, 4, 3, 2, 1])[0]
@@ -254,6 +258,11 @@ def plan(seed: int, era: str | None = None, mood: float | None = None, mode_weig
         chords = s.pop("chords")
         t.sections.append(Section(name, bars, chords, **s))
     t.sound = pick_sound(seed, era)
+    if style == "racer":
+        t.bpm = int(round(RACER_BPM[0] + (RACER_BPM[1] - RACER_BPM[0]) * mood + ((seed * 2654435761) % 1000) / 1000 * 4 - 2))
+        t.swing, t.groove = 0.0, "drive"
+    elif style:
+        raise ValueError(f"unknown style {style!r}")
     return t
 
 
@@ -383,7 +392,10 @@ def compose(t: Track):
                     "p2": [(0, 4, root), (6, 2, root + 12), (8, 4, fifth), (12, 2, root), (14, 2, approach)],
                     "p3": [(0, 4, root), (4, 4, third), (8, 4, fifth), (12, 4, approach)],
                     "p4": [(0, 3, root), (3, 3, root), (6, 2, fifth), (8, 4, root + 12), (12, 4, fifth)],
-                }[pat]
+                    # the racer bass: eighth notes jumping root to octave, the fifth in the second half, an approach note into the next chord
+                    "drive": [(0, 2, root), (2, 2, root + 12), (4, 2, root), (6, 2, root + 12), (8, 2, fifth), (10, 2, fifth + 12), (12, 2, root),
+                              (14, 2, approach)],
+                }["drive" if t.groove == "drive" else pat]
                 lo_slot, hi_slot = b * 4, (b + ln) * 4
                 for slot, sl, m in lines:
                     if lo_slot <= slot < hi_slot:
@@ -393,7 +405,7 @@ def compose(t: Track):
             if sec.arp:
                 pattern = {"updown": [0, 1, 2, 3, 2, 1], "broken": [0, 2, 1, 3], "pedal": [0, 2, 0, 3, 0, 2, 0, 1],
                            "gated": [0, -1, 1, -1, 2, -1, 1, -1]}[sec.arp]
-                stride = 4 if t.mood < 0.5 else 2      # quarter notes for lofi, eighths toward boss; 16ths were a constant plink
+                stride = 2 if t.groove == "drive" or t.mood >= 0.5 else 4      # quarter notes for lofi, eighths toward boss; 16ths were a constant plink
                 for b, ch, ln in chs:
                     tones = sorted(tonic + 12 + ch.root + (iv % 12) for iv in ch.ivs)
                     tones.append(tones[0] + 12)
@@ -429,6 +441,8 @@ def compose(t: Track):
                     "steady": ([0, 8], [4, 12], [], list(range(0, 16, 2))),
                     "lofi": ([0, 6, 10], [4, 12], [7, 15], list(range(0, 16, 2))),
                     "broken": ([0, 7, 10], [4, 12], [14], list(range(0, 16, 1)) if sec.energy > 0.9 else list(range(0, 16, 2))),
+                    # racer: four on the floor in the big sections, kick on 1 and the "and" of 3 elsewhere, 16th hats throughout
+                    "drive": ([0, 4, 8, 12] if sec.energy > 0.8 else [0, 8, 10], [4, 12], [14], list(range(0, 16, 1))),
                 }
                 kicks, snares, ghosts, hats = grooves[t.groove]
                 fill = sec.fill and block_end
@@ -444,7 +458,7 @@ def compose(t: Track):
                 if fill and bar % 8 == 7:
                     for k, p in zip((12, 13, 14, 15), (0.0, 0.3, 0.6, 0.9)):
                         ev["tom"].append((place(t, t0, k), 0.1, 0, 0.55 * d, {"pitch": 110 - 25 * p}))
-                if sec.hats:
+                if sec.hats or t.groove == "drive":
                     for k in hats:
                         acc = 1.0 if k % 4 == 0 else 0.55
                         ev["hat"].append((place(t, t0, k), 0.04, 0, acc * (0.8 if k % 2 == 0 else 0.35) * d, None))
