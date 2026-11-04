@@ -318,6 +318,31 @@ def test_chat_off_flag_and_spend_cap_stop_model_calls(app_client):
     assert calls["model"] == []
 
 
+def test_off_line_is_bens_nap_wording():
+    assert buddy.OFF_LINE.startswith("Buddy is taking a nap and will be back tomorrow.")
+    assert "write to Ben" in buddy.OFF_LINE
+
+
+def test_monthly_cap_names_the_day_buddy_is_back(app_client):
+    c, app, calls = app_client
+    tok = _session(c)
+    _, month = buddy.spend_keys()
+    app.buddy_dict[month] = buddy.CHAT_MONTHLY_USD
+    reply = _chat(c, session=tok).json()["reply"]
+    assert reply.startswith("Buddy is taking a nap and will be back on ") and " 1. " in reply
+    assert "tomorrow" not in reply and calls["model"] == []
+
+
+def test_nap_line_dates():
+    nov = 1_794_000_000      # 2026-11-06 UTC
+    dec = 1_796_600_000      # 2026-12-06 UTC
+    for now, back in ((nov, "December 1"), (dec, "January 1")):
+        _, month = buddy.spend_keys(now)
+        store = {month: buddy.CHAT_MONTHLY_USD}
+        assert buddy.nap_line(store, 0.01, now) == f"Buddy is taking a nap and will be back on {back}. You can write to Ben instead."
+    assert buddy.nap_line({}, 0.01, nov) == buddy.OFF_LINE          # under the monthly cap: the daily one stopped it
+
+
 def test_chat_per_minute_limit(app_client):
     c, _, calls = app_client
     tok = _session(c)

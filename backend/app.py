@@ -3946,7 +3946,7 @@ def web():
         reserve = _buddy.estimate_cost(len(json.dumps(messages)) + len(_buddy.facts()) + len(_buddy.VOICE) + 3000)
         try:
             if not _buddy.reserve_spend(buddy_dict, reserve):
-                return JSONResponse({"reply": _buddy.OFF_LINE, "off": True})
+                return JSONResponse({"reply": _buddy.nap_line(buddy_dict, reserve), "off": True})
         except Exception:
             return JSONResponse({"reply": _buddy.OFF_LINE, "off": True})
 

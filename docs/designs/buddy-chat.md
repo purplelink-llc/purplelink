@@ -141,7 +141,9 @@ builds it only from site tokens, so it stays calm and works in both themes (deci
 - **Spend cap:** before each call, reserve the worst case (input tokens counted locally plus 350 output, at Haiku
   list price from one `HAIKU_PRICE` constant) in `buddy_spend_dict[utc_day]`; reconcile with the real `usage` after
   the call, and release the reservation if the call fails. Daily cap $1.50, monthly cap $30. Over a cap, or if the
-  Dict is unreachable (fail closed), the chat answers: "The chat is off for today. You can write to Ben below."
+  Dict is unreachable (fail closed), the chat answers: "Buddy is taking a nap and will be back tomorrow. You can
+  write to Ben instead." (Ben's wording, 2026-11-03). When the monthly cap is the one hit, it names the day it is
+  back instead, for example "Buddy is taking a nap and will be back on December 1."
   Overshoot is bounded by the in-flight requests at the moment the cap is crossed (at most about 10 at the per-IP
   burst limit), which is accepted.
 - Chat spend also goes into `_write_usage_ledger` with product `buddy-chat`, so it shows on the existing cost

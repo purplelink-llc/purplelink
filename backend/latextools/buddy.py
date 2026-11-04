@@ -40,7 +40,10 @@ FREE_COST_CEILING_USD = 0.60
 FORM_MIN_SECONDS = 3
 FORM_MAX_SECONDS = 24 * 3600
 
-OFF_LINE = "The chat is off for today. You can write to Ben instead."
+# Ben, 2026-11-03: when the chat is off or out of spend, "Buddy is taking a nap and will be back tomorrow."
+OFF_LINE = "Buddy is taking a nap and will be back tomorrow. You can write to Ben instead."
+_MONTHS = ("January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
+           "November", "December")
 ERROR_LINE = "Something went wrong on my side. You can write to Ben instead."
 NO_DEALS_LINE = ("I can't offer discounts, codes or free products. Prices are on each product page, and the free "
                  "Citation Gap check is the button in this chat.")
@@ -217,6 +220,19 @@ def reserve_spend(store, amount: float, now: float | None = None) -> bool:
     store[day_key] = day + amount
     store[month_key] = month + amount
     return True
+
+
+def nap_line(store, amount: float, now: float | None = None) -> str:
+    """The line for a chat stopped by a spend cap. The monthly cap lifts on the 1st (spend is counted by UTC
+    month), so "tomorrow" would be false there and the line names the date instead."""
+    try:
+        _, month_key = spend_keys(now)
+        if float(store.get(month_key, 0.0)) + amount <= CHAT_MONTHLY_USD:
+            return OFF_LINE
+    except Exception:
+        return OFF_LINE
+    t = time.gmtime(now or time.time())
+    return f"Buddy is taking a nap and will be back on {_MONTHS[t.tm_mon % 12]} 1. You can write to Ben instead."
 
 
 def settle_spend(store, reserved: float, actual: float, now: float | None = None) -> float:

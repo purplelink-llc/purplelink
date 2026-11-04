@@ -340,7 +340,7 @@
   function fetchStatus() {
     sessionReady = getSession().catch(function () {
       input.disabled = true; sendBtn.disabled = true;
-      say("buddy", "The chat is off for today. You can write to Ben instead.");
+      say("buddy", "Buddy is taking a nap and will be back tomorrow. You can write to Ben instead.");
     });
   }
 
