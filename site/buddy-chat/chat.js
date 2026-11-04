@@ -134,9 +134,28 @@
     log.scrollTop = log.scrollHeight;
     return p;
   }
+  // Pre-sale buttons on the paid Mac-app pages (design doc, "Conversion pass", section 2), keyed by the first path
+  // segment after any locale prefix.
+  var APPS = {
+    "moderntex": "ModernTex", "outbound-veil": "Outbound Veil", "legroom": "Legroom", "keyfeel": "Keyfeel",
+    "tapefolio": "Tapefolio", "panely": "Panely", "summonly": "Summonly", "lenscrib": "Lenscrib", "nee": "N\u00e9e",
+    "suite": "the Mac Suite"
+  };
+  var LOCALES = { "de": 1, "fr": 1, "ja": 1, "pt-br": 1, "zh-cn": 1 };
+  function appOfPage() {
+    var parts = location.pathname.split("/").filter(Boolean);
+    if (parts.length && LOCALES[parts[0]]) parts.shift();
+    return parts.length && Object.prototype.hasOwnProperty.call(APPS, parts[0]) ? APPS[parts[0]] : "";
+  }
+  function chipList() {
+    var app = appOfPage();
+    if (!app) return [["free_check", "Free citation check"], ["app_fit", "Which app fits me?"], ["latex", "Help with a LaTeX error"]];
+    return [["price", "What does " + app + " cost?"], ["trial", "How does the free trial work?"],
+            ["macs", "Which Macs does it run on?"], ["free_check", "Free citation check"]];
+  }
   function chips() {
     var row = el("div", "bc-chips");
-    [["free_check", "Free citation check"], ["app_fit", "Which app fits me?"], ["latex", "Help with a LaTeX error"]]
+    chipList()
       .forEach(function (c) {
         var b = el("button", "bc-chip", c[1]);
         b.type = "button";
@@ -172,11 +191,12 @@
     mood("thinking");
     (sessionReady || Promise.resolve())
       .then(function () { return post("/buddy/chat", { session: session, turns: turns.slice(-8) }); })
-      .then(function (res) { return res && res.reply ? res.reply : "Something went wrong. You can write to Ben instead."; })
-      .catch(function () { return "I could not reach the server. You can write to Ben instead."; })
-      .then(function (reply) {
+      .then(function (res) { return res && res.reply ? res : { reply: "Something went wrong. You can write to Ben instead." }; })
+      .catch(function () { return { reply: "I could not reach the server. You can write to Ben instead." }; })
+      .then(function (res) {
         wait.remove();
-        say("buddy", reply);
+        say("buddy", res.reply);
+        if (res.offer === "coupon") couponButtons();
         mood("idle");
         busy = false;
         sendBtn.disabled = false;
@@ -185,31 +205,32 @@
   }
 
   // ---- free Citation Gap check (section 6) -----------------------------------------------------------------------
-  function freeCheckForm() {
+  // One small email form for the free check and the emailed code: honeypot, signed form stamp, same checks.
+  function emailForm(o) {
     if (panel.querySelector(".bc-form")) { panel.querySelector(".bc-form input").focus(); return; }
     var f = el("form", "bc-form");
     f.noValidate = true;
-    f.appendChild(el("p", null, "One free check per email. I'll email you a link to upload your PDF."));
+    f.appendChild(el("p", null, o.intro));
     var lab = el("label", null, "Email");
     lab.htmlFor = "bc-email";
     var email = el("input", "bc-field");
     email.type = "email"; email.id = "bc-email"; email.autocomplete = "email"; email.required = true;
     var hp = el("input", "bc-hp");
     hp.name = "website"; hp.tabIndex = -1; hp.autocomplete = "off"; hp.setAttribute("aria-hidden", "true");
-    var go = el("button", "bc-send", "Send me the link");
+    var go = el("button", "bc-send", o.button);
     go.type = "submit";
     f.appendChild(lab); f.appendChild(email); f.appendChild(hp);
-    f.appendChild(el("p", null, "Your PDF is sent to Anthropic for analysis and is not kept by us."));
+    if (o.note) f.appendChild(el("p", null, o.note));
     f.appendChild(go);
     f.addEventListener("submit", function (e) {
       e.preventDefault();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) { email.focus(); return; }
       go.disabled = true;
-      track("free_check_requested");
-      post("/buddy/free-check", { email: email.value.trim(), website: hp.value, form_ts: formTs, session: session })
+      track(o.event, o.meta);
+      post(o.path, { email: email.value.trim(), website: hp.value, form_ts: formTs, session: session })
         .then(function (res) {
           f.remove();
-          say("buddy", (res && res.message) || "Check your inbox for the upload link. It works for 3 days.");
+          say("buddy", (res && res.message) || o.done);
           if (res && res.ok) { mood("happy"); setTimeout(function () { mood("idle"); }, 2500); }
         })
         .catch(function () { go.disabled = false; say("buddy", "That did not go through. Please try again."); });
@@ -218,6 +239,62 @@
     log.scrollTop = log.scrollHeight;
     email.focus();
   }
+  function freeCheckForm() {
+    emailForm({ intro: "One free check per email. I'll email you a link to upload your PDF.",
+                note: "Your PDF is sent to Anthropic for analysis and is not kept by us.",
+                button: "Send me the link", event: "free_check_requested", path: "/buddy/free-check",
+                done: "Check your inbox for the upload link. It works for 3 days." });
+  }
+
+  // ---- the 20% code (docs/designs/buddy-coupon.md): shown only after the visitor asks, made by the server ---------
+  function couponButtons() {
+    track("coupon_offer");
+    var row = el("div", "bc-chips");
+    [["Get my code", getCode], ["Email me a 20% code instead", couponEmailForm]].forEach(function (c) {
+      var b = el("button", "bc-chip", c[0]);
+      b.type = "button";
+      b.addEventListener("click", function () { row.remove(); c[1](); });
+      row.appendChild(b);
+    });
+    log.appendChild(row);
+    log.scrollTop = log.scrollHeight;
+  }
+  function getCode() {
+    (sessionReady || Promise.resolve())
+      .then(function () { return post("/buddy/coupon", { session: session }); })
+      .then(function (res) {
+        if (!res || !res.ok) { say("buddy", (res && res.message) || "I could not make a code just now."); return; }
+        track("coupon_issued", "ask");
+        codeBox(res.code, res.expires_at);
+      })
+      .catch(function () { say("buddy", "I could not reach the server. You can write to Ben instead."); });
+  }
+  function codeBox(code, expiresAt) {
+    var until = "";
+    try { until = new Date(expiresAt * 1000).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }); } catch (e) {}
+    var p = el("div", "bc-msg bc-msg--buddy bc-code-box");
+    p.appendChild(el("p", null, "Your code:"));
+    var c = el("code", "bc-code", code);
+    p.appendChild(c);
+    var copy = el("button", "bc-chip", "Copy");
+    copy.type = "button";
+    copy.addEventListener("click", function () {
+      try { navigator.clipboard.writeText(code).then(function () { copy.textContent = "Copied"; }); } catch (e) {}
+    });
+    p.appendChild(copy);
+    p.appendChild(el("p", null, "Enter it at checkout under Add promotion code within 10 minutes" +
+      (until ? " (until " + until + ")" : "") + ". It takes 20% off one order and works once."));
+    log.appendChild(p);
+    log.scrollTop = log.scrollHeight;
+    mood("happy"); setTimeout(function () { mood("idle"); }, 2500);
+  }
+  function couponEmailForm() {
+    emailForm({ intro: "One code per email. It takes 20% off one order and works for 24 hours.",
+                note: "We send this one email and don't add you to any list.",
+                button: "Email me the code", event: "coupon_requested", meta: "email", path: "/buddy/coupon-email",
+                done: "Check your inbox. The code works for 24 hours." });
+  }
+
 
   // ---- panel ----------------------------------------------------------------------------------------------------
   function build() {
@@ -231,7 +308,7 @@
     avatar.innerHTML = window.__buddyFace;
     var title = el("div", "bc-title");
     title.appendChild(el("p", "bc-name", "Buddy"));
-    var note = el("p", "bc-note", "AI, can be wrong. ");
+    var note = el("p", "bc-note", "AI answers from what's on this site. It can be wrong. ");
     var ben = el("a", null, "Write to Ben");
     ben.href = "/support/";
     note.appendChild(ben);
@@ -288,7 +365,8 @@
     panel.addEventListener("keydown", function (e) { if (e.key === "Escape") hide(); });
     document.body.appendChild(panel);
 
-    say("buddy", "Ask me about our Mac apps or paper tools. I can also run a free Citation Gap check on a paper draft.");
+    say("buddy", "I answer questions about our Mac apps and paper tools from what's on this site, and I can run a free " +
+      "Citation Gap check on a paper draft. I can't look up an order.");
     chips();
     loadAllowed();
     fetchStatus();
@@ -340,7 +418,7 @@
   function fetchStatus() {
     sessionReady = getSession().catch(function () {
       input.disabled = true; sendBtn.disabled = true;
-      say("buddy", "The chat is off for today. You can write to Ben instead.");
+      say("buddy", "Buddy is taking a nap and will be back tomorrow. You can write to Ben instead.");
     });
   }
 
@@ -359,10 +437,14 @@
   }
 
   // ---- canned replies for the local mock (no server) -----------------------------------------------------------
-  function mockPost(path) {
+  function mockPost(path, body) {
     return new Promise(function (ok) {
       setTimeout(function () {
+        var last = body && body.turns && body.turns.length ? body.turns[body.turns.length - 1].text : "";
         if (path === "/buddy/free-check") ok({ ok: true, message: "Check your inbox for the upload link. It works for 3 days." });
+        else if (path === "/buddy/coupon") ok({ ok: true, code: "BUDDY-MOCK42", expires_at: Math.floor(Date.now() / 1000) + 600 });
+        else if (path === "/buddy/coupon-email") ok({ ok: true, message: "If that address can get a code, it is on its way. It works for 24 hours." });
+        else if (/coupon|discount|promo|voucher/i.test(last)) ok({ reply: "I can make you a one-time 20% code. It takes 20% off one order, and you enter it at checkout within 10 minutes of getting it.", offer: "coupon" });
         else ok({ reply: "ModernTex is a native Mac LaTeX editor: $19.99 once, with a 7-day trial. " +
           "If you write in Overleaf today, it opens the same projects and compiles offline. See https://purplelink.llc/moderntex/" });
       }, 900);

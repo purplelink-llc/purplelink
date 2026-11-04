@@ -1,7 +1,7 @@
 # Buddy on the web: a site chat with a free Citation Gap check
 
 Status: v2, reviewed (EGM Goldfish review, three Sonnet reviewers: design, implementation readiness, scope) and
-decided by Ben 2026-11-02. Not built yet. Owner: Ben. Decisions and the review log are at the end.
+decided by Ben 2026-11-02. Built 2026-11-02 (see "As built"); widened to every public page 2026-11-03. Owner: Ben. Decisions and the review log are at the end.
 
 ## Concepts brief
 
@@ -28,12 +28,15 @@ Citation Gap page itself) before deciding.
 
 **Boundaries.**
 - The model has no tools and grants nothing. Offers are buttons the page draws from fixed rules; the server checks
-  them. A visitor cannot talk Buddy into a free Suite or a discount.
+  them. A visitor cannot talk Buddy into a free Suite or a discount. (Amended 2026-11-04: a visitor who asks for a
+  discount gets a button that makes a one-time 20% code, minted and checked by the server; the model still grants
+  nothing. See `docs/designs/buddy-coupon.md`.)
 - No rewards for App Store ratings or reviews (Apple's App Review Guidelines and the FTC's 2024 rule on reviews
   forbid it) and none for social follows. Not in this design and not later.
-- First release only on the paper-tool pages (`/tools/paper-review/`, `/tools/citation-gap/` and the other paid tool
-  landing pages) and the Mac-app product pages. Never on checkout, success, upload, manage, stats or digest pages.
-  With JavaScript off, every page is as before.
+- On every public page `apply_layout.py` stamps (Ben, 2026-11-03: "Everywhere except checkout"; the first release
+  was the paper-tool and Mac-app pages only). Never on a page inside a `checkout`, `success`, `upload`, `manage`,
+  `recover`, `account`, `stats` or `digest` folder, and never on pages `apply_layout.py` skips. With JavaScript off,
+  every page is as before.
 - No new third-party origin. The chat talks only to the Modal origin already in `connect-src`.
 
 ## What exists today
@@ -67,14 +70,15 @@ Citation Gap page itself) before deciding.
 
 ### 1. Loader and placement
 
-- `site/buddy-chat/loader.js` (under 2 KB) is added by a new `with_chat()` step in `apply_layout.py`, driven by its
-  own `CHAT_PAGES` allow list (the pages in Boundaries), with an idempotency guard so `--check` stays stable. It
-  draws only the launcher: a 56 px round button, bottom right, 20 px from the edges, with Buddy's face. After
+- `site/buddy-chat/loader.js` (about 1.1 KB gzipped) is added by a `with_chat()` step in `apply_layout.py`, driven by
+  `chat_page()` and its `CHAT_EXCLUDED_DIRS` (the pages in Boundaries), with an idempotency guard so `--check` stays
+  stable. It adds `chat.css` itself and draws the launcher once that has loaded, so the stylesheet never holds up a
+  page (a `<link>` in `<head>` would block rendering and revalidate on every view). It draws only the launcher: a 56 px round button, bottom right, 20 px from the edges, with Buddy's face. After
   `DOMContentLoaded` it moves up when `body.has-sticky-cta` is set.
 - The rest (`chat.js`, `chat.css`, the Buddy SVG, sounds) loads on first click.
 - **Kill switch, runtime:** `chat.js` calls `GET /buddy/status` on open; the server reads a flag in a `modal.Dict`
   (`buddy_flags_dict["enabled"]`) on every request, so Ben can turn the chat and the free check off in seconds with
-  one command (`scripts/buddy_flag.py off`) and no deploy. Removing the page from `CHAT_PAGES` hides the launcher at
+  one command (`scripts/buddy_flag.py off`) and no deploy. Adding a folder to `CHAT_EXCLUDED_DIRS` hides the launcher there at
   the next build.
 
 ### 2. The look
@@ -139,7 +143,9 @@ builds it only from site tokens, so it stays calm and works in both themes (deci
 - **Spend cap:** before each call, reserve the worst case (input tokens counted locally plus 350 output, at Haiku
   list price from one `HAIKU_PRICE` constant) in `buddy_spend_dict[utc_day]`; reconcile with the real `usage` after
   the call, and release the reservation if the call fails. Daily cap $1.50, monthly cap $30. Over a cap, or if the
-  Dict is unreachable (fail closed), the chat answers: "The chat is off for today. You can write to Ben below."
+  Dict is unreachable (fail closed), the chat answers: "Buddy is taking a nap and will be back tomorrow. You can
+  write to Ben instead." (Ben's wording, 2026-11-03). When the monthly cap is the one hit, it names the day it is
+  back instead, for example "Buddy is taking a nap and will be back on December 1."
   Overshoot is bounded by the in-flight requests at the moment the cap is crossed (at most about 10 at the per-IP
   burst limit), which is accepted.
 - Chat spend also goes into `_write_usage_ledger` with product `buddy-chat`, so it shows on the existing cost
@@ -208,12 +214,32 @@ builds it only from site tokens, so it stays calm and works in both themes (deci
 5. `with_chat()` in `apply_layout.py`, analytics events, privacy paragraph, `log_change.py`, CI tests, PR. Ben
    creates `buddy-web`, `buddy-anthropic-secret` and `BUDDY_FREE_SECRET` before the backend deploy.
 
-## Decisions (Ben, 2026-11-02)
+## Decisions (Ben, 2026-11-02, and later)
 
 1. **Look:** token-built glass as in section 2 (not the full "crystal" look, not a solid panel).
 2. **Sounds:** on once the chat is open, the visitor's own typing only; Buddy's replies are silent.
 3. **Phasing:** chat and free check together, on the paper-tool and Mac-app pages first.
 4. **Caps:** 3 free checks a day globally, chat $1.50 a day and $30 a month.
+5. **Pages (2026-11-03):** "Everywhere except checkout". The launcher goes from 18 paper-tool and Mac-app pages to
+   398 of the 417 pages `apply_layout.py` stamps: the homepage, every product page (Née and GlobePin among them), the
+   guides, the converters and other free tools, the blog, the games, the latex-errors pages and the localized pages.
+   The 19 without it are the success, upload, recover and account pages. Checks made for this change:
+   - **Caps stay as they are.** Over the 28 days to 2026-11-02 the whole site averaged 90 visitors a day (peak 212 on
+     2026-11-02). A turn costs about $0.0027 uncached, so $1.50 a day is about 550 messages and $30 a month about
+     11,000 (370 a day). If 5% of all visitors opened the chat and sent 5 messages each, an average day is about 22
+     messages ($0.06) and the peak day about 53 ($0.14). The daily cap trips only on a day near ten times the peak
+     at that rate, and it is the guard meant for that day. The free check's 3-a-day cap bounds its cost whatever the
+     audience. After a week, read the real spend (product `buddy-chat` on the cost dashboard) and the `chat_message` events, and
+     raise caps only on that evidence.
+   - **Page speed:** the launcher is one deferred 1.1 KB script; `chat.css` moved out of `<head>` into the loader
+     (Chrome reports both as non-blocking), and `chat.js` loads only on the first click.
+   - **In-browser tools:** the launcher binds only its own button. The converters' and the metadata cleaner's
+     document-level paste handlers ignore text inputs, so pasting into the chat cannot start a conversion; a PNG to
+     JPG run with the launcher on the page converted as before. The games' achievement toast shared the corner and
+     now sits above the launcher (`chat.css`).
+   - **Embeds:** one sitewide CSP and no page-level policy; the only third-party frame (Focus Radio's YouTube
+     player) is inline and unaffected. AdSense auto-ads load on 138 of these pages; whether a mobile anchor ad is on
+     is a console setting, so look at a guide on a phone once ads serve.
 
 ## As built (2026-11-02), where it differs from the sections above
 
@@ -283,3 +309,94 @@ Three Sonnet Goldfish reviewers read v1 with no other context.
   near $60; pages limited to paper-tool and Mac-app pages; fake typing delay removed; every loop gated by reduced
   motion; plain copy instead of mascot lines; data use stated next to the email field. Left to Ben as decisions 1-3:
   cutting the glass, the sounds and the chat itself for a first test, because Ben asked for them.
+
+## Conversion pass (v2, 2026-11-04)
+
+Ben asked for a review of the peer-reviewed literature on site chatbots and conversion, then approved acting on it
+("Go ahead implement your findings accordingly, I approve"). v1 of this section went to three Sonnet Goldfish
+reviewers (design, implementation readiness, scope); the review log is at the end of the section.
+
+What the evidence says, and how much weight each piece carries:
+
+- **Disclosure costs sales through perceived competence.** Disclosing a bot before an outbound sales call cut
+  purchases about 80%, because customers judged it less knowledgeable and less empathetic (Luo, Tong, Fang and Qu,
+  *Marketing Science* 2019, a field experiment; outbound calls, not inbound site chat, so the transfer is an
+  assumption). Disclosure stays (Anthropic usage policy, California's bot law, EU AI Act Article 50). Wording it to
+  name where the answers come from is a hypothesis drawn from that mechanism, not a tested finding.
+- **Human-like framing raises expectations the bot then misses**, and telling people what it cannot do removes the
+  penalty (Crolic, Thomaz, Hadi and Stephen, *Journal of Marketing* 2022). In a field experiment a moderately
+  human-like bot (humor, delays, a name) converted worse than a plain one (Schanke, Burtch and Ray, *Information
+  Systems Research* 2021). Buddy keeps its pup face and name (Ben asked for them), but no humor, persona or fake
+  delays, and the opening line now states a limit.
+- **Pre-sale questions are where a chat lifts conversion.** A pre-sale chatbot raised conversion 21.7% against no
+  chat in randomized field experiments, through more buyers rather than bigger carts (Fang, Yuan, Zhang, Donati and
+  Sarvary, CESifo working paper 2026; not yet peer-reviewed).
+- **Proactive pop-ups**: scenario studies only; not adopted. **A visible typing state** reduces the latency penalty
+  (already there: "Buddy is thinking" and the glancing eyes). **A route to a human** helps in survey evidence (already
+  there: "Write to Ben").
+- **Novelty fades** for one-off purchases (*Journal of Retailing and Consumer Services* 2025, a field experiment).
+
+### 1. Wording (`site/buddy-chat/chat.js`)
+
+- Header note: "AI answers from what's on this site. It can be wrong." followed by the existing "Write to Ben" link
+  (was "AI, can be wrong.").
+- Opening line: "I answer questions about our Mac apps and paper tools from what's on this site, and I can run a free
+  Citation Gap check on a paper draft. I can't give discounts or look up an order." (was "Ask me about our Mac apps
+  or paper tools. I can also run a free Citation Gap check on a paper draft.")
+- Neither string is repeated in the facts block or the server prompt; no test pinned the old ones.
+
+### 2. Pre-sale buttons on the paid Mac-app pages (`site/buddy-chat/chat.js`)
+
+- `APPS` maps the page's first path segment, after dropping a locale prefix (`de`, `fr`, `ja`, `pt-br`, `zh-cn`), to
+  a display name: moderntex ModernTex, outbound-veil Outbound Veil, legroom Legroom, keyfeel Keyfeel, tapefolio
+  Tapefolio, panely Panely, summonly Summonly, lenscrib Lenscrib, nee Née, suite the Mac Suite.
+- On those pages the buttons are "What does <name> cost?", "How does the free trial work?", "Which Macs does it run
+  on?" and "Free citation check" (kept, so the free-check entry point stays on the pages it started on). They track
+  `chat_offer` with `price`, `trial`, `macs` and `free_check`. The first three are sent as visitor messages, so they
+  count toward the per-IP and spend caps like typed ones.
+- Every other page keeps the current three buttons.
+- The "no deals" screen (`screen_reply`) is tested against honest price and trial answers ("one-time license key",
+  "free 7-day trial", "updates are free") so they are not replaced by the fixed line.
+- The buttons do not depend on any experiment arm, so they change the ModernTex hero test's level (more questions on
+  `/moderntex/` in both arms) but not its comparison. That date goes into the change log.
+
+### 3. Holdout from 2026-12-28 (Ben, 2026-11-04: "yes, start the holdout on 12-28")
+
+Built in v2's plan and shipped dormant; it switches itself on at 00:00 UTC on 2026-12-28.
+
+- **Switch:** `site/buddy-chat/loader.js` holds `START = "2026-12-28"` and a 56-day `SCHEDULE` (to 2027-02-21). On
+  A days it returns before adding the stylesheet or the launcher; on B days, outside the window, with a malformed
+  schedule or on any error in the schedule code it draws the chat as before. The arm is read once per page load from
+  the UTC date and written to `<html data-exp-buddy-chat>` ("A", "B", "off"); nothing is sent or stored.
+- **Draw:** `scripts/draw_buddy_schedule.py`: days 1+2, 3+4, ... are pairs, one `random.Random(seed)` coin per pair
+  (`rng.random() < 0.5` puts B first), seeds from 20261228 up, first draw with 3 to 5 B days on every UTC weekday.
+  Seed 20261228 (the first tried) met it: B days Mon..Sun 3, 5, 3, 5, 5, 3, 4. `--check` fails if the loader holds
+  anything else; a site test runs it (an all-B schedule, meaning stopped, also passes).
+- **Data:** `stats.mjs` adds `appPageviews` and `appConversions` to each `byDay` row: views of the ten Mac-app pages
+  (localized ModernTex included, success and buy pages excluded), and trial downloads plus checkout clicks made on
+  those pages (a "send to my Mac" pointer click, meta ending `-not-mac`, is not a conversion). The daily dashboard
+  archives every numeric `byDay` field into `history.json`, so the series builds itself from the next build on.
+- **Read-out:** `scripts/buddy_holdout_report.py` pairs each A day with its B day, takes B minus A of
+  appConversions / appPageviews per pair, and reports the mean with a two-sided sign-flip randomization test. The
+  rule: "remove or rethink" only if B is lower with p < 0.05; otherwise keep Buddy. A lift is reported, not
+  required. Review date: 2027-02-22.
+- **What it compares** is the whole chat (launcher, wording, buttons) against no chat. The 20% coupon Ben asked for
+  on 2026-11-04 would, if it starts inside the window, become part of the B arm from that day; the coupon design
+  says how that is handled.
+- **Stop or keep for good:** set `SCHEDULE` to all `B`. Tests: `netlify/tests/buddy-holdout.test.mjs` (every day of
+  the window, UTC boundaries, fallbacks, all-B), `netlify/tests/stats-buddy-holdout.test.mjs`, and the schedule and
+  report tests in `site-tests/test_buddy_chat_pages.py`.
+
+### Review log, conversion pass
+
+- **Scope:** the holdout was disproportionate at this traffic and overlapped two tests (deferred, section 3); the
+  wording changes are hypotheses (now labelled); the opening line was long (two sentences); keep the original
+  redemption target (kept).
+- **Implementation readiness:** the schedule draw, loader error paths, dashboard pickup and tests were unspecified
+  (moot for now: the holdout is deferred and will be specified in full before it starts); the button strings, name
+  table, locale handling and tracking values are now exact (section 2).
+- **Design:** the free-check button would have vanished from the Mac-app pages (kept as a fourth button); "Will it
+  run on my Mac?" cannot be answered (now "Which Macs does it run on?"); "from our product pages" was inaccurate (now
+  "what's on this site"); "support for an order" contradicted the LaTeX button (now "look up an order"); the deals
+  screen could hit honest answers (now tested); localized pages lost the buttons (locale prefix dropped); the Luo
+  transfer and the kept avatar are now stated plainly.

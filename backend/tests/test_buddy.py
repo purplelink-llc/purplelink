@@ -318,6 +318,31 @@ def test_chat_off_flag_and_spend_cap_stop_model_calls(app_client):
     assert calls["model"] == []
 
 
+def test_off_line_is_bens_nap_wording():
+    assert buddy.OFF_LINE.startswith("Buddy is taking a nap and will be back tomorrow.")
+    assert "write to Ben" in buddy.OFF_LINE
+
+
+def test_monthly_cap_names_the_day_buddy_is_back(app_client):
+    c, app, calls = app_client
+    tok = _session(c)
+    _, month = buddy.spend_keys()
+    app.buddy_dict[month] = buddy.CHAT_MONTHLY_USD
+    reply = _chat(c, session=tok).json()["reply"]
+    assert reply.startswith("Buddy is taking a nap and will be back on ") and " 1. " in reply
+    assert "tomorrow" not in reply and calls["model"] == []
+
+
+def test_nap_line_dates():
+    nov = 1_794_000_000      # 2026-11-06 UTC
+    dec = 1_796_600_000      # 2026-12-06 UTC
+    for now, back in ((nov, "December 1"), (dec, "January 1")):
+        _, month = buddy.spend_keys(now)
+        store = {month: buddy.CHAT_MONTHLY_USD}
+        assert buddy.nap_line(store, 0.01, now) == f"Buddy is taking a nap and will be back on {back}. You can write to Ben instead."
+    assert buddy.nap_line({}, 0.01, nov) == buddy.OFF_LINE          # under the monthly cap: the daily one stopped it
+
+
 def test_chat_per_minute_limit(app_client):
     c, _, calls = app_client
     tok = _session(c)
@@ -434,3 +459,170 @@ def test_free_token_submit_marks_the_job_as_a_free_check(app_client):
     assert r.status_code == 200, r.text
     (_args, kwargs), = app.adjacent_tool_pipeline.calls
     assert kwargs["free_check"] is True
+
+
+def test_deals_screen_lets_honest_price_and_trial_answers_through():
+    # The pre-sale buttons on the Mac-app pages ask these (design doc, "Conversion pass", section 2).
+    for reply in (
+        "ModernTex costs $19.99 once, with a free 7-day trial in the same download. After that a one-time license "
+        "key unlocks it, and updates are free.",
+        "The free 7-day trial is the full app. When it ends, you buy a license key on the product page; one key "
+        "works on two Macs.",
+        "The Mac Suite is $59.99 and includes ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, "
+        "Summonly, Née and a lifetime Vitae Plus.",
+        "It runs on macOS 14 or later, on Apple silicon and Intel Macs.",
+    ):
+        assert buddy.screen_reply(reply) == reply
+    assert buddy.screen_reply("Use code SAVE20 for 20% off.") == buddy.NO_DEALS_LINE
+
+
+# ---- the 20% code (docs/designs/buddy-coupon.md) -----------------------------------------------------------------
+
+@pytest.mark.parametrize("text", [
+    "Do you have a coupon?", "any coupons", "Is there a promo code?", "promotion code please", "Got a discount?",
+    "any discounts for students", "discount code?", "I have a voucher", "Can I get 20% off?", "50 % off maybe",
+    "student discount", "Is ModernTex on sale?", "any deals right now?", "COUPON", "do you do discounts",
+])
+def test_coupon_ask_is_recognised(text):
+    assert buddy.is_coupon_ask(text)
+
+
+@pytest.mark.parametrize("text", [
+    "Is it cheaper than Overleaf?", "What's the sales tax?", "That's a deal-breaker for me", "What does ModernTex cost?",
+    "How does the free trial work?", "Which Macs does it run on?", "How much is the Suite?", "sale", "deal",
+    "Is the price fair?", "Can I get a refund?", "Help with a LaTeX error", "Which app fits me?",
+    "Free citation check", "Do I need a license key?",
+])
+def test_ordinary_questions_are_not_coupon_asks(text):
+    assert not buddy.is_coupon_ask(text)
+
+
+class _StripeResp:
+    def __init__(self, status, payload):
+        self.status_code = status
+        self._payload = payload
+
+    def json(self):
+        return self._payload
+
+
+@pytest.fixture
+def coupon_live(app_client, monkeypatch):
+    import httpx
+
+    c, app, calls = app_client
+    app.buddy_dict["flag:coupon"] = True
+    monkeypatch.setenv("STRIPE_SECRET_KEY", "sk_test_x")
+    calls["stripe"] = []
+    calls["stripe_fail"] = 0
+
+    async def fake_post(self, url, **kw):
+        assert url == "https://api.stripe.com/v1/promotion_codes"
+        calls["stripe"].append(kw["data"])
+        if calls["stripe_fail"]:
+            calls["stripe_fail"] -= 1
+            return _StripeResp(500, {})
+        return _StripeResp(200, {"code": kw["data"]["code"]})
+
+    monkeypatch.setattr(httpx.AsyncClient, "post", fake_post)
+    return c, app, calls
+
+
+def test_ask_before_the_flag_gets_the_no_deals_line_and_no_model_call(app_client):
+    c, _, calls = app_client
+    r = _chat(c, "Do you have a discount code?").json()
+    assert r == {"reply": buddy.NO_DEALS_LINE} and calls["model"] == []
+    assert c.post("/buddy/status", json={}, headers=ORIGIN).json()["coupon"] is False
+
+
+def test_ask_when_live_offers_the_button_without_the_model(coupon_live):
+    c, app, calls = coupon_live
+    tok = _session(c)
+    r = _chat(c, "Any coupons?", session=tok).json()
+    assert r == {"reply": buddy.COUPON_OFFER_LINE, "offer": "coupon"}
+    assert calls["model"] == []
+    assert app.buddy_dict.get(f"convo:{buddy.session_id(tok, SECRET)}") is None   # not counted toward the limit
+    assert c.post("/buddy/status", json={}, headers=ORIGIN).json()["coupon"] is True
+
+
+def _coupon(c, session):
+    return c.post("/buddy/coupon", json={"session": session}, headers=ORIGIN)
+
+
+def test_coupon_is_single_use_expires_in_ten_minutes_and_repeats_per_session(coupon_live):
+    c, _, calls = coupon_live
+    tok = _session(c)
+    before = int(time.time())
+    first = _coupon(c, tok).json()
+    assert first["ok"] and first["code"].startswith("BUDDY-") and len(first["code"]) == 12
+    sent = calls["stripe"][0]
+    assert sent["promotion[coupon]"] == "buddy-20" and sent["max_redemptions"] == "1"
+    assert before + 600 <= int(sent["expires_at"]) <= int(time.time()) + 600
+    assert sent["metadata[source]"] == "buddy-ask" and tok not in sent["metadata[key]"]
+    assert _coupon(c, tok).json() == first and len(calls["stripe"]) == 1     # same session: same code
+
+
+def test_coupon_per_address_daily_cap(coupon_live):
+    c, _, _ = coupon_live
+    assert _coupon(c, _session(c)).json()["ok"]
+    assert _coupon(c, _session(c)).json()["ok"]
+    third = _coupon(c, _session(c)).json()
+    assert not third["ok"] and "today" in third["message"]
+
+
+def test_coupon_stripe_failure_retries_once_then_lets_the_visitor_try_again(coupon_live):
+    c, _, calls = coupon_live
+    tok = _session(c)
+    calls["stripe_fail"] = 2
+    r = _coupon(c, tok).json()
+    assert not r["ok"] and "could not make a code" in r["message"] and len(calls["stripe"]) == 2
+    assert _coupon(c, tok).json()["ok"]                                   # the session's slot was released
+
+
+def test_coupon_needs_the_flag_and_a_session(app_client, coupon_live):
+    c, app, _ = coupon_live
+    assert c.post("/buddy/coupon", json={"session": "x"}, headers=ORIGIN).status_code == 401
+    app.buddy_dict["flag:coupon"] = False
+    assert _coupon(c, _session(c)).json() == {"ok": False, "message": buddy.NO_DEALS_LINE}
+
+
+def _coupon_email(c, email="jane.doe@uni.edu", **extra):
+    body = {"email": email, "website": "", "form_ts": _stamp(), "session": _session(c), **extra}
+    return c.post("/buddy/coupon-email", json=body, headers=ORIGIN)
+
+
+def test_emailed_code_once_per_inbox_for_24_hours(coupon_live):
+    c, app, calls = coupon_live
+    assert _coupon_email(c, "jane+a@gmail.com").json()["ok"]
+    assert _coupon_email(c, "j.a.n.e+b@gmail.com").json()["ok"]          # same inbox: same reply, nothing sent
+    assert len(calls["email"]) == 1 and len(calls["stripe"]) == 1
+    sent = calls["stripe"][0]
+    assert sent["metadata[source]"] == "buddy-email"
+    assert abs(int(sent["expires_at"]) - (int(time.time()) + 24 * 3600)) < 5
+    assert sent["code"] in calls["email"][0]["html"]
+    claims = [k for k in app.buddy_dict.data if k.startswith("claim:coupon:")]
+    assert len(claims) == 1                                               # durable claim: key, not the address
+    assert "jane" not in claims[0]
+
+
+def test_emailed_code_and_free_check_claims_never_collide(coupon_live):
+    c, app, calls = coupon_live
+    assert _coupon_email(c, "sam@uni.edu").json()["ok"]
+    assert _free(c, "sam@uni.edu").json()["ok"]
+    assert len(calls["email"]) == 2                                       # both went out
+
+
+def test_emailed_code_honeypot_and_disposable(coupon_live):
+    c, _, calls = coupon_live
+    assert _coupon_email(c, website="spam").json()["ok"] and calls["email"] == []
+    assert not _coupon_email(c, "x@mailinator.com").json()["ok"]
+
+
+def test_model_reply_with_a_code_is_screened_to_the_live_line(coupon_live, monkeypatch):
+    c, _, _ = coupon_live
+
+    async def deal(client, key, messages):
+        return "Use promo code SAVE20 at checkout.", {"input_tokens": 10, "output_tokens": 5}
+
+    monkeypatch.setattr(buddy, "ask_model", deal)
+    assert _chat(c, "How much is Legroom?").json()["reply"] == buddy.NO_DEALS_LIVE_LINE
