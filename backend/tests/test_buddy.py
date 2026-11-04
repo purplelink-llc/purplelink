@@ -459,3 +459,18 @@ def test_free_token_submit_marks_the_job_as_a_free_check(app_client):
     assert r.status_code == 200, r.text
     (_args, kwargs), = app.adjacent_tool_pipeline.calls
     assert kwargs["free_check"] is True
+
+
+def test_deals_screen_lets_honest_price_and_trial_answers_through():
+    # The pre-sale buttons on the Mac-app pages ask these (design doc, "Conversion pass", section 2).
+    for reply in (
+        "ModernTex costs $19.99 once, with a free 7-day trial in the same download. After that a one-time license "
+        "key unlocks it, and updates are free.",
+        "The free 7-day trial is the full app. When it ends, you buy a license key on the product page; one key "
+        "works on two Macs.",
+        "The Mac Suite is $59.99 and includes ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, "
+        "Summonly, Née and a lifetime Vitae Plus.",
+        "It runs on macOS 14 or later, on Apple silicon and Intel Macs.",
+    ):
+        assert buddy.screen_reply(reply) == reply
+    assert buddy.screen_reply("Use code SAVE20 for 20% off.") == buddy.NO_DEALS_LINE
