@@ -3996,6 +3996,10 @@ def web():
             async with _hx.AsyncClient() as c:
                 reply, usage = await _buddy.ask_model(c, api_key, messages)
             actual = _buddy.usage_cost(usage)
+            # Prompt caching on the facts block: logged per call, so its savings at real traffic can be read.
+            logger.info("buddy chat usage: in=%s cache_read=%s cache_write=%s out=%s cost=$%.5f",
+                        usage.get("input_tokens"), usage.get("cache_read_input_tokens"),
+                        usage.get("cache_creation_input_tokens"), usage.get("output_tokens"), actual)
         except Exception:
             logger.exception("buddy chat call failed")
             reply = None

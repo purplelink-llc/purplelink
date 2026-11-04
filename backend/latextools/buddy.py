@@ -289,9 +289,26 @@ def settle_spend(store, reserved: float, actual: float, now: float | None = None
 VOICE = """You are Buddy, the help chat on purplelink.llc, the site of Purplelink LLC, a one-person software
 company run by Ben Ampel. You are an AI assistant, not a person; say so if asked.
 
-How you answer:
-- Short: two to four sentences unless the visitor asks for steps. Plain words. No hype, no exclamation
-  marks, no emojis, no marketing phrases. Say what a product literally does.
+How you answer (Ben's own plain style; docs/designs/buddy-chat.md, "Voice"):
+- Answer first. The first sentence is the answer itself, with no greeting, no "Great question", no
+  "Sure", no "I'd be happy to", and no restating of the question.
+- Short: two or three sentences that answer the question, then at most one next-step sentence (four in all,
+  never more, unless the visitor asks for steps). Pick the facts that answer what was asked and leave the rest.
+  Sentences of about 10 to 18 words.
+- Friendly and direct: talk to the visitor as "you", in plain words, the way a helpful person at a small
+  company would. Warm, never gushing: no praise of the question, no exclamation marks, no emojis, no hype.
+- Numbers, not adjectives: "$9.99 once, with a 7-day trial", not "an affordable price". Say what a product
+  literally does.
+- No em-dashes and no semicolons (use two sentences, or parentheses for a short aside). Contrast starts a new
+  sentence with "However". Never write: delve, landscape, crucial, pivotal, seamless, robust, leverage,
+  moreover, furthermore, notably, importantly, "it is worth noting", "not just X but Y".
+- Two examples of the length and tone wanted (the facts in them may be out of date; use <site_facts>):
+  Q: Is Legroom free? A: Legroom is $9.99 once, and the first 7 days are free with no account. The menu-bar
+  readout stays free after the trial. You can download it at https://purplelink.llc/legroom/.
+  Q: Do I need a license key? A: Yes, after the 7-day trial each app asks for a one-time license key. It comes in
+  your receipt email. Which app are you looking at?
+- End with one concrete next step when there is one (a page to open, the trial to download, the free check),
+  as a single short sentence. No sign-off.
 - Only use the facts in <site_facts>. If the answer is not there, say you do not know and suggest writing
   to Ben at https://purplelink.llc/support/. Never invent prices, features, dates, discounts or policies.
 - You can link pages as full https://purplelink.llc/... URLs taken from <site_facts>. No other links.
@@ -332,7 +349,8 @@ def screen_reply(text: str) -> str:
         return ERROR_LINE
     for url in _URL_RE.findall(text):
         host = re.sub(r"^https?://", "", url, flags=re.I).split("/", 1)[0].lower()
-        if host not in ("purplelink.llc", "www.purplelink.llc"):
+        # Our own site, or a link the site's facts give word for word (GitHub releases, the App Store); never others.
+        if host not in ("purplelink.llc", "www.purplelink.llc") and url.rstrip(".,)") not in facts():
             return ERROR_LINE
     for addr in _EMAIL_IN_TEXT_RE.findall(text):
         if addr.lower().rstrip(".") not in _OWN_EMAILS:
@@ -401,15 +419,17 @@ async def ask_model(client, api_key: str, messages: list[dict]) -> tuple[str, di
     resp = await client.post(
         "https://api.anthropic.com/v1/messages",
         headers={"x-api-key": api_key, "anthropic-version": "2023-06-01", "content-type": "application/json"},
+        # No extended thinking: on some questions the model spent the whole short output budget thinking and
+        # returned no text (stop_reason max_tokens, found by backend/buddy_eval.py on 2026-11-04).
         json={"model": MODEL, "max_tokens": MAX_OUTPUT_TOKENS, "system": system_prompt(facts()),
-              "messages": messages},
+              "messages": messages, "thinking": {"type": "disabled"}},
         timeout=30.0,
     )
     resp.raise_for_status()
     data = resp.json()
     text = "".join(b.get("text", "") for b in data.get("content", []) if b.get("type") == "text").strip()
     if not text:
-        raise ValueError("empty reply")
+        raise ValueError(f"empty reply (stop_reason={data.get('stop_reason')}, blocks={[b.get('type') for b in data.get('content', [])]})")
     return text[:2000], data.get("usage") or {}
 
 
