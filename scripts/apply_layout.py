@@ -328,29 +328,30 @@ def with_motion(html: str) -> str:
                   lambda m: m.group(1) + MOTION_JS, out, count=1) if "motion.js" not in out else out
 
 
-# Buddy, the site chat (docs/designs/buddy-chat.md): only these pages get the launcher for its first test.
-CHAT_PAGES = {f"{p}/index.html" for p in (
-    "tools/paper-review", "tools/paper-review/revision", "tools/citation-gap", "tools/anonymity-check",
-    "tools/cover-letter", "tools/response-review", "tools/resume-review",
-    "moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "panely", "summonly", "lenscrib", "suite",
-    "buddy", "vitae",
-)}
-CHAT_TAGS = ('    <link rel="stylesheet" href="/buddy-chat/chat.css">\n'
-             '    <script src="/buddy-chat/loader.js" defer></script>\n')
+# Buddy, the site chat (docs/designs/buddy-chat.md, Boundaries): every page this script stamps except the account and
+# payment flows (Ben, 2026-11-03: "Everywhere except checkout"). A page in any folder named here goes without it.
+CHAT_EXCLUDED_DIRS = {"checkout", "success", "upload", "manage", "recover", "account", "stats", "digest"}
+CHAT_TAG = '    <script src="/buddy-chat/loader.js" defer></script>\n'
+# Pages built before 2026-11-03 also carried chat.css in <head>. loader.js now adds it itself, so it never holds up
+# rendering; with_chat takes the old tag off.
+CHAT_CSS_RE = re.compile(r'[ \t]*<link rel="stylesheet" href="/buddy-chat/chat\.css[^"]*">\n')
+CHAT_JS_RE = re.compile(r'[ \t]*<script src="/buddy-chat/loader\.js[^"]*" defer></script>\n')
+
+
+def chat_page(rel: str) -> bool:
+    return not set(rel.split("/")[:-1]) & CHAT_EXCLUDED_DIRS
 
 
 def with_chat(rel: str, html: str) -> str:
-    """Add the chat launcher to CHAT_PAGES and take it off any other page. Pages that already carry it
-    (with or without the ?v hash fingerprint_assets stamps) are left alone, as with_motion does."""
-    has = "/buddy-chat/loader.js" in html
-    if rel in CHAT_PAGES:
+    """Add the chat launcher to chat pages and take it off any other page. A page that already carries it (with or
+    without the ?v hash fingerprint_assets stamps) is left alone, as with_motion does."""
+    html = CHAT_CSS_RE.sub("", html)
+    has = CHAT_JS_RE.search(html) is not None
+    if chat_page(rel):
         if has or "</head>" not in html:
             return html
-        return re.sub(r"([ \t]*)</head>", lambda m: CHAT_TAGS + m.group(0), html, count=1)
-    if not has:
-        return html
-    return re.sub(r'[ \t]*<link rel="stylesheet" href="/buddy-chat/chat\.css[^"]*">\n'
-                  r'[ \t]*<script src="/buddy-chat/loader\.js[^"]*" defer></script>\n', "", html)
+        return re.sub(r"([ \t]*)</head>", lambda m: CHAT_TAG + m.group(0), html, count=1)
+    return CHAT_JS_RE.sub("", html) if has else html
 
 
 def render(rel: str, html: str) -> str:
