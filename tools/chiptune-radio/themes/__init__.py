@@ -13,6 +13,7 @@ What a theme provides:
 from __future__ import annotations
 
 import importlib
+import os
 import pkgutil
 from pathlib import Path
 
@@ -49,11 +50,28 @@ class Theme:
     music_bed_level = 0.4          # how loud the ambience is under music, against music at 1.0
     thumb_at = 0.3                 # fraction of the video to take the thumbnail frame from
     is_study = False
+    bg_loop: str | None = None     # the name of a pre-rendered background loop (bgloop.py) this theme plays, or None to draw everything in code
 
     def __init__(self, seed: int, seconds: float, bpm_at=None, options: dict | None = None):
         self.seed, self.seconds, self.options = seed, float(seconds), dict(options or {})
         self.bpm_at = bpm_at or (lambda t: 72)
         self.events: list = []
+        self.loop = None
+        if self.bg_loop and self.wants_loop(self.options):
+            import bgloop
+            self.loop = bgloop.load(self.bg_loop)
+
+    @staticmethod
+    def wants_loop(options: dict) -> bool:
+        """The loop is used unless options say bg=code; longform.main puts AMBIENT_BG there, and callers that pass no options (the thumbnail
+        tool) fall back to the environment."""
+        bg = options.get("bg") or os.environ.get("AMBIENT_BG", "")
+        return bg != "code"
+
+    @property
+    def background(self) -> str:
+        """What the picture is drawn from, for video.json: "code", or the loop's name and the start of its hash."""
+        return "code" if self.loop is None else f"{self.loop.name}@{self.loop.manifest['sha256'][:12]}"
 
     def progress(self, t: float) -> float:
         return min(1.0, max(0.0, t / self.seconds))

@@ -1,6 +1,6 @@
 # Blender loop backgrounds for Hearthside Pixels long-form videos
 
-Status: reviewed draft, waiting for Ben's approval (2026-11-04). Owner: Ben. First theme: `racer` ("Music to Run To").
+Status: approved by Ben 2026-11-04 (full 3D skyway, all four asset sets, 320x180 at 6x); built the same day. Owner: Ben. First theme: `racer` ("Music to Run To").
 Review notes: `blender-loop-backgrounds-review.md` next to this file.
 
 ## Background
@@ -246,6 +246,26 @@ small synthetic loop in a temporary folder.
 10. `assets.json`: every entry has a page URL, a sha256 and licence `CC0-1.0`.
 11. With the real loop present (skipped elsewhere): the manifest's `seam_rms` and `flicker` are under their limits, and
     the road data's lane lines lie on the rendered road within 1 pixel on 10 sampled frames.
+
+## As built (2026-11-04)
+
+Where the build differs from the plan above:
+
+- **Depth is a second render.** EEVEE has no reliable depth pass with a transparent film, so `racer_highway.py` renders each frame
+  twice: colour, then a `material_override` that writes view Z. Depth is stored as a log uint8 code, 255 for sky (`skyway_geom.depth_code`).
+- **Fog and bloom are done in numpy, not in Blender.** Fog mixes each 1280x720 pixel towards the scene-linear haze by depth before the 4x4
+  mean; bloom (threshold 0.9, gain 0.35, blurs of 1.5 and 5 px) runs on the 320x180 frame in `bgloop.finish`.
+- **Tone map, then sky.** Geometry is tone-mapped with 1 - exp(-x); the sky (gradient, 150 twinkling stars, the planet) is drawn by
+  `bgloop.Sky` in display space and composited behind it through the alpha. The haze the fog aims at is the inverse-tone-mapped sky, so
+  distant geometry melts into the sky with no seam. Star twinkles use whole cycles per loop, so the sky repeats too.
+- **Checks at pack time.** `bgloop build` refuses a loop whose last frame differs from the first by more than 0.5 % RMS, or whose sky
+  flickers more than 2 % of pixels a frame. The manifest records both, the palette step, the Blender version and each asset's sha256.
+- **Size and speed.** About 0.45 s a frame on the Mac mini (0.4 to 1.0 s depending on section), so a 901-frame loop takes under 10 minutes.
+  The packed loop is about 104 MB in memory per render worker.
+- **The switch.** `longform.build_theme` reads `AMBIENT_BG` once and passes it as `options["bg"]`; a theme built without options (the
+  thumbnail tool) falls back to the environment variable. `--loop-min` is refused for loop themes, since the background already loops.
+  `video.json` records the background as `racer-highway-v1@<sha256 prefix>` or `code`.
+- **Build command.** `bash tools/chiptune-radio/blender/build_loop.sh [render|pack|preview|all]`.
 
 ## Later
 

@@ -45,10 +45,12 @@ class Racer(Theme):
     bed = {"wind": 0.35}
     bed_solo = {"wind": 1.0}
     music_bed_level = 0.18
+    bg_loop = "racer-highway-v1"   # the Blender skyway (blender/racer_highway.py); AMBIENT_BG=code draws the old road instead
 
     def __init__(self, seed, seconds, bpm_at=None, options=None):
         super().__init__(seed, seconds, bpm_at, options)
         self.events = schedule(seed, seconds, {"boost": (95.0, 6.0), "rival": (160.0, 7.0), "star": (300.0, 1.4)}, min_gap=12.0)
+        self._snapped: dict = {}
         self.boosts = [e for e in self.events if e[1] == "boost"]
         self.stars = px.star_field(seed + 2, 90, 0, 0, W, HOR - 22, bias=1.4)
         self.sky = self._build_sky()
@@ -126,8 +128,19 @@ class Racer(Theme):
             d += SPEED * BOOST * (a / 2 - dur / (4 * math.pi) * math.sin(2 * math.pi * a / dur))
         return d
 
+    def _c(self, rgb) -> tuple:
+        """A colour for something drawn over the picture: as given on the code road, the nearest palette colour over the loop."""
+        if self.loop is None:
+            return rgb
+        rgb = tuple(int(v) for v in rgb)
+        if rgb not in self._snapped:
+            self._snapped[rgb] = self.loop.snap(rgb)
+        return self._snapped[rgb]
+
     # ---------------------------------------------------------------- the frame
     def frame(self, t: float) -> Image.Image:
+        if self.loop is not None:
+            return self._frame_loop(t)
         t = math.floor(t * self.fps) / self.fps
         bend = _curve(t)
         boost = self._boost_level(t)
@@ -154,6 +167,70 @@ class Racer(Theme):
             self._speed_lines(d, t, boost)
         self._craft(d, t, bend, boost)
         return out
+
+    def _frame_loop(self, t: float) -> Image.Image:
+        """The Blender skyway: loop frame n mod N at a constant rate (boosts show as speed lines and thruster glow, never as a faster road),
+        with the shooting star only where sky is open and the rival hidden behind anything nearer than it."""
+        n = int(round(t * self.fps)) * (30 // self.fps)
+        lp = self.loop
+        t = n / 30.0
+        bend = float(lp.bend[n % lp.frames])
+        boost = self._boost_level(t)
+        out = Image.fromarray(lp.rgb(n), "RGB")
+        e, a = self._event("star", t)
+        if e:
+            layer = Image.new("RGB", (W, H), (0, 0, 0))
+            px.shooting_star(ImageDraw.Draw(layer), a, e[2], 40 + (e[0] * 37) % 180, 6, 70, 22)
+            arr = np.asarray(layer)
+            hit = (arr.max(-1) > 0) & lp.sky(n)
+            if hit.any():
+                base = np.asarray(out).copy()
+                for y, x in zip(*np.nonzero(hit)):
+                    base[y, x] = self._c(arr[y, x])
+                out = Image.fromarray(base, "RGB")
+        e, a = self._event("rival", t)
+        if e:
+            out = self._rival_loop(out, n, a, e[2], int(e[0]))
+        d = ImageDraw.Draw(out)
+        if boost > 0.05:
+            self._speed_lines(d, t, boost, hor=lp.horizon)
+        self._craft(d, t, bend, boost)
+        return out
+
+    def _rival_loop(self, out: Image.Image, n: int, a: float, dur: float, key: int) -> Image.Image:
+        """The rival on the 3D road: it overtakes in the next lane and pulls away to about 300 m. Its row, centre and size come from the
+        loop's per-row road data; pixels behind nearer geometry (a gantry leg, a bend's wall) are left as they are."""
+        lp = self.loop
+        z = 3.0 + (a / dur) ** 1.6 * 300.0
+        dz, cx, hw = lp.road_dz[n % lp.frames], lp.road_cx[n % lp.frames], lp.road_hw[n % lp.frames]
+        ok = np.isfinite(dz)
+        if not ok.any() or z > np.nanmax(dz) or z < np.nanmin(dz):
+            return out
+        rows = np.arange(H)[ok]
+        order = np.argsort(dz[ok])
+        y = float(np.interp(z, dz[ok][order], rows[order]))
+        r = int(round(y))
+        if not 0 <= r < H or not np.isfinite(cx[r]):
+            return out
+        ppm = float(hw[r]) / 8.1                                 # pixels per metre at that row (road_hw measures to the kerb edge, 8.1 m)
+        lane = (-5.4 if key % 2 else 5.4) * ppm
+        x0 = float(cx[r]) + lane
+        w, h = 1.1 * ppm, 0.9 * ppm
+        if w < 0.6:
+            return out
+        layer = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        d = ImageDraw.Draw(layer)
+        col = self._c((255, 180, 40) if key % 3 else (60, 220, 120))
+        d.polygon([(x0 - w, y), (x0 - w * 0.6, y - h), (x0 + w * 0.6, y - h), (x0 + w, y)], fill=col + (255,))
+        if w > 3:
+            lamp = self._c((255, 140, 70)) + (255,)
+            d.ellipse([x0 - w * 0.5 - 1, y - 1, x0 - w * 0.5 + 1, y + 1], fill=lamp)
+            d.ellipse([x0 + w * 0.5 - 1, y - 1, x0 + w * 0.5 + 1, y + 1], fill=lamp)
+        al = np.asarray(layer)
+        show = (al[..., 3] > 0) & (lp.depth_m(n) > z - 1.5)       # hidden where the scene is nearer than the rival
+        base = np.asarray(out).copy()
+        base[show] = al[..., :3][show]
+        return Image.fromarray(base, "RGB")
 
     def _ground(self, t: float, bend: float, boost: float) -> np.ndarray:
         travel = self._travel(t)
@@ -200,23 +277,24 @@ class Racer(Theme):
         x = 160 - bend * 10 + 2.5 * math.sin(t * 0.9)
         y = 150 + 1.5 * math.sin(t * 3.1) - boost * 3
         lean = -bend * 3.0                                       # the left side drops on a left bend
+        c = self._c
         def pt(dx, dy):
             return (x + dx, y + dy + lean * dx / 18.0)
-        d.ellipse([x - 20, 166, x + 20, 172], fill=(10, 6, 20))  # shadow on the road
+        d.ellipse([x - 20, 166, x + 20, 172], fill=c((10, 6, 20)))  # shadow on the road
         body = [pt(-21, 6), pt(-15, -2), pt(-7, -8), pt(7, -8), pt(15, -2), pt(21, 6), pt(12, 10), pt(-12, 10)]
-        d.polygon(body, fill=(70, 80, 170))
-        d.polygon([pt(-21, 6), pt(-15, -2), pt(15, -2), pt(21, 6)], fill=(110, 130, 230))     # the lit top deck
-        d.line([pt(-21, 6), pt(21, 6)], fill=(255, 70, 150))                                  # a magenta stripe along the side
-        d.polygon([pt(-13, -2), pt(-11, -12), pt(-9, -2)], fill=(200, 60, 120))               # fins
-        d.polygon([pt(13, -2), pt(11, -12), pt(9, -2)], fill=(200, 60, 120))
-        d.polygon([pt(-5, -8), pt(-3, -12), pt(3, -12), pt(5, -8)], fill=(120, 230, 255))     # canopy
-        d.point(pt(-2, -11), fill=(240, 255, 255))
+        d.polygon(body, fill=c((70, 80, 170)))
+        d.polygon([pt(-21, 6), pt(-15, -2), pt(15, -2), pt(21, 6)], fill=c((110, 130, 230)))     # the lit top deck
+        d.line([pt(-21, 6), pt(21, 6)], fill=c((255, 70, 150)))                                  # a magenta stripe along the side
+        d.polygon([pt(-13, -2), pt(-11, -12), pt(-9, -2)], fill=c((200, 60, 120)))               # fins
+        d.polygon([pt(13, -2), pt(11, -12), pt(9, -2)], fill=c((200, 60, 120)))
+        d.polygon([pt(-5, -8), pt(-3, -12), pt(3, -12), pt(5, -8)], fill=c((120, 230, 255)))     # canopy
+        d.point(pt(-2, -11), fill=c((240, 255, 255)))
         flick = 0.5 + 0.5 * math.sin(t * 47.0) * math.sin(t * 13.0)
         for side in (-8, 8):
             tx, ty = pt(side, 8)
             r = 3 + boost * 2 + flick
-            d.ellipse([tx - r - 1, ty - r + 1, tx + r + 1, ty + r + 1], fill=(255, 120, 60) if boost < 0.3 else (120, 200, 255))
-            d.ellipse([tx - 2, ty - 1, tx + 2, ty + 2], fill=(255, 245, 210))
+            d.ellipse([tx - r - 1, ty - r + 1, tx + r + 1, ty + r + 1], fill=c((255, 120, 60) if boost < 0.3 else (120, 200, 255)))
+            d.ellipse([tx - 2, ty - 1, tx + 2, ty + 2], fill=c((255, 245, 210)))
 
     def _rival(self, d: ImageDraw.ImageDraw, a: float, dur: float, bend: float, key: int) -> None:
         """Another craft overtaking on the left lane: it passes us and pulls away up the road, shrinking."""
@@ -235,7 +313,7 @@ class Racer(Theme):
             d.ellipse([cx - w * 0.5 - 1, y - 1, cx - w * 0.5 + 1, y + 1], fill=(255, 140, 70))
             d.ellipse([cx + w * 0.5 - 1, y - 1, cx + w * 0.5 + 1, y + 1], fill=(255, 140, 70))
 
-    def _speed_lines(self, d: ImageDraw.ImageDraw, t: float, boost: float) -> None:
+    def _speed_lines(self, d: ImageDraw.ImageDraw, t: float, boost: float, hor: float = HOR) -> None:
         """White streaks flying out from the vanishing point during a boost."""
         r = random.Random(int(t * self.fps))
         for _ in range(int(14 * boost)):
@@ -244,6 +322,6 @@ class Racer(Theme):
                 continue
             r0 = r.uniform(60, 140)
             r1 = r0 + r.uniform(20, 50) * boost
-            x0, y0 = 160 + math.cos(ang) * r0, HOR + math.sin(ang) * r0 * 0.6
-            x1, y1 = 160 + math.cos(ang) * r1, HOR + math.sin(ang) * r1 * 0.6
-            d.line([x0, y0, x1, y1], fill=(230, 240, 255))
+            x0, y0 = 160 + math.cos(ang) * r0, hor + math.sin(ang) * r0 * 0.6
+            x1, y1 = 160 + math.cos(ang) * r1, hor + math.sin(ang) * r1 * 0.6
+            d.line([x0, y0, x1, y1], fill=self._c((230, 240, 255)))

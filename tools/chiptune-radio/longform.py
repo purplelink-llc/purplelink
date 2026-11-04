@@ -387,6 +387,7 @@ def video_stage(theme, seconds: float, work: Path, spec: dict, workers: int = 2,
         subprocess.run(black_cmd(black_s, fps, work / "black.mp4", uhd), check=True)
         write_dark_list(work, drawn, final_s or seconds, black_s)
     (work / "video.json").write_text(json.dumps({"frames": total, "loop_seconds": seconds if loop else 0, "dark_seconds": dark, "uhd": uhd,
+                                                 "background": getattr(theme, "background", "code"),
                                                  "seconds_of_work": round(time.time() - t0, 1)}))
 
 
@@ -485,8 +486,16 @@ def build_theme(args, tracks=None):
         options["season"] = args.season
     if getattr(args, "view", ""):
         options["view"] = args.view
+    if cls.bg_loop:                                                 # read once here and carried to every worker in options
+        options["bg"] = os.environ.get("AMBIENT_BG", "") or "loop"
+        if options["bg"] != "code" and getattr(args, "loop_min", 0):
+            sys.exit(f"--loop-min does not apply to {cls.name}: its background is already a {cls.bg_loop} loop (set AMBIENT_BG=code for the old road)")
     tracks = tracks if tracks is not None else plan_tracks(cls, seconds, args.seed, music_cfg(cls, args.sound))
-    return cls(args.seed, seconds, bpm_at=bpm_lookup(tracks), options=options), tracks, seconds
+    try:
+        theme = cls(args.seed, seconds, bpm_at=bpm_lookup(tracks), options=options)
+    except (FileNotFoundError, ValueError) as e:                    # a missing or damaged loop stops the run before any audio work
+        sys.exit(str(e))
+    return theme, tracks, seconds
 
 
 def main(argv=None) -> None:
