@@ -1,0 +1,116 @@
+{
+ "id": "howto-bibtex-found-no-citation-commands-biblatex",
+ "app": "moderntex",
+ "title": "I found no \\citation commands on Mac with biblatex (run biber, not bibtex)",
+ "short_title": "BibTeX says I found no \\citation commands? Run biber",
+ "url": "purplelink.llc/moderntex",
+ "page": "https://purplelink.llc/moderntex/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://www.dickimaw-books.com/latex/thesis/html/biblatextroubleshooting.html",
+  "https://www.dickimaw-books.com/latex/thesis/html/bibtextroubleshooting.html"
+ ],
+ "verify": {
+  "runs": [
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf '%s\\n' '@article{knuth84,' '  author = {Donald E. Knuth},' '  title = {Literate Programming},' '  journal = {The Computer Journal},' '  year = {1984}' '}' > refs.bib && printf '%s\\n' '\\documentclass{article}' '\\usepackage{biblatex}' '\\addbibresource{refs.bib}' '\\begin{document}' 'As shown by \\cite{knuth84}.' '\\printbibliography' '\\end{document}' > main.tex && pdflatex -interaction=nonstopmode main.tex > /dev/null; bibtex main | grep 'I found no'; grep -n biblatex main.tex",
+    "output": "I found no \\citation commands---while reading file main.aux\nI found no \\bibdata command---while reading file main.aux\nI found no \\bibstyle command---while reading file main.aux\n2:\\usepackage{biblatex}"
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf '%s\\n' '@article{knuth84,' '  author = {Donald E. Knuth},' '  title = {Literate Programming},' '  journal = {The Computer Journal},' '  year = {1984}' '}' > refs.bib && printf '%s\\n' '\\documentclass{article}' '\\usepackage{biblatex}' '\\addbibresource{refs.bib}' '\\begin{document}' 'As shown by \\cite{knuth84}.' '\\printbibliography' '\\end{document}' > main.tex && pdflatex -interaction=nonstopmode main.tex > /dev/null; biber main | grep 'Output to'; pdflatex -interaction=nonstopmode main.tex | grep 'Output written'",
+    "output": "INFO - Output to main.bbl\nOutput written on main.pdf (1 page, 38560 bytes)."
+   }
+  ],
+  "docs": [
+   "https://ctan.org/pkg/biblatex",
+   "https://ctan.org/pkg/biber"
+  ],
+  "notes": "Each run writes a one-entry refs.bib and a small article that loads biblatex in a fresh temporary folder, then builds it with pdfLaTeX from TeX Live 2026. Running bibtex on it prints the three I found no lines, because biblatex writes its citation data to main.bcf for biber, not to main.aux. Running biber writes main.bbl and the next pdflatex pass builds the PDF with the citation filled in. biblatex uses biber as its default backend (biblatex manual on CTAN)."
+ },
+ "scenes": [
+  {
+   "type": "hook",
+   "short": true,
+   "kicker": "LaTeX on a Mac",
+   "title": "I found no \\citation commands",
+   "sub": "Your citations are there. The wrong program read them.",
+   "narration": "If BibTeX says I found no citation commands, but your document is full of citations, check one line in your preamble."
+  },
+  {
+   "type": "symptom",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ bibtex main",
+    "I found no \\citation commands---while reading file main.aux",
+    "I found no \\bibdata command---while reading file main.aux",
+    "I found no \\bibstyle command---while reading file main.aux",
+    "$ grep -n biblatex main.tex",
+    "2:\\usepackage{biblatex}"
+   ],
+   "narration": "This is the message. BibTeX finds no citations, no bibliography file, and no style. Line two of the document loads biblatex."
+  },
+  {
+   "type": "cause",
+   "text": "biblatex writes its citations to main.bcf for a program called biber. BibTeX only reads main.aux, so it finds nothing there.",
+   "narration": "biblatex does not hand its citations to BibTeX. It writes them to a file ending in b c f, for a different program called biber. BibTeX looks in the aux file, finds nothing, and reports three errors."
+  },
+  {
+   "type": "steps",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ pdflatex main.tex",
+    "$ biber main",
+    "$ pdflatex main.tex"
+   ],
+   "ui": "In an editor, set the bibliography tool to biber instead of BibTeX.",
+   "narration": "Run biber where you ran BibTeX. Build with pdflatex, run biber on the same name, then build again. In an editor, change the bibliography tool in its settings from BibTeX to biber."
+  },
+  {
+   "type": "check",
+   "short": true,
+   "label": "Terminal",
+   "ok": "Bibliography built",
+   "lines": [
+    "$ biber main",
+    "INFO - Output to main.bbl",
+    "$ pdflatex main.tex",
+    "Output written on main.pdf (1 page, 38560 bytes)."
+   ],
+   "narration": "biber writes the bibliography file, and the next build puts the citation and the reference list in the PDF."
+  },
+  {
+   "type": "app",
+   "name": "ModernTex",
+   "line": "Builds biblatex with biber or classic BibTeX, set by one switch in the compile profile.",
+   "url": "purplelink.llc/moderntex",
+   "img": "site/assets/moderntex-screens/01-editor-clean-1440.webp",
+   "icon": "site/assets/moderntex-icon.png",
+   "narration": "If you write LaTeX on a Mac, ModernTex builds your bibliography with BibTeX or with biblatex and biber. It is one switch in the compile profile, so the full build runs the right program."
+  }
+ ],
+ "thumbs": {
+  "A": {
+   "kind": "error",
+   "msg": "I found no \\citation commands"
+  },
+  "B": {
+   "kind": "long",
+   "msg": "I found no \\citation commands",
+   "n": 1,
+   "unit": "command",
+   "sub": "run biber, not bibtex"
+  },
+  "C": {
+   "kind": "product",
+   "name": "ModernTex",
+   "line": "biblatex? Built with biber",
+   "img": "site/assets/moderntex-screens/01-editor-clean-1440.webp",
+   "icon": "site/assets/moderntex-icon.png",
+   "zoom": 1.7,
+   "pos": "28% 22%"
+  }
+ }
+}
