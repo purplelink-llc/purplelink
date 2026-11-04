@@ -690,7 +690,19 @@ def render(t: Track) -> np.ndarray:
     def inst(names, ts):
         return names[1] if section_at(t, ts).name.startswith("B") else names[0]
 
+    studio = snd.get("studio") or {}               # channels played on Apple's sampled instruments instead (studio.py)
+
     def play(group, channel, names, p, gain, pad_alt=False):
+        if channel in studio:
+            import studio as S
+            spec = studio[channel]
+            stem = S.sampled_stem(spec["exs"], ev[channel], total, spec.get("latency", 0), spec.get("transpose", 0))
+            stem = S.level(stem, spec["rms"])
+            if spec.get("width"):                  # a little stereo spread for pads: delay the right side by a few ms
+                d = int(spec["width"] * SR)
+                stem[1] = np.concatenate([np.zeros(d, np.float32), stem[1][:-d]])
+            groups[group] += stem
+            return
         for k, (start, dur, m, vol, ex) in enumerate(ev[channel]):
             name = names if isinstance(names, str) else inst(names, start)
             n = max(16, int(dur * RATE))
@@ -711,6 +723,12 @@ def render(t: Track) -> np.ndarray:
 
     # drums: the 8-bit kit is the original noise and sine, the others are the sampled-style kits in voices.py
     def drum(channel, fn8, fn, gain, p, rate=None):
+        if "drums" in studio:
+            import studio as S
+            groups["drums"] += S.level(S.drum_stem(studio["drums"]["kit"], channel, ev[channel], total), studio["drums"]["rms"][channel] * dm)
+            if channel == "kick":
+                kick_times.extend(s for s, *_ in ev[channel])
+            return
         for start, dur, _, vol, ex in ev[channel]:
             if kit == "8bit":
                 w = fn8(int(dur * RATE), vol, ex)
@@ -738,7 +756,9 @@ def render(t: Track) -> np.ndarray:
     drum("kick", k8, kits["kick"] if kits else None, 0.36 * dm, 0.0)
     drum("snare", s8, kits["snare"] if kits else None, 0.20 * dm, 0.15)
     drum("hat", h8, kits["hat"] if kits else None, (0.055 if kit == "8bit" else 0.07) * dm * dm, 0.4)
-    for start, dur, _, vol, ex in ev["tom"]:
+    if "drums" in studio:
+        drum("tom", None, None, 0, 0)
+    for start, dur, _, vol, ex in ([] if "drums" in studio else ev["tom"]):
         w = t8(int(dur * RATE), vol, ex) if kit == "8bit" else V.tom_16(dur, rng, ex["pitch"]) * V.DRUM_TRIM[V.tom_16] * vol
         put("drums", w, start, 0.0, 0.3 * dm)
     if snd["risers"]:
