@@ -351,7 +351,8 @@ test("annual checkout uses the configured Stripe Price and asks for terms consen
   assert.equal(res.status, 200);
   assert.equal(body.get("mode"), "subscription");
   assert.equal(body.get("line_items[0][price]"), "price_1UYByUJkzNxf3fKqUtZInNif");
-  assert.equal(body.get("consent_collection[terms_of_service]"), "required");
+  assert.equal(body.get("consent_collection[terms_of_service]"), null); // needs a Stripe dashboard Terms URL; see checkout.mjs
+  assert.match(body.get("custom_text[submit][message]") || "", /Renews at \$79 a year/);
   assert.equal(body.get("metadata[product]"), "paper-review-annual");
   assert.equal(body.get("subscription_data[metadata][product]"), "paper-review-annual");
 });

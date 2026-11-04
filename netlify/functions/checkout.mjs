@@ -552,10 +552,9 @@ export default async function handler(request) {
     params["subscription_data[metadata][product]"] = product;
     if (attrFirst) params["subscription_data[metadata][attr_first]"] = attrFirst;
     if (attrLast) params["subscription_data[metadata][attr_last]"] = attrLast;
-    if (product === "paper-review-annual") {
-      // Affirmative consent to the renewal terms (auto-renewal laws). Needs the Terms URL set in the Stripe dashboard.
-      params["consent_collection[terms_of_service]"] = "required";
-    }
+    // paper-review-annual: no consent_collection[terms_of_service]. Stripe refuses that parameter until a Terms URL is
+    // set in the dashboard, and Ben chose to change nothing else in Stripe (2026-11-04). The renewal terms are shown
+    // beside the Pay button (REFUND_TEXT) and beside the button on our own page instead.
     if (entry.trialDays) {
       params["subscription_data[trial_period_days]"] = String(entry.trialDays);
     }

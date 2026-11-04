@@ -262,8 +262,9 @@ so a referred sale nets about $6.57 in its first year and $29.85 a year after th
   "/tools/paper-review/packs/success/" }`, the same inline shape as `live-scholar`. If the env var
   `STRIPE_PRICE_PAPER_REVIEW_ANNUAL` is set, checkout uses that Price instead, so either answer to the price question
   works with the same code. No trial (the free first-review offers already cover trying it).
-- `consent_collection[terms_of_service]=required`: the buyer ticks a box agreeing to the renewal terms. This is the
-  affirmative consent auto-renewal laws expect.
+- No `consent_collection[terms_of_service]` checkbox for now. Stripe refuses it until a Terms of Service URL is set in
+  the Stripe dashboard, and Ben chose to change nothing else in Stripe (2026-11-04). The renewal terms sit directly
+  beside the Pay button and beside our own button; adding the checkbox later is one dashboard setting plus one line.
 - `custom_text[submit][message]` gets a new `REFUND_TEXT` entry (the test that matches it to `/terms/` is updated):
   "Renews at $79 a year on the same date until you cancel. Cancel in one click from any plan email. We email you 30
   and 7 days before each renewal. Unused reviews end with the year; cancelling stops the next charge and is not a
@@ -465,7 +466,7 @@ Kept against the scope reviewer's advice:
 | Reminders read stale stored flags; opt-out loop deletes entries; no dedupe | own loop, per-period markers, live Stripe re-read before sending; `customer.subscription.updated` forwarded |
 | Parallel referral system collides with `referral_dict` and the `.edu` credit | reuse `referral_dict`; annual excluded from the `.edu` credit |
 | Referral abuse via promo codes, aliases, second cards | reward only on a paid $79 invoice, normalised email and card fingerprint checks, one per buyer |
-| No affirmative consent; `<date>` cannot be filled in custom text | `consent_collection[terms_of_service]`; "on the same date" wording; text beside the button |
+| No affirmative consent; `<date>` cannot be filled in custom text | Renewal terms beside the Pay button (checkbox deferred, see Checkout); "on the same date" wording; text beside the button |
 | Webhook drops the product; no subscription id or period end forwarded | product added to both catalogs; subscription retrieved with alert on failure |
 | "Reply cancel" has no owner; no cancel confirmation | Ben, one business day, effective from the reply; confirmation email on cancel and undo |
 | Lifecycle win-back mail would reach paying subscribers | not seeded for this product |
