@@ -370,7 +370,7 @@ test("the home page dock has a tile for Tapefolio with its icon, and the dock CS
   const home = read("index.html");
   const tiles = [...home.matchAll(/<a class="dock-app" href="([^"]+)"/g)].map((m) => m[1]);
   assert.deepEqual(tiles, ["/moderntex/", "/outbound-veil/", "/legroom/", "/keyfeel/", "/tapefolio/", "/panely/", "/summonly/", "/nee/", "/vitae/", "/globepin/", "/circled-hoops/", "/haea/", "/scholar-utility-belt/"]);
-  assert.match(home, /<a class="dock-app" href="\/tapefolio\/" data-track="home_cta" data-track-meta="dock-tapefolio">\s*<span class="dock-art"><img src="\/assets\/tapefolio-icon\.webp" alt="" width="96" height="96" decoding="async"><\/span>\s*<strong class="dock-name">Tapefolio<\/strong>/);
+  assert.match(home, /<a class="dock-app" href="\/tapefolio\/" data-track="home_cta" data-track-meta="dock-tapefolio">\s*<span class="dock-art"><img src="\/assets\/dock\/tapefolio-icon\.webp" alt="" width="96" height="96" decoding="async"><\/span>\s*<strong class="dock-name">Tapefolio<\/strong>/);
   assert.match(home, /Free for 7 days, \$29\.99/);
   const css = read("home.css");
   assert.match(css, /\.dock \{[^}]*grid-template-columns: repeat\(5, minmax\(0, 1fr\)\)/);
