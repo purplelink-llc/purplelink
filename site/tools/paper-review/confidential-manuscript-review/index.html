@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Confidential AI Manuscript Review: Where Your Paper Goes | Purplelink</title>
+    <meta name="description" content="Where a manuscript goes during an AI pre-submission review: who reads it, what is kept, when it is deleted, and what we cannot promise. Free reference check first.">
+    <link rel="canonical" href="https://purplelink.llc/tools/paper-review/confidential-manuscript-review/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Confidential AI Manuscript Review: Where Your Paper Goes | Purplelink">
+    <meta property="og:description" content="Where a manuscript goes during an AI pre-submission review: who reads it, what is kept, when it is deleted, and what we cannot promise. Free reference check first.">
+    <meta property="og:url" content="https://purplelink.llc/tools/paper-review/confidential-manuscript-review/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/paper-review.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Confidential AI Manuscript Review: Where Your Paper Goes | Purplelink">
+    <meta name="twitter:description" content="Where a manuscript goes during an AI pre-submission review: who reads it, what is kept, when it is deleted, and what we cannot promise. Free reference check first.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/paper-review.png">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "name": "Confidential AI Manuscript Review: Where Your Paper Goes | Purplelink",
+      "url": "https://purplelink.llc/tools/paper-review/confidential-manuscript-review/",
+      "description": "Where a manuscript goes during an AI pre-submission review: who reads it, what is kept, when it is deleted, and what we cannot promise. Free reference check first.",
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "https://purplelink.llc/tools/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Paper Review",
+          "item": "https://purplelink.llc/tools/paper-review/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Confidential Manuscript Review",
+          "item": "https://purplelink.llc/tools/paper-review/confidential-manuscript-review/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does Anthropic train on my manuscript?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Paper Review uses Anthropic's API under its commercial terms, which keep inputs for up to 30 days for abuse monitoring and do not use them to train models."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can anyone at Purplelink read my paper?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The review runs without a person reading the manuscript. It sits in our storage only until the cleanup deletes it, within about a day after you first open the result, or within 48 hours if you never do."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does the free reference check send my paper anywhere?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It reads the PDF on our server, sends the reference titles and DOIs to CrossRef, and discards the file when it answers. Nothing goes to Anthropic, nothing is stored, and no email address is asked for."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can my institution sign a data processing agreement?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. A data processing addendum, the subprocessor list and a completed HECVAT Lite or your own vendor questionnaire are available on request from ben@purplelink.llc. There is no on-premises version."
+          }
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/motion.css">
+    <link rel="stylesheet" href="/tools/paper-review/pipeline-compare.css">
+    <script src="/site.js" defer></script>
+    <script src="/motion.js" defer></script>
+    <script src="/buddy-chat/loader.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/paper-review/">← Paper Review</a>
+      <section class="catalog-hero">
+        <p class="eyebrow">Paper Review · Data handling</p>
+        <h1>Is an AI review safe for <em>an unpublished manuscript?</em></h1>
+        <p class="catalog-lede">This page sets out where your manuscript goes during a Paper Review, who can read it, and when it is deleted. It also lists what we cannot promise, so you can decide before you upload anything.</p>
+        <div class="field-actions">
+          <a class="btn btn-primary" href="/tools/paper-review/#pr-preview-h" data-track="field_cta" data-track-meta="confidential-free">Run the free reference check</a>
+          <a class="btn btn-ghost" href="/tools/paper-review/#choose-tier" data-track="field_cta" data-track-meta="confidential">Start a review, from $9</a>
+        </div>
+      </section>
+
+      <section class="catalog-section" aria-labelledby="conf-who">
+        <div class="catalog-section-head">
+          <p class="eyebrow">During the review</p>
+          <h2 id="conf-who">Who reads the manuscript</h2>
+          <p>The upload goes straight from your browser to our server on Modal, not to the website host. From there, three parties see some part of it.</p>
+        </div>
+        <ul class="field-checks">
+          <li><strong>Our server on Modal.</strong> A Word file is converted to PDF, and the PDF is read in memory. Pages are rendered to images from a private temporary file that is deleted as soon as the rendering finishes.</li>
+          <li><strong>Anthropic.</strong> The text and page images are sent to Anthropic's Claude API, which runs the seven reviewers. Under Anthropic's commercial terms, API inputs are kept for up to 30 days for abuse monitoring and are not used to train models.</li>
+          <li><strong>CrossRef, OpenAlex and Semantic Scholar.</strong> They receive the titles and DOIs of your references, so each one can be looked up. Nothing from your own text goes to them.</li>
+          <li><strong>Nobody else.</strong> No person at Purplelink reads the manuscript as part of the review, and it is not used to train anything.</li>
+        </ul>
+      </section>
+
+      <section class="catalog-section catalog-section-tint" aria-labelledby="conf-others">
+        <div class="catalog-section-head">
+          <p class="eyebrow">The other services</p>
+          <h2 id="conf-others">What payment, email and hosting see</h2>
+          <p>None of these three ever receives the manuscript.</p>
+        </div>
+        <ul class="field-checks">
+          <li><strong>Stripe</strong> takes the payment on its own checkout page. It sees your email address and card. Purplelink never sees the card.</li>
+          <li><strong>Resend</strong> sends the email that says your review is ready, with the report attached as a PDF. It sees your address and that email. The manuscript and the annotated PDF are never emailed.</li>
+          <li><strong>Netlify</strong> hosts this site and the payment notice from Stripe. It sees the Stripe session ID and the email address passing through that notice, and IP addresses like any web host.</li>
+        </ul>
+      </section>
+
+      <section class="catalog-section" aria-labelledby="conf-delete">
+        <div class="catalog-section-head">
+          <p class="eyebrow">Afterwards</p>
+          <h2 id="conf-delete">When it is deleted, and what we keep</h2>
+        </div>
+        <ul class="field-checks">
+          <li><strong>The manuscript, the online report and the annotated PDF</strong> are deleted within about a day after you first open the result, or within 48 hours if you never open it. A cleanup job runs once a day to enforce this.</li>
+          <li><strong>The emailed report</strong> stays in your mailbox. Our copy of the email at Resend follows Resend's own retention.</li>
+          <li><strong>A cost record per review</strong> is kept permanently: the product, whether the job finished, the price, token counts, cost and model names, with the time. It contains no manuscript text, no title and no email address. We use it to check that prices cover what the reviews cost.</li>
+        </ul>
+      </section>
+
+      <section class="catalog-section catalog-section-tint" aria-labelledby="conf-limits">
+        <div class="catalog-section-head">
+          <p class="eyebrow">Limits</p>
+          <h2 id="conf-limits">What we cannot promise</h2>
+        </div>
+        <ul class="field-checks">
+          <li><strong>No on-premises version.</strong> The review runs on our server and Anthropic's API. There is no version you can run inside your institution.</li>
+          <li><strong>The 30 days at Anthropic are set by Anthropic.</strong> Deleting our copy does not shorten them.</li>
+          <li><strong>Contracts on request, not by default.</strong> A data processing addendum, the subprocessor list and a completed HECVAT Lite are available from <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>. The <a href="/security/">security page</a> and the <a href="/labs/">page for labs</a> have the detail.</li>
+          <li><strong>An AI review can be wrong.</strong> It does not replace your co-authors or the journal's reviewers.</li>
+        </ul>
+      </section>
+
+      <section class="prc" aria-labelledby="prc-h">
+        <h2 id="prc-h">Why not paste it into a chatbot?</h2>
+        <p class="prc-lede">A chat assistant reads your PDF once and answers in one pass. Paper Review looks every reference up in three scholarly databases, recomputes your statistics without a language model, and has seven separate reviewers read the paper before one pass reconciles what they found.</p>
+        <div class="prc-grid">
+          <div class="prc-col prc-chat">
+            <h3 class="prc-col-h">One chat prompt</h3>
+            <p class="prc-col-sub">One model, one pass</p>
+            <ol class="prc-mini" aria-label="What a chat prompt does">
+              <li>Your PDF</li>
+              <li>One model</li>
+              <li>One answer</li>
+            </ol>
+            <ul class="prc-gaps" aria-label="What it does not do">
+              <li>References are not looked up one by one, so a wrong or invented one can pass.</li>
+              <li>Retractions are caught only if the model happens to know them.</li>
+              <li>p-values and means are not recomputed.</li>
+              <li>One point of view, written in one go.</li>
+              <li>No marked-up PDF.</li>
+              <li>Whether the manuscript is kept or used for training depends on your account settings.</li>
+            </ul>
+          </div>
+          <div class="prc-col prc-pipe">
+            <h3 class="prc-col-h">Paper Review</h3>
+            <p class="prc-col-sub">Four stages, many checks, run for every paper</p>
+            <ol class="prc-stages">
+              <li class="prc-stage">
+                <span class="prc-num" aria-hidden="true">1</span>
+                <span class="prc-stage-h">Read the paper apart</span>
+                <p>The PDF is split into text, figures, tables and the reference list.</p>
+              </li>
+              <li class="prc-stage">
+                <span class="prc-num" aria-hidden="true">2</span>
+                <span class="prc-stage-h">Check it, in parallel</span>
+                <ul class="prc-lanes" data-motion="stagger">
+                  <li class="prc-lane">
+                    <span class="prc-lane-tag">Lookups</span>
+                    <span class="prc-lane-h">Every reference</span>
+                    <ul class="prc-chips" aria-label="Databases queried">
+                      <li>CrossRef</li><li>OpenAlex</li><li>Semantic Scholar</li>
+                    </ul>
+                    <ul>
+                      <li>Each reference matched to a real record</li>
+                      <li>Retractions, withdrawals and expressions of concern flagged</li>
+                      <li>Key claims checked against the cited source's abstract</li>
+                    </ul>
+                  </li>
+                  <li class="prc-lane">
+                    <span class="prc-lane-tag">Rule-based, no AI</span>
+                    <span class="prc-lane-h">Numbers and structure</span>
+                    <ul>
+                      <li>p-values recomputed from t, F, chi-square, r and z (statcheck)</li>
+                      <li>Reported means tested for consistency (GRIM)</li>
+                      <li>In-text citations matched to the reference list</li>
+                      <li>Figure and table numbering checked</li>
+                    </ul>
+                  </li>
+                  <li class="prc-lane">
+                    <span class="prc-lane-tag">Vision</span>
+                    <span class="prc-lane-h">Every page and figure</span>
+                    <ul>
+                      <li>Pages rendered and read as images</li>
+                      <li>Figures compared with what the text claims</li>
+                      <li>Missing error bars, broken axes, color-only encoding</li>
+                    </ul>
+                  </li>
+                  <li class="prc-lane">
+                    <span class="prc-lane-tag">Panel</span>
+                    <span class="prc-lane-h">Seven reviewers, separately</span>
+                    <ul class="prc-roles">
+                      <li>Methodology</li><li>Statistics</li><li>Data integrity</li><li>Editor</li>
+                      <li>Equations</li><li>Literature</li><li>Numerical realism</li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+              <li class="prc-stage">
+                <span class="prc-num" aria-hidden="true">3</span>
+                <span class="prc-stage-h">Reconcile</span>
+                <p>Findings are merged, and issues raised by more than one reviewer rank first. A coherence check compares the abstract, hypotheses and results with each other.</p>
+              </li>
+              <li class="prc-stage">
+                <span class="prc-num" aria-hidden="true">4</span>
+                <span class="prc-stage-h">Deliver</span>
+                <p>A report with a fix-first checklist and an annotated PDF, by email. Your files are deleted within about a day.</p>
+              </li>
+            </ol>
+          </div>
+        </div>
+        <p class="prc-foot">The reviewers and the final pass use Claude Opus through Anthropic's API, which does not train on your manuscript.</p>
+      </section>
+
+      <section class="catalog-section" aria-labelledby="conf-chat">
+        <div class="catalog-section-head">
+          <p class="eyebrow">Compared with a chat assistant</p>
+          <h2 id="conf-chat">Pasting a draft into a chat app</h2>
+          <p>In a consumer chat app, how long your draft is kept, and whether it can be used for training, depend on the plan you are on and the settings in your account. The same draft can be handled differently on two accounts. Paper Review uses Anthropic's commercial API terms for every review, so the rules above are the same for everyone, and you do not need to change a setting first.</p>
+        </div>
+      </section>
+
+      <section class="catalog-section catalog-section-tint" aria-labelledby="conf-check">
+        <div class="catalog-section-head">
+          <p class="eyebrow">Before you upload</p>
+          <h2 id="conf-check">A short checklist</h2>
+          <p>These apply to any AI tool, this one included.</p>
+        </div>
+        <ul class="field-checks">
+          <li><strong>Your co-authors agree.</strong> The manuscript is theirs too. Ask before you send it to any outside service.</li>
+          <li><strong>The data allows it.</strong> If the paper quotes restricted data, patient details or anything under a data use agreement, check that the agreement permits sending it to a third-party processor. If not, remove those passages first.</li>
+          <li><strong>The journal and funder allow it.</strong> Read their AI policies. Some ask you to disclose AI assistance in the cover letter or acknowledgments.</li>
+          <li><strong>It is your own paper.</strong> Never upload a manuscript you were sent to review. Journals forbid sharing those with AI tools, and so do we.</li>
+        </ul>
+      </section>
+
+      <section class="tool-faq" aria-labelledby="conf-faq">
+        <h2 id="conf-faq">Questions</h2>
+        <details><summary>Does Anthropic train on my manuscript?</summary><div class="faq-body">No. Paper Review uses Anthropic's API under its commercial terms, which keep inputs for up to 30 days for abuse monitoring and do not use them to train models.</div></details>
+        <details><summary>Can anyone at Purplelink read my paper?</summary><div class="faq-body">The review runs without a person reading the manuscript. It sits in our storage only until the cleanup deletes it, within about a day after you first open the result, or within 48 hours if you never do.</div></details>
+        <details><summary>Does the free reference check send my paper anywhere?</summary><div class="faq-body">It reads the PDF on our server, sends the reference titles and DOIs to CrossRef, and discards the file when it answers. Nothing goes to Anthropic, nothing is stored, and no email address is asked for.</div></details>
+        <details><summary>Can my institution sign a data processing agreement?</summary><div class="faq-body">Yes. A data processing addendum, the subprocessor list and a completed HECVAT Lite or your own vendor questionnaire are available on request from ben@purplelink.llc. There is no on-premises version.</div></details>
+      </section>
+
+      <section class="closing-cta field-closing" aria-labelledby="conf-close">
+        <h2 id="conf-close">Start with the free check.</h2>
+        <p>It reads your reference list, stores nothing and needs no account. The full review is from $9, usually back in 4 to 8 minutes.</p>
+        <div class="closing-cta-actions">
+          <a class="btn btn-primary" href="/tools/paper-review/#pr-preview-h" data-track="field_cta" data-track-meta="confidential-free-close">Run the free check</a>
+          <a class="btn btn-ghost" href="/tools/paper-review/#choose-tier" data-track="field_cta" data-track-meta="confidential-close">Start a review</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/nee/">Née</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/suite/">Mac Suite</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+    <script src="/analytics.js" defer></script>
+  </body>
+</html>
