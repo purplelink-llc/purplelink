@@ -178,6 +178,8 @@
         });
       })
       .then(function (data) {
+        // Remember that this device ran a free check (a time, no identifier); checkout sends it as a flag for 30 days.
+        try { localStorage.setItem("pl_pr_preview_at", String(Date.now())); } catch (e) { /* storage blocked */ }
         var counts = data.counts || {};
         setStatus("Checked " + plural(counts.references_found || 0, "reference", "references") +
           " across " + plural(data.pages || 0, "page", "pages") + ". The file has been discarded.");

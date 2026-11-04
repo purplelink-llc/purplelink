@@ -442,10 +442,12 @@ export default async function handler(request) {
   const attempt = typeof body?.attempt === "string" && /^[A-Za-z0-9_-]{8,64}$/.test(body.attempt) ? body.attempt : "";
   // Stripe as merchant of record for this product (off unless STRIPE_MANAGED_PAYMENTS names it); see
   // netlify/lib/managed-payments.mjs. Part of the idempotency key, because Stripe rejects a reused key with new params.
+  // Paper Review only: the buyer ran the free check on this device in the last 30 days (a flag, no identifier).
+  const prPreview = product.startsWith("paper-review") && body?.pr_preview === 1;
   const managed = managedPaymentsOn(product, Netlify.env.get("STRIPE_MANAGED_PAYMENTS"));
   const timeBucket = Math.floor(Date.now() / IDEMPOTENCY_WINDOW_MS);
   const idempotencyKey = createHash("sha256")
-    .update(`v6:${managed ? "mp:" : ""}${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${trialDay}:${appSource}:${redditAd ? "r" + redditClick : ""}:${photo}:${seats}:${bundleParts.join("+")}`)
+    .update(`v6:${managed ? "mp:" : ""}${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${trialDay}:${appSource}:${redditAd ? "r" + redditClick : ""}:${photo}:${seats}:${bundleParts.join("+")}:${prPreview ? "pv" : ""}`)
     .digest("hex");
 
   // Attach the product key as Stripe metadata so the webhook can route
@@ -527,6 +529,7 @@ export default async function handler(request) {
   }
   if (trialDay) params["metadata[trial_day]"] = trialDay;
   if (appSource) params["metadata[app_source]"] = appSource;
+  if (prPreview) params["metadata[pr_preview]"] = "1";
   if (attrFirst) params["metadata[attr_first]"] = attrFirst;
   if (attrLast) params["metadata[attr_last]"] = attrLast;
   // ModernTex sale from a Reddit ad (the browser sends `rdt` only for that visitor and never under Do Not Track):

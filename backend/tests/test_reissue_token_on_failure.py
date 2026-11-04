@@ -324,3 +324,59 @@ def test_adjacent_tool_pipeline_soft_error_reissues_token(backend_app, monkeypat
     session_entry = backend_app.paper_tokens_dict["sess-soft-2"]
     assert replacement in session_entry["tokens"]
     assert replacement not in (session_entry.get("consumed_tokens") or [])
+
+
+# ---- job -> order link and first view (funnel instrumentation) --------------
+
+class _Usage:
+    total_input_tokens = 10
+    total_cache_read_tokens = 0
+    total_cache_creation_tokens = 0
+    total_output_tokens = 5
+    total_cost_usd = 0.1234
+
+    def models_used(self):
+        return ["m"]
+
+
+def test_ledger_record_links_to_the_order(backend_app, monkeypatch):
+    import hashlib
+
+    monkeypatch.setattr(backend_app, "usage_ledger_dict", {})
+    entry = {"tokens": ["tok-a"], "product_key": "paper-review-pack-5"}
+    backend_app.paper_tokens_dict["sess-1"] = entry
+    backend_app.paper_token_index_dict["tok-a"] = "sess-1"
+    key = backend_app._write_usage_ledger("tok-a", "paper-review-standard", "done", _Usage())
+    rec = backend_app.usage_ledger_dict[key]
+    assert rec["purchase"] == hashlib.sha256(b"sess-1").hexdigest()[:16]
+    assert rec["sold_as"] == "paper-review-pack-5"
+    assert rec["attempt"] == 1
+    assert rec["product_key"] == "paper-review-standard"  # cost-ceiling key unchanged
+
+
+def test_ledger_record_without_a_session_has_no_link(backend_app, monkeypatch):
+    monkeypatch.setattr(backend_app, "usage_ledger_dict", {})
+    key = backend_app._write_usage_ledger("tok-orphan", "paper-review-standard", "done", _Usage())
+    rec = backend_app.usage_ledger_dict[key]
+    assert "purchase" not in rec and "sold_as" not in rec and "attempt" not in rec
+
+
+def test_replacement_token_is_attempt_two(backend_app, monkeypatch):
+    monkeypatch.setattr(backend_app, "usage_ledger_dict", {})
+    backend_app.paper_tokens_dict["sess-1"] = {"tokens": ["tok-a"], "product_key": "paper-review-standard"}
+    backend_app.paper_token_index_dict["tok-a"] = "sess-1"
+    new = backend_app._reissue_token_on_failure("tok-a")
+    key = backend_app._write_usage_ledger(new, "paper-review-standard", "done", _Usage())
+    assert backend_app.usage_ledger_dict[key]["attempt"] == 2
+    new2 = backend_app._reissue_token_on_failure(new)
+    key2 = backend_app._write_usage_ledger(new2, "paper-review-standard", "done", _Usage())
+    assert backend_app.usage_ledger_dict[key2]["attempt"] == 3
+
+
+def test_ledger_write_failure_returns_none(backend_app, monkeypatch):
+    class _Down:
+        def __setitem__(self, *a):
+            raise RuntimeError("down")
+
+    monkeypatch.setattr(backend_app, "usage_ledger_dict", _Down())
+    assert backend_app._write_usage_ledger("tok", "paper-review-standard", "done", _Usage()) is None

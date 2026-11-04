@@ -1456,8 +1456,282 @@ def fetch_api_usage() -> list[dict] | None:
         print(f"  ! usage ledger unavailable: {str(exc)[:100]}", file=sys.stderr)
         return None
     return sorted(({k: r.get(k) for k in ("ts", "product_key", "status", "cost_usd",
-                                          "input_tokens", "output_tokens", "price_charged_usd")}
+                                          "input_tokens", "output_tokens", "price_charged_usd",
+                                          "purchase", "sold_as", "attempt", "viewed_at")}
                    for r in rows if r.get("models")), key=lambda r: r["ts"])
+
+
+# ------------------------------------------------------- Paper Review funnel
+#
+# docs/designs/paper-review-growth.md, Part A. Joins three records that already exist: the Stripe orders from
+# sales.mjs (history["ledger"], plus the 100%-off orders in history["prComps"]), the permanent job ledger
+# (history["apiUsage"]) and the daily free-check counters (history["previewDaily"]). A job joins its order through
+# `purchase`, sha256(session id)[:16], which backend/app.py writes on the job and sales.mjs on the order. Jobs without
+# it predate the change ("before tracking"). Nothing is backfilled, and no public endpoint computes any of this.
+
+PR_FUNNEL_PATH = OUT_DIR / "paper_review_funnel.json"
+PR_OK_STATUSES = ("done", "ok")          # the Paper Review pipeline writes "done"; adjacent tools write "ok"
+PR_PACK_QTY = {"paper-review-pack-5": 5, "paper-review-pack-20": 20}
+PR_MIN_DENOMINATOR = 10                  # a rate over fewer than this is shown, but flagged as too small to read
+PR_TARGETS = {"signups": 100, "activated": 40, "repeat_60d": 15, "paid_individuals": 10, "paid_lab": 1}
+PR_FOUNDER_HOURLY_USD = 50
+
+
+def fetch_preview_counts() -> dict | None:
+    """Free-check counts per day, {day: {ok, error, limited}}, from backend/app.py's preview_counts_dict. One key per
+    container and day ("preview:<day>:<outcome>:<container>"), summed here."""
+    modal = _modal_sdk()
+    if modal is None:
+        return None
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "backend"))
+        from latextools.durable_dict import DurableDict
+
+        d = DurableDict(modal.Dict.from_name("paper-review-preview-counts"),
+                        modal.Volume.from_name("paper-review-durable"), "preview-counts")
+        items = list(d.items())
+    except Exception as exc:  # noqa: BLE001
+        print(f"  ! free-check counters unavailable: {str(exc)[:100]}", file=sys.stderr)
+        return None
+    return sum_preview_counts(items)
+
+
+def sum_preview_counts(items) -> dict:
+    out: dict[str, dict[str, int]] = {}
+    for key, n in items:
+        parts = str(key).split(":")
+        if len(parts) < 3 or parts[0] != "preview" or parts[2] not in ("ok", "error", "limited"):
+            continue
+        day = out.setdefault(parts[1], {"ok": 0, "error": 0, "limited": 0})
+        day[parts[2]] += int(n or 0)
+    return out
+
+
+def _pr_rate(num: int, den: int) -> dict:
+    """A rate with its counts: {"n": 3, "of": 7, "pct": 42.9, "text": "3 of 7", "small": True}. `small` marks a
+    denominator under PR_MIN_DENOMINATOR, which the dashboard greys; pct is None for an empty denominator."""
+    return {"n": num, "of": den, "pct": round(100 * num / den, 1) if den else None,
+            "text": f"{num} of {den}", "small": den < PR_MIN_DENOMINATOR}
+
+
+def _pr_quantile(values: list[float], q: float) -> float | None:
+    if not values:
+        return None
+    v = sorted(values)
+    return round(v[min(len(v) - 1, int(q * len(v)))] if q != 0.5 else
+                 (v[len(v) // 2] if len(v) % 2 else (v[len(v) // 2 - 1] + v[len(v) // 2]) / 2), 4)
+
+
+def _pr_week(ts: float) -> str:
+    d = dt.datetime.fromtimestamp(ts, dt.timezone.utc).date()
+    return (d - dt.timedelta(days=d.weekday())).isoformat()
+
+
+def paper_review_funnel(orders: list[dict], comps: list[dict], jobs: list[dict], preview_daily: dict,
+                        *, today: dt.date | None = None, window_days: int = 30,
+                        modal_cost_usd: float | None = None, modal_days: int = COST_DAYS,
+                        spend_by_channel: dict | None = None, hours_by_channel: dict | None = None) -> dict:
+    """The Paper Review funnel, unit economics and CAC, every figure from the populations in the design's Definitions
+    table. `orders` are sales.mjs ledger rows (all products accepted; only paper-review ones count), `comps` its
+    100%-off Paper Review orders, `jobs` the usage-ledger records, `preview_daily` {day: {ok, error, limited}}.
+    `modal_cost_usd` is Modal compute for the last `modal_days` days (the whole app: an upper bound for Paper Review);
+    `spend_by_channel` (USD) and `hours_by_channel` come from the hub and Part E and may be empty."""
+    today = today or dt.date.today()
+    now = dt.datetime.combine(today + dt.timedelta(days=1), dt.time(), dt.timezone.utc).timestamp()
+    day = 86400
+
+    # -- signups: paid orders and comps, minus owner tests (already out of sales.mjs) and fully refunded orders
+    signups: list[dict] = []
+    for r in orders:
+        if not str(r.get("product", "")).startswith("paper-review") or r.get("kind", "purchase") != "purchase":
+            continue
+        gross = r.get("gross") or 0
+        if gross > 0 and (r.get("refunded") or 0) >= gross:
+            continue
+        net = (r["net"] if r.get("net") is not None else gross) - (r.get("refunded") or 0)
+        signups.append({"purchase": r.get("purchase"), "cust": r.get("cust") or r.get("purchase") or r.get("id"),
+                        "ts": r["ts"], "comp": False, "gross": gross, "net": net, "product": r["product"],
+                        "pr_preview": bool(r.get("pr_preview")), "attr": r.get("attr")})
+    for r in comps:
+        signups.append({"purchase": r.get("purchase"), "cust": r.get("cust") or r.get("purchase") or r.get("id"),
+                        "ts": r["ts"], "comp": True, "gross": 0, "net": 0, "product": r.get("product", ""),
+                        "pr_preview": bool(r.get("pr_preview")), "attr": r.get("attr")})
+    signups.sort(key=lambda s: s["ts"])
+    by_purchase = {s["purchase"]: s for s in signups if s["purchase"]}
+
+    # -- jobs: tracked ones join an order; the rest are "before tracking"
+    tracked, before = [], []
+    for j in jobs:
+        (tracked if j.get("purchase") else before).append(j)
+    ok = lambda j: j.get("status") in PR_OK_STATUSES  # noqa: E731
+    for j in tracked:
+        j["_order"] = by_purchase.get(j["purchase"])
+    joined = [j for j in tracked if j["_order"]]
+    ok_jobs = [j for j in jobs if ok(j)]
+    cost = lambda j: float(j.get("cost_usd") or 0)  # noqa: E731
+
+    # -- activated: an ok job viewed within 7 days of the order
+    viewed_ok = [j for j in joined if ok(j) and j.get("viewed_at")]
+    activated_orders = {j["purchase"] for j in viewed_ok
+                        if j["viewed_at"] <= j["_order"]["ts"] + 7 * day}
+    weeks: dict[str, list[int]] = {}
+    for s in signups:
+        w = weeks.setdefault(_pr_week(s["ts"]), [0, 0])
+        w[1] += 1
+        w[0] += 1 if s["purchase"] in activated_orders else 0
+    activated = _pr_rate(len(activated_orders), len(signups))
+
+    # -- repeat: activated buyers with a second viewed job within 30/60 days of the first
+    views_by_cust: dict[str, list[float]] = {}
+    for j in viewed_ok:
+        views_by_cust.setdefault(j["_order"]["cust"], []).append(j["viewed_at"])
+    act_custs = {by_purchase[p]["cust"] for p in activated_orders}
+    repeat = {}
+    for n in (30, 60):
+        hit = 0
+        for c in act_custs:
+            v = sorted(views_by_cust.get(c, []))
+            if len(v) > 1 and v[1] - v[0] <= n * day:
+                hit += 1
+        repeat[f"{n}d"] = _pr_rate(hit, len(act_custs))
+
+    # -- free checks and the upper-bound proxy
+    lo_day = (today - dt.timedelta(days=window_days - 1)).isoformat()
+    pv = {"ok": 0, "error": 0, "limited": 0}
+    for d, c in (preview_daily or {}).items():
+        if lo_day <= d <= today.isoformat():
+            for k in pv:
+                pv[k] += int(c.get(k) or 0)
+    lo_ts = now - window_days * day
+    paid_window = [s for s in signups if not s["comp"] and s["ts"] >= lo_ts]
+    flagged = [s for s in paid_window if s["pr_preview"]]
+    free_to_paid = _pr_rate(len(flagged), pv["ok"])
+    free_to_paid["note"] = "upper bound: a device keeps the flag for 30 days"
+
+    # -- comp -> paid: buyers whose first order was a comp and who paid more than $0 within 60 days
+    first_by_cust: dict[str, dict] = {}
+    for s in signups:
+        first_by_cust.setdefault(s["cust"], s)
+    comp_first = [c for c, s in first_by_cust.items() if s["comp"]]
+    comp_paid = [c for c in comp_first
+                 if any(s["cust"] == c and not s["comp"] and s["gross"] > 0 and
+                        0 < s["ts"] - first_by_cust[c]["ts"] <= 60 * day for s in signups)]
+    comp_to_paid = _pr_rate(len(comp_paid), len(comp_first))
+
+    # -- Modal compute per ok job (whole-app upper bound), over the days Modal's figure covers
+    recent_ok = [j for j in ok_jobs if (j.get("ts") or 0) >= now - modal_days * day]
+    modal_per_job = (modal_cost_usd / len(recent_ok)) if modal_cost_usd and recent_ok else 0.0
+
+    # -- cost, revenue, margin
+    ok_costs = [cost(j) for j in ok_jobs]
+    model_cost_all = sum(cost(j) for j in jobs)
+    cost_per_eval = None
+    if ok_jobs:
+        cost_per_eval = {"usd": round((model_cost_all + modal_per_job * len(ok_jobs)) / len(ok_jobs), 4),
+                         "model_usd": round(model_cost_all / len(ok_jobs), 4),
+                         "modal_usd": round(modal_per_job, 4),
+                         "median_usd": _pr_quantile(ok_costs, 0.5), "p90_usd": _pr_quantile(ok_costs, 0.9),
+                         "jobs_ok": len(ok_jobs), "jobs_all": len(jobs),
+                         "modal_whole_app": modal_cost_usd is not None}
+
+    def qty(s: dict) -> int:
+        return PR_PACK_QTY.get(s["product"], 1)
+
+    paid_joined = [j for j in joined if not j["_order"]["comp"]]
+    paid_ok = [j for j in paid_joined if ok(j)]
+    revenue = sum(j["_order"]["net"] / 100 / qty(j["_order"]) for j in paid_ok)
+    paid_cost = sum(cost(j) + (modal_per_job if ok(j) else 0.0) for j in paid_joined)
+    margin = None
+    if paid_ok and revenue > 0:
+        margin = {"revenue_usd": round(revenue, 2), "cost_usd": round(paid_cost, 2),
+                  "revenue_per_eval_usd": round(revenue / len(paid_ok), 2),
+                  "gross_margin": _pr_rate(0, 0) | {"pct": round(100 * (revenue - paid_cost) / revenue, 1)},
+                  "paid_jobs_ok": len(paid_ok)}
+    comp_jobs = [j for j in joined if j["_order"]["comp"]]
+    promo_cost = sum(cost(j) + (modal_per_job if ok(j) else 0.0) for j in comp_jobs)
+
+    # -- CAC by channel: new paid buyers (first paid order in the window) by first-touch channel
+    chan = lambda s: classify_touch(((s.get("attr") or {}).get("first")))  # noqa: E731
+    first_paid: dict[str, dict] = {}
+    for s in signups:
+        if not s["comp"] and s["gross"] > 0:
+            first_paid.setdefault(s["cust"], s)
+    new_buyers: dict[str, list[dict]] = {}
+    for s in first_paid.values():
+        if s["ts"] >= lo_ts:
+            new_buyers.setdefault(chan(s), []).append(s)
+    promo_by_chan: dict[str, float] = {}
+    for j in comp_jobs:
+        promo_by_chan[chan(j["_order"])] = promo_by_chan.get(chan(j["_order"]), 0.0) + cost(j) + (modal_per_job if ok(j) else 0.0)
+    cac = []
+    for ch, buyers in sorted(new_buyers.items(), key=lambda kv: -len(kv[1])):
+        spend = float((spend_by_channel or {}).get(ch) or 0)
+        hours = float((hours_by_channel or {}).get(ch) or 0)
+        total = spend + hours * PR_FOUNDER_HOURLY_USD + promo_by_chan.get(ch, 0.0)
+        profit_90 = 0.0
+        for s in buyers:
+            for j in paid_joined:
+                if j["_order"]["cust"] == s["cust"] and ok(j) and (j["ts"] or 0) <= s["ts"] + 90 * day:
+                    profit_90 += j["_order"]["net"] / 100 / qty(j["_order"]) - cost(j) - modal_per_job
+        monthly = profit_90 / len(buyers) / 3
+        c = total / len(buyers)
+        cac.append({"channel": ch, "new_paid_buyers": len(buyers), "spend_usd": round(spend, 2), "hours": hours,
+                    "promotion_usd": round(promo_by_chan.get(ch, 0.0), 2), "cac_usd": round(c, 2),
+                    "payback_months": round(c / monthly, 1) if monthly > 0 else None,
+                    "small": len(buyers) < PR_MIN_DENOMINATOR})
+
+    # -- progress toward the 90-day targets (pilots live in the marketing hub, not here)
+    paid_s = [s for s in signups if not s["comp"] and s["gross"] > 0]
+    progress = {
+        "signups": {"n": len(signups), "target": PR_TARGETS["signups"]},
+        "activated": {"n": len(activated_orders), "target": PR_TARGETS["activated"]},
+        "repeat_60d": {"n": repeat["60d"]["n"], "target": PR_TARGETS["repeat_60d"]},
+        "paid_individuals": {"n": len({s["cust"] for s in paid_s if qty(s) == 1}), "target": PR_TARGETS["paid_individuals"]},
+        "paid_lab": {"n": len({s["cust"] for s in paid_s if qty(s) > 1}), "target": PR_TARGETS["paid_lab"]},
+    }
+
+    # -- instrumentation gaps: ok jobs that never got a first-view stamp (delivered_at is purged after 30 minutes, so
+    # "not viewed" and "stamp failed" cannot be told apart later; the count makes a systematic gap visible)
+    stale_ok = [j for j in joined if ok(j) and not j.get("viewed_at") and (j.get("ts") or 0) < now - 2 * day]
+    return {
+        "generated": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+        "window_days": window_days,
+        "free_checks": {**pv, "window_from": lo_day},
+        "signups": {"total": len(signups), "paid": sum(1 for s in signups if not s["comp"]),
+                    "comps": sum(1 for s in signups if s["comp"])},
+        "activated": {**activated, "by_week": [{"week": w, **_pr_rate(a, n)} for w, (a, n) in sorted(weeks.items())]},
+        "repeat": repeat,
+        "free_check_to_paid": free_to_paid,
+        "comp_to_paid": comp_to_paid,
+        "cost_per_evaluation": cost_per_eval,
+        "margin": margin,
+        "promotion_cost_usd": round(promo_cost, 2),
+        "cac_by_channel": cac,
+        "targets": progress,
+        "before_tracking": {"jobs": len(before), "ok": sum(1 for j in before if ok(j)),
+                            "model_cost_usd": round(sum(cost(j) for j in before), 2)},
+        "unjoined_jobs": len(tracked) - len(joined),
+        "ok_without_view_stamp": len(stale_ok),
+    }
+
+
+def write_paper_review_funnel(history: dict, modal_costs: dict | None = None,
+                              today: dt.date | None = None) -> dict | None:
+    """Build the funnel from the archive and write paper_review_funnel.json next to history.json. Never raises."""
+    try:
+        orders = [r for r in (history.get("ledger") or {}).values() if not r.get("market")]
+        comps = list((history.get("prComps") or {}).values())
+        modal_cost = None
+        by_day = ((modal_costs or {}).get("byAppDay") or {}).get("purplelink-latextools")
+        if by_day:
+            modal_cost = sum(by_day.values())
+        out = paper_review_funnel(orders, comps, [dict(j) for j in (history.get("apiUsage") or [])],
+                                  history.get("previewDaily") or {}, today=today, modal_cost_usd=modal_cost)
+        PR_FUNNEL_PATH.write_text(json.dumps(out, indent=1, sort_keys=True))
+        return out
+    except Exception as exc:  # noqa: BLE001 -- never let this sink the run
+        print(f"  ! Paper Review funnel not written: {str(exc)[:100]}", file=sys.stderr)
+        return None
 
 
 ASA_API = "https://api.searchads.apple.com/api/v5"
@@ -6801,6 +7075,8 @@ def main() -> int:
             sales = fetch_sales(sales_token)
             if sales:
                 new_events += merge_ledger(history, sales) or []
+                for c in (sales.get("comps") or {}).get("paperReview") or []:
+                    history.setdefault("prComps", {})[c["id"]] = c
                 new_events += subscription_events(prev_subs, sales.get("subscriptions"))
                 if sales.get("subscriptions") is not None:
                     s_ = sales["subscriptions"]
@@ -6885,6 +7161,11 @@ def main() -> int:
             print(f"  ok Claude API usage ledger: {len(usage)} paid job(s), "
                   f"${sum(u.get('cost_usd') or 0 for u in usage):,.2f} all time")
 
+        preview_daily = fetch_preview_counts()
+        if preview_daily is not None:
+            history["previewDaily"] = {**(history.get("previewDaily") or {}), **preview_daily}
+            print(f"  ok Paper Review free checks: {sum(d['ok'] for d in preview_daily.values())} ok run(s) on record")
+
         # Apple Search Ads API. When configured it replaces the manual Chrome
         # reading: same manual-ads.json key, so every card reads it unchanged.
         try:
@@ -6949,6 +7230,8 @@ def main() -> int:
             stamp = dt.datetime.now(dt.timezone.utc).isoformat()
             history["eventLog"] = history.get("eventLog", []) + [{**e, "at": stamp} for e in mk_events]
             HISTORY_PATH.write_text(json.dumps(history, indent=1, sort_keys=True))
+
+    write_paper_review_funnel(history, history.get("modalCosts"))
 
     summaries = [summarise(s, history["sites"].get(s["key"], {})) for s in SITES]
     obs = (observations(summaries, history.get("sales"))

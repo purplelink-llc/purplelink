@@ -1470,6 +1470,42 @@ def test_status_done_job_survives_first_read(client):
     assert r2.json()["result_md"] == "# Review\n\nfindings..."
 
 
+def test_status_first_view_stamps_viewed_at_on_the_ledger(client):
+    http, backend_app = client
+    backend_app.usage_ledger_dict["k1"] = {"status": "done", "purchase": "p1"}
+    backend_app.paper_jobs_dict["tok-v"] = {
+        "status": "done", "result_md": "# Review", "product": "paper-review", "ledger_key": "k1",
+    }
+    assert http.get("/paper-review/status", params={"token": "tok-v"}).status_code == 200
+    first = backend_app.usage_ledger_dict["k1"]["viewed_at"]
+    assert first == backend_app.paper_jobs_dict.get("tok-v")["delivered_at"]
+    # A refresh inside the grace window keeps the first-view time.
+    assert http.get("/paper-review/status", params={"token": "tok-v"}).status_code == 200
+    assert backend_app.usage_ledger_dict["k1"]["viewed_at"] == first
+
+
+def test_status_serves_the_report_when_the_ledger_stamp_fails(client, monkeypatch):
+    http, backend_app = client
+
+    class _Down:
+        def get(self, *a, **k):
+            raise RuntimeError("ledger down")
+
+    monkeypatch.setattr(backend_app, "usage_ledger_dict", _Down())
+    backend_app.paper_jobs_dict["tok-w"] = {
+        "status": "done", "result_md": "# Review", "product": "paper-review", "ledger_key": "k2",
+    }
+    r = http.get("/paper-review/status", params={"token": "tok-w"})
+    assert r.status_code == 200 and r.json()["result_md"] == "# Review"
+
+
+def test_status_without_a_ledger_key_is_unchanged(client):
+    http, backend_app = client
+    backend_app.paper_jobs_dict["tok-old"] = {"status": "done", "result_md": "# Review", "product": "paper-review"}
+    assert http.get("/paper-review/status", params={"token": "tok-old"}).status_code == 200
+    assert backend_app.usage_ledger_dict == {}
+
+
 def test_status_done_job_includes_session_id_for_invoice_button(client):
     """The status page's "Get invoice for reimbursement" button only renders
     when the done payload carries session_id — and session_id is deliberately
@@ -1644,6 +1680,27 @@ def test_paper_review_pipeline_email_failure_preserves_done_result(monkeypatch):
     # _referral_footer_md) — assert on the original content being intact
     # rather than an exact match against the pre-footer literal.
     assert entry["result_md"].startswith("# Review\n\nfindings...")
+
+
+def test_paper_review_pipeline_job_entry_carries_the_ledger_key(monkeypatch):
+    import app as backend_app
+    monkeypatch.setattr(backend_app, "paper_jobs_dict", _FakeDict())
+    monkeypatch.setattr(backend_app, "paper_tokens_dict", _FakeDict())
+    monkeypatch.setattr(backend_app, "paper_token_index_dict", _FakeDict())
+    backend_app.paper_tokens_dict["sess-9"] = {"tokens": ["tok-key"], "product_key": "paper-review-pack-5"}
+    backend_app.paper_token_index_dict["tok-key"] = "sess-9"
+
+    from latextools import papercheck
+
+    async def _fake_run_review_pipeline(pdf_bytes, domain, on_progress=None, **kwargs):
+        return {"status": "done", "result_md": "# Review\n\nfindings..."}
+
+    monkeypatch.setattr(papercheck, "run_review_pipeline", _fake_run_review_pipeline)
+    backend_app.paper_review_pipeline.local("tok-key", PDF_BYTES, "cs", tier="standard")
+
+    entry = backend_app.paper_jobs_dict.get("tok-key")
+    rec = backend_app.usage_ledger_dict[entry["ledger_key"]]
+    assert rec["sold_as"] == "paper-review-pack-5" and rec["attempt"] == 1 and rec["purchase"]
 
 
 def test_adjacent_tool_pipeline_email_failure_preserves_done_result(monkeypatch):
