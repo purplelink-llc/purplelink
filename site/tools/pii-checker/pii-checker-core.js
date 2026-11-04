@@ -17,11 +17,12 @@
   "use strict";
 
   // Label names are the raw values Outbound Veil uses in its placeholders (Types.swift).
-  var LABELS = ["SSN", "CREDIT_CARD", "IBAN", "EMAIL", "PHONE", "DATE_OF_BIRTH", "MEDICAL_RECORD_NUMBER", "IP_ADDRESS", "URL"];
+  var LABELS = ["SSN", "TAX_ID", "CREDIT_CARD", "IBAN", "EMAIL", "PHONE", "DATE_OF_BIRTH", "MEDICAL_RECORD_NUMBER", "IP_ADDRESS", "URL"];
 
   // Plain-language names, from LabelNames.swift. URL is shown with what makes it reportable (see isLowRiskURL).
   var DISPLAY = {
     SSN: "Social Security number",
+    TAX_ID: "Taxpayer ID (ITIN or EIN)",
     CREDIT_CARD: "Card number",
     IBAN: "Bank account number (IBAN)",
     EMAIL: "Email address",
@@ -57,6 +58,17 @@
     if (serial === "0000") return false;
     return true;
   }
+
+  // US ITIN structure: first digit 9; the fourth and fifth digits are 50-65, 70-88, 90-92 or 94-99. Group 93 is an
+  // ATIN and other 9xx groups are not issued. ITIN and SSN ranges never overlap.
+  function isValidITIN(digits) {
+    if (!/^9[0-9]{8}$/.test(digits)) return false;
+    var g = parseInt(digits.slice(3, 5), 10);
+    return (g >= 50 && g <= 65) || (g >= 70 && g <= 88) || (g >= 90 && g <= 92) || g >= 94;
+  }
+
+  // US EIN: prefix 00 is never issued. The rule below also needs the written form NN-NNNNNNN.
+  function isValidEIN(digits) { return /^[0-9]{9}$/.test(digits) && digits.slice(0, 2) !== "00"; }
 
   // IBAN: 15 to 34 characters, two letters, two check digits, mod 97 equals 1.
   function isValidIBAN(value) {
@@ -121,12 +133,15 @@
 
   // Digit-bearing numbers are found over digit runs, so every separator form is one rule: 472-81-0094, 472 81 0094,
   // 472.81.0094 and 472810094. Longest and strictest first, so a 16-digit card is never carved into a 9-digit SSN.
+  // Nine digits must be written without separators or as 3-2-4 with one kind of separator, so an IPv4 address such as
+  // 192.168.1.10, or a ZIP+4 such as 30303-1234, is not taken. An ITIN is written like an SSN; an EIN is written
+  // NN-NNNNNNN, and sits before the SSN rule so a dashed EIN is never called a Social Security number.
+  var NINE = /^(?:\d{9}|\d{3}([ .\-])\d{2}\1\d{4})$/;
   var DIGIT_RULES = [
     { label: "CREDIT_CARD", lengths: [16, 15, 14], validate: isLuhnValid },
-    // Differs from the app: the app takes any nine digits with a single space, dot or hyphen between any two of them.
-    // Here the nine digits must be written without separators or as 3-2-4 with one kind of separator. Without this,
-    // an IPv4 address such as 192.168.1.10, or a ZIP+4 such as 30303-1234, passes the SSN structure check.
-    { label: "SSN", lengths: [9], validate: isValidSSN, shape: /^(?:\d{9}|\d{3}([ .\-])\d{2}\1\d{4})$/ }
+    { label: "TAX_ID", lengths: [9], validate: isValidITIN, shape: NINE },
+    { label: "TAX_ID", lengths: [9], validate: isValidEIN, shape: /^\d{2}-\d{7}$/ },
+    { label: "SSN", lengths: [9], validate: isValidSSN, shape: NINE }
   ];
   function detectDigitEntities(raw) {
     var spans = [], re = /[0-9](?:[ .\-]?[0-9])*/g, m;
@@ -296,7 +311,7 @@
 
   // ---------- placeholders (Redactor.swift) ----------
 
-  var IDENTIFIER_LABELS = { SSN: 1, CREDIT_CARD: 1, PHONE: 1, IBAN: 1, MEDICAL_RECORD_NUMBER: 1 };
+  var IDENTIFIER_LABELS = { SSN: 1, TAX_ID: 1, CREDIT_CARD: 1, PHONE: 1, IBAN: 1, MEDICAL_RECORD_NUMBER: 1 };
   // Identifier-like values compare by their letters and digits only, so 472-81-0094 and 472 81 0094 are one value.
   function valueKey(label, value) {
     var lowered = String(value).toLowerCase();
@@ -347,7 +362,7 @@
 
   return {
     LABELS: LABELS, DISPLAY: DISPLAY,
-    isLuhnValid: isLuhnValid, isValidSSN: isValidSSN, isValidIBAN: isValidIBAN, isLowRiskURL: isLowRiskURL,
+    isLuhnValid: isLuhnValid, isValidSSN: isValidSSN, isValidITIN: isValidITIN, isValidEIN: isValidEIN, isValidIBAN: isValidIBAN, isLowRiskURL: isLowRiskURL,
     stripInvisible: stripInvisible, projectToRaw: projectToRaw,
     detectHeuristics: detectHeuristics, mergeSpans: mergeSpans, detect: detect,
     redact: redact, check: check, decodeBytes: decodeBytes
