@@ -81,7 +81,9 @@ new guide straight to `main` and broke Site tests (no social card; a shared-foot
    Build output is not committed (docs/designs/generated-files-at-build.md): `site/search-index.json` and
    `site/llms-full.txt` are git-ignored, so never `git add` them, and the pages carry no `?v=` asset stamps, which the
    Netlify build adds. Do not run `fingerprint_assets.py`; if a page arrives stamped (copied from an old branch), run
-   `python3 scripts/fingerprint_assets.py --strip`. CI and the pre-commit hook reject stamped pages.
+   `python3 scripts/fingerprint_assets.py --strip`. CI and the pre-commit hook reject stamped pages. The site chat's
+   facts, `backend/latextools/buddy_facts.py`, are build output too (since 2026-11-04): `backend/app.py` writes them
+   from `site/llms.txt` on every `modal deploy` and test run, so a change to `llms.txt` needs no regenerated file.
 3. Wait for the PR's checks (`gh pr checks <n> --watch`). Squash-merge only when every check passes; if one fails,
    fix it on the branch or leave the PR open and say so in the run's summary. Never merge red, never bypass checks.
 4. Add files by path, never `git add -A`; never add `Outreach/`, `docs/growth-briefs/` or other private paths.
