@@ -37,6 +37,19 @@ class BuddyChatPages(unittest.TestCase):
         self.assertIn('BASE + "chat.css"', loader)
         self.assertIn("css.onload = draw", loader)
 
+    def test_pre_sale_buttons_name_real_app_pages(self):
+        # chat.js shows price, trial and Mac buttons on these pages (design doc, "Conversion pass", section 2).
+        chat = (SITE / "buddy-chat" / "chat.js").read_text(encoding="utf-8")
+        table = re.search(r"var APPS = \{(.*?)\};", chat, re.S).group(1)
+        keys = re.findall(r'"([a-z-]+)":', table)
+        self.assertEqual(len(keys), 10)
+        for key in keys:
+            with self.subTest(app=key):
+                self.assertRegex((SITE / key / "index.html").read_text(encoding="utf-8"), LOADER)
+        for text in ("Which Macs does it run on?", "How does the free trial work?",
+                     "AI answers from what's on this site. It can be wrong. "):
+            self.assertIn(text, chat)
+
 
 if __name__ == "__main__":
     unittest.main()

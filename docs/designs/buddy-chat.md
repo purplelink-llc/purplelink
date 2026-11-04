@@ -307,3 +307,82 @@ Three Sonnet Goldfish reviewers read v1 with no other context.
   near $60; pages limited to paper-tool and Mac-app pages; fake typing delay removed; every loop gated by reduced
   motion; plain copy instead of mascot lines; data use stated next to the email field. Left to Ben as decisions 1-3:
   cutting the glass, the sounds and the chat itself for a first test, because Ben asked for them.
+
+## Conversion pass (v2, 2026-11-04)
+
+Ben asked for a review of the peer-reviewed literature on site chatbots and conversion, then approved acting on it
+("Go ahead implement your findings accordingly, I approve"). v1 of this section went to three Sonnet Goldfish
+reviewers (design, implementation readiness, scope); the review log is at the end of the section.
+
+What the evidence says, and how much weight each piece carries:
+
+- **Disclosure costs sales through perceived competence.** Disclosing a bot before an outbound sales call cut
+  purchases about 80%, because customers judged it less knowledgeable and less empathetic (Luo, Tong, Fang and Qu,
+  *Marketing Science* 2019, a field experiment; outbound calls, not inbound site chat, so the transfer is an
+  assumption). Disclosure stays (Anthropic usage policy, California's bot law, EU AI Act Article 50). Wording it to
+  name where the answers come from is a hypothesis drawn from that mechanism, not a tested finding.
+- **Human-like framing raises expectations the bot then misses**, and telling people what it cannot do removes the
+  penalty (Crolic, Thomaz, Hadi and Stephen, *Journal of Marketing* 2022). In a field experiment a moderately
+  human-like bot (humor, delays, a name) converted worse than a plain one (Schanke, Burtch and Ray, *Information
+  Systems Research* 2021). Buddy keeps its pup face and name (Ben asked for them), but no humor, persona or fake
+  delays, and the opening line now states a limit.
+- **Pre-sale questions are where a chat lifts conversion.** A pre-sale chatbot raised conversion 21.7% against no
+  chat in randomized field experiments, through more buyers rather than bigger carts (Fang, Yuan, Zhang, Donati and
+  Sarvary, CESifo working paper 2026; not yet peer-reviewed).
+- **Proactive pop-ups**: scenario studies only; not adopted. **A visible typing state** reduces the latency penalty
+  (already there: "Buddy is thinking" and the glancing eyes). **A route to a human** helps in survey evidence (already
+  there: "Write to Ben").
+- **Novelty fades** for one-off purchases (*Journal of Retailing and Consumer Services* 2025, a field experiment).
+
+### 1. Wording (`site/buddy-chat/chat.js`)
+
+- Header note: "AI answers from what's on this site. It can be wrong." followed by the existing "Write to Ben" link
+  (was "AI, can be wrong.").
+- Opening line: "I answer questions about our Mac apps and paper tools from what's on this site, and I can run a free
+  Citation Gap check on a paper draft. I can't give discounts or look up an order." (was "Ask me about our Mac apps
+  or paper tools. I can also run a free Citation Gap check on a paper draft.")
+- Neither string is repeated in the facts block or the server prompt; no test pinned the old ones.
+
+### 2. Pre-sale buttons on the paid Mac-app pages (`site/buddy-chat/chat.js`)
+
+- `APPS` maps the page's first path segment, after dropping a locale prefix (`de`, `fr`, `ja`, `pt-br`, `zh-cn`), to
+  a display name: moderntex ModernTex, outbound-veil Outbound Veil, legroom Legroom, keyfeel Keyfeel, tapefolio
+  Tapefolio, panely Panely, summonly Summonly, lenscrib Lenscrib, nee Née, suite the Mac Suite.
+- On those pages the buttons are "What does <name> cost?", "How does the free trial work?", "Which Macs does it run
+  on?" and "Free citation check" (kept, so the free-check entry point stays on the pages it started on). They track
+  `chat_offer` with `price`, `trial`, `macs` and `free_check`. The first three are sent as visitor messages, so they
+  count toward the per-IP and spend caps like typed ones.
+- Every other page keeps the current three buttons.
+- The "no deals" screen (`screen_reply`) is tested against honest price and trial answers ("one-time license key",
+  "free 7-day trial", "updates are free") so they are not replaced by the fixed line.
+- The buttons do not depend on any experiment arm, so they change the ModernTex hero test's level (more questions on
+  `/moderntex/` in both arms) but not its comparison. That date goes into the change log.
+
+### 3. Holdout: deferred to 2026-12-28
+
+Not built in this pass. The reviewers agreed the v1 plan could not answer its question: the primary metric counted
+every visitor while about 5% would ever open the chat, 28 days per arm at this traffic detects only a very large
+lift, and it overlapped the header-link test (to 2026-12-27) and the ModernTex hero test (to 2026-12-13), one of
+which the new trial button touches. The plan, to confirm with Ben before 2026-12-28:
+
+- Paired-day switchback in `loader.js`, as in `exp-trial-link.js`, starting Monday 2026-12-28 (UTC), after both other
+  tests have ended, for 56 days; one seeded fair coin per pair; the only balance rule is 3 to 5 B days per weekday.
+- Unit and metric: the day; (trial downloads + checkout clicks) per pageview on the ten Mac-app pages above, the
+  pages where the chat is meant to sell. Analysis: the paired difference over the 28 pairs with a randomization test.
+- Decision rule, written now: keep Buddy unless the B-day rate is lower than the A-day rate (harm check). A lift is
+  reported with its interval and is not required. The free-check target stays 10 redemptions in its 28-day read.
+- What it compares is the whole chat (launcher, wording and buttons together), not any one part.
+
+### Review log, conversion pass
+
+- **Scope:** the holdout was disproportionate at this traffic and overlapped two tests (deferred, section 3); the
+  wording changes are hypotheses (now labelled); the opening line was long (two sentences); keep the original
+  redemption target (kept).
+- **Implementation readiness:** the schedule draw, loader error paths, dashboard pickup and tests were unspecified
+  (moot for now: the holdout is deferred and will be specified in full before it starts); the button strings, name
+  table, locale handling and tracking values are now exact (section 2).
+- **Design:** the free-check button would have vanished from the Mac-app pages (kept as a fourth button); "Will it
+  run on my Mac?" cannot be answered (now "Which Macs does it run on?"); "from our product pages" was inaccurate (now
+  "what's on this site"); "support for an order" contradicted the LaTeX button (now "look up an order"); the deals
+  screen could hit honest answers (now tested); localized pages lost the buttons (locale prefix dropped); the Luo
+  transfer and the kept avatar are now stated plainly.

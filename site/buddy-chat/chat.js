@@ -134,9 +134,28 @@
     log.scrollTop = log.scrollHeight;
     return p;
   }
+  // Pre-sale buttons on the paid Mac-app pages (design doc, "Conversion pass", section 2), keyed by the first path
+  // segment after any locale prefix.
+  var APPS = {
+    "moderntex": "ModernTex", "outbound-veil": "Outbound Veil", "legroom": "Legroom", "keyfeel": "Keyfeel",
+    "tapefolio": "Tapefolio", "panely": "Panely", "summonly": "Summonly", "lenscrib": "Lenscrib", "nee": "N\u00e9e",
+    "suite": "the Mac Suite"
+  };
+  var LOCALES = { "de": 1, "fr": 1, "ja": 1, "pt-br": 1, "zh-cn": 1 };
+  function appOfPage() {
+    var parts = location.pathname.split("/").filter(Boolean);
+    if (parts.length && LOCALES[parts[0]]) parts.shift();
+    return parts.length && Object.prototype.hasOwnProperty.call(APPS, parts[0]) ? APPS[parts[0]] : "";
+  }
+  function chipList() {
+    var app = appOfPage();
+    if (!app) return [["free_check", "Free citation check"], ["app_fit", "Which app fits me?"], ["latex", "Help with a LaTeX error"]];
+    return [["price", "What does " + app + " cost?"], ["trial", "How does the free trial work?"],
+            ["macs", "Which Macs does it run on?"], ["free_check", "Free citation check"]];
+  }
   function chips() {
     var row = el("div", "bc-chips");
-    [["free_check", "Free citation check"], ["app_fit", "Which app fits me?"], ["latex", "Help with a LaTeX error"]]
+    chipList()
       .forEach(function (c) {
         var b = el("button", "bc-chip", c[1]);
         b.type = "button";
@@ -231,7 +250,7 @@
     avatar.innerHTML = window.__buddyFace;
     var title = el("div", "bc-title");
     title.appendChild(el("p", "bc-name", "Buddy"));
-    var note = el("p", "bc-note", "AI, can be wrong. ");
+    var note = el("p", "bc-note", "AI answers from what's on this site. It can be wrong. ");
     var ben = el("a", null, "Write to Ben");
     ben.href = "/support/";
     note.appendChild(ben);
@@ -288,7 +307,8 @@
     panel.addEventListener("keydown", function (e) { if (e.key === "Escape") hide(); });
     document.body.appendChild(panel);
 
-    say("buddy", "Ask me about our Mac apps or paper tools. I can also run a free Citation Gap check on a paper draft.");
+    say("buddy", "I answer questions about our Mac apps and paper tools from what's on this site, and I can run a free " +
+      "Citation Gap check on a paper draft. I can't give discounts or look up an order.");
     chips();
     loadAllowed();
     fetchStatus();
