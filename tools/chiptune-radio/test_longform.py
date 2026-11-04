@@ -14,8 +14,8 @@ import longform_pub as pub
 import px
 import themes
 
-ALL = ["campfire", "halloween", "study", "winter"]
-EVENT_KINDS = {"owl", "settle", "gust", "sleigh", "star", "bats", "ghost"}
+ALL = ["campfire", "halloween", "study", "winter", "racer"]
+EVENT_KINDS = {"owl", "settle", "gust", "sleigh", "star", "bats", "ghost", "boost", "rival"}
 
 
 def test_every_theme_is_registered_by_a_small_file():
@@ -76,7 +76,8 @@ def test_pomodoro_is_for_study_only_and_25_5_only():
     assert plain.getbbox() is None                                         # no timer without --pomodoro
 
 
-@pytest.mark.parametrize("name,allowed", [("halloween", {"minor", "dorian", "mixolydian"}), ("winter", {"major", "lydian", "mixolydian", "dorian"})])
+@pytest.mark.parametrize("name,allowed", [("halloween", {"minor", "dorian", "mixolydian"}), ("winter", {"major", "lydian", "mixolydian", "dorian"}),
+                                                ("racer", {"minor", "dorian", "mixolydian"})])
 def test_music_palette_follows_the_theme(name, allowed):
     cls = themes.get(name)
     tracks = lf.plan_tracks(cls, 7200, 11)
@@ -85,7 +86,21 @@ def test_music_palette_follows_the_theme(name, allowed):
     for a, b in zip(tracks, tracks[1:]):
         assert a["key"] != b["key"] and abs(a["bpm"] - b["bpm"]) <= lf.MAX_BPM_STEP
         assert abs(b["start"] - (a["start"] + a["seconds"] - lf.XFADE)) < 1e-6   # each track starts inside the previous one's crossfade
-    assert min(t["mood"] for t in tracks) < 0.1 and max(t["mood"] for t in tracks) > 0.3   # the mood drifts
+    lo, hi = cls.music["mood"]
+    assert min(t["mood"] for t in tracks) < lo + 0.1 and max(t["mood"] for t in tracks) > lo + 0.3   # the mood drifts
+
+
+def test_racer_style_changes_only_tempo_and_feel():
+    for seed in (3, 7, 40):
+        plain, racer = c.plan(seed, "synth", 0.7), c.plan(seed, "synth", 0.7, style="racer")
+        assert (plain.key, plain.mode, [x.name for x in plain.sections]) == (racer.key, racer.mode, [x.name for x in racer.sections])   # the same song, faster
+        assert c.RACER_BPM[0] - 2 <= racer.bpm <= c.RACER_BPM[1] + 2 and racer.swing == 0 and racer.groove == "drive"
+        assert plain.groove != "drive" and plain.bpm <= 96                 # nothing changes for the cozy themes
+    tracks = lf.plan_tracks(themes.get("racer"), 1800, 2)
+    assert all(t["style"] == "racer" and t["bpm"] >= 148 for t in tracks)
+    assert "style" not in lf.plan_tracks(themes.get("winter"), 1800, 2)[0]
+    with pytest.raises(ValueError):
+        c.plan(1, style="polka")
 
 
 def test_mode_weights_do_not_change_the_default_plan():
@@ -152,7 +167,8 @@ def test_thumbnail_is_1280x720_under_2mb(tmp_path):
     assert d < 12                                                          # only JPEG noise and the live animation differ there
 
 
-@pytest.mark.parametrize("name,music,pomo", [("campfire", True, False), ("campfire", False, False), ("halloween", True, False), ("winter", True, False), ("study", True, True)])
+@pytest.mark.parametrize("name,music,pomo", [("campfire", True, False), ("campfire", False, False), ("halloween", True, False), ("winter", True, False), ("study", True, True),
+                                            ("racer", True, False)])
 def test_metadata_is_plain_and_honest(name, music, pomo):
     m = pub.build_metadata(name, 7200 if music else 3600, f"{name}-x", music, pomo, 1, [])
     assert len(m["title"]) <= 100 and not re.search(r"[^\x00-\x7f]", m["title"] + m["description"])        # no emoji, no fancy characters

@@ -40,6 +40,7 @@ THUMB_LAYOUT = {
     "halloween": {"x": 0.5, "y": 0.05, "align": "center"},
     "winter": {"x": 0.5, "y": 0.04, "align": "center"},
     "study": {"x": 0.5, "y": 0.05, "align": "center"},
+    "racer": {"x": 0.5, "y": 0.05, "align": "center"},
 }
 
 
@@ -176,6 +177,18 @@ COPY = {
         "title_solo_pomo": "Study With Me, {dur}, 25/5 Pomodoro Timer, No Music",
         "category": "Education", "category_solo": "Education", "hashtags": "#studywithme #pomodoro #chiptune",
     },
+    "racer": {
+        "scene": "a pixel-art hover-racer on a neon highway at night: a perspective road with rumble strips and guard-rail lights, a glowing grid, a city skyline and a ringed planet, and now and then a boost or a rival craft overtaking",
+        "sound_music": "fast 16-bit racing chiptune at about 150 to 170 BPM, with driving octave bass, four-on-the-floor kicks and bright brass and saw leads",
+        "sound_solo": "a steady rush of wind, with no music",
+        "use": "running, workouts, cycling, gaming or getting through a task list",
+        "tags": ["music to run to", "running music", "workout music", "8 bit racing music", "racing music", "16 bit music", "retro racing music", "pixel art", "synthwave"],
+        "tags_music": ["chiptune", "8-bit music", "video game music", "boss battle music", "music to fight to"],
+        "title_music": "Music to Run To, 16-Bit Racing Chiptune, {dur}",
+        "title_solo": "Neon Highway Pixel Art, Wind Ambience, No Music, {dur}",
+        "made": "the rush of wind", "chiptune_keywords": False,
+        "category": "Music", "category_solo": "Entertainment", "hashtags": "#runningmusic #chiptune #8bit",
+    },
 }
 
 DISCLOSURE = {
@@ -189,9 +202,9 @@ DISCLOSURE = {
 }
 
 
-TITLE_THEME = {"campfire": "Crackling Campfire", "halloween": "Halloween Porch", "winter": "Winter Cabin", "study": "Study Room"}
+TITLE_THEME = {"campfire": "Crackling Campfire", "halloween": "Halloween Porch", "winter": "Winter Cabin", "study": "Study Room", "racer": "Neon Highway"}
 SCENE_SHORT = {"campfire": "a pixel-art campfire at night", "halloween": "a pixel-art Halloween porch", "winter": "a pixel-art snowed-in cabin",
-               "study": "a pixel-art study room"}
+               "study": "a pixel-art study room", "racer": "a pixel-art neon highway at night"}
 # title lead phrases per sound; the first is the default, the others win only if the keyword research ranks them higher
 LEADS = {"brown": ["Brown Noise"], "pink": ["Pink Noise"], "white": ["White Noise"],
          "binaural-alpha": ["Alpha Binaural Beats 10 Hz", "10 Hz Binaural Beats"], "binaural-theta": ["Theta Binaural Beats 6 Hz", "6 Hz Binaural Beats"],
@@ -209,7 +222,7 @@ WHAT_SHORT = {"brown": "Deep, smooth brown noise", "pink": "Smooth pink noise", 
 SOUND_HASH = {"brown": "#brownnoise", "pink": "#pinknoise", "white": "#whitenoise", "binaural-alpha": "#binauralbeats", "binaural-theta": "#binauralbeats",
               "binaural-delta": "#binauralbeats", "synth": "#ambientmusic", "lofi": "#lofi", "rain": "#rainsounds", "thunderstorm": "#thunderstorm",
               "fireplace": "#fireplace", "ocean": "#oceanwaves", "wind": "#windsounds", "fan": "#fansounds", "airplane": "#airplanesounds"}
-THEME_HASH = {"campfire": "#campfire", "halloween": "#halloween", "winter": "#cozycabin", "study": "#studywithme"}
+THEME_HASH = {"campfire": "#campfire", "halloween": "#halloween", "winter": "#cozycabin", "study": "#studywithme", "racer": "#runningmusic"}
 LAYER_WORDS = {"fire": "fire crackle", "wind": "wind", "hollow_wind": "a low hollow wind", "muffled_wind": "a muffled wind outside", "crickets": "crickets", "rain": "rain"}
 SLEEP_SOUNDS = {"brown", "pink", "white", "rain", "thunderstorm", "ocean", "fan", "airplane", "wind", "fireplace", "binaural-delta"}
 MAX_TAGS, MAX_TAG_CHARS = 15, 470
@@ -327,7 +340,7 @@ HOLIDAY_SCENE = {
 }
 HOLIDAY_SCENE_SHORT = {("winter", "fireplace"): "a pixel-art Christmas fireplace", ("winter", ""): "a pixel-art Christmas cabin",
                        ("study", ""): "a pixel-art Christmas study room"}
-SCENE_NAME = {"winter": "Snowy Cabin", "study": "Study Room", "campfire": "Crackling Campfire", "halloween": "Halloween Porch"}
+SCENE_NAME = {"winter": "Snowy Cabin", "study": "Study Room", "campfire": "Crackling Campfire", "halloween": "Halloween Porch", "racer": "Neon Highway"}
 
 
 def holiday_lead(cands: list, kind: str, kw: dict | None) -> str:
@@ -519,7 +532,7 @@ def build_metadata(theme_name: str, seconds: float, slug: str, music: bool, pomo
     lines = [f"{dur} of {cp['scene']}.", "", f"Sound: {snd}.", ""]
     if music:
         lines += ["The music is original. A program composes every track from a random seed (melody, chords, bass and drums), and the same program draws the picture "
-                  "and synthesises the fire, wind and rain. Nothing in this video is sampled, recorded, or taken from a music, sound or image library.", ""]
+                  f"and synthesises {cp.get('made', 'the fire, wind and rain')}. Nothing in this video is sampled, recorded, or taken from a music, sound or image library.", ""]
     else:
         lines += ["There is no music. A program synthesises every sound (fire, wind, crickets) from noise and sine waves and draws the picture. "
                   "Nothing in this video is sampled, recorded, or taken from a sound or image library.", ""]
@@ -534,7 +547,8 @@ def build_metadata(theme_name: str, seconds: float, slug: str, music: bool, pomo
                   "The person at the desk takes their break when the timer says so.", "", "Chapters:"]
         lines += [f"{c['time']} {c['title']}" for c in chapters] + [""]
     lines += [cp["hashtags"]]
-    tags = merge_tags(keywords.top(kw, "chiptune", 4) + keywords.top(kw, theme_name, 4), cp["tags"], cp["tags_music"] if music else ["no music ambience", "ambient sounds"])
+    ranked = (keywords.top(kw, "chiptune", 4) if cp.get("chiptune_keywords", True) else []) + keywords.top(kw, theme_name, 4)   # the shared chiptune research is study-music
+    tags = merge_tags(ranked, cp["tags"], cp["tags_music"] if music else ["no music ambience", "ambient sounds"])
     return {
         "slug": slug,
         "title": title,

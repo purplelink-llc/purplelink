@@ -65,6 +65,7 @@ THEME_SEEDS = {
     "halloween": (["halloween ambience", "spooky ambience", "halloween music"], ["halloween", "spooky"]),
     "winter": (["cozy winter cabin ambience", "winter cabin ambience", "snowy cabin sounds"], ["winter", "snow", "cabin"]),
     "study": (["study with me", "study with me pomodoro", "study ambience"], ["study"]),
+    "racer": (["music to run to", "8 bit racing music", "running music", "music to fight to"], ["run", "racing", "race", "fight", "workout"]),
 }
 # holiday and TV searches (added 2026-10-17): people put a fireplace on the living-room TV, so the phrases that matter are "christmas fireplace 4k", "yule log" and the like
 HOLIDAY_SEEDS = {

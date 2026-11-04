@@ -93,12 +93,13 @@ def plan_tracks(theme_cls, seconds: float, seed: int, cfg: dict | None = None) -
     while total < seconds + 2.0:
         era = cfg["eras"][len(out) % len(cfg["eras"])]
         mood = mood_wave(min(1.0, total / seconds), seconds, lo, hi)
-        t = c.plan(s, era, mood, cfg.get("modes"))
+        t = c.plan(s, era, mood, cfg.get("modes"), cfg.get("style"))
         s += 1
         if prev is not None and (t.key == prev.key or abs(t.bpm - prev.bpm) > MAX_BPM_STEP):
             continue
         start = total - (XFADE if prev else 0.0)               # each track begins inside the end of the one before, where they crossfade
-        out.append({"seed": t.seed, "era": era, "mood": round(mood, 3), "start": start, "seconds": t.seconds, "key": t.key, "mode": t.mode, "bpm": t.bpm})
+        out.append({"seed": t.seed, "era": era, "mood": round(mood, 3), "start": start, "seconds": t.seconds, "key": t.key, "mode": t.mode, "bpm": t.bpm,
+                    **({"style": cfg["style"]} if cfg.get("style") else {})})
         total = start + t.seconds
         prev = t
     return out
@@ -124,7 +125,7 @@ def leveled(audio: np.ndarray) -> np.ndarray:
 
 def render_track(spec: dict, modes: dict | None, sound: dict | None) -> np.ndarray:
     """Runs in a worker process (a track needs a few hundred MB while it renders; a fresh process hands it all back)."""
-    t = c.plan(spec["seed"], spec["era"], spec["mood"], modes)
+    t = c.plan(spec["seed"], spec["era"], spec["mood"], modes, spec.get("style"))
     if sound:
         t.sound.update({k: (list(v) if isinstance(v, list) else v) for k, v in sound.items()})
     audio = c.render(t)[:, : int(t.seconds * SR)]            # drop the reverb tail: under a crossfade it is only a dip
