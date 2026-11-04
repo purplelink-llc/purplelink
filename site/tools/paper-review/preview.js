@@ -71,6 +71,38 @@
     return (checkout && checkout.textContent.trim()) || "Start a review";
   }
 
+  // Starts checkout through the page's own button. data-src makes the click
+  // count as <product>+preview, so sales from this box can be told apart.
+  function startButton(id) {
+    var start = el("button", "btn btn-primary", startReviewLabel());
+    start.type = "button";
+    if (id) start.id = id;
+    start.addEventListener("click", function () {
+      var checkout = document.getElementById("checkout-btn");
+      if (!checkout) return;
+      checkout.dataset.src = "preview";
+      checkout.click();
+    });
+    return start;
+  }
+
+  function sampleLink() {
+    var link = el("a", "pr-preview-sample", "Read a sample report");
+    link.href = "/tools/paper-review/sample/";
+    link.target = "_blank";
+    link.rel = "noopener";
+    return link;
+  }
+
+  // Under a refusal (rate limit or busy) there is still something to do next.
+  function addNextStep() {
+    var next = el("span", "pr-preview-next");
+    next.appendChild(document.createTextNode("You can start the full review now, or read the sample report first."));
+    next.appendChild(startButton(""));
+    next.appendChild(sampleLink());
+    statusEl.appendChild(next);
+  }
+
   function render(data) {
     var counts = data.counts || {};
     var findings = Array.isArray(data.findings) ? data.findings.slice(0, 3) : [];
@@ -113,18 +145,14 @@
     }
 
     var more = moreLine(data.more || {});
-    if (more) results.appendChild(el("p", "pr-preview-note", more));
 
     var upsell = el("div", "pr-preview-upsell");
-    upsell.appendChild(el("p", "", "The full review adds seven reviewers on methods, statistics and claims"));
-    var start = el("button", "btn btn-primary", startReviewLabel());
-    start.type = "button";
-    start.id = "pr-preview-start";
-    start.addEventListener("click", function () {
-      var checkout = document.getElementById("checkout-btn");
-      if (checkout) checkout.click();
-    });
-    upsell.appendChild(start);
+    if (more) upsell.appendChild(el("p", "pr-preview-lead", more));
+    upsell.appendChild(el("p", "pr-preview-pitch",
+      "The full review reads the whole manuscript, not only the reference list: seven reviewers on methods, statistics, data and claims. " +
+      "It takes 4 to 8 minutes, and you upload the file again after paying."));
+    upsell.appendChild(startButton("pr-preview-start"));
+    upsell.appendChild(sampleLink());
     results.appendChild(upsell);
 
     results.hidden = false;
@@ -172,7 +200,7 @@
       .then(function (resp) {
         return resp.json().catch(function () { return null; }).then(function (data) {
           if (!resp.ok || !data || data.status !== "ok") {
-            throw { detail: (data && data.detail) || FALLBACK_ERROR };
+            throw { detail: (data && data.detail) || FALLBACK_ERROR, refused: resp.status === 429 || resp.status === 503 };
           }
           return data;
         });
@@ -187,6 +215,7 @@
       })
       .catch(function (err) {
         setStatus((err && err.detail) || FALLBACK_ERROR, "error");
+        if (err && err.refused) addNextStep();
       })
       .then(function () {
         clearTimeout(timer);

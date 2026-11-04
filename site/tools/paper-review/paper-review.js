@@ -3,6 +3,18 @@
 // hits the Netlify checkout function with the product key, redirects to
 // Stripe. The success_url returns to /tools/paper-review/upload/?session_id=…
 (function () {
+  // A review started on this device and not yet opened: offer the way back.
+  try {
+    var resume = document.getElementById("pr-resume");
+    var savedStatus = JSON.parse(localStorage.getItem("pl_pr_status") || "null");
+    if (resume && savedStatus && typeof savedStatus.url === "string" && Date.now() - savedStatus.at < 86400000 &&
+        /^\/tools\/paper-review\/status\/\?token=[^&#\s]+$/.test(savedStatus.url)) {
+      var resumeLink = resume.querySelector("a");
+      if (resumeLink) resumeLink.href = savedStatus.url;
+      resume.hidden = false;
+    }
+  } catch (e) { /* storage blocked: nothing to offer */ }
+
   var btn = document.getElementById("checkout-btn");
   var statusEl = document.getElementById("checkout-status");
   if (!btn) return;
@@ -58,14 +70,24 @@
     } catch (e) { return false; }
   }
 
+  function checkoutBody(product, clickSrc) {
+    var body = { product: product, ref: referralCode };
+    if (ranFreeCheck()) body.pr_preview = 1;
+    if (clickSrc) body.src = clickSrc;
+    return body;
+  }
+
   btn.addEventListener("click", function () {
     var product = (document.querySelector('input[name="tier"]:checked') || {}).value || "paper-review-standard";
+    // The free-check upsell sets data-src="preview" so the click is counted as <product>+preview.
+    var clickSrc = btn.dataset.src || "";
+    btn.removeAttribute("data-src");
     btn.disabled = true;
     setStatus("Opening checkout…", false);
     fetch("/.netlify/functions/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(ranFreeCheck() ? { product: product, ref: referralCode, pr_preview: 1 } : { product: product, ref: referralCode }),
+      body: JSON.stringify(checkoutBody(product, clickSrc)),
     })
       .then(function (resp) {
         if (!resp.ok) return resp.json().then(function (p) { throw p; });

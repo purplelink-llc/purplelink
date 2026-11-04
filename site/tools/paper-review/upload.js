@@ -20,17 +20,66 @@
   var journalErrorEl = document.getElementById("journal-error");
   var anonymityWrap = document.getElementById("anonymity-wrap");
   var emailField = document.getElementById("email-field");
+  var reportGroup = document.getElementById("report-address-group");
+  var reportEmail = document.getElementById("report-email");
+  var reportEcho = document.getElementById("report-email-echo");
+  var reportError = document.getElementById("report-email-error");
+  var overrideGroup = document.getElementById("email-override-group");
+  var retryWrap = document.getElementById("redeem-retry");
+  var retryBtn = document.getElementById("redeem-retry-btn");
+  var resumeEl = document.getElementById("pr-resume");
+  var REDEEM_WINDOW_MS = 90000;
+  var STATUS_KEY = "pl_pr_status";
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  var reportRequired = false;
 
   var chosen = null;
   var token = null;
   var journalListFailed = false;
   var productConfig = { category: "paper-review", bundled_anonymity: false, bundled_journal: false };
 
-  function setRedeemStatus(msg, isError) {
+  function setRedeemStatus(msg, isError, linkHref, linkText) {
     if (!redeemEl) return;
+    redeemEl.hidden = false;
     redeemEl.textContent = msg;
     redeemEl.classList.toggle("error", !!isError);
+    if (linkHref) {
+      redeemEl.appendChild(document.createTextNode(" "));
+      var a = document.createElement("a");
+      a.href = linkHref;
+      a.textContent = linkText || "Open the status page";
+      redeemEl.appendChild(a);
+    }
   }
+
+  function statusPageUrl(t) {
+    return "/tools/paper-review/status/?token=" + encodeURIComponent(t);
+  }
+
+  // Only ever follow a status link that stays on this site.
+  function safeStatusUrl(u) {
+    return typeof u === "string" && /^\/tools\/paper-review\/status\/\?token=[^&#\s]+$/.test(u) ? u : "";
+  }
+
+  // The status address is kept so the landing and upload pages can offer a
+  // way back until the report has been opened (status.js clears it then).
+  function saveStatusUrl(u) {
+    try { localStorage.setItem(STATUS_KEY, JSON.stringify({ url: u, at: Date.now() })); } catch (e) { /* storage blocked */ }
+  }
+  function savedStatusUrl() {
+    try {
+      var v = JSON.parse(localStorage.getItem(STATUS_KEY) || "null");
+      if (v && v.url && Date.now() - v.at < 86400000) return safeStatusUrl(v.url);
+    } catch (e) { /* storage blocked or bad value */ }
+    return "";
+  }
+  (function showResume() {
+    var u = savedStatusUrl();
+    if (!u || !resumeEl) return;
+    var a = resumeEl.querySelector("a");
+    if (a) a.href = u;
+    resumeEl.hidden = false;
+  })();
 
   function getSessionId() {
     return new URLSearchParams(window.location.search).get("session_id");
@@ -113,6 +162,12 @@
     if (productConfig.bundled_anonymity && anonymityWrap) {
       anonymityWrap.hidden = false;
     }
+    if (reportRequired && reportGroup) {
+      reportGroup.hidden = false;
+      if (overrideGroup) overrideGroup.hidden = true;
+      var moreOpts = document.getElementById("more-options");
+      if (moreOpts && getDirectToken()) moreOpts.hidden = true;
+    }
     document.querySelectorAll('input[name="domain"]').forEach(function (input) {
       input.addEventListener("change", function () {
         if (productConfig.bundled_journal) {
@@ -122,8 +177,10 @@
     });
   }
 
-  function redeem(requestBody, attempt) {
+  function redeem(requestBody, startedAt, attempt) {
+    startedAt = startedAt || Date.now();
     attempt = attempt || 1;
+    if (retryWrap) retryWrap.hidden = true;
     fetch(API_BASE + "/paper-review/redeem-session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -131,15 +188,27 @@
     })
       .then(function (resp) {
         if (resp.status === 404) {
-          if (attempt < 15) {
-            setRedeemStatus("Waiting on payment confirmation… (retry " + attempt + ")", false);
-            setTimeout(function () { redeem(requestBody, attempt + 1); }, 2000);
+          if (Date.now() - startedAt < REDEEM_WINDOW_MS) {
+            // Back off from 2 s towards 6 s so a slow webhook is not hammered.
+            var delay = Math.min(6000, Math.round(2000 * Math.pow(1.25, attempt - 1)));
+            setRedeemStatus("Confirming your payment. This usually takes a few seconds.", false);
+            setTimeout(function () { redeem(requestBody, startedAt, attempt + 1); }, delay);
             return null;
           }
-          throw { detail: "Payment confirmation didn't arrive. Email ben@purplelink.llc with your Stripe receipt." };
+          if (typeof window.plTrack === "function") {
+            window.plTrack("redeem_timeout", requestBody.token ? "token" : "session");
+          }
+          setRedeemStatus("We have not received confirmation of your payment yet. If you have paid, it can still arrive: check again in a minute, or open the \"link to start\" email we sent to the address you paid with. Still stuck? Email ben@purplelink.llc with your Stripe receipt; there is no need to pay again.", true);
+          if (retryWrap) retryWrap.hidden = false;
+          return null;
         }
         if (resp.status === 409) {
-          throw { detail: "This token has already been used. Use another token from your pack, or check its status if you already started a review." };
+          return resp.json().catch(function () { return {}; }).then(function (p) {
+            throw {
+              detail: (p && p.detail) || "A review was already started with this link.",
+              status_url: safeStatusUrl(p && p.status_url) || (requestBody.token ? statusPageUrl(requestBody.token) : ""),
+            };
+          });
         }
         if (!resp.ok) return resp.json().then(function (p) { throw p; });
         return resp.json();
@@ -153,17 +222,27 @@
           bundled_anonymity: !!data.bundled_anonymity,
           bundled_journal: !!data.bundled_journal,
           tier: data.tier || "standard",
+          product: data.product || "",
         };
         if (productConfig.category !== "paper-review") {
           setRedeemStatus("Your token is for a different product (" + productConfig.category + "). Open that product's upload page.", true);
           return;
         }
+        reportRequired = !!getDirectToken() || /pack|annual/.test(productConfig.product);
         setRedeemStatus("Payment verified. Upload your manuscript below.", false);
         showForm();
       })
       .catch(function (err) {
-        setRedeemStatus((err && err.detail) || "Could not redeem your payment.", true);
+        var href = err && err.status_url;
+        setRedeemStatus((err && err.detail) || "Could not redeem your payment.", true, href, "Open the status page");
       });
+  }
+
+  if (retryBtn) {
+    retryBtn.addEventListener("click", function () {
+      setRedeemStatus("Checking again. This usually takes a few seconds.", false);
+      if (directToken) redeem({ token: directToken }); else if (sessionId) redeem({ session_id: sessionId });
+    });
   }
 
   function validPdf(file) {
@@ -196,6 +275,23 @@
   submitBtn.addEventListener("click", function () {
     if (!chosen || !token) return;
     var domain = (document.querySelector('input[name="domain"]:checked') || {}).value || "general";
+    var address = "";
+    if (reportRequired && reportEmail) {
+      address = reportEmail.value.trim();
+      if (!EMAIL_RE.test(address)) {
+        setReportError("Enter the address where the report should be sent.");
+        reportEmail.focus();
+        return;
+      }
+      setReportError("");
+    } else if (emailField && emailField.value) {
+      address = emailField.value.trim();
+    }
+    if (productConfig.bundled_journal && journalSelect && !journalSelect.value &&
+        !window.confirm("You have not chosen a journal, so the journal compliance check will be skipped. Submit without one?")) {
+      journalSelect.focus();
+      return;
+    }
     var fd = new FormData();
     fd.append("token", token);
     fd.append("domain", domain);
@@ -207,9 +303,7 @@
     if (productConfig.bundled_anonymity && anonymityToggle && anonymityToggle.checked) {
       fd.append("anonymity_check", "true");
     }
-    if (emailField && emailField.value) {
-      fd.append("email", emailField.value.trim());
-    }
+    if (address) fd.append("email", address);
     var remind = document.querySelector('input[name="remind_weeks"]:checked');
     if (remind && remind.value) {
       fd.append("remind_weeks", remind.value);
@@ -224,8 +318,19 @@
           return resp.text().then(function (text) {
             var parsed = null;
             try { parsed = JSON.parse(text); } catch (e) { /* non-JSON error body */ }
-            if (parsed && parsed.detail) throw parsed;
-            throw { detail: "Upload failed (HTTP " + resp.status + "). Please try again." };
+            var err = { httpStatus: resp.status };
+            if (resp.status === 409) {
+              err.status_url = safeStatusUrl(parsed && parsed.status_url) || statusPageUrl(token);
+            } else if (resp.status === 410) {
+              err.detail = "This link has expired. Email ben@purplelink.llc with your Stripe receipt and we will send you a new one. There is no need to pay again.";
+            } else if (resp.status === 429) {
+              err.detail = "Too many attempts in a short time. Wait a minute, then submit again.";
+            } else if (parsed && parsed.detail) {
+              err.detail = parsed.detail;
+            } else {
+              err.detail = "Upload failed (HTTP " + resp.status + "). Please try again.";
+            }
+            throw err;
           });
         }
         return resp.json();
@@ -237,15 +342,38 @@
         // holds it can claim any unused tokens for that session), and the
         // status page never reads it, so carrying it into browser history /
         // Referer headers on this page would be pure unnecessary exposure.
-        var url = "/tools/paper-review/status/?token=" + encodeURIComponent(data.token);
+        var url = statusPageUrl(data.token);
+        saveStatusUrl(url);
         window.location.assign(url);
       })
       .catch(function (err) {
+        // A 409 here means the review already started (a second click, a
+        // second tab): the status page is where it can be followed.
+        if (err && err.httpStatus === 409 && err.status_url) {
+          saveStatusUrl(err.status_url);
+          window.location.assign(err.status_url);
+          return;
+        }
         submitBtn.disabled = false;
         var msg = (err && err.detail) ? err.detail : "Upload failed. Please try again.";
         statusEl.innerHTML = '<span class="bib-err">' + escapeHtml(msg) + "</span>";
       });
   });
+
+  function setReportError(msg) {
+    if (!reportError) return;
+    reportError.textContent = msg;
+    reportError.hidden = !msg;
+  }
+  if (reportEmail && reportEcho) {
+    reportEmail.addEventListener("input", function () {
+      var v = reportEmail.value.trim();
+      if (EMAIL_RE.test(v)) setReportError("");
+      reportEcho.textContent = EMAIL_RE.test(v)
+        ? "The report will be sent to " + v + "."
+        : "The report is emailed to this address as a PDF when the review finishes.";
+    });
+  }
 
   var sessionId = getSessionId();
   var directToken = getDirectToken();

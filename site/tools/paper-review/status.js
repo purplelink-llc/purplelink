@@ -39,18 +39,18 @@
       order: ["extracting", "vision", "citations", "panel", "rectifying", "done"],
       labels: {
         queued: "Queued…",
-        extracting: "Extracting paper structure…",
-        vision: "Scanning figures + verifying citations…",
-        citations: "Verifying citations…",
-        panel: "Running adversarial seven-persona panel…",
-        rectifying: "Synthesising the final report…",
+        extracting: "Reading the paper…",
+        vision: "Checking figures and references…",
+        citations: "Checking references…",
+        panel: "Seven reviewers are reading…",
+        rectifying: "Writing the report…",
         done: "Done.",
       },
       boxes: [
-        ["extracting", "Extract", "Parse PDF"],
-        ["vision", "Vision + Cite", "L1 + L2"],
-        ["panel", "Panel", "4-persona debate"],
-        ["rectifying", "Synthesise", "Final report"],
+        ["extracting", "Read the paper", "Sections and text"],
+        ["vision", "Check figures and references", "Figures, CrossRef"],
+        ["panel", "Seven reviewers", "Each reads, then they debate"],
+        ["rectifying", "Write the report", "Final report"],
       ],
     },
     "response-review": {
@@ -148,6 +148,26 @@
     }
   }
   var STAGE_LABEL = ACTIVE_CONFIG.labels;
+
+  // One deletion sentence, matching the backend's 30-minute retrieval window.
+  var DELETION_SENTENCE = "The online copy can be opened again for 30 minutes after you first open it and is deleted within a day. The emailed PDF is yours to keep.";
+
+  // Time estimate per tier. The page starts with the standard estimate and the
+  // first poll corrects it once the backend says which tier this job is.
+  var ETA = { deep: "10 to 15 minutes" };
+  var etaApplied = false;
+  function applyTier(tier) {
+    if (etaApplied || ACTIVE_PRODUCT !== "paper-review" || !tier) return;
+    etaApplied = true;
+    var etaEl = document.getElementById("eta");
+    if (etaEl && ETA[tier]) etaEl.textContent = ETA[tier];
+  }
+
+  // The upload page saves this page's address so the landing and upload pages
+  // can offer a way back. Drop it once the report has been opened.
+  function forgetSavedStatus() {
+    try { localStorage.removeItem("pl_pr_status"); } catch (e) { /* storage blocked */ }
+  }
 
   // Render this product's stepper boxes (label + tag) into the existing
   // 4-box DOM/CSS grid, hiding any unused trailing boxes.
@@ -296,10 +316,11 @@
       showError("The review completed but the report was empty.");
       return;
     }
+    forgetSavedStatus();
     pageTitle.textContent = "Your review is ready";
     // Paper Review also emails the report as a PDF; the other tools do not.
     pageBlurb.innerHTML = (payload.product || ACTIVE_PRODUCT) === "paper-review"
-      ? "<strong>A PDF of the report is on its way to your email.</strong> If it has not arrived, download a copy below. The manuscript and this online copy are deleted 30 minutes after you first open the result."
+      ? "<strong>A PDF of the report is on its way to your email.</strong> If it has not arrived, download a copy below. " + DELETION_SENTENCE
       : "<strong>This is the only copy.</strong> Save it locally now — once you leave this page the review is gone from our servers.";
     if (progressWrap) progressWrap.style.display = "none";
 
@@ -317,7 +338,7 @@
 
     var html = '<div class="pr-result-wrap">';
     html += (product === "paper-review")
-      ? '<div class="pr-result-meta">Also emailed to you as a PDF. The online copy is deleted 30 minutes after you first open it.</div>'
+      ? '<div class="pr-result-meta">' + DELETION_SENTENCE + '</div>'
       : '<div class="pr-result-meta">Saved nowhere on our side. Download the Markdown to keep a copy.</div>';
     html += renderDeterministicPanel(payload.deterministic_findings);
     html += '<article class="pr-result-md">' + renderMarkdown(md) + '</article>';
@@ -588,7 +609,8 @@
     fetch(API_BASE + "/paper-review/status?token=" + encodeURIComponent(token))
       .then(function (resp) {
         if (resp.status === 404) {
-          showError("This link does not match a review we still hold. Results are deleted 30 minutes after they are first opened, or after 24 hours; if yours should still be here, email ben@purplelink.llc.");
+          forgetSavedStatus();
+          showError("This link does not match a review we still hold. The online copy can be opened again for 30 minutes after you first open it and is deleted within a day; if yours should still be here, email ben@purplelink.llc.");
           return null;
         }
         if (!resp.ok) return resp.json().then(function (p) { throw p; });
@@ -596,6 +618,7 @@
       })
       .then(function (data) {
         if (!data) return;
+        applyTier(data.tier);
         setProgress(data.progress_pct, data.stage);
         if (data.status === "done") {
           showResult(data);
