@@ -28,7 +28,9 @@ Citation Gap page itself) before deciding.
 
 **Boundaries.**
 - The model has no tools and grants nothing. Offers are buttons the page draws from fixed rules; the server checks
-  them. A visitor cannot talk Buddy into a free Suite or a discount.
+  them. A visitor cannot talk Buddy into a free Suite or a discount. (Amended 2026-11-04: a visitor who asks for a
+  discount gets a button that makes a one-time 20% code, minted and checked by the server; the model still grants
+  nothing. See `docs/designs/buddy-coupon.md`.)
 - No rewards for App Store ratings or reviews (Apple's App Review Guidelines and the FTC's 2024 rule on reviews
   forbid it) and none for social follows. Not in this design and not later.
 - On every public page `apply_layout.py` stamps (Ben, 2026-11-03: "Everywhere except checkout"; the first release

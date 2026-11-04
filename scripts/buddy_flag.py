@@ -3,7 +3,9 @@
 
   python3 scripts/buddy_flag.py off      # chat and free checks answer "Buddy is taking a nap and will be back tomorrow"
   python3 scripts/buddy_flag.py on
-  python3 scripts/buddy_flag.py status   # flag plus today's and this month's chat spend
+  python3 scripts/buddy_flag.py status   # flags plus today's and this month's chat spend
+  python3 scripts/buddy_flag.py coupon on|off   # the 20% code (docs/designs/buddy-coupon.md); off by default, and
+                                                # on only after backend/setup_buddy_coupon.py made the coupon
 
 Needs the Modal CLI login (uvx --from modal ...). Writes the "flag:enabled" key in the buddy-chat Dict.
 """
@@ -18,13 +20,16 @@ def main() -> int:
     d = modal.Dict.from_name("buddy-chat", create_if_missing=True)
     if cmd in ("on", "off"):
         d["flag:enabled"] = cmd == "on"
+    elif cmd == "coupon" and len(sys.argv) > 2 and sys.argv[2] in ("on", "off"):
+        d["flag:coupon"] = sys.argv[2] == "on"
     elif cmd != "status":
         print(__doc__)
         return 2
     t = time.gmtime()
     day = d.get(f"spend:day:{time.strftime('%Y-%m-%d', t)}", 0.0)
     month = d.get(f"spend:month:{time.strftime('%Y-%m', t)}", 0.0)
-    print(f"enabled={d.get('flag:enabled', True) is not False}  spend today=${day:.4f}  this month=${month:.4f}")
+    print(f"enabled={d.get('flag:enabled', True) is not False}  coupon={d.get('flag:coupon', False) is True}  "
+          f"spend today=${day:.4f}  this month=${month:.4f}")
     return 0
 
 

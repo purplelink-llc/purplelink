@@ -3799,6 +3799,34 @@ def web():
         except Exception:
             return False
 
+    def _coupon_live() -> bool:
+        """The 20% code (docs/designs/buddy-coupon.md) is live only once Ben's flag says so (scripts/buddy_flag.py
+        coupon on, after the Stripe coupon exists), the chat is on and the Stripe key is set. Fails closed."""
+        try:
+            return (buddy_dict.get("flag:coupon", False) is True and _buddy_on()
+                    and bool(os.environ.get("STRIPE_SECRET_KEY")))
+        except Exception:
+            return False
+
+    async def _mint_buddy_code(client, expires_at: int, source: str, key: str) -> str | None:
+        """One single-use promotion code on the buddy-20 coupon. One retry with a new code (a duplicate code is a
+        400), then None."""
+        stripe_key = os.environ.get("STRIPE_SECRET_KEY", "")
+        for _ in range(2):
+            code = _buddy.new_coupon_code()
+            try:
+                resp = await client.post(
+                    "https://api.stripe.com/v1/promotion_codes", auth=(stripe_key, ""), timeout=15.0,
+                    data={"promotion[type]": "coupon", "promotion[coupon]": _buddy.COUPON_ID, "code": code,
+                          "max_redemptions": "1", "expires_at": str(expires_at),
+                          "metadata[source]": source, "metadata[key]": key})
+                if resp.status_code == 200:
+                    return resp.json().get("code", code)
+                logger.warning("buddy code mint: Stripe %s", resp.status_code)
+            except Exception:
+                logger.exception("buddy code mint failed")
+        return None
+
     def _buddy_origin_ok(request: Request) -> bool:
         origin = request.headers.get("origin", "")
         return origin in BUDDY_ORIGINS or (os.environ.get("ALLOW_LOCAL_CORS") == "1" and origin.startswith("http://localhost"))
@@ -3872,7 +3900,7 @@ def web():
             return JSONResponse({"error": "forbidden_origin"}, status_code=403)
         secret = _buddy_secret()
         on = _buddy_on() and bool(secret) and not _buddy_blocked(request)
-        return JSONResponse({"enabled": on,
+        return JSONResponse({"enabled": on, "coupon": on and _coupon_live(),
                              "form_ts": _buddy.form_stamp(secret) if on else "",
                              "challenge": _buddy.new_challenge(secret) if on else "",
                              "bits": _buddy.POW_BITS})
@@ -3930,6 +3958,12 @@ def web():
             return JSONResponse({"reply": _buddy.OFF_LINE, "off": True})
         if _buddy.looks_like_injection(turns[-1]):
             _buddy_strike(request, "injection")
+        # An ask for a discount is answered here, before the model: the offer is a button the server checks, and
+        # the model never makes or writes a code. It does not count toward the conversation's length limit.
+        if _buddy.is_coupon_ask(turns[-1]):
+            if _coupon_live():
+                return JSONResponse({"reply": _buddy.COUPON_OFFER_LINE, "offer": "coupon"})
+            return JSONResponse({"reply": _buddy.NO_DEALS_LINE})
 
         convo_key = f"convo:{convo}"
         try:
@@ -3967,6 +4001,8 @@ def web():
         screened = _buddy.screen_reply(reply)
         if screened != reply[:1500]:
             _buddy_strike(request, "screened")
+        if screened == _buddy.NO_DEALS_LINE and _coupon_live():
+            screened = _buddy.NO_DEALS_LIVE_LINE
         elif screened.startswith(_buddy.REFUSAL_START):
             _buddy_strike(request, "off_topic")
         reply = screened
@@ -4030,6 +4066,104 @@ def web():
                 tags=[{"name": "kind", "value": "buddy-free-check"}], from_name="Purplelink")
         if result.get("status") != "ok":
             _buddy_claims().pop(f"claim:{akey}", None)   # let them try again; the day slot stays used
+            return JSONResponse({"ok": False, "message": "The email did not go out. Please try again later."})
+        return JSONResponse(sent)
+
+    @api.post("/buddy/coupon")
+    async def buddy_coupon(request: Request):
+        """A one-time 20% code that must be entered at checkout within 10 minutes. One per chat session (a repeat
+        returns the same code), COUPON_PER_IP_DAY per address a day."""
+        import httpx as _hx
+
+        if not _buddy_origin_ok(request):
+            return JSONResponse({"error": "forbidden_origin"}, status_code=403)
+        if not _coupon_live() or not _buddy_secret():
+            return JSONResponse({"ok": False, "message": _buddy.NO_DEALS_LINE})
+        body = await _buddy_body(request)
+        if body is None:
+            return JSONResponse({"error": "invalid"}, status_code=400)
+        sid = _buddy_session(body)
+        if not sid:
+            return JSONResponse({"error": "no_session"}, status_code=401)
+        if _buddy_blocked(request):
+            return JSONResponse({"ok": False, "message": "The chat is closed for you today. You can write to Ben "
+                                                         "instead."})
+        skey = f"coupon:s:{sid}"
+        try:
+            held = buddy_dict.get(skey)
+            if isinstance(held, dict) and held.get("expires_at", 0) > _time_module.time():
+                return JSONResponse({"ok": True, "code": held["code"], "expires_at": held["expires_at"]})
+            if held:
+                return JSONResponse({"ok": False, "message": "That code has run out. Each chat gets one."})
+            if not _buddy_ip_ok(request, "buddy-coupon", _buddy.COUPON_PER_IP_DAY, _buddy.COUPON_PER_IP_DAY):
+                return JSONResponse({"ok": False, "message": "That is all the codes for today from here."})
+            if not buddy_dict.put(skey, {"pending": True}, skip_if_exists=True):
+                return JSONResponse({"ok": False, "message": "Your code is on its way. Try again in a moment."})
+        except Exception:
+            logger.exception("buddy coupon caps failed")
+            return JSONResponse({"ok": False, "message": _buddy.OFF_LINE})
+        expires_at = int(_time_module.time()) + _buddy.COUPON_ASK_SECONDS
+        async with _hx.AsyncClient() as c:
+            code = await _mint_buddy_code(c, expires_at, "buddy-ask", _buddy.session_hash(sid, _buddy_secret()))
+        if not code:
+            buddy_dict.pop(skey, None)
+            return JSONResponse({"ok": False, "message": "I could not make a code just now. Try again in a minute."})
+        buddy_dict[skey] = {"code": code, "expires_at": expires_at}
+        return JSONResponse({"ok": True, "code": code, "expires_at": expires_at})
+
+    @api.post("/buddy/coupon-email")
+    async def buddy_coupon_email(request: Request):
+        """A one-time 20% code by email, good for 24 hours. One per inbox ever (a durable claim), and the same
+        reply whatever happens, so addresses cannot be probed."""
+        import httpx as _hx
+        from latextools import delivery as _delivery
+
+        if not _buddy_origin_ok(request):
+            return JSONResponse({"error": "forbidden_origin"}, status_code=403)
+        secret = _buddy_secret()
+        if not _coupon_live() or not secret:
+            return JSONResponse({"ok": False, "message": _buddy.NO_DEALS_LINE})
+        body = await _buddy_body(request)
+        if body is None:
+            return JSONResponse({"error": "invalid"}, status_code=400)
+        sent = {"ok": True, "message": "If that address can get a code, it is on its way. It works for 24 hours."}
+        if _buddy_blocked(request):
+            return JSONResponse(sent)
+        if not _buddy_session(body):
+            return JSONResponse({"error": "no_session"}, status_code=401)
+        if body.get("website") or not _buddy.form_stamp_ok(str(body.get("form_ts") or ""), secret):
+            return JSONResponse(sent)
+        addr = _buddy.canonical_email(str(body.get("email") or ""))
+        if not addr:
+            return JSONResponse({"ok": False, "message": "That email address does not look right."})
+        if _buddy.is_disposable(addr):
+            return JSONResponse({"ok": False, "message": "Please use an email address you keep, not a "
+                                                         "throwaway one."})
+        akey = _buddy.coupon_address_key(addr, secret)
+        claim = f"claim:coupon:{akey}"   # a claim: key, so _buddy_claims keeps a durable copy past the Dict's 7 days
+        try:
+            if not _buddy_ip_ok(request, "buddy-coupon-email", _buddy.COUPON_EMAIL_PER_IP_DAY,
+                                _buddy.COUPON_EMAIL_PER_IP_DAY):
+                return JSONResponse(sent)
+            if not _buddy_claims().put(claim, {"at": _time_module.time(), "state": "sent"}, skip_if_exists=True):
+                return JSONResponse(sent)
+        except Exception:
+            logger.exception("buddy coupon-email caps failed")
+            return JSONResponse({"ok": False, "message": _buddy.OFF_LINE})
+        expires_at = int(_time_module.time()) + _buddy.COUPON_EMAIL_SECONDS
+        async with _hx.AsyncClient() as c:
+            code = await _mint_buddy_code(c, expires_at, "buddy-email", akey)
+            if not code:
+                _buddy_claims().pop(claim, None)
+                return JSONResponse({"ok": False, "message": "I could not make a code just now. Try again in a "
+                                                             "minute."})
+            when = datetime.datetime.fromtimestamp(expires_at, datetime.timezone.utc).strftime("%B %-d at %H:%M")
+            result = await _delivery.send_email(
+                c, to=str(body.get("email")).strip(), subject="Your 20% code from Purplelink",
+                html=_buddy.coupon_email_html(code, when),
+                tags=[{"name": "kind", "value": "buddy-coupon"}], from_name="Purplelink")
+        if result.get("status") != "ok":
+            _buddy_claims().pop(claim, None)   # the unsent code expires on its own in 24 hours
             return JSONResponse({"ok": False, "message": "The email did not go out. Please try again later."})
         return JSONResponse(sent)
 
