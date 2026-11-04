@@ -125,6 +125,10 @@ body:has(.bc-launcher) .pl-toast { bottom: 88px; }
 }
 .bc-msg a { color: var(--purple); }
 .bc-msg--buddy { align-self: flex-start; background: var(--panel); border-bottom-left-radius: 4px; }
+/* The 20% code: large, spaced and selectable, with its Copy button beside it. */
+.bc-code-box p { margin: 0; }
+.bc-code { display: inline-block; margin: 6px 8px 6px 0; padding: 4px 10px; border: 1px dashed var(--line); border-radius: 8px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 17px; letter-spacing: 0.08em; user-select: all; }
 .bc-msg--you {
   align-self: flex-end;
   background: color-mix(in oklch, var(--purple) 14%, var(--panel));
