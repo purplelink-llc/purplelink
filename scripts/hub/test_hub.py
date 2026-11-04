@@ -344,7 +344,7 @@ def test_export_has_no_contacts():
     out = tmp / "export"
     run("export", str(out))
     names = sorted(f.name for f in out.glob("*.json"))
-    assert names == sorted(f"marketing_{n}.json" for n in ("summary", "grid", "channels", "placements", "followups", "listings", "heard", "campaigns", "rechecks"))
+    assert names == sorted(f"marketing_{n}.json" for n in ("summary", "grid", "channels", "placements", "followups", "listings", "heard", "campaigns", "rechecks", "crm_summary", "labs", "pilots", "opps"))
     blob = "".join(f.read_text() for f in out.glob("*.json"))
     assert not hub.EMAIL_RE.search(blob.replace("@purplelink", ""))
     assert "OUTREACH-LOG" not in blob and "Pat" not in blob and "Reviewer" not in blob and "Example University" not in blob
@@ -1057,3 +1057,81 @@ def test_utm_takes_a_preferred_content_and_medium():
     assert hub.make_utm(P, "https://purplelink.llc/widget/", "widget", "youtube", content="howto-x").endswith(
         "utm_content=howto-x-2")
     assert "utm_medium=email" in hub.make_utm(P, "https://purplelink.llc/widget/", "widget", "youtube", medium="email")
+
+
+def test_crm_labs_and_pilots():
+    import pytest
+    crm_file = tmp / "hub" / "crm.json"
+    assert not crm_file.exists()
+    run("crm", "add", "lab", "Smith Lab", "--institution", "State U", "--pi", "Dr Smith", "--status", "contacted",
+        "--next", "send pilot terms", "--next-date", "2026-10-20", "--notes", "met at conference; smith@x.edu")
+    assert crm_file.exists() and not list((tmp / "hub").glob("crm.json.tmp"))
+    run("crm", "add", "lab", "Jones Lab", "--institution", "Tech", "--next-date", "2026-11-30", "--next", "later")
+    run("crm", "add", "person", "Dr Smith", "--lab", "Smith Lab", "--roles", "user,champion", "--opted-out", "yes",
+        "--next", "email", "--next-date", "2026-10-01")
+    run("crm", "add", "person", "Ada", "--lab", "Jones Lab", "--next", "call", "--next-date", "2026-10-22")
+    run("crm", "add", "pilot", "Smith Lab", "--start", "2026-10-10", "--planned", "5", "--used", "2", "--status", "active",
+        "--terms", "v1")
+    run("crm", "add", "opp", "Smith Lab", "--stage", "qualified", "--value", "1200",
+        "--buying", "user=known:Dr Smith", "--buying", "budget_owner=missing", "--next", "ask budget", "--next-date", "2026-10-23")
+    run("crm", "set", "lab", "Jones Lab", "--status", "customer")
+    run("crm", "hours", "--hours", "1.5", "--on", "Smith Lab", "--date", "2026-10-20", "--note", "call")
+    assert "1.50 h  Smith Lab" in run("crm", "hours")
+    # due: opted-out person and that PI's lab are skipped; not-yet-due lab skipped
+    due = run("crm", "due")
+    assert run("crm", "list", "--due") == due
+    assert "Ada" in due and "Smith Lab" in due and "ask budget" in due  # the opp is due, the lab and person are not
+    assert "Dr Smith" not in due and "send pilot terms" not in due and "Jones Lab: later" not in due
+    with pytest.raises(SystemExit):
+        run("crm", "add", "lab", "Smith Lab", "--institution", "State U")
+    with pytest.raises(SystemExit):
+        run("crm", "set", "lab", "Smith Lab", "--status", "bogus")
+    with pytest.raises(SystemExit):
+        run("crm", "add", "pilot", "No Such Lab")
+
+    run("import")
+    con = db()
+    assert con.execute("SELECT count(*) FROM crm_labs").fetchone()[0] == 2
+    out = tmp / "export"
+    run("export", str(out))
+    ex = {n: json.loads((out / f"{n}.json").read_text()) for n in
+          ("marketing_crm_summary", "marketing_labs", "marketing_pilots", "marketing_opps")}
+    s = ex["marketing_crm_summary"][0]
+    assert s["labs"] == 2 and s["byStatus"]["customer"] == 1 and s["byStatus"]["contacted"] == 1
+    assert s["pilots"] == 2 and s["paidLabs"] == 1 and s["pilotTargetMin"] == 3 and s["hoursTotal"] == 1.5
+    assert s["due"] == 2
+    opp = ex["marketing_opps"][0]
+    assert opp["roles"]["user"] == "known" and opp["roles"]["budget_owner"] == "missing" and opp["rolesKnown"] == 1
+    blob = json.dumps(ex)
+    assert "smith@x.edu" not in blob and "met at conference" not in blob  # notes stay on the Mac
+    assert "Dr Smith" in json.dumps(ex["marketing_labs"])  # a lab's PI is shown ...
+    assert '"Dr Smith"' not in json.dumps(ex["marketing_opps"])  # ... buying-role names never are
+    assert ex["marketing_labs"][0]["isDue"] is False and ex["marketing_pilots"][0]["used"] == 2
+
+    # import-labs: case-insensitive columns, unknown ones ignored, idempotent by name + institution
+    md = tmp / "labs.md"
+    md.write_text("# Labs\n\n| LAB | Institution | Field | PI | Warmth | Color | Status |\n|---|---|---|---|---|---|---|\n"
+                  "| Smith lab | state u | IS | Dr Smith | warm | red | interviewed |\n"
+                  "| Kim Lab | Tech | HCI | Kim |  | blue | prospect |\n")
+    assert "1 added, 1 updated, 0 unchanged" in run("crm", "import-labs", str(md))
+    assert "0 added, 0 updated, 2 unchanged" in run("crm", "import-labs", str(md))
+    labs = json.loads(crm_file.read_text())["labs"]
+    assert len(labs) == 3 and [l for l in labs if l["name"] == "Smith Lab"][0]["status"] == "interviewed"
+    assert [l for l in labs if l["name"] == "Smith Lab"][0]["notes"].startswith("met at")  # blank cells never erase
+
+    # Georgia State / GSU refused everywhere, and nothing is written
+    before = crm_file.read_text()
+    for argv in (["crm", "add", "lab", "Georgia State Lab"], ["crm", "add", "lab", "X", "--institution", "georgia  state University"],
+                 ["crm", "add", "lab", "Y", "--notes", "knows someone at GSU"], ["crm", "set", "lab", "Jones Lab", "--notes", "gsu"],
+                 ["crm", "add", "person", "Z", "--lab", "GSU"], ["crm", "hours", "--hours", "1", "--on", "Georgia State"]):
+        with pytest.raises(SystemExit) as e:
+            run(*argv)
+        assert "Georgia State" in str(e.value)
+    bad = tmp / "bad.md"
+    bad.write_text("| Name | Institution |\n|---|---|\n| Fine Lab | Tech |\n| Other | Georgia State University |\n")
+    with pytest.raises(SystemExit):
+        run("crm", "import-labs", str(bad))
+    run("crm", "add", "lab", "Gsuite Analytics Lab")  # "GSU" only as a whole word
+    assert "Gsuite" in crm_file.read_text()
+    assert crm_file.read_text() != before
+    assert "Fine Lab" not in crm_file.read_text()

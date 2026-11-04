@@ -27,6 +27,14 @@ Phase 2 (the hub as the gate):
   hub.py week pick|measure [--write]   Monday: up to 5 assets to draft for; Sunday: what the week's placements did
   hub.py log                    write Outreach/PLACEMENTS.md, a generated read-only view of every placement
 
+Labs and pilots (private source ~/.purplelink/hub/crm.json, loaded into crm_* tables by import):
+  hub.py crm add|set KIND NAME [--flags]   KIND is lab, person, pilot or opp (pilot and opp are keyed by lab name)
+  hub.py crm list [KIND] [--due]           crm due is the same as crm list --due (opted-out people skipped)
+  hub.py crm hours [--hours H --on CHANNEL_OR_LAB --date D --note N]   log hours (feeds CAC); no --hours totals them
+  hub.py crm import-labs FILE.md           add or update labs from a markdown table, by lab name + institution
+  Anything naming Georgia State or GSU is refused. export adds marketing_crm_summary, marketing_labs,
+  marketing_pilots, marketing_opps (buying roles as known or missing, never names).
+
 Paid campaigns and data quality:
   hub.py campaigns              each paid test (campaigns.json): reported spend and clicks beside exact-link visits,
                                 trials and orders, cost per trial and order, and the next reading date
@@ -107,6 +115,7 @@ def paths() -> dict:
         "rechecks": env_path("PURPLELINK_HUB", HOME / ".purplelink" / "hub") / "rechecks.json",
         "links": env_path("PURPLELINK_HUB", HOME / ".purplelink" / "hub") / "links.json",
         "manual_ads": env_path("PURPLELINK_MANUAL_ADS", HOME / ".purplelink" / "traffic" / "manual-ads.json"),
+        "crm": env_path("PURPLELINK_HUB", HOME / ".purplelink" / "hub") / "crm.json",
         "contests": env_path("PURPLELINK_CONTESTS", HOME / ".purplelink" / "contests") / "ledger.json",
     }
 
@@ -1911,6 +1920,7 @@ def build(p: dict) -> dict:
         con.execute(f"INSERT INTO placements VALUES ({','.join('?' * len(cols))})", [pl.get(c) or "" for c in cols])
         con.executemany("INSERT OR IGNORE INTO placement_assets VALUES (?,?)", [(pl["id"], a) for a in links[pl["id"]]])
     con.executemany("INSERT INTO results VALUES (?,?,?,?,?,?)", results)
+    crm_build(con, p)
     con.executemany(f"INSERT INTO channel_stats VALUES ({','.join('?' * 11)})", chan)
     con.executemany("INSERT INTO heard VALUES (?,?,?,?)", [(k[0], k[1], HEARD_CHANNEL.get(k[1], ""), n) for k, n in heard.items()])
     now = dt.datetime.now().astimezone().isoformat(timespec="minutes")
@@ -1923,6 +1933,345 @@ def build(p: dict) -> dict:
     for pl in placements:
         by_source[pl["source"]] = by_source.get(pl["source"], 0) + 1
     return {"assets": len(assets), "placements": len(links), "unmatched": unmatched, "by_source": by_source}
+
+
+# --- labs and pilots (CRM) ----------------------------------------------------------------------------------------
+# A private source file, ~/.purplelink/hub/crm.json (never in the repo). Contact details stay in Ben's mail.
+# design: docs/designs/paper-review-growth.md, Part E.
+
+LAB_STATUS = ["prospect", "contacted", "interviewed", "pilot", "customer", "dropped"]
+PILOT_STATUS = ["planned", "active", "done", "dropped"]
+OPP_STAGE = ["lead", "qualified", "pilot", "proposal", "won", "lost"]
+BUYING_ROLES = ["user", "champion", "budget_owner", "procurement_route", "security_reviewer", "signer"]
+PERSON_ROLES = ["user", "champion"]
+PILOT_TARGET = (3, 5)
+PAID_TARGET = 1
+GSU_RE = re.compile(r"georgia\s+state|\bgsu\b", re.I)
+CRM_KINDS = ["lab", "person", "pilot", "opp"]
+CRM_LIST = {"lab": "labs", "person": "people", "pilot": "pilots", "opp": "opportunities"}
+# kind -> {record field: flag dest}; the first record field of each kind is its key
+CRM_FIELDS = {
+    "lab": ["institution", "field", "pi", "url", "warmth", "tie", "status", "next", "next_date", "notes"],
+    "person": ["role", "lab", "roles", "opted_out", "next", "next_date", "notes"],
+    "pilot": ["start", "end", "planned", "used", "terms", "status", "outcome", "notes"],
+    "opp": ["stage", "value", "next", "next_date", "notes"],
+}
+IMPORT_COLUMNS = {
+    "name": "name", "lab": "name", "lab name": "name", "institution": "institution", "university": "institution",
+    "school": "institution", "field": "field", "pi": "pi", "principal investigator": "pi", "url": "url",
+    "link": "url", "website": "url", "warmth": "warmth", "tie": "tie", "status": "status", "next": "next",
+    "next step": "next", "next date": "next_date", "next_date": "next_date", "due": "next_date", "notes": "notes",
+    "note": "notes",
+}
+
+
+def crm_empty() -> dict:
+    return {"labs": [], "people": [], "pilots": [], "opportunities": [], "hours": []}
+
+
+def crm_load(p: dict) -> dict:
+    d = load_json(p["crm"], {})
+    out = crm_empty()
+    for k in out:
+        if isinstance(d.get(k), list):
+            out[k] = d[k]
+    return out
+
+
+def crm_save(p: dict, data: dict) -> None:
+    p["crm"].parent.mkdir(parents=True, exist_ok=True)
+    tmp = p["crm"].with_name(p["crm"].name + ".tmp")
+    tmp.write_text(json.dumps(data, ensure_ascii=False, indent=1, sort_keys=True))
+    os.replace(tmp, p["crm"])
+
+
+def gsu_check(*values) -> None:
+    """Georgia State is off limits (Ben, 2026-10-15): refuse any text that names it, before anything is written."""
+    for v in values:
+        for s in (v if isinstance(v, (list, tuple)) else [v]):
+            if isinstance(s, dict):
+                gsu_check(*s.values())
+            elif isinstance(s, str) and GSU_RE.search(s):
+                sys.exit(f"refused: {s[:60]!r} matches Georgia State / GSU, which is never contacted or tracked here")
+
+
+def _same(a: str, b: str) -> bool:
+    return (a or "").strip().casefold() == (b or "").strip().casefold()
+
+
+def crm_find(data: dict, kind: str, key: str, institution: str = "") -> list:
+    if kind == "lab":
+        return [r for r in data["labs"] if _same(r["name"], key) and (not institution or _same(r.get("institution", ""), institution))]
+    if kind == "person":
+        return [r for r in data["people"] if _same(r["name"], key)]
+    rows = data["pilots"] if kind == "pilot" else data["opportunities"]
+    return [r for r in rows if _same(r["lab"], key)]
+
+
+def _check_enum(label: str, v: str, allowed: list) -> str:
+    v = (v or "").strip().lower()
+    if v not in allowed:
+        sys.exit(f"{label} must be one of {', '.join(allowed)} (got {v!r})")
+    return v
+
+
+def _check_date(v: str) -> str:
+    if v and not re.fullmatch(r"\d{4}-\d\d-\d\d", v):
+        sys.exit(f"date must be YYYY-MM-DD (got {v!r})")
+    return v
+
+
+def parse_buying(items: list) -> dict:
+    out = {}
+    for it in items or []:
+        role, _, rest = it.partition("=")
+        role = role.strip().lower().replace("-", "_").replace(" ", "_")
+        state, _, note = rest.partition(":")
+        out[_check_enum("buying role", role, BUYING_ROLES)] = {
+            "state": _check_enum("buying role state", state or "known", ["known", "missing"]), "note": note.strip()}
+    return out
+
+
+def crm_clean(kind: str, fields: dict) -> dict:
+    """Validate and normalise the flag values that were given (absent ones are not in `fields`)."""
+    f = {k: v for k, v in fields.items() if v is not None}
+    for d in ("next_date", "start", "end"):
+        if d in f:
+            _check_date(f[d])
+    if kind == "lab" and "status" in f:
+        f["status"] = _check_enum("lab status", f["status"], LAB_STATUS)
+    if kind == "pilot" and "status" in f:
+        f["status"] = _check_enum("pilot status", f["status"], PILOT_STATUS)
+    if kind == "opp" and "stage" in f:
+        f["stage"] = _check_enum("opportunity stage", f["stage"], OPP_STAGE)
+    if "roles" in f:
+        f["roles"] = [_check_enum("person role", r, PERSON_ROLES) for r in re.split(r"[,\s]+", f["roles"]) if r] \
+            if isinstance(f["roles"], str) else f["roles"]
+    if "opted_out" in f and not isinstance(f["opted_out"], bool):
+        f["opted_out"] = _check_enum("opted-out", f["opted_out"], ["yes", "no"]) == "yes"
+    for k in ("planned", "used"):
+        if k in f:
+            f[k] = int(f[k])
+    if "value" in f:
+        f["value"] = float(f["value"])
+    return f
+
+
+def crm_defaults(kind: str, key: str) -> dict:
+    if kind == "lab":
+        return {"name": key, "institution": "", "field": "", "pi": "", "url": "", "warmth": "", "tie": "",
+                "status": "prospect", "next": "", "next_date": "", "notes": ""}
+    if kind == "person":
+        return {"name": key, "role": "", "lab": "", "roles": [], "opted_out": False, "next": "", "next_date": "", "notes": ""}
+    if kind == "pilot":
+        return {"lab": key, "start": "", "end": "", "planned": 0, "used": 0, "terms": "", "status": "planned",
+                "outcome": "", "notes": ""}
+    return {"lab": key, "stage": "lead", "value": 0.0, "buying": {r: {"state": "missing", "note": ""} for r in BUYING_ROLES},
+            "next": "", "next_date": "", "notes": ""}
+
+
+def crm_add(p: dict, kind: str, key: str, fields: dict, buying: list | None = None) -> str:
+    data = crm_load(p)
+    f = crm_clean(kind, fields)
+    b = parse_buying(buying) if kind == "opp" else {}
+    gsu_check(key, f, b)
+    if kind in ("pilot", "opp") and not crm_find(data, "lab", key):
+        sys.exit(f"no lab named {key!r}: add the lab first")
+    if crm_find(data, kind, key, f.get("institution", "") if kind == "lab" else ""):
+        sys.exit(f"{kind} {key!r} already exists: use crm set")
+    rec = crm_defaults(kind, key)
+    rec.update(f)
+    if b:
+        rec["buying"].update(b)
+    data[CRM_LIST[kind]].append(rec)
+    crm_save(p, data)
+    return f"added {kind} {key}"
+
+
+def crm_set(p: dict, kind: str, key: str, fields: dict, buying: list | None = None, institution: str = "") -> str:
+    data = crm_load(p)
+    f = crm_clean(kind, fields)
+    b = parse_buying(buying) if kind == "opp" else {}
+    gsu_check(key, f, b)
+    hits = crm_find(data, kind, key, institution)
+    if not hits:
+        sys.exit(f"no {kind} named {key!r}")
+    if len(hits) > 1:
+        sys.exit(f"{len(hits)} labs are named {key!r}: add --institution to pick one")
+    hits[0].update(f)
+    if b:
+        hits[0].setdefault("buying", {}).update(b)
+    crm_save(p, data)
+    return f"updated {kind} {key}"
+
+
+def crm_hours_add(p: dict, hours: float, on: str, day: str, note: str) -> str:
+    gsu_check(on, note)
+    data = crm_load(p)
+    data["hours"].append({"date": _check_date(day), "on": on, "hours": hours, "note": note})
+    crm_save(p, data)
+    return f"logged {hours:g} h on {on}"
+
+
+def split_row(line: str) -> list:
+    return [c.strip() for c in line.strip().strip("|").split("|")]
+
+
+def parse_labs_table(text: str) -> list:
+    rows, header = [], None
+    for line in text.splitlines():
+        if not line.strip().startswith("|"):
+            header = None if rows else header
+            continue
+        cells = split_row(line)
+        if all(re.fullmatch(r":?-{2,}:?", c) or not c for c in cells):
+            continue
+        if header is None:
+            cols = [IMPORT_COLUMNS.get(re.sub(r"\s+", " ", c.lower()).strip()) for c in cells]
+            if "name" in cols:
+                header = cols
+            continue
+        rec = {}
+        for col, c in zip(header, cells):
+            if col and c and c not in ("-", "n/a"):
+                rec.setdefault(col, c)
+        if rec.get("name"):
+            rows.append(rec)
+    return rows
+
+
+def crm_import_labs(p: dict, path: Path) -> str:
+    if not path.exists():
+        sys.exit(f"no such file: {path}")
+    rows = parse_labs_table(path.read_text())
+    if not rows:
+        sys.exit("no table with a Name or Lab column found")
+    gsu_check(*rows)  # the whole file is refused before anything is written
+    data = crm_load(p)
+    added = updated = same = 0
+    for r in rows:
+        f = crm_clean("lab", {k: v for k, v in r.items() if k != "name"})
+        hit = crm_find(data, "lab", r["name"], f.get("institution", ""))
+        if not hit:
+            rec = crm_defaults("lab", r["name"])
+            rec.update(f)
+            data["labs"].append(rec)
+            added += 1
+        elif any(hit[0].get(k) != v for k, v in f.items()):
+            hit[0].update(f)
+            updated += 1
+        else:
+            same += 1
+    crm_save(p, data)
+    return f"import-labs: {added} added, {updated} updated, {same} unchanged"
+
+
+def crm_due(data: dict, today: dt.date) -> list:
+    """Next steps due today or earlier. A person who opted out is never listed, nor a lab whose PI opted out."""
+    out_names = {r["name"].casefold() for r in data["people"] if r.get("opted_out")}
+    now = today.isoformat()
+    rows = []
+
+    def add(kind, who, r):
+        if r.get("next_date") and r["next_date"] <= now:
+            rows.append({"kind": kind, "who": who, "next": r.get("next", ""), "date": r["next_date"]})
+
+    for r in data["labs"]:
+        if r.get("status") not in ("dropped",) and (r.get("pi") or "").casefold() not in out_names:
+            add("lab", r["name"], r)
+    for r in data["people"]:
+        if not r.get("opted_out"):
+            add("person", r["name"], r)
+    for r in data["opportunities"]:
+        if r.get("stage") not in ("won", "lost"):
+            add("opp", r["lab"], r)
+    return sorted(rows, key=lambda x: (x["date"], x["who"]))
+
+
+def crm_summary(data: dict, today: dt.date) -> dict:
+    labs = data["labs"]
+    by = {s: sum(1 for r in labs if r.get("status") == s) for s in LAB_STATUS}
+    pilot_labs = {r["name"].casefold() for r in labs if r.get("status") in ("pilot", "customer")}
+    pilot_labs |= {r["lab"].casefold() for r in data["pilots"] if r.get("status") != "dropped"}
+    paid = {r["name"].casefold() for r in labs if r.get("status") == "customer"}
+    paid |= {r["lab"].casefold() for r in data["opportunities"] if r.get("stage") == "won"}
+    cutoff = (today - dt.timedelta(days=30)).isoformat()
+    hrs = [r for r in data["hours"] if r.get("date")]
+    return {
+        "asOf": today.isoformat(), "labs": len(labs), "byStatus": by, "people": len(data["people"]),
+        "pilots": len(pilot_labs), "pilotTargetMin": PILOT_TARGET[0], "pilotTargetMax": PILOT_TARGET[1],
+        "paidLabs": len(paid), "paidTarget": PAID_TARGET,
+        "openOpps": sum(1 for r in data["opportunities"] if r.get("stage") not in ("won", "lost")),
+        "due": len(crm_due(data, today)),
+        "hoursTotal": round(sum(float(r.get("hours") or 0) for r in data["hours"]), 2),
+        "hours30": round(sum(float(r.get("hours") or 0) for r in hrs if r["date"] >= cutoff), 2),
+    }
+
+
+def crm_rows(con, today: dt.date) -> dict:
+    """Export rows. Notes, contact details, people and buying-role names never leave the Mac: roles are known/missing."""
+    try:
+        q = lambda t: [dict(r) for r in con.execute(f"SELECT * FROM {t}")]
+        data = {"labs": q("crm_labs"), "pilots": q("crm_pilots"), "opportunities": q("crm_opps"), "hours": q("crm_hours"),
+                "people": q("crm_people")}
+    except sqlite3.OperationalError:
+        data = crm_empty()
+    for r in data["people"]:
+        r["opted_out"] = bool(r["opted_out"])
+    for r in data["opportunities"]:
+        r["buying"] = json.loads(r["buying"] or "{}")
+    now = today.isoformat()
+    due_lab = {x["who"] for x in crm_due(data, today) if x["kind"] == "lab"}
+    due_opp = {x["who"] for x in crm_due(data, today) if x["kind"] == "opp"}
+    labs = [{"name": r["name"], "institution": r["institution"] or None, "field": r["field"] or None,
+             "pi": r["pi"] or None, "url": r["url"] or None, "warmth": r["warmth"] or None, "tie": r["tie"] or None,
+             "status": r["status"], "next": r["next"] or None, "nextDate": r["next_date"] or None,
+             "isDue": r["name"] in due_lab} for r in data["labs"]]
+    labs.sort(key=lambda r: (LAB_STATUS.index(r["status"]) if r["status"] in LAB_STATUS else 9, r["name"]))
+    pilots = [{"lab": r["lab"], "start": r["start"] or None, "end": r["end"] or None, "planned": r["planned"],
+               "used": r["used"], "terms": r["terms"] or None, "status": r["status"], "outcome": r["outcome"] or None}
+              for r in data["pilots"]]
+    opps = []
+    for r in data["opportunities"]:
+        b = r["buying"]
+        roles = {k: (b.get(k) or {}).get("state", "missing") for k in BUYING_ROLES}
+        opps.append({"lab": r["lab"], "stage": r["stage"], "value": r["value"], "roles": roles,
+                     "rolesKnown": sum(1 for v in roles.values() if v == "known"), "rolesTotal": len(BUYING_ROLES),
+                     "missing": [k for k, v in roles.items() if v != "known"], "next": r["next"] or None,
+                     "nextDate": r["next_date"] or None, "isDue": r["lab"] in due_opp})
+    opps.sort(key=lambda r: (OPP_STAGE.index(r["stage"]) if r["stage"] in OPP_STAGE else 9, r["lab"]))
+    return {"marketing_crm_summary": [crm_summary(data, today)], "marketing_labs": labs,
+            "marketing_pilots": pilots, "marketing_opps": opps}
+
+
+def crm_build(con, p: dict) -> None:
+    """Load crm.json into crm_* tables (rows naming Georgia State or GSU are skipped, whatever the file holds)."""
+    data = crm_load(p)
+    clean = {k: [r for r in rows if not GSU_RE.search(json.dumps(r))] for k, rows in data.items()}
+    con.executescript("""
+CREATE TABLE crm_labs (name TEXT, institution TEXT, field TEXT, pi TEXT, url TEXT, warmth TEXT, tie TEXT, status TEXT,
+  next TEXT, next_date TEXT, notes TEXT);
+CREATE TABLE crm_people (name TEXT, role TEXT, lab TEXT, roles TEXT, opted_out INTEGER, next TEXT, next_date TEXT, notes TEXT);
+CREATE TABLE crm_pilots (lab TEXT, start TEXT, end TEXT, planned INTEGER, used INTEGER, terms TEXT, status TEXT,
+  outcome TEXT, notes TEXT);
+CREATE TABLE crm_opps (lab TEXT, stage TEXT, value REAL, buying TEXT, next TEXT, next_date TEXT, notes TEXT);
+CREATE TABLE crm_hours (date TEXT, "on" TEXT, hours REAL, note TEXT);
+""")
+    g = lambda r, k, d="": r.get(k) if r.get(k) is not None else d
+    con.executemany("INSERT INTO crm_labs VALUES (?,?,?,?,?,?,?,?,?,?,?)", [
+        tuple(g(r, k) for k in ["name", "institution", "field", "pi", "url", "warmth", "tie"]) + (g(r, "status", "prospect"),)
+        + tuple(g(r, k) for k in ["next", "next_date", "notes"]) for r in clean["labs"]])
+    con.executemany("INSERT INTO crm_people VALUES (?,?,?,?,?,?,?,?)", [
+        (g(r, "name"), g(r, "role"), g(r, "lab"), json.dumps(g(r, "roles", [])), int(bool(r.get("opted_out"))),
+         g(r, "next"), g(r, "next_date"), g(r, "notes")) for r in clean["people"]])
+    con.executemany("INSERT INTO crm_pilots VALUES (?,?,?,?,?,?,?,?,?)", [
+        (g(r, "lab"), g(r, "start"), g(r, "end"), g(r, "planned", 0), g(r, "used", 0), g(r, "terms"),
+         g(r, "status", "planned"), g(r, "outcome"), g(r, "notes")) for r in clean["pilots"]])
+    con.executemany("INSERT INTO crm_opps VALUES (?,?,?,?,?,?,?)", [
+        (g(r, "lab"), g(r, "stage", "lead"), g(r, "value", 0.0), json.dumps(g(r, "buying", {})), g(r, "next"),
+         g(r, "next_date"), g(r, "notes")) for r in clean["opportunities"]])
+    con.executemany("INSERT INTO crm_hours VALUES (?,?,?,?)", [
+        (g(r, "date"), g(r, "on"), g(r, "hours", 0), g(r, "note")) for r in clean["hours"]])
 
 
 def connect(p: dict) -> sqlite3.Connection:
@@ -2163,7 +2512,53 @@ def export_rows(p: dict) -> dict:
     return {"marketing_summary": summary, "marketing_grid": grid, "marketing_channels": channels,
             "marketing_placements": placements, "marketing_followups": followups, "marketing_listings": listings,
             "marketing_heard": heard, "marketing_campaigns": [{k: v for k, v in r.items()} for r in campaign_report(con, p)],
-            "marketing_rechecks": [{k: v for k, v in r.items() if k != "targets"} for r in recheck_report(con, p)]}
+            "marketing_rechecks": [{k: v for k, v in r.items() if k != "targets"} for r in recheck_report(con, p)],
+            **crm_rows(con, today)}
+
+
+def cmd_crm(a, p):
+    act = a.action
+    if act == "due":
+        act, a.due = "list", True
+    if act == "import-labs":
+        print(crm_import_labs(p, Path(a.target or a.kind or "")))
+        return
+    if act == "hours":
+        if a.hours is None:
+            data = crm_load(p)
+            tot: dict = {}
+            for r in data["hours"]:
+                tot[r["on"]] = tot.get(r["on"], 0) + float(r["hours"] or 0)
+            for k, v in sorted(tot.items(), key=lambda kv: -kv[1]):
+                print(f"{v:6.2f} h  {k}")
+            print(f"{sum(tot.values()):6.2f} h  total")
+            return
+        print(crm_hours_add(p, a.hours, a.on or "", a.date or dt.date.today().isoformat(), a.note or ""))
+        return
+    kind = a.kind
+    fields = {k: getattr(a, k, None) for k in CRM_FIELDS.get(kind, [])} if kind else {}
+    if act in ("add", "set"):
+        if not kind or not a.target:
+            sys.exit(f"crm {act} KIND NAME [--flags]")
+        if act == "add":
+            print(crm_add(p, kind, a.target, fields, a.buying))
+        else:
+            print(crm_set(p, kind, a.target, fields, a.buying, a.institution or ""))
+        return
+    data = crm_load(p)
+    today = dt.date.today()
+    if a.due:
+        rows = crm_due(data, today)
+        for r in rows:
+            print(f"{r['date']}  {r['kind']:6} {r['who']}: {r['next']}")
+        if not rows:
+            print("nothing due")
+        return
+    for k in ([kind] if kind else CRM_KINDS):
+        for r in data[CRM_LIST[k]]:
+            label = r.get("name") or r.get("lab")
+            extra = r.get("status") or r.get("stage") or ""
+            print(f"{k:6} {label}  {extra}  {r.get('next', '')}  {r.get('next_date', '')}".rstrip())
 
 
 def cmd_export(a, p):
@@ -2344,6 +2739,17 @@ def main(argv=None) -> int:
     cs = sub.add_parser("campaign-spend"); cs.add_argument("campaign"); cs.add_argument("--spend", type=float, required=True)
     cs.add_argument("--clicks", type=int); cs.add_argument("--impressions", type=int); cs.add_argument("--ad")
     cs.add_argument("--as-of", dest="as_of")
+    cr = sub.add_parser("crm", help="labs, people, pilots, opportunities, hours (private crm.json)")
+    cr.add_argument("action", choices=["add", "set", "list", "due", "hours", "import-labs"])
+    cr.add_argument("kind", nargs="?", help="lab|person|pilot|opp (add, set, list); hours; FILE.md for import-labs")
+    cr.add_argument("target", nargs="?")
+    cr.add_argument("--due", action="store_true")
+    for fl in ["institution", "field", "pi", "url", "warmth", "tie", "status", "next", "notes", "role", "lab", "roles",
+               "opted-out", "start", "end", "planned", "used", "terms", "outcome", "stage", "value", "next-date"]:
+        cr.add_argument("--" + fl, dest=fl.replace("-", "_"))
+    cr.add_argument("--buying", action="append", metavar="ROLE=known|missing[:note]")
+    cr.add_argument("--hours", type=float)
+    cr.add_argument("--on"); cr.add_argument("--date"); cr.add_argument("--note")
     dr = sub.add_parser("doctor"); dr.add_argument("--links", action="store_true")
     dr.add_argument("--pin", action="store_true", help="record the row text on unpinned outreach overrides")
     a = ap.parse_args(argv)
@@ -2351,7 +2757,7 @@ def main(argv=None) -> int:
      "status": cmd_status, "channels": cmd_channels, "followups": cmd_followups, "check-listings": cmd_check_listings,
      "export": cmd_export, "utm": cmd_utm, "kits": cmd_kits, "rules": cmd_rules, "week": cmd_week,
      "log": cmd_log, "campaigns": cmd_campaigns, "campaign-spend": cmd_campaign_spend,
-     "rechecks": cmd_rechecks,
+     "rechecks": cmd_rechecks, "crm": cmd_crm,
      "doctor": cmd_doctor}[a.cmd](a, paths())
     return 0
 
