@@ -1,5 +1,6 @@
 /* Buddy chat launcher (docs/designs/buddy-chat.md, section 1).
-   Draws only the round button; chat.js loads on the first click. */
+   Adds chat.css and, once it has loaded, draws only the round button; chat.js loads on the first click.
+   The stylesheet is added from here, not from <head>, so it never holds up the page. */
 (function () {
   "use strict";
   if (window.__buddyChat) return;
@@ -21,6 +22,14 @@
   window.__buddyFace = FACE;
 
   function start() {
+    var css = document.createElement("link");
+    css.rel = "stylesheet";
+    css.href = BASE + "chat.css";
+    css.onload = draw;  // an unstyled button would flash in the page; with no stylesheet there is no button
+    document.head.appendChild(css);
+  }
+
+  function draw() {
     var btn = document.createElement("button");
     btn.type = "button";
     btn.className = "bc-launcher";

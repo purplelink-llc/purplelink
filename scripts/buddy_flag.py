@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Turn Buddy, the site chat, on or off at once, with no deploy (docs/designs/buddy-chat.md, section 1).
 
-  python3 scripts/buddy_flag.py off      # chat and free checks answer "The chat is off for today"
+  python3 scripts/buddy_flag.py off      # chat and free checks answer "Buddy is taking a nap and will be back tomorrow"
   python3 scripts/buddy_flag.py on
   python3 scripts/buddy_flag.py status   # flag plus today's and this month's chat spend
 
