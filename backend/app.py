@@ -10,6 +10,13 @@ import modal
 logger = logging.getLogger(__name__)
 
 from latextools import core
+
+# Buddy's facts block (latextools/buddy_facts.py) is build output, not in git: write it from site/llms.txt whenever
+# this file runs here (every `modal deploy`, every test run), before Modal uploads the latextools package. In the
+# container the uploaded copy is already there.
+if modal.is_local():
+    from latextools import buddy_build as _buddy_build
+    _buddy_build.write_facts()
 from latextools.durable_dict import DurableDict
 from latextools.safe_exec import minimal_env, run_pandoc_plain, run_pandoc_sandboxed
 

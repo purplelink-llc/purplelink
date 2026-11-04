@@ -390,6 +390,8 @@ def facts() -> str:
             from latextools.buddy_facts import FACTS
             _FACTS = FACTS
         except ImportError:
+            # Written at deploy time by app.py (latextools/buddy_build.py); missing means a broken deploy.
+            logger.error("buddy facts missing: latextools/buddy_facts.py was not generated at deploy")
             _FACTS = ""
     return _FACTS
 

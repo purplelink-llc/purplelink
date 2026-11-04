@@ -166,3 +166,20 @@ Differences from the plan above, and why:
 
 Parity: building origin/main and this branch with `NETLIFY=true` (the full Netlify command) in two temporary
 exports gives byte-identical `site/` trees; result in the PR.
+
+## Buddy's facts block (2026-11-04)
+
+`backend/latextools/buddy_facts.py` (the site chat's facts, a copy of `site/llms.txt`) was committed, so every open
+pull request that touched `llms.txt` conflicted on it: PR 381 needed four re-merges in a day, and PR 550 broke main
+once. It now follows this design:
+
+- **Made at deploy and test time.** `backend/app.py` calls `latextools/buddy_build.write_facts()` whenever
+  `modal.is_local()` is true, which covers every `modal deploy` (by `scripts/deploy.sh --backend` or by hand) and every
+  test run that imports the app. The file is written before Modal uploads the `latextools` package, so the deployed
+  facts always come from the `llms.txt` in the tree being deployed. In the container the uploaded copy is used.
+- **Fails loudly.** With no `site/llms.txt` (a partial checkout) the import raises, so a deploy cannot ship a chat
+  without facts; if the module were ever missing in the container, `buddy.facts()` logs an error.
+- **Not in git.** `.gitignore` lists it; the tracked copy was removed. `site/buddy-chat/links.json` stays committed
+  (the browser reads it as a static file) and `scripts/build_buddy_assets.py --check` covers only it.
+- **Test:** `test_facts_are_built_from_llms_txt_not_kept_in_git` writes the facts, checks they equal `llms.txt` and
+  that the file is ignored.

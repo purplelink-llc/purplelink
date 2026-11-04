@@ -250,8 +250,10 @@ builds it only from site tokens, so it stays calm and works in both themes (deci
 - **Replies are screened in code** (`buddy.screen_reply`): a canary string in the system prompt, any link off
   purplelink.llc, any email address other than Ben's, or a reply over 1,500 characters becomes a fixed error line.
 - **`/buddy/status` is a POST**, because the web app's CORS allows POST and OPTIONS only.
-- **Facts block:** `scripts/build_buddy_assets.py` copies all of `site/llms.txt` into
-  `backend/latextools/buddy_facts.py` (the Modal image bundles Python sources only) and writes
+- **Facts block:** `backend/latextools/buddy_build.py` copies all of `site/llms.txt` into
+  `backend/latextools/buddy_facts.py` (the Modal image bundles Python sources only). Since 2026-11-04 that file is
+  build output and git-ignored: `backend/app.py` writes it whenever it runs locally (every `modal deploy`, every test
+  run), so facts always match the llms.txt being deployed. `scripts/build_buddy_assets.py` writes it too and writes
   `site/buddy-chat/links.json` from `site/sitemap.xml`; `test_generated_assets_are_current` fails when either is stale.
   At about 24,000 tokens and Haiku's $0.10 per million, an uncached turn costs about $0.0025.
 - **The "send me product news" box was dropped** from the free-check form until it is wired to the double opt-in.
