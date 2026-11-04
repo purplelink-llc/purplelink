@@ -767,6 +767,19 @@
   to = "/moderntex/"
   status = 301
 
+# Paper Review annual plan page (cancel, undo, email box): rendered by a function so a GET never changes anything.
+[[redirects]]
+  from = "/tools/paper-review/plan"
+  to = "/.netlify/functions/paper-review-plan"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/tools/paper-review/plan/"
+  to = "/.netlify/functions/paper-review-plan"
+  status = 200
+  force = true
+
 # Vitae downloads go through a counted function (DMGs live in the vitae-files Blobs
 # store, not site/). Rewrites, not redirects, so the URL the browser and installed
 # copies' /vitae/version.json downloadURL see never changes.

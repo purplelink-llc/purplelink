@@ -151,10 +151,18 @@
             <span class="pr-tier-desc">20 Standard Paper Review tokens (vs $180 if bought one-by-one, 17% off). Tokens never expire. Best for active labs.</span>
           </span>
         </label>
+        <label class="pr-tier-option">
+          <input type="radio" name="pack" value="paper-review-annual">
+          <span class="pr-tier-content">
+            <span class="pr-tier-head"><strong>Annual plan</strong> · <em>$79 a year</em></span>
+            <span class="pr-tier-desc">12 Standard + Journal Pack reviews over one year for one person (vs $132 bought one-by-one). Renews each year until you cancel. Unused reviews do not carry past the year.</span>
+          </span>
+        </label>
       </fieldset>
 
       <div class="pr-checkout-row">
         <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn">Buy pack — $38</button>
+        <p class="pr-renew-note" id="renew-note" hidden>$79 a year, charged again each year until you cancel. 12 Journal reviews per year. Cancel any time before the renewal date from the plan page or the link in any plan email; you keep the reviews you have until the year ends.</p>
         <p class="pr-checkout-meta">Secure checkout via Stripe. Tokens emailed to the address on the Stripe receipt.</p>
       </div>
       <p class="tool-status" id="checkout-status" aria-live="polite"></p>

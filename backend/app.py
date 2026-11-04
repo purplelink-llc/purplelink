@@ -4,6 +4,7 @@ import hashlib
 import logging
 import os
 import sys
+import time
 import re
 import uuid
 
@@ -11,6 +12,7 @@ import modal
 
 logger = logging.getLogger(__name__)
 
+from latextools import annual
 from latextools import core
 
 # Buddy's facts block (latextools/buddy_facts.py) is build output, not in git: write it from site/llms.txt whenever
@@ -134,6 +136,12 @@ paper_tokens_dict = DurableDict(
 paper_jobs_dict = modal.Dict.from_name("paper-review-jobs", create_if_missing=True)
 paper_token_claims_dict = modal.Dict.from_name("paper-review-token-claims", create_if_missing=True)
 paper_token_index_dict = modal.Dict.from_name("paper-review-token-index", create_if_missing=True)
+# Paper Review annual plans (docs/designs/paper-review-growth.md, Part D): one record per subscription plus a
+# sub:<subscription_id> index; see latextools/annual.py. Durable (a plan outlives modal.Dict's 7-day idle expiry).
+annual_plans_dict = DurableDict(
+    modal.Dict.from_name("paper-review-annual-plans", create_if_missing=True),
+    durable_volume, "annual-plans",
+)
 
 # Permanent per-job cost ledger — unlike paper_jobs_dict (deleted on first
 # status read, by design, for data minimization), this never expires. Keyed
@@ -395,6 +403,8 @@ PAID_PRODUCTS: dict[str, dict] = {
     # anonymity scan (the packs page, FAQ and /labs/ say so).
     "paper-review-pack-5":      {"category": "paper-review", "tier": "standard", "qty": 5,  "amount": 3800, "bundled_anonymity": True},
     "paper-review-pack-20":     {"category": "paper-review", "tier": "standard", "qty": 20, "amount": 15000, "bundled_anonymity": True},
+    # A year of reviews: $79/year auto-renewing, 12 Journal reviews per paid year (annual.py).
+    "paper-review-annual":      {"category": "paper-review", "tier": "standard", "qty": 12, "amount": 7900, "bundled_anonymity": True, "bundled_journal": True},
     # Auxiliary paid tools — single/few-call pipelines, cheap even at Fable
     # rates, so these carry a wide margin rather than a thin one.
     "cover-letter":             {"category": "cover-letter", "qty": 1, "amount": 200},
@@ -2435,6 +2445,43 @@ def web():
     def _gen_token() -> str:
         return _secrets_module.token_urlsafe(32)
 
+    async def _register_annual_plan(payload: dict, session_id: str, product_cfg: dict, amount_paid, referral_code: str):
+        """First purchase of the annual plan: the plan record, 12 tokens, and a plan email. No lifecycle seeding
+        (the plan has its own reminders) and no .edu referral credit (annual pays the 6-review reward instead)."""
+        sub_id = payload.get("subscription_id", "")
+        term_end = payload.get("term_ends_at")
+        email = payload.get("email", "")
+        email = email[:200] if isinstance(email, str) else ""
+        if not isinstance(sub_id, str) or not sub_id.startswith("sub_") or len(sub_id) > 100:
+            return JSONResponse({"error": "missing_subscription_id"}, status_code=400)
+        now = _time_module.time()
+        if not isinstance(term_end, int) or term_end <= now or term_end > now + 400 * 86400:
+            return JSONResponse({"error": "bad_term"}, status_code=400)
+        existing_plan = annual.plan_by_subscription(annual_plans_dict, sub_id)
+        if existing_plan:
+            return JSONResponse({"error": "plan_exists"}, status_code=409)
+        paid = int(amount_paid) if isinstance(amount_paid, int) else 0
+        referral = None
+        if referral_code:
+            referrer_email = referral_dict.get(referral_code)
+            if referrer_email:
+                referral = annual.referral_block(referral_code, referrer_email, paid, now)
+        fp = payload.get("card_fingerprint", "")
+        plan, tokens = annual.create_plan(
+            _annual_store(), root_session=session_id, email=email, subscription_id=sub_id,
+            customer=str(payload.get("customer", ""))[:100], period_end=term_end, amount_paid=paid,
+            cfg=product_cfg, gen_token=_gen_token, now=now, canonical_email=_buddy_canonical_email,
+            referral=referral, card_fingerprint=fp[:100] if isinstance(fp, str) else "",
+            invoice_id=str(payload.get("invoice_id", ""))[:100])
+        entry = paper_tokens_dict.get(session_id)
+        if isinstance(entry, dict):
+            entry["amount_paid"] = paid
+            paper_tokens_dict[session_id] = entry
+        if email:
+            await _annual_send_welcome(plan, tokens, renewed=False)
+        return JSONResponse({"tokens": tokens, "product": annual.ANNUAL_PRODUCT, "qty": annual.PLAN_REVIEWS,
+                             "plan_id": plan["plan_id"], "status": "registered"})
+
     @api.post("/paper-review/register-token")
     async def paper_review_register_token(request: Request):
         """Internal webhook target — called by the Netlify Stripe webhook
@@ -2516,6 +2563,9 @@ def web():
                 "product": existing.get("product_key"),
                 "status": "exists",
             })
+
+        if product_key == annual.ANNUAL_PRODUCT:
+            return await _register_annual_plan(payload, session_id, product_cfg, amount_paid, referral_code)
 
         qty = int(product_cfg.get("qty", 1))
         if qty < 1 or qty > MAX_PACK_QTY:
@@ -2628,6 +2678,163 @@ def web():
             "qty": qty,
             "status": "registered",
         })
+
+    # ---- Paper Review annual plan endpoints (Part D). All header-authenticated: the Netlify functions
+    # (stripe-webhook, paper-review-plan) are the only callers. -------------------------------------------------
+
+    def _annual_auth(request: Request):
+        import hmac as _hmac
+        expected = os.environ.get("BACKEND_WEBHOOK_SECRET", "")
+        if not expected:
+            return JSONResponse({"error": "misconfigured"}, status_code=500)
+        if not _hmac.compare_digest(request.headers.get("x-webhook-secret", ""), expected):
+            return JSONResponse({"error": "unauthorized"}, status_code=401)
+        return None
+
+    async def _annual_json(request: Request):
+        try:
+            data = await request.json()
+        except Exception:
+            return None
+        return data if isinstance(data, dict) else None
+
+    def _annual_view_payload(plan: dict, token: str = "") -> dict:
+        v = annual.plan_view(_annual_store(), plan, _time_module.time())
+        if token:
+            v["token"] = token
+        return v
+
+    @api.post("/paper-review/annual-renew")
+    async def paper_review_annual_renew(request: Request):
+        """invoice.paid (subscription_cycle) from the webhook. Re-reads the subscription from Stripe and mints the
+        new year once, however many times this is called."""
+        bad = _annual_auth(request)
+        if bad:
+            return bad
+        data = await _annual_json(request)
+        sub_id = (data or {}).get("subscription_id", "")
+        if not isinstance(sub_id, str) or not sub_id.startswith("sub_"):
+            return JSONResponse({"error": "missing_subscription_id"}, status_code=400)
+        res = await _annual_renew_from_stripe(sub_id)
+        if res.get("reason") == "stripe_unreadable":
+            return JSONResponse({"error": "stripe_unreadable"}, status_code=502)   # webhook retries
+        return JSONResponse({"ok": res.get("ok", False), "reason": res.get("reason"), "minted": res.get("minted", False)})
+
+    @api.post("/paper-review/annual-revoke")
+    async def paper_review_annual_revoke(request: Request):
+        """A refund or dispute on an annual plan's invoice: stop the plan and drop its unused reviews."""
+        bad = _annual_auth(request)
+        if bad:
+            return bad
+        data = await _annual_json(request)
+        sub_id = (data or {}).get("subscription_id", "")
+        reason = str((data or {}).get("reason", "refund"))[:40]
+        if not isinstance(sub_id, str) or not sub_id.startswith("sub_"):
+            return JSONResponse({"error": "missing_subscription_id"}, status_code=400)
+        res = annual.revoke(_annual_store(), sub_id, reason, _time_module.time())
+        return JSONResponse({"ok": res["ok"], "reason": res["reason"], "dropped": res.get("dropped", 0)})
+
+    @api.post("/paper-review/annual-status")
+    async def paper_review_annual_status(request: Request):
+        """customer.subscription.updated / .deleted: record cancel_at_period_end, status and the period end so a
+        cancel or undo made in the Stripe portal shows at once. Records only: a past_due or unpaid status grants
+        nothing, and a later period end is not a renewal (annual-renew mints, after reading a paid invoice)."""
+        bad = _annual_auth(request)
+        if bad:
+            return bad
+        data = await _annual_json(request)
+        sub_id = (data or {}).get("subscription_id", "")
+        if not isinstance(sub_id, str) or not sub_id.startswith("sub_"):
+            return JSONResponse({"error": "missing_subscription_id"}, status_code=400)
+        cancel = (data or {}).get("cancel_at_period_end")
+        res = annual.apply_status(_annual_store(), {
+            "subscription_id": sub_id,
+            "status": (data or {}).get("status") if isinstance((data or {}).get("status"), str) else None,
+            "cancel_at_period_end": cancel if isinstance(cancel, bool) else None,
+        })
+        return JSONResponse({"ok": res["plan"] is not None, "changed": res["changed"]})
+
+    @api.post("/paper-review/annual-plan")
+    async def paper_review_annual_plan(request: Request):
+        """The plan page's read: validate the link, check Stripe live (portal changes, a missed renewal) and return
+        the state. Changes nothing the buyer would notice."""
+        bad = _annual_auth(request)
+        if bad:
+            return bad
+        data = await _annual_json(request)
+        token = (data or {}).get("token", "")
+        plan, why = annual.plan_for_token(annual_plans_dict, _annual_secret(), token)
+        if not plan:
+            return JSONResponse({"error": why}, status_code=404 if why == "invalid" else 410)
+        plan = await _annual_refresh(plan)
+        return JSONResponse(_annual_view_payload(plan))
+
+    async def _annual_refresh(plan: dict) -> dict:
+        """Safety net behind the webhooks: read Stripe now and bring the plan in line (cancel mark, status, and a
+        renewal whose invoice.paid we missed)."""
+        if plan.get("revoked") or plan.get("ended"):
+            return plan
+        snap = await _annual_fetch_subscription(plan["subscription_id"])
+        if snap:
+            annual.apply_status(_annual_store(), snap)
+            if snap.get("status") == "active" and isinstance(snap.get("period_end"), int) and snap["period_end"] > plan["period_end"]:
+                res = annual.renew(_annual_store(), snap, cfg=PAID_PRODUCTS[annual.ANNUAL_PRODUCT],
+                                   gen_token=_annual_gen_token, now=_time_module.time())
+                if res.get("minted"):
+                    await _annual_on_renewed(res)
+        return annual_plans_dict.get(plan["plan_id"]) or plan
+
+    async def _annual_change(request: Request, cancel: bool):
+        bad = _annual_auth(request)
+        if bad:
+            return bad
+        data = await _annual_json(request)
+        token = (data or {}).get("token", "")
+        plan, why = annual.plan_for_token(annual_plans_dict, _annual_secret(), token)
+        if not plan:
+            return JSONResponse({"error": why}, status_code=404 if why == "invalid" else 410)
+        if plan.get("revoked") or plan.get("ended") or plan.get("period_end", 0) < _time_module.time():
+            return JSONResponse({"error": "plan_over"}, status_code=409)
+        if not await _annual_set_cancel(plan["subscription_id"], cancel):
+            return JSONResponse({"error": "stripe_failed"}, status_code=502)
+        plan["cancel_at_period_end"] = cancel
+        plan["nonce"] = annual.new_nonce()           # the link just used stops working; the new one is in the email
+        annual_plans_dict[plan["plan_id"]] = plan
+        link = annual.plan_link(_annual_secret(), plan)
+        end = annual.date_label(plan["period_end"])
+        await _annual_send(
+            plan["email"], "Your plan will renew again" if not cancel else "Your plan will not renew",
+            annual.html_plan_cancel_confirmation(end_label=end, link=link, undone=not cancel),
+            "annual_undo" if not cancel else "annual_cancel")
+        new_token = link.split("?t=", 1)[1]
+        return JSONResponse(_annual_view_payload(plan, new_token))
+
+    @api.post("/paper-review/annual-cancel")
+    async def paper_review_annual_cancel(request: Request):
+        return await _annual_change(request, True)
+
+    @api.post("/paper-review/annual-undo")
+    async def paper_review_annual_undo(request: Request):
+        return await _annual_change(request, False)
+
+    @api.post("/paper-review/annual-link")
+    async def paper_review_annual_link(request: Request):
+        """The plan page's email box: a fresh plan link to the address on the plan, if there is one. The answer is
+        always the same, so it cannot be used to learn who has a plan."""
+        bad = _annual_auth(request)
+        if bad:
+            return bad
+        data = await _annual_json(request)
+        email = (data or {}).get("email", "")
+        if isinstance(email, str) and "@" in email and len(email) <= 200:
+            key = _buddy_canonical_email(email) or _email_key(email)
+            plan = annual.plan_by_email(list(annual_plans_dict.items()), key)
+            if plan:
+                plan["nonce"] = annual.new_nonce()
+                annual_plans_dict[plan["plan_id"]] = plan
+                await _annual_send(plan["email"], "Your plan link",
+                                   annual.html_plan_link(link=annual.plan_link(_annual_secret(), plan)), "annual_link")
+        return JSONResponse({"ok": True})
 
     def _lifecycle_unsubscribe_token(email: str) -> str:
         """Namespaced so lifecycle-unsubscribe tokens can't be replayed
@@ -3074,6 +3281,11 @@ def web():
 
         if not entry or not isinstance(entry, dict):
             return JSONResponse({"error": "pending"}, status_code=404)
+        if entry.get("plan_id") and not token_lookup:
+            session_id, entry = await _annual_current_entry(session_id, entry)
+        _term_refusal = annual.term_refusal(_annual_store(), entry, _time_module.time())
+        if _term_refusal:
+            return JSONResponse({"error": _term_refusal}, status_code=410)
         if entry.get("expires_at", 0) and entry["expires_at"] < _time_module.time():
             # Purge on the app's own clock rather than relying on Modal
             # Dict's inactivity-based TTL, which resets on any read/write
@@ -3239,6 +3451,9 @@ def web():
             return JSONResponse({"error": "unknown_token"}, status_code=404)
         if token in (entry.get("consumed_tokens") or []):
             return _already_used_409(token)
+        _term_refusal = annual.term_refusal(_annual_store(), entry, _time_module.time())
+        if _term_refusal:
+            return JSONResponse({"error": _term_refusal}, status_code=410)
         if entry.get("expires_at", 0) and entry["expires_at"] < _time_module.time():
             # Purge on the app's own clock rather than relying on Modal
             # Dict's inactivity-based TTL (see _expire_token_entry).
@@ -3753,6 +3968,9 @@ def web():
             return JSONResponse({"error": "unknown_token"}, status_code=404)
         if token in (entry.get("consumed_tokens") or []):
             return JSONResponse({"error": "already_used"}, status_code=409)
+        _term_refusal = annual.term_refusal(_annual_store(), entry, _time_module.time())
+        if _term_refusal:
+            return JSONResponse({"error": _term_refusal}, status_code=410)
         if entry.get("expires_at", 0) and entry["expires_at"] < _time_module.time():
             _expire_token_entry(session_id, entry)
             return JSONResponse({"error": "expired"}, status_code=410)
@@ -3806,6 +4024,9 @@ def web():
             return JSONResponse({"error": "unknown_token"}, status_code=404)
         if token in (entry.get("consumed_tokens") or []):
             return JSONResponse({"error": "already_used"}, status_code=409)
+        _term_refusal = annual.term_refusal(_annual_store(), entry, _time_module.time())
+        if _term_refusal:
+            return JSONResponse({"error": _term_refusal}, status_code=410)
         if entry.get("expires_at", 0) and entry["expires_at"] < _time_module.time():
             _expire_token_entry(session_id, entry)
             return JSONResponse({"error": "expired"}, status_code=410)
@@ -3850,6 +4071,9 @@ def web():
             return JSONResponse({"error": "unknown_token"}, status_code=404)
         if token in (entry.get("consumed_tokens") or []):
             return JSONResponse({"error": "already_used"}, status_code=409)
+        _term_refusal = annual.term_refusal(_annual_store(), entry, _time_module.time())
+        if _term_refusal:
+            return JSONResponse({"error": _term_refusal}, status_code=410)
         if entry.get("expires_at", 0) and entry["expires_at"] < _time_module.time():
             _expire_token_entry(session_id, entry)
             return JSONResponse({"error": "expired"}, status_code=410)
@@ -4324,6 +4548,9 @@ def web():
             return JSONResponse({"error": "unknown_token"}, status_code=404)
         if token in (entry.get("consumed_tokens") or []):
             return JSONResponse({"error": "already_used"}, status_code=409)
+        _term_refusal = annual.term_refusal(_annual_store(), entry, _time_module.time())
+        if _term_refusal:
+            return JSONResponse({"error": _term_refusal}, status_code=410)
         if entry.get("expires_at", 0) and entry["expires_at"] < _time_module.time():
             _expire_token_entry(session_id, entry)
             return JSONResponse({"error": "expired"}, status_code=410)
@@ -4373,6 +4600,9 @@ def web():
             return JSONResponse({"error": "unknown_token"}, status_code=404)
         if token in (entry.get("consumed_tokens") or []):
             return JSONResponse({"error": "already_used"}, status_code=409)
+        _term_refusal = annual.term_refusal(_annual_store(), entry, _time_module.time())
+        if _term_refusal:
+            return JSONResponse({"error": _term_refusal}, status_code=410)
         if entry.get("expires_at", 0) and entry["expires_at"] < _time_module.time():
             _expire_token_entry(session_id, entry)
             return JSONResponse({"error": "expired"}, status_code=410)
@@ -4427,6 +4657,9 @@ def web():
             return JSONResponse({"error": "unknown_token"}, status_code=404)
         if token in (entry.get("consumed_tokens") or []):
             return JSONResponse({"error": "already_used"}, status_code=409)
+        _term_refusal = annual.term_refusal(_annual_store(), entry, _time_module.time())
+        if _term_refusal:
+            return JSONResponse({"error": _term_refusal}, status_code=410)
         if entry.get("expires_at", 0) and entry["expires_at"] < _time_module.time():
             _expire_token_entry(session_id, entry)
             return JSONResponse({"error": "expired"}, status_code=410)
@@ -4652,7 +4885,9 @@ def _keep_pack_alive(session_id: str, entry: dict, now: float) -> None:
     tokens = entry.get("tokens") or []
     consumed = set(entry.get("consumed_tokens") or [])
     created_at = entry.get("created_at", now) or now
-    if tokens and consumed.issuperset(tokens) and now - created_at > PACK_SPENT_RETENTION_DAYS * 86400:
+    term_end = entry.get("term_ends_at") or 0
+    plan_over = bool(term_end) and now - term_end > PACK_SPENT_RETENTION_DAYS * 86400   # a plan year that ended
+    if tokens and (plan_over or (consumed.issuperset(tokens) and now - created_at > PACK_SPENT_RETENTION_DAYS * 86400)):
         for tok in tokens:
             try:
                 del paper_token_index_dict[tok]
@@ -4670,6 +4905,142 @@ def _keep_pack_alive(session_id: str, entry: dict, now: float) -> None:
                 paper_token_index_dict[tok] = session_id
     except Exception:
         logger.exception("keep-alive write failed for pack %s", session_id[:12])
+
+
+# ---------------------------------------------------------------------------
+# Annual plan helpers (module level so the daily cron can use them; tests patch these names).
+# ---------------------------------------------------------------------------
+from types import SimpleNamespace as _NS
+
+
+def _buddy_canonical_email(raw: str):
+    from latextools.buddy import canonical_email
+    return canonical_email(raw)
+
+
+def _annual_store():
+    return _NS(plans=annual_plans_dict, tokens=paper_tokens_dict, index=paper_token_index_dict,
+               claims=paper_token_claims_dict)
+
+
+def _annual_gen_token() -> str:
+    import secrets as _s
+    return _s.token_urlsafe(32)
+
+
+def _annual_secret() -> str:
+    return os.environ.get("SUBSCRIBE_SECRET", "")
+
+
+async def _annual_fetch_subscription(subscription_id: str):
+    """The live subscription from Stripe as annual.snapshot_from_stripe() output, or None when it cannot be read."""
+    key = os.environ.get("STRIPE_SECRET_KEY", "")
+    if not key or not isinstance(subscription_id, str) or not subscription_id.startswith("sub_"):
+        return None
+    import httpx
+    try:
+        async with httpx.AsyncClient(timeout=15.0) as c:
+            r = await c.get(f"https://api.stripe.com/v1/subscriptions/{subscription_id}",
+                            params={"expand[]": "latest_invoice"}, headers={"Authorization": f"Bearer {key}"})
+        if r.status_code != 200:
+            return None
+        return annual.snapshot_from_stripe(r.json())
+    except Exception:
+        logger.exception("annual: Stripe subscription read failed")
+        return None
+
+
+async def _annual_set_cancel(subscription_id: str, cancel: bool) -> bool:
+    """Set cancel_at_period_end on the subscription. True when Stripe accepted it."""
+    key = os.environ.get("STRIPE_SECRET_KEY", "")
+    if not key or not isinstance(subscription_id, str) or not subscription_id.startswith("sub_"):
+        return False
+    import httpx
+    try:
+        async with httpx.AsyncClient(timeout=15.0) as c:
+            r = await c.post(f"https://api.stripe.com/v1/subscriptions/{subscription_id}",
+                             data={"cancel_at_period_end": "true" if cancel else "false"},
+                             headers={"Authorization": f"Bearer {key}"})
+        return r.status_code == 200
+    except Exception:
+        logger.exception("annual: Stripe cancel update failed")
+        return False
+
+
+async def _annual_send(to: str, subject: str, html: str, tag: str) -> dict:
+    from latextools import delivery as _delivery
+    import httpx
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as c:
+            return await _delivery.send_email(c, to=to, subject=subject, html=html,
+                                              tags=[{"name": "product", "value": annual.ANNUAL_PRODUCT},
+                                                    {"name": "type", "value": tag}])
+    except Exception:
+        logger.exception("annual: email send failed")
+        return {"status": "error"}
+
+
+async def _annual_send_welcome(plan: dict, tokens: list, renewed: bool) -> None:
+    """The plan email: the 12 tokens, the date, a fresh plan link. Mints a new link, so the nonce stays current."""
+    link = annual.plan_link(_annual_secret(), plan)
+    end = annual.date_label(plan["period_end"])
+    res = await _annual_send(
+        plan["email"], "Your plan has renewed: 12 new reviews" if renewed else "Your year of reviews",
+        annual.html_plan_welcome(tokens=tokens, end_label=end, link=link, renewed=renewed),
+        "annual_renewed" if renewed else "annual_welcome")
+    if res.get("status") != "ok":
+        logger.warning("annual welcome email not sent for plan %s: %s", plan.get("plan_id"), res)
+
+
+async def _annual_on_renewed(res: dict) -> None:
+    await _annual_send_welcome(res["plan"], res.get("tokens") or [], renewed=True)
+
+
+async def _annual_renew_from_stripe(subscription_id: str) -> dict:
+    """Re-read Stripe, and mint the new year if it was paid. Shared by the invoice.paid webhook, the lazy path
+    (plan or upload page) and the daily loop. Idempotent (annual.renew takes an atomic claim)."""
+    snap = await _annual_fetch_subscription(subscription_id)
+    if not snap:
+        return {"ok": False, "reason": "stripe_unreadable", "minted": False}
+    res = annual.renew(_annual_store(), snap, cfg=PAID_PRODUCTS[annual.ANNUAL_PRODUCT],
+                       gen_token=_annual_gen_token, now=time.time())
+    if res.get("minted"):
+        await _annual_on_renewed(res)
+    return res
+
+
+async def _annual_current_entry(session_id: str, entry: dict):
+    """For a plan entry looked up by its first session id: the entry for the current paid year. When the stored
+    term has passed, ask Stripe first (the lazy renewal path, in case the invoice.paid webhook was missed)."""
+    plan = annual_plans_dict.get(entry.get("plan_id"))
+    if not isinstance(plan, dict):
+        return session_id, entry
+    if plan.get("period_end", 0) < time.time() and not plan.get("revoked") and not plan.get("ended"):
+        await _annual_renew_from_stripe(plan["subscription_id"])
+        plan = annual_plans_dict.get(plan["plan_id"]) or plan
+    key = plan.get("period_key")
+    if key and key != session_id:
+        current = paper_tokens_dict.get(key)
+        if isinstance(current, dict):
+            return key, current
+    return session_id, entry
+
+
+async def _annual_sweep_async() -> dict:
+    return await annual.run_sweep(
+        _annual_store(), now=time.time(), secret=_annual_secret(), cfg=PAID_PRODUCTS[annual.ANNUAL_PRODUCT],
+        gen_token=_annual_gen_token, canonical_email=_buddy_canonical_email,
+        fetch_subscription=_annual_fetch_subscription,
+        send_email=lambda **kw: _annual_send(kw["to"], kw["subject"], kw["html"], kw["tag"]),
+        on_renewed=_annual_on_renewed)
+
+
+# Plain function (not a scheduled one): invoked by lifecycle_email_sweep, which owns the 14:00 UTC slot (Modal's
+# 5-scheduled-function cap). Separate from the lifecycle loop on purpose: that loop drops opted-out buyers, and
+# a renewal reminder must still go to them.
+def annual_plan_sweep() -> dict:
+    import asyncio
+    return asyncio.run(_annual_sweep_async())
 
 
 def sweep_expired_paper_tokens() -> int:
@@ -4989,7 +5360,7 @@ def _sessions_with_later_purchase(entries) -> set:
     image=modal.Image.debian_slim(python_version="3.11").pip_install("httpx").add_local_python_source("latextools"),
     schedule=modal.Cron("0 14 * * *"),  # daily, 14:00 UTC — mid-morning US
     timeout=600,
-    secrets=[resend_secret, subscribe_secret],
+    secrets=[resend_secret, subscribe_secret, stripe_secret],
 )
 def lifecycle_email_sweep() -> dict:
     """Advance every customer_lifecycle_dict entry to its next due stage.
@@ -5013,6 +5384,13 @@ def lifecycle_email_sweep() -> dict:
     # Merged housekeeping: run the two paper-review TTL sweeps in this same daily
     # slot so all three cleanup jobs share one Modal scheduled function (the
     # account cap is 5). Cleanup timing is not sensitive, so 14:00 UTC is fine.
+    # Annual plans: renewal pick-up, 30 and 7 day reminders, referral rewards. Its own try so a Stripe
+    # outage here never stops the housekeeping or the lifecycle emails below.
+    try:
+        annual_summary = annual_plan_sweep()
+        logger.info("annual_plan_sweep: %s", annual_summary)
+    except Exception:
+        logger.exception("annual_plan_sweep failed")
     try:
         purged_tokens = sweep_expired_paper_tokens()
         purged_jobs = sweep_stale_paper_jobs()

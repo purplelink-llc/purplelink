@@ -26,7 +26,18 @@
  *   https://purplelink.llc/.netlify/functions/stripe-webhook
  *   subscribed to events: checkout.session.completed, customer.subscription.deleted,
  *   charge.refunded, charge.dispute.created, charge.dispute.closed, checkout.session.expired
- *   (the last one for ModernTex checkout recovery, netlify/lib/checkout-recovery.mjs)
+ *   (the last one for ModernTex checkout recovery, netlify/lib/checkout-recovery.mjs),
+ *   invoice.paid and customer.subscription.updated (the Paper Review annual plan, below)
+ *
+ * Paper Review annual plan ("paper-review-annual", $79 a year, auto-renewing): this function forwards
+ * the subscription's lifecycle to Modal (/paper-review/annual-renew, -status, -revoke, same shared-secret header):
+ *   checkout.session.completed  register-token, plus subscription_id, term end, customer, card fingerprint
+ *   invoice.paid (subscription_cycle)  annual-renew
+ *   customer.subscription.updated / .deleted  annual-status (cancel_at_period_end, status, period end)
+ *   full refund or dispute on one of its invoices  annual-revoke (charge -> invoice -> subscription)
+ * Only subscriptions whose metadata.product is paper-review-annual are forwarded; any other is ignored.
+ * Modal also re-reads Stripe itself (reminder loop, plan page), so a missed event is caught later.
+ * Needs STRIPE_SECRET_KEY here to read the subscription.
  */
 
 import { issueKeyfeelLicense } from "../lib/keyfeel-license.mjs";
@@ -50,6 +61,8 @@ const MODAL_REGISTER_URL =
 const MODAL_LIFECYCLE_URL =
   "https://ben-ampel--purplelink-latextools-web.modal.run/lifecycle/register";
 const LIFECYCLE_PRODUCTS = new Set(["moderntex"]);
+const MODAL_BASE = "https://ben-ampel--purplelink-latextools-web.modal.run";
+const ANNUAL_PRODUCT = "paper-review-annual";
 const RESEND_API_URL = "https://api.resend.com/emails";
 // Resend verifies domains exactly: send from `purplelink.llc`, never a
 // subdomain. RESEND_API_KEY is the "purplelink-netlify" key (sending access,
@@ -69,6 +82,7 @@ const PURPLELINK_PRODUCTS = new Set([
   "paper-review-deep",
   "paper-review-pack-5",
   "paper-review-pack-20",
+  "paper-review-annual",
   "cover-letter",
   "anonymity-check",
   "citation-gap",
@@ -188,6 +202,85 @@ function verifyStripeSignature(rawBody, header, secret) {
     }
   }
   return false;
+}
+
+
+// ---- Paper Review annual plan helpers ----------------------------------------------------------------------
+
+/** GET a Stripe object (read only). Returns the parsed JSON, or null when it cannot be read. */
+async function stripeGet(path) {
+  const key = Netlify.env.get("STRIPE_SECRET_KEY");
+  if (!key) return null;
+  try {
+    const r = await fetch(`https://api.stripe.com${path}`, { headers: { Authorization: `Bearer ${key}` } });
+    if (!r.ok) return null;
+    return await r.json();
+  } catch (_) {
+    return null;
+  }
+}
+
+/** POST JSON to a Modal path with the shared secret. Returns {ok, status, body} and never throws. */
+async function postModal(path, body, backendSecret) {
+  try {
+    const r = await fetch(`${MODAL_BASE}${path}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-webhook-secret": backendSecret },
+      body: JSON.stringify(body),
+    });
+    const text = await r.text().catch(() => "");
+    return { ok: r.ok, status: r.status, text };
+  } catch (err) {
+    return { ok: false, status: 0, text: String(err) };
+  }
+}
+
+const idOf = (v) => (typeof v === "string" ? v : (v && typeof v.id === "string" ? v.id : ""));
+
+/** The subscription id on an invoice, in either API shape. */
+function subscriptionOfInvoice(inv) {
+  return idOf(inv?.subscription) || idOf(inv?.parent?.subscription_details?.subscription) || "";
+}
+
+/** The end of the paid period: newer API versions put it on the item, older ones on the subscription. */
+function periodEndOf(sub) {
+  const item = sub?.items?.data?.[0];
+  const v = item?.current_period_end ?? sub?.current_period_end;
+  return Number.isInteger(v) ? v : null;
+}
+
+/** Charge -> invoice -> subscription id, or "" when the charge is not on a subscription invoice. */
+async function subscriptionOfCharge(charge) {
+  let invoiceId = idOf(charge?.invoice);
+  if (!invoiceId) {
+    const pi = paymentIntentOf(charge);
+    if (!pi) return "";
+    const found = await stripeGet(`/v1/invoice_payments?payment[type]=payment_intent&payment[payment_intent]=${encodeURIComponent(pi)}`);
+    invoiceId = idOf(found?.data?.[0]?.invoice);
+    if (!invoiceId) return "";
+  }
+  const inv = await stripeGet(`/v1/invoices/${encodeURIComponent(invoiceId)}`);
+  return subscriptionOfInvoice(inv);
+}
+
+/**
+ * A full refund or a dispute on a charge. If it belongs to a Paper Review annual subscription, tell Modal to
+ * revoke the plan. Returns null when it is not an annual charge, else {ok, status}.
+ */
+async function revokeAnnualForCharge(charge, reason, backendSecret) {
+  if (!charge || !Netlify.env.get("STRIPE_SECRET_KEY")) return null;
+  const subId = await subscriptionOfCharge(charge);
+  if (!subId) return null;
+  const sub = await stripeGet(`/v1/subscriptions/${encodeURIComponent(subId)}`);
+  if (!sub || sub.metadata?.product !== ANNUAL_PRODUCT) return null;
+  const res = await postModal("/paper-review/annual-revoke", { subscription_id: subId, reason }, backendSecret);
+  if (!res.ok) {
+    await alertOperator(
+      "Annual plan revoke failed after a refund or dispute",
+      `subscription_id=${subId}\nreason=${reason}\nmodal_status=${res.status}\ndetail=${res.text.slice(0, 300)}\n\nStripe will retry this webhook.`
+    );
+  }
+  return { ok: res.ok, status: res.status, subscription_id: subId };
 }
 
 /**
@@ -675,6 +768,58 @@ export default async function handler(request, context) {
     return jsonResponse(400, { error: "invalid_json" });
   }
 
+  // Paper Review annual plan: a portal cancel, an undo, a status change or the end of the subscription.
+  // Modal only records it; it never grants anything from a status. A foreign product is ignored.
+  if (event.type === "customer.subscription.updated" ||
+      (event.type === "customer.subscription.deleted" && event.data?.object?.metadata?.product === ANNUAL_PRODUCT)) {
+    const sub = event.data?.object || {};
+    if (sub.metadata?.product !== ANNUAL_PRODUCT) {
+      return jsonResponse(200, { status: "ignored_foreign_product", type: event.type });
+    }
+    const status = event.type === "customer.subscription.deleted" ? "canceled" : (sub.status || "");
+    const res = await postModal("/paper-review/annual-status", {
+      subscription_id: sub.id,
+      status,
+      cancel_at_period_end: event.type === "customer.subscription.deleted" ? true : sub.cancel_at_period_end === true,
+      current_period_end: periodEndOf(sub),
+    }, backendSecret);
+    if (!res.ok) {
+      await alertOperator(
+        "Annual plan status not recorded",
+        `subscription_id=${sub.id}\nevent=${event.type}\nmodal_status=${res.status}\ndetail=${res.text.slice(0, 300)}\n\nStripe will retry this webhook.`
+      );
+      return jsonResponse(502, { error: "modal_status_failed", modal_status: res.status });
+    }
+    return jsonResponse(200, { status: "annual_status_recorded", type: event.type, subscription_id: sub.id });
+  }
+
+  // A renewal payment. billing_reason subscription_create is the first payment, which checkout.session.completed
+  // already registered, so only subscription_cycle renews.
+  if (event.type === "invoice.paid") {
+    const inv = event.data?.object || {};
+    if (inv.billing_reason !== "subscription_cycle") {
+      return jsonResponse(200, { status: "ignored", type: event.type, billing_reason: inv.billing_reason || null });
+    }
+    const subId = subscriptionOfInvoice(inv);
+    if (!subId) return jsonResponse(200, { status: "ignored_no_subscription", type: event.type });
+    const sub = await stripeGet(`/v1/subscriptions/${encodeURIComponent(subId)}`);
+    if (!sub) {
+      await alertOperator("Annual renewal could not read the subscription",
+        `subscription_id=${subId}\ninvoice=${inv.id || ""}\n\nStripe will retry this webhook.`);
+      return jsonResponse(502, { error: "stripe_unreadable" });
+    }
+    if (sub.metadata?.product !== ANNUAL_PRODUCT) {
+      return jsonResponse(200, { status: "ignored_foreign_product", type: event.type });
+    }
+    const res = await postModal("/paper-review/annual-renew", { subscription_id: subId }, backendSecret);
+    if (!res.ok) {
+      await alertOperator("Annual plan renewal failed",
+        `subscription_id=${subId}\ninvoice=${inv.id || ""}\nmodal_status=${res.status}\ndetail=${res.text.slice(0, 300)}\n\nStripe will retry this webhook.`);
+      return jsonResponse(502, { error: "modal_renew_failed", modal_status: res.status });
+    }
+    return jsonResponse(200, { status: "annual_renewed", subscription_id: subId });
+  }
+
   if (event.type === "customer.subscription.deleted") {
     const deletedProduct = event.data?.object?.metadata?.product || "";
     if (deletedProduct.startsWith(VITAE_PLUS_PREFIX)) {
@@ -713,6 +858,8 @@ export default async function handler(request, context) {
     const pi = paymentIntentOf(charge);
     const full = charge.refunded === true || (charge.amount > 0 && charge.amount_refunded >= charge.amount);
     if (!full) return jsonResponse(200, { status: "partial_refund_ignored", type: event.type });
+    const annualRefund = await revokeAnnualForCharge(charge, "refund", backendSecret);
+    if (annualRefund && !annualRefund.ok) return jsonResponse(502, { error: "modal_revoke_failed" });
     if (!pi) return jsonResponse(200, { status: "ignored_no_payment_intent", type: event.type });
     await recordRevocation(pi, { reason: "refund", chargeId: charge.id || null, eventId: event.id || null });
     return jsonResponse(200, { status: "refund_recorded", payment_intent: pi });
@@ -720,6 +867,11 @@ export default async function handler(request, context) {
   if (event.type === "charge.dispute.created" || event.type === "charge.dispute.closed") {
     const dispute = event.data?.object || {};
     const pi = paymentIntentOf(dispute);
+    if (event.type === "charge.dispute.created" && dispute.charge && Netlify.env.get("STRIPE_SECRET_KEY")) {
+      const chargeObj = await stripeGet(`/v1/charges/${encodeURIComponent(idOf(dispute.charge))}`);
+      const annualDispute = await revokeAnnualForCharge(chargeObj, "dispute", backendSecret);
+      if (annualDispute && !annualDispute.ok) return jsonResponse(502, { error: "modal_revoke_failed" });
+    }
     if (!pi) return jsonResponse(200, { status: "ignored_no_payment_intent", type: event.type });
     if (event.type === "charge.dispute.created") {
       await recordRevocation(pi, { reason: "dispute", chargeId: dispute.charge || null, disputeId: dispute.id || null, eventId: event.id || null });
@@ -912,6 +1064,40 @@ export default async function handler(request, context) {
   // server-side against referral_dict there, not trusted here.
   const referralCode = (session.metadata && session.metadata.referral_code) || "";
 
+  // The annual plan registers a subscription, not a one-off payment: read it so Modal can record the
+  // subscription id, the end of the paid year and the card fingerprint (for the referral abuse check).
+  const annualExtras = {};
+  if (product === ANNUAL_PRODUCT) {
+    const subId = idOf(session.subscription);
+    const sub = subId ? await stripeGet(`/v1/subscriptions/${encodeURIComponent(subId)}?expand[]=latest_invoice`) : null;
+    const termEnd = periodEndOf(sub);
+    if (!subId || !sub || !termEnd) {
+      await alertOperator("Annual plan checkout could not read the subscription",
+        `session_id=${sessionId}\nsubscription_id=${subId}\n\nStripe will retry this webhook.`);
+      return jsonResponse(502, { error: "stripe_unreadable" });
+    }
+    const invoice = sub.latest_invoice && typeof sub.latest_invoice === "object" ? sub.latest_invoice : null;
+    let fingerprint = "";
+    try {
+      const ch = idOf(invoice?.charge);
+      let chargeObj = ch ? await stripeGet(`/v1/charges/${encodeURIComponent(ch)}`) : null;
+      if (!chargeObj) {
+        const pi = idOf(invoice?.payment_intent);
+        const piObj = pi ? await stripeGet(`/v1/payment_intents/${encodeURIComponent(pi)}`) : null;
+        const lc = idOf(piObj?.latest_charge);
+        chargeObj = lc ? await stripeGet(`/v1/charges/${encodeURIComponent(lc)}`) : null;
+      }
+      fingerprint = chargeObj?.payment_method_details?.card?.fingerprint || "";
+    } catch (_) { /* best effort: the abuse check just has less to go on */ }
+    Object.assign(annualExtras, {
+      subscription_id: subId,
+      term_ends_at: termEnd,
+      customer: idOf(session.customer),
+      card_fingerprint: fingerprint,
+      invoice_id: invoice?.id || "",
+    });
+  }
+
   // Forward to the Modal backend so a redemption token is minted.
   let registerResp;
   try {
@@ -928,6 +1114,7 @@ export default async function handler(request, context) {
         amount_subtotal: amountSubtotal,
         product,
         referral_code: referralCode,
+        ...annualExtras,
       }),
     });
   } catch (err) {

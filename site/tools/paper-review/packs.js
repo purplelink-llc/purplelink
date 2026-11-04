@@ -8,11 +8,14 @@
   var LABELS = {
     "paper-review-pack-5": "Buy pack — $38",
     "paper-review-pack-20": "Buy pack — $150",
+    "paper-review-annual": "Start the annual plan — $79 a year",
   };
 
   function updateBtn() {
     var v = (document.querySelector('input[name="pack"]:checked') || {}).value || "paper-review-pack-5";
     btn.textContent = LABELS[v] || "Buy pack";
+    var renew = document.getElementById("renew-note");
+    if (renew) renew.hidden = v !== "paper-review-annual";
   }
   document.querySelectorAll('input[name="pack"]').forEach(function (i) {
     i.addEventListener("change", updateBtn);
