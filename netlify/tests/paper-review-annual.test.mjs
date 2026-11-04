@@ -28,6 +28,7 @@ const { default: plan } = await import("../functions/paper-review-plan.mjs");
 const { default: checkout } = await import("../functions/checkout.mjs");
 
 const MODAL = "https://ben-ampel--purplelink-latextools-web.modal.run";
+const MODAL_HOST = new URL(MODAL).hostname;
 let calls;       // every fetch
 let stripeData;  // path -> object served for GET api.stripe.com
 let modalReply;  // path -> {status, body}
@@ -40,13 +41,14 @@ beforeEach(() => {
   globalThis.fetch = async (url, opts = {}) => {
     const u = String(url);
     calls.push({ url: u, opts });
-    if (u.startsWith("https://api.stripe.com")) {
-      const path = u.replace("https://api.stripe.com", "").split("?")[0];
+    const host = new URL(u).hostname;
+    if (host === "api.stripe.com") {
+      const path = new URL(u).pathname;
       if (stripeData[path]) return new Response(JSON.stringify(stripeData[path]), { status: 200 });
       return new Response("{}", { status: 404 });
     }
-    if (u.startsWith(MODAL)) {
-      const path = u.slice(MODAL.length);
+    if (host === MODAL_HOST) {
+      const path = new URL(u).pathname;
       const r = modalReply[path] || { status: 200, body: { ok: true } };
       return new Response(JSON.stringify(r.body), { status: r.status });
     }
@@ -54,7 +56,7 @@ beforeEach(() => {
   };
 });
 
-const modalCalls = () => calls.filter((c) => c.url.startsWith(MODAL)).map((c) => ({ path: c.url.slice(MODAL.length), body: JSON.parse(c.opts.body), headers: c.opts.headers }));
+const modalCalls = () => calls.filter((c) => new URL(c.url).hostname === MODAL_HOST).map((c) => ({ path: new URL(c.url).pathname, body: JSON.parse(c.opts.body), headers: c.opts.headers }));
 
 function signed(event) {
   const body = JSON.stringify(event);
@@ -331,7 +333,7 @@ async function annualCheckout(priceEnv) {
   env.STRIPE_PRICE_PAPER_REVIEW_ANNUAL = priceEnv;
   let body = null;
   globalThis.fetch = async (url, opts) => {
-    if (String(url).includes("api.stripe.com")) {
+    if (new URL(String(url)).hostname === "api.stripe.com") {
       body = new URLSearchParams(opts.body);
       return new Response(JSON.stringify({ id: "cs_test_1", url: "https://checkout.stripe.com/c/pay/cs_test_1" }), { status: 200 });
     }
