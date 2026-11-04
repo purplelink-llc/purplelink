@@ -1,6 +1,6 @@
 {
-  "_source": "claude-api skill model table (cached 2026-10-06) and its prompt-caching economics: cache writes 1.25x input (5 min TTL) and 2x input (1 h TTL); cache reads 0.1x input except where listed. USD per million tokens, Anthropic first-party API rates.",
-  "_checked": "2026-11-02",
+  "_source": "claude-api skill model table (cached 2026-10-06) and its prompt-caching economics: cache writes 1.25x input (5 min TTL) and 2x input (1 h TTL); cache reads 0.1x input except where listed (Sonnet 5.5 $0.10 per the claude-api skill, 2026-11-04). USD per million tokens, Anthropic first-party API rates.",
+  "_checked": "2026-11-04",
   "_note": "Figures are API-equivalent cost. On a subscription plan this is what the same tokens would cost at API rates, not cash spent. Edit a row here when prices change; the longest matching prefix wins.",
   "stale_after_days": 45,
   "fast_multiplier": 2.0,
@@ -11,6 +11,7 @@
     "claude-opus-5-5":   {"input": 4.00,  "output": 20.00, "cache_read": 0.20, "cache_write_5m": 5.00,  "cache_write_1h": 8.00},
     "claude-opus-5":     {"input": 5.00,  "output": 25.00, "cache_read": 0.50, "cache_write_5m": 6.25,  "cache_write_1h": 10.00},
     "claude-opus-4":     {"input": 5.00,  "output": 25.00, "cache_read": 0.50, "cache_write_5m": 6.25,  "cache_write_1h": 10.00},
+    "claude-sonnet-5-5": {"input": 2.00,  "output": 10.00, "cache_read": 0.10, "cache_write_5m": 2.50,  "cache_write_1h": 4.00},
     "claude-sonnet-5":   {"input": 2.00,  "output": 10.00, "cache_read": 0.20, "cache_write_5m": 2.50,  "cache_write_1h": 4.00},
     "claude-sonnet-4":   {"input": 3.00,  "output": 15.00, "cache_read": 0.30, "cache_write_5m": 3.75,  "cache_write_1h": 6.00},
     "claude-haiku-5-5":  {"input": 0.10,  "output": 0.50,  "cache_read": 0.01, "cache_write_5m": 0.125, "cache_write_1h": 0.20},

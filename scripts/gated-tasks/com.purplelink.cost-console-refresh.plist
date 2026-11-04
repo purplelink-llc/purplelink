@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>HOME</key>
+		<string>/Users/benampel</string>
+		<key>TZ</key>
+		<string>America/New_York</string>
+	</dict>
+	<key>Label</key>
+	<string>com.purplelink.cost-console-refresh</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/bin/bash</string>
+		<string>/Users/benampel/.purplelink/bin/cost-console-refresh.sh</string>
+	</array>
+	<key>StartCalendarInterval</key>
+	<array>
+		<dict><key>Hour</key><integer>4</integer><key>Minute</key><integer>42</integer></dict>
+	</array>
+	<key>StandardErrorPath</key>
+	<string>/Users/benampel/Library/Logs/purplelink-cost-console-refresh.launchd.log</string>
+	<key>StandardOutPath</key>
+	<string>/Users/benampel/Library/Logs/purplelink-cost-console-refresh.launchd.log</string>
+</dict>
+</plist>
