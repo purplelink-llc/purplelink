@@ -55,11 +55,11 @@
 ### Outbound Veil (macOS)
 - **Platform:** macOS 14 (Sonoma) or later, Apple silicon and Intel
 - **Category:** Privacy utility
-- **Description:** A Mac menu-bar app that checks what you type for personal information before you send it: names, street addresses, phone numbers, email addresses, Social Security numbers, card numbers, passport and driver's license numbers, tax and bank identifiers, dates of birth, medical record numbers and IBANs. It shows a badge when it finds something, and you redact, ignore, or in apps you choose have it hold the send key until you decide.
+- **Description:** A Mac menu-bar app that checks what you type for personal information before you send it: names, street addresses, phone numbers, email addresses, Social Security numbers, card numbers, passport and driver's license numbers, tax identifiers (including ITINs and EINs), A-Numbers and USCIS receipt numbers, bank identifiers, API keys, tokens and passwords, dates of birth, medical record numbers and IBANs. It shows a badge when it finds something, and you redact, ignore, or in apps you choose have it hold the send key until you decide.
 - **Pricing:** Free 7-day trial (the complete app, no account), then $29.99 once to keep, updates included. One download for everyone: after the trial the app asks for a license key, sent in the receipt email.
 - **Privacy:** The checking runs on the Mac. Nothing typed is stored or sent, there are no accounts and no analytics. Apart from the download, the only network use is the update check.
 - **Limits:** Latin-script names only; it also flags public figures' names; it will miss some things; in the body of a new Apple Mail message (read since 1.3.0) it highlights details but does not rewrite the message, so they are edited by hand. It lowers the chance of a mistake and is not a compliance product.
-- **Status:** Shipping, version 1.4.0. Notarized download, no App Store required.
+- **Status:** Shipping, version 1.5.0. Notarized download, no App Store required.
 - **Credit:** The detection model is Rampart by National Design Studio (CC BY 4.0), https://github.com/nationaldesignstudio/rampart. Purplelink ported its processing code to Swift and added rules for dates of birth, medical record numbers and IBANs; the model file is unchanged.
 - **Trial and purchase:** https://purplelink.llc/outbound-veil/
 - **Setup guide:** https://purplelink.llc/outbound-veil/start/ (first ten minutes: install, Accessibility, a first check on a made-up note, redacting, choosing apps, trial and updates)
