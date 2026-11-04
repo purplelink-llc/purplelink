@@ -665,3 +665,13 @@ def test_voice_rules_are_in_the_prompt_and_the_facts_are_cached():
     blocks = buddy.system_prompt("facts")
     assert "Answer first" in blocks[0]["text"] and "No em-dashes" in blocks[0]["text"]
     assert blocks[-1]["cache_control"] == {"type": "ephemeral"} and blocks[-1]["text"].startswith("<site_facts>")
+
+
+def test_eval_script_imports_in_a_container_without_llms_txt(monkeypatch, tmp_path):
+    # Modal re-imports buddy_eval.py inside each container, where site/llms.txt does not exist (2026-11-04 crash loop).
+    import importlib, modal
+    from latextools import buddy_build
+    monkeypatch.setattr(modal, "is_local", lambda: False)
+    monkeypatch.setattr(buddy_build, "LLMS", tmp_path / "missing.txt")
+    sys.modules.pop("buddy_eval", None)
+    importlib.import_module("buddy_eval")   # must not raise
