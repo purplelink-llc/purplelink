@@ -15,7 +15,7 @@ import apply_send_to_mac  # noqa: E402
 def function_products():
     src = read("netlify/functions/send-to-mac.mjs")
     body = re.search(r"export const PRODUCTS = \{\n(.*?)\n\};", src, re.S).group(1)
-    return set(re.findall(r"^  ([a-z-]+): \{", body, re.M))
+    return set(re.findall(r'^  "?([a-z-]+)"?: \{', body, re.M))
 
 
 class SendToMac(unittest.TestCase):
@@ -56,7 +56,7 @@ class SendToMac(unittest.TestCase):
             # In the hero, after the buttons and the sentences that belong to them (trial-buy-path.test.mjs keeps the
             # Suite sentence directly under the buttons).
             self.assertLess(page.index('class="app-hero-actions"'), page.index("<!-- send-to-mac:start -->"), rel)
-            self.assertLess(page.index("<!-- send-to-mac:end -->"), page.index('class="app-hero-window"'), rel)
+            self.assertLess(page.index("<!-- send-to-mac:end -->"), page.index('class="app-hero-window'), rel)
 
     def test_css_shows_the_block_only_under_the_class(self):
         css = read("site/styles.css")
@@ -73,7 +73,7 @@ class SendToMac(unittest.TestCase):
         self.assertRegex(read("site/buy.css"), r"\.exp-hero-shot \.send-to-mac \{ order: 5; \}")
 
     def test_not_on_other_pages(self):
-        for rel in ("index.html", "legroom/index.html", "de/moderntex/index.html", "privacy/index.html"):
+        for rel in ("index.html", "keyfeel/index.html", "de/moderntex/index.html", "privacy/index.html"):
             self.assertNotIn("data-send-to-mac", read_site(rel), rel)
             self.assertNotIn("/send-to-mac.js", read_site(rel), rel)
 

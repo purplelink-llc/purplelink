@@ -213,7 +213,10 @@
       var n = b.getAttribute("data-act"); if (n in map) b.setAttribute("aria-pressed", map[n] ? "true" : "false");
     });
   }
+  var played = false;
+  function seen() { if (!played) { played = true; if (window.plTrack) window.plTrack("ball_lab_play"); } }
   function share() {
+    if (window.plTrack) window.plTrack("ball_lab_share");
     var url = location.origin + location.pathname, data = { title: "Ball Lab, a free ball-physics toy", text: "Drop balls, flip gravity, make music.", url: url };
     var status = document.getElementById("bl-status");
     if (navigator.share) { navigator.share(data).catch(function () {}); return; }
@@ -224,10 +227,11 @@
     var el = e.target.closest("[data-act],[data-mode]"); if (!el) return;
     if (el.hasAttribute("data-mode")) { setMode(el.getAttribute("data-mode")); ensureAudio(); }
     else act(el.getAttribute("data-act"));
+    seen();
   });
   function pos(e) { var r = canvas.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; }
   canvas.addEventListener("pointerdown", function (e) {
-    var p = pos(e); pointer.x = p.x; pointer.y = p.y; pointer.down = pointer.inside = true;
+    var p = pos(e); pointer.x = p.x; pointer.y = p.y; pointer.down = pointer.inside = true; seen();
     ensureAudio(); if (audio && audio.state === "suspended") audio.resume();
     if (mode === "sandbox") { burst(4, p.x, p.y); }
     try { canvas.setPointerCapture(e.pointerId); } catch (x) { /* older browsers */ }

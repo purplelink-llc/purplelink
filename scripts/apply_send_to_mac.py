@@ -32,6 +32,9 @@ SCRIPT = '<script src="/send-to-mac.js"></script>'
 # page -> (product slug, app name, trial download link on that page)
 PAGES = {
     "moderntex/index.html": ("moderntex", "ModernTex", "/.netlify/functions/moderntex-download?trial=1"),
+    "legroom/index.html": ("legroom", "Legroom", "/.netlify/functions/legroom-download?trial=1"),
+    "outbound-veil/index.html": ("outbound-veil", "Outbound Veil", "/.netlify/functions/outbound-veil-download?trial=1"),
+    "nee/index.html": ("nee", "Née", "/.netlify/functions/nee-download?trial=1"),
 }
 
 

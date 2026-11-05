@@ -24,6 +24,7 @@
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <script src="/theme.js"></script>
+    <script src="/send-to-mac.js"></script>
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="/motion.css">
     <link rel="stylesheet" href="/product-flair.css">
@@ -171,6 +172,21 @@
           <a class="btn btn-primary" id="trial-download" href="/.netlify/functions/outbound-veil-download?trial=1">Try it free for 7 days</a>
           <button type="button" class="btn btn-ghost pr-checkout-btn" id="checkout-btn" data-product="outbound-veil">Buy Outbound Veil</button>
         </div>
+        <!-- send-to-mac:start -->
+        <form class="send-to-mac" data-send-to-mac data-product="outbound-veil" hidden novalidate aria-labelledby="s2m-head">
+          <p class="send-to-mac-head" id="s2m-head">On Windows or a phone? Outbound Veil runs on a Mac, so I can email you the download link to open there.</p>
+          <label class="send-to-mac-label" for="s2m-email">Your email</label>
+          <div class="trial-remind-row">
+            <input type="email" id="s2m-email" name="email" autocomplete="email" inputmode="email" spellcheck="false" maxlength="254" required aria-describedby="s2m-note s2m-status">
+            <button type="submit" class="btn btn-secondary">Email me the link</button>
+          </div>
+          <div class="send-to-mac-hp" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
+          <label class="send-to-mac-news"><input type="checkbox" name="news"> <span>Also send me news about new Purplelink apps, a few emails a year at most.</span></label>
+          <p class="trial-remind-note" id="s2m-note">One email with the link and the trial terms. Your address is not kept. The news box sends a confirm link first, and only a confirmed address is kept.</p>
+          <p class="trial-remind-note send-to-mac-status" id="s2m-status" data-s2m-status role="status" aria-live="polite"></p>
+          <p class="trial-remind-note"><a href="/.netlify/functions/outbound-veil-download?trial=1" data-s2m-anyway>Download the disk image here anyway</a> · <a href="/privacy/#send-to-mac">Privacy</a></p>
+        </form>
+        <!-- send-to-mac:end -->
         <p class="buy-assurance">Checkout shows the price in your local currency, and you can switch back to US dollars. Refunded if you email within 14 days of purchase. Updates are included forever.</p>
         <p class="tool-status" id="checkout-status" aria-live="polite"></p>
         <form class="trial-remind" data-ov-trial-signup hidden novalidate>
