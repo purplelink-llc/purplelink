@@ -166,7 +166,7 @@
       if (section && !keep(slug)) section.hidden = true;
     });
     var keys = document.getElementById("part-keys");
-    if (keys && !(keep("moderntex") || keep("outbound-veil") || keep("legroom") || keep("nee"))) keys.hidden = true;
+    if (keys && !(keep("moderntex") || keep("outbound-veil") || keep("legroom") || keep("nee") || keep("lenses"))) keys.hidden = true;
     if (parts) {
       if (heroTitle) heroTitle.textContent = "Your bundle is ready";
       if (heroLead) heroLead.textContent = "Everything you chose is below: the downloads and license keys for your parts. We have also emailed this page to the address on your receipt.";

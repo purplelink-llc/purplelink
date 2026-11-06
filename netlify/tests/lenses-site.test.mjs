@@ -59,14 +59,16 @@ test("the page is indexed, canonical and posts product lenses to checkout", () =
 test("the page carries the required claims", () => {
   const text = visibleText(read("lenses/index.html"));
   assert.ok(text.includes("Tested on RayNeo Air."));
-  assert.ok(text.includes("Lenses collects nothing and makes no network requests."));
+  assert.match(text, /collects nothing/);
+  assert.match(text, /only network request it makes is the update check/);
   assert.match(text, /\$4\.99/);
   assert.match(text, /XREAL and VITURE/);
   assert.ok(text.includes('Use this display as my glasses'));
   assert.match(text, /macOS 14/);
   assert.match(text, /Apple silicon/);
   assert.match(text, /14 days/);
-  assert.match(text, /no license key/i);
+  assert.match(text, /7-day trial/);
+  assert.match(text, /license key/i);
 });
 
 test("no page has an emoji, an inline style, a launch gate or an em dash", () => {
@@ -81,7 +83,7 @@ test("no page has an emoji, an inline style, a launch gate or an em dash", () =>
   assert.doesNotMatch(read("lenses/index.html"), /data-pf-|launch\.js/);
 });
 
-test("the success page calls lenses-download and has no license key", () => {
+test("the success page calls lenses-download and shows the license key", () => {
   const html = read("lenses/success/index.html");
   const js = read("lenses/success.js");
   assert.match(html, /\/lenses\/success\.js/);

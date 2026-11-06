@@ -1,5 +1,5 @@
 // Selling Lenses: the checkout catalog (inline $4.99, no Stripe Price), the refund line against /terms/, the purchase
-// email (download link, one plain note, no license key), and the recovery email. Stripe, Resend and Blobs are stubbed.
+// email (download link, one plain note, license key), and the recovery email. Stripe, Resend and Blobs are stubbed.
 //
 // Run with: node --experimental-test-module-mocks --test netlify/tests/lenses-purchase.test.mjs
 
@@ -21,6 +21,7 @@ try { mock.module("@netlify/blobs", { exports: blobsModule }); } catch { mock.mo
 
 const env = {
   STRIPE_SECRET_KEY: "sk_test_dummy", STRIPE_WEBHOOK_SECRET: "whsec_test", BACKEND_WEBHOOK_SECRET: "backend", RESEND_API_KEY: "re_dummy",
+  PURPLELINK_LICENSE_PRIVATE_KEY: Buffer.alloc(32, 9).toString("base64"),
 };
 globalThis.Netlify = { env: { get: (k) => env[k] } };
 
@@ -105,31 +106,33 @@ test("Lenses is a blob-delivered product with its own success page", () => {
   assert.equal(BLOB_DELIVERED_PRODUCTS.get("lenses").successPath, "/lenses/success/");
 });
 
-test("a paid Lenses order emails the page link and one note, and no license key", async () => {
+test("a paid Lenses order emails the page link and one note, with an LN1 license key", async () => {
   const res = await webhook(signed(paid({ product: "lenses" }, 499, "evt_ls", "cs_live_ls_abcdefghij")));
   assert.equal((await res.json()).status, "delivered_by_blobs");
   const mail = mailOf();
   assert.deepEqual(mail.to, ["buyer@example.com"]);
   assert.match(mail.text, /https:\/\/purplelink\.llc\/lenses\/success\/\?session_id=cs_live_ls_abcdefghij/);
   assert.match(mail.text, /macOS 14 or later on an Apple silicon Mac/);
-  assert.doesNotMatch(mail.text + mail.html, /license key|LCB1|TFL1|Enter License/i);
-  assert.doesNotMatch(mail.text + mail.html, /Lenscrib|Tapefolio/);
+  assert.match(mail.text, /LN1-([0-9A-Z]{5}-){11}/);
+  assert.match(mail.text, /license key/i);
+  assert.doesNotMatch(mail.text + mail.html, /LCB1|TFL1|Lenscrib|Tapefolio/);
   assert.doesNotMatch(mail.text + mail.html, /—/);
 });
 
-test("a paid Suite order names the Lenses download and no Lenses license key", async () => {
+test("a paid Suite order names the Lenses download and a Lenses license key", async () => {
   await webhook(signed(paid({ product: "app-suite" }, 5999, "evt_su", "cs_live_su_abcdefghij")));
   const mail = mailOf();
   assert.match(mail.text, /Née and Lenses downloads/);
   assert.match(mail.html, /Née and Lenses downloads/);
-  assert.doesNotMatch(mail.text + mail.html, /Lenses license key/i);
+  assert.match(mail.text, /LN1-/);
 });
 
 // ---- recovery ----
 
-test("the recovery email lists a Lenses purchase as a download page with no key line", () => {
-  const only = recoveryEmail([{ sessionId: "cs_ls", product: "lenses", created: 5 }], null, null, new Map(), null, null, null, null);
+test("the recovery email lists a Lenses purchase as a download page with a key line", () => {
+  const key = "LN1-AAAAA-BBBBB";
+  const only = recoveryEmail([{ sessionId: "cs_ls", product: "lenses", created: 5 }], null, null, new Map([["cs_ls", [{ slug: "lenses", label: "Lenses", key }]]]));
   assert.match(only.text, /Lenses for macOS/);
   assert.match(only.text, /\/lenses\/success\/\?session_id=cs_ls/);
-  assert.doesNotMatch(only.text, /license key/i);
+  assert.ok(only.text.includes(key));
 });

@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="/motion.css">
     <script src="/motion.js" defer></script>
+    <link rel="stylesheet" href="/buy.css">
+    <script src="/license-keys.js" defer></script>
 </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -31,9 +33,18 @@
       <div class="kit-hero">
         <p class="eyebrow">Thank you</p>
         <h1>Lenses is yours</h1>
-        <p>Your download is below. We have also emailed this link to the address on your receipt, so you can come back any time. There is no license key: the disk image is the whole purchase.</p>
+        <p>Your download is below. We have also emailed this link to the address on your receipt, so you can come back any time. Once installed, Lenses checks for updates itself.</p>
+        <p><strong>Already using Lenses 1.0.0 or the free trial?</strong> There is nothing to reinstall for the key. Open Lenses, choose Enter license key, and paste the key below.</p>
         <p>Lose the email later? <a href="/recover/">Find a purchase</a> sends this page again to the address you paid with.</p>
       </div>
+
+      <section class="kit-trust" aria-labelledby="key-h">
+        <h2 id="key-h" class="tools-section-heading">Your license key</h2>
+        <div class="kit-product-buy" data-license-keys aria-live="polite">
+          <p class="tool-status"><span class="tool-spinner" aria-hidden="true"></span>Preparing your key…</p>
+        </div>
+        <p class="kit-buy-meta kit-center">Lenses runs free for 7 days from the first time you open it. Then it asks for this key: choose Enter license key and paste it. The key works offline, with no account. The same key is in your receipt email.</p>
+      </section>
 
       <section class="kit-trust" aria-labelledby="dl-h">
         <h2 id="dl-h" class="tools-section-heading">Download</h2>
@@ -56,7 +67,7 @@
           </div>
           <div>
             <h3>Updates and refunds</h3>
-            <p>Lenses has no built-in updater. You have 14 days to ask for a full refund, which stops the download link working.</p>
+            <p>Lenses checks for updates itself and asks before installing one. You have 14 days to ask for a full refund, which stops the download link working.</p>
           </div>
         </div>
       </section>
