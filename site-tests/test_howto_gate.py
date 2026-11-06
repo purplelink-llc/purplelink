@@ -97,3 +97,19 @@ class HowtoGate(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+LENSES = json.loads((ROOT / "video" / "storyboards" / "howto" / "lenses-ar-glasses-mac.json").read_text())
+
+
+class StandaloneLaunchVideo(unittest.TestCase):
+    def test_the_lenses_launch_storyboard_passes(self):
+        self.assertEqual(errors(LENSES), [])
+
+    def test_a_price_still_fails_in_a_standalone_video(self):
+        sb = copy.deepcopy(LENSES); sb["scenes"][-1]["narration"] += " It costs $4.99."
+        self.assertTrue(any("price" in e for e in errors(sb)))
+
+    def test_a_standalone_video_still_needs_a_hook(self):
+        sb = copy.deepcopy(LENSES); sb["scenes"] = [s for s in sb["scenes"] if s["type"] != "hook"]
+        self.assertTrue(errors(sb))
