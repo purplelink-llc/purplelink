@@ -262,9 +262,10 @@ so a referred sale nets about $6.57 in its first year and $29.85 a year after th
   "/tools/paper-review/packs/success/" }`, the same inline shape as `live-scholar`. If the env var
   `STRIPE_PRICE_PAPER_REVIEW_ANNUAL` is set, checkout uses that Price instead, so either answer to the price question
   works with the same code. No trial (the free first-review offers already cover trying it).
-- No `consent_collection[terms_of_service]` checkbox for now. Stripe refuses it until a Terms of Service URL is set in
-  the Stripe dashboard, and Ben chose to change nothing else in Stripe (2026-11-04). The renewal terms sit directly
-  beside the Pay button and beside our own button; adding the checkbox later is one dashboard setting plus one line.
+- `consent_collection[terms_of_service]=required` (Ben approved 2026-11-05): the buyer ticks the Terms box before
+  paying. Stripe refuses the parameter unless the Terms URL https://purplelink.llc/terms/ is set under Settings >
+  Public details, so that setting must be in place before this ships. The renewal terms also sit beside the Pay button
+  and beside our own button.
 - `custom_text[submit][message]` gets a new `REFUND_TEXT` entry (the test that matches it to `/terms/` is updated):
   "Renews at $79 a year on the same date until you cancel. Cancel in one click from any plan email. We email you 30
   and 7 days before each renewal. Unused reviews end with the year; cancelling stops the next charge and is not a
