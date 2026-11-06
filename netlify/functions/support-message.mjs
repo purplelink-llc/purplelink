@@ -54,6 +54,7 @@ export const TOPICS = {
   legroom: "Legroom",
   keyfeel: "Keyfeel",
   tapefolio: "Tapefolio",
+  lenses: "Lenses",
   panely: "Panely",
   summonly: "Summonly",
   nee: "Née",

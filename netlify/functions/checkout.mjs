@@ -131,6 +131,7 @@ const REFUND_TEXT = {
   "tapefolio": `${REFUND_EMAIL} the full $29.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "lenscrib": `${REFUND_EMAIL} the full $19.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "nee": `${REFUND_EMAIL} the full $14.99 to the original payment method. You don't need to give a reason. A refunded purchase's license key is no longer licensed for use.`,
+  "lenses": `${REFUND_EMAIL} the full $4.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "panely": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "summonly": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   // The annual Paper Review plan. Mirrors the "Refunds." sentence of its /terms/ auto-renewal section.
@@ -209,6 +210,12 @@ const PRODUCT_CATALOG = {
   // not in the Mac Suite or the custom bundles. Delivery is the session-gated DMG from the lenscrib-files Blobs store;
   // see lenscrib-download.mjs. Product page and success page: /lenscrib/ and /lenscrib/success/. See docs/products/lenscrib.md.
   "lenscrib":                { amount: 1999, name: "Lenscrib for macOS", successPath: "/lenscrib/success/" },
+  // Lenses for macOS: $4.99 one-time. The Stripe Price STRIPE_PRICE_LENSES points at (product prod_VZncC6arvZzEdp, created
+  // 2026-11-05 with Ben's approval) wins when set; the inline amount is the fallback. Keep both equal to the copy on /lenses/.
+  // A paid download only: no license key, no trial, no updater. Sold on its own, not in the Mac Suite or the custom bundles. Delivery is the session-gated DMG from
+  // the lenses-files Blobs store; see lenses-download.mjs. Product page and success page: /lenses/ and /lenses/success/.
+  // See docs/products/lenses.md.
+  "lenses":                  { envKey: "STRIPE_PRICE_LENSES", amount: 499, name: "Lenses for macOS", successPath: "/lenses/success/" },
   // Née for macOS: $14.99 one-time, priced inline (no Stripe Price to create), like Lenscrib. Licensed with the shared
   // PurplelinkLicenseV1 scheme (NEE1 keys, netlify/lib/license.mjs). Part of the Mac Suite and the custom bundles
   // (Ben, 2026-11-02; the `inSuite` gate in license.mjs is open). Delivery is the session-gated DMG from the

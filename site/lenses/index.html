@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Lenses - Sharper Text and Black Edges for AR Glasses on Mac | Purplelink LLC</title>
+    <meta name="description" content="Lenses is a Mac menu-bar app for AR glasses. When the glasses are plugged in it applies a profile: a sharp display mode, 120 Hz where the glasses offer it, a black edge margin, a night tint, Dark Mode and a bigger pointer. Tested on RayNeo Air. $4.99 once.">
+    <link rel="canonical" href="https://purplelink.llc/lenses/">
+    <meta property="og:title" content="Lenses - Set Up AR Glasses on Your Mac">
+    <meta property="og:description" content="Lenses is a Mac menu-bar app for AR glasses. When the glasses are plugged in it applies a profile: a sharp display mode, 120 Hz where the glasses offer it, a black edge margin, a night tint, Dark Mode and a bigger pointer. Tested on RayNeo Air. $4.99 once.">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/lenses.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/lenses/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Lenses - Set Up AR Glasses on Your Mac">
+    <meta name="twitter:description" content="Lenses is a Mac menu-bar app for AR glasses. When the glasses are plugged in it applies a profile: a sharp display mode, 120 Hz where the glasses offer it, a black edge margin, a night tint, Dark Mode and a bigger pointer. Tested on RayNeo Air. $4.99 once.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/lenses.png">
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/motion.css">
+    <link rel="stylesheet" href="/lenses/lenses.css">
+    <script src="/site.js" defer></script>
+    <script src="/support-box.js" defer></script>
+    <script src="/motion.js" defer></script>
+    <script src="/tools/paper-review/paid-tool-landing.js" defer></script>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "Lenses",
+      "applicationCategory": "UtilitiesApplication",
+      "applicationSubCategory": "Display",
+      "operatingSystem": "macOS 14+",
+      "url": "https://purplelink.llc/lenses/",
+      "image": "https://purplelink.llc/assets/og/lenses.png",
+      "description": "Lenses applies a profile when AR glasses are plugged into a Mac: a sharp HiDPI mode, 120 Hz where the glasses offer it, an edge margin, a night tint, Dark Mode and a bigger pointer. It puts the Mac back when the glasses are unplugged. Tested on RayNeo Air.",
+      "softwareRequirements": "macOS 14 (Sonoma) or later, Apple silicon.",
+      "featureList": [
+        "Sharp HiDPI mode, with text drawn at 2x and scaled down, and 120 Hz where the glasses offer it",
+        "Layout: mirror, glasses above the laptop, or side by side",
+        "Edge margin of 95%, 90% or 85% so the soft edges of the lenses show black",
+        "Night tint: Warm, Night or Candle, automatic from 9 PM to 7 AM, and a matching tint whenever macOS Night Shift is on",
+        "Dark Mode and a bigger pointer while the Mirror 70% profile is on, put back afterwards",
+        "Seven profiles",
+        "Optional sound through the glasses, and open at login",
+        "Recognises XREAL and VITURE glasses by display name; any other glasses through Use this display as my glasses",
+        "Collects nothing and makes no network requests"
+      ],
+      "offers": {
+        "@type": "Offer",
+        "price": "4.99",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock",
+        "url": "https://purplelink.llc/lenses/",
+        "category": "One-time purchase",
+        "seller": {
+          "@id": "https://purplelink.llc/#organization"
+        },
+        "hasMerchantReturnPolicy": {
+          "@type": "MerchantReturnPolicy",
+          "applicableCountry": "US",
+          "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+          "merchantReturnDays": 14,
+          "returnFees": "https://schema.org/FreeReturn",
+          "refundType": "https://schema.org/FullRefund"
+        }
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "creator": {
+        "@id": "https://purplelink.llc/about/#person"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What glasses does it work with?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Tested on RayNeo Air. It also recognises XREAL and VITURE glasses by their display name, but I have not tested it on them. For any other glasses, choose Use this display as my glasses from the menu."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does it need to run?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "macOS 14 Sonoma or later, on an Apple silicon Mac."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why is it not in the Mac App Store?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It uses private macOS display calls, which the Mac App Store does not allow. It is a notarized direct download instead."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does the edge margin do?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It shrinks the picture to 95%, 90% or 85% of the screen so the soft, blurry edges of the lenses show black. Black pixels are switched off, so nothing is lit there. This is underscan, and System Settings does not offer it for these glasses."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Night Shift work on my glasses?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Night Shift does not reach them. Lenses gives the glasses a matching warm tint whenever macOS Night Shift is on. You can also pick Warm, Night or Candle yourself, or let it switch on from 9 PM to 7 AM."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What happens when I unplug the glasses?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Lenses puts the Mac back: the display mode, layout, Dark Mode and pointer size you had before. It does the same when you quit it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it collect anything?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Lenses collects nothing and makes no network requests. Its settings stay on your Mac."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is there a trial or a license key?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It is a $4.99 paid download with no trial and no license key. If it does not suit your glasses, you have 14 days to ask for a full refund."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I get a refund?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Email ben@purplelink.llc within 14 days, no reason needed, for the full $4.99. A refunded purchase's download link stops working. See the terms."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is it part of the Mac Suite?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Lenses is sold on its own."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Lenses",
+          "item": "https://purplelink.llc/lenses/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <script src="/buddy-chat/loader.js" defer></script>
+</head>
+  <body>
+
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/" aria-current="page">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+    <main id="main-content" data-progress>
+
+    <a class="back-link" href="/products/">&larr; All products</a>
+
+    <div class="app-hero lenses-hero">
+      <div class="app-hero-copy">
+        <div class="app-hero-meta">
+          <span class="platform-tag platform-macos">macOS</span>
+          <span class="product-status product-status-live"><span id="price">$4.99</span> once</span>
+        </div>
+        <h1 class="app-hero-name">Lenses</h1>
+        <p class="app-hero-tagline">Lenses is a menu-bar app for AR glasses plugged into a Mac. When the glasses connect, it applies the profile you chose: a sharp display mode, 120 Hz, a black margin around the picture, a night tint, Dark Mode and a bigger pointer. When you unplug them, it puts the Mac back.</p>
+        <div class="app-hero-actions" id="buy">
+          <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn" data-product="lenses">Buy Lenses, $4.99</button>
+        </div>
+        <p class="buy-assurance">Checkout shows the price in your local currency, and you can switch back to US dollars.</p>
+        <p class="tool-status" id="checkout-status" aria-live="polite"></p>
+        <p class="waitlist-fine-print"><strong>Tested on RayNeo Air.</strong> It also recognises XREAL and VITURE glasses by name, which I have not tested. For any other glasses, choose &ldquo;Use this display as my glasses&rdquo; from the menu.</p>
+        <p class="waitlist-fine-print">Needs macOS 14 Sonoma or later and an Apple silicon Mac. One $4.99 payment, no trial and no license key. You can ask for a full refund within 14 days.</p>
+        <p class="waitlist-fine-print">Lenses collects nothing and makes no network requests. Its settings stay on your Mac.</p>
+        <p class="waitlist-fine-print">New to AR glasses on a Mac? Read <a href="/guides/ar-glasses-mac-setup/">Setting up your new VR/AR glasses with a Mac</a>. It covers each setting by hand, and says where macOS cannot do it.</p>
+      </div>
+      <figure class="lenses-figure">
+        <div class="frame-soft">
+          <svg class="lenses-diagram" viewBox="0 0 720 340" role="img" aria-labelledby="ld-title ld-desc" xmlns="http://www.w3.org/2000/svg">
+            <title id="ld-title">The same picture with the edge margin off and at 90 percent</title>
+            <desc id="ld-desc">Two drawn screens side by side. On the left the picture fills the whole screen, so its edge sits where the lens is blurry. On the right the picture is smaller and a black border surrounds it, which the glasses show as an unlit edge.</desc>
+            <rect class="ld-screen" x="24" y="48" width="320" height="180" rx="6"/>
+            <rect class="ld-picture" x="24" y="48" width="320" height="180" rx="6"/>
+            <path class="ld-line" d="M52 84h140M52 110h200M52 136h110"/>
+            <rect class="ld-soft" x="24" y="48" width="320" height="180" rx="6"/>
+            <text class="ld-label" x="24" y="30">Edge margin: Off</text>
+            <text class="ld-note" x="24" y="256">The picture runs to the blurry edge.</text>
+            <rect class="ld-screen" x="376" y="48" width="320" height="180" rx="6"/>
+            <rect class="ld-picture" x="392" y="57" width="288" height="162" rx="4"/>
+            <path class="ld-line" d="M418 90h126M418 114h180M418 138h100"/>
+            <text class="ld-label" x="376" y="30">Edge margin: 90%</text>
+            <text class="ld-note" x="376" y="256">A black border. Those pixels stay off.</text>
+          </svg>
+        </div>
+        <figcaption>A drawing of the idea, not a screenshot of the app or of the glasses. The dashed line marks where the lens edge softens.</figcaption>
+      </figure>
+    </div>
+
+    <section class="features-section" aria-labelledby="why-h">
+      <div class="features-header">
+        <h2 id="why-h">Why an app, when System Settings has a Displays pane</h2>
+      </div>
+      <div class="features-grid" data-motion="stagger">
+        <div class="feature-item">
+          <h3>Three things System Settings cannot do for these glasses</h3>
+          <p>It has no edge margin, so the soft edges of the lenses always show picture. Night Shift does not reach the glasses. And nothing applies your settings when the glasses connect or puts them back when you unplug. The other settings, such as the sharp mode and Dark Mode, you can set by hand, and the guide below shows how.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Plug in, and it is set up</h3>
+          <p>Choose a profile once. Each time the glasses connect, Lenses applies it. When they disconnect, or when you quit Lenses, it puts the Mac back as it was.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Free tips first</h3>
+          <p>Each setting is explained in <a href="/guides/ar-glasses-mac-setup/">a guide to setting up VR and AR glasses with a Mac</a>, with the by-hand version where macOS allows one. You can do much of it without Lenses.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="specs-section" aria-labelledby="does-h">
+      <h2 id="does-h">What it does</h2>
+      <table class="compare-table specs-table lenses-table" data-motion="rows">
+        <tbody>
+          <tr><th scope="row">Sharp mode</th><td>A HiDPI mode, where text is drawn at 2x and scaled down, and 120 Hz where the glasses offer it. If a profile&rsquo;s exact size is not offered by the glasses, Lenses picks the nearest HiDPI size.</td></tr>
+          <tr><th scope="row">Layout</th><td>Mirror the laptop, put the glasses above the laptop, or place them side by side.</td></tr>
+          <tr><th scope="row">Edge margin</th><td>Shrinks the picture to 95%, 90% or 85%, or leaves it off, so the soft edges of the lenses show black with the pixels off. This is underscan, which System Settings does not offer for these glasses.</td></tr>
+          <tr><th scope="row">Night tint</th><td>Off, Warm, Night or Candle, with an automatic setting from 9 PM to 7 AM. Whenever macOS Night Shift is on, the glasses get a matching warm tint, because Night Shift itself does not reach them.</td></tr>
+          <tr><th scope="row">Dark Mode and pointer</th><td>While the Mirror 70% profile is on, Lenses turns on Dark Mode and a bigger pointer, then puts both back afterwards.</td></tr>
+          <tr><th scope="row">Restore</th><td>On unplug, and when you quit, the Mac goes back to how it was.</td></tr>
+          <tr><th scope="row">Sound</th><td>Optionally plays sound through the glasses.</td></tr>
+          <tr><th scope="row">Open at login</th><td>A switch in its settings.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="specs-section" aria-labelledby="profiles-h">
+      <h2 id="profiles-h">Seven profiles</h2>
+      <ul class="lenses-profile-list">
+        <li><strong>Optimal.</strong> 1920 by 1080 HiDPI, glasses above the laptop, 120 Hz.</li>
+        <li><strong>Mirror.</strong> 1920 by 1080 HiDPI, 60 Hz.</li>
+        <li><strong>Mirror Big Text.</strong> 1600 by 900 HiDPI, 120 Hz.</li>
+        <li><strong>Big Text.</strong> 1600 by 900 HiDPI, glasses above the laptop.</li>
+        <li><strong>Side by Side.</strong> The glasses placed beside the laptop screen.</li>
+        <li><strong>Cinema.</strong> Native 1080p at 120 Hz, with the laptop screen dark.</li>
+        <li><strong>Mirror 70%.</strong> The picture at 70%, with Dark Mode and a bigger pointer.</li>
+      </ul>
+    </section>
+
+    <section class="specs-section" aria-labelledby="glasses-h">
+      <h2 id="glasses-h">Which glasses</h2>
+      <p class="specs-more"><strong>Tested on RayNeo Air.</strong> Lenses also recognises XREAL and VITURE glasses by their display name, so it should find them on its own, but I have not tested it on them. If your glasses are something else, or Lenses does not spot them, open its menu while they are plugged in and choose &ldquo;Use this display as my glasses&rdquo;. If you try it on XREAL or VITURE, I would like to hear how it goes: <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>.</p>
+    </section>
+
+    <section class="features-section bg-purple-xlight" aria-labelledby="privacy-h">
+      <div class="features-header">
+        <h2 id="privacy-h">Privacy</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-item">
+          <h3>Collects nothing</h3>
+          <p>Lenses collects nothing and makes no network requests. There is no account, and its settings stay on your Mac.</p>
+        </div>
+        <div class="feature-item">
+          <h3>No updater</h3>
+          <p>It has no built-in update check, which is part of why it makes no network requests at all.</p>
+        </div>
+      </div>
+      <p>Details are on the <a href="/privacy/">privacy page</a>.</p>
+    </section>
+
+    <section class="specs-section" aria-labelledby="not-h">
+      <h2 id="not-h">What it is not</h2>
+      <table class="compare-table specs-table" data-motion="rows">
+        <tbody>
+          <tr><th scope="row">A Mac App Store app</th><td>It uses private macOS display calls, which the Mac App Store does not allow. It is a notarized direct download.</td></tr>
+          <tr><th scope="row">Tested everywhere</th><td>Tested on RayNeo Air only. XREAL and VITURE are recognised by name and untested.</td></tr>
+          <tr><th scope="row">Part of the Mac Suite</th><td>It is sold on its own.</td></tr>
+          <tr><th scope="row">Cross-platform</th><td>Mac only, on Apple silicon.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="faq-section" id="faq" aria-labelledby="faq-heading">
+      <h2 id="faq-heading">Frequently asked questions</h2>
+      <div class="faq-list" data-motion="stagger">
+        <details class="faq-item">
+          <summary>What glasses does it work with?</summary>
+          <div class="faq-body">Tested on RayNeo Air. It also recognises XREAL and VITURE glasses by their display name, but I have not tested it on them. For any other glasses, choose Use this display as my glasses from the menu.</div>
+        </details>
+        <details class="faq-item">
+          <summary>What does it need to run?</summary>
+          <div class="faq-body">macOS 14 Sonoma or later, on an Apple silicon Mac.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Why is it not in the Mac App Store?</summary>
+          <div class="faq-body">It uses private macOS display calls, which the Mac App Store does not allow. It is a notarized direct download instead.</div>
+        </details>
+        <details class="faq-item">
+          <summary>What does the edge margin do?</summary>
+          <div class="faq-body">It shrinks the picture to 95%, 90% or 85% of the screen so the soft, blurry edges of the lenses show black. Black pixels are switched off, so nothing is lit there. This is underscan, and System Settings does not offer it for these glasses.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does Night Shift work on my glasses?</summary>
+          <div class="faq-body">Night Shift does not reach them. Lenses gives the glasses a matching warm tint whenever macOS Night Shift is on. You can also pick Warm, Night or Candle yourself, or let it switch on from 9 PM to 7 AM.</div>
+        </details>
+        <details class="faq-item">
+          <summary>What happens when I unplug the glasses?</summary>
+          <div class="faq-body">Lenses puts the Mac back: the display mode, layout, Dark Mode and pointer size you had before. It does the same when you quit it.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Does it collect anything?</summary>
+          <div class="faq-body">No. Lenses collects nothing and makes no network requests. Its settings stay on your Mac.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Is there a trial or a license key?</summary>
+          <div class="faq-body">No. It is a $4.99 paid download with no trial and no license key. If it does not suit your glasses, you have 14 days to ask for a full refund.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Can I get a refund?</summary>
+          <div class="faq-body">Yes. Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days, no reason needed, for the full $4.99. A refunded purchase's download link stops working. See the <a href="/terms/">terms</a>.</div>
+        </details>
+        <details class="faq-item">
+          <summary>Is it part of the Mac Suite?</summary>
+          <div class="faq-body">No. Lenses is sold on its own.</div>
+        </details>
+      </div>
+    </section>
+    <!-- support-box:start -->
+    <section class="support-box support-box--compact" data-support-box data-support-topic="lenses" aria-labelledby="sb-heading">
+      <h2 class="support-box-head" id="sb-heading">Write to Ben</h2>
+      <p class="support-box-lede">A question about Lenses that this page does not answer? Write to Ben here.</p>
+      <form class="support-box-form" novalidate hidden>
+      <div class="support-box-field">
+        <label for="sb-email">Your email</label>
+        <input type="email" id="sb-email" name="email" autocomplete="email" inputmode="email" spellcheck="false" maxlength="254" required aria-describedby="sb-email-hint sb-email-error">
+        <p class="support-box-hint" id="sb-email-hint">Used only to reply to this message.</p>
+        <p class="support-box-error" id="sb-email-error" hidden></p>
+      </div>
+      <div class="support-box-field">
+        <label for="sb-message">Message</label>
+        <textarea id="sb-message" name="message" rows="6" maxlength="5000" required aria-describedby="sb-message-hint sb-message-error"></textarea>
+        <p class="support-box-hint" id="sb-message-hint">What you did, what you expected and what you saw. For a purchase, include the email you paid with.</p>
+        <p class="support-box-error" id="sb-message-error" hidden></p>
+      </div>
+      <input type="text" name="website" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <button type="submit" class="btn btn-primary">Send message</button>
+      </form>
+      <p class="support-box-status" data-sb-status role="status" aria-live="polite"></p>
+      <p class="support-box-fine">Prefer your own mail app? Write to <a href="mailto:ben@purplelink.llc?subject=Support%3A%20Lenses">ben@purplelink.llc</a>. The form delivers your message by email through Resend and does not store it on this site. <a href="/privacy/#support-form">Privacy</a>.</p>
+    </section>
+    <!-- support-box:end -->
+    <section class="closing-cta" data-motion="reveal" aria-labelledby="closing-cta-heading">
+      <h2 id="closing-cta-heading">Plug in and read.</h2>
+      <p>One payment of $4.99, a 14-day refund, and nothing sent anywhere.</p>
+      <div class="closing-cta-actions">
+        <a class="btn btn-primary" href="#buy">Buy Lenses</a>
+      </div>
+      <p class="closing-cta-fine">macOS 14 or later, Apple silicon. Tested on RayNeo Air.</p>
+    </section>
+    </main>
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/nee/">Née</a></li>
+            <li><a href="/lenses/">Lenses</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/suite/">Mac Suite</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+    <script src="/analytics.js" defer></script>
+  </body>
+</html>
