@@ -30,11 +30,12 @@
  *   invoice.paid and customer.subscription.updated (the Paper Review annual plan, below)
  *
  * Paper Review annual plan ("paper-review-annual", $79 a year, auto-renewing): this function forwards
- * the subscription's lifecycle to Modal (/paper-review/annual-renew, -status, -revoke, same shared-secret header):
+ * the subscription's lifecycle to Modal (/paper-review/annual-renew, -status, -revoke, -restore, same shared-secret header):
  *   checkout.session.completed  register-token, plus subscription_id, term end, customer, card fingerprint
  *   invoice.paid (subscription_cycle)  annual-renew
  *   customer.subscription.updated / .deleted  annual-status (cancel_at_period_end, status, period end)
  *   full refund or dispute on one of its invoices  annual-revoke (charge -> invoice -> subscription)
+ *   dispute on one of its invoices closed as won     annual-restore
  * Only subscriptions whose metadata.product is paper-review-annual are forwarded; any other is ignored.
  * Modal also re-reads Stripe itself (reminder loop, plan page), so a missed event is caught later.
  * Needs STRIPE_SECRET_KEY here to read the subscription.
@@ -267,17 +268,41 @@ async function subscriptionOfCharge(charge) {
  * A full refund or a dispute on a charge. If it belongs to a Paper Review annual subscription, tell Modal to
  * revoke the plan. Returns null when it is not an annual charge, else {ok, status}.
  */
-async function revokeAnnualForCharge(charge, reason, backendSecret) {
-  if (!charge || !Netlify.env.get("STRIPE_SECRET_KEY")) return null;
+async function annualSubscriptionOfCharge(charge) {
+  if (!charge || !Netlify.env.get("STRIPE_SECRET_KEY")) return "";
   const subId = await subscriptionOfCharge(charge);
-  if (!subId) return null;
+  if (!subId) return "";
   const sub = await stripeGet(`/v1/subscriptions/${encodeURIComponent(subId)}`);
-  if (!sub || sub.metadata?.product !== ANNUAL_PRODUCT) return null;
-  const res = await postModal("/paper-review/annual-revoke", { subscription_id: subId, reason }, backendSecret);
+  return sub && sub.metadata?.product === ANNUAL_PRODUCT ? subId : "";
+}
+
+async function revokeAnnualForCharge(charge, reason, backendSecret, disputeId = "") {
+  const subId = await annualSubscriptionOfCharge(charge);
+  if (!subId) return null;
+  const body = { subscription_id: subId, reason };
+  if (disputeId) body.dispute_id = disputeId;
+  const res = await postModal("/paper-review/annual-revoke", body, backendSecret);
   if (!res.ok) {
     await alertOperator(
       "Annual plan revoke failed after a refund or dispute",
       `subscription_id=${subId}\nreason=${reason}\nmodal_status=${res.status}\ndetail=${res.text.slice(0, 300)}\n\nStripe will retry this webhook.`
+    );
+  }
+  return { ok: res.ok, status: res.status, subscription_id: subId };
+}
+
+/**
+ * A dispute on an annual invoice was closed as won: tell Modal to give the plan back. Modal restores only a plan
+ * that disputes alone revoked (never one a refund revoked). Returns null when it is not an annual charge.
+ */
+async function restoreAnnualForCharge(charge, disputeId, backendSecret) {
+  const subId = await annualSubscriptionOfCharge(charge);
+  if (!subId) return null;
+  const res = await postModal("/paper-review/annual-restore", { subscription_id: subId, dispute_id: disputeId || "" }, backendSecret);
+  if (!res.ok) {
+    await alertOperator(
+      "Annual plan restore failed after a won dispute",
+      `subscription_id=${subId}\ndispute_id=${disputeId}\nmodal_status=${res.status}\ndetail=${res.text.slice(0, 300)}\n\nStripe will retry this webhook.`
     );
   }
   return { ok: res.ok, status: res.status, subscription_id: subId };
@@ -869,8 +894,13 @@ export default async function handler(request, context) {
     const pi = paymentIntentOf(dispute);
     if (event.type === "charge.dispute.created" && dispute.charge && Netlify.env.get("STRIPE_SECRET_KEY")) {
       const chargeObj = await stripeGet(`/v1/charges/${encodeURIComponent(idOf(dispute.charge))}`);
-      const annualDispute = await revokeAnnualForCharge(chargeObj, "dispute", backendSecret);
+      const annualDispute = await revokeAnnualForCharge(chargeObj, "dispute", backendSecret, dispute.id || "");
       if (annualDispute && !annualDispute.ok) return jsonResponse(502, { error: "modal_revoke_failed" });
+    }
+    if (event.type === "charge.dispute.closed" && dispute.status === "won" && dispute.charge && Netlify.env.get("STRIPE_SECRET_KEY")) {
+      const chargeObj = await stripeGet(`/v1/charges/${encodeURIComponent(idOf(dispute.charge))}`);
+      const annualWon = await restoreAnnualForCharge(chargeObj, dispute.id || "", backendSecret);
+      if (annualWon && !annualWon.ok) return jsonResponse(502, { error: "modal_restore_failed" });
     }
     if (!pi) return jsonResponse(200, { status: "ignored_no_payment_intent", type: event.type });
     if (event.type === "charge.dispute.created") {

@@ -300,6 +300,10 @@ is checked at redeem and submit. So:
   cannot find it. The `charge.refunded` and `charge.dispute.created` handlers look up the charge's invoice, then its
   subscription, and call a new Modal `/paper-review/annual-revoke`, which sets `revoked` and drops unused tokens.
   Tested in both directions.
+  A dispute closed as won (`charge.dispute.closed`, status `won`) calls `/paper-review/annual-restore`, which gives
+  the plan back: the current year's unused reviews resolve again and a cancel made before the dispute is kept. It
+  restores only a plan that disputes alone revoked, and only when the last open dispute closes; a refund is never
+  undone. A lost dispute changes nothing.
 - **Lifecycle mail.** The existing tips, review-request and win-back sequence is not seeded for this product; a paying
   subscriber should not get win-back mail.
 
