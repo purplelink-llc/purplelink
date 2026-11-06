@@ -552,9 +552,10 @@ export default async function handler(request) {
     params["subscription_data[metadata][product]"] = product;
     if (attrFirst) params["subscription_data[metadata][attr_first]"] = attrFirst;
     if (attrLast) params["subscription_data[metadata][attr_last]"] = attrLast;
-    // paper-review-annual: no consent_collection[terms_of_service]. Stripe refuses that parameter until a Terms URL is
-    // set in the dashboard, and Ben chose to change nothing else in Stripe (2026-11-04). The renewal terms are shown
-    // beside the Pay button (REFUND_TEXT) and beside the button on our own page instead.
+    // paper-review-annual: the buyer ticks "I agree to the Terms of Service" before paying for an auto-renewing plan.
+    // Stripe refuses this parameter unless a Terms URL (https://purplelink.llc/terms/) is set under Settings > Public
+    // details in the dashboard (Ben approved setting it, 2026-11-05). The renewal terms also sit beside the Pay button.
+    if (product === "paper-review-annual") params["consent_collection[terms_of_service]"] = "required";
     if (entry.trialDays) {
       params["subscription_data[trial_period_days]"] = String(entry.trialDays);
     }
