@@ -7,6 +7,19 @@
   if (!/^cs_(live|test)_[A-Za-z0-9]{10,200}$/.test(sessionId)) return;
   const main = document.querySelector("main");
   if (!main) return;
+  // A single-app order with a second app added at checkout (netlify/lib/addons.mjs) is shown on the Suite success page,
+  // which already lists several apps' downloads and keys. Any failure leaves the buyer on this page, which still has
+  // the main app and the receipt email names both.
+  if (!location.pathname.startsWith("/suite/")) {
+    fetch(`/.netlify/functions/purchase-license?session_id=${encodeURIComponent(sessionId)}`, { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((b) => {
+        if (b && Array.isArray(b.parts) && b.parts.length > 1) {
+          location.replace(`/suite/success/?session_id=${encodeURIComponent(sessionId)}&from=addon`);
+        }
+      })
+      .catch(() => { /* stay on this page */ });
+  }
   const waits = [1500, 3000, 6000, 12000];
 
   const show = (o) => {

@@ -93,12 +93,36 @@ export function entitledParts(product, metadata) {
   if (product === "app-suite") return new Set(BUNDLE_SLUGS);
   if (isBundleProduct(product)) return new Set(bundlePartsOf({ ...(metadata || {}), product }));
   if (product === "moderntex-seats") return new Set(["moderntex"]);
-  return BUNDLE_SLUGS.includes(product) ? new Set([product]) : new Set();
+  if (BUNDLE_SLUGS.includes(product)) return new Set([product, ...addonPartsOf(product, metadata)]);
+  return new Set();
 }
 
-/** Does this bundle (and only a bundle) contain the part? The Suite and single products are handled by the caller. */
+/**
+ * The parts that can be added to a single-app purchase at checkout (netlify/lib/addons.mjs): every part except the
+ * lifetime Vitae Plus key. Lenscrib is not a part, so it is never one.
+ */
+export const ADDON_SLUGS = BUNDLE_SLUGS.filter((s) => s !== "vitae-plus");
+
+/**
+ * The second app a single-app purchase carries, from `metadata.addons` (comma-separated slugs). Only a single Mac app
+ * has add-ons; anything else (a bundle, the Suite, seats, a part that is already the main app, an unknown slug) gives
+ * []. The value is written server-side from the paid line items, never taken from the buyer.
+ */
+export function addonPartsOf(product, metadata) {
+  if (!ADDON_SLUGS.includes(product)) return [];
+  const raw = typeof metadata?.addons === "string" ? metadata.addons.split(",") : [];
+  const out = [];
+  for (const item of raw) {
+    const slug = item.trim();
+    if (ADDON_SLUGS.includes(slug) && slug !== product && !out.includes(slug)) out.push(slug);
+  }
+  return out.slice(0, 2);
+}
+
+/** Does this purchase contain the part beyond a plain single-product match: a bundle's parts, or a single app's add-ons? The Suite and the single product itself are handled by the caller. */
 export function bundleHasPart(product, metadata, slug) {
-  return isBundleProduct(product) && bundlePartsOf({ ...(metadata || {}), product }).includes(slug);
+  if (isBundleProduct(product)) return bundlePartsOf({ ...(metadata || {}), product }).includes(slug);
+  return addonPartsOf(product, metadata).includes(slug);
 }
 
 /** "ModernTex and Legroom", "ModernTex, Legroom and Keyfeel". */

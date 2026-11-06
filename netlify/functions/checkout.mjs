@@ -39,6 +39,7 @@ import { BUNDLES, bundleCents, parseBundleParts, partsSentence } from "../lib/bu
 import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import { managedPaymentsOn, applyManagedPayments } from "../lib/managed-payments.mjs";
+import { pickAddons, setOptionalItems } from "../lib/addons.mjs";
 import { recoveryParams, isRecoveryParamError } from "../lib/checkout-recovery.mjs";
 import { checkCode, STORE as BUYER_CODE_STORE } from "../lib/buyer-codes.mjs";
 import { REF_RE, FRIEND_COUPON, FRIEND_PERCENT, friendEligible, checkRef, ensureFriendCoupon } from "../lib/referrals.mjs";
@@ -493,8 +494,15 @@ export default async function handler(request) {
   const prPreview = product.startsWith("paper-review") && body?.pr_preview === 1;
   const managed = managedPaymentsOn(product, Netlify.env.get("STRIPE_MANAGED_PAYMENTS"));
   const timeBucket = Math.floor(Date.now() / IDEMPOTENCY_WINDOW_MS);
+  // Optional second app at 25% off (netlify/lib/addons.mjs). Single Mac apps only, never with a discount or Managed
+  // Payments. Any failure to find the Prices gives [] and the checkout is exactly what it was. It is part of the
+  // idempotency key below, so a retry that finds different rows gets a fresh session instead of a Stripe key clash.
+  let addonRows = [];
+  try {
+    addonRows = await pickAddons({ product, entry, managed, discounted: !!(buyerCode || friend), secretKey });
+  } catch (_) { addonRows = []; }
   const idempotencyKey = createHash("sha256")
-    .update(`v6:${buyerCode ? "xs" + buyerCode.code + ":" : ""}${friend ? "fr:" : ""}${managed ? "mp:" : ""}${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${trialDay}:${appSource}:${redditAd ? "r" + redditClick : ""}:${photo}:${seats}:${bundleParts.join("+")}:${prPreview ? "pv" : ""}`)
+    .update(`v6:${buyerCode ? "xs" + buyerCode.code + ":" : ""}${friend ? "fr:" : ""}${managed ? "mp:" : ""}${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${trialDay}:${appSource}:${redditAd ? "r" + redditClick : ""}:${photo}:${seats}:${bundleParts.join("+")}:${prPreview ? "pv" : ""}${addonRows.length ? ":ao" + addonRows.map((r) => r[0]).join("+") : ""}`)
     .digest("hex");
 
   // Attach the product key as Stripe metadata so the webhook can route
@@ -601,6 +609,11 @@ export default async function handler(request) {
   }
 
   if (managed) applyManagedPayments(params, product);
+  if (addonRows.length) {
+    setOptionalItems(params, addonRows);
+    // Only says which rows were OFFERED (the webhook reads the paid line items for what was bought).
+    params["metadata[addon_offered]"] = addonRows.map((r) => r[0]).join(",");
+  }
 
   // Stripe takes either a fixed discount or the promotion-code box, not both, so a code replaces the box.
   if (buyerCode) {
@@ -642,6 +655,20 @@ export default async function handler(request) {
   } catch (err) {
     console.error("checkout: stripe request failed:", err?.name, err?.message);
     return jsonResponse(502, { error: "stripe_unreachable", detail: "Could not reach the payment processor. Try again in a minute." });
+  }
+
+  // If Stripe refuses the optional rows, the session is created again without them, so the upsell can never block a sale.
+  if (!resp.ok && addonRows.length && /optional_items/i.test(`${data?.error?.param || ""} ${data?.error?.message || ""}`)) {
+    console.error("checkout: optional items rejected, retrying without them:", data?.error?.param || data?.error?.code);
+    const bare = { ...params };
+    for (const k of Object.keys(bare)) if (k.startsWith("optional_items[")) delete bare[k];
+    delete bare["metadata[addon_offered]"];
+    try {
+      ({ resp, data } = await post({ ...bare, ...recovery }, `${idempotencyKey}:noaddon`));
+    } catch (err) {
+      console.error("checkout: stripe request failed:", err?.name, err?.message);
+      return jsonResponse(502, { error: "stripe_unreachable", detail: "Could not reach the payment processor. Try again in a minute." });
+    }
   }
 
   if (data === null) {
