@@ -41,6 +41,7 @@ import { getStore } from "@netlify/blobs";
 import { managedPaymentsOn, applyManagedPayments } from "../lib/managed-payments.mjs";
 import { recoveryParams, isRecoveryParamError } from "../lib/checkout-recovery.mjs";
 import { checkCode, STORE as BUYER_CODE_STORE } from "../lib/buyer-codes.mjs";
+import { REF_RE, FRIEND_COUPON, FRIEND_PERCENT, friendEligible, checkRef, ensureFriendCoupon } from "../lib/referrals.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 
@@ -446,6 +447,13 @@ export default async function handler(request) {
     buyerCode = check;
   }
 
+  // A friend's referral link (netlify/lib/referrals.mjs): 20% off when the code belongs to a real buyer and the
+  // product qualifies. Never with a buyer code. Any failure to check means the full price, never a blocked sale.
+  let friend = false;
+  if (!buyerCode && REF_RE.test(referralCode) && friendEligible(product, entry)) {
+    friend = await checkRef(getStore(BUYER_CODE_STORE), referralCode, { secret: Netlify.env.get("BACKEND_WEBHOOK_SECRET") });
+  }
+
   const secretKey = Netlify.env.get("STRIPE_SECRET_KEY");
   // An entry with an inline amount may also name an env Price; the env Price wins when it is set.
   const envPrice = entry.envKey ? Netlify.env.get(entry.envKey) : "";
@@ -479,7 +487,7 @@ export default async function handler(request) {
   const managed = managedPaymentsOn(product, Netlify.env.get("STRIPE_MANAGED_PAYMENTS"));
   const timeBucket = Math.floor(Date.now() / IDEMPOTENCY_WINDOW_MS);
   const idempotencyKey = createHash("sha256")
-    .update(`v6:${buyerCode ? "xs" + buyerCode.code + ":" : ""}${managed ? "mp:" : ""}${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${trialDay}:${appSource}:${redditAd ? "r" + redditClick : ""}:${photo}:${seats}:${bundleParts.join("+")}:${prPreview ? "pv" : ""}`)
+    .update(`v6:${buyerCode ? "xs" + buyerCode.code + ":" : ""}${friend ? "fr:" : ""}${managed ? "mp:" : ""}${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${trialDay}:${appSource}:${redditAd ? "r" + redditClick : ""}:${photo}:${seats}:${bundleParts.join("+")}:${prPreview ? "pv" : ""}`)
     .digest("hex");
 
   // Attach the product key as Stripe metadata so the webhook can route
@@ -592,6 +600,10 @@ export default async function handler(request) {
     delete params.allow_promotion_codes;
     params["discounts[0][coupon]"] = buyerCode.coupon;
     params["metadata[buyer_code]"] = buyerCode.code;
+  } else if (friend) {
+    delete params.allow_promotion_codes;
+    params["discounts[0][coupon]"] = FRIEND_COUPON;
+    params["metadata[friend_discount]"] = String(FRIEND_PERCENT);
   }
 
   // Checkout recovery (netlify/lib/checkout-recovery.mjs): consent box plus a recovery link when the session
@@ -627,6 +639,28 @@ export default async function handler(request) {
 
   if (data === null) {
     return jsonResponse(502, { error: "stripe_bad_response" });
+  }
+
+  // The friend coupon is made the first time it is needed. If Stripe still refuses it, the sale goes ahead at the
+  // full price with the promotion-code box back.
+  const couponError = (d) => /coupon|discount/i.test(`${d?.error?.param || ""} ${d?.error?.code || ""} ${d?.error?.message || ""}`);
+  if (!resp.ok && friend && couponError(data)) {
+    try {
+      if (/no such coupon/i.test(data?.error?.message || "") && (await ensureFriendCoupon(secretKey))) {
+        ({ resp, data } = await post({ ...params, ...recovery }, `${idempotencyKey}:coupon`));
+      }
+      if (!resp.ok && couponError(data)) {
+        console.error("checkout: friend coupon refused, retrying at full price:", data?.error?.code);
+        const plain = { ...params, allow_promotion_codes: "true" };
+        delete plain["discounts[0][coupon]"];
+        delete plain["metadata[friend_discount]"];
+        ({ resp, data } = await post({ ...plain, ...recovery }, `${idempotencyKey}:nofriend`));
+      }
+    } catch (err) {
+      console.error("checkout: stripe request failed:", err?.name, err?.message);
+      return jsonResponse(502, { error: "stripe_unreachable", detail: "Could not reach the payment processor. Try again in a minute." });
+    }
+    if (data === null) return jsonResponse(502, { error: "stripe_bad_response" });
   }
 
   if (!resp.ok && buyerCode && /coupon|discount/i.test(`${data?.error?.param || ""} ${data?.error?.code || ""} ${data?.error?.message || ""}`)) {
