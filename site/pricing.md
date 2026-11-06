@@ -20,7 +20,7 @@ Last checked: 2026-10-17. Prices are in US dollars. Each Mac app is one download
 | Buddy | Free, open source (MIT) | n/a | macOS 14 or later, Apple silicon, Claude Code | Notch companion for Claude Code: shows what each session is doing and opens when one needs you, with session usage and automatic updates. Network only for the daily update check and optional exact usage. Not affiliated with Anthropic. https://purplelink.llc/buddy/ |
 | Vitae | Free; Plus $2.99 a month or $23.99 a year | n/a | macOS 15 or later | Free Mac app for academics to keep submissions, grants and a CV record. https://purplelink.llc/vitae/ |
 
-Pick your own: any 2 of the nine Suite parts for $34.99, or any 3 for $44.99, whichever parts you choose (Vitae Plus counts as one part). Four or more cost more than the Suite. https://purplelink.llc/suite/
+Pick your own: any 2 of the ten Suite parts are 25% off their combined price, and any 3 are 40% off (Vitae Plus counts as one part, at its first-year price). For four or more, the Suite has all ten for $59.99. https://purplelink.llc/suite/
 
 ## Web tools
 

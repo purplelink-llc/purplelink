@@ -25,7 +25,7 @@ globalThis.Netlify = {
 
 const { default: handler } = await import("../functions/checkout.mjs");
 const { seatUnitCents, seatTotalCents } = await import("../lib/seats.mjs");
-const { BUNDLES } = await import("../lib/bundles.mjs");
+const { bundleCents } = await import("../lib/bundles.mjs");
 
 // product key -> { body, cents } where cents is the expected unit amount, or null for a product priced by a
 // Stripe Price (Outbound Veil, Legroom), which the session cannot show.
@@ -36,8 +36,8 @@ const MAC_APPS = {
   "panely": { body: {}, cents: 999 },
   "summonly": { body: {}, cents: 999 },
   "app-suite": { body: {}, cents: 5999 },
-  "bundle-2": { body: { apps: ["moderntex", "keyfeel"] }, cents: BUNDLES["bundle-2"].cents },
-  "bundle-3": { body: { apps: ["moderntex", "keyfeel", "panely"] }, cents: BUNDLES["bundle-3"].cents },
+  "bundle-2": { body: { apps: ["moderntex", "keyfeel"] }, cents: bundleCents(["moderntex", "keyfeel"]) },
+  "bundle-3": { body: { apps: ["moderntex", "keyfeel", "panely"] }, cents: bundleCents(["moderntex", "keyfeel", "panely"]) },
   "moderntex-seats": { body: { seats: 5 }, cents: seatUnitCents(5) },
   "outbound-veil": { body: {}, cents: null },
   "legroom": { body: {}, cents: null },
@@ -107,8 +107,8 @@ test("the inline amounts in the catalog equal the ones this test expects", () =>
     assert.ok(m, `${product} is not priced inline in PRODUCT_CATALOG`);
     assert.equal(Number(m[1]), cents, product);
   }
-  assert.match(src, /"bundle-2":\s*\{ amount: BUNDLES\["bundle-2"\]\.cents,/);
-  assert.match(src, /"bundle-3":\s*\{ amount: BUNDLES\["bundle-3"\]\.cents,/);
+  assert.match(src, /"bundle-2":\s*\{ bundle: true,/);
+  assert.match(src, /"bundle-3":\s*\{ bundle: true,/);
 });
 
 test("seat packs charge the seats.mjs unit price, in USD, for every offered count", async () => {

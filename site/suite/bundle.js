@@ -1,10 +1,13 @@
-// Pick-your-own bundles on /suite/: any 2 for one price, any 3 for one price, whichever parts are chosen. The server
-// prices the order from the count alone (netlify/lib/bundles.mjs); this table is only for showing the price, and a test
-// keeps it equal to the server's. Four or more parts cost more than the whole Suite, so that case offers the Suite.
+// Pick-your-own bundles on /suite/: any 2 parts for 25% off their combined price, any 3 for 40% off, whichever parts
+// are chosen. The server prices the order from the chosen parts and the tier (netlify/lib/bundles.mjs); these tables
+// are only for showing the price, and a test keeps them equal to the server's. Four or more parts are sent to the
+// whole Suite, said plainly: a few cheap apps can cost less on their own than the Suite does.
 (function () {
-  var BUNDLE_PRICING = {"2":3499,"3":4499,"suite":5999};
+  var BUNDLE_PERCENT = {"2":25,"3":40};
+  var SUITE_CENTS = 5999;
   // What each part costs on its own today (Vitae Plus is its first year, as in the Suite's own price stack).
   var PART_PRICE = {"moderntex":1999,"outbound-veil":2999,"legroom":999,"keyfeel":999,"tapefolio":2999,"panely":999,"summonly":999,"nee":1499,"lenses":499,"vitae-plus":2399};
+  var PART_NAME = {"moderntex":"ModernTex","outbound-veil":"Outbound Veil","legroom":"Legroom","keyfeel":"Keyfeel","tapefolio":"Tapefolio","panely":"Panely","summonly":"Summonly","nee":"Née","lenses":"Lenses","vitae-plus":"Vitae Plus"};
 
   var form = document.getElementById("bundle-form");
   if (!form) return;
@@ -23,27 +26,53 @@
     statusEl.textContent = msg;
     statusEl.classList.toggle("bundle-error", Boolean(isError));
   }
+  function bundleCents(sum, n) {
+    return Math.round(sum * (100 - BUNDLE_PERCENT[String(n)]) / 100);
+  }
+  // The piece of the summary with the separate total struck through: [text, {s: "$49.98"}, text, ...].
+  function priceLine(n, separate, price) {
+    var pct = BUNDLE_PERCENT[String(n)];
+    return [n + " apps: ", { s: money(separate) }, " " + money(price) + ", " + pct + "% off, you save " + money(separate - price) + "."];
+  }
+  function nextTierNudge(chosen, separate) {
+    var cheapest = null;
+    Object.keys(PART_PRICE).forEach(function (slug) {
+      if (chosen.indexOf(slug) === -1 && (cheapest === null || PART_PRICE[slug] < PART_PRICE[cheapest])) cheapest = slug;
+    });
+    var now = separate - bundleCents(separate, 2);
+    var then = (separate + PART_PRICE[cheapest]) - bundleCents(separate + PART_PRICE[cheapest], 3);
+    return " Add a third app for " + BUNDLE_PERCENT["3"] + "% off all three. With " + PART_NAME[cheapest] + " (" + money(PART_PRICE[cheapest]) + ") your saving goes up by " + money(then - now) + ".";
+  }
   function state() {
     var chosen = picks();
     var n = chosen.length;
     var separate = chosen.reduce(function (sum, slug) { return sum + (PART_PRICE[slug] || 0); }, 0);
-    if (n === 0) return { text: "Choose two or three parts.", product: null, label: "Choose your parts" };
-    if (n === 1) return { text: "Choose one more. A single app is cheaper on its own, from its own page.", product: null, label: "Choose one more" };
+    if (n === 0) return { parts: ["Choose two or three parts."], product: null, label: "Choose your parts" };
+    if (n === 1) return { parts: ["Choose one more for " + BUNDLE_PERCENT["2"] + "% off both. Two apps get " + BUNDLE_PERCENT["2"] + "% off, three get " + BUNDLE_PERCENT["3"] + "% off."], product: null, label: "Choose one more" };
     if (n >= 4) {
-      return { text: "Four or more cost more than the Suite, which has all ten for " + money(BUNDLE_PRICING.suite) + ". The Suite is the better buy.",
-               product: "app-suite", label: "Buy the Suite, " + money(BUNDLE_PRICING.suite) };
+      var tail = separate < SUITE_CENTS
+        ? ", or buy these on their own for " + money(separate) + "."
+        : ". Bought on their own, these would cost " + money(separate) + ".";
+      return { parts: ["For four or more, the Suite has all ten for " + money(SUITE_CENTS) + tail],
+               product: "app-suite", label: "Buy the Suite, " + money(SUITE_CENTS) };
     }
-    var price = BUNDLE_PRICING[String(n)];
-    if (separate <= price) {
-      return { text: "Bought separately, these " + n + " cost " + money(separate) + ", which is less than the " + money(price) + " bundle. Buy them on their own, or pick different parts.",
-               product: null, label: "Choose different parts" };
-    }
-    return { text: n + " parts for " + money(price) + ". Bought separately: " + money(separate) + ", so you save " + money(separate - price) + ".",
-             product: "bundle-" + n, label: "Buy these " + n + ", " + money(price), apps: chosen };
+    var price = bundleCents(separate, n);
+    var parts = priceLine(n, separate, price);
+    if (n === 2) parts.push(nextTierNudge(chosen, separate));
+    return { parts: parts, product: "bundle-" + n, label: "Buy these " + n + ", " + money(price), apps: chosen };
   }
   function refresh() {
     var s = state();
-    summary.textContent = s.text;
+    summary.textContent = "";
+    s.parts.forEach(function (piece) {
+      if (typeof piece === "string") {
+        summary.appendChild(document.createTextNode(piece));
+      } else {
+        var el = document.createElement("s");
+        el.textContent = piece.s;
+        summary.appendChild(el);
+      }
+    });
     buy.textContent = s.label;
     buy.disabled = !s.product;
   }

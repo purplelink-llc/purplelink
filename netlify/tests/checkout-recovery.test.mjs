@@ -247,6 +247,7 @@ test("every one-time product in checkout has a recovery entry, and nothing else 
 
 test("every price a recovery email states is the price that product is sold at", async () => {
   for (const [product, entry] of Object.entries(RECOVERY_PRODUCTS)) {
+    if (entry.percent) continue; // bundles: priced from the chosen apps, see the bundle recovery test below
     assert.equal(entry.price, `$${(entry.cents / 100).toFixed(2)}`, product);
     calls = [];
     await buy(product, extraFor(product));
@@ -279,10 +280,21 @@ test("app emails say updates are included; other products only say once", () => 
   assert.equal(recoveryEmail({ to: "a@example.edu", product: "lenses", url, secret: "s" }).text.includes("updates"), false);
 });
 
+const url = "https://buy.stripe.com/r/live_abc";
+test("a bundle recovery email states the session's own amount, or the percent off when there is none", () => {
+  const two = recoveryEmail({ to: "a@example.edu", product: "bundle-2", url, secret: "s", cents: 3749 });
+  assert.match(two.text, /\(\$37\.49, once, with updates included\)/);
+  const noAmount = recoveryEmail({ to: "a@example.edu", product: "bundle-2", url, secret: "s" });
+  assert.match(noAmount.text, /\(25% off the apps' own prices, once, with updates included\)/);
+  assert.doesNotMatch(noAmount.text, /34\.99/);
+  assert.match(recoveryEmail({ to: "a@example.edu", product: "bundle-3", url, secret: "s" }).text, /40% off/);
+  assert.match(recoveryEmail({ to: "a@example.edu", product: "bundle-3", url, secret: "s", cents: 0 }).text, /40% off/);
+});
+
 test("a bundle purchase counts as buying each app in it", async () => {
   const paid = {
     id: "evt_paid_bundle", type: "checkout.session.completed",
-    data: { object: { id: "cs_live_bundle_abcdefghij", status: "complete", payment_status: "paid", amount_total: 3499,
+    data: { object: { id: "cs_live_bundle_abcdefghij", status: "complete", payment_status: "paid", amount_total: 3749,
       customer_details: { email: "pair@example.edu" }, metadata: { product: "bundle-2", apps: "moderntex,legroom" } } },
   };
   await webhook(signed(paid));
