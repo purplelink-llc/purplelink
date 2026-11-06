@@ -97,13 +97,13 @@ const zeroed = (keys) => Object.fromEntries(keys.map((k) => [k, 0]));
 // Journeys (analytics backlog AB-20261020-3): of the visitors whose first page of the day was a guide, a tool or
 // anything else, how many viewed a product page later that day, and which one. Built from the daily-salted visitor
 // hash already on every record, so a journey never spans two days and nothing new is stored.
-export const PRODUCT_PAGES = ["moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "lenscrib", "nee", "panely", "summonly", "suite", "vitae", "batterymeter"];
+export const PRODUCT_PAGES = ["moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "lenscrib", "lenses", "nee", "panely", "summonly", "suite", "vitae", "batterymeter"];
 const PRODUCT_RE = new RegExp(`^/(${PRODUCT_PAGES.join("|")})/`);
 export const entryKind = (path) => (/^\/guides\//.test(path) ? "guide" : /^\/tools\//.test(path) ? "tool" : PRODUCT_RE.test(path) ? "product" : "other");
 export const productOf = (path) => { const m = PRODUCT_RE.exec(path || ""); return m ? m[1] : ""; };
 // The ten paid Mac-app pages where the Buddy chat holdout is read (docs/designs/buddy-chat.md, "Conversion pass",
 // section 3): the page itself, localized or not, and not its success or buy subpages.
-const CHAT_APP_PAGE_RE = /^\/(?:(?:de|fr|ja|pt-br|zh-cn)\/)?(?:moderntex|outbound-veil|legroom|keyfeel|tapefolio|panely|summonly|lenscrib|nee|suite)\/?$/;
+const CHAT_APP_PAGE_RE = /^\/(?:(?:de|fr|ja|pt-br|zh-cn)\/)?(?:moderntex|outbound-veil|legroom|keyfeel|tapefolio|panely|summonly|lenscrib|lenses|nee|suite)\/?$/;
 export const isChatAppPage = (path) => CHAT_APP_PAGE_RE.test(path || "");
 /** visits: Map of vid -> [{ ts, path }] for one day. Returns { guide|tool|product|other: { visitors, reachedProduct, byProduct } }. */
 export function journeysOf(visits) {

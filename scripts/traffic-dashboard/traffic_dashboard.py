@@ -189,6 +189,8 @@ SITES = [
             "/tapefolio/",
             # Lenscrib: buy button (pr-checkout-btn, data-product="lenscrib").
             "/lenscrib/",
+            # Lenses: buy button (pr-checkout-btn, data-product="lenses").
+            "/lenses/",
             # Née: buy button (pr-checkout-btn, data-product="nee"). Hidden until launch, so no views yet.
             "/nee/",
             # Panely and Summonly: buy buttons (pr-checkout-btn, data-product="panely" and "summonly").
@@ -280,7 +282,7 @@ ADMOB_APPS = {
                  "appId": "ca-app-pub-6407975157274256~3074958691"},
 }
 ADMOB_DAYS = 7  # matches the Apple Search Ads manual reading, for a fair spend-vs-earnings comparison
-PRODUCT_PAGE_PATHS = {"/moderntex", "/outbound-veil", "/legroom", "/keyfeel", "/tapefolio", "/lenscrib", "/nee", "/panely", "/summonly", "/vitae", "/suite"}
+PRODUCT_PAGE_PATHS = {"/moderntex", "/outbound-veil", "/legroom", "/keyfeel", "/tapefolio", "/lenscrib", "/lenses", "/nee", "/panely", "/summonly", "/vitae", "/suite"}
 AD_FUNNEL_DAYS = 7  # window for the first-touch channel funnel (adFunnel in history.json)
 
 
@@ -676,7 +678,7 @@ SITE_DOWNLOAD_METRICS = {"moderntex": "trialDownloads", "outbound-veil": "ovTria
                          "keyfeel": "kfTrialDownloads", "tapefolio": "tfTrialDownloads", "lenscrib": "lcbTrialDownloads", "nee": "neeTrialDownloads", "panely": "pnTrialDownloads",
                          "summonly": "smTrialDownloads", "vitae": "vitaeDownloads"}
 APP_LABELS = {"moderntex": "ModernTex", "outbound-veil": "Outbound Veil", "legroom": "Legroom", "keyfeel": "Keyfeel",
-              "tapefolio": "Tapefolio", "lenscrib": "Lenscrib", "nee": "Née", "panely": "Panely", "summonly": "Summonly", "vitae": "Vitae"}
+              "tapefolio": "Tapefolio", "lenscrib": "Lenscrib", "lenses": "Lenses", "nee": "Née", "panely": "Panely", "summonly": "Summonly", "vitae": "Vitae"}
 
 
 def downloads_all_sources(history: dict, today: dt.date | None = None) -> list[dict]:
@@ -3081,7 +3083,7 @@ def site_card(s: dict) -> str:
 
 
 PRODUCT_LABELS = {
-    "scholar-belt": "Scholar Utility Belt Pro", "moderntex": "ModernTex", "outbound-veil": "Outbound Veil", "legroom": "Legroom", "keyfeel": "Keyfeel", "tapefolio": "Tapefolio", "lenscrib": "Lenscrib", "nee": "Née", "panely": "Panely", "summonly": "Summonly", "freeboard": "Legroom", "app-suite": "Mac Suite", "bundle-2": "Mac Suite bundle (any 2)", "bundle-3": "Mac Suite bundle (any 3)", "cover-letter": "Cover letter", "anonymity-check": "Anonymity check",
+    "scholar-belt": "Scholar Utility Belt Pro", "moderntex": "ModernTex", "outbound-veil": "Outbound Veil", "legroom": "Legroom", "keyfeel": "Keyfeel", "tapefolio": "Tapefolio", "lenscrib": "Lenscrib", "lenses": "Lenses", "nee": "Née", "panely": "Panely", "summonly": "Summonly", "freeboard": "Legroom", "app-suite": "Mac Suite", "bundle-2": "Mac Suite bundle (any 2)", "bundle-3": "Mac Suite bundle (any 3)", "cover-letter": "Cover letter", "anonymity-check": "Anonymity check",
     "citation-gap": "Citation gap", "revision-review": "Revision review",
     "response-review": "Response review", "resume-review": "Resume review",
     "kit-bundle": "Kit bundle", "kit-clip": "Clip pipeline kit",
@@ -3565,6 +3567,7 @@ PRODUCT_GROUPS = [
     ("Keyfeel", "oklch(74% 0.13 190)"),
     ("Tapefolio", "oklch(70% 0.14 255)"),
     ("Lenscrib", "oklch(72% 0.14 90)"),
+    ("Lenses", "oklch(72% 0.14 120)"),
     ("Née", "oklch(72% 0.14 340)"),
     ("Panely", "oklch(72% 0.13 165)"),
     ("Summonly", "oklch(70% 0.15 25)"),
@@ -3599,6 +3602,8 @@ def product_group(row: dict) -> str:
         return "Tapefolio"
     if product == "lenscrib":
         return "Lenscrib"
+    if product == "lenses":
+        return "Lenses"
     if product == "nee":
         return "Née"
     if product == "panely":
@@ -4811,7 +4816,7 @@ def print_metrics(m: dict | None) -> None:
 
 PROFIT_DAYS = 7
 COSTS_PATH = Path.home() / ".config" / "purplelink" / "costs.json"
-PROFIT_LINES = ["ModernTex", "Outbound Veil", "Scholar Utility Belt Pro", "Legroom", "Keyfeel", "Tapefolio", "Lenscrib", "Née", "Panely", "Summonly", "Mac Suite", "Paper Review & tools", "Kits", "Spreadsheets", "Photo prints (Etsy)", "Subscriptions", "MuscleOnGLP",
+PROFIT_LINES = ["ModernTex", "Outbound Veil", "Scholar Utility Belt Pro", "Legroom", "Keyfeel", "Tapefolio", "Lenscrib", "Lenses", "Née", "Panely", "Summonly", "Mac Suite", "Paper Review & tools", "Kits", "Spreadsheets", "Photo prints (Etsy)", "Subscriptions", "MuscleOnGLP",
                 "GlobePin", "Company"]
 
 

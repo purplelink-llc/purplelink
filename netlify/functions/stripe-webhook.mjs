@@ -110,6 +110,7 @@ export const BLOB_DELIVERED_PRODUCTS = new Map([
   ["keyfeel",           { name: "Keyfeel for macOS",                 successPath: "/keyfeel/success/" }],
   ["tapefolio",         { name: "Tapefolio for macOS",               successPath: "/tapefolio/success/" }],
   ["lenscrib",          { name: "Lenscrib for macOS",                successPath: "/lenscrib/success/" }],
+  ["lenses",            { name: "Lenses for macOS",                  successPath: "/lenses/success/" }],
   ["nee",          { name: "Née for macOS",                successPath: "/nee/success/" }],
   ["panely",          { name: "Panely for macOS",                successPath: "/panely/success/" }],
   ["summonly",          { name: "Summonly for macOS",                successPath: "/summonly/success/" }],
@@ -416,7 +417,7 @@ export function paperReviewOffer(productKey, nowMs = Date.now()) {
 // when a calendar stops being a sensible gift. Ben approved this exact text on 2026-10-31 (photo-arm plan, idea 3).
 // Stop rule: no calendar sale by December 10 means this line comes out early.
 export const CALENDAR_LINE_LAST_DAY_MS = Date.UTC(2027, 0, 15, 23, 59, 59);
-const CALENDAR_LINE_PRODUCTS = new Set(["moderntex", "moderntex-seats", "outbound-veil", "legroom", "keyfeel", "tapefolio", "lenscrib", "nee",
+const CALENDAR_LINE_PRODUCTS = new Set(["moderntex", "moderntex-seats", "outbound-veil", "legroom", "keyfeel", "tapefolio", "lenscrib", "lenses", "nee",
   "panely", "summonly", "app-suite", "bundle-2", "bundle-3"]);
 
 export function calendarOffer(productKey, nowMs = Date.now()) {
@@ -584,6 +585,13 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     "so read every field before you save.";
   const lenscribText = lenscribKey.text + (isLenscrib ? lenscribNote + "\n\n" : "");
   const lenscribHtml = lenscribKey.html + (isLenscrib ? `<p>${lenscribNote}</p>` : "");
+  // Lenses has no key, trial or updater: the email is the download link plus one practical note. Sold on its own, so it is
+  // keyed on the product, not on `parts`.
+  const isLenses = productKey === "lenses";
+  const lensesNote = "Lenses needs macOS 14 or later on an Apple silicon Mac. It is a menu bar app with an Open at Login option in its menu. " +
+    "It collects nothing and makes no network requests.";
+  const lensesText = isLenses ? lensesNote + "\n\n" : "";
+  const lensesHtml = isLenses ? `<p>${lensesNote}</p>` : "";
   // Née's key is in the generic keys block above (shared PurplelinkLicenseV1 scheme), so this is only the one practical
   // note: how the ring opens and what it asks for. It goes to anyone whose purchase includes Née: the app itself, the
   // Suite, or a custom bundle that has it.
@@ -601,6 +609,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     keyfeelText +
     tapefolioText +
     lenscribText +
+    lensesText +
     neeText +
     panelyText +
     summonlyText +
@@ -621,6 +630,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     keyfeelHtml +
     tapefolioHtml +
     lenscribHtml +
+    lensesHtml +
     neeHtml +
     panelyHtml +
     summonlyHtml +

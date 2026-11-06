@@ -1,6 +1,6 @@
 # Purplelink LLC
 
-> Purplelink LLC is a one-person software studio in Atlanta, Georgia, founded in 2026 by Benjamin Ampel, that makes native Mac apps and free web tools. Mac apps (all with a free 7-day trial in the same download, then a one-time license key): ModernTex ($19.99, a LaTeX editor), Outbound Veil ($29.99, a menu-bar check for personal information in what you type), Legroom ($9.99, a menu-bar disk space readout and cleaner), Keyfeel ($9.99, recorded keyboard-switch sounds as you type), Tapefolio ($29.99, on-device transcription and OCR for researchers, macOS 26 and Apple silicon), Panely ($9.99, window snapping and saved layouts), Summonly ($9.99, file search, launcher and clipboard history), Née ($14.99, a file converter that opens as a ring at the pointer), and the Mac Suite ($59.99: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and a lifetime Vitae Plus). Also Vitae (a free Mac app for tracking submissions, grants and your CV, with an optional Plus subscription), Paper Review (AI pre-submission manuscript review, $9-$15), Scholar Utility Belt (a Chrome extension for Google Scholar, free core with an optional Pro tier), free in-browser LaTeX and BibTeX tools, GlobePin (a free iOS travel-mapping app) and haea (an on-device iOS health app in development).
+> Purplelink LLC is a one-person software studio in Atlanta, Georgia, founded in 2026 by Benjamin Ampel, that makes native Mac apps and free web tools. Mac apps (all but Lenses with a free 7-day trial in the same download, then a one-time license key): ModernTex ($19.99, a LaTeX editor), Outbound Veil ($29.99, a menu-bar check for personal information in what you type), Legroom ($9.99, a menu-bar disk space readout and cleaner), Keyfeel ($9.99, recorded keyboard-switch sounds as you type), Tapefolio ($29.99, on-device transcription and OCR for researchers, macOS 26 and Apple silicon), Panely ($9.99, window snapping and saved layouts), Summonly ($9.99, file search, launcher and clipboard history), Née ($14.99, a file converter that opens as a ring at the pointer), Lenses ($4.99 once, no trial: sets up AR glasses on a Mac, tested on RayNeo Air), and the Mac Suite ($59.99: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and a lifetime Vitae Plus). Also Vitae (a free Mac app for tracking submissions, grants and your CV, with an optional Plus subscription), Paper Review (AI pre-submission manuscript review, $9-$15), Scholar Utility Belt (a Chrome extension for Google Scholar, free core with an optional Pro tier), free in-browser LaTeX and BibTeX tools, GlobePin (a free iOS travel-mapping app) and haea (an on-device iOS health app in development).
 
 ## Company
 
@@ -18,7 +18,7 @@
 
 ## What Purplelink builds
 
-1. **Mac apps** — ModernTex (LaTeX manuscript editor), Outbound Veil (a menu-bar checker for personal information in what you type), Legroom (a menu-bar disk space readout and cleaner), Keyfeel (recorded keyboard-switch sounds, mouse clicks, scroll ticks and optional trackpad haptics, in the menu bar), Tapefolio (private on-device transcription and OCR for researchers), Panely (window snapping, a drag to a screen edge, and saved layouts that return when a monitor is reconnected), Summonly (a menu-bar launcher that finds files, apps and clipboard history, with quick answers), Née (a file converter: hold Option while dragging files and drop them on an action in a ring at the pointer), the Mac Suite bundle, and Vitae (free academic record keeping).
+1. **Mac apps** — ModernTex (LaTeX manuscript editor), Outbound Veil (a menu-bar checker for personal information in what you type), Legroom (a menu-bar disk space readout and cleaner), Keyfeel (recorded keyboard-switch sounds, mouse clicks, scroll ticks and optional trackpad haptics, in the menu bar), Tapefolio (private on-device transcription and OCR for researchers), Panely (window snapping, a drag to a screen edge, and saved layouts that return when a monitor is reconnected), Summonly (a menu-bar launcher that finds files, apps and clipboard history, with quick answers), Née (a file converter: hold Option while dragging files and drop them on an action in a ring at the pointer), Lenses (a menu-bar app that sets up AR glasses on a Mac: sharp mode, edge margin, night tint, Dark Mode, bigger pointer; $4.99, no trial, tested on RayNeo Air), the Mac Suite bundle, and Vitae (free academic record keeping).
 2. **Paid AI manuscript tools** — Paper Review and six smaller pre-submission checks, $2-$15 per use, no account.
 3. **Free in-browser tools and guides** — LaTeX compilation, BibTeX validation, citation generation, format conversion, and how-to guides for academic writing.
 4. **iOS apps** — GlobePin (travel mapping, shipping) and haea (on-device health analytics, in development).
@@ -134,6 +134,17 @@
 - **Status:** Shipping, version 1.0.0 (November 2, 2026). Notarized download, no App Store required.
 - **Trial and purchase:** https://purplelink.llc/nee/
 
+### Lenses (macOS)
+- **Platform:** macOS 14 Sonoma or later, Apple silicon only
+- **Category:** Display utility for AR glasses
+- **Description:** A menu-bar app that applies a profile when AR glasses are plugged into a Mac and puts the Mac back when they are unplugged. A sharp HiDPI mode (text drawn at 2x and scaled down) and 120 Hz where the glasses offer it; a layout of mirror, glasses above the laptop or side by side; an edge margin of 95, 90 or 85 percent so the soft edges of the lenses show black; a night tint (Warm, Night or Candle, automatic from 9 PM to 7 AM, and a matching warm tint whenever macOS Night Shift is on); Dark Mode and a bigger pointer while the Mirror 70% profile is on; optional sound through the glasses; open at login. Seven profiles: Optimal, Mirror, Mirror Big Text, Big Text, Side by Side, Cinema and Mirror 70%.
+- **Compatibility:** Tested on RayNeo Air. It recognises XREAL and VITURE glasses by display name, which is untested. For any other glasses, the menu item "Use this display as my glasses" marks the display.
+- **Pricing:** $4.99 once. No trial, no license key and no updater. Sold on its own, not in the Mac Suite. 14-day refund; a refunded purchase's download link stops working.
+- **Privacy:** Lenses collects nothing and makes no network requests. Its settings stay on the Mac.
+- **Limits:** Notarized direct download, not in the Mac App Store, because it uses private macOS display calls. Edge margin, a night tint on the glasses only and automatic apply and restore are things System Settings does not do for these glasses.
+- **Guide:** https://purplelink.llc/guides/ar-glasses-mac-setup/
+- **Purchase:** https://purplelink.llc/lenses/
+
 ### BatteryMeter (macOS)
 - **Platform:** macOS 13 or later, Apple silicon only
 - **Category:** Battery and power
@@ -245,6 +256,7 @@
 - Panely (macOS, free 7-day trial then $9.99, window snapping and saved layouts): https://purplelink.llc/panely/
 - Summonly (macOS, free 7-day trial then $9.99, file search, launcher and clipboard history): https://purplelink.llc/summonly/
 - Née (macOS, free 7-day trial then $14.99, file converter with 51 actions from a ring at the pointer): https://purplelink.llc/nee/
+- Lenses (macOS, $4.99 once, sets up AR glasses on a Mac, tested on RayNeo Air): https://purplelink.llc/lenses/
 - Mac Suite (macOS, $59.99 once: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and Vitae Plus for life, 14-day refund): https://purplelink.llc/suite/
 - Vitae (macOS, free app; optional Vitae Plus subscription from $2.99 a month, shipping): https://purplelink.llc/vitae/
 - Paper Review (AI manuscript review, from $9): https://purplelink.llc/tools/paper-review/
@@ -455,6 +467,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - LaTeX hub: https://purplelink.llc/guides/latex/ — pillar page covering the full academic LaTeX workflow.
 - latexdiff online for a multi-file project: https://purplelink.llc/guides/latexdiff-online/ — when to use latexdiff, how to run it on a single file or a git project with latexpand and latexdiff-vc, common failures, and what the online tool does.
 - Simulate Likert data for power analysis: https://purplelink.llc/guides/simulate-likert-data-for-power-analysis/ — dry-run an analysis script and estimate power with synthetic survey data, with Python code and real outputs, and what simulated data cannot tell you.
+- Setting up your new VR/AR glasses with a Mac: https://purplelink.llc/guides/ar-glasses-mac-setup/ — why the edges blur, a sharp HiDPI mode, 120 Hz, shrinking the picture, Dark Mode, Night Shift and the pointer, by hand in macOS, with where macOS cannot do it. Written for RayNeo, XREAL and VITURE.
 - Check Mac battery health, voltage and cycle count: https://purplelink.llc/guides/check-mac-battery-health-voltage-and-cycle-count/ — read health, cycle count, charge current, voltage, charger watts and time to empty with System Settings, System Information and Terminal, with real output and what the numbers cannot tell you.
 - Which app is draining your MacBook battery? Four ways to check (2026): https://purplelink.llc/guides/which-app-is-draining-mac-battery/ — the battery menu, Activity Monitor's Energy tab (Energy Impact is a relative score, not watts; 12 hr Power on laptops only) and Battery settings' last 24 hours, read from Apple's pages 2026-10-31; Spotlight indexing and kernel_task; BatteryMeter is the publisher's own free menu-bar app and is disclosed.
 - BibTeX hub: https://purplelink.llc/guides/bibtex/ — pillar page covering bibliography management.
