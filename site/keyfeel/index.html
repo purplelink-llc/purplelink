@@ -34,6 +34,8 @@
     <script src="/motion.js" defer></script>
     <script src="/product-flair.js" defer></script>
     <script src="/keyfeel/launch.js" defer></script>
+    <script src="/tools/mac-keyboard-tester/key-sounds.js" defer></script>
+    <script src="/keyfeel/hear-it.js" defer></script>
     <script src="/tools/paper-review/paid-tool-landing.js" defer></script>
     <script type="application/ld+json">
     {
@@ -185,6 +187,10 @@
         </div>
         <p class="buy-assurance">Checkout shows the price in your local currency, and you can switch back to US dollars.</p>
         <!-- bundle-nudge:start --><p class="buy-bundle">Add any second Mac Suite app and save 25% on both, or any third for 40% off all three. <a href="/suite/?utm_source=purplelink&amp;utm_medium=product-page&amp;utm_campaign=bundle-nudge&amp;utm_content=keyfeel#bundle">Choose the apps</a>.</p><!-- bundle-nudge:end -->
+        <p class="kf-hear">
+          <button type="button" class="btn btn-ghost" id="kf-hear">Hear it</button>
+          <span class="kf-hear-note" id="kf-hear-status" role="status">Plays three keystrokes from the Tactile set. <a href="/tools/mac-keyboard-tester/">Try the keyboard tester</a>.</span>
+        </p>
         <p class="tool-status" id="checkout-status" aria-live="polite"></p>
         <form class="trial-remind" data-reminder-signup data-reminder-api="/.netlify/functions/keyfeel-reminder" data-reminder-link="keyfeel-download" hidden novalidate>
           <p class="trial-remind-head" id="kf-remind-head-1">Your download has started. Want setup tips by email, and one reminder before the trial ends?</p>

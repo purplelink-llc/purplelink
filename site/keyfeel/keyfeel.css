@@ -37,3 +37,8 @@
 /* Comparison table on the product page: even columns inside a scroll container. */
 .compare-table.u-table-wide tbody th { min-width: 7.5rem; }
 .compare-table.u-table-wide td { min-width: 10rem; }
+
+/* "Hear it" sample button under the hero actions. */
+.kf-hear { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin: 12px 0 0; }
+.kf-hear-note { color: var(--muted); font-size: .9rem; }
+.kf-hear .btn[aria-disabled="true"] { opacity: .6; cursor: progress; }
