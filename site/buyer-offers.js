@@ -28,11 +28,35 @@
     p.append(code, ` takes ${o.percent}% off one other Purplelink product, once, until ${o.expires_text}. ` +
       "It is applied at checkout from this browser or from the link in your purchase email. " +
       "It does not work on bundles or subscriptions.");
+    section.append(h, p);
+    // Up to two hand-picked products (netlify/lib/upsell.mjs), with the real price and the price with the code.
+    const picks = Array.isArray(o.suggestions) ? o.suggestions.filter((s) =>
+      s && typeof s.name === "string" && /^\/[a-z0-9\-/]+\/$/.test(s.path || "") &&
+      /^\$\d+\.\d{2}$/.test(s.price || "") && /^\$\d+\.\d{2}$/.test(s.price_with_code || "")).slice(0, 2) : [];
+    if (picks.length) {
+      const list = document.createElement("ul");
+      list.className = "buyer-offer-picks";
+      for (const s of picks) {
+        const li = document.createElement("li");
+        const link = document.createElement("a");
+        link.href = `${s.path}?code=${encodeURIComponent(o.code)}`;
+        link.textContent = s.name;
+        link.addEventListener("click", () => {
+          if (typeof window.plTrack === "function") window.plTrack("upsell_click", String(s.product || ""));
+        });
+        const price = document.createElement("span");
+        price.className = "buyer-offer-price";
+        price.textContent = `${s.price_with_code} with your code (normally ${s.price})`;
+        li.append(link, " ", price);
+        list.append(li);
+      }
+      section.append(list);
+    }
     const a = document.createElement("a");
     a.className = "btn btn-ghost";
     a.href = `/products/?code=${encodeURIComponent(o.code)}`;
-    a.textContent = "See the products";
-    section.append(h, p, a);
+    a.textContent = picks.length ? "See all products" : "See the products";
+    section.append(a);
     const slot = document.querySelector("[data-buyer-offer]");
     if (slot) slot.append(section); else main.append(section);
   };

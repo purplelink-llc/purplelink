@@ -5,7 +5,9 @@
  * the proof of purchase, as on every other success page: it is long, random and only shown to the buyer.
  *
  *   200 { pending: true }  the webhook has not issued it yet (or this order earns none); the page asks again a few times
- *   200 { code, expires, expires_text, percent, source_product }
+ *   200 { code, expires, expires_text, percent, source_product, suggestions }
+ *       suggestions: up to two products for the code (netlify/lib/upsell.mjs), each
+ *       { product, name, path, price, price_with_code }
  *   400 { error: "invalid_request" }
  * Any 200 may also carry referral_link: the buyer's own referral link (netlify/lib/referrals.mjs), once the webhook
  * has registered the order.
@@ -13,6 +15,7 @@
 import { getStore } from "@netlify/blobs";
 import { STORE, PERCENT_OFF, readRecord, expiryText } from "../lib/buyer-codes.mjs";
 import { referralFor } from "../lib/referrals.mjs";
+import { suggestionsFor } from "../lib/upsell.mjs";
 
 const SESSION_RE = /^cs_(live|test)_[A-Za-z0-9]{10,200}$/;
 
@@ -43,5 +46,6 @@ export default async function handler(request, { nowMs = Date.now() } = {}) {
     expires_text: expiryText(rec.expires),
     percent: PERCENT_OFF,
     source_product: rec.source_product,
+    suggestions: suggestionsFor(rec),
   });
 }
