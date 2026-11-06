@@ -1,0 +1,37 @@
+[
+ {
+  "id": "fontspec-engine-thumb-A",
+  "kind": "focus",
+  "hook": "Wrong\nengine",
+  "lines": [
+   "fontspec requires",
+   "either XeTeX",
+   "or LuaTeX."
+  ],
+  "hl": "XeTeX",
+  "variant": "A",
+  "video": "hWAiJ4CeDZI"
+ },
+ {
+  "id": "fontspec-engine-thumb-B",
+  "kind": "diff",
+  "hook": "One comment",
+  "before": "$ pdflatex main.tex",
+  "after": "% !TEX program = xelatex",
+  "variant": "B",
+  "video": "hWAiJ4CeDZI"
+ },
+ {
+  "id": "fontspec-engine-thumb-C",
+  "kind": "face",
+  "hook": "Which\nengine?",
+  "lines": [
+   "fontspec requires",
+   "either XeTeX or LuaTeX"
+  ],
+  "hl": "XeTeX",
+  "mood": "confused, hand on chin",
+  "variant": "C",
+  "video": "hWAiJ4CeDZI"
+ }
+]

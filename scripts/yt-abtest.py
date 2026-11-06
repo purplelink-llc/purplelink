@@ -103,6 +103,8 @@ def _record(entry):
 def start(vid, a, b, c):
     paths = [os.path.abspath(p) for p in (a, b, c)]
     for p in paths:
+        if "placeholder" in os.path.basename(p).lower():
+            raise SystemExit(f"{p} is a face placeholder render; placeholders are never uploaded")
         if not os.path.isfile(p) or os.path.getsize(p) >= 2_000_000:
             raise SystemExit(f"thumbnail missing or 2 MB or more: {p}")
     # A is the control: make it the video's current thumbnail first (no-op when it already is)

@@ -1,0 +1,37 @@
+[
+ {
+  "id": "file-not-found-five-thumb-A",
+  "kind": "focus",
+  "hook": "Which\none?",
+  "lines": [
+   "LaTeX Error:",
+   "File not found."
+  ],
+  "hl": "File not found",
+  "big": "5",
+  "variant": "A",
+  "video": "Yd51v0bEfCw"
+ },
+ {
+  "id": "file-not-found-five-thumb-B",
+  "kind": "diff",
+  "hook": "5 fixes",
+  "before": "! LaTeX Error: File not found",
+  "after": "PDF builds",
+  "variant": "B",
+  "video": "Yd51v0bEfCw"
+ },
+ {
+  "id": "file-not-found-five-thumb-C",
+  "kind": "face",
+  "hook": "5 causes",
+  "lines": [
+   "LaTeX Error:",
+   "File not found."
+  ],
+  "hl": "File not found",
+  "mood": "shocked, hands on head",
+  "variant": "C",
+  "video": "Yd51v0bEfCw"
+ }
+]
