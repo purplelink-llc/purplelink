@@ -79,7 +79,7 @@ async function startCheckout() {
   let priceId = null;
   const original = globalThis.fetch;
   globalThis.fetch = async (url, opts) => {
-    if (String(url).includes("api.stripe.com")) {
+    if (new URL(String(url)).hostname === "api.stripe.com") {
       used = opts.headers.Authorization;
       priceId = new URLSearchParams(opts.body).get("line_items[0][price]");
       return new Response(JSON.stringify({ id: "cs_test_x", url: "https://checkout.stripe.com/pay/cs_test_x" }), { status: 200 });
