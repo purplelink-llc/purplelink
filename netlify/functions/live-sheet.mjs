@@ -25,6 +25,7 @@
 import { randomBytes } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import { clientIp, overDailyLimit } from "../lib/ratelimit.mjs";
+import { stripeFetchAny } from "../lib/stripe-account.mjs";
 import { SITE_ORIGIN, createPortalSession, sendPortalEmail, signPortalToken, verifyPortalToken } from "../lib/portal-link.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
@@ -88,7 +89,7 @@ async function getJSON(url, init = {}) {
 async function stripe(path) {
   const key = Netlify.env.get("STRIPE_SECRET_KEY");
   if (!key) throw new Error("STRIPE_SECRET_KEY not set");
-  const resp = await fetch(`${STRIPE_API}${path}`, { headers: { Authorization: `Bearer ${key}` } });
+  const resp = await stripeFetchAny(`${STRIPE_API}${path}`, { headers: { Authorization: `Bearer ${key}` } });
   if (!resp.ok) return null;
   return resp.json();
 }

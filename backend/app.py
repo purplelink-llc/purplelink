@@ -12,6 +12,7 @@ import modal
 
 logger = logging.getLogger(__name__)
 
+import stripe_account as _stripe_account
 from latextools import annual
 from latextools import core
 
@@ -83,6 +84,7 @@ image = (
         "test \"$(kpsewhich -var-value=shell_escape)\" = f",
     )
     .add_local_python_source("latextools")
+    .add_local_python_source("stripe_account")
 )
 
 # Isolated JVM image for the free PDF-structure tool. The opendataloader-pdf
@@ -102,6 +104,7 @@ opendataloader_image = (
         "assert glob.glob(os.path.join(p,'jar','*.jar')), 'bundled JAR missing'\"",
     )
     .add_local_python_source("latextools")
+    .add_local_python_source("stripe_account")
 )
 
 # Persistent, low-volume counter store for rate limiting.
@@ -633,7 +636,8 @@ async def _mint_referral_promo_code(client, email: str) -> str | None:
     whole crediting flow for both sides."""
     import secrets as _secrets
 
-    stripe_key = os.environ.get("STRIPE_SECRET_KEY", "")
+    # Created in the account checkout runs on, so the code is redeemable there.
+    stripe_key = _stripe_account.checkout_secret_key()
     if not stripe_key:
         logger.warning("_mint_referral_promo_code: STRIPE_SECRET_KEY not set")
         return None
@@ -4393,14 +4397,14 @@ def web():
         coupon on, after the Stripe coupon exists), the chat is on and the Stripe key is set. Fails closed."""
         try:
             return (buddy_dict.get("flag:coupon", False) is True and _buddy_on()
-                    and bool(os.environ.get("STRIPE_SECRET_KEY")))
+                    and bool(_stripe_account.checkout_secret_key()))
         except Exception:
             return False
 
     async def _mint_buddy_code(client, expires_at: int, source: str, key: str) -> str | None:
         """One single-use promotion code on the buddy-20 coupon. One retry with a new code (a duplicate code is a
         400), then None."""
-        stripe_key = os.environ.get("STRIPE_SECRET_KEY", "")
+        stripe_key = _stripe_account.checkout_secret_key()  # the account checkout runs on
         for _ in range(2):
             code = _buddy.new_coupon_code()
             try:
@@ -4992,8 +4996,7 @@ def web():
         if token not in (token_entry.get("tokens") or []):
             return JSONResponse({"error": "invalid_token"}, status_code=403)
 
-        stripe_key = os.environ.get("STRIPE_SECRET_KEY")
-        if not stripe_key:
+        if not _stripe_account.lookup_keys():
             return JSONResponse(
                 {"error": "misconfigured", "detail": "STRIPE_SECRET_KEY not set on web function."},
                 status_code=500,
@@ -5005,9 +5008,11 @@ def web():
         # Look up the Checkout Session to find customer + amount
         async with _httpx.AsyncClient(timeout=15.0) as client:
             try:
-                resp = await client.get(
+                # The session lives in one account; try each key and keep using the one that found it, so the
+                # customer and invoice below are created in that same account.
+                resp, stripe_key = await _stripe_account.fetch_any(
+                    client, "GET",
                     f"https://api.stripe.com/v1/checkout/sessions/{_ulp.quote(session_id, safe='')}",
-                    headers={"Authorization": f"Bearer {stripe_key}"},
                 )
                 if resp.status_code != 200:
                     logger.error("stripe checkout session lookup failed: %s", resp.text[:300])
@@ -5200,14 +5205,14 @@ def _annual_secret() -> str:
 
 async def _annual_fetch_subscription(subscription_id: str):
     """The live subscription from Stripe as annual.snapshot_from_stripe() output, or None when it cannot be read."""
-    key = os.environ.get("STRIPE_SECRET_KEY", "")
-    if not key or not isinstance(subscription_id, str) or not subscription_id.startswith("sub_"):
+    if not _stripe_account.lookup_keys() or not isinstance(subscription_id, str) or not subscription_id.startswith("sub_"):
         return None
     import httpx
     try:
         async with httpx.AsyncClient(timeout=15.0) as c:
-            r = await c.get(f"https://api.stripe.com/v1/subscriptions/{subscription_id}",
-                            params={"expand[]": "latest_invoice"}, headers={"Authorization": f"Bearer {key}"})
+            r, _key = await _stripe_account.fetch_any(
+                c, "GET", f"https://api.stripe.com/v1/subscriptions/{subscription_id}",
+                params={"expand[]": "latest_invoice"})
         if r.status_code != 200:
             return None
         return annual.snapshot_from_stripe(r.json())
@@ -5218,15 +5223,14 @@ async def _annual_fetch_subscription(subscription_id: str):
 
 async def _annual_set_cancel(subscription_id: str, cancel: bool) -> bool:
     """Set cancel_at_period_end on the subscription. True when Stripe accepted it."""
-    key = os.environ.get("STRIPE_SECRET_KEY", "")
-    if not key or not isinstance(subscription_id, str) or not subscription_id.startswith("sub_"):
+    if not _stripe_account.lookup_keys() or not isinstance(subscription_id, str) or not subscription_id.startswith("sub_"):
         return False
     import httpx
     try:
         async with httpx.AsyncClient(timeout=15.0) as c:
-            r = await c.post(f"https://api.stripe.com/v1/subscriptions/{subscription_id}",
-                             data={"cancel_at_period_end": "true" if cancel else "false"},
-                             headers={"Authorization": f"Bearer {key}"})
+            r, _key = await _stripe_account.fetch_any(
+                c, "POST", f"https://api.stripe.com/v1/subscriptions/{subscription_id}",
+                data={"cancel_at_period_end": "true" if cancel else "false"})
         return r.status_code == 200
     except Exception:
         logger.exception("annual: Stripe cancel update failed")
@@ -5321,15 +5325,14 @@ def _referral_store():
 async def _referral_fetch_charge(session_id: str):
     """{refunded, disputed, fingerprint} for a paid Checkout Session, or None when Stripe cannot be read."""
     from latextools import referrals as _referrals
-    key = os.environ.get("STRIPE_SECRET_KEY", "")
-    if not key or not isinstance(session_id, str) or not session_id.startswith("cs_"):
+    if not _stripe_account.lookup_keys() or not isinstance(session_id, str) or not session_id.startswith("cs_"):
         return None
     import httpx
     try:
         async with httpx.AsyncClient(timeout=15.0) as c:
-            r = await c.get(f"https://api.stripe.com/v1/checkout/sessions/{session_id}",
-                            params={"expand[]": "payment_intent.latest_charge"},
-                            headers={"Authorization": f"Bearer {key}"})
+            r, _key = await _stripe_account.fetch_any(
+                c, "GET", f"https://api.stripe.com/v1/checkout/sessions/{session_id}",
+                params={"expand[]": "payment_intent.latest_charge"})
         if r.status_code != 200:
             return None
         return _referrals.charge_state(r.json())
@@ -5680,7 +5683,7 @@ def _sessions_with_later_purchase(entries) -> set:
 
 
 @app.function(
-    image=modal.Image.debian_slim(python_version="3.11").pip_install("httpx").add_local_python_source("latextools"),
+    image=modal.Image.debian_slim(python_version="3.11").pip_install("httpx").add_local_python_source("latextools").add_local_python_source("stripe_account"),
     timeout=900,
     secrets=[stripe_secret, subscribe_secret],
 )
@@ -5690,38 +5693,42 @@ def backfill_buyer_ledger(max_pages: int = 200) -> dict:
     The Stripe key stays inside the Modal secret. Idempotent (record_purchase keeps the oldest order first)."""
     import httpx
     from latextools import referrals as _referrals
-    key = os.environ.get("STRIPE_SECRET_KEY", "")
-    if not key:
+    keys = _stripe_account.lookup_keys()
+    if not keys:
         return {"error": "no_stripe_key"}
-    added, pages, after = 0, 0, ""
+    added, pages = 0, 0
+    # A list under the wrong account is a 200 with no rows, so walk every account's sessions and merge.
     with httpx.Client(timeout=30.0) as c:
-        while pages < max_pages:
-            params = {"limit": "100", "status": "complete"}
-            if after:
-                params["starting_after"] = after
-            r = c.get("https://api.stripe.com/v1/checkout/sessions", params=params,
-                      headers={"Authorization": f"Bearer {key}"})
-            r.raise_for_status()
-            body = r.json()
-            pages += 1
-            for sess in body.get("data", []):
-                if sess.get("payment_status") != "paid" or not int(sess.get("amount_total") or 0):
-                    continue
-                email = ((sess.get("customer_details") or {}).get("email") or "").strip()
-                if not email:
-                    continue
-                canon = _buddy_canonical_email(email) or email.lower()
-                _referrals.record_purchase(buyer_ledger_dict, canon, sess["id"], float(sess.get("created") or 0))
-                added += 1
-            data = body.get("data") or []
-            if not body.get("has_more") or not data:
-                break
-            after = data[-1]["id"]
+        for key in keys:
+            after, key_pages = "", 0
+            while key_pages < max_pages:
+                params = {"limit": "100", "status": "complete"}
+                if after:
+                    params["starting_after"] = after
+                r = c.get("https://api.stripe.com/v1/checkout/sessions", params=params,
+                          headers={"Authorization": f"Bearer {key}"})
+                r.raise_for_status()
+                body = r.json()
+                pages += 1
+                key_pages += 1
+                for sess in body.get("data", []):
+                    if sess.get("payment_status") != "paid" or not int(sess.get("amount_total") or 0):
+                        continue
+                    email = ((sess.get("customer_details") or {}).get("email") or "").strip()
+                    if not email:
+                        continue
+                    canon = _buddy_canonical_email(email) or email.lower()
+                    _referrals.record_purchase(buyer_ledger_dict, canon, sess["id"], float(sess.get("created") or 0))
+                    added += 1
+                data = body.get("data") or []
+                if not body.get("has_more") or not data:
+                    break
+                after = data[-1]["id"]
     return {"sessions": added, "pages": pages, "buyers": len(list(buyer_ledger_dict.keys()))}
 
 
 @app.function(
-    image=modal.Image.debian_slim(python_version="3.11").pip_install("httpx").add_local_python_source("latextools"),
+    image=modal.Image.debian_slim(python_version="3.11").pip_install("httpx").add_local_python_source("latextools").add_local_python_source("stripe_account"),
     schedule=modal.Cron("0 14 * * *"),  # daily, 14:00 UTC — mid-morning US
     timeout=600,
     secrets=[resend_secret, subscribe_secret, stripe_secret],

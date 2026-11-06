@@ -25,7 +25,7 @@ export const FLAG_ENV = "STRIPE_NEW_ACCOUNT";
 const ON = new Set(["on", "1", "true", "all", "yes"]);
 
 function env(name) {
-  return (globalThis.Netlify?.env?.get(name) || "").trim();
+  return String(globalThis.Netlify?.env?.get(name) ?? globalThis.process?.env?.[name] ?? "").trim();
 }
 
 /** True when new Checkout Sessions go to the new account: the flag is on and the new key is present. */
@@ -47,6 +47,22 @@ export function priceEnvName(envKey) {
 export function lookupKeys() {
   const keys = [env(NEW_KEY_ENV), env(OLD_KEY_ENV)].filter(Boolean);
   return [...new Set(keys)];
+}
+
+/** lookupKeys() with a caller's own key included (last, when it is neither account's key). */
+export function keysWith(primary) {
+  return [...new Set([...lookupKeys(), primary].filter(Boolean))];
+}
+
+/** True when key is the new account's key. */
+export function isNewKey(key) {
+  const n = env(NEW_KEY_ENV);
+  return Boolean(n) && key === n;
+}
+
+/** Name of a per-account env var (a portal configuration id): the `_NEW` twin for the new account's key. */
+export function configEnvName(name, key) {
+  return isNewKey(key) ? `${name}_NEW` : name;
 }
 
 /**

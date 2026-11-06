@@ -19,6 +19,7 @@
  */
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { getStore } from "@netlify/blobs";
+import { configEnvName, isNewKey, keysWith } from "./stripe-account.mjs";
 
 export const SITE_ORIGIN = "https://purplelink.llc";
 export const PORTAL_LINK_SECONDS = 30 * 60;
@@ -55,11 +56,13 @@ export function verifyPortalToken(kind, token, secret, now = Math.floor(Date.now
 }
 
 export async function portalConfiguration(secretKey) {
-  const fromEnv = process.env.STRIPE_PORTAL_CONFIG_SUBSCRIPTIONS;
+  // A portal configuration belongs to one Stripe account: the new account has its own `_NEW` id and cache entry.
+  const fromEnv = process.env[configEnvName("STRIPE_PORTAL_CONFIG_SUBSCRIPTIONS", secretKey)];
   if (fromEnv) return fromEnv;
   const store = getStore(CONFIG_STORE);
+  const configKey = isNewKey(secretKey) ? `${CONFIG_KEY}-new` : CONFIG_KEY;
   try {
-    const cached = await store.get(CONFIG_KEY);
+    const cached = await store.get(configKey);
     if (cached) return cached;
   } catch { /* fall through and create one */ }
   let resp;
@@ -89,12 +92,21 @@ export async function portalConfiguration(secretKey) {
   }
   const config = await resp.json().catch(() => null);
   if (typeof config?.id !== "string") return null;
-  try { await store.set(CONFIG_KEY, config.id); } catch { /* next call creates another; harmless */ }
+  try { await store.set(configKey, config.id); } catch { /* next call creates another; harmless */ }
   return config.id;
 }
 
 /** A Stripe billing portal URL for this customer, or null on any failure. */
 export async function createPortalSession(customer, returnUrl, secretKey) {
+  // The customer lives in one account; try the new account first, then the old, and keep the first portal that opens.
+  for (const key of keysWith(secretKey)) {
+    const url = await createPortalSessionFor(customer, returnUrl, key);
+    if (url) return url;
+  }
+  return null;
+}
+
+async function createPortalSessionFor(customer, returnUrl, secretKey) {
   const configuration = await portalConfiguration(secretKey);
   if (!configuration) return null;
   let resp;
