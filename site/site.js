@@ -487,6 +487,71 @@
   });
 })();
 
+// A buyer's cross-sell code (netlify/lib/buyer-codes.mjs): 30% off one other product, once. It arrives as ?code=
+// from the purchase email or is remembered by a success page (buyer-offers.js). While it is valid, a note says so
+// and every checkout request carries it; checkout.mjs decides whether it applies. A refusal (wrong product, used,
+// expired) comes back as code_not_valid with a plain reason that the buy button shows, and the code is forgotten
+// here so the next press goes through at the full price. Nothing is sent anywhere until a buy button is pressed.
+(() => {
+  const KEY = "pl_buyer_code";
+  const RE = /^PL-[2-9A-HJKMNP-Z]{8}$/;
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) { saved = null; }
+  const q = new URLSearchParams(location.search);
+  const fromUrl = (q.get("code") || "").trim().toUpperCase();
+  let code = "";
+  if (RE.test(fromUrl)) {
+    code = fromUrl;
+    // The expiry is checked at checkout; keep a link's code for 30 days at most in this browser.
+    const keep = saved && saved.code === fromUrl && saved.expires ? saved.expires : new Date(Date.now() + 30 * 86400000).toISOString();
+    try { localStorage.setItem(KEY, JSON.stringify({ code, expires: keep })); } catch (e) { /* the code still works on this page */ }
+  } else if (saved && RE.test(saved.code || "") && Date.parse(saved.expires) > Date.now()) {
+    code = saved.code;
+  } else if (saved) {
+    try { localStorage.removeItem(KEY); } catch (e) { /* ignore */ }
+  }
+  if (!code) return;
+  const forget = () => { code = ""; try { localStorage.removeItem(KEY); } catch (e) { /* ignore */ } };
+
+  const realFetch = window.fetch;
+  if (typeof realFetch === "function") {
+    window.fetch = function (input, init) {
+      const url = typeof input === "string" ? input : (input && input.url) || "";
+      if (!code || url.indexOf("/.netlify/functions/checkout") === -1 || !init || typeof init.body !== "string") {
+        return realFetch.apply(this, arguments);
+      }
+      let parsed = null;
+      try { parsed = JSON.parse(init.body); } catch (e) { parsed = null; }
+      if (!parsed || typeof parsed !== "object" || parsed.code) return realFetch.apply(this, arguments);
+      parsed.code = code;
+      return realFetch.call(this, input, Object.assign({}, init, { body: JSON.stringify(parsed) })).then((resp) => {
+        if (resp.status === 400) {
+          resp.clone().json().then((d) => { if (d && d.error === "code_not_valid") forget(); }).catch(() => {});
+        }
+        return resp;
+      });
+    };
+  }
+
+  // Only on pages that sell something: a buy button or a product's checkout script.
+  const show = () => {
+    const main = document.querySelector("main");
+    const sells = location.pathname === "/products/" || document.querySelector("#checkout-btn, .pr-checkout-btn, .pl-buy, [data-product]");
+    if (!main || !sells) return;
+    const note = document.createElement("div");
+    note.className = "buyer-code-note";
+    note.setAttribute("role", "status");
+    const p = document.createElement("p");
+    const strong = document.createElement("strong");
+    strong.textContent = code;
+    p.append("Your code ", strong, " takes 30% off one product at checkout. It does not apply to bundles, seat packs, subscriptions or the kind of product you bought to get it.");
+    note.append(p);
+    main.prepend(note);
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", show);
+  else show();
+})();
+
 // Back from a closed Stripe checkout (?checkout=canceled): say that nothing
 // was charged and where to ask, once, then drop the flag from the address.
 (() => {

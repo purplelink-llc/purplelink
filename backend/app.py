@@ -2527,6 +2527,15 @@ def web():
         product_key = (payload or {}).get("product", "paper-review-standard")
         referral_code = (payload or {}).get("referral_code", "")
         referral_code = referral_code.strip()[:32] if isinstance(referral_code, str) else ""
+        # The buyer's cross-sell code from stripe-webhook.mjs (netlify/lib/buyer-codes.mjs): 30% off one other
+        # product, shown in the purchase email. Untrusted text, so only the code shape and a short date pass.
+        import re as _re
+        _buyer_code = (payload or {}).get("buyer_code", "")
+        _buyer_code = _buyer_code if isinstance(_buyer_code, str) and _re.fullmatch(r"PL-[2-9A-HJKMNP-Z]{8}", _buyer_code) else ""
+        _buyer_code_expires = (payload or {}).get("buyer_code_expires", "")
+        _buyer_code_expires = _buyer_code_expires if isinstance(_buyer_code_expires, str) and _re.fullmatch(r"[A-Za-z]+ \d{1,2}, \d{4}", _buyer_code_expires) else ""
+        if not _buyer_code_expires:
+            _buyer_code = ""
         if not session_id or not isinstance(session_id, str) or len(session_id) > 200:
             return JSONResponse({"error": "missing_session_id"}, status_code=400)
 
@@ -2643,7 +2652,8 @@ def web():
                         to=entry["email"],
                         subject=f"Your {_delivery._READY_NAMES.get(category, 'purchase')}: link to start",
                         html=_delivery.html_purchase_link(
-                            product_name=_delivery._READY_NAMES.get(category, "purchase"), link=link),
+                            product_name=_delivery._READY_NAMES.get(category, "purchase"), link=link,
+                            buyer_code=_buyer_code, buyer_code_expires=_buyer_code_expires),
                         tags=[{"name": "product", "value": product_key}],
                     )
                 if _email_result.get("status") != "ok":
@@ -2661,7 +2671,9 @@ def web():
                         _ec,
                         to=entry["email"],
                         subject=f"Your {qty}-pack of Paper Reviews",
-                        html=_delivery.html_volume_pack_tokens(tokens=tokens, pack_size=qty),
+                        html=_delivery.html_volume_pack_tokens(
+                            tokens=tokens, pack_size=qty,
+                            buyer_code=_buyer_code, buyer_code_expires=_buyer_code_expires),
                         tags=[{"name": "product", "value": product_key}],
                     )
                 if _email_result.get("status") != "ok":
