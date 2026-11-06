@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Offline tests for approval_queue.py. Run: python3 scripts/queue/test_approval_queue.py"""
-import datetime as dt, importlib.util, os, sys, tempfile
+import contextlib, datetime as dt, importlib.util, io, os, sys, tempfile
 from pathlib import Path
 
 tmp = tempfile.mkdtemp()
@@ -174,4 +174,20 @@ except SystemExit as e:
 check(any(nid[0] in p.read_text() for p in (aq.ROOT / "pending").glob("*.md")), "still pending after refusal")
 aq.main(["approve", nid[0], "--by-ben", "--note", "Ben said yes in chat"])
 check(any(nid[0] in p.read_text() for p in (aq.ROOT / "approved").glob("*.md")), "--by-ben approves")
+# Scalars written by fmt_scalar (json.dumps) must read back unchanged.
+for s in ['searches for "check pdf redaction" (est: 5)', 'C:\\path\\x', 'a \\"b\\" c',
+          'trailing\\', 'key: value', '"fully quoted"']:
+    check(aq.parse_scalar(aq.fmt_scalar(s)) == s, f"scalar round trip: {s!r}")
+    fm, body = aq.split_item(aq.join_item({"id": "q-rt", "expected_effect": s}, "body\n"))
+    check(fm["expected_effect"] == s, f"item round trip: {s!r}")
+
+# An item that cannot be parsed is named on stderr, not skipped silently.
+broken = aq.ROOT / "pending" / "broken.md"
+broken.write_text("no front matter")
+err = io.StringIO()
+with contextlib.redirect_stderr(err):
+    aq.all_items()
+broken.unlink()
+check("broken.md" in err.getvalue(), "all_items warns about an unparseable file")
+
 print("approval queue tests ok")

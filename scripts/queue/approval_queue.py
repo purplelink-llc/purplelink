@@ -63,11 +63,26 @@ def parse_scalar(v: str):
         return ""
     if v[0] in "\"'":
         q = v[0]
+        if q == '"':
+            # fmt_scalar writes json.dumps(s); decode the same token with the
+            # JSON decoder so escaped quotes and backslashes round-trip exactly.
+            try:
+                s, _ = json.JSONDecoder().raw_decode(v)
+                if isinstance(s, str):
+                    return s
+            except ValueError:
+                pass
         end = v.find(q, 1)
         while end > 0 and v[end - 1] == "\\":
             end = v.find(q, end + 1)
         inner = v[1:end] if end > 0 else v[1:]
-        return json.loads('"' + inner.replace('"', '\\"') + '"') if q == '"' and "\\" in inner else inner
+        if q == '"' and "\\" in inner:
+            # Hand-written item that is not valid JSON: keep the old reading.
+            try:
+                return json.loads('"' + inner.replace('"', '\\"') + '"')
+            except ValueError:
+                return inner
+        return inner
     if v[0] == "{":
         close = v.rfind("}")
         body = v[1:close]
@@ -147,7 +162,8 @@ def all_items():
         for p in sorted((ROOT / f).glob("*.md")):
             try:
                 fm, body = split_item(p.read_text())
-            except Exception:
+            except Exception as e:
+                print(f"warning: skipping unparseable queue item {p}: {e}", file=sys.stderr)
                 continue
             items.append({"folder": f, "path": p, "fm": fm, "body": body})
     return items
