@@ -1,0 +1,139 @@
+{
+ "id": "howto-lenses-ar-glasses-mac",
+ "app": "lenses",
+ "standalone": true,
+ "title": "Optimizing your new AR glasses on a Mac",
+ "short_title": "Blurry edges on AR glasses with a Mac? Six settings",
+ "url": "purplelink.llc/lenses",
+ "page": "https://purplelink.llc/lenses/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "verify": {
+  "runs": [],
+  "docs": [
+   "https://support.apple.com/guide/mac-help/mchl52e1c2d2/mac"
+  ],
+  "notes": "No terminal output on screen. Launch video for Lenses, approved by Ben 2026-11-05. Claims come from the launch facts file (lenses-launch-facts-2026-11-05.md) and /Volumes/Extreme SSD/Lenses/README.md: tested on RayNeo Air only; XREAL and VITURE are recognised by name but untested; no network requests; macOS 14 or later on Apple silicon; System Settings has no edge margin or glasses-only night tint for these glasses. Dark Mode page: Apple's Mac User Guide, Use a light or dark appearance on your Mac (read 2026-11-05). The drawings are illustrations and are labelled as such on screen; there is no footage through the glasses. The price is left out of the video (gate rule) and goes in the description."
+ },
+ "scenes": [
+  {
+   "type": "hook",
+   "short": true,
+   "kicker": "AR and VR display glasses",
+   "title": "Optimizing your new AR glasses on a Mac",
+   "sub": "Six settings. Two have no switch in macOS.",
+   "narration": "You plugged new display glasses into your Mac, and the picture looks soft at the edges and tiring to read. Here are six settings that help. Two of them have no switch in macOS."
+  },
+  {
+   "type": "panel",
+   "kind": "edges",
+   "label": "Why the edges blur",
+   "lines": [
+    "The lenses are soft toward the edge",
+    "That is the optics, not your eyes",
+    "The steps below make the middle as clear as possible"
+   ],
+   "narration": "First, why the edges blur. The glasses are soft toward the edge because of the optics. It is the lens, not your eyes, and not your Mac. The steps below make the part you look at as clear as they can."
+  },
+  {
+   "type": "panel",
+   "kind": "hidpi",
+   "label": "Sharp text",
+   "lines": [
+    "Open System Settings, then Displays",
+    "Choose the glasses, and hold Option",
+    "Pick a HiDPI size, such as 1920 by 1080"
+   ],
+   "ui": "HiDPI means the Mac draws the text at twice the size, then scales it down.",
+   "narration": "Second, sharp text. Open System Settings, then Displays, choose the glasses, and hold Option to see more sizes. Pick a HiDPI size, such as 1920 by 1080. The Mac draws the text at twice that size and scales it down, which is smoother."
+  },
+  {
+   "type": "panel",
+   "kind": "hz",
+   "label": "Refresh rate",
+   "lines": [
+    "Stay in Displays",
+    "Set Refresh Rate to 120 Hz",
+    "If the menu stops at 60, the glasses offer no more"
+   ],
+   "narration": "Third, refresh rate. In the same pane, set Refresh Rate to 120 hertz if the glasses offer it. Text and scrolling move more smoothly. If the menu stops at 60, the glasses are not offering more."
+  },
+  {
+   "type": "panel",
+   "short": true,
+   "kind": "edge",
+   "label": "Edge margin",
+   "lines": [
+    "Shrink the picture to 95, 90 or 85 percent",
+    "The soft outer band shows black",
+    "System Settings has no setting for this"
+   ],
+   "ui": "This is called underscan.",
+   "narration": "Fourth, shrink the picture a little, to ninety-five, ninety or eighty-five percent. The soft outer band then shows black, which means those pixels are off. This is called underscan, and System Settings does not offer it for these glasses."
+  },
+  {
+   "type": "panel",
+   "kind": "dark",
+   "label": "Dark Mode",
+   "lines": [
+    "Open System Settings, then Appearance",
+    "Choose Dark"
+   ],
+   "ui": "On these displays, black is see-through.",
+   "narration": "Fifth, Dark Mode. Open Appearance and choose Dark. On these displays black is see-through, so a dark desktop does not sit in front of the room as a bright sheet."
+  },
+  {
+   "type": "panel",
+   "short": true,
+   "kind": "night",
+   "label": "Night Shift",
+   "lines": [
+    "Night Shift warms the Mac's own screen",
+    "It does not reach the glasses",
+    "They need a tint of their own"
+   ],
+   "narration": "Sixth, night colour. Night Shift warms the Mac's own screen, but it does not reach the glasses. A warm tint for the glasses needs an app."
+  },
+  {
+   "type": "panel",
+   "kind": "pointer",
+   "label": "Pointer size",
+   "lines": [
+    "Open System Settings, then Accessibility",
+    "Open Display",
+    "Drag Pointer size to the right"
+   ],
+   "narration": "One more free setting. In Accessibility, open Display, and drag Pointer size to the right. On a wide picture, a bigger pointer is easier to find."
+  },
+  {
+   "type": "app",
+   "short": true,
+   "name": "Lenses",
+   "kind": "menu",
+   "line": "Applies these settings when you plug the glasses in, and puts the Mac back when you unplug them. Tested on RayNeo Air.",
+   "url": "purplelink.llc/lenses",
+   "narration": "Lenses is a menu bar app that applies these settings when you plug the glasses in, and puts the Mac back when you unplug them. It was tested on RayNeo Air. It also recognises XREAL and VITURE glasses by name, but that is untested, and any other glasses can be picked from the menu. Lenses makes no network requests. It needs macOS 14 or later on an Apple silicon Mac. The link is in the description."
+  }
+ ],
+ "thumbs": {
+  "A": {
+   "kind": "long",
+   "msg": "Set up your glasses",
+   "n": 6,
+   "unit": "settings",
+   "sub": "two have no macOS switch",
+   "pill": "AR glasses"
+  },
+  "B": {
+   "kind": "error",
+   "pill": "AR glasses",
+   "msg": "Blurry edges"
+  },
+  "C": {
+   "kind": "product",
+   "name": "Lenses",
+   "line": "Sharp text on AR glasses",
+   "img": "video/thumbs/assets/lenses-edge-margin.png"
+  }
+ }
+}

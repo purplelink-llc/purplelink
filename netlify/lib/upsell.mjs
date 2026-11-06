@@ -48,6 +48,7 @@ export const UPSELL = Object.freeze({
   "revision-review": ["response-review", "paper-review-standard", "moderntex"],
   "cover-letter": ["paper-review-standard", "moderntex"],
   "anonymity-check": ["paper-review-standard", "moderntex"],
+  "journal-check": ["moderntex", "response-review"],
   "citation-gap": ["paper-review-standard", "moderntex"],
   "resume-review": ["paper-review-standard", "moderntex"],
   "sheet-submission": ["moderntex", "paper-review-standard"],

@@ -304,6 +304,11 @@
 .pr-next-price { color: var(--purple); font-size: 0.8rem; font-weight: 700; }
 .pr-next-desc { color: var(--muted); font-size: 0.88rem; }
 @media (prefers-reduced-motion: reduce) { .pr-next-card { transition: none; } }
+.pr-upgrade { margin: 1.75rem 0 0; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+.pr-upgrade h2 { font-family: var(--font-display); font-size: 1.2rem; margin: 0 0 0.75rem; }
+.pr-upgrade-item { padding: 0.9rem 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); margin: 0 0 0.75rem; }
+.pr-upgrade-item h3 { font-size: 1rem; margin: 0 0 0.35rem; }
+.pr-upgrade-item p { color: var(--muted); font-size: 0.92rem; margin: 0 0 0.6rem; max-width: 62ch; }
 
 /* Status page: something useful to read during the wait */
 .pr-wait { margin-top: 1.5rem; padding: 1rem 1.1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }

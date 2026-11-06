@@ -1,0 +1,27 @@
+[
+ {
+  "id": "lenses-howto-thumb-A",
+  "kind": "long",
+  "msg": "Set up your glasses",
+  "n": 6,
+  "unit": "settings",
+  "sub": "two have no macOS switch",
+  "variant": "A",
+  "pill": "AR glasses"
+ },
+ {
+  "id": "lenses-howto-thumb-B",
+  "kind": "error",
+  "pill": "AR glasses",
+  "msg": "Blurry edges",
+  "variant": "B"
+ },
+ {
+  "id": "lenses-howto-thumb-C",
+  "kind": "product",
+  "name": "Lenses",
+  "line": "Sharp text on AR glasses",
+  "img": "video/thumbs/assets/lenses-edge-margin.png",
+  "variant": "C"
+ }
+]

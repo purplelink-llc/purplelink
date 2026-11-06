@@ -4,6 +4,7 @@ import { brand, clamp01, expoOut, FONT_BODY, FONT_DISPLAY, FORMATS } from "./the
 import { Backdrop, useFonts } from "./V2.jsx";
 import { Bumpered, BUMPER } from "./Bumper.jsx";
 import { buildHowTo, DRIFT } from "./howto/plan.js";
+import { Diagram } from "./LensesPanels.jsx";
 
 // Daily problem-and-fix videos (storyboards/howto/<slug>.json, built by build-howto.mjs). One storyboard, two cuts:
 // 16:9 (every scene) and 9:16 (scenes marked "short"). Scene types:
@@ -11,6 +12,7 @@ import { buildHowTo, DRIFT } from "./howto/plan.js";
 //   symptom  the error as the viewer sees it            { label, lines }
 //   cause    one plain sentence on why                  { text }
 //   steps    commands or clicks that fix it             { label, lines, ui? }
+//   panel    a settings step with a drawing           { label, lines, kind, ui? }  (Lenses how-to)
 //   check    proof it worked                            { label, lines, ok }
 //   app      how the product removes the problem        { name, line, url, img, icon }
 // Terminal text types in step with the narration. Nothing on screen is invented output: every symptom and check
@@ -143,6 +145,41 @@ function Cause({ sc, v, cues, dur }) {
   );
 }
 
+// A settings step with a drawn illustration (Lenses how-to): numbered lines on one side, the drawing on the other.
+// The drawing moves from its before state to its after state when the last line starts.
+function Panel({ sc, v, cues, dur }) {
+  const t = useT();
+  const lines = sc.lines || [];
+  const last = (cues.lines[lines.length - 1] || { s: 0.5 }).s;
+  const a = expoOut(clamp01((t - last) / 1.2));
+  const inP = expoOut(clamp01(t / 0.6));
+  const uiP = expoOut(clamp01((t - (cues.ui ?? 0)) / 0.6));
+  return (
+    <AbsoluteFill>
+      <Backdrop px={0} py={0} />
+      <Drift cues={cues} dur={dur}>
+      <div style={{ position: "absolute", left: v ? 56 : 110, top: v ? 250 : 130, width: v ? 968 : 760, display: "grid", gap: v ? 26 : 22, ...up(inP, 30) }}>
+        <Q name="label" style={{ fontFamily: FONT_BODY, fontWeight: 800, fontSize: v ? 40 : 34, letterSpacing: "0.1em", textTransform: "uppercase", color: PURPLE }}>{sc.label}</Q>
+        {lines.map((l, i) => {
+          const p = expoOut(clamp01((t - (cues.lines[i] || { s: 0 }).s) / 0.5));
+          return (
+            <div key={i} style={{ display: "flex", gap: 22, alignItems: "baseline", ...up(p, 18) }}>
+              <span style={{ fontFamily: FONT_DISPLAY, fontWeight: 650, fontSize: v ? 56 : 52, color: PURPLE, minWidth: 48 }}>{i + 1}</span>
+              <Q as="span" name={`line ${i}`} style={{ fontFamily: FONT_DISPLAY, fontWeight: 600, fontSize: v ? 56 : 54, lineHeight: 1.15, color: INK }}>{l}</Q>
+            </div>
+          );
+        })}
+        {sc.ui && <Q name="ui" style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: v ? 42 : 36, lineHeight: 1.3, color: MUTED, opacity: uiP }}>{sc.ui}</Q>}
+      </div>
+      <div style={{ position: "absolute", ...(v ? { left: 56, right: 56, top: 1010, height: 640 } : { left: 930, right: 90, top: 190, height: 600 }), borderRadius: 22, background: "white", padding: 20, boxShadow: "0 40px 90px oklch(30% 0.14 310 / 0.34)", ...up(inP, 50) }}>
+        <Diagram kind={sc.kind} a={a} />
+        <Q name="tag" style={{ position: "absolute", right: 26, bottom: 14, fontFamily: FONT_BODY, fontWeight: 600, fontSize: 24, color: MUTED }}>Illustration, not a photo through the glasses</Q>
+      </div>
+      </Drift>
+    </AbsoluteFill>
+  );
+}
+
 function App({ sc, v, cues, dur }) {
   const t = useT();
   const rv = (d, l = 0.7) => expoOut(clamp01((t - d) / l));
@@ -158,6 +195,11 @@ function App({ sc, v, cues, dur }) {
         <Q name="line" style={{ fontFamily: FONT_BODY, fontWeight: 600, fontSize: v ? 48 : 44, lineHeight: 1.3, color: INK, ...up(rv(cues.line)) }}>{sc.line}</Q>
         <Q name="url" style={{ justifySelf: "start", fontFamily: FONT_BODY, fontWeight: 700, fontSize: v ? 42 : 38, color: "oklch(99% 0.01 310)", background: PURPLE, borderRadius: 999, padding: "14px 36px", ...up(rv(cues.url), 20) }}>{sc.url}</Q>
       </div>
+      {sc.kind && (
+        <div style={{ position: "absolute", ...(v ? { left: 56, right: 56, top: 820, height: 760 } : { left: 940, right: 100, top: 110, height: 760 }), borderRadius: 22, overflow: "hidden", background: "white", padding: 16, boxShadow: "0 40px 90px oklch(30% 0.14 310 / 0.34)", ...up(rv(cues.img, 0.9), 50) }}>
+          <Diagram kind={sc.kind} a={expoOut(clamp01((t - cues.img - 0.6) / 1.2))} tick={Math.max(0, t - cues.img - 1.8) / 1.4} />
+        </div>
+      )}
       {sc.img && (
         <div style={{ position: "absolute", ...(v ? { left: 56, right: 56, top: 820, height: 640 } : { left: 940, right: 100, top: 150, height: 640 }), borderRadius: 22, overflow: "hidden", background: "white", boxShadow: "0 40px 90px oklch(30% 0.14 310 / 0.34)", ...up(rv(cues.img, 0.9), 50) }}>
           <Img src={staticFile(sc.img)} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: sc.pos || "left top", display: "block" }} />
@@ -174,6 +216,7 @@ function Scene({ seg, v, qa }) {
   const body =
     sc.type === "hook" ? <Hook sc={sc} v={v} cues={cues} dur={dur} /> :
     sc.type === "cause" ? <Cause sc={sc} v={v} cues={cues} dur={dur} /> :
+    sc.type === "panel" ? <Panel sc={sc} v={v} cues={cues} dur={dur} /> :
     sc.type === "app" ? <App sc={sc} v={v} cues={cues} dur={dur} /> :
     sc.type === "check" ? <Term sc={sc} v={v} cues={cues} dur={dur} okText={sc.ok || "Fixed"} /> :
     <Term sc={sc} v={v} cues={cues} dur={dur} />; // symptom, steps
