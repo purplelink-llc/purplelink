@@ -61,6 +61,39 @@ class HowtoGate(unittest.TestCase):
         sb["thumbs"] = {k: {"kind": "error", "msg": "x"} for k in "ABC"}
         self.assertTrue(any("two templates" in e for e in errors(sb)))
 
+    def _new(self, a):
+        sb = copy.deepcopy(GOOD); sb["id"] = "howto-not-in-ledger-test"
+        sb["thumbs"] = {"A": a, "B": {"kind": "focus", "msg": "x"},
+                        "C": {"kind": "product", "name": "ModernTex", "line": "x", "img": "x", "icon": "x"}}
+        return errors(sb)
+
+    GOODA = {"kind": "diff", "hook": "Install two tools", "before": "zsh: command not found: latexmk",
+             "after": "Latexmk, John Collins, 9 March 2026. Version 4.88"}
+
+    def test_a_new_video_with_old_style_thumbs_fails(self):
+        sb = copy.deepcopy(GOOD); sb["id"] = "howto-not-in-ledger-test"
+        self.assertTrue(any("must be kind 'diff'" in e for e in errors(sb)))
+
+    def test_a_valid_diff_a_passes_the_thumb_checks(self):
+        self.assertEqual([e for e in self._new(dict(self.GOODA)) if "thumbs" in e], [])
+
+    def test_before_after_must_be_on_screen(self):
+        a = dict(self.GOODA, after="Output written on main.pdf")
+        self.assertTrue(any("verbatim" in e for e in self._new(a)))
+
+    def test_a_face_without_a_file_fails(self):
+        sb = copy.deepcopy(GOOD); sb["id"] = "howto-not-in-ledger-test"
+        sb["thumbs"] = {"A": dict(self.GOODA), "B": {"kind": "focus", "msg": "x"}, "C": {"kind": "face", "hook": "x"}}
+        self.assertTrue(any("face variant" in e for e in errors(sb)))
+
+    def test_a_click_count_fails(self):
+        a = dict(self.GOODA, hook="4 clicks")
+        self.assertTrue(any("counts clicks" in e for e in self._new(a)))
+
+    def test_a_wrong_command_count_fails(self):
+        a = dict(self.GOODA, hook="5 commands")
+        self.assertTrue(any("commands but" in e for e in self._new(a)))
+
 
 if __name__ == "__main__":
     unittest.main()

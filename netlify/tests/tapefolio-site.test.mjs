@@ -236,7 +236,7 @@ test("the page never claims anonymization, guaranteed compliance, or anything th
   // Every percentage on the page is one the README states.
   // (The captions under the screenshots quote what the captures show; they are checked in their own test.)
   const allowed = new Set(["21%", "29%", "39%", "83%", "84%", "11.3%", "1.9%", "8.5%", "1.7%", "1.1%", "1.4%", "0.5%", "0.0%", "1.5%"]);
-  const withoutCaptions = visibleText(html.replace(/<section class="screenshots-section" aria-labelledby="shots-h">[\s\S]*?<\/section>/, ""));
+  const withoutCaptions = visibleText(html.replace(/<section class="screenshots-section" aria-labelledby="shots-h">[\s\S]*?<\/section>/, "")).replace(/Add any second Mac Suite app[^.]*\./, "");
   for (const m of withoutCaptions.matchAll(/\d+(?:\.\d+)?%/g)) assert.ok(allowed.has(m[0]), `unexpected figure ${m[0]}`);
   // Features that are not built are not named. (Draft summaries are built since 1.1.0; "Microsoft Teams" is a call app, not a team feature.)
   const named = text.replace(/Microsoft Teams/g, "");
@@ -299,7 +299,7 @@ test("the share card is 1200 by 630, is what the page's meta tags and JSON-LD po
   }
   const gen = read("assets/og/_gen.html");
   assert.match(gen, /"tapefolio":\s+\{[^}]*title: "Tapefolio"/);
-  assert.match(gen, /"mac-suite":\s+\{[^}]*Nine Mac apps/);
+  assert.match(gen, /"mac-suite":\s+\{[^}]*Ten Mac apps/);
 });
 
 test("the stylesheets, scripts and fonts the pages load all exist", () => {
@@ -369,7 +369,7 @@ test("every shared footer that links Keyfeel also links Tapefolio, and the layou
 test("the home page dock has a tile for Tapefolio with its icon, and the dock CSS groups the tiles by platform and lays up to five in a row", () => {
   const home = read("index.html");
   const tiles = [...home.matchAll(/<a class="dock-app" href="([^"]+)"/g)].map((m) => m[1]);
-  assert.deepEqual(tiles, ["/moderntex/", "/outbound-veil/", "/legroom/", "/keyfeel/", "/tapefolio/", "/panely/", "/summonly/", "/nee/", "/vitae/", "/globepin/", "/circled-hoops/", "/haea/", "/scholar-utility-belt/"]);
+  assert.deepEqual(tiles, ["/moderntex/", "/outbound-veil/", "/legroom/", "/keyfeel/", "/tapefolio/", "/panely/", "/summonly/", "/nee/", "/lenses/", "/vitae/", "/globepin/", "/circled-hoops/", "/haea/", "/scholar-utility-belt/"]);
   assert.match(home, /<a class="dock-app" href="\/tapefolio\/" data-track="home_cta" data-track-meta="dock-tapefolio">\s*<span class="dock-art"><img src="\/assets\/dock\/tapefolio-icon\.webp" alt="" width="96" height="96" decoding="async"><\/span>\s*<strong class="dock-name">Tapefolio<\/strong>/);
   assert.match(home, /Free for 7 days, \$29\.99/);
   const css = read("home.css");
@@ -477,11 +477,11 @@ test("the Suite page lists Tapefolio with its own price and card, keeps the $59.
   assert.match(html, /href="\/tapefolio\/">See Tapefolio/);
   assert.match(html, /<span class="suite-row-name">Tapefolio<\/span><span class="suite-row-price">\$29\.99 once<\/span>/);
   assert.match(html, /Tapefolio needs macOS 26 or later and Apple silicon, with no Intel version/);
-  assert.match(html, /Nine Mac apps, one \$59\.99 payment/);
+  assert.match(html, /Ten Mac apps, one \$59\.99 payment/);
   assert.doesNotMatch(html, /\bfive Mac apps\b|Five Mac apps/i);
   assert.match(html, /<img class="suite-app-icon" src="\/assets\/tapefolio-icon\.webp" alt="" width="56" height="56" loading="lazy">\s*<h3>Tapefolio<\/h3>/);
   assert.match(html, /<img src="\/assets\/tapefolio-icon\.webp" alt="" width="72" height="72">/);
-  assert.equal([...html.matchAll(/class="suite-icons"[\s\S]*?<\/div>/g)][0][0].match(/<img /g).length, 9, "nine icons in the row");
+  assert.equal([...html.matchAll(/class="suite-icons"[\s\S]*?<\/div>/g)][0][0].match(/<img /g).length, 10, "ten icons in the row");
   assert.ok(existsSync(join(SITE, "assets/tapefolio-icon.webp")));
   const app = jsonLd(html).find((n) => n["@type"] === "Product").hasPart.find((a) => a.name === "Tapefolio");
   assert.equal(app.operatingSystem, "macOS 26+");
@@ -495,16 +495,16 @@ test("every page that names the Suite's contents names Tapefolio, and none still
       assert.match(m[0], /Tapefolio/, `${p}: ${m[0].trim()}`);
     }
   }
-  assert.match(read("products/index.html"), /Bought separately they come to \$159 the first year/);
+  assert.match(read("products/index.html"), /Bought separately they come to \$164 the first year/);
   assert.doesNotMatch(read("products/index.html"), /come to \$94 the first year/);
-  assert.match(read("suite/index.html"), /\$159/);
+  assert.match(read("suite/index.html"), /\$164/);
 });
 
 test("the Suite success page has a Tapefolio section and the script shows its key with the right label", async () => {
   const html = read("suite/success/index.html");
   assert.match(html, /id="dl-tf"/);
   assert.match(html, /Tapefolio&rsquo;s keys are with their downloads below/);
-  const nodes = Object.fromEntries(["dl-moderntex", "dl-ov", "dl-lg", "dl-kf", "dl-tf", "dl-pf", "dl-lf", "dl-nee", "license"].map((id) => [id, new FakeNode()]));
+  const nodes = Object.fromEntries(["dl-moderntex", "dl-ov", "dl-lg", "dl-kf", "dl-tf", "dl-pf", "dl-lf", "dl-nee", "dl-lenses", "license"].map((id) => [id, new FakeNode()]));
   const ctx = {
     document: { getElementById: (id) => nodes[id] || null, createElement: (t) => new FakeNode(t), createRange: () => ({}), body: new FakeNode("body") },
     window: { location: { search: `?session_id=${SID}` }, getSelection: () => ({}) },

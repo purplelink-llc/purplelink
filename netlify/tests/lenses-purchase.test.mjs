@@ -90,11 +90,13 @@ test("the checkout refund sentence matches the Lenses section of /terms/ word fo
   assert.equal(msg, text);
 });
 
-test("Lenses is not a custom bundle part, and the Suite line does not name it", async () => {
-  const bad = await post({ product: "bundle-2", apps: ["lenses", "panely"] });
-  assert.equal(bad.status, 400);
+test("Lenses is a custom bundle part, and the Suite line names it", async () => {
+  const ok = await post({ product: "bundle-2", apps: ["lenses", "panely"] });
+  assert.equal(ok.status, 200);
+  assert.equal(stripeParams().get("metadata[apps]"), "panely,lenses");
+  calls.length = 0;
   await post({ product: "app-suite" });
-  assert.doesNotMatch(stripeParams().get("line_items[0][price_data][product_data][name]"), /Lenses/);
+  assert.match(stripeParams().get("line_items[0][price_data][product_data][name]"), /Née, Lenses and Vitae Plus for life/);
 });
 
 // ---- delivery ----
@@ -115,10 +117,12 @@ test("a paid Lenses order emails the page link and one note, and no license key"
   assert.doesNotMatch(mail.text + mail.html, /—/);
 });
 
-test("a paid Suite order carries no Lenses text", async () => {
+test("a paid Suite order names the Lenses download and no Lenses license key", async () => {
   await webhook(signed(paid({ product: "app-suite" }, 5999, "evt_su", "cs_live_su_abcdefghij")));
   const mail = mailOf();
-  assert.doesNotMatch(mail.text + mail.html, /Lenses/);
+  assert.match(mail.text, /Née and Lenses downloads/);
+  assert.match(mail.html, /Née and Lenses downloads/);
+  assert.doesNotMatch(mail.text + mail.html, /Lenses license key/i);
 });
 
 // ---- recovery ----

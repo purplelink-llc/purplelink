@@ -35,7 +35,7 @@
 
 import { readAttrCookie, touchFromCookie } from "../lib/attr-cookie.mjs";
 import { MAX_SEATS, parseSeats, seatUnitCents } from "../lib/seats.mjs";
-import { BUNDLES, parseBundleParts, partsSentence } from "../lib/bundles.mjs";
+import { BUNDLES, bundleCents, parseBundleParts, partsSentence } from "../lib/bundles.mjs";
 import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import { managedPaymentsOn, applyManagedPayments } from "../lib/managed-payments.mjs";
@@ -230,19 +230,19 @@ const PRODUCT_CATALOG = {
   // Delivery is the session-gated DMG from the panely-files / summonly-files Blobs stores. Pages: /panely/ and /summonly/.
   "panely":                { amount: 999, name: "Panely for macOS", successPath: "/panely/success/" },
   "summonly":                { amount: 999, name: "Summonly for macOS", successPath: "/summonly/success/" },
-  // Purplelink Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Panely + Summonly + Née + Vitae Plus for life,
+  // Purplelink Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Panely + Summonly + Née + Lenses + Vitae Plus for life,
   // $59.99 one-time (was $54.99 until 2026-10-12 and $54 until 2026-10-07; $49 with four apps, $39 before Legroom; Tapefolio
-  // joined 2026-10-09 at the same price, Panely and Summonly joined 2026-10-12 and Née at launch, all with this price). Priced inline (no Stripe
-  // Price to create). One session unlocks all nine: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and
-  // Née download functions accept it, and vitae-license.mjs signs a 100-year Vitae Plus key from it. See
+  // joined 2026-10-09 at the same price, Panely and Summonly joined 2026-10-12 and Née at launch, Lenses joined 2026-11-06, all with this price). Priced inline (no Stripe
+  // Price to create). One session unlocks all ten: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and
+  // Lenses download functions accept it, and vitae-license.mjs signs a 100-year Vitae Plus key from it. See
   // docs/products/app-suite.md.
-  "app-suite":               { amount: 5999, name: "Purplelink Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and Vitae Plus for life", successPath: "/suite/success/" },
-  // Custom bundles of the Mac Suite: pick any 2 for $34.99 or any 3 for $44.99, the same price whichever parts are
-  // chosen (the nine parts are the eight apps and a lifetime Vitae Plus key; all nine is the Suite above). The client sends
-  // only `apps`; the price is the table in netlify/lib/bundles.mjs. Delivery reuses /suite/success/ and the per-app
-  // download functions, which read metadata.apps back. See docs/growth-briefs/custom-bundle-pricing-2026-10-11.md.
-  "bundle-2":                { amount: BUNDLES["bundle-2"].cents, bundle: true, name: "Purplelink Mac Suite custom bundle (any 2)", successPath: "/suite/success/" },
-  "bundle-3":                { amount: BUNDLES["bundle-3"].cents, bundle: true, name: "Purplelink Mac Suite custom bundle (any 3)", successPath: "/suite/success/" },
+  "app-suite":               { amount: 5999, name: "Purplelink Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née, Lenses and Vitae Plus for life", successPath: "/suite/success/" },
+  // Custom bundles of the Mac Suite: any 2 parts for 25% off their combined price, any 3 for 40% off, whichever parts
+  // are chosen. The client sends only `apps`; the amount is computed per request from netlify/lib/bundles.mjs
+  // (bundleCents), so these entries carry no fixed `amount`. Delivery reuses /suite/success/ and the per-app
+  // download functions, which read metadata.apps back. See docs/products/app-suite.md.
+  "bundle-2":                { bundle: true, name: `Purplelink Mac Suite bundle, ${BUNDLES["bundle-2"].percent}% off`, successPath: "/suite/success/" },
+  "bundle-3":                { bundle: true, name: `Purplelink Mac Suite bundle, ${BUNDLES["bundle-3"].percent}% off`, successPath: "/suite/success/" },
   // Vitae Plus: optional subscription for the free Vitae app ($2.99/month or
   // $23.99/year, 7-day trial). The success page asks vitae-license.mjs for a
   // signed key; the app refreshes it from the same function about monthly.
@@ -433,6 +433,11 @@ export default async function handler(request) {
     }
   }
 
+  // The amount in cents this session charges per unit: a bundle's is computed from the chosen parts, every other
+  // entry's is fixed in the catalog. Buyer codes and the friend discount never apply to bundles (both refuse them),
+  // so a bundle is charged exactly this amount; a Stripe promotion code the buyer types is applied by Stripe on top.
+  const unitAmount = entry.bundle ? bundleCents(bundleParts) : entry.amount;
+
   // A buyer's cross-sell code (netlify/lib/buyer-codes.mjs): 30% off one other product, once. A code that does not
   // apply is refused with a plain reason (the page shows it, and site.js forgets the code so the next press goes
   // through at full price); it is never silently dropped, so nobody pays full price thinking the code was used.
@@ -459,8 +464,8 @@ export default async function handler(request) {
   const secretKey = Netlify.env.get("STRIPE_SECRET_KEY");
   // An entry with an inline amount may also name an env Price; the env Price wins when it is set.
   const envPrice = entry.envKey ? Netlify.env.get(entry.envKey) : "";
-  const priceId = entry.seats ? null : entry.amount ? (envPrice || null) : envPrice;
-  const inlinePrice = !priceId && (entry.amount || entry.seats);
+  const priceId = entry.seats ? null : unitAmount ? (envPrice || null) : envPrice;
+  const inlinePrice = !priceId && (unitAmount || entry.seats);
   if (!secretKey || (!inlinePrice && !priceId)) {
     return jsonResponse(500, {
       error: "misconfigured",
@@ -508,7 +513,7 @@ export default async function handler(request) {
     ...(inlinePrice
       ? {
           "line_items[0][price_data][currency]": "usd",
-          "line_items[0][price_data][unit_amount]": String(entry.seats ? seatUnit : entry.amount),
+          "line_items[0][price_data][unit_amount]": String(entry.seats ? seatUnit : unitAmount),
           "line_items[0][price_data][product_data][name]": photo ? `${entry.name}: ${photo}` : entry.bundle ? `${entry.name}: ${partsSentence(bundleParts)}` : entry.name,
           ...(entry.interval ? { "line_items[0][price_data][recurring][interval]": entry.interval } : {}),
         }

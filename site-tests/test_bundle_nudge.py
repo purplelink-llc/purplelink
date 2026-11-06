@@ -1,4 +1,4 @@
-"""The pick-two bundle line on the product pages (scripts/apply_bundle_nudge.py) stays current and honest."""
+"""The bundle line on the product pages (scripts/apply_bundle_nudge.py) stays current and honest."""
 from __future__ import annotations
 
 import importlib.util
@@ -6,7 +6,6 @@ import re
 import subprocess
 import sys
 import unittest
-from itertools import combinations
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -21,9 +20,6 @@ PRESSURE = re.compile(r"\b(today|now|hurry|limited|only \d|ends|expires|last cha
 
 
 class BundleNudge(unittest.TestCase):
-    def setUp(self):
-        self.bundles, self.parts = nudge.prices()
-
     def page(self, slug):
         return (ROOT / "site" / slug / "index.html").read_text(encoding="utf-8")
 
@@ -31,27 +27,17 @@ class BundleNudge(unittest.TestCase):
         r = subprocess.run([sys.executable, str(SCRIPT), "--check"], capture_output=True, text=True)
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
 
-    def test_prices_match_bundle_js(self):
-        for slug, part in nudge.PAGES.items():
+    def test_every_app_page_has_the_line_with_the_real_percents(self):
+        tiers = nudge.percents()
+        self.assertEqual(tiers, {"2": 25, "3": 40})
+        self.assertIn("lenses", nudge.PAGES)
+        for slug in nudge.PAGES:
             m = LINE.search(self.page(slug))
-            if nudge.sentence(part, self.bundles, self.parts) is None:
-                self.assertIsNone(m, slug)
-                continue
             self.assertIsNotNone(m, slug)
             text = m.group(1)
-            self.assertIn(nudge.dollars(self.bundles["2"]), text, slug)
-            if text.startswith("Add a second"):
-                self.assertIn(nudge.dollars(self.bundles["2"] - self.parts[part]), text, slug)
-
-    def test_every_named_pairing_really_saves(self):
-        for slug, part in nudge.PAGES.items():
-            text = nudge.sentence(part, self.bundles, self.parts) or ""
-            for other, name in nudge.NAMES.items():
-                if other != part and name in text.split(" in the Mac Suite")[0]:
-                    self.assertGreater(self.parts[part] + self.parts[other], self.bundles["2"], (slug, other))
-            if "any three" in text:
-                for a, b in combinations([k for k in self.parts if k != part], 2):
-                    self.assertGreater(self.parts[part] + self.parts[a] + self.parts[b], self.bundles["3"])
+            self.assertIn(f"save {tiers['2']}% on both", text, slug)
+            self.assertIn(f"{tiers['3']}% off all three", text, slug)
+            self.assertNotRegex(text, r"\$\d", slug)
 
     def test_no_pressure_words(self):
         for slug in nudge.PAGES:

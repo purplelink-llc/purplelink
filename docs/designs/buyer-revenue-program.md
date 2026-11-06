@@ -121,11 +121,11 @@ replaced by the observed pairs (follow-up, not in this program).
 
 ## 6. Bundle nudge
 
-On each app product page, under the buy button: "Add a second app for $X more: any two apps for $34.99",
-listing only the second apps for which pick-2 costs less than buying both singly (for ModernTex at $19.99, for example
-Tapefolio and Outbound Veil). Same for pick-3 where it is cheaper than three singles. Prices come from
-`site/suite/bundle.js`, which a test already keeps equal to `netlify/lib/bundles.mjs`. No nudge shows when no
-pair saves money.
+On each app product page (Lenses included), under the buy button, one line: "Add any second Mac Suite app and save 25% on
+both, or any third for 40% off all three." Since 2026-11-06 the bundles are percent tiers, so every pair saves and every
+page gets the same line, with percents only and no dollar figure. The percents come from `site/suite/bundle.js`, which a
+test keeps equal to `netlify/lib/bundles.mjs`. (Before that the line named only second apps that cost less than the fixed
+$34.99 pick-2 price.)
 
 ## Rollout
 

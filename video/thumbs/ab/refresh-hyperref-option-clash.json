@@ -1,0 +1,36 @@
+[
+ {
+  "id": "hyperref-option-clash-thumb-A",
+  "kind": "focus",
+  "hook": "Loaded\ntwice",
+  "lines": [
+   "LaTeX Error: Option clash",
+   "for package hyperref."
+  ],
+  "hl": "Option clash",
+  "variant": "A",
+  "video": "48PnbsZGIcQ"
+ },
+ {
+  "id": "hyperref-option-clash-thumb-B",
+  "kind": "diff",
+  "hook": "One line",
+  "before": "\\usepackage[colorlinks]{hyperref}",
+  "after": "\\hypersetup{colorlinks=true}",
+  "variant": "B",
+  "video": "48PnbsZGIcQ"
+ },
+ {
+  "id": "hyperref-option-clash-thumb-C",
+  "kind": "face",
+  "hook": "Why twice?",
+  "lines": [
+   "Option clash for",
+   "package hyperref"
+  ],
+  "hl": "Option clash",
+  "mood": "confused, squinting at a screen",
+  "variant": "C",
+  "video": "48PnbsZGIcQ"
+ }
+]

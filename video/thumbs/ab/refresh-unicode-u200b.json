@@ -1,0 +1,37 @@
+[
+ {
+  "id": "unicode-u200b-thumb-A",
+  "kind": "focus",
+  "hook": "Invisible\nbug",
+  "lines": [
+   "LaTeX Error: Unicode",
+   "character (U+200B)",
+   "not set up."
+  ],
+  "hl": "U+200B",
+  "variant": "A",
+  "video": "ticLxRICj90"
+ },
+ {
+  "id": "unicode-u200b-thumb-B",
+  "kind": "diff",
+  "hook": "2 commands",
+  "before": "! Unicode character (U+200B)",
+  "after": "Output written on main.pdf",
+  "variant": "B",
+  "video": "ticLxRICj90"
+ },
+ {
+  "id": "unicode-u200b-thumb-C",
+  "kind": "face",
+  "hook": "Where?!",
+  "lines": [
+   "Unicode character",
+   "(U+200B)"
+  ],
+  "hl": "U+200B",
+  "mood": "shocked, cannot find the problem",
+  "variant": "C",
+  "video": "ticLxRICj90"
+ }
+]
