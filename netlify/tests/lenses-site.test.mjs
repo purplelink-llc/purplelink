@@ -134,12 +134,12 @@ test("the guide has the 8 steps in order, links to /lenses/ and mentions RayNeo 
   assert.deepEqual(types, ["Article", "BreadcrumbList", "FAQPage"]);
 });
 
-test("the listings include Lenses and the guide, and not the Suite or bundle pages", () => {
+test("the listings include Lenses and the guide, and the Suite page lists it too", () => {
   assert.match(read("sitemap.xml"), /<loc>https:\/\/purplelink\.llc\/lenses\/<\/loc>/);
   assert.match(read("sitemap.xml"), /<loc>https:\/\/purplelink\.llc\/guides\/ar-glasses-mac-setup\/<\/loc>/);
   assert.match(read("llms.txt"), /### Lenses \(macOS\)/);
   assert.match(read("products/index.html"), /href="\/lenses\/"/);
   assert.match(read("pricing/index.html"), /href="\/lenses\/"/);
   assert.match(read("guides/index.html"), /\/guides\/ar-glasses-mac-setup\//);
-  assert.doesNotMatch(read("suite/index.html").replace(/<footer[\s\S]*?<\/footer>/, ""), /\/lenses\/|>Lenses</);
+  assert.match(read("suite/index.html"), /\/lenses\/[^>]*>See Lenses|>Lenses</);
 });

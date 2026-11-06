@@ -11,8 +11,11 @@ profile); on unplug or quit it puts the Mac back. Tested on RayNeo Air; it also 
 App Store (it uses private macOS display calls).
 
 **$4.99 once, USD. A paid download only.** No license key, no free trial, no public download, no Sparkle updater, no trial
-reminder emails. 14-day refund like the other apps. Sold on its own: not in the Mac Suite and not a bundle part
-(`netlify/lib/bundles.mjs` is untouched), so a Suite or bundle session gets `not_entitled` from the download function.
+reminder emails. 14-day refund like the other apps. Sold on its own for $4.99 and, since 2026-11-06 (Ben, in chat), also
+in the Mac Suite at the same $59.99 and as a custom-bundle pick (`lenses` in `netlify/lib/bundles.mjs`). `lenses-download.mjs`
+accepts a paid `lenses` session, a paid `app-suite` session and a bundle session whose apps include `lenses` (`bundleHasPart`);
+anything else gets `not_entitled`. Past Suite buyers get Lenses at no charge. Lenses has no key, so the Suite email and
+recovery email name the download only, and the REFUND_TEXT for `app-suite` (which speaks of license keys) is unchanged.
 
 Privacy claim: Lenses collects nothing and makes no network requests.
 
@@ -56,10 +59,10 @@ email ("always hands you the newest version"). Version text on the product page 
 
 ## Tests
 
-- `netlify/tests/lenses-download.test.mjs`: session checks, newest-DMG listing with no `license` field, streaming, bad file
+- `netlify/tests/lenses-download.test.mjs`: session checks (Suite session, bundle with and without Lenses), newest-DMG listing with no `license` field, streaming, bad file
   names, no release, no public or update door.
 - `netlify/tests/lenses-purchase.test.mjs`: catalog entry ($4.99 inline), refund text against Terms, receipt email with the
-  link and no key, Suite email without Lenses, recovery email.
+  link and no key, Suite email naming the Lenses download, Lenses as a bundle part, recovery email.
 - Product page tests live in `netlify/tests/lenses-site.test.mjs` (page owner, not this file).
 
 ## Not verified
@@ -72,3 +75,9 @@ email ("always hands you the newest version"). Version text on the product page 
   and the checkout entry are server code, but this launch is not a reason for `[deploy now]`; wait for the 06:00 or 17:00
   Eastern slot unless Ben decides otherwise.
 - The Lenses Stripe session metadata (`product=lenses`) is only exercised by tests, not by a real Checkout Session.
+
+## Video on the product page
+`site/lenses/index.html` embeds the launch video with the click-to-load `yt-embed` block (youtube-nocookie, styles in
+`motion.css`). The id is a placeholder, `Lt6G-s0_UlQ`: swap it in the `data-youtube-id` attribute and in the `href` of the
+`yt-play` link right under it, and replace `site/assets/video/lenses-poster.webp` (currently the share card). Add a
+`VideoObject` to the JSON-LD once the final video is up.

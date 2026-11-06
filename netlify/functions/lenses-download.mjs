@@ -7,8 +7,8 @@
  *   GET /.netlify/functions/lenses-download?session_id=cs_...&file=<dmg> -> the DMG
  *
  * The Stripe Checkout session id is the bearer token, as for the other apps. The session must be paid, not
- * refunded or disputed (netlify/lib/refunds.mjs), and must be a Lenses order: Lenses is sold on its own, so a
- * Mac Suite or custom bundle session is not entitled.
+ * refunded or disputed (netlify/lib/refunds.mjs), and must be a Lenses order, a Mac Suite order, or a custom bundle whose
+ * chosen parts include Lenses (since 2026-11-06).
  *
  * The DMGs are NOT part of the published site. They live only in the private `lenses-files` Blobs store (see
  * docs/products/lenses.md). Responses stream straight from Blobs, which keeps a large disk image clear of the
@@ -16,10 +16,12 @@
  */
 import { getStore } from "@netlify/blobs";
 import { revocationFor, REVOKED_DETAIL } from "../lib/refunds.mjs";
+import { bundleHasPart } from "../lib/bundles.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 const FILE_STORE = "lenses-files";
 const PRODUCT_KEY = "lenses";
+const SUITE_KEY = "app-suite";
 const DMG_NAME = /^Lenses-\d+\.\d+\.\d+\.dmg$/;
 
 function json(status, body) {
@@ -46,9 +48,9 @@ async function loadSession(sessionId) {
   if (session.payment_status !== "paid") return { error: json(403, { error: "not_paid", detail: "This order has not been paid." }) };
   // A fully refunded or disputed order no longer gets the file (netlify/lib/refunds.mjs).
   if (await revocationFor(session)) return { error: json(403, { error: "refunded", detail: REVOKED_DETAIL }) };
-  // Lenses is sold on its own; it is not part of the Mac Suite or the custom bundles.
+  // Lenses itself, the whole Mac Suite, or a custom bundle that names Lenses.
   const bought = session.metadata?.product || "";
-  if (bought !== PRODUCT_KEY) {
+  if (bought !== PRODUCT_KEY && bought !== SUITE_KEY && !bundleHasPart(bought, session.metadata, "lenses")) {
     return { error: json(403, { error: "not_entitled", detail: "This order is for a different product." }) };
   }
   return { session };

@@ -40,7 +40,7 @@ PAGES = {
 
 NAMES = {
     "moderntex": "ModernTex", "outbound-veil": "Outbound Veil", "legroom": "Legroom", "keyfeel": "Keyfeel",
-    "tapefolio": "Tapefolio", "panely": "Panely", "summonly": "Summonly", "nee": "Née", "vitae-plus": "Vitae Plus",
+    "tapefolio": "Tapefolio", "panely": "Panely", "summonly": "Summonly", "nee": "Née", "lenses": "Lenses", "vitae-plus": "Vitae Plus",
 }
 
 
