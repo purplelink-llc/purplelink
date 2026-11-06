@@ -194,7 +194,10 @@ research and writing; everything else is scripted. Ben chose fully automatic pub
    the tool for the symptom) and record each command and its output in `verify.runs`. Documentation links in
    `verify.docs`. On-screen output lines must come from those runs; the gate re-runs them.
 3. Write `storyboards/howto/<slug>.json` (scene types and fields in `src/HowTo.jsx`; example:
-   `latexmk-command-not-found.json`), with `thumbs` A/B/C in at least two templates.
+   `latexmk-command-not-found.json`), with `thumbs` A/B/C in at least two templates. A is the `diff` design (hook of 24 characters or fewer, `before` and
+   `after` copied verbatim from on-screen lines, no click counts; the gate checks this for new videos), B is `focus`,
+   C is `face` only when its `face` file exists, otherwise a non-face template. Placeholder faces are never uploaded
+   (`build-thumbs.mjs` needs `--allow-placeholder` and writes `.placeholder.jpg`, which the upload scripts refuse).
 4. `node build-howto.mjs <slug>`: gate, narration (ElevenLabs when its key exists, edge-tts otherwise), the 16:9
    tutorial, the 9:16 Short (scenes marked `short`), thumbnails. Review the frames.
    After the full build, `python3 ../scripts/howto_gate.py storyboards/howto/<slug>.json --video out/howto/<slug>/<slug>-16x9.mp4

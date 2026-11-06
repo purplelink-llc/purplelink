@@ -12,6 +12,8 @@ upload. Checks:
   honesty     every output line on screen appears in a recorded verification run, and the gate re-runs those
               commands itself (with TeX Live on PATH) to confirm the recorded output is real
   sources     at least one https demand source; every documentation link answers 200; images exist
+  thumbnails  (storyboards not yet in the ledger) A is the "diff" design: a short hook plus the real before and after
+              strings, each copied verbatim from the storyboard's on-screen lines; a face variant needs a real image
 
 Rendered-video step (run after the full build, before publishing; build-howto.mjs leaves <slug>-<format>.qa.json
 next to each mp4 with the measured text boxes):
@@ -58,10 +60,60 @@ def texts(sb: dict) -> list[tuple[str, str]]:
         for ln in sc.get("lines", []):
             out.append((f"scene {i} line", ln))
     for k, v in (sb.get("thumbs") or {}).items():
-        for f in ("msg", "line", "sub"):
+        for f in ("msg", "line", "sub", "hook"):
             if v.get(f):
                 out.append((f"thumb {k} {f}", v[f]))
     return out
+
+
+NUMBER_WORDS = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]
+
+
+def on_screen(sb: dict) -> str:
+    """Every on-screen line of the storyboard, whitespace folded and the shell prompt dropped."""
+    out = []
+    for sc in sb.get("scenes", []):
+        for ln in sc.get("lines", []):
+            out.append(re.sub(r"\s+", " ", ln[2:] if ln.startswith("$ ") else ln).strip())
+    return "\n".join(out)
+
+
+def thumb_checks(sb: dict) -> list[str]:
+    """Ben's rule (2026-11-06): the default thumbnail (A, the control Test & Compare starts from) is the diff design,
+    built from strings the video really shows; the hook may only claim what the video delivers."""
+    errs: list[str] = []
+    th = sb.get("thumbs") or {}
+    a = th.get("A") or {}
+    if a.get("kind") != "diff":
+        return ["thumbs.A must be kind 'diff' (hook, before, after) for a new video"]
+    hook = (a.get("hook") or "").strip()
+    if not hook or len(hook) > 24:
+        errs.append("thumbs.A.hook is required and at most 24 characters")
+    if not a.get("after"):
+        errs.append("thumbs.A.after is required (the fix line the video shows)")
+    screen = on_screen(sb)
+    for f in ("before", "after"):
+        v = re.sub(r"\s+", " ", a.get(f) or "").strip()
+        if v and v not in screen:
+            errs.append(f"thumbs.A.{f} {v!r} is not copied verbatim from an on-screen line of the video")
+    m = re.match(r"(?i)(\d+|" + "|".join(NUMBER_WORDS) + r")\s+(\w+)", hook)
+    if m:
+        word, unit = m.group(1).lower(), m.group(2).lower()
+        if unit in ("click", "clicks", "tap", "taps"):
+            errs.append("thumbs.A.hook counts clicks, which the gate cannot verify: drop the number")
+        elif unit in ("command", "commands"):
+            n = int(word) if word.isdigit() else NUMBER_WORDS.index(word)
+            cmds = sum(1 for sc in sb.get("scenes", []) if sc.get("type") == "steps"
+                       for ln in sc.get("lines", []) if ln.startswith("$ "))
+            if n != cmds:
+                errs.append(f"thumbs.A.hook says {n} commands but the steps scene shows {cmds}")
+    for k, v in th.items():
+        if v.get("kind") == "face":
+            f = v.get("face")
+            if not f or not (REPO / f).is_file():
+                errs.append(f"thumbs.{k} is a face variant without a real image (set face to an existing file); "
+                            "use a non-face variant until the face exists. Placeholders are never uploaded")
+    return errs
 
 
 def head_ok(url: str) -> bool:
@@ -123,6 +175,10 @@ def check(sb_path: Path, offline: bool, rebuild: bool) -> list[str]:
         E("thumbs must hold variants A, B and C")
     elif len({v.get("kind") for v in sb["thumbs"].values()}) < 2:
         E("thumbs must use at least two templates")
+    # thumbnails: a published storyboard keeps the thumbnails it shipped with
+    if not any(x.get("slug") == sb.get("id") for x in ledger) and sb.get("thumbs"):
+        for e in thumb_checks(sb):
+            E(e)
     # text
     for where, t in texts(sb):
         if PRICE.search(t):

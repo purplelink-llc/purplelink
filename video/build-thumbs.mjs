@@ -1,4 +1,4 @@
-// node build-thumbs.mjs [--only ID,ID] [--spec thumbs/youtube.json] [--out DIR] [--no-sheet]
+// node build-thumbs.mjs [--only ID,ID] [--spec thumbs/youtube.json] [--out DIR] [--no-sheet] [--allow-placeholder]
 // Renders YouTube thumbnails (src/Thumb.jsx, 1280x720 JPEG) for every entry in the spec into out/thumbs/<id>.jpg,
 // plus out/thumbs/sheet.jpg (all of them at 320 px, the size viewers actually judge them at).
 // Spec entries: { id, kind: "error"|"long"|"product", ... }. A product `img` is a repo-relative path, or
@@ -19,6 +19,15 @@ let specs = JSON.parse(fs.readFileSync(path.join(ROOT, opt("spec", "thumbs/youtu
 const only = opt("only", "");
 if (only) specs = specs.filter((s) => only.split(",").includes(s.id));
 if (!specs.length) throw new Error("no thumbnail specs selected");
+
+// A face variant without a real face image draws a marked placeholder. It may be rendered to look at the layout
+// (--allow-placeholder), and then lands in <id>.placeholder.jpg, which scripts/yt-thumbnail.py and yt-abtest.py refuse
+// to upload. Without the flag the build stops.
+const allowPlaceholder = args.includes("--allow-placeholder");
+const placeholders = specs.filter((s) => s.kind === "face" && !s.face);
+if (placeholders.length && !allowPlaceholder) {
+  throw new Error(`face variant without a face image: ${placeholders.map((s) => s.id).join(", ")} (set "face", or pass --allow-placeholder to preview the layout)`);
+}
 
 const brand = JSON.parse(fs.readFileSync(path.join(ROOT, "brand.json"), "utf8"));
 const pub = path.join(ROOT, ".cache", "public-thumbs");
@@ -48,7 +57,7 @@ const serveUrl = await bundle({ entryPoint: path.join(ROOT, "src", "index.jsx"),
 const files = [];
 for (const p of props) {
   const comp = await selectComposition({ serveUrl, id: "Thumb", inputProps: p });
-  const file = path.join(OUT, `${p.id}.jpg`);
+  const file = path.join(OUT, p.kind === "face" && !p.face ? `${p.id}.placeholder.jpg` : `${p.id}.jpg`);
   await renderStill({ composition: comp, serveUrl, output: file, imageFormat: "jpeg", jpegQuality: 90, inputProps: p });
   const mb = fs.statSync(file).size / 1e6;
   if (mb >= 2) throw new Error(`${p.id}: ${mb.toFixed(2)} MB, YouTube's limit is 2 MB`);

@@ -13,7 +13,7 @@
  {
   "id": "mac-click-sound-thumb-B",
   "kind": "diff",
-  "hook": "4 clicks",
+  "hook": "Use Slow Keys",
   "after": "Accessibility > Keyboard > Slow Keys",
   "afterLabel": "Open",
   "variant": "B",

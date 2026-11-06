@@ -17,7 +17,7 @@
   "kind": "diff",
   "hook": "5 fixes",
   "before": "! LaTeX Error: File not found",
-  "after": "Output written on main.pdf",
+  "after": "PDF builds",
   "variant": "B",
   "video": "Yd51v0bEfCw"
  },

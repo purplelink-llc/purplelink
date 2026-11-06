@@ -14,7 +14,7 @@
  {
   "id": "bibtex-from-doi-thumb-B",
   "kind": "diff",
-  "hook": "Swap the URL",
+  "hook": "Ask doi.org",
   "before": "api.crossref.org/works/10.1093/...",
   "after": "doi.org/10.1093/comjnl/27.2.97",
   "variant": "B",
