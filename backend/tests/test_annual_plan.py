@@ -20,7 +20,7 @@ def env(monkeypatch):
     import app as backend_app
     for name in ("paper_tokens_dict", "paper_jobs_dict", "paper_token_claims_dict", "paper_token_index_dict",
                  "customer_lifecycle_dict", "lifecycle_optout_dict", "referral_dict", "feedback_dict",
-                 "annual_plans_dict", "referral_rewards_dict", "buyer_ledger_dict"):
+                 "annual_plans_dict", "referral_rewards_dict", "buyer_ledger_dict", "review_spend_dict"):
         monkeypatch.setattr(backend_app, name, _FakeDict())
     monkeypatch.setattr(backend_app, "rate_dict", {})
     monkeypatch.setattr(backend_app, "paper_review_pipeline", _FakeSpawnFunction())

@@ -204,6 +204,7 @@ _READY_NAMES = {
     "paper-review": "Paper Review",
     "citation-gap": "Citation Gap report",
     "anonymity-check": "Anonymity Check",
+    "journal-check": "Journal check",
     "cover-letter": "cover letter draft",
     "revision-review": "Revision Review",
     "response-review": "Response to Reviewers check",
@@ -286,7 +287,7 @@ _READY_DELETION = (
 
 def html_review_ready(
     *, status_url: str, manuscript_title: str = "", amount_cents: int = 900,
-    product: str = "paper-review", attachment: str = "",
+    product: str = "paper-review", attachment: str = "", offers: Optional[dict] = None,
 ) -> str:
     """*attachment* is the kind returned by build_report_attachment(). Left
     empty (the adjacent tools, which attach nothing), the email keeps the
@@ -315,6 +316,11 @@ def html_review_ready(
         cta = "Open it"
     next_step = _READY_NEXT.get(product, "")
     next_html = f'\n  <p style="color: #555; font-size: 0.9em;">{next_step}</p>' if next_step else ""
+    if offers:
+        from latextools import upgrades as _upgrades
+        _offers_html = _upgrades.offers_email_html(offers, _LINK)
+        if _offers_html:
+            next_html += "\n  " + _offers_html
     return f"""
 <div style="{_EMAIL_BASE_CSS}">
   <h2 style="color: #6d28d9;">Your {name} is ready</h2>
