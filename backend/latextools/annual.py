@@ -437,6 +437,10 @@ def reward_decision(store, plan: dict, canonical_email, now: float) -> tuple[str
         for k, p in store.plans.items():
             if str(k).startswith("pl_") and isinstance(p, dict) and p.get("email_key") == b and p.get("card_fingerprint") == fp:
                 return "reject", "same_card"
+    # One reward per referred buyer across both programs (latextools/referrals.py writes the same key).
+    referred = getattr(store, "referred", None)
+    if referred is not None and referred.get(f"referred:{a}"):
+        return "reject", "already_rewarded"
     year = _dt.datetime.fromtimestamp(now, _dt.timezone.utc).year
     if int(store.plans.get(f"reward:{b}:{year}", 0) or 0) >= REWARDS_PER_REFERRER_YEAR:
         return "reject", "referrer_cap"
@@ -602,6 +606,10 @@ async def run_sweep(store, *, now: float, secret: str, cfg: dict, gen_token, can
         ref["paid_at"] = now
         store.plans[plan["plan_id"]] = plan
         store.plans[f"reward:{b}:{year}"] = int(store.plans.get(f"reward:{b}:{year}", 0) or 0) + 1
+        referred = getattr(store, "referred", None)
+        if referred is not None:
+            a = canonical_email(plan.get("email", "")) or plan.get("email", "").lower()
+            referred[f"referred:{a}"] = plan["plan_id"]
         reward_key = f"reward-{plan['plan_id']}"
         entry = {
             "tokens": [], "product_key": "paper-review-journal", "product_cfg": REWARD_CFG,

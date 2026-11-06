@@ -37,12 +37,48 @@
     if (slot) slot.append(section); else main.append(section);
   };
 
+  // The buyer's own referral link (netlify/lib/referrals.mjs). Shown once, under the code if there is one.
+  let referralShown = false;
+  const showReferral = (url) => {
+    if (referralShown || typeof url !== "string" || !/^https:\/\/purplelink\.llc\/\?ref=[0-9a-f]{10}$/.test(url)) return;
+    referralShown = true;
+    const section = document.createElement("section");
+    section.className = "buyer-offer";
+    section.setAttribute("aria-labelledby", "buyer-referral-heading");
+    const h = document.createElement("h2");
+    h.id = "buyer-referral-heading";
+    h.className = "tools-section-heading";
+    h.textContent = "Your referral link";
+    const p = document.createElement("p");
+    p.textContent = "A friend who makes their first Purplelink purchase through this link gets 20% off. " +
+      "Two weeks after their order you get a free Standard Paper Review by email. The same link is in your purchase email.";
+    const line = document.createElement("p");
+    const code = document.createElement("code");
+    code.className = "buyer-offer-code";
+    code.textContent = url;
+    line.append(code);
+    section.append(h, p, line);
+    if (navigator.clipboard && window.isSecureContext) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn btn-ghost";
+      b.textContent = "Copy link";
+      b.addEventListener("click", () => {
+        navigator.clipboard.writeText(url).then(() => { b.textContent = "Copied"; }).catch(() => {});
+      });
+      section.append(b);
+    }
+    const slot = document.querySelector("[data-buyer-offer]");
+    if (slot) slot.append(section); else main.append(section);
+  };
+
   const ask = (n) => {
     fetch(`/.netlify/functions/buyer-offers?session_id=${encodeURIComponent(sessionId)}`, { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
       .then((o) => {
         if (o && o.code) show(o);
-        else if (o && o.pending && n < waits.length) setTimeout(() => ask(n + 1), waits[n]);
+        if (o) showReferral(o.referral_link);
+        if (o && o.pending && n < waits.length) setTimeout(() => ask(n + 1), waits[n]);
       })
       .catch(() => { /* the purchase email carries the code */ });
   };
