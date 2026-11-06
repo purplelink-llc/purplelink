@@ -1,0 +1,35 @@
+[
+ {
+  "id": "mac-click-sound-thumb-A",
+  "kind": "focus",
+  "hook": "Slow Keys",
+  "lines": [
+   "Use click key sounds"
+  ],
+  "hl": "click key sounds",
+  "variant": "A",
+  "video": "L5Yq6tS7ITA"
+ },
+ {
+  "id": "mac-click-sound-thumb-B",
+  "kind": "diff",
+  "hook": "4 clicks",
+  "after": "Accessibility > Keyboard > Slow Keys",
+  "afterLabel": "Open",
+  "variant": "B",
+  "video": "L5Yq6tS7ITA"
+ },
+ {
+  "id": "mac-click-sound-thumb-C",
+  "kind": "face",
+  "hook": "No click?",
+  "lines": [
+   "No keyboard",
+   "click sound"
+  ],
+  "hl": "click sound",
+  "mood": "disappointed, listening to a silent keyboard",
+  "variant": "C",
+  "video": "L5Yq6tS7ITA"
+ }
+]

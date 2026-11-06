@@ -1,0 +1,36 @@
+[
+ {
+  "id": "bibtex-from-doi-thumb-A",
+  "kind": "focus",
+  "hook": "Wrong\naddress",
+  "lines": [
+   "No acceptable",
+   "resource available."
+  ],
+  "hl": "No acceptable",
+  "variant": "A",
+  "video": "6yBaTePGk5I"
+ },
+ {
+  "id": "bibtex-from-doi-thumb-B",
+  "kind": "diff",
+  "hook": "Swap the URL",
+  "before": "api.crossref.org/works/10.1093/...",
+  "after": "doi.org/10.1093/comjnl/27.2.97",
+  "variant": "B",
+  "video": "6yBaTePGk5I"
+ },
+ {
+  "id": "bibtex-from-doi-thumb-C",
+  "kind": "face",
+  "hook": "Crossref\nsaid no",
+  "lines": [
+   "No acceptable",
+   "resource available."
+  ],
+  "hl": "No acceptable",
+  "mood": "annoyed, eyebrows raised",
+  "variant": "C",
+  "video": "6yBaTePGk5I"
+ }
+]
