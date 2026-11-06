@@ -218,6 +218,7 @@ lifecycle_optout_dict = DurableDict(
 PURCHASE_UPLOAD_PATHS = {
     "cover-letter": "/tools/cover-letter/compose/",
     "anonymity-check": "/tools/anonymity-check/upload/",
+    "journal-check": "/tools/paper-review/journal-check/upload/",
     "citation-gap": "/tools/citation-gap/upload/",
     "revision-review": "/tools/paper-review/revision/upload/",
     "response-review": "/tools/response-review/upload/",
@@ -293,6 +294,12 @@ referral_rewards_dict = DurableDict(
     modal.Dict.from_name("purplelink-referral-rewards", create_if_missing=True),
     durable_volume, "referral-rewards",
 )
+# What each buyer paid for single Paper Reviews (canonical email -> {"purchases": [...]}), written at purchase
+# time. Read only to show the annual plan comparison after a review (latextools/upgrades.py, 2026-11-05).
+review_spend_dict = DurableDict(
+    modal.Dict.from_name("paper-review-spend", create_if_missing=True),
+    durable_volume, "review-spend",
+)
 
 # Customer feedback from the /feedback/ page (linked from the review-request
 # email and the status page): a rating, an optional comment, and permission
@@ -304,7 +311,7 @@ feedback_dict = DurableDict(
     durable_volume, "feedback",
 )
 FEEDBACK_RATINGS = ("useful", "partly", "not_useful")
-FEEDBACK_PRODUCTS = ("paper-review", "citation-gap", "anonymity-check", "cover-letter",
+FEEDBACK_PRODUCTS = ("paper-review", "citation-gap", "anonymity-check", "journal-check", "cover-letter",
                      "revision-review", "response-review", "resume-review", "moderntex", "other")
 
 
@@ -422,6 +429,9 @@ PAID_PRODUCTS: dict[str, dict] = {
     # rates, so these carry a wide margin rather than a thin one.
     "cover-letter":             {"category": "cover-letter", "qty": 1, "amount": 200},
     "anonymity-check":          {"category": "anonymity-check", "qty": 1, "amount": 200},
+    # The $2 journal check offered after a Standard review (latextools/upgrades.py): the rule-based Journal
+    # tier checklist for one journal, no model call. Its own category, so /paper-review/submit refuses it.
+    "journal-check":            {"category": "journal-check", "qty": 1, "amount": 200},
     "citation-gap":             {"category": "citation-gap", "qty": 1, "amount": 300},
     "revision-review":          {"category": "revision-review", "qty": 1, "amount": 200},
     "response-review":          {"category": "response-review", "qty": 1, "amount": 600},
@@ -701,6 +711,21 @@ async def _credit_referral(referrer_email: str, referee_email: str) -> None:
 # polling endpoint just reads from that dict.
 # ---------------------------------------------------------------------------
 
+def _upgrade_offers_for(entry: dict, journal_used: bool) -> dict:
+    """upgrades.build_offers for a token entry. Never raises: a failure means no offers."""
+    try:
+        from latextools import upgrades as _upgrades
+        sold_as = entry.get("product_key", "")
+        purchases = []
+        if sold_as in _upgrades.SINGLE_REVIEW_PRODUCTS and entry.get("email"):
+            canon = _buddy_canonical_email(entry["email"])
+            purchases = ((review_spend_dict.get(canon) or {}).get("purchases") or []) if canon else []
+        return _upgrades.build_offers(sold_as, journal_used, purchases, time.time())
+    except Exception:
+        logger.exception("upgrade offers failed")
+        return {}
+
+
 @app.function(
     image=image,
     timeout=1200,        # 20 min cap — deep tier can take 10+ min (was 900; the 7-call panel now warms a cache first)
@@ -719,8 +744,13 @@ def paper_review_pipeline(
     anonymity_check: bool = False,
     deliver_email: str = "",
     source_note: str = "",
+    upgrade_offers: dict | None = None,
 ) -> None:
     """Run the full Paper Review pipeline (any tier) and persist to dict.
+
+    `upgrade_offers` comes from upgrades.build_offers in the submit handler: the $2 journal check after a review
+    that ran without a journal, and the annual plan comparison for a repeat buyer. Shown under a finished report
+    on the status page and in the ready email; never on an error.
 
     `source_note` is a line the web layer sets when the review ran on a PDF it
     converted from a Word file; it is placed at the top of the report."""
@@ -787,6 +817,7 @@ def paper_review_pipeline(
                     **final,
                     "product": "paper-review",
                     "status": job_status,
+                    **({"upgrade_offers": upgrade_offers} if upgrade_offers and job_status == "done" else {}),
                     **({"ledger_key": ledger_key} if ledger_key else {}),
                     **({"replacement_token": replacement_token} if job_status == "error" else {}),
                 }
@@ -822,6 +853,7 @@ def paper_review_pipeline(
                                     amount_cents=(PAID_PRODUCTS.get(product_key, {}).get("amount", 900)
                                                   // max(1, PAID_PRODUCTS.get(product_key, {}).get("qty", 1))),
                                     attachment=_attachment_kind,
+                                    offers=upgrade_offers or None,
                                 ),
                                 attachments=_attachments or None,
                                 tags=[{"name": "product", "value": "paper-review"}],
@@ -929,6 +961,7 @@ def adjacent_tool_pipeline(
     resume_filename: str = "",
     deliver_email: str = "",
     free_check: bool = False,
+    journal_key: str = "",
 ) -> None:
     """Single dispatcher for cover-letter, anonymity-check, citation-gap,
     revision-review, response-review, resume-review jobs. The product field
@@ -1015,6 +1048,27 @@ def adjacent_tool_pipeline(
                     "result_md": md,
                     "error": "" if res.get("status") == "ok" else "analysis_failed",
                     "raw": res,
+                    "finished_at": _time.time(),
+                }
+
+            elif product == "journal-check":
+                # Rule-based only (journals.check_compliance), so no model call and no cost to speak of.
+                from latextools import journals as _journals, upgrades as _upgrades
+                paper_jobs_dict[token] = {
+                    "status": "running", "progress_pct": 30,
+                    "stage": "extracting", "product": product,
+                    "started_at": _time.time(),
+                }
+                struct = papercheck.extract_paper(pdf_bytes)
+                res = _journals.check_compliance(struct, journal_key)
+                ok = bool(res) and not res.get("error")
+                paper_jobs_dict[token] = {
+                    "status": "done" if ok else "error",
+                    "progress_pct": 100,
+                    "stage": "done",
+                    "product": product,
+                    "result_md": _upgrades.compliance_markdown(res) if ok else "",
+                    "error": "" if ok else "analysis_failed",
                     "finished_at": _time.time(),
                 }
 
@@ -2632,6 +2686,14 @@ def web():
         paper_tokens_dict[session_id] = entry
         for _tok in tokens:
             paper_token_index_dict[_tok] = session_id
+        # Spend on single reviews, for the annual plan comparison shown after a later review. Best effort.
+        try:
+            from latextools import upgrades as _upgrades
+            _canon = _buddy_canonical_email(entry["email"]) if entry["email"] else ""
+            _upgrades.record_spend(review_spend_dict, _canon, session_id, product_key,
+                                   entry["amount_paid"], entry["created_at"])
+        except Exception:
+            logger.exception("review spend record failed for session=%s", session_id[:16])
 
         # Seed the lifecycle-email sequence for this purchase (tips, later
         # review-request, eventual win-back). Skipped if the buyer's email
@@ -3727,6 +3789,7 @@ def web():
                 anonymity_check=do_anonymity,
                 deliver_email=_deliver_to,
                 source_note=source_note,
+                upgrade_offers=_upgrade_offers_for(entry, bool(chosen_journal)),
             )
         except Exception:
             logger.exception("paper_review_pipeline.spawn failed for token=%s", token[:12])
@@ -3882,6 +3945,7 @@ def web():
                 "compliance_result": entry.get("compliance_result"),
                 "anonymity_result": entry.get("anonymity_result"),
                 "deterministic_findings": entry.get("deterministic_findings"),
+                "upgrade_offers": entry.get("upgrade_offers"),
                 "session_id": session_id_for_invoice,
                 "_note": "This result will be deleted from server storage shortly. Save it now.",
             }
@@ -4199,6 +4263,60 @@ def web():
         if claimed == "spawn_failed":
             return JSONResponse(
                 {"error": "spawn_failed", "detail": "Could not start the review. Your token has not been used — please try again."},
+                status_code=500,
+            )
+        return JSONResponse({"token": token, "status_url": f"/paper-review/status?token={token}"})
+
+    @api.post("/journal-check/submit")
+    async def journal_check_submit(
+        request: Request,
+        token: str = Form(...),
+        file: UploadFile = File(...),
+        journal_key: str = Form(""),
+        email: str = Form(""),
+    ):
+        """The $2 journal check: the Journal tier's rule-based checklist for one journal, on its own."""
+        from latextools import journals as _journals
+        if not _enforce_rate_limit(request, "journal-check"):
+            return JSONResponse({"error": "rate_limited"}, status_code=429)
+        if _too_large(request, core.MAX_PAPER_UPLOAD_BYTES):
+            return JSONResponse({"error": "invalid", "detail": "File too large."}, status_code=400)
+        journal_key = (journal_key or "").strip().lower()
+        if journal_key not in _journals.JOURNAL_SPECS:
+            return JSONResponse({"error": "invalid", "detail": "Choose a journal from the list."}, status_code=400)
+        session_id, entry = _lookup_token(token)
+        if entry is None:
+            return JSONResponse({"error": "unknown_token"}, status_code=404)
+        if token in (entry.get("consumed_tokens") or []):
+            return JSONResponse({"error": "already_used"}, status_code=409)
+        _term_refusal = annual.term_refusal(_annual_store(), entry, _time_module.time())
+        if _term_refusal:
+            return JSONResponse({"error": _term_refusal}, status_code=410)
+        if entry.get("expires_at", 0) and entry["expires_at"] < _time_module.time():
+            _expire_token_entry(session_id, entry)
+            return JSONResponse({"error": "expired"}, status_code=410)
+        if (entry.get("product_cfg") or {}).get("category") != "journal-check":
+            return JSONResponse({"error": "wrong_product"}, status_code=400)
+        try:
+            data = await _read_capped(file, core.MAX_PAPER_UPLOAD_BYTES)
+        except _UploadTooLarge:
+            return JSONResponse({"error": "invalid", "detail": "File too large."}, status_code=400)
+        try:
+            core.validate_paper_upload(file.filename or "", len(data))
+        except core.ValidationError as e:
+            return _invalid(e)
+        if not data.startswith(b"%PDF-"):
+            return JSONResponse({"error": "invalid", "detail": "File is not a valid PDF."}, status_code=400)
+        claimed = await _start_adjacent(token, session_id, entry, product="journal-check", spawn_kwargs={
+            "pdf_bytes": data,
+            "journal_key": journal_key,
+            "deliver_email": email if email and "@" in email else "",
+        })
+        if claimed == "already_used":
+            return JSONResponse({"error": "already_used"}, status_code=409)
+        if claimed == "spawn_failed":
+            return JSONResponse(
+                {"error": "spawn_failed", "detail": "Could not start the check. Your token has not been used. Please try again."},
                 status_code=500,
             )
         return JSONResponse({"token": token, "status_url": f"/paper-review/status?token={token}"})

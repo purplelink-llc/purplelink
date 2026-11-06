@@ -1,6 +1,6 @@
 # Purplelink LLC
 
-> Purplelink LLC is a one-person software studio in Atlanta, Georgia, founded in 2026 by Benjamin Ampel, that makes native Mac apps and free web tools. Mac apps (all but Lenses with a free 7-day trial in the same download, then a one-time license key): ModernTex ($19.99, a LaTeX editor), Outbound Veil ($29.99, a menu-bar check for personal information in what you type), Legroom ($9.99, a menu-bar disk space readout and cleaner), Keyfeel ($9.99, recorded keyboard-switch sounds as you type), Tapefolio ($29.99, on-device transcription and OCR for researchers, macOS 26 and Apple silicon), Panely ($9.99, window snapping and saved layouts), Summonly ($9.99, file search, launcher and clipboard history), Née ($14.99, a file converter that opens as a ring at the pointer), Lenses ($4.99 once, no trial: sets up AR glasses on a Mac, tested on RayNeo Air), and the Mac Suite ($59.99: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and a lifetime Vitae Plus). Also Vitae (a free Mac app for tracking submissions, grants and your CV, with an optional Plus subscription), Paper Review (AI pre-submission manuscript review, $9-$15), Scholar Utility Belt (a Chrome extension for Google Scholar, free core with an optional Pro tier), free in-browser LaTeX and BibTeX tools, GlobePin (a free iOS travel-mapping app) and haea (an on-device iOS health app in development).
+> Purplelink LLC is a one-person software studio in Atlanta, Georgia, founded in 2026 by Benjamin Ampel, that makes native Mac apps and free web tools. Mac apps (each with a free 7-day trial in the same download, then a one-time license key): ModernTex ($19.99, a LaTeX editor), Outbound Veil ($29.99, a menu-bar check for personal information in what you type), Legroom ($9.99, a menu-bar disk space readout and cleaner), Keyfeel ($9.99, recorded keyboard-switch sounds as you type), Tapefolio ($29.99, on-device transcription and OCR for researchers, macOS 26 and Apple silicon), Panely ($9.99, window snapping and saved layouts), Summonly ($9.99, file search, launcher and clipboard history), Née ($14.99, a file converter that opens as a ring at the pointer), Lenses ($4.99 once: sets up AR glasses on a Mac, tested on RayNeo Air), and the Mac Suite ($59.99: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née, Lenses and a lifetime Vitae Plus). Also Vitae (a free Mac app for tracking submissions, grants and your CV, with an optional Plus subscription), Paper Review (AI pre-submission manuscript review, $9-$15), Scholar Utility Belt (a Chrome extension for Google Scholar, free core with an optional Pro tier), free in-browser LaTeX and BibTeX tools, GlobePin (a free iOS travel-mapping app) and haea (an on-device iOS health app in development).
 
 ## Company
 
@@ -35,7 +35,7 @@
 - **Languages:** The product page is in English, German, French, Brazilian Portuguese, Japanese and Simplified Chinese (links below). The app interface is in English, German, Japanese and Chinese (German, Japanese and Simplified Chinese are betas; German since ModernTex 2.0); it is not available in French or Portuguese. Chinese and Japanese documents compile with XeLaTeX (ctex) and LuaLaTeX (luatexja, jlreq) when the user's TeX installation has those packages.
 - **Seats for labs and departments:** one license key per seat, bought on https://purplelink.llc/moderntex/#departments. 5 seats $69.95 ($13.99 each), 10 seats $124.90 ($12.49), 15 seats $172.35 ($11.49), 20 seats $209.80 ($10.49), 25 to 500 seats $9.99 each. Invoices and a W-9 on request.
 - **Privacy:** No cloud sync, no data collection
-- **Status:** Shipping. Current version 2.5.1 (November 6, 2026). Every update since the 1.0 launch on September 4, 2026 is listed at https://purplelink.llc/moderntex/#changelog.
+- **Status:** Shipping. Current version 2.5.2 (November 6, 2026). Every update since the 1.0 launch on September 4, 2026 is listed at https://purplelink.llc/moderntex/#changelog.
 - **Trial and purchase:** https://purplelink.llc/moderntex/
 - **Setup guide:** https://purplelink.llc/moderntex/start/ (first ten minutes: install, MacTeX or TinyTeX setup, first build, first error, venue templates, submission checks)
 - **German page (Deutsch):** https://purplelink.llc/de/moderntex/ (ModernTex product page in German; same price, USD 19.99 once, 7-day free trial; the app interface can be shown in German, beta)
@@ -139,8 +139,8 @@
 - **Category:** Display utility for AR glasses
 - **Description:** A menu-bar app that applies a profile when AR glasses are plugged into a Mac and puts the Mac back when they are unplugged. A sharp HiDPI mode (text drawn at 2x and scaled down) and 120 Hz where the glasses offer it; a layout of mirror, glasses above the laptop or side by side; an edge margin of 95, 90 or 85 percent so the soft edges of the lenses show black; a night tint (Warm, Night or Candle, automatic from 9 PM to 7 AM, and a matching warm tint whenever macOS Night Shift is on); Dark Mode and a bigger pointer while the Mirror 70% profile is on; optional sound through the glasses; open at login. Seven profiles: Optimal, Mirror, Mirror Big Text, Big Text, Side by Side, Cinema and Mirror 70%.
 - **Compatibility:** Tested on RayNeo Air. It recognises XREAL and VITURE glasses by display name, which is untested. For any other glasses, the menu item "Use this display as my glasses" marks the display.
-- **Pricing:** $4.99 once. No trial, no license key and no updater. Sold on its own, not in the Mac Suite. 14-day refund; a refunded purchase's download link stops working.
-- **Privacy:** Lenses collects nothing and makes no network requests. Its settings stay on the Mac.
+- **Pricing:** $4.99 once, with a free 7-day trial in the same download and then a license key (emailed and shown on the page after you pay; every update included). Sold on its own, not in the Mac Suite. 14-day refund; a refunded purchase's download link stops working.
+- **Privacy:** Lenses collects nothing. The only network request it makes is the daily update check. Its settings stay on the Mac.
 - **Limits:** Notarized direct download, not in the Mac App Store, because it uses private macOS display calls. Edge margin, a night tint on the glasses only and automatic apply and restore are things System Settings does not do for these glasses.
 - **Guide:** https://purplelink.llc/guides/ar-glasses-mac-setup/
 - **Purchase:** https://purplelink.llc/lenses/
@@ -168,9 +168,9 @@
 - **Download:** https://purplelink.llc/buddy/ (source: https://github.com/purplelink-llc/buddy)
 
 ### Mac Suite (macOS bundle)
-- **Contents:** ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and a lifetime Vitae Plus key.
+- **Contents:** ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née, Lenses and a lifetime Vitae Plus key.
 - **Pricing:** $59.99 once. 14-day refund. Each app is the same single download with a 7-day trial; the license keys arrive in the receipt email.
-- **Pick your own:** any 2 of the nine parts for $34.99, or any 3 for $44.99, the same price whichever parts are chosen (Vitae Plus counts as one part, as a lifetime key). Four or more cost more than the Suite, so the Suite is the better buy. The checkout page lists only the chosen parts.
+- **Pick your own:** any 2 of the ten parts are 25% off their combined price, and any 3 are 40% off, whichever parts are chosen (Vitae Plus counts as one part, as a lifetime key, at its first-year price of $23.99). For four or more, the Suite has all ten for $59.99; a few cheap apps can cost less on their own. The checkout page lists only the chosen parts.
 - **Page:** https://purplelink.llc/suite/
 
 ### Vitae (macOS)
@@ -257,7 +257,7 @@
 - Summonly (macOS, free 7-day trial then $9.99, file search, launcher and clipboard history): https://purplelink.llc/summonly/
 - Née (macOS, free 7-day trial then $14.99, file converter with 51 actions from a ring at the pointer): https://purplelink.llc/nee/
 - Lenses (macOS, $4.99 once, sets up AR glasses on a Mac, tested on RayNeo Air): https://purplelink.llc/lenses/
-- Mac Suite (macOS, $59.99 once: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and Vitae Plus for life, 14-day refund): https://purplelink.llc/suite/
+- Mac Suite (macOS, $59.99 once: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née, Lenses and Vitae Plus for life, 14-day refund): https://purplelink.llc/suite/
 - Vitae (macOS, free app; optional Vitae Plus subscription from $2.99 a month, shipping): https://purplelink.llc/vitae/
 - Paper Review (AI manuscript review, from $9): https://purplelink.llc/tools/paper-review/
 - Paper Review example report, section by section: https://purplelink.llc/tools/paper-review/sample/
@@ -410,6 +410,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - Equation Renderer: https://purplelink.llc/tools/equation-renderer/ — render LaTeX math to an image; the equation is compiled in a temporary folder on Purplelink's server and deleted afterwards.
 - LaTeX Table Generator: https://purplelink.llc/tools/latex-table-generator/ — build LaTeX tabular code from a visual grid, runs in your browser.
 - Word & Character Counter: https://purplelink.llc/tools/word-counter/ — count words, characters, sentences, and reading time; pasted text stays in your browser, and an uploaded file is sent to Purplelink's server only to extract its text, then deleted.
+- Mac Keyboard Tester: https://purplelink.llc/tools/mac-keyboard-tester/ — press keys to light them on a MacBook layout, count keys held at once and play recorded keyboard sounds (off until you turn them on); runs in your browser, reads key codes only and sends nothing.
 - Thesis Format Checker: https://purplelink.llc/tools/thesis-format-checker/ — checks a thesis or dissertation PDF for page size, margins against the minimums you enter, body font size, embedded fonts, page numbers and their sequence, line spacing and front-matter headings; the PDF is read in the browser and never uploaded.
 - Replication Package Checker: https://purplelink.llc/tools/reproducibility-checker/ — checks a replication package .zip for a top-level README and the Social Science Data Editors' template sections, a license, pinned dependencies, a main script, absolute paths, random seeds, data files named in code but missing, output folders and stray files; the zip is read in the browser, never uploaded, and no code is run.
 - Camera-Ready PDF Checker: https://purplelink.llc/tools/camera-ready-checker/ — checks the final PDF of an accepted paper for fonts that are not embedded or are Type 3 (with pages), page size, page count against the limit you enter, margins, page numbers and running heads, PDF title and author metadata, blind-submission leftovers, links and file size, with presets for IEEE conferences, ACM sigconf, Springer LNCS and NeurIPS sourced from the publishers' author pages; the PDF is read in the browser and never uploaded, and it does not replace IEEE PDF eXpress or ACM TAPS.

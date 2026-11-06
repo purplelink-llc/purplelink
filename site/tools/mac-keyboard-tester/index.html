@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Mac Keyboard Tester with Key Sounds | Purplelink</title>
+    <meta name="description" content="Free Mac keyboard tester. Press keys to light them on a MacBook layout, see how many you hold at once, and turn on recorded keyboard sounds. Nothing you type is stored or sent.">
+    <link rel="canonical" href="https://purplelink.llc/tools/mac-keyboard-tester/">
+    <meta property="og:title" content="Mac Keyboard Tester with Key Sounds">
+    <meta property="og:description" content="Press keys to light them on a MacBook layout, count the keys you hold at once, and hear recorded keyboard sounds. Free, and nothing you type is stored or sent.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/tools/mac-keyboard-tester/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/tools-mac-keyboard-tester.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Mac Keyboard Tester with Key Sounds">
+    <meta name="twitter:description" content="Light up keys on a MacBook layout and hear recorded keyboard sounds as you press them. Free, in your browser.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/tools-mac-keyboard-tester.jpg">
+    <meta name="twitter:image:alt" content="Mac Keyboard Tester with Key Sounds">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "Mac Keyboard Tester with Key Sounds",
+          "url": "https://purplelink.llc/tools/mac-keyboard-tester/",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "Any (web-based)",
+          "browserRequirements": "Requires JavaScript",
+          "description": "A free keyboard tester with a MacBook layout. Each key lights when the browser sees it pressed, a counter shows how many keys are held at once, and an optional sound switch plays recorded keyboard sounds. It reads key codes only and stores or sends nothing.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "featureList": [
+            "MacBook ANSI layout, each key lights on press",
+            "Count of keys held at once and the most held together",
+            "List of keys the browser has not seen yet",
+            "Optional recorded keyboard sounds in three sets, off by default",
+            "Reads key codes only; nothing is stored or sent"
+          ],
+          "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            { "@type": "Question", "name": "Does the keyboard tester record what I type?", "acceptedAnswer": { "@type": "Answer", "text": "No. The page reads which physical key was pressed, as a key code such as KeyA, and lights that key. It does not read characters, and nothing you press is stored, logged or sent anywhere." } },
+            { "@type": "Question", "name": "Why does a key not light up?", "acceptedAnswer": { "@type": "Answer", "text": "The browser did not see it. That does not mean the key is broken. The fn (Globe) key, brightness, volume, media and Touch ID keys are handled by macOS before a web page can see them. Check those in Keyboard Viewer, which you can open from the Input menu once it is turned on in System Settings under Keyboard." } },
+            { "@type": "Question", "name": "Why do F1 to F12 not light up?", "acceptedAnswer": { "@type": "Answer", "text": "On a Mac, the top row usually triggers brightness, volume and media actions instead of sending F1 to F12. Hold fn while you press a key, or turn on Use F1, F2, etc. keys as standard function keys in System Settings under Keyboard, Keyboard Shortcuts, Function Keys." } },
+            { "@type": "Question", "name": "Where do the sounds come from?", "acceptedAnswer": { "@type": "Answer", "text": "They are the recordings that ship in Keyfeel, our Mac app, released under CC0 1.0 and credited on the Keyfeel sound credits page. The files are served from this site, and sound stays off until you turn it on." } }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://purplelink.llc/tools/" },
+            { "@type": "ListItem", "position": 3, "name": "Mac Keyboard Tester", "item": "https://purplelink.llc/tools/mac-keyboard-tester/" }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/motion.css">
+    <link rel="stylesheet" href="/tools/mac-keyboard-tester/keyboard-tester.css">
+    <script src="/site.js" defer></script>
+    <script src="/motion.js" defer></script>
+    <script src="/buddy-chat/loader.js" defer></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">&larr; All tools</a>
+      <div class="tools-hero">
+        <h1>Mac keyboard tester</h1>
+        <p>Press any key. It lights on a MacBook layout and stays marked until you reset. A counter shows how many keys you hold at once, and you can turn on recorded keyboard sounds. The page reads key codes only, so what you type is never stored or sent.</p>
+      </div>
+
+      <div class="tool-app">
+        <div class="kt-board" id="kt-board" tabindex="0" role="group" aria-label="MacBook keyboard. Press keys to test them. Tab moves on."></div>
+        <p class="kt-hint" id="kt-capture">Click the keyboard above so the page does not scroll or act on the keys you press.</p>
+
+        <ul class="kt-stats" aria-label="Test results">
+          <li><span class="kt-num" id="kt-tested">0</span><span class="kt-lbl">Keys seen</span></li>
+          <li><span class="kt-num" id="kt-held">0</span><span class="kt-lbl">Held now</span></li>
+          <li><span class="kt-num" id="kt-max">0</span><span class="kt-lbl">Most held together</span></li>
+        </ul>
+        <p class="kt-last">Last key: <span id="kt-last">Press a key.</span></p>
+        <div class="tool-options">
+          <button class="btn btn-secondary" id="kt-reset" type="button">Reset</button>
+        </div>
+
+        <section class="kt-sound" aria-labelledby="kt-sound-h">
+          <h2 id="kt-sound-h">Key sounds</h2>
+          <p>Off until you turn it on. Sound plays as you press and release keys.</p>
+          <button class="btn btn-secondary kt-switch" id="kt-sound" type="button" role="switch" aria-checked="false">Sound off</button>
+          <fieldset class="kt-sets">
+            <legend>Sound set</legend>
+            <label><input type="radio" name="kt-set" value="tactile" checked> Tactile</label>
+            <label><input type="radio" name="kt-set" value="dome"> Dome (Cherry KC 1000)</label>
+            <label><input type="radio" name="kt-set" value="wood"> Soft wood</label>
+          </fieldset>
+          <p class="kt-status" id="kt-sound-status" role="status">Sound is off.</p>
+        </section>
+
+        <section class="kt-limits" aria-labelledby="kt-limits-h">
+          <h2 id="kt-limits-h">What a web page cannot see</h2>
+          <ul>
+            <li>The fn (Globe) key is never reported to a web page. It is drawn with a dashed border for that reason.</li>
+            <li>Brightness, volume, media, Spotlight, Dictation and Touch ID keys are handled by macOS first, so the browser does not see them. On most Macs the top row sends those actions unless you hold fn.</li>
+            <li>If a key does not light, the browser did not see it. That does not mean the key is broken. Open Keyboard Viewer from the Input menu (turn the menu on in System Settings, Keyboard) to check keys the page cannot.</li>
+            <li>macOS sends no key-up for a key pressed while Command is held, so the held count clears when you release Command.</li>
+          </ul>
+        </section>
+
+        <section class="kt-details" aria-labelledby="kt-details-h">
+          <h2 id="kt-details-h">Keys</h2>
+          <details>
+            <summary>Not seen yet (<span id="kt-missing-count">0</span>)</summary>
+            <p id="kt-missing"></p>
+          </details>
+          <details>
+            <summary>Keys seen that are not on this layout</summary>
+            <p id="kt-other"></p>
+          </details>
+        </section>
+
+        <aside class="kt-product" aria-labelledby="kt-product-h">
+          <h2 id="kt-product-h">Keyfeel plays these sounds in every app</h2>
+          <p>Keyfeel, our Mac app, plays these sounds in every app. It reads key codes, not what you type. $9.99 once after 7 days free.</p>
+          <a class="btn btn-ghost" data-track="tool_next" data-track-meta="mac-keyboard-tester" href="/keyfeel/?utm_source=tool-mac-keyboard-tester&amp;utm_medium=tool&amp;utm_campaign=keyfeel">About Keyfeel</a>
+        </aside>
+
+        <p class="tool-privacy">The page listens for key presses only while it is open. It reads each key's code, never the character, and keeps nothing.</p>
+      </div>
+
+      <section class="tool-faq">
+        <h2>About this tool</h2>
+        <details><summary>Does the keyboard tester record what I type?</summary><div class="faq-body">No. The page reads which physical key was pressed, as a key code such as KeyA, and lights that key. It does not read characters, and nothing you press is stored, logged or sent anywhere.</div></details>
+        <details><summary>Why does a key not light up?</summary><div class="faq-body">The browser did not see it. That does not mean the key is broken. The fn (Globe) key, brightness, volume, media and Touch ID keys are handled by macOS before a web page can see them. Check those in Keyboard Viewer, which you can open from the Input menu once it is turned on in System Settings under Keyboard.</div></details>
+        <details><summary>Why do F1 to F12 not light up?</summary><div class="faq-body">On a Mac, the top row usually triggers brightness, volume and media actions instead of sending F1 to F12. Hold fn while you press a key, or turn on Use F1, F2, etc. keys as standard function keys in System Settings under Keyboard, Keyboard Shortcuts, Function Keys.</div></details>
+        <details><summary>Where do the sounds come from?</summary><div class="faq-body">They are the recordings that ship in Keyfeel, our Mac app, released under CC0 1.0 and credited on the Keyfeel sound credits page. The files are served from this site, and sound stays off until you turn it on.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools">
+        <h2>More free tools</h2>
+        <ul>
+          <li><a href="/tools/word-counter/">Word Counter</a></li>
+          <li><a href="/tools/heic-to-jpg/">HEIC to JPG</a></li>
+          <li><a href="/keyfeel/sound-credits/">Keyfeel sound credits</a></li>
+          <li><a href="/tools/">All free tools</a></li>
+        </ul>
+      </nav>
+
+      <p class="tool-support">If this saves you time, you can <a href="https://buymeacoffee.com/bampel" target="_blank" rel="noopener">leave a tip</a>. It helps keep these tools free and online.</p>
+
+      <script src="/tools/mac-keyboard-tester/key-sounds.js" defer></script>
+      <script src="/tools/mac-keyboard-tester/keyboard-tester.js" defer></script>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/nee/">Née</a></li>
+            <li><a href="/lenses/">Lenses</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/suite/">Mac Suite</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js" defer></script>
+</body>
+</html>

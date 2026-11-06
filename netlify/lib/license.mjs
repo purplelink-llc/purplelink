@@ -1,5 +1,5 @@
 /**
- * Purplelink license keys for Outbound Veil, Legroom and Née (scheme "PurplelinkLicenseV1").
+ * Purplelink license keys for Outbound Veil, Legroom, Née and Lenses (scheme "PurplelinkLicenseV1").
  * Keyfeel has its own, older scheme (KFL1, netlify/lib/keyfeel-license.mjs) and ModernTex has MTX1.
  *
  * A key is  <PREFIX>-  +  Crockford-Base32( nonce[4] ‖ Ed25519 signature[64] ),  split into groups of 5.
@@ -27,6 +27,8 @@ export const LICENSED_PRODUCTS = {
   // Née (NEE1) is in the Mac Suite since its launch (Ben, 2026-11-02): see docs/products/nee.md, "Suite gate".
   // `inSuite: false` is still honoured by suiteIncludes() for any future product that launches hidden.
   nee: { prefix: "NEE1", label: "Née", appPath: "/nee/" },
+  // Lenses (LN1) got a trial and a key with 1.1.0 (2026-11-06). It is in the Suite and bundles like every entry.
+  lenses: { prefix: "LN1", label: "Lenses", appPath: "/lenses/" },
 };
 
 /** Whether a Mac Suite purchase includes this product. Every entry is in the Suite unless it says `inSuite: false`. */

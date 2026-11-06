@@ -10,11 +10,21 @@ profile); on unplug or quit it puts the Mac back. Tested on RayNeo Air; it also 
 (untested on them) and any other glasses through "Use this display as my glasses". Notarized direct download, not the Mac
 App Store (it uses private macOS display calls).
 
-**$4.99 once, USD. A paid download only.** No license key, no free trial, no public download, no Sparkle updater, no trial
-reminder emails. 14-day refund like the other apps. Sold on its own: not in the Mac Suite and not a bundle part
-(`netlify/lib/bundles.mjs` is untouched), so a Suite or bundle session gets `not_entitled` from the download function.
+**$4.99 once, USD. One download: 7-day trial from first launch, then a license key** (licensing added 2026-11-06, Ben in chat;
+1.1.0 is the first version with it). PurplelinkLicenseV1, prefix `LN1`, slug `lenses`, same signing seed and public key as the
+other keyed apps (`PURPLELINK_LICENSE_PRIVATE_KEY`). Sparkle updates come from the token-gated feed below. No trial
+reminder emails. 14-day refund like the other apps. Sold on its own for $4.99 and, since 2026-11-06 (Ben, in chat), also
+in the Mac Suite at the same $59.99 and as a custom-bundle pick (`lenses` in `netlify/lib/bundles.mjs`). `lenses-download.mjs`
+accepts a paid `lenses` session, a paid `app-suite` session and a bundle session whose apps include `lenses` (`bundleHasPart`);
+anything else gets `not_entitled`. Past Suite buyers get Lenses at no charge, and a Suite or pick-bundle that includes Lenses
+issues a Lenses key too (`licensedSlugsFor`). The Suite email, success page (`site/suite/success.js`), `/recover/` and the
+REFUND_TEXT for `app-suite` all name the Lenses key.
 
-Privacy claim: Lenses collects nothing and makes no network requests.
+Existing 1.0.0 buyers have no key but are not locked out: 1.1.0 treats an install with prior Lenses preferences as paid (see
+the app repo's `docs` and `Licensing.swift`). The key nonce derives from the Stripe session id, so the success page and
+`purchases-recover.mjs` give every old buyer their key; they can enter it any time. Nobody is emailed.
+
+Privacy claim: Lenses collects nothing about your displays or settings. The only network request is the Sparkle update check.
 
 ## Delivery chain
 
@@ -24,42 +34,54 @@ Privacy claim: Lenses collects nothing and makes no network requests.
    match the Refunds sentence in the Lenses section of `site/terms/index.html` word for word (`lenses-purchase.test.mjs` and
    `trial-buy-path.test.mjs` compare them).
 2. `stripe-webhook.mjs`: `lenses` is in `BLOB_DELIVERED_PRODUCTS`; the receipt email carries the link to
-   `/lenses/success/?session_id=...` and one plain note (macOS 14, Apple silicon, Open at Login option). No key block.
+   `/lenses/success/?session_id=...`, the generic license-key block (`licenseKeysForSession`) and one plain note (macOS 14,
+   Apple silicon, Open at Login option).
 3. `/lenses/success/` calls `lenses-download.mjs?session_id=cs_...` for `{product, files:[{key,label,url}]}` and links the
    `&file=Lenses-x.y.z.dmg` stream. The function checks the session is paid, not refunded or disputed (`revocationFor`), and
    that `metadata.product === "lenses"` exactly. It serves the newest version by semantic sort and any older named DMG. It
    streams from the private Blobs store `lenses-files`.
-4. `purchases-recover.mjs` needs no Lenses code: it lists the purchase as a download page with no key line, because it reads
-   `BLOB_DELIVERED_PRODUCTS`. `purchase-license.mjs` is deliberately NOT changed: `KEYED_PRODUCTS` there is the list of products
-   that have a key, and Lenses has none.
+4. `purchases-recover.mjs` needs no Lenses code: it lists the purchase as a download page and adds the key line from
+   `licenseKeysForSession`. `purchase-license.mjs` `KEYED_PRODUCTS` includes `lenses`, which is what the success page's
+   `/license-keys.js` box reads.
 5. Also registered: `sales.mjs` (site map), `stats.mjs` (`PRODUCT_PAGES`, chat-page pattern), `followup.mjs` (the day-14 "what
    do you use it for" email), `managed-payments.mjs` (tax code `txcd_10202000`, same as the other Mac apps),
    `support-message.mjs` (topic), `scripts/traffic-dashboard/traffic_dashboard.py` (name maps, group and colour).
 
+## Three doors on `lenses-download.mjs`
+
+1. Purchase door: `?session_id=cs_...` (above).
+2. Trial door: `?trial=1`, public, no Stripe call, 20 per IP per day, serves the newest DMG. It answers 404 `no_trial` until a
+   version >= 1.1.0 is staged, so the free trial can never hand out 1.0.0 (which has no license check).
+3. Update door (Sparkle): `?feed=1` (appcast), `?update=Lenses-x.y.z.dmg`, `?stats=1`. Needs the header `X-Lenses-Channel`
+   equal to env `LENSES_UPDATE_TOKEN` (constant-time compare; no env value means closed). The feed's enclosure URLs are rewritten
+   to the update door unless the appcast is signed. The app bakes the token into Info.plist (`LensesUpdateChannelToken`).
+
 ## Blobs store and publishing a release
 
-Only one store: `lenses-files` (private), holding `Lenses-<x.y.z>.dmg`. Nothing else: no appcast, no stats store, no env var.
-Create it by uploading the first DMG from a checkout of this repo (the CLI must be logged in to the Purplelink site):
+Store `lenses-files` (private) holds `Lenses-<x.y.z>.dmg` and `appcast.xml`; `lenses-stats` holds download counters. The app
+repo's `scripts/publish-release.sh` uploads a release (DMG first, then the appcast) and verifies it; the Sparkle key is the
+keychain account `lenses`, backed up under `~/.config/purplelink/sparkle-keys/`. Manual form:
 
 ```
-netlify blobs:set lenses-files Lenses-1.0.0.dmg --input /path/to/Lenses-1.0.0.dmg --force
+netlify blobs:set lenses-files Lenses-1.1.0.dmg --input /path/to/Lenses-1.1.0.dmg --force
+netlify blobs:set lenses-files appcast.xml --input /path/to/appcast.xml --force
 netlify blobs:list lenses-files
 ```
 
-This is the same command the other apps' `scripts/publish-release.sh` use (for example Keyfeel's). The file name must match
-`Lenses-<digits>.<digits>.<digits>.dmg` exactly or the function ignores it. Verify the upload against the local file's size or
-sha256 afterwards. Uploading takes effect at once: no site build is needed, because the function reads Blobs on each request.
-To withdraw a version, `netlify blobs:delete lenses-files Lenses-x.y.z.dmg --force`.
+The file name must match `Lenses-<digits>.<digits>.<digits>.dmg` exactly or the function ignores it. Verify the upload against
+the local file's size or sha256 afterwards. Uploading takes effect at once: no site build is needed. To withdraw a version,
+`netlify blobs:delete lenses-files Lenses-x.y.z.dmg --force`. Product-page version text waits for the next scheduled build.
 
-Because there is no updater, a later version is a new DMG in the store; buyers get it from the same link in their receipt
-email ("always hands you the newest version"). Version text on the product page waits for the next scheduled build.
+Go-live order: set `LENSES_UPDATE_TOKEN` in Netlify (local copy `~/.config/purplelink/lenses-update-token`), confirm
+`PURPLELINK_LICENSE_PRIVATE_KEY` is set, upload the 1.1.0 DMG and appcast, then let the site PR deploy at the next slot.
 
 ## Tests
 
-- `netlify/tests/lenses-download.test.mjs`: session checks, newest-DMG listing with no `license` field, streaming, bad file
-  names, no release, no public or update door.
+- `netlify/tests/lenses-download.test.mjs`: session checks (Suite session, bundle with and without Lenses), newest-DMG listing, streaming, bad file
+  names, no release, the trial door (1.0.0 guard, rate limit), the token-gated feed and update door.
+- `netlify/tests/lenses-license.test.mjs`: LN1 key shape, isolation from other products, determinism, no seed gives no key, Suite.
 - `netlify/tests/lenses-purchase.test.mjs`: catalog entry ($4.99 inline), refund text against Terms, receipt email with the
-  link and no key, Suite email without Lenses, recovery email.
+  link and an LN1 key, Suite email naming the Lenses download and key, Lenses as a bundle part, recovery email.
 - Product page tests live in `netlify/tests/lenses-site.test.mjs` (page owner, not this file).
 
 ## Not verified
@@ -72,3 +94,10 @@ email ("always hands you the newest version"). Version text on the product page 
   and the checkout entry are server code, but this launch is not a reason for `[deploy now]`; wait for the 06:00 or 17:00
   Eastern slot unless Ben decides otherwise.
 - The Lenses Stripe session metadata (`product=lenses`) is only exercised by tests, not by a real Checkout Session.
+
+## Video on the product page
+`site/lenses/index.html` embeds the v2 video, `Lkc1RzLbGCs` (2026-11-06: before/after for each setting, 60 vs 120 Hz
+slowed 4x), with the click-to-load `yt-embed` block (youtube-nocookie, styles in `motion.css`); the poster is its thumbnail A.
+The Short is `2PWYkaGT-6I`. The v1 launch videos (`Lt6G-s0_UlQ`, Short `86CL2_aWajw`) are replaced. The JSON-LD carries a `VideoObject` for it.
+The v2 pair went public and v1 unlisted on 2026-11-06. The before/after stills in `site/assets/lenses/` come from
+`video/build-lenses-stills.mjs`; they are simulated views, and the page says so.

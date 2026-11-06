@@ -1,0 +1,81 @@
+/* Mac keyboard tester. External file for the strict CSP (style-src 'self'). Tokens only, no hardcoded surfaces. */
+
+.kt-board {
+  display: grid; gap: 4px; padding: 10px; margin: 0;
+  background: var(--panel); border: 1.5px solid var(--field-line); border-radius: 14px;
+  cursor: pointer; user-select: none; -webkit-user-select: none;
+}
+.kt-board:focus-visible { outline: 2px solid var(--purple); outline-offset: 3px; }
+.kt-row { display: grid; grid-template-columns: repeat(60, minmax(0, 1fr)); gap: 4px; }
+
+.kt-key {
+  display: flex; align-items: center; justify-content: center;
+  height: clamp(30px, 6.4vw, 52px); padding: 0 2px; box-sizing: border-box; overflow: hidden;
+  font-size: clamp(.55rem, 1.7vw, .85rem); line-height: 1; color: var(--ink);
+  background: var(--bg); border: 1px solid var(--line); border-radius: 6px;
+  position: relative;
+}
+.kt-small { font-size: clamp(.5rem, 1.4vw, .72rem); }
+.kt-row:first-child .kt-key { height: clamp(22px, 4.6vw, 38px); }
+.kt-stack { display: grid; grid-template-rows: 1fr 1fr; gap: 2px; }
+.kt-half { height: auto; min-height: 0; font-size: clamp(.4rem, 1.1vw, .6rem); }
+
+.kt-w4  { grid-column: span 4; }
+.kt-w5  { grid-column: span 5; }
+.kt-w6  { grid-column: span 6; }
+.kt-w7  { grid-column: span 7; }
+.kt-w8  { grid-column: span 8; }
+.kt-w9  { grid-column: span 9; }
+.kt-w11 { grid-column: span 11; }
+.kt-w22 { grid-column: span 22; }
+
+/* Tested: tinted fill, solid purple border and a corner dot, so state is not colour alone. */
+.kt-tested {
+  background: color-mix(in oklch, var(--purple) 22%, var(--bg));
+  border-color: var(--purple);
+}
+.kt-tested::after {
+  content: ""; position: absolute; top: 3px; right: 3px; width: 5px; height: 5px;
+  border-radius: 50%; background: var(--purple);
+}
+.kt-held { background: var(--purple); color: oklch(99% 0.003 310); border-color: var(--purple); }
+.kt-held::after { background: oklch(99% 0.003 310); }
+:where(:root:not([data-theme="light"])) .kt-held { color: oklch(18% 0.06 310); }
+:where(:root:not([data-theme="light"])) .kt-held::after { background: oklch(18% 0.06 310); }
+
+/* The fn key: the browser never reports it. Dashed border, muted label. */
+.kt-unseen { border-style: dashed; color: var(--muted); }
+
+.kt-stats { display: flex; flex-wrap: wrap; gap: 12px 28px; margin: 18px 0 6px; padding: 0; list-style: none; }
+.kt-stats li { display: flex; flex-direction: column; }
+.kt-stats .kt-num { font-family: var(--font-display); font-size: 1.5rem; color: var(--ink); }
+.kt-stats .kt-lbl { font-size: .85rem; color: var(--muted); }
+.kt-last { margin: 8px 0 0; color: var(--ink); }
+.kt-hint { margin: 10px 0 0; color: var(--muted); font-size: .9rem; }
+
+.kt-sound { margin-top: 24px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
+.kt-sound h2 { font-family: var(--font-display); font-size: 1.15rem; margin: 0 0 4px; }
+.kt-sound p { margin: 0 0 10px; color: var(--muted); }
+.kt-sets { border: 0; margin: 12px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.kt-sets legend { font-weight: 600; padding: 0; margin-bottom: 6px; }
+.kt-sets label { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; }
+.kt-sets input { width: 18px; height: 18px; accent-color: var(--purple); }
+.kt-switch[aria-checked="true"] { background: var(--purple); color: oklch(99% 0.003 310); border-color: var(--purple); }
+:where(:root:not([data-theme="light"])) .kt-switch[aria-checked="true"] { color: oklch(18% 0.06 310); }
+.kt-status { min-height: 1.5em; margin: 10px 0 0; color: var(--muted); font-size: .95rem; }
+
+.kt-limits, .kt-details { margin-top: 24px; }
+.kt-limits h2, .kt-details h2 { font-family: var(--font-display); }
+.kt-limits ul { margin: 8px 0 0 1.1rem; color: var(--muted); }
+.kt-limits li { margin-bottom: 6px; }
+.kt-details details { border-bottom: 1px solid var(--line); padding: 12px 0; }
+.kt-details summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+.kt-details p { color: var(--muted); margin: 6px 0 0; overflow-wrap: anywhere; }
+
+.kt-product { margin-top: 28px; padding: 18px 22px; border: 1px solid var(--line); border-radius: 14px; background: var(--purple-xlight); }
+.kt-product h2 { font-family: var(--font-display); font-size: 1.2rem; margin: 0 0 6px; }
+.kt-product p { margin: 0 0 12px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .kt-key { transition: background-color .08s ease-out; }
+}

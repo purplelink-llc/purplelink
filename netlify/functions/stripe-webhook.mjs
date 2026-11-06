@@ -50,7 +50,8 @@ import { createHmac, timingSafeEqual, randomBytes, sign as edSign } from "node:c
 import { ed25519PrivateKeyFromSeed } from "../lib/ed25519-seed.mjs";
 import { getStore } from "@netlify/blobs";
 import { issueLicense, licensedSlugsFor, LICENSED_PRODUCTS } from "../lib/license.mjs";
-import { bundlePartsOf, entitledParts, isBundleProduct, partsSentence } from "../lib/bundles.mjs";
+import { ADDON_SLUGS, addonPartsOf, bundlePartsOf, entitledParts, isBundleProduct, partsSentence } from "../lib/bundles.mjs";
+import { SESSION_EXPAND, withAddons } from "../lib/addons.mjs";
 import { recordRevocation, clearDispute, paymentIntentOf } from "../lib/refunds.mjs";
 import { handleExpired, markBought, STORE as RECOVERY_STORE } from "../lib/checkout-recovery.mjs";
 import { sendRedditPurchase } from "../lib/reddit-capi.mjs";
@@ -126,6 +127,7 @@ const PURPLELINK_PRODUCTS = new Set([
   "paper-review-annual",
   "cover-letter",
   "anonymity-check",
+  "journal-check",
   "citation-gap",
   "revision-review",
   "response-review",
@@ -139,6 +141,7 @@ const PURPLELINK_PRODUCTS = new Set([
 // the session is paid (kit-download.mjs, moderntex-download.mjs). They are
 // listed so a ModernTex or kit sale reads as "delivered" in the function log
 // rather than as a foreign product.
+const ADDON_PRODUCTS = new Set(ADDON_SLUGS);
 export const BLOB_DELIVERED_PRODUCTS = new Map([
   ["kit-faceless",      { name: "The Faceless Content Pipeline kit", successPath: "/kits/success/" }],
   ["kit-monetization",  { name: "The Monetization Stack kit",        successPath: "/kits/success/" }],
@@ -155,10 +158,10 @@ export const BLOB_DELIVERED_PRODUCTS = new Map([
   ["nee",          { name: "Née for macOS",                successPath: "/nee/success/" }],
   ["panely",          { name: "Panely for macOS",                successPath: "/panely/success/" }],
   ["summonly",          { name: "Summonly for macOS",                successPath: "/summonly/success/" }],
-  // Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Panely + Summonly + Née + Vitae Plus for life. /suite/success/
-  // lists all eight downloads and asks vitae-license.mjs for the lifetime Vitae Plus key.
+  // Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Panely + Summonly + Née + Lenses + Vitae Plus for life. /suite/success/
+  // lists all nine downloads and asks vitae-license.mjs for the lifetime Vitae Plus key.
   ["app-suite",         { name: "the Purplelink Mac Suite",          successPath: "/suite/success/" }],
-  // Custom bundles: any 2 or any 3 of the nine Suite parts, one fixed price (netlify/lib/bundles.mjs). The same page
+  // Custom bundles: any 2 or any 3 of the ten Suite parts, one fixed price (netlify/lib/bundles.mjs). The same page
   // lists only the chosen parts; each download function and vitae-license.mjs read metadata.apps back.
   ["bundle-2",          { name: "the Purplelink Mac Suite custom bundle", successPath: "/suite/success/" }],
   ["bundle-3",          { name: "the Purplelink Mac Suite custom bundle", successPath: "/suite/success/" }],
@@ -433,10 +436,10 @@ export function issueModernTexLicense(sessionId, index) {
  * Suite entitles all of them; a custom bundle (`apps` = its chosen parts, comma-separated) entitles only those. Keys are derived from the session id, so every caller gets the same key.
  * An entry is left out, never faked, when its signing secret is not configured.
  */
-export function licenseKeysForSession(productKey, sessionId, { seats = 0, apps = "" } = {}) {
+export function licenseKeysForSession(productKey, sessionId, { seats = 0, apps = "", addons = "" } = {}) {
   const out = [];
   // What the purchase entitles: the whole Suite, the chosen parts of a custom bundle, or the single app.
-  const parts = entitledParts(productKey, { apps });
+  const parts = entitledParts(productKey, { apps, addons });
   if (productKey === "moderntex-seats") {
     // One key per seat, each from its own index so the keys differ yet stay the same for a given purchase.
     // Slug "moderntex-seat" (not "moderntex") so the recovery email lists them with the other session keys.
@@ -454,7 +457,7 @@ export function licenseKeysForSession(productKey, sessionId, { seats = 0, apps =
   const seedB64 = Netlify.env.get("PURPLELINK_LICENSE_PRIVATE_KEY");
   // PURPLELINK_LICENSE_PUBLIC_KEY is only ever set by tests; production uses the key baked into license.mjs.
   const publicB64 = Netlify.env.get("PURPLELINK_LICENSE_PUBLIC_KEY") || undefined;
-  const licensedSlugs = isBundleProduct(productKey) ? Object.keys(LICENSED_PRODUCTS).filter((x) => parts.has(x)) : licensedSlugsFor(productKey);
+  const licensedSlugs = isBundleProduct(productKey) || addonPartsOf(productKey, { addons }).length ? Object.keys(LICENSED_PRODUCTS).filter((x) => parts.has(x)) : licensedSlugsFor(productKey);
   for (const slug of licensedSlugs) {
     const key = issueLicense(slug, { sessionId, seedB64, publicB64 });
     if (key) out.push({ slug, label: LICENSED_PRODUCTS[slug].label, key });
@@ -505,7 +508,7 @@ export function calendarOffer(productKey, nowMs = Date.now()) {
  * paid buyer with neither the page nor the email is exactly what the alert
  * exists for.
  */
-async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = "", buyerCode = null, referralLink = "" } = {}) {
+async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = "", addons = "", buyerCode = null, referralLink = "" } = {}) {
   const apiKey = Netlify.env.get("RESEND_API_KEY");
   const entry = BLOB_DELIVERED_PRODUCTS.get(productKey);
   if (!apiKey || !to || !entry) return false;
@@ -515,9 +518,10 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
   // download email, so a missing key is simply left out and the buyer still gets the link.
   const isSuite = productKey === "app-suite";
   const isBundle = isBundleProduct(productKey);
-  const parts = entitledParts(productKey, { apps });
+  const parts = entitledParts(productKey, { apps, addons });
   const bundleParts = isBundle ? bundlePartsOf({ product: productKey, apps }) : [];
-  const keys = licenseKeysForSession(productKey, sessionId, { seats, apps });
+  const addonParts = addonPartsOf(productKey, { addons });
+  const keys = licenseKeysForSession(productKey, sessionId, { seats, apps, addons });
   const isSeats = productKey === "moderntex-seats";
   const keyHint = (k) => (k.slug === "moderntex" ? `"Enter license key" (older trial copies say "Have a license key?")` : `"Enter license key"`);
   const licenseTextBlock = isSeats && keys.length
@@ -555,11 +559,11 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
   const reviewHtmlBlock = reviewApp ? `<p>${reviewAsk}</p>` : "";
   // Mac Suite: say what is on the page, since one link carries six things.
   const suiteText = isSuite
-    ? `That page has nine things: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Née downloads, and your Vitae Plus key ` +
+    ? `That page has ten things: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and Lenses downloads, and your Vitae Plus key ` +
       `(for life; in Vitae open Settings, then Vitae Plus, paste it and click Activate). Vitae itself is a free download from the same page.\n\n`
     : "";
   const suiteHtml = isSuite
-    ? `<p>That page has nine things: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Née downloads, and your Vitae Plus key ` +
+    ? `<p>That page has ten things: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and Lenses downloads, and your Vitae Plus key ` +
       `(for life; in Vitae open Settings, then Vitae Plus, paste it and click Activate). Vitae itself is a free download from the same page.</p>`
     : "";
   // Custom bundle: name the chosen parts, and say that the page lists those and nothing else.
@@ -571,8 +575,12 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
       (bundleVitae ? `${bundleApps.length ? " and " : ""}your lifetime Vitae Plus key (in Vitae open Settings, then Vitae Plus, paste it and click Activate; Vitae itself is a free download from the same page)` : "") +
       "."
     : "";
-  const bundleText = bundleLine ? `${bundleLine}\n\n` : "";
-  const bundleHtml = bundleLine ? `<p>${bundleLine}</p>` : "";
+  // A second app added at checkout (25% off): say so once, and that the page carries both.
+  const addonLine = addonParts.length
+    ? `Your order also includes ${partsSentence(addonParts)}, added at checkout. That page has the ${partsSentence([productKey, ...addonParts])} download${addonParts.length > 0 ? "s" : ""} and each app's license key below.`
+    : "";
+  const bundleText = bundleLine ? `${bundleLine}\n\n` : addonLine ? `${addonLine}\n\n` : "";
+  const bundleHtml = bundleLine ? `<p>${bundleLine}</p>` : addonLine ? `<p>${addonLine}</p>` : "";
   // Outbound Veil: the one step new users trip on is macOS Accessibility, so point at the setup guide.
   const startUrl = `${SITE_ORIGIN}/outbound-veil/start/`;
   const startText = productKey === "outbound-veil"
@@ -653,11 +661,11 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     "so read every field before you save.";
   const lenscribText = lenscribKey.text + (isLenscrib ? lenscribNote + "\n\n" : "");
   const lenscribHtml = lenscribKey.html + (isLenscrib ? `<p>${lenscribNote}</p>` : "");
-  // Lenses has no key, trial or updater: the email is the download link plus one practical note. Sold on its own, so it is
-  // keyed on the product, not on `parts`.
-  const isLenses = productKey === "lenses";
+  // Lenses: its key is in the generic keys block (shared PurplelinkLicenseV1 scheme, LN1), so this is the one practical note.
+  // It goes to anyone whose purchase includes Lenses: the app itself, the Suite, or a custom bundle that has it.
+  const isLenses = productKey === "lenses" || parts.has("lenses");
   const lensesNote = "Lenses needs macOS 14 or later on an Apple silicon Mac. It is a menu bar app with an Open at Login option in its menu. " +
-    "It collects nothing and makes no network requests.";
+    "Lenses has no account and sends nothing about your displays; the only network request it makes is the update check.";
   const lensesText = isLenses ? lensesNote + "\n\n" : "";
   const lensesHtml = isLenses ? `<p>${lensesNote}</p>` : "";
   // Née's key is in the generic keys block above (shared PurplelinkLicenseV1 scheme), so this is only the one practical
@@ -1055,6 +1063,19 @@ export default async function handler(request, context) {
   // fails, we return 502, and Stripe retries for ~3 days while alerting the
   // operator each time. Ignore anything that is not ours.
   if (BLOB_DELIVERED_PRODUCTS.has(rawProduct)) {
+    // A second app added at checkout is on the paid line items only: re-read the session with them expanded. If that
+    // read fails, Stripe is asked to retry (502) rather than delivering one app of two to a buyer who paid for both.
+    // Checkout stamps metadata.addon_offered only when it sent optional rows, so every other order keeps the event's own session.
+    let deliverSession = session;
+    if (ADDON_PRODUCTS.has(rawProduct) && session.metadata?.addon_offered) {
+      const full = await stripeGet(`/v1/checkout/sessions/${encodeURIComponent(sessionId)}?${SESSION_EXPAND}`);
+      if (!full) {
+        await alertOperator("Could not read a paid order's line items",
+          `session_id=${sessionId}\nproduct=${rawProduct}\n\nStripe will retry this webhook. If it keeps failing, a buyer may be owed a second app.`);
+        return jsonResponse(502, { error: "line_items_unreadable" });
+      }
+      deliverSession = withAddons({ ...session, line_items: full.line_items });
+    }
     // Stripe explicitly warns a webhook event can be delivered more than
     // once. Without a dedupe, a duplicate delivery here would call
     // emailDownloadLink() again, which for ModernTex mints and emails a
@@ -1067,11 +1088,12 @@ export default async function handler(request, context) {
       return jsonResponse(200, { status: "duplicate_event_ignored", product: rawProduct, event_id: event.id || null });
     }
     await dedupeStore.set(dedupeKey, new Date().toISOString());
+    const deliverMeta = deliverSession.metadata || {};
     // A buyer who later lets another checkout expire must not get a "you did not finish" email.
-    try { await markBought(getStore(RECOVERY_STORE), rawProduct, email, entitledParts(rawProduct, session.metadata || {})); } catch (_) { /* best effort */ }
-    const buyerCode = await buyerCodeFor(session, rawProduct, email);
+    try { await markBought(getStore(RECOVERY_STORE), rawProduct, email, entitledParts(rawProduct, deliverMeta)); } catch (_) { /* best effort */ }
+    const buyerCode = await buyerCodeFor(deliverSession, rawProduct, email);
     const ref = await referralFor(session, rawProduct, email, backendSecret);
-    const emailed = await emailDownloadLink(email, sessionId, rawProduct, { seats: parseInt(session.metadata?.seats || "0", 10) || 0, apps: session.metadata?.apps || "", buyerCode, referralLink: ref?.link || "" });
+    const emailed = await emailDownloadLink(email, sessionId, rawProduct, { seats: parseInt(session.metadata?.seats || "0", 10) || 0, apps: session.metadata?.apps || "", addons: deliverMeta.addons || "", buyerCode, referralLink: ref?.link || "" });
     if (LIFECYCLE_PRODUCTS.has(rawProduct) && email) {
       // Day-3 tips and a day-21 note, sent by the backend's daily sweep with
       // an unsubscribe link. The buyer already has the key and download, so

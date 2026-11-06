@@ -11,7 +11,7 @@
  *   - the session has an email address and a recovery URL,
  *   - the address has not bought the product, has not unsubscribed from purchase follow-ups, and was not sent a
  *     recovery email (for any product) in the last QUIET_DAYS.
- * Same price, no discount, no promotion code. CHECKOUT_RECOVERY=off in the Netlify environment stops the emails
+ * Same price, no extra discount, no promotion code. CHECKOUT_RECOVERY=off in the Netlify environment stops the emails
  * (the Stripe parameters stay, so consent is still recorded). Addresses are never logged.
  *
  * Not here: subscriptions (Stripe offers no recovery URL for them) and ModernTex seats (the price depends on the
@@ -36,8 +36,10 @@ export const RECOVERY_PRODUCTS = Object.freeze({
   "panely":                     { name: "Panely", price: "$9.99", cents: 999, kind: "app" },
   "summonly":                   { name: "Summonly", price: "$9.99", cents: 999, kind: "app" },
   "app-suite":                  { name: "the Purplelink Mac Suite", price: "$59.99", cents: 5999, kind: "app" },
-  "bundle-2":                   { name: "a custom bundle of two Purplelink Mac apps", short: "Purplelink bundle", price: "$34.99", cents: 3499, kind: "app" },
-  "bundle-3":                   { name: "a custom bundle of three Purplelink Mac apps", short: "Purplelink bundle", price: "$44.99", cents: 4499, kind: "app" },
+  // A bundle's price depends on the apps chosen (netlify/lib/bundles.mjs), so it has no fixed price here: the email
+  // states the session's own amount when it has one, else the percent off.
+  "bundle-2":                   { name: "a custom bundle of two Purplelink Mac apps", short: "Purplelink bundle", percent: 25, kind: "app" },
+  "bundle-3":                   { name: "a custom bundle of three Purplelink Mac apps", short: "Purplelink bundle", percent: 40, kind: "app" },
   "paper-review-standard":      { name: "a Paper Review (Standard)", price: "$9.00", cents: 900, kind: "once" },
   "paper-review-journal":       { name: "a Paper Review (Journal check)", price: "$11.00", cents: 1100, kind: "once" },
   "paper-review-deep":          { name: "a Paper Review (Deep)", price: "$15.00", cents: 1500, kind: "once" },
@@ -45,6 +47,7 @@ export const RECOVERY_PRODUCTS = Object.freeze({
   "paper-review-pack-20":       { name: "a 20-review Paper Review pack", price: "$150.00", cents: 15000, kind: "once" },
   "cover-letter":               { name: "the cover letter tool", price: "$2.00", cents: 200, kind: "once" },
   "anonymity-check":            { name: "the anonymity check", price: "$2.00", cents: 200, kind: "once" },
+  "journal-check":              { name: "the journal check", price: "$2.00", cents: 200, kind: "once" },
   "citation-gap":               { name: "the citation gap check", price: "$3.00", cents: 300, kind: "once" },
   "revision-review":            { name: "the revision review", price: "$2.00", cents: 200, kind: "once" },
   "response-review":            { name: "the response letter review", price: "$6.00", cents: 600, kind: "once" },
@@ -98,13 +101,16 @@ function stripArticle(name) {
 }
 
 /** The recovery email for one address. */
-export function recoveryEmail({ to, product, url, secret }) {
+export function recoveryEmail({ to, product, url, secret, cents }) {
   const p = RECOVERY_PRODUCTS[product];
   if (!p || !url) return null;
+  const priceText = p.price || (Number.isInteger(cents) && cents > 0
+    ? `$${(cents / 100).toFixed(2)}`
+    : `${p.percent}% off the apps' own prices`);
   const unsub = unsubscribeUrl(to, secret);
   const paragraphs = [
     `You started buying ${p.name} on purplelink.llc, and the checkout closed before payment, so nothing was charged.`,
-    `If you still want it, this link reopens the same checkout at the same price (${p.price}, once${p.kind === "app" ? ", with updates included" : ""}). It works for 30 days: ${url}`,
+    `If you still want it, this link reopens the same checkout at the same price (${priceText}, once${p.kind === "app" ? ", with updates included" : ""}). It works for 30 days: ${url}`,
     "If something on the page stopped you (a payment method, a licensing question, something unclear), reply and tell me. I read every reply myself.",
     "Ben Ampel",
   ];
@@ -142,7 +148,7 @@ export async function handleExpired(session, { store, suppressed, send, secret, 
   const last = await store.get(`email:${h}`);
   if (last && nowS - Number(last) < QUIET_DAYS * 86400) { await store.set(`session:${session.id}`, "quiet"); return "quiet"; }
   if (!enabled) { await store.set(`session:${session.id}`, "off"); return "off"; }
-  const mail = recoveryEmail({ to: email, product, url, secret });
+  const mail = recoveryEmail({ to: email, product, url, secret, cents: Number(session?.amount_total) || undefined });
   const ok = mail ? await send(mail) : false;
   if (!ok) return "send_failed";
   await store.set(`session:${session.id}`, String(nowS));

@@ -23,7 +23,8 @@ import { issueLenscribLicense } from "../lib/lenscrib-license.mjs";
 import { issuePanelyLicense } from "../lib/panely-license.mjs";
 import { issueSummonlyLicense } from "../lib/summonly-license.mjs";
 import { issueModernTexLicense, licenseKeysForSession, BLOB_DELIVERED_PRODUCTS, LIVE_PRODUCTS } from "./stripe-webhook.mjs";
-import { entitledParts, isBundleProduct, partsSentence, bundlePartsOf } from "../lib/bundles.mjs";
+import { addonPartsOf, entitledParts, isBundleProduct, partsSentence, bundlePartsOf } from "../lib/bundles.mjs";
+import { addonsFromSession } from "../lib/addons.mjs";
 import { revocationFor, paymentIntentOf } from "../lib/refunds.mjs";
 
 const SITE_ORIGIN = "https://purplelink.llc";
@@ -74,7 +75,7 @@ export async function purchasesForEmail(email, secretKey) {
     let after = "";
     for (let page = 0; page < MAX_PAGES; page++) {
       const query =
-        `/checkout/sessions?customer_details%5Bemail%5D=${encodeURIComponent(address)}&limit=100` +
+        `/checkout/sessions?customer_details%5Bemail%5D=${encodeURIComponent(address)}&limit=100&expand%5B%5D=data.line_items` +
         (after ? `&starting_after=${encodeURIComponent(after)}` : "");
       const res = await stripeGet(query, secretKey);
       if (res.error) return { error: res.error };
@@ -85,7 +86,7 @@ export async function purchasesForEmail(email, secretKey) {
         // Live sheets start on a free trial, so their session is complete but unpaid.
         const live = LIVE_PRODUCTS.has(product) && s.status === "complete";
         if (!live && (s.payment_status !== "paid" || !BLOB_DELIVERED_PRODUCTS.has(product))) continue;
-        found.set(s.id, { sessionId: s.id, product, created: s.created || 0, seats: parseInt(s?.metadata?.seats || "0", 10) || 0, apps: s?.metadata?.apps || "", paymentIntent: paymentIntentOf(s) });
+        found.set(s.id, { sessionId: s.id, product, created: s.created || 0, seats: parseInt(s?.metadata?.seats || "0", 10) || 0, apps: s?.metadata?.apps || "", addons: addonsFromSession(s).join(","), paymentIntent: paymentIntentOf(s) });
       }
       if (!res.data?.has_more || rows.length === 0) break;
       after = rows[rows.length - 1].id;
@@ -117,12 +118,32 @@ export function recoveryEmail(purchases, license, keyfeelLicense = null, keysByS
       lines.push("Reply to this email for your license key.");
       html.push("<p>Reply to this email for your license key.</p>");
     }
+    // A second app added to a ModernTex order at checkout: its download is on the same page, its key is here.
+    for (const m of mtx) {
+      const added = addonPartsOf("moderntex", { addons: m.addons || "" });
+      if (!added.length) continue;
+      const line = `Also on this order: ${partsSentence(added)}, added at checkout. The download page above has its download.`;
+      lines.push(line);
+      html.push(`<p>${escapeHtml(line)}</p>`);
+      const keyed = [["keyfeel", "Keyfeel", keyfeelLicense], ["tapefolio", "Tapefolio", tapefolioLicense], ["panely", "Panely", panelyLicense], ["summonly", "Summonly", summonlyLicense]];
+      for (const [slug, name, key] of keyed) {
+        if (!key || !added.includes(slug)) continue;
+        lines.push(`${name} license key (in ${name}, choose Enter License Key and paste it): ${key}`);
+        html.push(`<p>${name} license key (in ${name}, choose Enter License Key and paste it):</p>` +
+          `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${escapeHtml(key)}</p>`);
+      }
+      for (const k of keysBySession.get(m.sessionId) || []) {
+        lines.push(`${k.label} license key (paste it into "Enter license key"): ${k.key}`);
+        html.push(`<p>${escapeHtml(k.label)} license key (paste it into &quot;Enter license key&quot;):</p>` +
+          `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${escapeHtml(k.key)}</p>`);
+      }
+    }
     lines.push("");
   }
   for (const p of purchases.filter((q) => q.product !== "moderntex")) {
     const suite = p.product === "app-suite";
     const bundle = isBundleProduct(p.product);
-    const parts = entitledParts(p.product, { apps: p.apps || "" });
+    const parts = entitledParts(p.product, { apps: p.apps || "", addons: p.addons || "" });
     const live = LIVE_PRODUCTS.has(p.product);
     const entry = live ? LIVE_PRODUCTS.get(p.product) : BLOB_DELIVERED_PRODUCTS.get(p.product);
     const link = `${SITE_ORIGIN}${entry.successPath}?session_id=${encodeURIComponent(p.sessionId)}`;
@@ -152,6 +173,12 @@ export function recoveryEmail(purchases, license, keyfeelLicense = null, keysByS
           `<p style="font-family: ui-monospace, monospace; font-size: 14px; letter-spacing: 0.5px;">${escapeHtml(key)}</p>`);
       }
     }
+    const added = addonPartsOf(p.product, { addons: p.addons || "" });
+    if (added.length) {
+      const line = `Also on this order: ${partsSentence(added)}, added at checkout. That page has its download, and its license key is below.`;
+      lines.splice(lines.length - 1, 0, line);
+      html.push(`<p>${escapeHtml(line)}</p>`);
+    }
     if (bundle) {
       // A custom bundle: the page lists only the chosen parts; the ModernTex key, if chosen, is only ever emailed.
       const chosen = bundlePartsOf({ product: p.product, apps: p.apps || "" });
@@ -167,8 +194,8 @@ export function recoveryEmail(purchases, license, keyfeelLicense = null, keysByS
     }
     if (suite) {
       // The page holds the downloads and the Vitae Plus key; the ModernTex key is only ever emailed.
-      lines.splice(lines.length - 1, 0, "That page has the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Née downloads and your lifetime Vitae Plus key.");
-      html.push("<p>That page has the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Née downloads and your lifetime Vitae Plus key.</p>");
+      lines.splice(lines.length - 1, 0, "That page has the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and Lenses downloads and your lifetime Vitae Plus key.");
+      html.push("<p>That page has the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and Lenses downloads and your lifetime Vitae Plus key.</p>");
       if (license) {
         lines.splice(lines.length - 1, 0, `ModernTex license key (in ModernTex, choose Enter license key and paste it): ${license}`);
         html.push(`<p>ModernTex license key (in ModernTex, choose Enter license key and paste it):</p>` +
@@ -228,15 +255,15 @@ async function sendRecovery(to, purchases, revoked = 0) {
   if (!purchases.length) return postMail(apiKey, to, revokedOnlyEmail());
   // The ModernTex key is derived from the newest ModernTex or Suite purchase, so it matches what that
   // purchase's own email and download page show. Keyfeel's and Tapefolio's keys are derived from the address (their own schemes).
-  const mtxPurchase = purchases.find((p) => p.product === "moderntex" || p.product === "app-suite" || (isBundleProduct(p.product) && entitledParts(p.product, { apps: p.apps || "" }).has("moderntex")));
+  const mtxPurchase = purchases.find((p) => p.product === "moderntex" || p.product === "app-suite" || entitledParts(p.product, { apps: p.apps || "", addons: p.addons || "" }).has("moderntex"));
   const license = mtxPurchase ? issueModernTexLicense(mtxPurchase.sessionId) : null;
-  const keyfeelLicense = purchases.some((p) => p.product === "keyfeel" || p.product === "app-suite" || (isBundleProduct(p.product) && entitledParts(p.product, { apps: p.apps || "" }).has("keyfeel"))) ? issueKeyfeelLicense(to) : null;
-  const tapefolioLicense = purchases.some((p) => p.product === "tapefolio" || p.product === "app-suite" || (isBundleProduct(p.product) && entitledParts(p.product, { apps: p.apps || "" }).has("tapefolio"))) ? issueTapefolioLicense(to) : null;
-  const hasPart = (slug) => purchases.some((p) => p.product === slug || p.product === "app-suite" || (isBundleProduct(p.product) && entitledParts(p.product, { apps: p.apps || "" }).has(slug)));
+  const keyfeelLicense = purchases.some((p) => p.product === "keyfeel" || p.product === "app-suite" || entitledParts(p.product, { apps: p.apps || "", addons: p.addons || "" }).has("keyfeel")) ? issueKeyfeelLicense(to) : null;
+  const tapefolioLicense = purchases.some((p) => p.product === "tapefolio" || p.product === "app-suite" || entitledParts(p.product, { apps: p.apps || "", addons: p.addons || "" }).has("tapefolio")) ? issueTapefolioLicense(to) : null;
+  const hasPart = (slug) => purchases.some((p) => p.product === slug || p.product === "app-suite" || entitledParts(p.product, { apps: p.apps || "", addons: p.addons || "" }).has(slug));
   const panelyLicense = hasPart("panely") ? issuePanelyLicense(to) : null;
   const summonlyLicense = hasPart("summonly") ? issueSummonlyLicense(to) : null;
   const lenscribLicense = purchases.some((p) => p.product === "lenscrib") ? issueLenscribLicense(to) : null;
-  const keysBySession = new Map(purchases.map((p) => [p.sessionId, licenseKeysForSession(p.product, p.sessionId, { seats: p.seats || 0, apps: p.apps || "" }).filter((k) => k.slug !== "moderntex")]));
+  const keysBySession = new Map(purchases.map((p) => [p.sessionId, licenseKeysForSession(p.product, p.sessionId, { seats: p.seats || 0, apps: p.apps || "", addons: p.addons || "" }).filter((k) => k.slug !== "moderntex")]));
   const mail = recoveryEmail(purchases, license, keyfeelLicense, keysBySession, tapefolioLicense, panelyLicense, summonlyLicense, lenscribLicense);
   if (revoked) {
     mail.text = mail.text.replace("If you did not ask for this", `${REVOKED_LINE}\n\nIf you did not ask for this`);

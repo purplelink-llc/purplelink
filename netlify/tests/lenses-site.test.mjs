@@ -41,7 +41,7 @@ test("the Lenses page offers the app at $4.99 once, in stock, with a 14-day refu
   assert.equal(app.offers.hasMerchantReturnPolicy.merchantReturnDays, 14);
   assert.equal(app.operatingSystem, "macOS 14+");
   assert.ok(!("aggregateRating" in app) && !("review" in app));
-  assert.deepEqual(nodes.map((n) => n["@type"]).sort(), ["BreadcrumbList", "FAQPage", "SoftwareApplication"]);
+  assert.deepEqual(nodes.map((n) => n["@type"]).sort(), ["BreadcrumbList", "FAQPage", "SoftwareApplication", "VideoObject"]);
 });
 
 test("the page is indexed, canonical and posts product lenses to checkout", () => {
@@ -59,14 +59,16 @@ test("the page is indexed, canonical and posts product lenses to checkout", () =
 test("the page carries the required claims", () => {
   const text = visibleText(read("lenses/index.html"));
   assert.ok(text.includes("Tested on RayNeo Air."));
-  assert.ok(text.includes("Lenses collects nothing and makes no network requests."));
+  assert.match(text, /collects nothing/);
+  assert.match(text, /only network request it makes is the update check/);
   assert.match(text, /\$4\.99/);
   assert.match(text, /XREAL and VITURE/);
   assert.ok(text.includes('Use this display as my glasses'));
   assert.match(text, /macOS 14/);
   assert.match(text, /Apple silicon/);
   assert.match(text, /14 days/);
-  assert.match(text, /no license key/i);
+  assert.match(text, /7-day trial/);
+  assert.match(text, /license key/i);
 });
 
 test("no page has an emoji, an inline style, a launch gate or an em dash", () => {
@@ -81,7 +83,7 @@ test("no page has an emoji, an inline style, a launch gate or an em dash", () =>
   assert.doesNotMatch(read("lenses/index.html"), /data-pf-|launch\.js/);
 });
 
-test("the success page calls lenses-download and has no license key", () => {
+test("the success page calls lenses-download and shows the license key", () => {
   const html = read("lenses/success/index.html");
   const js = read("lenses/success.js");
   assert.match(html, /\/lenses\/success\.js/);
@@ -134,12 +136,12 @@ test("the guide has the 8 steps in order, links to /lenses/ and mentions RayNeo 
   assert.deepEqual(types, ["Article", "BreadcrumbList", "FAQPage"]);
 });
 
-test("the listings include Lenses and the guide, and not the Suite or bundle pages", () => {
+test("the listings include Lenses and the guide, and the Suite page lists it too", () => {
   assert.match(read("sitemap.xml"), /<loc>https:\/\/purplelink\.llc\/lenses\/<\/loc>/);
   assert.match(read("sitemap.xml"), /<loc>https:\/\/purplelink\.llc\/guides\/ar-glasses-mac-setup\/<\/loc>/);
   assert.match(read("llms.txt"), /### Lenses \(macOS\)/);
   assert.match(read("products/index.html"), /href="\/lenses\/"/);
   assert.match(read("pricing/index.html"), /href="\/lenses\/"/);
   assert.match(read("guides/index.html"), /\/guides\/ar-glasses-mac-setup\//);
-  assert.doesNotMatch(read("suite/index.html").replace(/<footer[\s\S]*?<\/footer>/, ""), /\/lenses\/|>Lenses</);
+  assert.match(read("suite/index.html"), /\/lenses\/[^>]*>See Lenses|>Lenses</);
 });

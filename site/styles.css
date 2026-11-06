@@ -1387,6 +1387,15 @@ dd {
   flex-wrap: wrap;
 }
 
+/* The pick-two bundle line under the buy buttons (scripts/apply_bundle_nudge.py). */
+.buy-bundle {
+  margin-top: 6px;
+  max-width: 60ch;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
 /* ─── Feature section ──────────────────────────────────────────────────── */
 
 .features-section {

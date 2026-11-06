@@ -1,26 +1,70 @@
 /**
- * Netlify Function: Lenses delivery. One private Blobs store, one door: the purchase.
+ * Netlify Function — Lenses delivery. One private Blobs store, three doors: purchase, trial, update channel.
  *
- * Lenses is a paid download only. No license key, no trial, no public download, no update channel.
+ *   Purchase (browser, after Stripe Checkout):
+ *     GET /.netlify/functions/lenses-download?session_id=cs_…            -> JSON {files:[…]}
+ *     GET /.netlify/functions/lenses-download?session_id=cs_…&file=<dmg> -> the DMG
  *
- *   GET /.netlify/functions/lenses-download?session_id=cs_...            -> JSON {product, files:[{key,label,url}]}
- *   GET /.netlify/functions/lenses-download?session_id=cs_...&file=<dmg> -> the DMG
+ *   Free trial (public, no session). There is ONE app: it runs free for 7 days and a license key (LN1-…, the shared
+ *   PurplelinkLicenseV1 scheme in netlify/lib/license.mjs) keeps it unlocked, so the trial door serves the same
+ *   newest build buyers get:
+ *     GET /.netlify/functions/lenses-download?trial=1                      -> newest Lenses-x.y.z.dmg
+ *     If the store holds no DMG this door answers 404.
  *
  * The Stripe Checkout session id is the bearer token, as for the other apps. The session must be paid, not
- * refunded or disputed (netlify/lib/refunds.mjs), and must be a Lenses order: Lenses is sold on its own, so a
- * Mac Suite or custom bundle session is not entitled.
+ * refunded or disputed (netlify/lib/refunds.mjs), and must be a Lenses order, a Mac Suite order, or a custom bundle whose
+ * chosen parts include Lenses (since 2026-11-06).
  *
- * The DMGs are NOT part of the published site. They live only in the private `lenses-files` Blobs store (see
- * docs/products/lenses.md). Responses stream straight from Blobs, which keeps a large disk image clear of the
- * 6 MB buffered-response limit.
+ *   Updates (Sparkle inside the app, never a browser):
+ *     GET /.netlify/functions/lenses-download?feed=1                       -> appcast.xml
+ *     GET /.netlify/functions/lenses-download?update=<dmg>                 -> the DMG
+ *     GET /.netlify/functions/lenses-download?stats=1                      -> download counts (JSON)
+ *     All three require the header  X-Lenses-Channel: <LENSES_UPDATE_TOKEN>,
+ *     which build.sh compiles into the app and UpdaterService sends on every
+ *     Sparkle request. The token is a shared secret in a shipped binary, so it
+ *     keeps the update channel off the open web rather than defeating a
+ *     determined reverse-engineer; the purchase door is what the paywall rests on.
+ *     `stats` piggybacks on the same guard purely because it's convenient, not
+ *     because the counts are sensitive — it's for `curl -H` from a terminal, not
+ *     anything the app itself calls.
+ *
+ * The DMGs and appcast are NOT part of the published site. They live only in the
+ * private `lenses-files` Blobs store (scripts/publish-release.sh in the Lenses repo
+ * uploads them; see docs/products/lenses.md). Responses stream straight from Blobs, which keeps a 13 MB disk
+ * image clear of the 6 MB buffered-response limit. Each served `update=<dmg>` also
+ * increments a plain counter in the `lenses-stats` store (see `stats=1` above) —
+ * counts requests, not confirmed completions or unique machines.
  */
+import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import { revocationFor, REVOKED_DETAIL } from "../lib/refunds.mjs";
+import { bundleHasPart } from "../lib/bundles.mjs";
+import { SESSION_EXPAND, withAddons } from "../lib/addons.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 const FILE_STORE = "lenses-files";
+const STATS_STORE = "lenses-stats";
 const PRODUCT_KEY = "lenses";
+const SUITE_KEY = "app-suite";
 const DMG_NAME = /^Lenses-\d+\.\d+\.\d+\.dmg$/;
+const TRIAL_DAILY_LIMIT = 20;
+/** 1.0.0 had no trial and no license check, so the free trial door never serves a build older than 1.1.0. */
+const MIN_TRIAL_VERSION = [1, 1, 0];
+
+function atLeast(name, min) {
+  const v = name.match(/\d+/g).map(Number);
+  for (let i = 0; i < 3; i++) if (v[i] !== min[i]) return v[i] > min[i];
+  return true;
+}
+
+/** Durable per-file download count, in the same Blobs-as-counter style already used
+ *  for the trial rate limit below — a plain string integer, read-increment-write. */
+async function incrementDownloadCount(fileName) {
+  const stats = getStore(STATS_STORE);
+  const key = `downloads:${fileName}`;
+  const n = parseInt((await stats.get(key)) || "0", 10) || 0;
+  await stats.set(key, String(n + 1));
+}
 
 function json(status, body) {
   return new Response(JSON.stringify(body), {
@@ -29,12 +73,19 @@ function json(status, body) {
   });
 }
 
+function timingSafeEqual(a, b) {
+  if (typeof a !== "string" || typeof b !== "string" || a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
 async function loadSession(sessionId) {
   const secretKey = Netlify.env.get("STRIPE_SECRET_KEY");
   if (!secretKey) return { error: json(500, { error: "misconfigured", detail: "STRIPE_SECRET_KEY not set." }) };
   let resp;
   try {
-    resp = await fetch(`${STRIPE_API}/checkout/sessions/${sessionId}`, {
+    resp = await fetch(`${STRIPE_API}/checkout/sessions/${sessionId}?${SESSION_EXPAND}`, {
       headers: { Authorization: `Bearer ${secretKey}` },
     });
   } catch (err) {
@@ -42,22 +93,23 @@ async function loadSession(sessionId) {
     return { error: json(502, { error: "stripe_unreachable", detail: "Could not reach the payment processor. Try again in a minute." }) };
   }
   if (!resp.ok) return { error: json(403, { error: "session_not_found", detail: "That download link is not valid for this store." }) };
-  const session = await resp.json();
+  // A second app added at checkout is read from the paid line items (netlify/lib/addons.mjs), so its download unlocks too.
+  const session = withAddons(await resp.json());
   if (session.payment_status !== "paid") return { error: json(403, { error: "not_paid", detail: "This order has not been paid." }) };
   // A fully refunded or disputed order no longer gets the file (netlify/lib/refunds.mjs).
   if (await revocationFor(session)) return { error: json(403, { error: "refunded", detail: REVOKED_DETAIL }) };
-  // Lenses is sold on its own; it is not part of the Mac Suite or the custom bundles.
+  // Lenses itself, the whole Mac Suite, or a custom bundle that names Lenses.
   const bought = session.metadata?.product || "";
-  if (bought !== PRODUCT_KEY) {
+  if (bought !== PRODUCT_KEY && bought !== SUITE_KEY && !bundleHasPart(bought, session.metadata, "lenses")) {
     return { error: json(403, { error: "not_entitled", detail: "This order is for a different product." }) };
   }
   return { session };
 }
 
 /** The newest DMG in the store, by semantic version in the filename. */
-async function latestDmgName(store) {
+async function latestDmgName(store, pattern = DMG_NAME) {
   const { blobs } = await store.list();
-  const names = blobs.map((b) => b.key).filter((k) => DMG_NAME.test(k));
+  const names = blobs.map((b) => b.key).filter((k) => pattern.test(k));
   names.sort((a, b) => {
     const va = a.match(/\d+/g).map(Number), vb = b.match(/\d+/g).map(Number);
     for (let i = 0; i < 3; i++) if (va[i] !== vb[i]) return vb[i] - va[i];
@@ -85,9 +137,96 @@ async function streamBlob(store, key, type, disposition) {
   return new Response(stream, { status: 200, headers });
 }
 
+/**
+ * The appcast, with every enclosure URL rewritten to the canonical update door.
+ *
+ * Sparkle's `generate_appcast --download-url-prefix` resolves each filename as a
+ * relative URL against the prefix, so a prefix carrying a query string
+ * (`…/lenses-download?update=`) collapses to `…/functions/Lenses-1.0.0.dmg`,
+ * which 404s and breaks in-app updates. publish-release.sh now post-processes its own
+ * output, but the feed is rewritten here too so a stale or hand-uploaded appcast
+ * in the store can never ship a dead download link to installed copies.
+ * The EdDSA signature on each enclosure covers the DMG, not the URL, so rewriting an unsigned feed is safe; a signed
+ * feed is never rewritten.
+ */
+async function serveFeed(store) {
+  let xml;
+  try {
+    xml = await store.get("appcast.xml", { type: "text" });
+  } catch (err) {
+    xml = null;
+  }
+  if (!xml) return json(404, { error: "file_unavailable", detail: "No update feed is staged." });
+  // A signed feed (Sparkle `sign_update` embeds a `sparkle-signatures` comment; the app sets SURequireSignedFeed) is
+  // served byte for byte: any change would break its signature and stop every update. The release script already
+  // points its enclosures at the update door before signing.
+  const fixed = xml.includes("<!-- sparkle-signatures:")
+    ? xml
+    : xml.replace(
+        /url="[^"]*\/(Lenses-\d+\.\d+\.\d+\.dmg)"/g,
+        (_m, name) => `url="https://purplelink.llc/.netlify/functions/lenses-download?update=${name}"`,
+      );
+  return new Response(fixed, {
+    status: 200,
+    headers: {
+      "Content-Type": "application/rss+xml; charset=utf-8",
+      "Cache-Control": "private, no-store",
+      "X-Content-Type-Options": "nosniff",
+    },
+  });
+}
+
 export default async function handler(request) {
   if (request.method !== "GET" && request.method !== "HEAD") return json(405, { error: "method_not_allowed" });
   const url = new URL(request.url);
+  const store = getStore(FILE_STORE);
+
+  // --- Free trial (public) --------------------------------------------------------
+  // No session, no token: anyone may take the trial. The only thing worth guarding
+  // is bandwidth, so one address gets a generous daily cap rather than none.
+  if (url.searchParams.get("trial") === "1") {
+    const ip = request.headers.get("x-nf-client-connection-ip") || request.headers.get("x-forwarded-for") || "unknown";
+    const day = new Date().toISOString().slice(0, 10);
+    const rl = getStore("rate-limits");
+    const key = `rl:trial:${day}:${createHash("sha256").update(ip).digest("hex").slice(0, 16)}`;
+    const n = parseInt((await rl.get(key)) || "0", 10) || 0;
+    if (n >= TRIAL_DAILY_LIMIT) return json(429, { error: "rate_limited", detail: "Too many downloads from this address today." });
+    await rl.set(key, String(n + 1));
+    const name = await latestDmgName(store);
+    if (!name || !atLeast(name, MIN_TRIAL_VERSION)) return json(404, { error: "no_trial", detail: "No trial build is available right now." });
+    return streamBlob(store, name, "application/x-apple-diskimage", `attachment; filename="${name}"`);
+  }
+
+  // --- Update channel (Sparkle) -------------------------------------------------
+  const wantsFeed = url.searchParams.get("feed") === "1";
+  const updateFile = url.searchParams.get("update") || "";
+  const wantsStats = url.searchParams.get("stats") === "1";
+  if (wantsFeed || updateFile || wantsStats) {
+    const expected = Netlify.env.get("LENSES_UPDATE_TOKEN") || "";
+    const presented = request.headers.get("x-lenses-channel") || "";
+    if (!expected || !timingSafeEqual(presented, expected)) {
+      return json(403, { error: "forbidden", detail: "Updates are delivered inside Lenses." });
+    }
+    if (wantsFeed) return serveFeed(store);
+    if (wantsStats) {
+      // Same shared secret as the update channel gates this too — it's read-only
+      // and non-sensitive (just counts), but there's no reason to expose it wider
+      // than the channel that already requires the token, e.g. to curl -H.
+      const stats = getStore(STATS_STORE);
+      const { blobs } = await stats.list({ prefix: "downloads:" });
+      const counts = {};
+      for (const b of blobs) counts[b.key.slice("downloads:".length)] = parseInt((await stats.get(b.key)) || "0", 10) || 0;
+      return json(200, { downloads: counts });
+    }
+    if (!DMG_NAME.test(updateFile)) return json(400, { error: "bad_file" });
+    // Counted as a download the moment we decide to serve it — matching the trial
+    // counter above, this does not confirm the client received every byte, only
+    // that Sparkle asked for this exact file and was handed it.
+    await incrementDownloadCount(updateFile);
+    return streamBlob(store, updateFile, "application/x-apple-diskimage", `attachment; filename="${updateFile}"`);
+  }
+
+  // --- Purchase door (Stripe Checkout session as bearer token) --------------------
   const sessionId = url.searchParams.get("session_id") || "";
   const fileKey = url.searchParams.get("file") || "";
   if (!/^cs_[A-Za-z0-9_]{10,200}$/.test(sessionId)) {
@@ -96,7 +235,6 @@ export default async function handler(request) {
   const { error } = await loadSession(sessionId);
   if (error) return error;
 
-  const store = getStore(FILE_STORE);
   const latest = await latestDmgName(store);
   if (!latest) return json(500, { error: "file_unavailable", detail: "No release is staged. Contact ben@purplelink.llc." });
 
@@ -111,7 +249,7 @@ export default async function handler(request) {
       }],
     });
   }
-  // A buyer may fetch any released version, not only the newest: an older Mac may need it.
+  // A buyer may fetch any released version, not only the newest — an older Mac may need it.
   if (!DMG_NAME.test(fileKey)) return json(404, { error: "unknown_file" });
   return streamBlob(store, fileKey, "application/x-apple-diskimage", `attachment; filename="${fileKey}"`);
 }

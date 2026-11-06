@@ -1,5 +1,5 @@
 // /lenses/success/: turn a paid Stripe session into a download link.
-// Calls lenses-download in list mode, then renders one button per file. Lenses has no license key.
+// Calls lenses-download in list mode, then renders one button per file.
 (function () {
   var box = document.getElementById("downloads");
   if (!box) return;

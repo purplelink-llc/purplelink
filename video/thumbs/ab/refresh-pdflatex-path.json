@@ -1,0 +1,36 @@
+[
+ {
+  "id": "pdflatex-path-thumb-A",
+  "kind": "focus",
+  "hook": "Installed,\nnot found",
+  "lines": [
+   "zsh: command not found:",
+   "pdflatex"
+  ],
+  "hl": "pdflatex",
+  "variant": "A",
+  "video": "S7iq7ogwcPs"
+ },
+ {
+  "id": "pdflatex-path-thumb-B",
+  "kind": "diff",
+  "hook": "One PATH line",
+  "before": "command not found: pdflatex",
+  "after": "PATH=/Library/TeX/texbin:$PATH",
+  "variant": "B",
+  "video": "S7iq7ogwcPs"
+ },
+ {
+  "id": "pdflatex-path-thumb-C",
+  "kind": "face",
+  "hook": "Still\nmissing",
+  "lines": [
+   "zsh: command not found:",
+   "pdflatex"
+  ],
+  "hl": "pdflatex",
+  "mood": "shocked, mouth open, after installing it",
+  "variant": "C",
+  "video": "S7iq7ogwcPs"
+ }
+]

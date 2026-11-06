@@ -76,14 +76,14 @@ test("the Suite line names all eight apps and stays $59.99", async () => {
   await post({ product: "app-suite" });
   const p = stripeParams();
   assert.equal(p.get("line_items[0][price_data][unit_amount]"), "5999");
-  assert.match(p.get("line_items[0][price_data][product_data][name]"), /Tapefolio, Panely, Summonly, Née and Vitae Plus for life/);
+  assert.match(p.get("line_items[0][price_data][product_data][name]"), /Tapefolio, Panely, Summonly, Née, Lenses and Vitae Plus for life/);
 });
 
-test("a custom bundle can hold the two new apps, priced by count", async () => {
+test("a custom bundle can hold the two new apps, 25% off their prices", async () => {
   await post({ product: "bundle-2", apps: ["summonly", "panely"] });
   const p = stripeParams();
   assert.equal(p.get("metadata[apps]"), "panely,summonly");
-  assert.equal(p.get("line_items[0][price_data][unit_amount]"), "3499");
+  assert.equal(p.get("line_items[0][price_data][unit_amount]"), "1499"); // 2 x $9.99 = $19.98, less 25%, rounded
 });
 
 // ---- delivery ----
@@ -122,7 +122,7 @@ test("the Suite email carries both new keys, and a bundle carries only the chose
   let mail = mailOf();
   assert.match(mail.text, /PNL1-/); assert.match(mail.text, /SML1-/);
   calls = [];
-  await webhook(signed(paid({ product: "bundle-2", apps: "panely,keyfeel" }, 3499, "evt_b", "cs_live_bundle_abcdefg")));
+  await webhook(signed(paid({ product: "bundle-2", apps: "panely,keyfeel" }, 1499, "evt_b", "cs_live_bundle_abcdefg")));
   mail = mailOf();
   assert.match(mail.text, /PNL1-/); assert.doesNotMatch(mail.text, /SML1-/);
 });
