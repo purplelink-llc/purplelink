@@ -183,7 +183,7 @@ def check(sb_path: Path, offline: bool, rebuild: bool) -> list[str]:
     elif len({v.get("kind") for v in sb["thumbs"].values()}) < 2:
         E("thumbs must use at least two templates")
     # thumbnails: a published storyboard keeps the thumbnails it shipped with
-    if not any(x.get("slug") == sb.get("id") for x in ledger) and sb.get("thumbs"):
+    if not standalone and not any(x.get("slug") == sb.get("id") for x in ledger) and sb.get("thumbs"):
         for e in thumb_checks(sb):
             E(e)
     # text
