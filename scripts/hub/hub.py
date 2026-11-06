@@ -1962,6 +1962,9 @@ IMPORT_COLUMNS = {
     "link": "url", "website": "url", "warmth": "warmth", "tie": "tie", "status": "status", "next": "next",
     "next step": "next", "next date": "next_date", "next_date": "next_date", "due": "next_date", "notes": "notes",
     "note": "notes",
+    # the warm-labs brief's own headers (docs/growth-briefs/paper-review-pilots/warm-labs-*.md)
+    "lab / group": "name", "tie to ben": "tie", "public lab url": "url", "suggested first contact": "next",
+    "why paper review fits": "notes",
 }
 
 
