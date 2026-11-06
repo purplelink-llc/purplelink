@@ -29,6 +29,7 @@ import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import { issueLenscribLicense } from "../lib/lenscrib-license.mjs";
 import { revocationFor, REVOKED_DETAIL } from "../lib/refunds.mjs";
+import { stripeFetchAny } from "../lib/stripe-account.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 const FILE_STORE = "lenscrib-files";
@@ -65,7 +66,7 @@ async function loadSession(sessionId) {
   if (!secretKey) return { error: json(500, { error: "misconfigured", detail: "STRIPE_SECRET_KEY not set." }) };
   let resp;
   try {
-    resp = await fetch(`${STRIPE_API}/checkout/sessions/${sessionId}`, {
+    resp = await stripeFetchAny(`${STRIPE_API}/checkout/sessions/${sessionId}`, {
       headers: { Authorization: `Bearer ${secretKey}` },
     });
   } catch (err) {

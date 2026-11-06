@@ -43,6 +43,7 @@ import { pickAddons, setOptionalItems } from "../lib/addons.mjs";
 import { recoveryParams, isRecoveryParamError } from "../lib/checkout-recovery.mjs";
 import { checkCode, STORE as BUYER_CODE_STORE } from "../lib/buyer-codes.mjs";
 import { REF_RE, FRIEND_COUPON, FRIEND_PERCENT, friendEligible, checkRef, ensureFriendCoupon } from "../lib/referrals.mjs";
+import { checkoutSecretKey, priceEnvName } from "../lib/stripe-account.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 
@@ -462,15 +463,16 @@ export default async function handler(request) {
     friend = await checkRef(getStore(BUYER_CODE_STORE), referralCode, { secret: Netlify.env.get("BACKEND_WEBHOOK_SECRET") });
   }
 
-  const secretKey = Netlify.env.get("STRIPE_SECRET_KEY");
+  // New sessions use the new Stripe account only while STRIPE_NEW_ACCOUNT is on (netlify/lib/stripe-account.mjs); otherwise unchanged.
+  const secretKey = checkoutSecretKey();
   // An entry with an inline amount may also name an env Price; the env Price wins when it is set.
-  const envPrice = entry.envKey ? Netlify.env.get(entry.envKey) : "";
+  const envPrice = entry.envKey ? Netlify.env.get(priceEnvName(entry.envKey)) : "";
   const priceId = entry.seats ? null : unitAmount ? (envPrice || null) : envPrice;
   const inlinePrice = !priceId && (unitAmount || entry.seats);
   if (!secretKey || (!inlinePrice && !priceId)) {
     return jsonResponse(500, {
       error: "misconfigured",
-      detail: `Set STRIPE_SECRET_KEY and ${entry.envKey} on this site.`,
+      detail: `Set STRIPE_SECRET_KEY and ${priceEnvName(entry.envKey)} on this site.`,
     });
   }
 

@@ -57,6 +57,7 @@ import { handleExpired, markBought, STORE as RECOVERY_STORE } from "../lib/check
 import { sendRedditPurchase } from "../lib/reddit-capi.mjs";
 import { issueCode, markUsed, crossSellOffer, expiryText, STORE as BUYER_CODE_STORE } from "../lib/buyer-codes.mjs";
 import { registerBuyer, saveReferral, referralText } from "../lib/referrals.mjs";
+import { currentSecretKey, runWithAccount, setRequestAccount, webhookSecrets } from "../lib/stripe-account.mjs";
 
 /**
  * Cross-sell code for a paid order (netlify/lib/buyer-codes.mjs): marks a code this order used, then issues the
@@ -66,7 +67,7 @@ async function buyerCodeFor(session, product, email) {
   let store;
   try { store = getStore(BUYER_CODE_STORE); } catch (_) { return null; }
   try { await markUsed(store, session); } catch (err) { console.warn("stripe-webhook: buyer code mark-used failed", err?.message); }
-  const stripeKey = Netlify.env.get("STRIPE_SECRET_KEY");
+  const stripeKey = currentSecretKey();
   if (!stripeKey) return null;
   try {
     return await issueCode({
@@ -254,7 +255,7 @@ function verifyStripeSignature(rawBody, header, secret) {
 
 /** GET a Stripe object (read only). Returns the parsed JSON, or null when it cannot be read. */
 async function stripeGet(path) {
-  const key = Netlify.env.get("STRIPE_SECRET_KEY");
+  const key = currentSecretKey();
   if (!key) return null;
   try {
     const r = await fetch(`https://api.stripe.com${path}`, { headers: { Authorization: `Bearer ${key}` } });
@@ -313,7 +314,7 @@ async function subscriptionOfCharge(charge) {
  * revoke the plan. Returns null when it is not an annual charge, else {ok, status}.
  */
 async function annualSubscriptionOfCharge(charge) {
-  if (!charge || !Netlify.env.get("STRIPE_SECRET_KEY")) return "";
+  if (!charge || !currentSecretKey()) return "";
   const subId = await subscriptionOfCharge(charge);
   if (!subId) return "";
   const sub = await stripeGet(`/v1/subscriptions/${encodeURIComponent(subId)}`);
@@ -830,14 +831,19 @@ async function emailLiveSetupLink(to, sessionId, productKey) {
   return false;
 }
 
-export default async function handler(request, context) {
+export default function handler(request, context) {
+  return runWithAccount(() => handleStripeEvent(request, context));
+}
+
+async function handleStripeEvent(request, context) {
   if (request.method !== "POST") {
     return jsonResponse(405, { error: "method_not_allowed" });
   }
 
-  const stripeSecret = Netlify.env.get("STRIPE_WEBHOOK_SECRET");
+  // The old account's endpoint secret, and the new account's once STRIPE_WEBHOOK_SECRET_NEW is set (netlify/lib/stripe-account.mjs).
+  const stripeSecrets = webhookSecrets();
   const backendSecret = Netlify.env.get("BACKEND_WEBHOOK_SECRET");
-  if (!stripeSecret || !backendSecret) {
+  if (stripeSecrets.length === 0 || !backendSecret) {
     return jsonResponse(500, {
       error: "misconfigured",
       detail: "STRIPE_WEBHOOK_SECRET or BACKEND_WEBHOOK_SECRET not set.",
@@ -847,9 +853,12 @@ export default async function handler(request, context) {
   // Stripe signature verification requires the raw request body.
   const rawBody = await request.text();
   const signature = request.headers.get("stripe-signature");
-  if (!verifyStripeSignature(rawBody, signature, stripeSecret)) {
+  const verified = stripeSecrets.find((s) => verifyStripeSignature(rawBody, signature, s.secret));
+  if (!verified) {
     return jsonResponse(400, { error: "invalid_signature" });
   }
+  // Calls to Stripe below use the key of the account whose endpoint signed this event.
+  setRequestAccount(verified.account);
 
   let event;
   try {
@@ -957,12 +966,12 @@ export default async function handler(request, context) {
   if (event.type === "charge.dispute.created" || event.type === "charge.dispute.closed") {
     const dispute = event.data?.object || {};
     const pi = paymentIntentOf(dispute);
-    if (event.type === "charge.dispute.created" && dispute.charge && Netlify.env.get("STRIPE_SECRET_KEY")) {
+    if (event.type === "charge.dispute.created" && dispute.charge && currentSecretKey()) {
       const chargeObj = await stripeGet(`/v1/charges/${encodeURIComponent(idOf(dispute.charge))}`);
       const annualDispute = await revokeAnnualForCharge(chargeObj, "dispute", backendSecret, dispute.id || "");
       if (annualDispute && !annualDispute.ok) return jsonResponse(502, { error: "modal_revoke_failed" });
     }
-    if (event.type === "charge.dispute.closed" && dispute.status === "won" && dispute.charge && Netlify.env.get("STRIPE_SECRET_KEY")) {
+    if (event.type === "charge.dispute.closed" && dispute.status === "won" && dispute.charge && currentSecretKey()) {
       const chargeObj = await stripeGet(`/v1/charges/${encodeURIComponent(idOf(dispute.charge))}`);
       const annualWon = await restoreAnnualForCharge(chargeObj, dispute.id || "", backendSecret);
       if (annualWon && !annualWon.ok) return jsonResponse(502, { error: "modal_restore_failed" });
@@ -980,7 +989,7 @@ export default async function handler(request, context) {
   // An unpaid checkout expired: one recovery email when the buyer consented (netlify/lib/checkout-recovery.mjs).
   // A failed send returns 502 so Stripe retries; the session key makes the retry safe.
   if (event.type === "checkout.session.expired") {
-    const secret = Netlify.env.get("FOLLOWUP_UNSUBSCRIBE_SECRET") || stripeSecret;
+    const secret = Netlify.env.get("FOLLOWUP_UNSUBSCRIBE_SECRET") || Netlify.env.get("STRIPE_WEBHOOK_SECRET");
     const apiKey = Netlify.env.get("RESEND_API_KEY");
     const status = await handleExpired(event.data?.object, {
       store: getStore(RECOVERY_STORE),
