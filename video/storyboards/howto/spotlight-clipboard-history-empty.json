@@ -1,0 +1,40 @@
+{
+ "id": "howto-spotlight-clipboard-history-empty",
+ "app": "summonly",
+ "title": "Spotlight clipboard history empty on Mac (turn on Results from Clipboard)",
+ "short_title": "Command-4 in Spotlight shows nothing you copied? Check this switch",
+ "url": "purplelink.llc/summonly",
+ "page": "https://purplelink.llc/summonly/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://discussions.apple.com/thread/256139237"
+ ],
+ "verify": {
+  "runs": [],
+  "docs": [
+   "https://support.apple.com/guide/mac-help/mchl54d95e8a/mac",
+   "https://support.apple.com/guide/mac-help/mh26783/mac",
+   "https://support.apple.com/guide/mac-help/mchl3e00eae9/mac"
+  ],
+  "notes": "GUI-only fix, no Terminal output on screen. Apple's Mac User Guide 'Spotlight settings on Mac' (macOS 27 version, read 2026-11-06) lists Results from Clipboard ('Turn on if you want to allow the contents of your Clipboard to appear in Spotlight search results'), the setting 'Clipboard history is available in Spotlight' with 30 minutes, 8 hours or 7 days ('Your Clipboard history older than the timeframe you choose won't be visible in Spotlight') and Clear Clipboard History. 'Spotlight keyboard shortcuts on Mac' (read the same day) lists Command-Space to open Spotlight and Command-4 for Search Clipboard. 'Select result categories for Spotlight on Mac' gives the path System Settings, Spotlight, Results from Clipboard. com.apple.Spotlight on Ben's Mac mini (macOS 27.0.1) has no documented key for these switches (read-only defaults read), so the video has no Terminal check. The Apple Community thread is people whose Command-4 clipboard search says no results; its other user-reported workarounds are not in the video because Apple does not document them. Summonly claims are from its page: clipboard history opens with Option-Shift-V or by typing clip, shows a pinned item first and then recent ones with how long ago they were copied, is off until you turn it on, and skips password managers."
+ },
+ "scenes": [
+  {"type": "hook", "short": true, "kicker": "Spotlight on a Mac", "title": "Spotlight clipboard history is empty", "sub": "Command-4 shows nothing you copied.",
+   "narration": "You press Command Space to open Spotlight, then Command 4 to see what you copied, and the list is empty. Here is the setting that controls it."},
+  {"type": "cause", "text": "Spotlight shows your clipboard only when Results from Clipboard is on, and only for the time window you choose.",
+   "narration": "Spotlight only shows clipboard items when Results from Clipboard is turned on. It also hides anything older than the time window you pick, so something you copied yesterday can be gone from the list even with the switch on."},
+  {"type": "steps", "short": true, "label": "System Settings",
+   "lines": ["Open System Settings", "Click Spotlight in the sidebar", "Turn on Results from Clipboard", "Choose 30 minutes, 8 hours or 7 days"],
+   "ui": "Clear Clipboard History, on the same page, empties the list.",
+   "narration": "Open System Settings and click Spotlight in the sidebar. Turn on Results from Clipboard. Then choose how long the history stays available: thirty minutes, eight hours, or seven days. Copy something new, press Command Space, then Command 4, and it should be there. The Clear Clipboard History button on the same page empties the list."},
+  {"type": "app", "name": "Summonly", "line": "Clipboard history with Option-Shift-V. A pinned item comes first, then recent ones with how long ago you copied them.",
+   "url": "purplelink.llc/summonly", "img": "site/summonly/img/panel-clipboard.webp", "icon": "site/assets/summonly-icon.webp",
+   "narration": "Summonly is a Mac search box for files, apps and clipboard history. Press Option Shift V, or type clip, to see what you copied. A pinned item comes first, then recent ones with how long ago you copied them. Clipboard history is off until you turn it on, and it skips password managers. There is a free seven day trial."}
+ ],
+ "thumbs": {
+  "A": {"kind": "error", "pill": "Spotlight", "msg": "Spotlight clipboard history is empty"},
+  "B": {"kind": "long", "pill": "Spotlight", "msg": "Command-4 shows nothing", "n": 1, "unit": "switch", "sub": "Results from Clipboard"},
+  "C": {"kind": "product", "name": "Summonly", "line": "Clipboard history with Option-Shift-V", "img": "site/summonly/img/panel-clipboard.webp", "icon": "site/assets/summonly-icon.webp", "zoom": 1.2, "pos": "50% 40%"}
+ }
+}
