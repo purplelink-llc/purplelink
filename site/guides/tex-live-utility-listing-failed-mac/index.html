@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>TeX Live Utility "Listing Failed" on Mac: causes and fixes | Purplelink</title>
+    <meta name="description" content="Why TeX Live Utility shows Listing Failed or says your TeX Live is older than the repository, and the fix for each cause: a new year, a bad mirror, or a broken tlmgr.">
+    <link rel="canonical" href="https://purplelink.llc/guides/tex-live-utility-listing-failed-mac/">
+    <meta property="og:title" content="TeX Live Utility &quot;Listing Failed&quot; on Mac: causes and fixes">
+    <meta property="og:description" content="The three usual causes of Listing Failed in TeX Live Utility, how to tell which one you have from the log, and the fix for each.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/tex-live-utility-listing-failed-mac/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/guides-tex-live-utility-listing-failed-mac.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TeX Live Utility &quot;Listing Failed&quot; on Mac: causes and fixes">
+    <meta name="twitter:description" content="The three usual causes of Listing Failed in TeX Live Utility, how to tell which one you have from the log, and the fix for each.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/guides-tex-live-utility-listing-failed-mac.jpg">
+    <meta name="twitter:image:alt" content="TeX Live Utility Listing Failed guide">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Article",
+          "headline": "TeX Live Utility \"Listing Failed\" on Mac: causes and fixes",
+          "description": "Why TeX Live Utility shows Listing Failed or says your TeX Live is older than the repository, and the fix for each cause: a new year, a bad mirror, or a broken tlmgr.",
+          "author": { "@id": "https://purplelink.llc/about/#person" },
+          "publisher": { "@id": "https://purplelink.llc/#organization" },
+          "datePublished": "2026-11-05",
+          "dateModified": "2026-11-05",
+          "image": "https://purplelink.llc/assets/og/cards/guides-tex-live-utility-listing-failed-mac.jpg",
+          "mainEntityOfPage": "https://purplelink.llc/guides/tex-live-utility-listing-failed-mac/"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home",   "item": "https://purplelink.llc/" },
+            { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://purplelink.llc/guides/" },
+            { "@type": "ListItem", "position": 3, "name": "TeX Live Utility Listing Failed", "item": "https://purplelink.llc/guides/tex-live-utility-listing-failed-mac/" }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What does Listing Failed mean in TeX Live Utility?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "TeX Live Utility asks tlmgr, TeX Live's package manager, for the list of available updates. Listing Failed means that request returned an error. The reason is in Window > Log Window. It is usually a TeX Live year that no longer matches the repository, a mirror that is down, or a damaged tlmgr."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I fix Local TeX Live is older than remote repository?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Your TeX Live is from an earlier year, and the repository now serves the new release. tlmgr does not update across years. TUG recommends installing the new MacTeX rather than upgrading in place. The old year can stay on disk, or you can delete its folder in /usr/local/texlive."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I update every package except a few?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In Terminal, run sudo tlmgr update --all --exclude biber --exclude biblatex, with your own package names. The tlmgr manual says the --exclude option can be given more than once and that it also skips each package's platform-specific parts."
+      }
+    }
+  ]
+}
+</script>
+    <script src="/theme.js"></script>
+<link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/motion.css">
+    <script src="/site.js" defer></script>
+    <script src="/motion.js" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+    <script src="/buddy-chat/loader.js" defer></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">How-to</p>
+        <h1 class="post-title">TeX Live Utility "Listing Failed" on Mac: causes and fixes</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-11-05">November 5, 2026</time></p>
+        <p class="post-lede">TeX Live Utility shows "Listing Failed" when it cannot get the list of package updates. The status line never says why. The log does, and nearly every case is one of three causes: your TeX Live is from last year, the mirror you are using is down, or tlmgr itself is damaged. Each has a short fix.</p>
+      </div>
+
+      <article class="post-body">
+        <p><strong>Disclosure:</strong> Purplelink makes ModernTex, a Mac LaTeX editor. It does not install or update TeX Live, and nothing below depends on it. The menu names and messages come from the <a href="https://github.com/amaxwell/tlutility" rel="noopener">TeX Live Utility source code</a> (version 1.58, released October 2, 2026), and the commands from the <a href="https://tug.org/texlive/doc/tlmgr.html" rel="noopener">tlmgr manual</a> and TUG's <a href="https://tug.org/texlive/upgrade.html" rel="noopener">upgrade page</a>. I read all three on November 5, 2026. I did not reproduce the errors on a test machine, so check the source if a detail does not match what you see.</p>
+
+        <h2>First, read the log</h2>
+        <p>TeX Live Utility is a front end for <code>tlmgr</code>, TeX Live's package manager. When you open it or press Refresh, it asks tlmgr which packages have updates. "Listing Failed" means that request ended in an error, and the error text goes to the log.</p>
+        <ol>
+          <li>Open <strong>Window &gt; Log Window</strong>.</li>
+          <li>Scroll to the newest lines and find the first message that says <code>tlmgr:</code> or mentions a URL.</li>
+          <li>Match it to one of the causes below.</li>
+        </ol>
+        <p>You can get the same text in Terminal, which is often quicker to read:</p>
+        <pre><code>tlmgr update --list</code></pre>
+        <p>This changes nothing. It only reports what an update would do, or the error that stops it.</p>
+
+        <h2 id="older">Cause 1: your TeX Live is from an earlier year</h2>
+        <p>TeX Live is released once a year, and the main repository then serves only the new year. An installation from a previous year cannot update from it. In Terminal the message looks like this (the years vary):</p>
+        <pre><code>tlmgr: Local TeX Live (2025) is older than remote repository (2026).
+Cross release updates are only supported with
+  update-tlmgr-latest(.sh/.exe) --update</code></pre>
+        <p>TeX Live Utility reports the same problem in its own words. It shows an alert titled "Repository has a different TeX Live version", saying the repository has one TeX Live year while you have another installed and that you need to switch repositories.</p>
+        <p><strong>The fix.</strong> Install the new year. TUG's upgrade page says to get the new release by doing a new installation by default, and that any number of installations can sit side by side. On a Mac that means downloading the current <a href="https://www.tug.org/mactex/" rel="noopener">MacTeX</a> and running the installer. It puts the new year in <code>/usr/local/texlive/</code> next to the old one and points <code>/Library/TeX/texbin</code> at it. The <a href="/guides/install-latex-on-mac/">install guide for MacTeX, BasicTeX and TinyTeX</a> covers the steps and the download sizes.</p>
+        <p>TUG does describe an in-place upgrade, but its own page calls the procedure not recommended and meant for people familiar with Unix and TeX Live. If you are reading this guide, the new installation is the better path.</p>
+        <p><strong>Afterwards.</strong> When both years are installed, TeX Live Utility has a <strong>Configure &gt; Change Default TeX Live Version</strong> item to choose which one it manages. To free the space, drag the old year's folder from <code>/usr/local/texlive</code> to the Trash. macOS asks for an administrator password because TeX Live is owned by root.</p>
+        <p>The opposite mistake gives a similar alert. If your repository address points at an archive of an older year, or at a mirror that is still on last year, TeX Live Utility says the repository has a different version. Switch back to the standard repository as in cause 2.</p>
+
+        <h2 id="mirror">Cause 2: the mirror is down or out of date</h2>
+        <p>By default, tlmgr uses <code>mirror.ctan.org</code>, which sends each request to a nearby CTAN mirror. If you or an installer set a specific mirror instead, and that mirror moves, goes offline or falls behind, every listing fails. The log usually shows a download error or a URL that does not respond. You may also see "Unable to find a valid update server". The app's text for it says the cause is either a network problem or a server on a different TeX Live version.</p>
+        <p><strong>The fix.</strong> Point tlmgr back at the automatic mirror. The tlmgr manual gives two equivalent commands:</p>
+        <pre><code>sudo tlmgr option repository ctan</code></pre>
+        <pre><code>sudo tlmgr option repository https://mirror.ctan.org/systems/texlive/tlnet</code></pre>
+        <p>In TeX Live Utility the same setting is under <strong>Configure &gt; Manage Repositories</strong>, where <strong>Set as Home Repository</strong> makes a chosen entry the default. Then refresh. If one mirror keeps failing, CTAN publishes the status of every mirror at <a href="https://ctan.org/mirrors/mirmon" rel="noopener">ctan.org/mirrors/mirmon</a>.</p>
+        <p>Mirrors also lag for a day or so after TeX Live changes, which is why the manual suggests updating at most once a day. A failure that appeared today and that a different mirror fixes is usually this.</p>
+
+        <h2 id="tlmgr">Cause 3: tlmgr itself is damaged or out of date</h2>
+        <p>Sometimes tlmgr's own files, which TeX Live calls the infrastructure, are left half updated, often after an update was interrupted. Listings then fail with Perl errors, checksum errors or messages about the TeX Live database.</p>
+        <p><strong>The fix.</strong> TeX Live Utility has two repair items in the <strong>Actions</strong> menu:</p>
+        <ul>
+          <li><strong>Reinstall TeX Live Manager</strong> reinstalls tlmgr from your current repository. Try this first.</li>
+          <li><strong>Install TeX Live Manager From Critical Repository</strong> takes it from TeX Live's own critical repository instead. Use this one if the first item fails.</li>
+        </ul>
+        <p>From Terminal, the equivalent first step is to update the infrastructure on its own:</p>
+        <pre><code>sudo tlmgr update --self</code></pre>
+        <h3>Signature errors</h3>
+        <p>If GnuPG (<code>gpg</code>) is installed, tlmgr checks a signature on the main repository's package list. The manual says a signature that is checked and fails to verify raises an error. Most such failures come from a mirror serving a stale or partial copy, so the cause 2 fix (the automatic mirror) is the first thing to try. Do not turn verification off to make the error go away.</p>
+
+        <h2 id="exclude">Updating everything except a few packages</h2>
+        <p>A related question: you want all updates except one or two, for example to keep a <code>biber</code> and <code>biblatex</code> pair you know works. In TeX Live Utility you can select packages and use <strong>Actions &gt; Update Selected Packages</strong>. If that item is greyed out, Terminal does the same job:</p>
+        <pre><code>sudo tlmgr update --all --exclude biber --exclude biblatex</code></pre>
+        <p>The tlmgr manual says <code>--exclude</code> can be repeated, and that each one also skips the package's platform-specific parts (the <code>biber.universal-darwin</code> binary, in this example). Remember that the pair stays held back only until the next plain "update all".</p>
+
+        <h2>Quick check from Terminal</h2>
+        <p>Three commands answer most questions about which TeX Live you are dealing with:</p>
+        <pre><code>tlmgr --version
+which tlmgr
+tlmgr option repository</code></pre>
+        <p>The first shows the TeX Live year, the second shows which installation answers (it should be under <code>/Library/TeX/texbin</code> for MacTeX), and the third shows the repository in use. If the year is older than the current release, you have cause 1. If the repository is a specific mirror rather than <code>mirror.ctan.org</code>, try cause 2.</p>
+
+        <h2>Sources</h2>
+        <ul>
+          <li>TeX Live Utility source, <a href="https://github.com/amaxwell/tlutility" rel="noopener">github.com/amaxwell/tlutility</a>: the status text, alert text and menu names quoted above.</li>
+          <li>The <a href="https://tug.org/texlive/doc/tlmgr.html" rel="noopener">tlmgr manual</a>: <code>update --list</code>, <code>--exclude</code>, <code>option repository</code>, and cryptographic verification.</li>
+          <li>TUG, <a href="https://tug.org/texlive/upgrade.html" rel="noopener">upgrading TeX Live from one year to the next</a>.</li>
+          <li>TeX Stack Exchange threads where people hit these errors: <a href="https://tex.stackexchange.com/q/557793" rel="noopener">Listing failed with a mirror that moved</a>, and <a href="https://tex.stackexchange.com/q/745818" rel="noopener">local TeX Live is older than remote repository</a>.</li>
+        </ul>
+      </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>What does Listing Failed mean in TeX Live Utility?</summary><div class="faq-body">TeX Live Utility asks tlmgr, TeX Live&#x27;s package manager, for the list of available updates. Listing Failed means that request returned an error. The reason is in Window &gt; Log Window. It is usually a TeX Live year that no longer matches the repository, a mirror that is down, or a damaged tlmgr.</div></details>
+        <details><summary>How do I fix Local TeX Live is older than remote repository?</summary><div class="faq-body">Your TeX Live is from an earlier year, and the repository now serves the new release. tlmgr does not update across years. TUG recommends installing the new MacTeX rather than upgrading in place. The old year can stay on disk, or you can delete its folder in /usr/local/texlive.</div></details>
+        <details><summary>How do I update every package except a few?</summary><div class="faq-body">In Terminal, run sudo tlmgr update --all --exclude biber --exclude biblatex, with your own package names. The tlmgr manual says the --exclude option can be given more than once and that it also skips each package&#x27;s platform-specific parts.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools and guides">
+        <h2>Related tools and guides</h2>
+        <ul>
+          <li><a href="/guides/install-latex-on-mac/">Install LaTeX on a Mac: MacTeX, BasicTeX or TinyTeX</a></li>
+          <li><a href="/guides/best-mac-latex-editors/">Best LaTeX editors for Mac</a></li>
+          <li><a href="/latex-errors/">LaTeX errors explained</a></li>
+          <li><a href="/guides/latex/">LaTeX guides hub</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/nee/">Née</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/suite/">Mac Suite</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js" defer></script>
+</body>
+</html>
