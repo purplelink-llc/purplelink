@@ -13,7 +13,7 @@
   "docs": [
    "https://support.apple.com/guide/mac-help/mchl52e1c2d2/mac"
   ],
-  "notes": "No terminal output on screen. Second cut of the Lenses launch video, after Ben's 2026-11-06 feedback that the drawings were weak. Claims come from the launch facts file (lenses-launch-facts-2026-11-05.md) and /Volumes/Extreme SSD/Lenses/README.md: tested on RayNeo Air only; System Settings has no edge margin or glasses-only night tint for these glasses. Dark Mode page: Apple's Mac User Guide, Use a light or dark appearance on your Mac. Every picture is simulated and labelled so on screen: the Mac text is real HTML rendered by Chrome (the low-resolution frame is a half-size render stretched to the panel), the soft lens edge, see-through room, warm tint and 60 vs 120 Hz persistence are models made by video/src/LensesSim.jsx. The 60 vs 120 Hz scene steps the real update intervals (every frame at 120 Hz, every second frame at 60 Hz) in 4x slow motion, labelled as slowed and simulated; it is not footage through the glasses. The price is left out of the video (gate rule) and goes in the description."
+  "notes": "No terminal output on screen. Second cut of the Lenses launch video, after Ben's 2026-11-06 feedback that the drawings were weak. Claims come from the launch facts file (lenses-launch-facts-2026-11-05.md) and /Volumes/Extreme SSD/Lenses/README.md: tested on RayNeo Air only; System Settings has no edge margin or glasses-only night tint for these glasses. Dark Mode page: Apple's Mac User Guide, Use a light or dark appearance on your Mac. Every picture is simulated and labelled so on screen: the Mac text is real HTML rendered by Chrome (the low-resolution frame is a half-size render stretched to the panel), the soft lens edge, see-through room, warm tint and 60 vs 120 Hz persistence are models made by video/src/LensesSim.jsx. The 60 vs 120 Hz scene steps the real update intervals (every frame at 120 Hz, every second frame at 60 Hz) in 4x slow motion, labelled as slowed and simulated; it is not footage through the glasses. The price is left out of the video (gate rule) and goes in the description. See-Through Mode panel (added 2026-11-06 with Lenses 1.2.0): the room is Ben's own photograph (Nikon DSC_7720, a library reading room, no people), dimmed to model the glasses' shaded front; the display is simulated with a screen blend, since these glasses only add light. Feature per Lenses CHANGELOG 1.2.0: Dark Mode, black desktop on the glasses' screen, edge margin capped at 90%."
  },
  "thumbs": {
   "A": {
@@ -141,6 +141,22 @@
   },
   {
    "type": "panel",
+   "short": true,
+   "label": "See-Through Mode",
+   "lines": [
+    "Click Lenses in the menu bar",
+    "Turn on See-Through Mode"
+   ],
+   "before": "site/assets/lenses/lenses-seethrough-before.png",
+   "after": "site/assets/lenses/lenses-seethrough-after.png",
+   "before_sub": "Mac as it ships",
+   "after_sub": "See-Through Mode",
+   "wipe_cue": "black",
+   "narration": "Lenses takes this one step further with See-Through Mode. It turns on Dark Mode, makes the desktop black, and keeps a margin at the edges, so only your windows light up and the room around them stays in view. The room here is a real photograph; the view through the glasses is simulated.",
+   "ui": "Only your windows light up."
+  },
+  {
+   "type": "panel",
    "label": "Pointer size",
    "lines": [
     "Open System Settings, then Accessibility",
@@ -162,7 +178,7 @@
    "imgs": [
     "site/assets/lenses/lenses-hidpi-after.png",
     "site/assets/lenses/lenses-hz-after.png",
-    "site/assets/lenses/lenses-edges-after.png",
+    "site/assets/lenses/lenses-seethrough-after.png",
     "site/assets/lenses/lenses-night-after.png"
    ],
    "line": "Applies these settings when you plug the glasses in, and puts the Mac back when you unplug them. Tested on RayNeo Air.",

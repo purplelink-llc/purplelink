@@ -70,7 +70,7 @@ export function Desktop({ theme = "light", full = false, big = 1, children, wall
   const win = full ? { left: 0, top: 30, width: PW, height: PH - 30, borderRadius: 0 } : { left: 190, top: 92, width: 1220, height: 730, borderRadius: 14 };
   const col = full ? 900 : 780;
   return (
-    <div style={{ position: "absolute", inset: 0, overflow: "hidden", background: wall ? WALL[theme] : c.win, fontFamily: SYS }}>
+    <div style={{ position: "absolute", inset: 0, overflow: "hidden", background: wall === "black" ? "#000" : wall ? WALL[theme] : c.win, fontFamily: SYS }}>
       <div style={{ position: "absolute", left: 0, right: 0, top: 0, height: 30, background: c.menu, display: "flex", alignItems: "center", gap: 26, padding: "0 20px", fontSize: 14, fontWeight: 600, color: c.menuInk }}>
         <span style={{ fontWeight: 800 }}>Notes</span><span>File</span><span>Edit</span><span>Format</span><span>View</span><span>Window</span><span>Help</span>
         <span style={{ marginLeft: "auto", fontWeight: 500 }}>Thu 9:41 AM</span>
@@ -155,10 +155,19 @@ export function Room() {
     </div>
   );
 }
-export function SeeThrough({ children }) {
+// A real room: Ben's photograph of a library reading room (img/room.jpg), dimmed the way the glasses' shaded front
+// dims everything behind it. Only the room is dimmed; the display's own light is not.
+export function PhotoRoom() {
+  return (
+    <div style={{ position: "absolute", inset: 0, overflow: "hidden", background: "#000" }}>
+      <Img src={staticFile("img/room.jpg")} style={{ position: "absolute", inset: 0, width: PW, height: PH, objectFit: "cover", filter: "brightness(0.62)" }} />
+    </div>
+  );
+}
+export function SeeThrough({ children, photo = false }) {
   return (
     <div style={{ position: "absolute", inset: 0, isolation: "isolate", background: "#000" }}>
-      <Room />
+      {photo ? <PhotoRoom /> : <Room />}
       <div style={{ position: "absolute", inset: 0, mixBlendMode: "screen" }}>{children}</div>
     </div>
   );
@@ -247,6 +256,8 @@ export function glassesView(scene, side) {
     case "edges": return <Lens>{after ? <Underscan pct={0.9}><Desktop theme="light" full /></Underscan> : <Desktop theme="light" full />}</Lens>;
     case "night": return after ? <Tint><Desktop theme="light" full big={1.12} /></Tint> : <Desktop theme="light" full big={1.12} />;
     case "dark": return <SeeThrough><Desktop theme={after ? "dark" : "light"} /></SeeThrough>;
+    // A Mac as it ships (light, wallpaper, edge to edge) against See-Through Mode (Dark Mode, black desktop, 90% margin).
+    case "seethrough": return <SeeThrough photo>{after ? <Underscan pct={0.9}><Desktop theme="dark" wall="black" /></Underscan> : <Desktop theme="light" />}</SeeThrough>;
     case "pointer": return <Desktop theme="light" full big={1.12}><Pointer s={after ? 2.8 : 1.1} x={820} y={430} /></Desktop>;
     case "hz": return <Hz hz={after ? 120 : 60} />;
     default: throw new Error(`unknown scene ${scene}`);
