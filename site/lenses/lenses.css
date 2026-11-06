@@ -1,6 +1,6 @@
 /* /lenses/ page. External file so the strict CSP permits it. */
 
-/* The hero has no app icon yet, so it is copy plus a drawn diagram. */
+/* Hero: copy plus the edge margin before/after still. */
 .app-hero.lenses-hero { grid-template-columns: minmax(0, 1fr); }
 .lenses-hero .lenses-figure { margin: 0; max-width: 720px; }
 .lenses-hero .lenses-figure figcaption { margin-top: 12px; font-size: 0.85rem; color: var(--muted); }
@@ -9,15 +9,12 @@
   .lenses-hero .app-hero-copy { max-width: 560px; }
 }
 
-/* Diagram: the same picture with the edge margin off and at 90%. Colours come from the page tokens,
-   so it follows the light and dark themes. */
-.lenses-diagram { display: block; width: 100%; height: auto; }
-.lenses-diagram .ld-screen { fill: oklch(8% 0.01 310); stroke: var(--line); stroke-width: 2; }
-.lenses-diagram .ld-picture { fill: var(--purple-dim); }
-.lenses-diagram .ld-line { stroke: oklch(95% 0.02 310); stroke-width: 3; stroke-linecap: round; opacity: 0.85; }
-.lenses-diagram .ld-soft { fill: none; stroke: var(--warn); stroke-width: 3; stroke-dasharray: 6 6; }
-.lenses-diagram .ld-label { fill: var(--ink); font-family: var(--font-body); font-size: 17px; font-weight: 600; }
-.lenses-diagram .ld-note { fill: var(--muted); font-family: var(--font-body); font-size: 14px; }
+/* Before/after stills: 1600x628 images with their own labels. */
+.lenses-pair { display: block; width: 100%; height: auto; border-radius: 14px; border: 1px solid var(--line); }
+.lenses-ba-grid { display: grid; gap: 32px; max-width: 1100px; }
+.lenses-ba { margin: 0; }
+.lenses-ba figcaption { margin-top: 10px; color: var(--muted); max-width: 70ch; }
+.lenses-ba figcaption strong { color: var(--ink); }
 
 .lenses-table td, .lenses-table th { vertical-align: top; }
 .lenses-profile-list { padding-left: 1.2em; max-width: 70ch; }

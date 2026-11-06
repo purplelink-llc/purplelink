@@ -231,24 +231,8 @@
         <p class="waitlist-fine-print">New to AR glasses on a Mac? Read <a href="/guides/ar-glasses-mac-setup/">Setting up your new VR/AR glasses with a Mac</a>. It covers each setting by hand, and says where macOS cannot do it.</p>
       </div>
       <figure class="lenses-figure">
-        <div class="frame-soft">
-          <svg class="lenses-diagram" viewBox="0 0 720 340" role="img" aria-labelledby="ld-title ld-desc" xmlns="http://www.w3.org/2000/svg">
-            <title id="ld-title">The same picture with the edge margin off and at 90 percent</title>
-            <desc id="ld-desc">Two drawn screens side by side. On the left the picture fills the whole screen, so its edge sits where the lens is blurry. On the right the picture is smaller and a black border surrounds it, which the glasses show as an unlit edge.</desc>
-            <rect class="ld-screen" x="24" y="48" width="320" height="180" rx="6"/>
-            <rect class="ld-picture" x="24" y="48" width="320" height="180" rx="6"/>
-            <path class="ld-line" d="M52 84h140M52 110h200M52 136h110"/>
-            <rect class="ld-soft" x="24" y="48" width="320" height="180" rx="6"/>
-            <text class="ld-label" x="24" y="30">Edge margin: Off</text>
-            <text class="ld-note" x="24" y="256">The picture runs to the blurry edge.</text>
-            <rect class="ld-screen" x="376" y="48" width="320" height="180" rx="6"/>
-            <rect class="ld-picture" x="392" y="57" width="288" height="162" rx="4"/>
-            <path class="ld-line" d="M418 90h126M418 114h180M418 138h100"/>
-            <text class="ld-label" x="376" y="30">Edge margin: 90%</text>
-            <text class="ld-note" x="376" y="256">A black border. Those pixels stay off.</text>
-          </svg>
-        </div>
-        <figcaption>A drawing of the idea, not a screenshot of the app or of the glasses. The dashed line marks where the lens edge softens.</figcaption>
+        <img class="lenses-pair" src="/assets/lenses/lenses-edges-pair.webp" alt="Before: the picture runs into the blurry edges of the lenses. After: with a 90% edge margin, the picture sits inside a black border and the edges show nothing." width="1600" height="628" decoding="async" fetchpriority="high">
+        <figcaption>Edge margin at 90%. A simulated view through the glasses, made from real Mac screens.</figcaption>
       </figure>
     </div>
 
@@ -258,6 +242,33 @@
       <div class="yt-embed" data-motion="youtube" data-youtube-id="Lt6G-s0_UlQ" data-youtube-title="Lenses: set up AR glasses on a Mac from the menu bar">
         <img class="yt-poster" src="/assets/video/lenses-poster.webp" alt="" width="1200" height="630" loading="lazy" decoding="async">
         <a class="yt-play" href="https://www.youtube.com/watch?v=Lt6G-s0_UlQ" rel="noopener">Play the video on YouTube</a>
+      </div>
+    </section>
+
+    <section class="specs-section lenses-ba-section" aria-labelledby="ba-h">
+      <h2 id="ba-h">Before and after</h2>
+      <p class="section-intro">Each pair shows one setting. These are simulated views through the glasses, made from real Mac screens; a camera cannot capture what you see in the lenses.</p>
+      <div class="lenses-ba-grid" data-motion="stagger">
+        <figure class="lenses-ba">
+          <img class="lenses-pair" src="/assets/lenses/lenses-hz-pair.webp" alt="Before: at 60 Hz the pointer jumps in large steps and leaves a wide smear. After: at 120 Hz it moves in steps half the size and text stays clearer while it scrolls." width="1600" height="628" loading="lazy" decoding="async">
+          <figcaption><strong>60 Hz and 120 Hz.</strong> Where the glasses offer 120 Hz, Lenses picks it. Motion moves in steps half the size.</figcaption>
+        </figure>
+        <figure class="lenses-ba">
+          <img class="lenses-pair" src="/assets/lenses/lenses-hidpi-pair.webp" alt="Before: text drawn at low resolution looks soft and blocky. After: in HiDPI mode the same text is crisp." width="1600" height="628" loading="lazy" decoding="async">
+          <figcaption><strong>Sharp text.</strong> HiDPI mode draws text at twice the size, then scales it down. Shown zoomed to the same words.</figcaption>
+        </figure>
+        <figure class="lenses-ba">
+          <img class="lenses-pair" src="/assets/lenses/lenses-night-pair.webp" alt="Before: a white page on the glasses at night. After: the same page with a warm tint." width="1600" height="628" loading="lazy" decoding="async">
+          <figcaption><strong>Night tint.</strong> Night Shift does not reach the glasses, so Lenses tints them to match.</figcaption>
+        </figure>
+        <figure class="lenses-ba">
+          <img class="lenses-pair" src="/assets/lenses/lenses-dark-pair.webp" alt="Before: a light Mac window covers the room. After: in Dark Mode the black parts are see-through on these displays." width="1600" height="628" loading="lazy" decoding="async">
+          <figcaption><strong>Dark Mode.</strong> On these displays, black is see-through, so Dark Mode lets you see the room.</figcaption>
+        </figure>
+        <figure class="lenses-ba">
+          <img class="lenses-pair" src="/assets/lenses/lenses-pointer-pair.webp" alt="Before: the standard pointer is hard to find. After: a larger pointer is easy to spot." width="1600" height="628" loading="lazy" decoding="async">
+          <figcaption><strong>A bigger pointer.</strong> The Mirror 70% profile makes the pointer bigger, then puts it back.</figcaption>
+        </figure>
       </div>
     </section>
 
