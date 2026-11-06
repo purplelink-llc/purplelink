@@ -168,8 +168,11 @@
     var keys = document.getElementById("part-keys");
     if (keys && !(keep("moderntex") || keep("outbound-veil") || keep("legroom") || keep("nee"))) keys.hidden = true;
     if (parts) {
-      if (heroTitle) heroTitle.textContent = "Your bundle is ready";
-      if (heroLead) heroLead.textContent = "Everything you chose is below: the downloads and license keys for your parts. We have also emailed this page to the address on your receipt.";
+      var added = new URLSearchParams(window.location.search).get("from") === "addon";
+      if (heroTitle) heroTitle.textContent = added ? "Your order is ready" : "Your bundle is ready";
+      if (heroLead) heroLead.textContent = added
+        ? "Both apps are below, with the downloads and license keys. We have also emailed this page to the address on your receipt."
+        : "Everything you chose is below: the downloads and license keys for your parts. We have also emailed this page to the address on your receipt.";
     }
     showHero();
     if (keep("moderntex")) files(boxes.mtx, "moderntex-download");

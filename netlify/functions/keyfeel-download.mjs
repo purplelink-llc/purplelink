@@ -29,6 +29,7 @@
 import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import { bundleHasPart } from "../lib/bundles.mjs";
+import { SESSION_EXPAND, withAddons } from "../lib/addons.mjs";
 import { issueKeyfeelLicense } from "../lib/keyfeel-license.mjs";
 import { revocationFor, REVOKED_DETAIL } from "../lib/refunds.mjs";
 
@@ -68,7 +69,7 @@ async function loadSession(sessionId) {
   if (!secretKey) return { error: json(500, { error: "misconfigured", detail: "STRIPE_SECRET_KEY not set." }) };
   let resp;
   try {
-    resp = await fetch(`${STRIPE_API}/checkout/sessions/${sessionId}`, {
+    resp = await fetch(`${STRIPE_API}/checkout/sessions/${sessionId}?${SESSION_EXPAND}`, {
       headers: { Authorization: `Bearer ${secretKey}` },
     });
   } catch (err) {
@@ -76,11 +77,12 @@ async function loadSession(sessionId) {
     return { error: json(502, { error: "stripe_unreachable", detail: "Could not reach the payment processor. Try again in a minute." }) };
   }
   if (!resp.ok) return { error: json(403, { error: "session_not_found", detail: "That download link is not valid for this store." }) };
-  const session = await resp.json();
+  // A second app added at checkout is read from the paid line items (netlify/lib/addons.mjs), so its download unlocks too.
+  const session = withAddons(await resp.json());
   if (session.payment_status !== "paid") return { error: json(403, { error: "not_paid", detail: "This order has not been paid." }) };
   // A fully refunded or disputed order no longer gets the file (netlify/lib/refunds.mjs).
   if (await revocationFor(session)) return { error: json(403, { error: "refunded", detail: REVOKED_DETAIL }) };
-  // The Mac Suite, and a custom bundle that names this app, include it, so their sessions unlock the same download.
+  // The Mac Suite, and a custom bundle that names this app, or a single-app order with it added at checkout, include it, so their sessions unlock the same download.
   const bought = session.metadata?.product || "";
   if (bought !== PRODUCT_KEY && bought !== SUITE_KEY && !bundleHasPart(bought, session.metadata, "keyfeel")) {
     return { error: json(403, { error: "not_entitled", detail: "This order is for a different product." }) };
