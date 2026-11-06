@@ -339,7 +339,19 @@ def html_review_ready(
 """
 
 
-def html_purchase_link(*, product_name: str, link: str) -> str:
+def _buyer_code_html(buyer_code: str, expires: str) -> str:
+    """The cross-sell code paragraph (netlify/lib/buyer-codes.mjs): 30% off one other product, once."""
+    if not buyer_code or not expires:
+        return ""
+    url = f"https://purplelink.llc/products/?code={_html.escape(buyer_code)}"
+    return (
+        f'<p>Your code <strong>{_html.escape(buyer_code)}</strong> takes 30% off one other Purplelink '
+        f'product, once, until {_html.escape(expires)}. <a href="{url}">See the products</a>; the code '
+        f'is applied at checkout.</p>'
+    )
+
+
+def html_purchase_link(*, product_name: str, link: str, buyer_code: str = "", buyer_code_expires: str = "") -> str:
     """Sent at purchase for single-use tools, so a buyer who paid on one
     device, or closed the tab, can upload later from another."""
     return f"""
@@ -358,6 +370,7 @@ def html_purchase_link(*, product_name: str, link: str) -> str:
   </p>
   <p style="color: #555; font-size: 0.9em;">Keep this email until you have
   used the link. Anyone with it can use your purchase.</p>
+  {_buyer_code_html(buyer_code, buyer_code_expires)}
   <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0;">
   <p style="color: #888; font-size: 0.85em;">Sent by Purplelink LLC. Questions:
   reply to this email.</p>
@@ -389,7 +402,7 @@ def html_purchase_waiting(*, product_name: str, link: str, ends: str) -> str:
 """
 
 
-def html_volume_pack_tokens(*, tokens: list[str], pack_size: int) -> str:
+def html_volume_pack_tokens(*, tokens: list[str], pack_size: int, buyer_code: str = "", buyer_code_expires: str = "") -> str:
     rows = "".join(
         f'<tr><td style="padding:6px 10px;border:1px solid #eee;font-family:monospace;font-size:13px;">{t}</td>'
         f'<td style="padding:6px 10px;border:1px solid #eee;">'
@@ -418,6 +431,7 @@ def html_volume_pack_tokens(*, tokens: list[str], pack_size: int) -> str:
     Store this email somewhere safe. The tokens above are your only copy.
     If you misplace them, reply to this email with your Stripe receipt.
   </p>
+  {_buyer_code_html(buyer_code, buyer_code_expires)}
   <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0;">
   <p style="color: #888; font-size: 0.85em;">Sent by Purplelink LLC.</p>
 </div>

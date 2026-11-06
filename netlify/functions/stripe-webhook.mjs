@@ -54,6 +54,28 @@ import { bundlePartsOf, entitledParts, isBundleProduct, partsSentence } from "..
 import { recordRevocation, clearDispute, paymentIntentOf } from "../lib/refunds.mjs";
 import { handleExpired, markBought, STORE as RECOVERY_STORE } from "../lib/checkout-recovery.mjs";
 import { sendRedditPurchase } from "../lib/reddit-capi.mjs";
+import { issueCode, markUsed, crossSellOffer, expiryText, STORE as BUYER_CODE_STORE } from "../lib/buyer-codes.mjs";
+
+/**
+ * Cross-sell code for a paid order (netlify/lib/buyer-codes.mjs): marks a code this order used, then issues the
+ * buyer's own code. Never blocks delivery: any failure is logged and the email goes out without the code.
+ */
+async function buyerCodeFor(session, product, email) {
+  let store;
+  try { store = getStore(BUYER_CODE_STORE); } catch (_) { return null; }
+  try { await markUsed(store, session); } catch (err) { console.warn("stripe-webhook: buyer code mark-used failed", err?.message); }
+  const stripeKey = Netlify.env.get("STRIPE_SECRET_KEY");
+  if (!stripeKey) return null;
+  try {
+    return await issueCode({
+      store, stripeKey, secret: Netlify.env.get("STRIPE_WEBHOOK_SECRET"), session, product, email,
+      fetchImpl: (url, opts) => fetch(url, { ...opts, signal: AbortSignal.timeout(5000) }),
+    });
+  } catch (err) {
+    console.warn("stripe-webhook: buyer code not issued", err?.message);
+    return null;
+  }
+}
 
 const MODAL_REGISTER_URL =
   "https://ben-ampel--purplelink-latextools-web.modal.run/paper-review/register-token";
@@ -465,7 +487,7 @@ export function calendarOffer(productKey, nowMs = Date.now()) {
  * paid buyer with neither the page nor the email is exactly what the alert
  * exists for.
  */
-async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = "" } = {}) {
+async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = "", buyerCode = null } = {}) {
   const apiKey = Netlify.env.get("RESEND_API_KEY");
   const entry = BLOB_DELIVERED_PRODUCTS.get(productKey);
   if (!apiKey || !to || !entry) return false;
@@ -509,6 +531,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
   const reviewTextBlock = reviewApp ? `${reviewAsk}\n\n` : "";
   const prOffer = paperReviewOffer(productKey);
   const calOffer = calendarOffer(productKey);
+  const xsOffer = crossSellOffer(buyerCode);
   const reviewHtmlBlock = reviewApp ? `<p>${reviewAsk}</p>` : "";
   // Mac Suite: say what is on the page, since one link carries six things.
   const suiteText = isSuite
@@ -645,6 +668,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     reviewTextBlock +
     prOffer.text +
     calOffer.text +
+    xsOffer.text +
     `Purplelink LLC, Atlanta, Georgia`;
   const html =
     `<p>Thanks for buying ${entry.name}.</p>` +
@@ -666,6 +690,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     reviewHtmlBlock +
     prOffer.html +
     calOffer.html +
+    xsOffer.html +
     `<p>Purplelink LLC, Atlanta, Georgia</p>`;
   try {
     const resp = await fetch(RESEND_API_URL, {
@@ -1022,7 +1047,8 @@ export default async function handler(request, context) {
     await dedupeStore.set(dedupeKey, new Date().toISOString());
     // A buyer who later lets another checkout expire must not get a "you did not finish" email.
     try { await markBought(getStore(RECOVERY_STORE), rawProduct, email, entitledParts(rawProduct, session.metadata || {})); } catch (_) { /* best effort */ }
-    const emailed = await emailDownloadLink(email, sessionId, rawProduct, { seats: parseInt(session.metadata?.seats || "0", 10) || 0, apps: session.metadata?.apps || "" });
+    const buyerCode = await buyerCodeFor(session, rawProduct, email);
+    const emailed = await emailDownloadLink(email, sessionId, rawProduct, { seats: parseInt(session.metadata?.seats || "0", 10) || 0, apps: session.metadata?.apps || "", buyerCode });
     if (LIFECYCLE_PRODUCTS.has(rawProduct) && email) {
       // Day-3 tips and a day-21 note, sent by the backend's daily sweep with
       // an unsubscribe link. The buyer already has the key and download, so
@@ -1105,6 +1131,8 @@ export default async function handler(request, context) {
   // the referral loop (task: "co-author exposure referral loop"). Validated
   // server-side against referral_dict there, not trusted here.
   const referralCode = (session.metadata && session.metadata.referral_code) || "";
+  // The buyer's cross-sell code, for the purchase email Modal sends (the annual plan is a subscription and earns none).
+  const buyerCode = await buyerCodeFor(session, product, email);
 
   // The annual plan registers a subscription, not a one-off payment: read it so Modal can record the
   // subscription id, the end of the paid year and the card fingerprint (for the referral abuse check).
@@ -1156,6 +1184,7 @@ export default async function handler(request, context) {
         amount_subtotal: amountSubtotal,
         product,
         referral_code: referralCode,
+        ...(buyerCode ? { buyer_code: buyerCode.code, buyer_code_expires: expiryText(buyerCode.expires) } : {}),
         ...annualExtras,
       }),
     });

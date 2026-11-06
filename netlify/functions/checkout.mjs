@@ -40,6 +40,7 @@ import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import { managedPaymentsOn, applyManagedPayments } from "../lib/managed-payments.mjs";
 import { recoveryParams, isRecoveryParamError } from "../lib/checkout-recovery.mjs";
+import { checkCode, STORE as BUYER_CODE_STORE } from "../lib/buyer-codes.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 
@@ -429,6 +430,22 @@ export default async function handler(request) {
     }
   }
 
+  // A buyer's cross-sell code (netlify/lib/buyer-codes.mjs): 30% off one other product, once. A code that does not
+  // apply is refused with a plain reason (the page shows it, and site.js forgets the code so the next press goes
+  // through at full price); it is never silently dropped, so nobody pays full price thinking the code was used.
+  let buyerCode = null;
+  if (typeof body.code === "string" && body.code.trim()) {
+    let check;
+    try {
+      check = await checkCode(getStore(BUYER_CODE_STORE), body.code, product, entry);
+    } catch (err) {
+      console.error("checkout: buyer code check failed:", err?.message);
+      return jsonResponse(503, { error: "code_check_failed", detail: "Could not check your code just now. Try again in a minute." });
+    }
+    if (!check.ok) return jsonResponse(400, { error: "code_not_valid", detail: `${check.detail} Press the button again to buy at the full price.` });
+    buyerCode = check;
+  }
+
   const secretKey = Netlify.env.get("STRIPE_SECRET_KEY");
   // An entry with an inline amount may also name an env Price; the env Price wins when it is set.
   const envPrice = entry.envKey ? Netlify.env.get(entry.envKey) : "";
@@ -462,7 +479,7 @@ export default async function handler(request) {
   const managed = managedPaymentsOn(product, Netlify.env.get("STRIPE_MANAGED_PAYMENTS"));
   const timeBucket = Math.floor(Date.now() / IDEMPOTENCY_WINDOW_MS);
   const idempotencyKey = createHash("sha256")
-    .update(`v6:${managed ? "mp:" : ""}${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${trialDay}:${appSource}:${redditAd ? "r" + redditClick : ""}:${photo}:${seats}:${bundleParts.join("+")}:${prPreview ? "pv" : ""}`)
+    .update(`v6:${buyerCode ? "xs" + buyerCode.code + ":" : ""}${managed ? "mp:" : ""}${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${trialDay}:${appSource}:${redditAd ? "r" + redditClick : ""}:${photo}:${seats}:${bundleParts.join("+")}:${prPreview ? "pv" : ""}`)
     .digest("hex");
 
   // Attach the product key as Stripe metadata so the webhook can route
@@ -570,6 +587,13 @@ export default async function handler(request) {
 
   if (managed) applyManagedPayments(params, product);
 
+  // Stripe takes either a fixed discount or the promotion-code box, not both, so a code replaces the box.
+  if (buyerCode) {
+    delete params.allow_promotion_codes;
+    params["discounts[0][coupon]"] = buyerCode.coupon;
+    params["metadata[buyer_code]"] = buyerCode.code;
+  }
+
   // Checkout recovery (netlify/lib/checkout-recovery.mjs): consent box plus a recovery link when the session
   // expires unpaid. If Stripe ever rejects those parameters, the session is created again without them, so the
   // experiment can never block a sale.
@@ -603,6 +627,10 @@ export default async function handler(request) {
 
   if (data === null) {
     return jsonResponse(502, { error: "stripe_bad_response" });
+  }
+
+  if (!resp.ok && buyerCode && /coupon|discount/i.test(`${data?.error?.param || ""} ${data?.error?.code || ""} ${data?.error?.message || ""}`)) {
+    return jsonResponse(400, { error: "code_not_valid", detail: "That code has already been used or has expired. Press the button again to buy at the full price." });
   }
 
   if (!resp.ok) {
