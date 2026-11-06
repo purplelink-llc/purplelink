@@ -175,6 +175,8 @@ const PRODUCT_CATALOG = {
   "paper-review-annual":     { envKey: "STRIPE_PRICE_PAPER_REVIEW_ANNUAL", amount: 7900, name: "Paper Review: a year of reviews (12 Journal reviews)", interval: "year", mode: "subscription", successPath: "/tools/paper-review/packs/success/" },
   "cover-letter":            { envKey: "STRIPE_PRICE_COVER_LETTER",            successPath: "/tools/cover-letter/compose/" },
   "anonymity-check":         { envKey: "STRIPE_PRICE_ANONYMITY_CHECK",         successPath: "/tools/anonymity-check/upload/" },
+  // $2 journal checklist offered after a Standard review (backend/latextools/upgrades.py). Inline price, no env Price.
+  "journal-check":           { amount: 200, name: "Paper Review: journal check", successPath: "/tools/paper-review/journal-check/upload/" },
   "citation-gap":            { envKey: "STRIPE_PRICE_CITATION_GAP",            successPath: "/tools/citation-gap/upload/" },
   "revision-review":         { envKey: "STRIPE_PRICE_REVISION_REVIEW",         successPath: "/tools/paper-review/revision/upload/" },
   "response-review":         { envKey: "STRIPE_PRICE_RESPONSE_REVIEW",         successPath: "/tools/response-review/upload/" },

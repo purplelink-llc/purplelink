@@ -45,6 +45,7 @@ export const RECOVERY_PRODUCTS = Object.freeze({
   "paper-review-pack-20":       { name: "a 20-review Paper Review pack", price: "$150.00", cents: 15000, kind: "once" },
   "cover-letter":               { name: "the cover letter tool", price: "$2.00", cents: 200, kind: "once" },
   "anonymity-check":            { name: "the anonymity check", price: "$2.00", cents: 200, kind: "once" },
+  "journal-check":              { name: "the journal check", price: "$2.00", cents: 200, kind: "once" },
   "citation-gap":               { name: "the citation gap check", price: "$3.00", cents: 300, kind: "once" },
   "revision-review":            { name: "the revision review", price: "$2.00", cents: 200, kind: "once" },
   "response-review":            { name: "the response letter review", price: "$6.00", cents: 600, kind: "once" },

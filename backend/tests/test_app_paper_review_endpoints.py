@@ -117,6 +117,7 @@ def client(monkeypatch):
     monkeypatch.setattr(backend_app, "buyer_ledger_dict", _FakeDict())
     monkeypatch.setattr(backend_app, "referral_rewards_dict", _FakeDict())
     monkeypatch.setattr(backend_app, "feedback_dict", _FakeDict())
+    monkeypatch.setattr(backend_app, "review_spend_dict", _FakeDict())
     monkeypatch.setattr(backend_app, "paper_review_pipeline", _FakeSpawnFunction())
     monkeypatch.setattr(backend_app, "adjacent_tool_pipeline", _FakeSpawnFunction())
 

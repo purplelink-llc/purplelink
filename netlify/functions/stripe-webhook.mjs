@@ -126,6 +126,7 @@ const PURPLELINK_PRODUCTS = new Set([
   "paper-review-annual",
   "cover-letter",
   "anonymity-check",
+  "journal-check",
   "citation-gap",
   "revision-review",
   "response-review",
