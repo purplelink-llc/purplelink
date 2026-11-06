@@ -41,7 +41,7 @@ test("the Lenses page offers the app at $4.99 once, in stock, with a 14-day refu
   assert.equal(app.offers.hasMerchantReturnPolicy.merchantReturnDays, 14);
   assert.equal(app.operatingSystem, "macOS 14+");
   assert.ok(!("aggregateRating" in app) && !("review" in app));
-  assert.deepEqual(nodes.map((n) => n["@type"]).sort(), ["BreadcrumbList", "FAQPage", "SoftwareApplication"]);
+  assert.deepEqual(nodes.map((n) => n["@type"]).sort(), ["BreadcrumbList", "FAQPage", "SoftwareApplication", "VideoObject"]);
 });
 
 test("the page is indexed, canonical and posts product lenses to checkout", () => {
