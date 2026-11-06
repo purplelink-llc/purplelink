@@ -156,10 +156,10 @@ export const BLOB_DELIVERED_PRODUCTS = new Map([
   ["nee",          { name: "Née for macOS",                successPath: "/nee/success/" }],
   ["panely",          { name: "Panely for macOS",                successPath: "/panely/success/" }],
   ["summonly",          { name: "Summonly for macOS",                successPath: "/summonly/success/" }],
-  // Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Panely + Summonly + Née + Vitae Plus for life. /suite/success/
-  // lists all eight downloads and asks vitae-license.mjs for the lifetime Vitae Plus key.
+  // Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Panely + Summonly + Née + Lenses + Vitae Plus for life. /suite/success/
+  // lists all nine downloads and asks vitae-license.mjs for the lifetime Vitae Plus key.
   ["app-suite",         { name: "the Purplelink Mac Suite",          successPath: "/suite/success/" }],
-  // Custom bundles: any 2 or any 3 of the nine Suite parts, one fixed price (netlify/lib/bundles.mjs). The same page
+  // Custom bundles: any 2 or any 3 of the ten Suite parts, one fixed price (netlify/lib/bundles.mjs). The same page
   // lists only the chosen parts; each download function and vitae-license.mjs read metadata.apps back.
   ["bundle-2",          { name: "the Purplelink Mac Suite custom bundle", successPath: "/suite/success/" }],
   ["bundle-3",          { name: "the Purplelink Mac Suite custom bundle", successPath: "/suite/success/" }],
@@ -556,11 +556,11 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
   const reviewHtmlBlock = reviewApp ? `<p>${reviewAsk}</p>` : "";
   // Mac Suite: say what is on the page, since one link carries six things.
   const suiteText = isSuite
-    ? `That page has nine things: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Née downloads, and your Vitae Plus key ` +
+    ? `That page has ten things: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and Lenses downloads, and your Vitae Plus key ` +
       `(for life; in Vitae open Settings, then Vitae Plus, paste it and click Activate). Vitae itself is a free download from the same page.\n\n`
     : "";
   const suiteHtml = isSuite
-    ? `<p>That page has nine things: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Née downloads, and your Vitae Plus key ` +
+    ? `<p>That page has ten things: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and Lenses downloads, and your Vitae Plus key ` +
       `(for life; in Vitae open Settings, then Vitae Plus, paste it and click Activate). Vitae itself is a free download from the same page.</p>`
     : "";
   // Custom bundle: name the chosen parts, and say that the page lists those and nothing else.
@@ -654,9 +654,9 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     "so read every field before you save.";
   const lenscribText = lenscribKey.text + (isLenscrib ? lenscribNote + "\n\n" : "");
   const lenscribHtml = lenscribKey.html + (isLenscrib ? `<p>${lenscribNote}</p>` : "");
-  // Lenses has no key, trial or updater: the email is the download link plus one practical note. Sold on its own, so it is
-  // keyed on the product, not on `parts`.
-  const isLenses = productKey === "lenses";
+  // Lenses has no key, trial or updater: the email is the download link plus one practical note. It goes to anyone whose
+  // purchase includes Lenses: the app itself, the Suite, or a custom bundle that has it.
+  const isLenses = productKey === "lenses" || parts.has("lenses");
   const lensesNote = "Lenses needs macOS 14 or later on an Apple silicon Mac. It is a menu bar app with an Open at Login option in its menu. " +
     "It collects nothing and makes no network requests.";
   const lensesText = isLenses ? lensesNote + "\n\n" : "";

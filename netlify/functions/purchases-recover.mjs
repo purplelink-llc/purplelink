@@ -167,8 +167,8 @@ export function recoveryEmail(purchases, license, keyfeelLicense = null, keysByS
     }
     if (suite) {
       // The page holds the downloads and the Vitae Plus key; the ModernTex key is only ever emailed.
-      lines.splice(lines.length - 1, 0, "That page has the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Née downloads and your lifetime Vitae Plus key.");
-      html.push("<p>That page has the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Née downloads and your lifetime Vitae Plus key.</p>");
+      lines.splice(lines.length - 1, 0, "That page has the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and Lenses downloads and your lifetime Vitae Plus key.");
+      html.push("<p>That page has the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and Lenses downloads and your lifetime Vitae Plus key.</p>");
       if (license) {
         lines.splice(lines.length - 1, 0, `ModernTex license key (in ModernTex, choose Enter license key and paste it): ${license}`);
         html.push(`<p>ModernTex license key (in ModernTex, choose Enter license key and paste it):</p>` +

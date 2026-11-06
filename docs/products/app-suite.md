@@ -6,6 +6,15 @@ price went to $54 on the `keyfeel-store` branch (2026-10-07, see `keyfeel.md`); 
 price ends in .99, so the Suite became $59.99 (Outbound Veil $29.99, Legroom $9.99); Tapefolio joined on 2026-10-09 with
 the price left at $59.99 by the owner's decision (see "Tapefolio joined" below and `tapefolio.md`).
 
+## Lenses joins (2026-11-06), price unchanged
+Lenses ($4.99, `lenses.md`) is the ninth Mac app, so the Suite is nine apps and Vitae Plus: ten parts in custom bundles, and
+it stays $59.99 (Ben decided yes in chat on 2026-11-06; pick-2 $34.99 and pick-3 $44.99 unchanged). The parts come to
+$163.90 the first year (the Née list plus Lenses $4.99); the Suite and products pages round that to $164 and "Save 63%".
+Past Suite buyers get Lenses at no charge: their `app-suite` session unlocks `lenses-download`; a bundle that names Lenses
+is entitled through `bundleHasPart`. Lenses has no license key, trial or updater, so nothing key-shaped was added: the
+Suite email says "ten things" and names the Lenses download, `/suite/success/` has a Lenses box that just offers the DMG,
+and the `app-suite` REFUND_TEXT and its Terms sentence are unchanged. `bundle.js` carries `"lenses":499`.
+
 ## Née joins (2026-11-02, with the Née launch PR), price unchanged
 Née ($14.99, `nee.md`) is the eighth Mac app, so the Suite is eight apps and Vitae Plus: nine parts in custom bundles, and
 it stays $59.99 (Ben decided yes on 2026-11-02; the pick-2 $34.99 and pick-3 $44.99 prices are unchanged too). The parts

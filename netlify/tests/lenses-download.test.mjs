@@ -92,11 +92,24 @@ test("a paid session for another product is refused", async () => {
   }
 });
 
-test("a paid Mac Suite or custom bundle session is refused: Lenses is sold on its own", async () => {
-  for (const metadata of [{ product: "app-suite" }, { product: "bundle-2", apps: "moderntex,lenses" }, { product: "bundle-3", apps: "keyfeel,tapefolio,panely" }]) {
+test("a paid Mac Suite session can download Lenses", async () => {
+  session.metadata = { product: "app-suite" };
+  const res = await call(`session_id=${SESSION}`);
+  assert.equal(res.status, 200);
+  const file = await call(`session_id=${SESSION}&file=Lenses-1.0.0.dmg`);
+  assert.equal(file.status, 200);
+});
+
+test("a custom bundle that includes Lenses can download it, and one without Lenses cannot", async () => {
+  for (const metadata of [{ product: "bundle-2", apps: "moderntex,lenses" }, { product: "bundle-3", apps: "keyfeel,lenses,panely" }]) {
     session.metadata = metadata;
     const res = await call(`session_id=${SESSION}`);
-    assert.equal(res.status, 403, metadata.product);
+    assert.equal(res.status, 200, metadata.product);
+  }
+  for (const metadata of [{ product: "bundle-3", apps: "keyfeel,tapefolio,panely" }, { product: "bundle-2", apps: "moderntex,panely" }, { product: "bundle-2", apps: "lenses" }]) {
+    session.metadata = metadata;
+    const res = await call(`session_id=${SESSION}`);
+    assert.equal(res.status, 403, JSON.stringify(metadata));
     assert.equal((await res.json()).error, "not_entitled");
   }
 });

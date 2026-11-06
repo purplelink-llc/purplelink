@@ -82,7 +82,7 @@ test("Née is a custom bundle part, and the Suite line names it", async () => {
   assert.equal(stripeParams().get("metadata[apps]"), "panely,nee");
   calls.length = 0;
   await post({ product: "app-suite" });
-  assert.match(stripeParams().get("line_items[0][price_data][product_data][name]"), /Summonly, Née and Vitae Plus for life/);
+  assert.match(stripeParams().get("line_items[0][price_data][product_data][name]"), /Summonly, Née, Lenses and Vitae Plus for life/);
 });
 
 test("Née has a tax code and a follow-up name like the other apps", () => {
@@ -137,7 +137,7 @@ test("a paid Suite order carries the Née key and the practical note, and a bund
   await webhook(signed(paid({ product: "app-suite" }, 5999, "evt_su", "cs_live_su_abcdefghij")));
   const mail = mailOf();
   assert.match(mail.text, /Née: NEE1-([0-9A-Z]{5}-){21}[0-9A-Z]{4}/);
-  assert.match(mail.text, /Née downloads/);
+  assert.match(mail.text, /Née and Lenses downloads/);
   assert.match(mail.text, /hold Option/);
   calls.length = 0;
   await webhook(signed(paid({ product: "bundle-2", apps: "legroom,panely" }, 3499, "evt_b2", "cs_live_b2_abcdefghij")));
@@ -156,5 +156,5 @@ test("the recovery email lists a Née purchase with its page and key, and a Suit
   const suite = recoveryEmail([{ sessionId: "cs_su", product: "app-suite", created: 5 }], null, null,
     new Map([["cs_su", licenseKeysForSession("app-suite", "cs_su")]]));
   assert.match(suite.text, /Née: NEE1-/);
-  assert.match(suite.text, /Summonly and Née downloads/);
+  assert.match(suite.text, /Summonly, Née and Lenses downloads/);
 });
