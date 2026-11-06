@@ -1119,6 +1119,14 @@ def test_crm_labs_and_pilots():
     assert len(labs) == 3 and [l for l in labs if l["name"] == "Smith Lab"][0]["status"] == "interviewed"
     assert [l for l in labs if l["name"] == "Smith Lab"][0]["notes"].startswith("met at")  # blank cells never erase
 
+    # the warm-labs brief's headers map too
+    brief = tmp / "brief.md"
+    brief.write_text("| # | Lab / group | PI | Institution | Tie to Ben | Why Paper Review fits | Public lab URL | Suggested first contact |\n"
+                     "|---|---|---|---|---|---|---|---|\n| 1 | Brief Lab | Dr B | Uni (unverified affiliation) | co-author | big lab | https://b.edu | email |\n")
+    assert "1 added" in run("crm", "import-labs", str(brief))
+    b = [l for l in json.loads(crm_file.read_text())["labs"] if l["name"] == "Brief Lab"][0]
+    assert b["tie"] == "co-author" and b["url"] == "https://b.edu" and "unverified" in b["institution"]
+
     # Georgia State / GSU refused everywhere, and nothing is written
     before = crm_file.read_text()
     for argv in (["crm", "add", "lab", "Georgia State Lab"], ["crm", "add", "lab", "X", "--institution", "georgia  state University"],
