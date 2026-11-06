@@ -74,7 +74,7 @@ test("no page has an emoji, an inline style, a launch gate or an em dash", () =>
     const src = read(p);
     assert.ok(!EMOJI.test(src), `${p} has an emoji`);
     if (p.endsWith(".html")) {
-      assert.doesNotMatch(src.replace(/<script[\s\S]*?<\/script>/g, ""), /\sstyle="/, `${p} has an inline style`);
+      assert.doesNotMatch(src.replace(/<script\b[\s\S]*?<\/script[^>]*>/gi, " "), /\sstyle="/, `${p} has an inline style`);
       assert.doesNotMatch(visibleText(src), /—/, `${p} has an em dash`);
     }
   }

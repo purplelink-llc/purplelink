@@ -84,7 +84,9 @@ test("the checkout refund sentence matches the Lenses section of /terms/ word fo
   const terms = readFileSync(new URL("../../site/terms/index.html", import.meta.url), "utf8");
   const sec = terms.split("<h2>").find((s) => s.startsWith("Lenses: additional terms"));
   const li = sec.match(/<li><strong>Refunds\.<\/strong>(.*?)<\/li>/s)[1];
-  const text = li.replace(/<[^>]+>/g, "").replace(/&#39;|&rsquo;/g, "'").replace(/\s+/g, " ").trim();
+  let bare = li;
+  for (let prev = ""; prev !== bare; ) { prev = bare; bare = bare.replace(/<[^>]*>/g, ""); }
+  const text = bare.replace(/&#39;|&rsquo;/g, "'").replace(/\s+/g, " ").trim();
   assert.equal(msg, text);
 });
 
