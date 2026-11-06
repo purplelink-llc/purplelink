@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>Lenses - Sharper Text and Black Edges for AR Glasses on Mac | Purplelink LLC</title>
-    <meta name="description" content="Lenses is a Mac menu-bar app for AR glasses. When the glasses are plugged in it applies a profile: a sharp display mode, 120 Hz where the glasses offer it, a black edge margin, a night tint, Dark Mode and a bigger pointer. Tested on RayNeo Air. $4.99 once.">
+    <meta name="description" content="Lenses is a Mac menu-bar app for AR glasses. When the glasses are plugged in it applies a profile: a sharp display mode, 120 Hz where the glasses offer it, a black edge margin, a night tint, Dark Mode and a bigger pointer. Tested on RayNeo Air. Free 7-day trial, then a $4.99 license key.">
     <link rel="canonical" href="https://purplelink.llc/lenses/">
     <meta property="og:title" content="Lenses - Set Up AR Glasses on Your Mac">
-    <meta property="og:description" content="Lenses is a Mac menu-bar app for AR glasses. When the glasses are plugged in it applies a profile: a sharp display mode, 120 Hz where the glasses offer it, a black edge margin, a night tint, Dark Mode and a bigger pointer. Tested on RayNeo Air. $4.99 once.">
+    <meta property="og:description" content="Lenses is a Mac menu-bar app for AR glasses. When the glasses are plugged in it applies a profile: a sharp display mode, 120 Hz where the glasses offer it, a black edge margin, a night tint, Dark Mode and a bigger pointer. Tested on RayNeo Air. Free 7-day trial, then a $4.99 license key.">
     <meta property="og:image" content="https://purplelink.llc/assets/og/lenses.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -16,7 +16,7 @@
     <meta property="og:url" content="https://purplelink.llc/lenses/">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Lenses - Set Up AR Glasses on Your Mac">
-    <meta name="twitter:description" content="Lenses is a Mac menu-bar app for AR glasses. When the glasses are plugged in it applies a profile: a sharp display mode, 120 Hz where the glasses offer it, a black edge margin, a night tint, Dark Mode and a bigger pointer. Tested on RayNeo Air. $4.99 once.">
+    <meta name="twitter:description" content="Lenses is a Mac menu-bar app for AR glasses. When the glasses are plugged in it applies a profile: a sharp display mode, 120 Hz where the glasses offer it, a black edge margin, a night tint, Dark Mode and a bigger pointer. Tested on RayNeo Air. Free 7-day trial, then a $4.99 license key.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/lenses.png">
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
     <meta name="theme-color" content="#19141d">
@@ -54,7 +54,7 @@
         "Seven profiles",
         "Optional sound through the glasses, and open at login",
         "Recognises XREAL and VITURE glasses by display name; any other glasses through Use this display as my glasses",
-        "Collects nothing and makes no network requests"
+        "Collects nothing; the only network request is the update check"
       ],
       "offers": {
         "@type": "Offer",
@@ -62,7 +62,7 @@
         "priceCurrency": "USD",
         "availability": "https://schema.org/InStock",
         "url": "https://purplelink.llc/lenses/",
-        "category": "One-time purchase",
+        "category": "One-time purchase, free 7-day trial",
         "seller": {
           "@id": "https://purplelink.llc/#organization"
         },
@@ -138,15 +138,15 @@
           "name": "Does it collect anything?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. Lenses collects nothing and makes no network requests. Its settings stay on your Mac."
+            "text": "No. Lenses collects nothing. The only network request it makes is the update check, which sends no information about your displays or settings. Its settings stay on your Mac."
           }
         },
         {
           "@type": "Question",
-          "name": "Is there a trial or a license key?",
+          "name": "Is there a trial, and what happens when it ends?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. It is a $4.99 paid download with no trial and no license key. If it does not suit your glasses, you have 14 days to ask for a full refund."
+            "text": "Yes. The same download runs free for 7 days from the first time you open it, with no account. After that, Lenses stops applying profiles until you enter a license key, which costs $4.99 once and arrives by email and on the page after you pay. If it does not suit your glasses, you have 14 days to ask for a full refund."
           }
         },
         {
@@ -213,19 +213,20 @@
       <div class="app-hero-copy">
         <div class="app-hero-meta">
           <span class="platform-tag platform-macos">macOS</span>
-          <span class="product-status product-status-live"><span id="price">$4.99</span> once</span>
+          <span class="product-status product-status-live">Free 7-day trial &middot; <span id="price">$4.99</span> to keep</span>
         </div>
         <h1 class="app-hero-name">Lenses</h1>
         <p class="app-hero-tagline">Lenses is a menu-bar app for AR glasses plugged into a Mac. When the glasses connect, it applies the profile you chose: a sharp display mode, 120 Hz, a black margin around the picture, a night tint, Dark Mode and a bigger pointer. When you unplug them, it puts the Mac back.</p>
         <div class="app-hero-actions" id="buy">
-          <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn" data-product="lenses">Buy Lenses, $4.99</button>
+          <a class="btn btn-primary" id="trial-download" href="/.netlify/functions/lenses-download?trial=1">Try it free for 7 days</a>
+          <button type="button" class="btn btn-ghost pr-checkout-btn" id="checkout-btn" data-product="lenses">Buy Lenses, $4.99</button>
         </div>
         <p class="buy-assurance">Checkout shows the price in your local currency, and you can switch back to US dollars.</p>
         <p class="tool-status" id="checkout-status" aria-live="polite"></p>
         <p class="waitlist-fine-print"><strong>Tested on RayNeo Air.</strong> It also recognises XREAL and VITURE glasses by name, which I have not tested. For any other glasses, choose &ldquo;Use this display as my glasses&rdquo; from the menu.</p>
-        <p class="waitlist-fine-print">Needs macOS 14 Sonoma or later and an Apple silicon Mac. One $4.99 payment, no trial and no license key. You can ask for a full refund within 14 days.</p>
+        <p class="waitlist-fine-print">Needs macOS 14 Sonoma or later and an Apple silicon Mac. The trial is the complete app for seven days from the first time you open it, with no account. Buying is one $4.99 payment with every update included, and you can ask for a full refund within 14 days. The license key arrives by email and on the page after you pay.</p>
         <p class="waitlist-fine-print">Also in the <a href="/suite/?utm_source=purplelink&amp;utm_medium=product-page&amp;utm_campaign=suite-placement&amp;utm_content=lenses-buy">Mac Suite</a>: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née, Lenses and Vitae Plus for life, $59.99 once.</p>
-        <p class="waitlist-fine-print">Lenses collects nothing and makes no network requests. Its settings stay on your Mac.</p>
+        <p class="waitlist-fine-print">Lenses collects nothing. The only network request it makes is the update check. Its settings stay on your Mac.</p>
         <p class="waitlist-fine-print">New to AR glasses on a Mac? Read <a href="/guides/ar-glasses-mac-setup/">Setting up your new VR/AR glasses with a Mac</a>. It covers each setting by hand, and says where macOS cannot do it.</p>
       </div>
       <figure class="lenses-figure">
@@ -320,11 +321,11 @@
       <div class="features-grid">
         <div class="feature-item">
           <h3>Collects nothing</h3>
-          <p>Lenses collects nothing and makes no network requests. There is no account, and its settings stay on your Mac.</p>
+          <p>Lenses collects nothing. There is no account, and its settings stay on your Mac. Checking your license happens on the Mac, with no request to us.</p>
         </div>
         <div class="feature-item">
-          <h3>No updater</h3>
-          <p>It has no built-in update check, which is part of why it makes no network requests at all.</p>
+          <h3>One network request</h3>
+          <p>Lenses checks once a day for a new version and asks before installing one. That request carries the app version and nothing about your displays.</p>
         </div>
       </div>
       <p>Details are on the <a href="/privacy/">privacy page</a>.</p>
@@ -371,11 +372,11 @@
         </details>
         <details class="faq-item">
           <summary>Does it collect anything?</summary>
-          <div class="faq-body">No. Lenses collects nothing and makes no network requests. Its settings stay on your Mac.</div>
+          <div class="faq-body">No. Lenses collects nothing. The only network request it makes is the update check, which sends no information about your displays or settings. Its settings stay on your Mac.</div>
         </details>
         <details class="faq-item">
-          <summary>Is there a trial or a license key?</summary>
-          <div class="faq-body">No. It is a $4.99 paid download with no trial and no license key. If it does not suit your glasses, you have 14 days to ask for a full refund.</div>
+          <summary>Is there a trial, and what happens when it ends?</summary>
+          <div class="faq-body">Yes. The same download runs free for 7 days from the first time you open it, with no account. After that, Lenses stops applying profiles until you enter a license key, which costs $4.99 once and arrives by email and on the page after you pay. If it does not suit your glasses, you have 14 days to ask for a full refund.</div>
         </details>
         <details class="faq-item">
           <summary>Can I get a refund?</summary>
@@ -413,9 +414,10 @@
     <!-- support-box:end -->
     <section class="closing-cta" data-motion="reveal" aria-labelledby="closing-cta-heading">
       <h2 id="closing-cta-heading">Plug in and read.</h2>
-      <p>One payment of $4.99, a 14-day refund, and nothing sent anywhere.</p>
+      <p>Seven days free, then one payment of $4.99 and a 14-day refund.</p>
       <div class="closing-cta-actions">
-        <a class="btn btn-primary" href="#buy">Buy Lenses</a>
+        <a class="btn btn-primary" href="/.netlify/functions/lenses-download?trial=1">Try it free for 7 days</a>
+        <a class="btn btn-ghost" href="#buy">Buy Lenses</a>
       </div>
       <p class="closing-cta-fine">macOS 14 or later, Apple silicon. Tested on RayNeo Air.</p>
     </section>

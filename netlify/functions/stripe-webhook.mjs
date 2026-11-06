@@ -654,11 +654,11 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     "so read every field before you save.";
   const lenscribText = lenscribKey.text + (isLenscrib ? lenscribNote + "\n\n" : "");
   const lenscribHtml = lenscribKey.html + (isLenscrib ? `<p>${lenscribNote}</p>` : "");
-  // Lenses has no key, trial or updater: the email is the download link plus one practical note. It goes to anyone whose
-  // purchase includes Lenses: the app itself, the Suite, or a custom bundle that has it.
+  // Lenses: its key is in the generic keys block (shared PurplelinkLicenseV1 scheme, LN1), so this is the one practical note.
+  // It goes to anyone whose purchase includes Lenses: the app itself, the Suite, or a custom bundle that has it.
   const isLenses = productKey === "lenses" || parts.has("lenses");
   const lensesNote = "Lenses needs macOS 14 or later on an Apple silicon Mac. It is a menu bar app with an Open at Login option in its menu. " +
-    "It collects nothing and makes no network requests.";
+    "Lenses has no account and sends nothing about your displays; the only network request it makes is the update check.";
   const lensesText = isLenses ? lensesNote + "\n\n" : "";
   const lensesHtml = isLenses ? `<p>${lensesNote}</p>` : "";
   // Née's key is in the generic keys block above (shared PurplelinkLicenseV1 scheme), so this is only the one practical
