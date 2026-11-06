@@ -26,7 +26,7 @@
  *   https://purplelink.llc/.netlify/functions/stripe-webhook
  *   subscribed to events: checkout.session.completed, customer.subscription.deleted,
  *   charge.refunded, charge.dispute.created, charge.dispute.closed, checkout.session.expired
- *   (the last one for ModernTex checkout recovery, netlify/lib/checkout-recovery.mjs),
+ *   (the last one for checkout recovery, netlify/lib/checkout-recovery.mjs),
  *   invoice.paid and customer.subscription.updated (the Paper Review annual plan, below)
  *
  * Paper Review annual plan ("paper-review-annual", $79 a year, auto-renewing): this function forwards
@@ -1021,7 +1021,7 @@ export default async function handler(request, context) {
     }
     await dedupeStore.set(dedupeKey, new Date().toISOString());
     // A buyer who later lets another checkout expire must not get a "you did not finish" email.
-    try { await markBought(getStore(RECOVERY_STORE), rawProduct, email); } catch (_) { /* best effort */ }
+    try { await markBought(getStore(RECOVERY_STORE), rawProduct, email, entitledParts(rawProduct, session.metadata || {})); } catch (_) { /* best effort */ }
     const emailed = await emailDownloadLink(email, sessionId, rawProduct, { seats: parseInt(session.metadata?.seats || "0", 10) || 0, apps: session.metadata?.apps || "" });
     if (LIFECYCLE_PRODUCTS.has(rawProduct) && email) {
       // Day-3 tips and a day-21 note, sent by the backend's daily sweep with
@@ -1099,6 +1099,8 @@ export default async function handler(request, context) {
   // this point (checked above) — digest and Blobs-delivered products already
   // returned earlier, so what's left is a genuine Paper Review price key.
   const product = rawProduct;
+  // A buyer who later lets another checkout expire must not get a "you did not finish" email.
+  try { await markBought(getStore(RECOVERY_STORE), product, email); } catch (_) { /* best effort */ }
   // See checkout.mjs — passed through unchanged so the backend can credit
   // the referral loop (task: "co-author exposure referral loop"). Validated
   // server-side against referral_dict there, not trusted here.
