@@ -42,7 +42,8 @@ class Racer(Theme):
     thumb_at = 0.42
     music = {"style": "racer", "modes": {"minor": 4, "dorian": 3, "mixolydian": 2}, "eras": ["synth", "16bit", "synth"], "mood": (0.4, 1.0),
              "sound": {"lead": ["fm_brass", "saw_lead"], "arp": ["saw_pluck", "pluck"], "pad": "strings", "bass": "fm_bass", "kit": "electro",
-                       # bass, strings and drums on Apple's sampled instruments (studio.py; Ben picked this sound 2026-11-04). The rms targets match the
+                       # bass, strings and drums on Apple's sampled instruments (studio.py; Ben picked this sound 2026-11-04), played only with
+                       # CHIPTUNE_STUDIO=1 since 2026-11-06 (GarageBand licence, docs/designs/studio-sound.md section 5). The rms targets match the
                        # loudness the numpy voices had on seed 313, so the mix balance is unchanged; latency cancels each instrument's attack delay.
                        "studio": {"bass": {"exs": "02 Bass/02 Electric Bass/Fingerstyle Electric Bass.exs", "latency": 574, "rms": 0.109},
                                   "pad": {"exs": "09 Orchestral/09 Strings/String Ensemble.exs", "latency": 600, "rms": 0.026, "width": 0.012},
