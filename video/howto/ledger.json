@@ -475,5 +475,33 @@
    "ok": true,
    "utm_content": "howto-window-fills-screen-when-dragged-to-top-reel"
   }
+ },
+ {
+  "slug": "howto-spotlight-clipboard-history-empty",
+  "app": "summonly",
+  "date": "2026-11-06",
+  "title": "Spotlight clipboard history empty on Mac (turn on Results from Clipboard)",
+  "long_id": "sefuRTWKmyI",
+  "short_id": "J9FV-SQH-Mo",
+  "link_arm": "A",
+  "link_utm_content": "howto-spotlight-clipboard-history-empty",
+  "short_utm_content": "howto-spotlight-clipboard-history-empty-short",
+  "sources": [
+   "https://discussions.apple.com/thread/256139237"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "sefuRTWKmyI",
+    "caption_id": "AUieDabg0arm738z_VP_zDq6Y7Ocxh99UNDU1bh-dJUAswHzlHt3-NrO"
+   },
+   "short": {
+    "video_id": "J9FV-SQH-Mo",
+    "caption_id": "AUieDaZxToOkp-A1EoIbXFGPYsaFQ6Ijc11d_zUNTkaaW8NabSPUh9mL"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-spotlight-clipboard-history-empty-reel"
+  }
  }
 ]
