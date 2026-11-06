@@ -315,8 +315,17 @@ is checked at redeem and submit. So:
 - **Confirmation email** on every cancel and undo, with the end date.
 - **Without a token:** the plan page has an email box that sends a fresh link, with the enumeration-safe answer and
   rate limits of `subscription-portal.mjs`.
-- **By reply:** every plan email says "or reply 'cancel'". Ben honours it within one business day, effective from the
+- **By reply:** every plan email says "or reply 'cancel'". Honoured within one business day, effective from the
   time of the reply; if a renewal charge lands in between, it is refunded. The terms say this.
+  - Since 2026-11-05 the business email operator handles these replies. It runs
+    `~/.purplelink/operator/bin/annual_cancel_by_email.py <sender>`, which calls the Modal endpoint
+    `/paper-review/annual-cancel-by-email`. That endpoint matches the sender's address to a live plan with
+    `plan_by_email` and then takes the one-click path (`_annual_apply_change`): Stripe `cancel_at_period_end`, a new
+    plan link, and the same confirmation email. The operator logs every call to `annual-cancels.jsonl`.
+  - The endpoint answers `{"matched": false}` when no plan matches. The operator then flags the email for Ben and does
+    not try another address.
+  - Unlike `annual-link`, this endpoint says whether a plan matched. That is safe because only callers holding
+    `BACKEND_WEBHOOK_SECRET` reach it.
 - The Stripe billing portal (30-minute links, restricted config) stays the place for the card and invoices.
 
 ### Warnings before it renews
