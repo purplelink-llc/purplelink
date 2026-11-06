@@ -28,6 +28,7 @@ import longform as lf
 import pixfont
 import px
 import sounds
+import studio
 import themes
 
 THUMB = (1280, 720)          # an exact 4x of the 320x180 art
@@ -179,7 +180,8 @@ COPY = {
     },
     "racer": {
         "scene": "a pixel-art hover-racer on a neon highway at night: a perspective road with rumble strips and guard-rail lights, a glowing grid, a city skyline and a ringed planet, and now and then a boost or a rival craft overtaking",
-        "sound_music": "fast 16-bit-style racing music at about 150 to 170 BPM, with a driving octave electric bass, punchy electronic drums, a string bed and bright brass and saw synth leads",
+        "sound_music": "fast 16-bit-style racing music at about 150 to 170 BPM, with a driving FM synth bass, punchy electronic drums, a synth string bed and bright brass and saw synth leads",
+        "sound_music_studio": "fast 16-bit-style racing music at about 150 to 170 BPM, with a driving octave electric bass, punchy electronic drums, a string bed and bright brass and saw synth leads",
         "sound_solo": "a steady rush of wind, with no music",
         "use": "running, workouts, cycling, gaming or getting through a task list",
         "tags": ["music to run to", "running music", "workout music", "8 bit racing music", "racing music", "16 bit music", "retro racing music", "pixel art", "synthwave"],
@@ -233,9 +235,15 @@ STUDIO_CHANNEL_LINE = ("This channel makes ambient videos in which every picture
 
 
 def uses_studio(theme_name: str, sound: str, musical: bool) -> bool:
-    """True when the video's music is played partly on Apple's sampled instruments (the theme has a `studio` kit; see studio.py). The lofi sound
+    """True when the video's music is played partly on Apple's sampled instruments (the theme has a `studio` kit and the run opted in; see studio.kit). The lofi sound
     brings its own settings, so it never does."""
-    return bool(musical) and sound != "lofi" and "studio" in themes.get(theme_name).music.get("sound", {})
+    return bool(musical) and sound != "lofi" and bool(studio.kit(themes.get(theme_name).music.get("sound", {})))
+
+
+def music_sound(theme_name: str, sound: str, musical: bool) -> str:
+    """The theme's "Sound:" line; a theme that has a studio kit describes the sampled instruments only when they are played."""
+    cp = COPY[theme_name]
+    return cp.get("sound_music_studio", cp["sound_music"]) if uses_studio(theme_name, sound, musical) else cp["sound_music"]
 
 
 def channel_line(theme_name: str, sound: str, musical: bool) -> str:
@@ -475,7 +483,7 @@ def holiday_metadata(theme_name: str, seconds: float, slug: str, music: bool, po
         lines.append(f"Also in the mix, quietly: {bed}.")
     if musical:
         lines.append("Music: composed by a program from a random seed (melody, chords, bass and drums). No carol, existing song or recording is used.")
-        lines.append(f"Sound: {sp.what if sound == 'lofi' else cp['sound_music']}" + (", with the room's own ambience quietly under it." if sound == "lofi" and not no_bed else "."))
+        lines.append(f"Sound: {sp.what if sound == 'lofi' else music_sound(theme_name, sound, musical)}" + (", with the room's own ambience quietly under it." if sound == "lofi" and not no_bed else "."))
     elif sp.how:
         lines.append(f"How it was made: {sp.how}.")
     if not musical:
@@ -540,7 +548,7 @@ def build_metadata(theme_name: str, seconds: float, slug: str, music: bool, pomo
     if pomodoro and key + "_pomo" in cp:
         key += "_pomo"
     title = cp[key].format(dur=dur)
-    snd = cp["sound_music"] if music else cp["sound_solo"]
+    snd = music_sound(theme_name, sound, music) if music else cp["sound_solo"]
     lines = [f"{dur} of {cp['scene']}.", "", f"Sound: {snd}.", ""]
     if music and uses_studio(theme_name, sound, music):
         lines += ["The music is original. A program composes every track from a random seed (melody, chords, bass and drums) and plays it partly on synthesised "
