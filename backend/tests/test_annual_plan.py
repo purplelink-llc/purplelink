@@ -251,6 +251,65 @@ def test_revoke_unknown_subscription_is_not_ok(env):
     assert r.json()["ok"] is False
 
 
+
+def _revoke(http, reason, dispute_id=""):
+    body = {"subscription_id": SUB, "reason": reason}
+    if dispute_id:
+        body["dispute_id"] = dispute_id
+    return http.post("/paper-review/annual-revoke", json=body, headers=H)
+
+
+def _restore(http, dispute_id):
+    return http.post("/paper-review/annual-restore", json={"subscription_id": SUB, "dispute_id": dispute_id}, headers=H)
+
+
+def test_won_dispute_restores_the_plan_and_its_unused_reviews(env):
+    http, app, _, _ = env
+    toks = _register(http).json()["tokens"]
+    _revoke(http, "dispute", "dp_1")
+    assert http.post("/paper-review/redeem-session", json={"token": toks[0]}).status_code == 410
+    r = _restore(http, "dp_1").json()
+    assert r == {"ok": True, "reason": "restored", "restored": 12}
+    assert _plan(app)["revoked"] is False and _plan(app)["cancel_at_period_end"] is False
+    assert http.post("/paper-review/redeem-session", json={"token": toks[0]}).status_code == 200
+    # a repeat of the same webhook changes nothing
+    assert _restore(http, "dp_1").json()["reason"] == "not_revoked"
+
+
+def test_won_dispute_never_undoes_a_refund(env):
+    http, app, _, _ = env
+    _register(http)
+    _revoke(http, "dispute", "dp_1")
+    _revoke(http, "refund")
+    assert _restore(http, "dp_1").json()["reason"] == "refunded"
+    assert _plan(app)["revoked"] is True
+
+
+def test_plan_stays_revoked_while_another_dispute_is_open(env):
+    http, app, _, _ = env
+    _register(http)
+    _revoke(http, "dispute", "dp_1")
+    _revoke(http, "dispute", "dp_2")
+    assert _restore(http, "dp_1").json()["reason"] == "disputes_still_open"
+    assert _plan(app)["revoked"] is True
+    assert _restore(http, "dp_2").json()["reason"] == "restored"
+
+
+def test_restore_keeps_a_cancel_made_before_the_dispute(env):
+    http, app, _, _ = env
+    _register(http)
+    _status(http, status="active", cancel_at_period_end=True)
+    _revoke(http, "dispute", "dp_1")
+    _restore(http, "dp_1")
+    assert _plan(app)["cancel_at_period_end"] is True
+
+
+def test_restore_needs_the_secret(env):
+    http, *_ = env
+    _register(http)
+    assert http.post("/paper-review/annual-restore", json={"subscription_id": SUB, "dispute_id": "dp_1"}).status_code == 401
+    assert http.post("/paper-review/annual-restore", json={"dispute_id": "dp_1"}, headers=H).status_code == 400
+
 def test_ordinary_purchases_are_not_affected(env):
     from latextools import annual
     _, app, _, _ = env

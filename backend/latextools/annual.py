@@ -288,11 +288,21 @@ def apply_status(store, snap: dict) -> dict:
     return {"plan": plan, "changed": False}
 
 
-def revoke(store, subscription_id: str, reason: str, now: float) -> dict:
-    """A refund or dispute: mark the plan and every period entry revoked, and drop their tokens from the index."""
+def revoke(store, subscription_id: str, reason: str, now: float, dispute_id: str = "") -> dict:
+    """A refund or dispute: mark the plan and every period entry revoked, and drop their tokens from the index.
+    A dispute is remembered by id so a won dispute can undo it (`restore`); a refund is never undone."""
     plan = plan_by_subscription(store.plans, subscription_id)
     if not plan:
         return {"ok": False, "reason": "unknown_plan"}
+    if not plan.get("revoked"):
+        plan["cancel_before_revoke"] = bool(plan.get("cancel_at_period_end"))
+    if reason == "dispute":
+        open_ids = list(plan.get("disputes_open") or [])
+        if dispute_id and dispute_id not in open_ids:
+            open_ids.append(dispute_id)
+        plan["disputes_open"] = open_ids
+    else:
+        plan["refund_revoked"] = True
     plan["revoked"] = True
     plan["revoked_reason"] = reason
     plan["revoked_at"] = now
@@ -317,6 +327,43 @@ def revoke(store, subscription_id: str, reason: str, now: float) -> dict:
                 pass
     return {"ok": True, "reason": "revoked", "plan": plan, "dropped": dropped}
 
+
+def restore(store, subscription_id: str, dispute_id: str, now: float) -> dict:
+    """A won dispute: undo the revoke it caused. Only when the plan was revoked by disputes alone (never after a
+    refund) and this was the last open one. The current period's unused tokens resolve again; earlier periods stay
+    over, as they would have after a renewal. Idempotent: a second call returns not_revoked."""
+    plan = plan_by_subscription(store.plans, subscription_id)
+    if not plan:
+        return {"ok": False, "reason": "unknown_plan"}
+    if not plan.get("revoked"):
+        return {"ok": True, "reason": "not_revoked", "restored": 0}
+    if plan.get("refund_revoked") or (plan.get("revoked_reason") != "dispute" and "disputes_open" not in plan):
+        return {"ok": True, "reason": "refunded", "restored": 0}
+    open_ids = [d for d in (plan.get("disputes_open") or []) if d != dispute_id]
+    plan["disputes_open"] = open_ids
+    if open_ids:
+        store.plans[plan["plan_id"]] = plan
+        return {"ok": True, "reason": "disputes_still_open", "restored": 0}
+    plan["revoked"] = False
+    plan["restored_at"] = now
+    plan["cancel_at_period_end"] = bool(plan.pop("cancel_before_revoke", plan.get("cancel_at_period_end")))
+    plan["nonce"] = new_nonce()
+    store.plans[plan["plan_id"]] = plan
+    restored = 0
+    for p in plan.get("periods", []):
+        entry = store.tokens.get(p["key"])
+        if not isinstance(entry, dict):
+            continue
+        entry["revoked"] = False
+        store.tokens[p["key"]] = entry
+        if p["key"] != plan.get("period_key"):
+            continue
+        consumed = set(entry.get("consumed_tokens") or [])
+        for t in entry.get("tokens") or []:
+            if t not in consumed:
+                store.index[t] = p["key"]
+                restored += 1
+    return {"ok": True, "reason": "restored", "plan": plan, "restored": restored}
 
 def term_refusal(store, entry: dict, now: float):
     """None when the entry may be used; ("revoked"|"expired") when its plan term has ended or it was revoked.

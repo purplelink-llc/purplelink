@@ -2731,8 +2731,25 @@ def web():
         reason = str((data or {}).get("reason", "refund"))[:40]
         if not isinstance(sub_id, str) or not sub_id.startswith("sub_"):
             return JSONResponse({"error": "missing_subscription_id"}, status_code=400)
-        res = annual.revoke(_annual_store(), sub_id, reason, _time_module.time())
+        dispute_id = str((data or {}).get("dispute_id") or "")[:80]
+        res = annual.revoke(_annual_store(), sub_id, reason, _time_module.time(), dispute_id=dispute_id)
         return JSONResponse({"ok": res["ok"], "reason": res["reason"], "dropped": res.get("dropped", 0)})
+
+    @api.post("/paper-review/annual-restore")
+    async def paper_review_annual_restore(request: Request):
+        """A dispute on an annual invoice was closed as won: give the plan back (see annual.restore)."""
+        bad = _annual_auth(request)
+        if bad:
+            return bad
+        data = await _annual_json(request)
+        sub_id = (data or {}).get("subscription_id", "")
+        dispute_id = str((data or {}).get("dispute_id") or "")[:80]
+        if not isinstance(sub_id, str) or not sub_id.startswith("sub_"):
+            return JSONResponse({"error": "missing_subscription_id"}, status_code=400)
+        res = annual.restore(_annual_store(), sub_id, dispute_id, _time_module.time())
+        if res.get("reason") == "restored":
+            logger.info("annual: plan %s restored after a won dispute", res["plan"]["plan_id"])
+        return JSONResponse({"ok": res["ok"], "reason": res["reason"], "restored": res.get("restored", 0)})
 
     @api.post("/paper-review/annual-status")
     async def paper_review_annual_status(request: Request):
