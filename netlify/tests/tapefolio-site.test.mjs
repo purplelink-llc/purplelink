@@ -236,7 +236,7 @@ test("the page never claims anonymization, guaranteed compliance, or anything th
   // Every percentage on the page is one the README states.
   // (The captions under the screenshots quote what the captures show; they are checked in their own test.)
   const allowed = new Set(["21%", "29%", "39%", "83%", "84%", "11.3%", "1.9%", "8.5%", "1.7%", "1.1%", "1.4%", "0.5%", "0.0%", "1.5%"]);
-  const withoutCaptions = visibleText(html.replace(/<section class="screenshots-section" aria-labelledby="shots-h">[\s\S]*?<\/section>/, ""));
+  const withoutCaptions = visibleText(html.replace(/<section class="screenshots-section" aria-labelledby="shots-h">[\s\S]*?<\/section>/, "")).replace(/Add any second Mac Suite app[^.]*\./, "");
   for (const m of withoutCaptions.matchAll(/\d+(?:\.\d+)?%/g)) assert.ok(allowed.has(m[0]), `unexpected figure ${m[0]}`);
   // Features that are not built are not named. (Draft summaries are built since 1.1.0; "Microsoft Teams" is a call app, not a team feature.)
   const named = text.replace(/Microsoft Teams/g, "");

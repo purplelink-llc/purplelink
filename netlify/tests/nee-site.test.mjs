@@ -208,7 +208,8 @@ test("the page claims nothing the app does not do, and uses none of the banned w
   const text = visibleText(html);
   assert.doesNotMatch(text, /guarantee|certified|100% (private|accurate|secure)|always accurate|never (wrong|misses)/i);
   assert.doesNotMatch(text, /seamless|supercharge|streamline|world-class|cutting-edge|revolutionary|effortless|AI-powered|game-chang|magic|blazing|lightning|powerful|best-in-class/i);
-  assert.doesNotMatch(text, /\d+(?:\.\d+)?%/, "a percentage appeared on the page");
+  // The Mac Suite bundle line states the real tier percentages; every other percentage is still refused.
+  assert.doesNotMatch(text.replace(/Add any second Mac Suite app[^.]*\./, ""), /\d+(?:\.\d+)?%/, "a percentage appeared on the page");
   // Not built in this version, so not promised.
   for (const unbuilt of ["powerpoint to pdf", "excel to pdf", "libreoffice", "watch folder", "shortcuts", "app store", "cloud sync", "ffmpeg"]) {
     assert.ok(!text.toLowerCase().includes(unbuilt), `the page mentions: ${unbuilt}`);

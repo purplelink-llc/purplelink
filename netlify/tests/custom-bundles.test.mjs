@@ -1,4 +1,4 @@
-// Custom bundles of the Mac Suite (pick any 2 for $34.99, any 3 for $44.99): the price table and its copy on the page,
+// Custom bundles of the Mac Suite (any 2 parts 25% off, any 3 parts 40% off): the price table and its copy on the page,
 // checkout validation, which download doors a bundle opens, which keys it gets, the purchase email, the success-page
 // key endpoint and the recovery email. Stripe, Resend and Blobs are stubbed; the signing keys are throwaways.
 //
@@ -60,35 +60,74 @@ beforeEach(() => {
 });
 
 const SID = "cs_live_bundle_0123456789";
-const bundle = (product, apps, over = {}) => ({ id: SID, status: "complete", payment_status: "paid", amount_total: 3499,
+const bundle = (product, apps, over = {}) => ({ id: SID, status: "complete", payment_status: "paid", amount_total: 3749,
   customer_details: { email: "buyer@example.com" }, metadata: { product, apps }, ...over });
 
 // ---- the price table and the helper ----
 
-test("two prices, below the Suite, above the dearest single app, and the ten parts are the Suite's ten", () => {
-  assert.deepEqual(lib.BUNDLES, { "bundle-2": { count: 2, cents: 3499 }, "bundle-3": { count: 3, cents: 4499 } });
-  const dearestSingle = 2999;
-  assert.ok(lib.BUNDLES["bundle-2"].cents > dearestSingle, "pick 2 costs more than any single app");
-  assert.ok(lib.BUNDLES["bundle-2"].cents < lib.BUNDLES["bundle-3"].cents);
-  assert.ok(lib.BUNDLES["bundle-3"].cents < 5999, "pick 3 stays under the Suite");
+test("two percent tiers, and the ten parts are the Suite's ten", () => {
+  assert.deepEqual(lib.BUNDLES, { "bundle-2": { count: 2, percent: 25 }, "bundle-3": { count: 3, percent: 40 } });
+  assert.ok(lib.BUNDLES["bundle-2"].percent < lib.BUNDLES["bundle-3"].percent);
   assert.deepEqual(lib.BUNDLE_SLUGS, ["moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "panely", "summonly", "nee", "lenses", "vitae-plus"]);
+  assert.deepEqual(Object.keys(lib.PART_CENTS), lib.BUNDLE_SLUGS);
+  // The ten parts add up to the Suite's own first-year price stack ($163.90, shown as "$164+" on /suite/).
+  assert.equal(Object.values(lib.PART_CENTS).reduce((a, b) => a + b, 0), 16390);
+  assert.ok(Object.values(lib.PART_CENTS).reduce((a, b) => a + b, 0) > 5999, "the Suite is cheaper than the parts");
 });
 
-test("the page's price tables are the server's", () => {
+test("bundleCents: a pair is 25% off the two prices, a triple 40% off the three", () => {
+  assert.equal(lib.bundleCents(["moderntex", "outbound-veil"]), 3749, "$49.98 less 25%");
+  assert.equal(lib.bundleCents(["outbound-veil", "moderntex"]), 3749, "order does not matter");
+  assert.equal(lib.bundleCents(["moderntex", "outbound-veil", "tapefolio"]), 4798, "$79.97 less 40% = 47.982");
+  assert.equal(lib.bundleCents(["legroom", "keyfeel", "lenses"]), 1498, "$24.97 less 40% = 14.982");
+});
+
+test("bundleCents: a cheap pair the old fixed price blocked is now sold", () => {
+  assert.equal(lib.bundleCents(["lenses", "legroom"]), 1124, "$14.98 less 25% = 11.235 rounds to the cent");
+  assert.ok(lib.bundleCents(["lenses", "legroom"]) < 499 + 999, "always cheaper than buying separately");
+});
+
+test("bundleCents: rounds half up to the cent, and every pair and triple is cheaper than its parts", () => {
+  assert.equal(lib.bundleCents(["panely", "summonly"]), 1499, "1998 x 0.75 = 1498.5 rounds up");
+  const slugs = lib.BUNDLE_SLUGS;
+  for (const a of slugs) for (const b of slugs) {
+    if (a >= b) continue;
+    const c = lib.bundleCents([a, b]);
+    assert.ok(Number.isInteger(c) && c < lib.PART_CENTS[a] + lib.PART_CENTS[b], `${a}+${b}`);
+    for (const d of slugs) {
+      if (b >= d) continue;
+      const t = lib.bundleCents([a, b, d]);
+      assert.ok(Number.isInteger(t) && t < lib.PART_CENTS[a] + lib.PART_CENTS[b] + lib.PART_CENTS[d], `${a}+${b}+${d}`);
+    }
+  }
+});
+
+test("bundleCents: invalid input has no price", () => {
+  for (const bad of [[], ["moderntex"], ["moderntex", "moderntex"], ["moderntex", "nope"], ["moderntex", 5], "moderntex,legroom", null, undefined, {},
+    ["moderntex", "legroom", "keyfeel", "tapefolio"], ["moderntex", "moderntex", "legroom"]]) {
+    assert.equal(lib.bundleCents(bad), null, JSON.stringify(bad));
+  }
+});
+
+test("the page's tables are the server's", () => {
   const src = readFileSync(new URL("../../site/suite/bundle.js", import.meta.url), "utf8");
-  const pricing = JSON.parse(src.match(/var BUNDLE_PRICING = (\{.*?\});/)[1]);
-  assert.deepEqual(pricing, { 2: lib.BUNDLES["bundle-2"].cents, 3: lib.BUNDLES["bundle-3"].cents, suite: 5999 });
+  const percent = JSON.parse(src.match(/var BUNDLE_PERCENT = (\{.*?\});/)[1]);
+  assert.deepEqual(percent, { 2: lib.BUNDLES["bundle-2"].percent, 3: lib.BUNDLES["bundle-3"].percent });
+  assert.equal(Number(src.match(/var SUITE_CENTS = (\d+);/)[1]), 5999);
   const parts = JSON.parse(src.match(/var PART_PRICE = (\{.*?\});/)[1]);
+  assert.deepEqual(parts, lib.PART_CENTS);
   assert.deepEqual(Object.keys(parts), lib.BUNDLE_SLUGS);
   // The four-or-more message names the Suite's part count; it said "all six" after the Suite grew to eight.
   const words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
-  const said = src.match(/which has all (\w+) for/)[1];
+  const said = src.match(/the Suite has all (\w+) for/)[1];
   assert.equal(said, words[lib.BUNDLE_SLUGS.length], `the Suite message says "all ${said}"`);
   const html = readFileSync(new URL("../../site/suite/index.html", import.meta.url), "utf8");
   for (const slug of lib.BUNDLE_SLUGS) assert.ok(html.includes(`name="apps" value="${slug}"`), `${slug} is a choice on the page`);
-  assert.ok(html.includes("$34.99") && html.includes("$44.99") && html.includes("$59.99"));
+  assert.ok(html.includes("Any 2:</strong> 25% off") && html.includes("Any 3:</strong> 40% off") && html.includes("$59.99"));
+  assert.ok(!html.includes("$34.99") && !html.includes("$44.99"), "the old fixed prices are gone");
   const checkout = readFileSync(new URL("../functions/checkout.mjs", import.meta.url), "utf8");
-  assert.match(checkout, /"bundle-2":\s+\{ amount: BUNDLES\["bundle-2"\]\.cents/);
+  assert.match(checkout, /"bundle-2":\s+\{ bundle: true,/);
+  assert.match(checkout, /bundleCents\(bundleParts\)/);
 });
 
 test("parsing: exactly the right number of different, known parts, in the canonical order", () => {
@@ -122,26 +161,34 @@ const post = (body, ip = "203.0.113.9") => checkout(new Request("https://purplel
 }));
 const stripeParams = () => new URLSearchParams(calls.find((c) => c.url.includes("/checkout/sessions")).opts.body);
 
-test("checkout prices a bundle from its count alone, names the parts and records them", async () => {
-  const res = await post({ product: "bundle-2", apps: ["tapefolio", "outbound-veil"], amount: 1, unit_amount: 1 });
+test("checkout prices a bundle from the chosen parts, names the discount and the parts, and records them", async () => {
+  const res = await post({ product: "bundle-2", apps: ["outbound-veil", "moderntex"], amount: 1, unit_amount: 1 });
   assert.equal(res.status, 200);
   const p = stripeParams();
-  assert.equal(p.get("line_items[0][price_data][unit_amount]"), "3499");
+  assert.equal(p.get("line_items[0][price_data][unit_amount]"), "3749");
   assert.equal(p.get("line_items[0][quantity]"), "1");
   assert.equal(p.get("metadata[product]"), "bundle-2");
-  assert.equal(p.get("metadata[apps]"), "outbound-veil,tapefolio");
-  assert.match(p.get("line_items[0][price_data][product_data][name]"), /custom bundle \(any 2\): Outbound Veil and Tapefolio/);
+  assert.equal(p.get("metadata[apps]"), "moderntex,outbound-veil");
+  assert.match(p.get("line_items[0][price_data][product_data][name]"), /^Purplelink Mac Suite bundle, 25% off: ModernTex and Outbound Veil$/);
   assert.match(p.get("success_url"), /\/suite\/success\/\?session_id=/);
   assert.equal(p.get("mode"), "payment");
 });
 
-test("a pick-3 costs the same whichever three parts are chosen", async () => {
-  const sets = [["keyfeel", "legroom", "moderntex"], ["outbound-veil", "tapefolio", "vitae-plus"], ["moderntex", "outbound-veil", "tapefolio"]];
-  for (const [i, apps] of sets.entries()) {
+test("a pick-3 is 40% off the three chosen prices, so it follows the parts", async () => {
+  const sets = [[["keyfeel", "legroom", "moderntex"], 2398], [["outbound-veil", "tapefolio", "vitae-plus"], 5038], [["moderntex", "outbound-veil", "tapefolio"], 4798]];
+  for (const [i, [apps, cents]] of sets.entries()) {
     calls = [];
     assert.equal((await post({ product: "bundle-3", apps }, `198.51.100.${i + 1}`)).status, 200);
-    assert.equal(stripeParams().get("line_items[0][price_data][unit_amount]"), "4499");
+    const p = stripeParams();
+    assert.equal(p.get("line_items[0][price_data][unit_amount]"), String(cents));
+    assert.equal(cents, lib.bundleCents(apps));
+    assert.match(p.get("line_items[0][price_data][product_data][name]"), /^Purplelink Mac Suite bundle, 40% off: /);
   }
+});
+
+test("a price sent by the client is ignored, and a cheap pair the old fixed price blocked can be bought", async () => {
+  assert.equal((await post({ product: "bundle-2", apps: ["lenses", "legroom"], amount: 1, unit_amount: 1, cents: 1 }, "198.51.100.30")).status, 200);
+  assert.equal(stripeParams().get("line_items[0][price_data][unit_amount]"), "1124");
 });
 
 test("checkout refuses a wrong count, a duplicate, an unknown part or no parts, and creates no session", async () => {
@@ -177,7 +224,7 @@ const callDoor = (handler, name) => handler(new Request(`https://purplelink.llc/
   headers: { "x-nf-client-connection-ip": "198.51.100.5" } }), {});
 
 test("a bundle opens the doors of the apps it names and closes the others", async () => {
-  session = bundle("bundle-3", "legroom,keyfeel,vitae-plus", { amount_total: 4499 });
+  session = bundle("bundle-3", "legroom,keyfeel,vitae-plus", { amount_total: 3298 });
   store.set("legroom-files/Legroom-1.1.0.dmg", "x");
   const open = await callDoor(legroomDl, "legroom-download");
   assert.equal(open.status, 200);
@@ -254,7 +301,7 @@ test("both bundles are blob-delivered on the Suite page", () => {
 });
 
 test("the email for a bundle carries only the chosen parts' keys and says what the page holds", async () => {
-  const event = { id: "evt_b1", type: "checkout.session.completed", data: { object: bundle("bundle-3", "moderntex,keyfeel,vitae-plus", { amount_total: 4499 }) } };
+  const event = { id: "evt_b1", type: "checkout.session.completed", data: { object: bundle("bundle-3", "moderntex,keyfeel,vitae-plus", { amount_total: 3298 }) } };
   const res = await webhook(signed(event));
   assert.equal((await res.json()).status, "delivered_by_blobs");
   const mail = sentMail();
@@ -299,10 +346,21 @@ test("the recovery email lists a bundle's parts and keeps the keys of the others
 // ---- the picker on /suite/ ----
 
 import vm from "node:vm";
+// A small fake DOM: text nodes and elements, with textContent that flattens, and <s> kept visible as "~~x~~".
+const textNode = (t) => ({ nodeType: 3, text: t });
+function fakeEl(tag = "div") {
+  const el = { tag, children: [], disabled: false, classList: { toggle() {} }, _text: "", addEventListener: () => {} };
+  Object.defineProperty(el, "textContent", {
+    get() { return el.children.length ? el.children.map((c) => (c.nodeType === 3 ? c.text : c.tag === "s" ? `~~${c.textContent}~~` : c.textContent)).join("") : el._text; },
+    set(v) { el.children = []; el._text = v; },
+  });
+  el.appendChild = (c) => { el.children.push(c); return c; };
+  return el;
+}
 function runPicker(picked) {
   const handlers = {};
   const clicks = [];
-  const mk = () => ({ textContent: "", disabled: false, classList: { toggle() {} }, addEventListener: (t, f) => { clicks.push([t, f]); } });
+  const mk = () => { const e = fakeEl(); e.addEventListener = (t, f) => { clicks.push([t, f]); }; return e; };
   const summary = mk(), buy = mk(), statusEl = mk();
   const form = {
     addEventListener: (t, f) => { handlers[t] = f; },
@@ -310,50 +368,63 @@ function runPicker(picked) {
   };
   const sent = [];
   const ctx = {
-    document: { getElementById: (id) => ({ "bundle-form": form, "bundle-summary": summary, "bundle-buy": buy, "bundle-status": statusEl })[id] || null },
+    document: {
+      getElementById: (id) => ({ "bundle-form": form, "bundle-summary": summary, "bundle-buy": buy, "bundle-status": statusEl })[id] || null,
+      createElement: (tag) => fakeEl(tag), createTextNode: textNode,
+    },
     window: { location: { search: "", assign: (u) => sent.push(["assign", u]) } },
-    URLSearchParams, Array, Math, Boolean, Promise, JSON, Number, String,
+    URLSearchParams, Array, Math, Boolean, Promise, JSON, Number, String, Object,
     fetch: (url, opts) => { sent.push([url, JSON.parse(opts.body)]); return Promise.resolve({ ok: true, json: () => Promise.resolve({ url: "https://checkout.stripe.com/x" }) }); },
   };
   vm.runInNewContext(readFileSync(new URL("../../site/suite/bundle.js", import.meta.url), "utf8"), ctx);
   return { summary, buy, sent, click: () => clicks.find(([t]) => t === "click")[1]() };
 }
 
-test("the picker: nothing or one part cannot be bought", () => {
+test("the picker: nothing or one part cannot be bought, and one part names the discount", () => {
   assert.equal(runPicker([]).buy.disabled, true);
   const one = runPicker(["moderntex"]);
   assert.equal(one.buy.disabled, true);
-  assert.match(one.summary.textContent, /cheaper on its own/);
+  assert.match(one.summary.textContent, /Choose one more for 25% off both\. Two apps get 25% off, three get 40% off\./);
 });
 
-test("the picker: a pair that costs less apart is not sold as a bundle", () => {
-  const cheap = runPicker(["keyfeel", "legroom"]);
-  assert.equal(cheap.buy.disabled, true);
-  assert.match(cheap.summary.textContent, /cost \$19\.98, which is less than the \$34\.99 bundle/);
-  const cheap3 = runPicker(["keyfeel", "legroom", "moderntex"]);
-  assert.equal(cheap3.buy.disabled, true);
-  assert.match(cheap3.summary.textContent, /\$39\.97, which is less than the \$44\.99 bundle/);
-});
-
-test("the picker: a pair and a triple show the price and the saving, and send only the parts", async () => {
-  const pair = runPicker(["outbound-veil", "tapefolio"]);
+test("the picker: a pair shows the struck-through separate total, the price, the saving and the next tier", async () => {
+  const pair = runPicker(["moderntex", "outbound-veil"]);
   assert.equal(pair.buy.disabled, false);
-  assert.equal(pair.buy.textContent, "Buy these 2, $34.99");
-  assert.match(pair.summary.textContent, /Bought separately: \$59\.98, so you save \$24\.99/);
+  assert.equal(pair.buy.textContent, "Buy these 2, $37.49");
+  assert.ok(pair.summary.textContent.startsWith("2 apps: ~~$49.98~~ $37.49, 25% off, you save $12.49."), pair.summary.textContent);
+  // The strike is a real <s> element, not text with markup in it.
+  assert.equal(pair.summary.children.filter((c) => c.tag === "s").length, 1);
+  assert.ok(pair.summary.children.every((c) => c.nodeType === 3 || c.tag === "s"));
+  // Next tier: Lenses ($4.99) is the lowest-priced app left; 40% off $54.97 saves $21.99, 25% off $49.98 saves $12.49.
+  assert.match(pair.summary.textContent, /Add a third app for 40% off all three\. With Lenses \(\$4\.99\) your saving goes up by \$9\.50\./);
   pair.click();
   await new Promise((r) => setTimeout(r, 5));
-  assert.deepEqual(pair.sent[0], ["/.netlify/functions/checkout", { product: "bundle-2", ref: "", apps: ["outbound-veil", "tapefolio"] }]);
-  const triple = runPicker(["moderntex", "outbound-veil", "vitae-plus"]);
-  assert.equal(triple.buy.textContent, "Buy these 3, $44.99");
-  assert.match(triple.summary.textContent, /\$73\.97, so you save \$28\.98/);
+  assert.deepEqual(pair.sent[0], ["/.netlify/functions/checkout", { product: "bundle-2", ref: "", apps: ["moderntex", "outbound-veil"] }]);
 });
 
-test("the picker: four or more parts point to the Suite instead", async () => {
-  const four = runPicker(["moderntex", "outbound-veil", "legroom", "tapefolio"]);
-  assert.equal(four.buy.disabled, false);
-  assert.equal(four.buy.textContent, "Buy the Suite, $59.99");
-  assert.match(four.summary.textContent, /Suite is the better buy/);
-  four.click();
+test("the picker: a cheap pair is sold too, and the nudge skips an app already chosen", () => {
+  const cheap = runPicker(["lenses", "legroom"]);
+  assert.equal(cheap.buy.disabled, false);
+  assert.equal(cheap.buy.textContent, "Buy these 2, $11.24");
+  assert.ok(cheap.summary.textContent.startsWith("2 apps: ~~$14.98~~ $11.24, 25% off, you save $3.74."), cheap.summary.textContent);
+  assert.match(cheap.summary.textContent, /With Keyfeel \(\$9\.99\)/, "Lenses is taken, so the next cheapest is a $9.99 app");
+});
+
+test("the picker: a triple shows 40% off and no further nudge", () => {
+  const triple = runPicker(["moderntex", "outbound-veil", "vitae-plus"]);
+  assert.equal(triple.buy.textContent, "Buy these 3, $44.38");
+  assert.equal(triple.summary.textContent, "3 apps: ~~$73.97~~ $44.38, 40% off, you save $29.59.");
+});
+
+test("the picker: four or more offer the Suite, and say so honestly when the apps cost less on their own", async () => {
+  const dear = runPicker(["moderntex", "outbound-veil", "legroom", "tapefolio"]);
+  assert.equal(dear.buy.disabled, false);
+  assert.equal(dear.buy.textContent, "Buy the Suite, $59.99");
+  assert.equal(dear.summary.textContent, "For four or more, the Suite has all ten for $59.99. Bought on their own, these would cost $89.96.");
+  dear.click();
   await new Promise((r) => setTimeout(r, 5));
-  assert.deepEqual(four.sent[0], ["/.netlify/functions/checkout", { product: "app-suite", ref: "" }]);
+  assert.deepEqual(dear.sent[0], ["/.netlify/functions/checkout", { product: "app-suite", ref: "" }]);
+  const cheap = runPicker(["legroom", "keyfeel", "panely", "summonly"]);
+  assert.equal(cheap.summary.textContent, "For four or more, the Suite has all ten for $59.99, or buy these on their own for $39.96.");
+  assert.doesNotMatch(cheap.summary.textContent, /cost more than the Suite/);
 });

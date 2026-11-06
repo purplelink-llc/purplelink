@@ -196,7 +196,8 @@ test("the page names the five agencies, the free tool, and claims nothing the ap
   assert.doesNotMatch(text, /guarantee|certified|100% (private|accurate|secure)|always accurate|never (wrong|misses)|accepted by|approved by/i);
   assert.doesNotMatch(text, /seamless|supercharge|streamline|world-class|cutting-edge|revolutionary|effortless|AI-powered|game-chang|magic|blazing|lightning/i);
   // The brief gives no accuracy figures, so the page carries none.
-  assert.doesNotMatch(text, /\d+(?:\.\d+)?%/, "a percentage appeared on the page");
+  // The Mac Suite bundle line states the real tier percentages; every other percentage is still refused.
+  assert.doesNotMatch(text.replace(/Add any second Mac Suite app[^.]*\./, ""), /\d+(?:\.\d+)?%/, "a percentage appeared on the page");
   // Not built or not decided: not named.
   for (const unbuilt of ["upload to your agency account", "cloud sync", "team", "collaborat", "intel"]) {
     const hit = text.toLowerCase().includes(unbuilt.toLowerCase());

@@ -1,14 +1,16 @@
 /**
- * Custom bundles of the Mac Suite: pick any 2 or any 3 of the ten parts for one fixed price, whichever parts
- * are chosen. One source of truth for checkout, delivery, keys and recovery; site/suite/bundle.js carries the
- * same table for the live price display, and a test keeps the two equal.
+ * Custom bundles of the Mac Suite: pick any 2 parts for 25% off their combined price, or any 3 for 40% off, whichever
+ * parts are chosen. One source of truth for checkout, delivery, keys and recovery; site/suite/bundle.js carries the
+ * same tables for the live price display, and a test keeps them equal.
  *
  * The ten parts are the nine Mac apps and a lifetime Vitae Plus key. The whole Suite (all ten) stays its own
- * product, "app-suite". The client chooses only WHICH parts; the price comes from this table, never from the
- * request. A bundle's session carries metadata.product ("bundle-2" or "bundle-3") and metadata.apps (the chosen
- * part slugs, comma-separated, in the canonical order below), and every entitlement check reads them back.
+ * product, "app-suite", and is what four or more parts are sent to. The client chooses only WHICH parts; the price
+ * is computed here from PART_CENTS and the tier, never taken from the request. A bundle's session carries
+ * metadata.product ("bundle-2" or "bundle-3") and metadata.apps (the chosen part slugs, comma-separated, in the
+ * canonical order below), and every entitlement check reads them back.
  *
- * Prices: docs/growth-briefs/custom-bundle-pricing-2026-10-11.md.
+ * Tiers: decided 2026-11-06 (percent off the parts' own prices, replacing the fixed $34.99 and $44.99 of
+ * docs/growth-briefs/custom-bundle-pricing-2026-10-11.md).
  */
 export const BUNDLE_PARTS = [
   { slug: "moderntex",     label: "ModernTex" },
@@ -24,10 +26,35 @@ export const BUNDLE_PARTS = [
 ];
 export const BUNDLE_SLUGS = BUNDLE_PARTS.map((p) => p.slug);
 
-export const BUNDLES = {
-  "bundle-2": { count: 2, cents: 3499 },
-  "bundle-3": { count: 3, cents: 4499 },
+/** What each part costs on its own, in cents (Vitae Plus is its first year, as in the Suite's own price stack). */
+export const PART_CENTS = {
+  "moderntex": 1999, "outbound-veil": 2999, "legroom": 999, "keyfeel": 999, "tapefolio": 2999,
+  "panely": 999, "summonly": 999, "nee": 1499, "lenses": 499, "vitae-plus": 2399,
 };
+
+export const BUNDLES = {
+  "bundle-2": { count: 2, percent: 25 },
+  "bundle-3": { count: 3, percent: 40 },
+};
+
+/** The product key for a number of parts (2 or 3), or null. */
+export function bundleProductFor(count) {
+  return Object.keys(BUNDLES).find((k) => BUNDLES[k].count === count) || null;
+}
+
+/**
+ * The price in cents of a bundle of these parts (an array of slugs, in any order): the parts' own prices added up,
+ * less the tier's percent, rounded to the nearest cent. Returns null unless it is exactly 2 or 3 different known parts.
+ */
+export function bundleCents(parts) {
+  if (!Array.isArray(parts)) return null;
+  const product = bundleProductFor(parts.length);
+  if (!product) return null;
+  const slugs = parseBundleParts(parts, parts.length);
+  if (!slugs) return null;
+  const sum = slugs.reduce((t, slug) => t + PART_CENTS[slug], 0);
+  return Math.round((sum * (100 - BUNDLES[product].percent)) / 100);
+}
 
 export function isBundleProduct(product) {
   return Object.prototype.hasOwnProperty.call(BUNDLES, product);

@@ -140,7 +140,7 @@ test("a paid Suite order carries the Née key and the practical note, and a bund
   assert.match(mail.text, /Née and Lenses downloads/);
   assert.match(mail.text, /hold Option/);
   calls.length = 0;
-  await webhook(signed(paid({ product: "bundle-2", apps: "legroom,panely" }, 3499, "evt_b2", "cs_live_b2_abcdefghij")));
+  await webhook(signed(paid({ product: "bundle-2", apps: "legroom,panely" }, 1499, "evt_b2", "cs_live_b2_abcdefghij")));
   const other = mailOf();
   assert.doesNotMatch(other.text + other.html, /Née|NEE1-/);
 });
