@@ -26,6 +26,7 @@ const PAIRS = [
   { name: "edges", beforeSub: "Soft lens edges", afterSub: "Edge margin at 90%" },
   { name: "night", beforeSub: "Full white", afterSub: "Night tint" },
   { name: "dark", beforeSub: "Light Mac, room hidden", afterSub: "Dark Mode, room visible" },
+  { name: "seethrough", beforeSub: "Mac as it ships, room hidden", afterSub: "See-Through Mode, room visible", note: "Room: a real photograph" },
   { name: "pointer", beforeSub: "Standard pointer", afterSub: "Bigger pointer", zoom: { x: 640, y: 340, s: 2.1 }, note: "Zoomed to the same area in both" },
   { name: "hz", beforeSub: "60 Hz", afterSub: "120 Hz", note: "Eye tracking the motion" },
 ].filter((p) => !only.length || only.includes(p.name));
@@ -35,6 +36,8 @@ fs.rmSync(pub, { recursive: true, force: true });
 for (const d of ["fonts", "img"]) fs.mkdirSync(path.join(pub, d), { recursive: true });
 const brand = JSON.parse(fs.readFileSync(path.join(ROOT, "brand.json"), "utf8"));
 for (const f of Object.values(brand.fonts)) fs.copyFileSync(path.resolve(ROOT, f.file), path.join(pub, "fonts", path.basename(f.file)));
+// the room behind the glasses in the see-through still: Ben's own photograph (DSC_7720), cropped to 16:9
+fs.copyFileSync(path.join(ROOT, "assets", "lenses-room.jpg"), path.join(pub, "img", "room.jpg"));
 
 const serveUrl = await bundle({ entryPoint: path.join(ROOT, "src", "index.jsx"), publicDir: pub });
 const still = async (scene, side, out, scale) => {
