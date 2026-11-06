@@ -35,15 +35,16 @@ This PR changes no live behavior. Everything below is behind env vars that are u
 - **Find a purchase** (`purchases-recover.mjs`): lists checkout sessions by email in each account in turn, because a list is a 200 with no rows, not a 404.
 - **`FOLLOWUP_UNSUBSCRIBE_SECRET`**: the unsubscribe HMAC falls back to `STRIPE_WEBHOOK_SECRET`. The fallback now reads the old secret explicitly, so adding the new secret never changes existing unsubscribe links. Pin `FOLLOWUP_UNSUBSCRIBE_SECRET` anyway before any future rotation of the old secret.
 
-### Still on the old key only (convert before cutover)
+### Converted in the second PR
 
-These read `STRIPE_SECRET_KEY` directly. For an old buyer that is correct and stays correct. For a buyer on the new account they would find nothing, so each needs the same one-line swap to `stripeFetchAny` (or a per-account loop for lists) before `STRIPE_NEW_ACCOUNT` goes on:
+Every reader now looks in the new account first and then the old one (objects by id fall through a 404; lists are read once per account and merged):
 
-- `live-sheet.mjs`, `vitae-license.mjs`, `subscription-portal.mjs`, `netlify/lib/portal-link.mjs`, `netlify/lib/trial-reminder.mjs` (subscriptions and portal sessions)
-- `keyfeel-`, `legroom-`, `lenscrib-`, `nee-`, `outbound-veil-`, `tapefolio-reminder.mjs` (trial and reminder lookups)
-- `sales.mjs`, `delivery-health.mjs`, `post-purchase-followup.mjs`, `unsubscribe.mjs`
-- `backend/app.py` and `backend/monthly_guide/app.py` (Modal): promotion-code minting and session reads. Add a second Modal secret key and mirror the same fallback.
-- `scripts/stripe-mp-smoke.mjs`, `scripts/stripe_addon_prices.mjs`, `scripts/vitae-weekly-report.mjs`: point at the new key when run for the new account.
+- Vitae Plus: `vitae-license.mjs` (activation, refresh, manage, recover by email, billing portal), `portal-link.mjs`, `subscription-portal.mjs`, `live-sheet.mjs`, `unsubscribe.mjs`. A billing portal configuration belongs to one account, so the new account reads `STRIPE_PORTAL_CONFIG_SUBSCRIPTIONS_NEW` and `STRIPE_PORTAL_CONFIG_VITAE_PLUS_NEW`, or creates and caches its own.
+- Trial and reminder buyer checks (`trial-reminder.mjs` and `outbound-veil-reminder.mjs`): a buyer in either account is a buyer; an unreadable account means unknown, so the run skips that address.
+- `sales.mjs` (including balance), `delivery-health.mjs`, `post-purchase-followup.mjs`: lists from both accounts, merged.
+- Modal backend (`backend/stripe_account.py`, `app.py`, `monthly_guide/app.py`): see the backend section below.
+
+Left as is on purpose: `scripts/stripe-mp-smoke.mjs`, `scripts/stripe_addon_prices.mjs`, `scripts/vitae-weekly-report.mjs` and the `backend/setup_*.py` one-offs read `STRIPE_SECRET_KEY` from the environment. Run them with the new account's key exported as `STRIPE_SECRET_KEY` when they are meant for the new account.
 
 ## Inventory
 
@@ -121,7 +122,7 @@ Already built and off (`netlify/lib/managed-payments.mjs`, `STRIPE_MANAGED_PAYME
 
 1. Ben creates the new account under the Purplelink LLC organization, enables Managed Payments in test, stores keys: test key in keychain service `stripe-test-secret` (account `purplelink`), later the live key in `stripe-live-secret-new`.
 2. `node scripts/stripe_catalog_migrate.mjs --dry-run`, then without `--dry-run`, then `node scripts/stripe-mp-smoke.mjs` with the new test key. Everything is test mode, nothing live.
-3. Convert the remaining functions in "Still on the old key only" and recreate coupons and the portal configuration. Separate PR.
+3. Done in the second PR (readers converted). Still to do by hand in the new account: recreate coupons (below) and, optionally, the portal configurations (they are created on first use otherwise).
 4. Accept Managed Payments terms in live. `node scripts/stripe_catalog_migrate.mjs --live --tax-codes`. Create the live webhook endpoint.
 5. In Netlify production set `STRIPE_SECRET_KEY_NEW`, `STRIPE_WEBHOOK_SECRET_NEW`, every `STRIPE_PRICE_*_NEW`. Flag still off. Place one real order on the old account to confirm nothing changed; check old and new session links both deliver.
 6. Set `STRIPE_NEW_ACCOUNT=on`, then `STRIPE_MANAGED_PAYMENTS=all` (or product by product). Place one real order per product family; refund each from the new dashboard. Netlify functions read env from the deploy, so each env change reaches them with the next site build (06:00 and 17:00 ET); do not use `[deploy now]` for this unless checkout is broken.

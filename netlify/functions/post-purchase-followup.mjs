@@ -4,6 +4,7 @@
 // be emailed and sends nothing. When on: one email per address (never again for QUIET_DAYS), skipping refunded
 // or disputed orders and anyone who unsubscribed. Addresses are never logged; the log holds counts only.
 import { getStore } from "@netlify/blobs";
+import { keysWith } from "../lib/stripe-account.mjs";
 import {
   FOLLOWUP_PRODUCTS, MAX_PER_RUN, QUIET_DAYS, emailHash, followupEmail, windowFor,
 } from "../lib/followup.mjs";
@@ -14,6 +15,17 @@ const MAX_PAGES = 5;
 
 /** Paid, delivered orders in the window, as [{ id, product, email, seats }], newest last. Refunded or disputed ones are left out. */
 export async function dueOrders(nowS, secretKey) {
+  // Orders live in whichever Stripe account took them: read each configured account and merge.
+  const out = [];
+  for (const key of keysWith(secretKey)) {
+    const got = await dueOrdersFor(nowS, key);
+    if (got.error) return got;
+    out.push(...got.orders);
+  }
+  return { orders: out };
+}
+
+async function dueOrdersFor(nowS, secretKey) {
   const { gte, lte } = windowFor(nowS);
   const out = [];
   let after = "";

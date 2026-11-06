@@ -67,6 +67,7 @@
 import { createHash, createHmac, createPrivateKey, sign, timingSafeEqual } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import { bundleHasPart } from "../lib/bundles.mjs";
+import { configEnvName, isNewKey, keysWith } from "../lib/stripe-account.mjs";
 import { revocationFor, REVOKED_DETAIL } from "../lib/refunds.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
@@ -171,12 +172,20 @@ export function buildLicenseKey({ subscriptionId, plan, exp, iat, privateKey }) 
   return "VP2-" + payload.toString("base64url") + "." + sig.toString("base64url");
 }
 
-async function stripeGet(path, secretKey) {
+/**
+ * GET one Stripe path. By default a 404 falls through to the other account (an object lives in only one of them);
+ * a LIST must pass `{ only: true }` and be repeated per key, because a list under the wrong account is 200 with no rows.
+ */
+async function stripeGet(path, secretKey, { only = false } = {}) {
+  const keys = only ? [secretKey] : keysWith(secretKey);
   let resp;
-  try {
-    resp = await fetch(`${STRIPE_API}${path}`, { headers: { Authorization: `Bearer ${secretKey}` } });
-  } catch (_) {
-    return { error: json(502, { error: "stripe_unreachable", detail: "Could not reach the payment processor." }) };
+  for (const key of keys) {
+    try {
+      resp = await fetch(`${STRIPE_API}${path}`, { headers: { Authorization: `Bearer ${key}` } });
+    } catch (_) {
+      return { error: json(502, { error: "stripe_unreachable", detail: "Could not reach the payment processor." }) };
+    }
+    if (resp.status !== 404) break;
   }
   if (resp.status === 404) return { notFound: true };
   if (!resp.ok) {
@@ -281,10 +290,12 @@ async function refresh(id, secretKey, pem) {
  * refuses rather than opening an unrestricted portal).
  */
 export async function portalConfiguration(secretKey) {
-  const fromEnv = Netlify.env.get("STRIPE_PORTAL_CONFIG_VITAE_PLUS");
+  // A portal configuration belongs to one Stripe account: the new account has its own `_NEW` id and cache entry.
+  const fromEnv = Netlify.env.get(configEnvName("STRIPE_PORTAL_CONFIG_VITAE_PLUS", secretKey));
   if (fromEnv) return fromEnv;
   const store = getStore(MAPPING_STORE);
-  const cached = await store.get(PORTAL_CONFIG_BLOB);
+  const configBlob = isNewKey(secretKey) ? `${PORTAL_CONFIG_BLOB}-new` : PORTAL_CONFIG_BLOB;
+  const cached = await store.get(configBlob);
   if (cached) return cached;
   const params = new URLSearchParams({
     "business_profile[headline]": "Vitae Plus from Purplelink LLC",
@@ -316,7 +327,7 @@ export async function portalConfiguration(secretKey) {
   }
   const config = await resp.json().catch(() => null);
   if (typeof config?.id !== "string") return null;
-  await store.set(PORTAL_CONFIG_BLOB, config.id);
+  await store.set(configBlob, config.id);
   return config.id;
 }
 
@@ -346,27 +357,28 @@ async function manage(id, secretKey, pem) {
 async function openPortal(token, secretKey, pem) {
   const customer = verifyPortalToken(token, pem);
   if (!customer) return redirect(MANAGE_FALLBACK);
-  const configuration = await portalConfiguration(secretKey);
-  if (!configuration) return redirect(MANAGE_FALLBACK);
-  let resp;
-  try {
-    resp = await fetch(`${STRIPE_API}/billing_portal/sessions`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${secretKey}`, "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({ customer, configuration, return_url: `${SITE_ORIGIN}/vitae/plus/` }),
-    });
-  } catch (_) {
-    return redirect(MANAGE_FALLBACK);
+  // The customer lives in one Stripe account, and a portal configuration belongs to one account: try each in turn.
+  for (const key of keysWith(secretKey)) {
+    const configuration = await portalConfiguration(key);
+    if (!configuration) continue;
+    let resp;
+    try {
+      resp = await fetch(`${STRIPE_API}/billing_portal/sessions`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ customer, configuration, return_url: `${SITE_ORIGIN}/vitae/plus/` }),
+      });
+    } catch (_) {
+      continue;
+    }
+    if (!resp.ok) {
+      console.error("vitae-license: billing portal error", resp.status);
+      continue;
+    }
+    const portal = await resp.json().catch(() => null);
+    if (typeof portal?.url === "string" && portal.url.startsWith("https://billing.stripe.com/")) return redirect(portal.url);
   }
-  if (!resp.ok) {
-    console.error("vitae-license: billing portal error", resp.status);
-    return redirect(MANAGE_FALLBACK);
-  }
-  const portal = await resp.json().catch(() => null);
-  if (typeof portal?.url !== "string" || !portal.url.startsWith("https://billing.stripe.com/")) {
-    return redirect(MANAGE_FALLBACK);
-  }
-  return redirect(portal.url);
+  return redirect(MANAGE_FALLBACK);
 }
 
 /** Per-address, per-UTC-day counter so one inbox cannot be flooded with recovery emails. */
@@ -389,16 +401,27 @@ export async function keysForEmail(email, secretKey, pem, now = Math.floor(Date.
   const privateKey = loadPrivateKey(pem);
   const seen = new Set();
   const keys = [];
+  // Past buyers are in the old Stripe account and new ones in the new account; a list under the wrong account is
+  // 200 with no rows, so every list is read once per account.
+  for (const accountKey of keysWith(secretKey)) {
+    const failed = await collectKeys(email, accountKey, privateKey, now, seen, keys);
+    if (failed) return { error: failed };
+  }
+  return { keys };
+}
+
+/** One account's share of keysForEmail. Returns an error response, or null. */
+async function collectKeys(email, secretKey, privateKey, now, seen, keys) {
   // Stripe matches the email exactly as stored; try it as typed and in lower case.
   for (const address of [...new Set([email, email.toLowerCase()])]) {
-    const customers = await stripeGet(`/customers?email=${encodeURIComponent(address)}&limit=10`, secretKey);
-    if (customers.error) return { error: customers.error };
+    const customers = await stripeGet(`/customers?email=${encodeURIComponent(address)}&limit=10`, secretKey, { only: true });
+    if (customers.error) return customers.error;
     for (const customer of customers.data?.data ?? []) {
       if (typeof customer?.id !== "string" || seen.has(customer.id)) continue;
       seen.add(customer.id);
       const subs = await stripeGet(
-        `/subscriptions?customer=${encodeURIComponent(customer.id)}&status=all&limit=20`, secretKey);
-      if (subs.error) return { error: subs.error };
+        `/subscriptions?customer=${encodeURIComponent(customer.id)}&status=all&limit=20`, secretKey, { only: true });
+      if (subs.error) return subs.error;
       for (const sub of subs.data?.data ?? []) {
         const product = sub?.metadata?.product || "";
         if (!product.startsWith(PRODUCT_PREFIX) || typeof sub.id !== "string") continue;
@@ -414,8 +437,8 @@ export async function keysForEmail(email, secretKey, pem, now = Math.floor(Date.
   // look the Checkout sessions up by the email on the session instead.
   for (const address of [...new Set([email, email.toLowerCase()])]) {
     const sessions = await stripeGet(
-      `/checkout/sessions?customer_details%5Bemail%5D=${encodeURIComponent(address)}&limit=100`, secretKey);
-    if (sessions.error) return { error: sessions.error };
+      `/checkout/sessions?customer_details%5Bemail%5D=${encodeURIComponent(address)}&limit=100`, secretKey, { only: true });
+    if (sessions.error) return sessions.error;
     for (const s of sessions.data?.data ?? []) {
       if (!grantsLifetime(s?.metadata) || s.payment_status !== "paid" || typeof s.id !== "string") continue;
       if (seen.has(s.id)) continue;
@@ -424,7 +447,7 @@ export async function keysForEmail(email, secretKey, pem, now = Math.floor(Date.
       keys.push({ key: buildLicenseKey({ subscriptionId: s.id, plan: "lifetime", exp: now + LIFETIME_SECONDS, iat: now, privateKey }), plan: "lifetime" });
     }
   }
-  return { keys };
+  return null;
 }
 
 const PLAN_LABEL = { annual: "Annual plan", monthly: "Monthly plan", lifetime: "Lifetime (Mac Suite)" };

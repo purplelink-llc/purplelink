@@ -1,3 +1,4 @@
+# NOTE: runs against the key in STRIPE_SECRET_KEY; after the Stripe account cutover, re-run it with the new account's key exported as STRIPE_SECRET_KEY.
 # One-off setup script: a limited run of free Paper Review reviews for early users.
 #
 # Creates a 100%-off Stripe coupon that applies ONLY to the Stripe products you name, and one promotion code

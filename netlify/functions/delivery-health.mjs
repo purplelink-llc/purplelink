@@ -27,6 +27,7 @@
  */
 
 import { timingSafeEqual } from "node:crypto";
+import { lookupKeys } from "../lib/stripe-account.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 const STRIPE_VERSION = "2024-06-20";   // pinned, as in sales.mjs
@@ -75,6 +76,12 @@ async function stripeList(path, pairs, key) {
     startingAfter = data[data.length - 1].id;
   }
   return { rows, truncated: true };
+}
+
+/** The same list from every configured Stripe account, merged. */
+async function stripeListAll(path, pairs, keys) {
+  const parts = await Promise.all(keys.map((k) => stripeList(path, pairs, k)));
+  return { rows: parts.flatMap((p) => p.rows), truncated: parts.some((p) => p.truncated) };
 }
 
 const shortId = (id) => `…${String(id || "").slice(-6)}`;
@@ -163,8 +170,8 @@ export default async function handler(request) {
   const url = new URL(request.url);
   const given = request.headers.get("x-stats-token") || url.searchParams.get("token");
   if (!sameToken(given, expected)) return json(401, { error: "unauthorized" });
-  const key = Netlify.env.get("STRIPE_SECRET_KEY");
-  if (!key) return json(500, { error: "misconfigured", detail: "STRIPE_SECRET_KEY not set." });
+  const keys = lookupKeys();
+  if (!keys.length) return json(500, { error: "misconfigured", detail: "STRIPE_SECRET_KEY not set." });
 
   let days = parseInt(url.searchParams.get("days") || "14", 10);
   if (!Number.isFinite(days) || days < 1) days = 14;
@@ -174,9 +181,10 @@ export default async function handler(request) {
 
   try {
     const [sessions, events, endpoints] = await Promise.all([
-      stripeList("/checkout/sessions", [["created[gte]", since]], key),
-      stripeList("/events", [["type", EVENT_TYPE], ["created[gte]", since]], key),
-      stripeGet("/webhook_endpoints", new URLSearchParams({ limit: "100" }), key).then((b) => b.data || []).catch(() => null),
+      stripeListAll("/checkout/sessions", [["created[gte]", since]], keys),
+      stripeListAll("/events", [["type", EVENT_TYPE], ["created[gte]", since]], keys),
+      Promise.all(keys.map((k) => stripeGet("/webhook_endpoints", new URLSearchParams({ limit: "100" }), k).then((b) => b.data || [])))
+        .then((lists) => lists.flat()).catch(() => null),
     ]);
     const result = evaluate({
       sessions: sessions.rows,
