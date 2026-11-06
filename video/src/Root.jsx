@@ -19,6 +19,8 @@ import { build as buildLatexFix } from "./latexfix/plan.js";
 import { bumperTotal, BUMPER } from "./Bumper.jsx";
 import { NeeDemo, TOTAL_FRAMES as NEE_FRAMES } from "./nee/NeeDemo.jsx";
 import { NeeSpot, SPOT_FRAMES } from "./nee/NeeSpot.jsx";
+import { GlobePinPreview, GlobePinFilm, GlobePinShot } from "./globepin/Preview.jsx";
+import { TOTAL as GP_TOTAL } from "./globepin/plan.js";
 import { FORMATS, brand } from "./theme.js";
 import { buildTimeline, totalFrames } from "./timeline.js";
 
@@ -86,5 +88,11 @@ export const Root = () => (
         return { durationInFrames: Math.round(secs * brand.fps) };
       }}
     />
+    <Composition id="GlobePinPreview" component={GlobePinPreview} fps={brand.fps} width={886} height={1920} durationInFrames={GP_TOTAL} />
+    <Composition id="GlobePinFilm" component={GlobePinFilm} fps={brand.fps} width={1920} height={1080}
+      durationInFrames={Math.round(bumperTotal(GP_TOTAL / brand.fps, BUMPER) * brand.fps)} defaultProps={{ bumper: BUMPER }} />
+    <Composition id="GlobePinShot" component={GlobePinShot} fps={brand.fps} width={1320} height={2868} durationInFrames={1}
+      defaultProps={{ device: "iphone", img: "shots/01.png", text: "", hot: [] }}
+      calculateMetadata={({ props }) => (props.device === "ipad" ? { width: 2064, height: 2752 } : { width: 1320, height: 2868 })} />
   </>
 );

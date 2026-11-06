@@ -1,0 +1,12 @@
+{
+  "iphone": [
+    { "raw": "raw-01-globe-europe.png", "text": "Every place you've been", "sub": "On a 3D globe you can spin", "hot": ["Every", "place"] },
+    { "raw": "raw-02-rebuild.png", "text": "Built from your photos", "sub": "Trips, flights and drives found for you", "hot": ["photos"] },
+    { "raw": "raw-03-stats.png", "text": "Your travel in numbers", "sub": "Countries, continents, miles and nights", "hot": ["numbers"] },
+    { "raw": "raw-04-timeline.png", "text": "Replay every trip", "sub": "Watch your map fill in, year by year", "hot": ["every", "trip"] },
+    { "raw": "raw-05-place-zermatt.png", "text": "Every place has its own page", "sub": "Nights, miles, notes and spots", "hot": ["own", "page"] },
+    { "raw": "raw-06-goals.png", "text": "Pick where you go next", "sub": "Continents, the EU, the Seven Wonders", "hot": ["next"] },
+    { "raw": "raw-07-reel.png", "text": "Turn your travels into a reel", "sub": "Your photos with an original soundtrack", "hot": ["reel"] },
+    { "raw": "raw-08-receipt.png", "text": "Share a travel receipt", "sub": "For a year, a month or one trip", "hot": ["receipt"] }
+  ]
+}
