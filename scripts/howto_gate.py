@@ -31,7 +31,7 @@ REPO = Path(__file__).resolve().parents[1]
 VIDEO = REPO / "video"
 ROTATION = VIDEO / "howto" / "rotation.json"
 LEDGER = VIDEO / "howto" / "ledger.json"
-TYPES = {"hook", "symptom", "cause", "steps", "check", "app"}
+TYPES = {"hook", "symptom", "cause", "steps", "panel", "check", "app"}
 TEX_BIN = Path.home() / "Library" / "TinyTeX" / "bin" / "universal-darwin"
 
 DENY = [r"\brm\s+-[a-z]*r", r"\bcurl\b[^|]*\|\s*(ba|z)?sh", r"\bwget\b[^|]*\|\s*(ba|z)?sh", r"\bdd\s+if=", r"\bmkfs\b",
@@ -90,27 +90,34 @@ def check(sb_path: Path, offline: bool, rebuild: bool) -> list[str]:
     sb = json.loads(sb_path.read_text())
     E = errs.append
     # structure
-    for k in ("id", "app", "title", "short_title", "url", "page", "sources", "verify", "scenes", "thumbs"):
+    # "standalone": a one-off launch video for a product outside the daily rotation (Lenses). It skips the rotation,
+    # ledger and demand-source checks; every text, command, link and visual check still applies.
+    standalone = bool(sb.get("standalone"))
+    for k in ("id", "app", "title", "short_title", "url", "page", "verify", "scenes", "thumbs") + (() if standalone else ("sources",)):
         if not sb.get(k):
             E(f"missing field: {k}")
     if not str(sb.get("id", "")).startswith("howto-"):
         E("id must start with 'howto-'")
     rot = json.loads(ROTATION.read_text()) if ROTATION.exists() else {"apps": []}
     apps = {a["app"]: a for a in rot.get("apps", [])}
-    if sb.get("app") not in apps:
+    if standalone:
+        pass
+    elif sb.get("app") not in apps:
         E(f"app {sb.get('app')!r} is not in the rotation ({', '.join(apps)})")
     elif not sb.get("page", "").startswith(apps[sb["app"]]["page"]):
         E(f"page must be the app's page {apps[sb['app']]['page']}")
     ledger = json.loads(LEDGER.read_text()) if LEDGER.exists() else []
-    if not rebuild and any(x.get("slug") == sb.get("id") for x in ledger):
+    if not rebuild and not standalone and any(x.get("slug") == sb.get("id") for x in ledger):
         E(f"{sb.get('id')} is already published (ledger)")
     scenes = sb.get("scenes", [])
     kinds = [s.get("type") for s in scenes]
     if any(k not in TYPES for k in kinds):
         E(f"unknown scene type in {kinds}")
-    for need in ("hook", "steps", "app"):
+    for need in ("hook", "app"):
         if need not in kinds:
             E(f"needs a {need} scene")
+    if "steps" not in kinds and "panel" not in kinds:
+        E("needs a steps or panel scene")
     if not any(s.get("short") for s in scenes):
         E("no scene is marked short (the vertical cut would be empty)")
     for i, s in enumerate(scenes):
@@ -174,7 +181,7 @@ def check(sb_path: Path, offline: bool, rebuild: bool) -> list[str]:
                     E(f"re-run of {r['cmd']!r} did not print {want!r}")
     # sources and assets
     srcs = sb.get("sources", [])
-    if not srcs or not all(u.startswith("https://") and "purplelink.llc" not in u for u in srcs):
+    if (not srcs and not standalone) or not all(u.startswith("https://") and "purplelink.llc" not in u for u in srcs):
         E("sources must be at least one https demand source outside purplelink.llc")
     if not offline:
         for u in docs + srcs:

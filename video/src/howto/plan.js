@@ -3,7 +3,7 @@
 // (spoken from 0.3 s) plus TAIL, and never less than its type's minimum, so typed terminal text can be read.
 export const LEAD = 0.3;
 export const TAIL = 0.9;
-export const MIN = { hook: 3.5, symptom: 4.5, cause: 4, steps: 5.5, check: 4.5, app: 6 };
+export const MIN = { hook: 3.5, symptom: 4.5, cause: 4, steps: 5.5, panel: 7, check: 4.5, app: 6 };
 
 // Visual cues (a line starting to type, a title, a step reveal) start CUE_LEAD seconds before the spoken word they
 // match, so the picture reads as in sync with the voice (2 to 3 frames at 30 fps).
