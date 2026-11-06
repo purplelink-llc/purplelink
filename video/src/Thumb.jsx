@@ -207,6 +207,26 @@ function DiffThumb({ hook, before, after, beforeLabel = "Before", afterLabel = "
   );
 }
 
+// Before and after stills side by side (Lenses). `before`/`after` are staged images; the small label says they are
+// simulated views, not footage through the glasses.
+function BaThumb({ hook, before, after, beforeLabel = "Before", afterLabel = "After", pos = "50% 50%", pill }) {
+  const half = (src, label, right, hl) => (
+    <div style={{ position: "absolute", left: right ? 644 : 0, top: 0, width: 636, height: 720, overflow: "hidden" }}>
+      <Img src={staticFile(src)} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: pos, display: "block" }} />
+      <span style={{ position: "absolute", left: 28, top: 26, fontFamily: FONT_BODY, fontWeight: 800, fontSize: 44, letterSpacing: "0.04em", color: "white", background: hl ? "oklch(50% 0.24 310)" : "oklch(14% 0.07 310)", borderRadius: 999, padding: "8px 30px" }}>{label}</span>
+    </div>
+  );
+  return (
+    <AbsoluteFill style={{ background: "oklch(14% 0.07 310)" }}>
+      {half(before, beforeLabel, false, false)}
+      {half(after, afterLabel, true, true)}
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 250, background: "linear-gradient(180deg, transparent, oklch(10% 0.08 310 / 0.92) 55%)" }} />
+      <div style={{ position: "absolute", left: 40, bottom: 46, fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 112, lineHeight: 1, letterSpacing: "-0.03em", color: "white" }}>{hook}</div>
+      <span style={{ position: "absolute", right: 24, bottom: 14, fontFamily: FONT_BODY, fontWeight: 600, fontSize: 22, color: "oklch(90% 0.03 310)" }}>Simulated</span>
+    </AbsoluteFill>
+  );
+}
+
 function FaceSlot({ face, mood }) {
   const box = { position: "absolute", left: 0, top: 0, width: 560, height: 720 };
   if (face) {
@@ -241,6 +261,7 @@ function FaceThumb({ hook, lines, hl, face, mood = "shocked" }) {
 export function Thumb(props) {
   useFonts();
   if (props.kind === "focus") return <FocusThumb {...props} />;
+  if (props.kind === "ba") return <BaThumb {...props} />;
   if (props.kind === "diff") return <DiffThumb {...props} />;
   if (props.kind === "face") return <FaceThumb {...props} />;
   if (props.kind === "split") return <SplitThumb {...props} />;

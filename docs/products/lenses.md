@@ -96,7 +96,8 @@ Go-live order: set `LENSES_UPDATE_TOKEN` in Netlify (local copy `~/.config/purpl
 - The Lenses Stripe session metadata (`product=lenses`) is only exercised by tests, not by a real Checkout Session.
 
 ## Video on the product page
-`site/lenses/index.html` embeds the launch video with the click-to-load `yt-embed` block (youtube-nocookie, styles in
-`motion.css`). The id is a placeholder, `Lt6G-s0_UlQ`: swap it in the `data-youtube-id` attribute and in the `href` of the
-`yt-play` link right under it, and replace `site/assets/video/lenses-poster.webp` (currently the share card). Add a
-`VideoObject` to the JSON-LD once the final video is up.
+`site/lenses/index.html` embeds the v2 video, `Lkc1RzLbGCs` (2026-11-06: before/after for each setting, 60 vs 120 Hz
+slowed 4x), with the click-to-load `yt-embed` block (youtube-nocookie, styles in `motion.css`); the poster is its thumbnail A.
+The Short is `2PWYkaGT-6I`. The v1 launch videos (`Lt6G-s0_UlQ`, Short `86CL2_aWajw`) are replaced. The JSON-LD carries a `VideoObject` for it.
+The v2 pair went public and v1 unlisted on 2026-11-06. The before/after stills in `site/assets/lenses/` come from
+`video/build-lenses-stills.mjs`; they are simulated views, and the page says so.

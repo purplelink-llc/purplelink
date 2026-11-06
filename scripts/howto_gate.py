@@ -244,11 +244,14 @@ def check(sb_path: Path, offline: bool, rebuild: bool) -> list[str]:
             if not head_ok(u):
                 E(f"link does not answer 200: {u}")
     for i, s in enumerate(scenes):
-        for k in ("img", "icon"):
+        for k in ("img", "icon", "before", "after"):
             if s.get(k) and not (REPO / s[k]).is_file():
                 E(f"scene {i}: missing {k} {s[k]}")
+        for m in s.get("imgs") or []:
+            if not (REPO / m).is_file():
+                E(f"scene {i}: missing imgs entry {m}")
     for k, v in (sb.get("thumbs") or {}).items():
-        for f in ("img", "icon"):
+        for f in ("img", "icon") + (("before", "after") if v.get("kind") == "ba" else ()):
             if isinstance(v.get(f), str) and not (REPO / v[f]).is_file():
                 E(f"thumb {k}: missing {f} {v[f]}")
     return errs
