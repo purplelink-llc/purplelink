@@ -116,7 +116,6 @@ for (const name of oldOk ? catalogEnvKeys() : []) {
           "product_data[metadata][migrated_from_env]": name,
         };
         if (productKey) f["product_data[metadata][product]"] = productKey;
-        if (prod.description) f["product_data[description]"] = prod.description;
         if (p.tax_behavior && p.tax_behavior !== "unspecified") f.tax_behavior = p.tax_behavior;
         if (rec) { f["recurring[interval]"] = rec.interval; f["recurring[interval_count]"] = String(rec.interval_count || 1); }
         if (withTax && MP_TAX_CODES[productKey]) f["product_data[tax_code]"] = MP_TAX_CODES[productKey];
@@ -124,6 +123,11 @@ for (const name of oldOk ? catalogEnvKeys() : []) {
       },
     });
     if (price) mapping.push(`${name}_NEW=${price.id}`);
+    // Stripe rejects product_data[description] on a Price, so the description is set on the Product afterwards.
+    if (price && !dry && prod.description && typeof price.product === "string") {
+      const prodNow = await api(newKey, "GET", `/products/${price.product}`);
+      if (!prodNow.description) await api(newKey, "POST", `/products/${price.product}`, { description: prod.description });
+    }
     if (price && withTax && MP_TAX_CODES[productKey] && typeof price.product === "string") {
       const prodNow = await api(newKey, "GET", `/products/${price.product}`);
       if (prodNow.tax_code !== MP_TAX_CODES[productKey] && !dry) {
