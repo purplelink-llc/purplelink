@@ -2793,6 +2793,15 @@ def web():
         plan, why = annual.plan_for_token(annual_plans_dict, _annual_secret(), token)
         if not plan:
             return JSONResponse({"error": why}, status_code=404 if why == "invalid" else 410)
+        res = await _annual_apply_change(plan, cancel)
+        if isinstance(res, JSONResponse):
+            return res
+        return JSONResponse(_annual_view_payload(plan, res))
+
+    async def _annual_apply_change(plan: dict, cancel: bool):
+        """Set or clear cancel_at_period_end at Stripe, rotate the plan link and send the confirmation email.
+        Shared by the one-click link and the operator's emailed-cancel path. Returns the new plan token, or an
+        error response."""
         if plan.get("revoked") or plan.get("ended") or plan.get("period_end", 0) < _time_module.time():
             return JSONResponse({"error": "plan_over"}, status_code=409)
         if not await _annual_set_cancel(plan["subscription_id"], cancel):
@@ -2806,8 +2815,7 @@ def web():
             plan["email"], "Your plan will renew again" if not cancel else "Your plan will not renew",
             annual.html_plan_cancel_confirmation(end_label=end, link=link, undone=not cancel),
             "annual_undo" if not cancel else "annual_cancel")
-        new_token = link.split("?t=", 1)[1]
-        return JSONResponse(_annual_view_payload(plan, new_token))
+        return link.split("?t=", 1)[1]
 
     @api.post("/paper-review/annual-cancel")
     async def paper_review_annual_cancel(request: Request):
@@ -2816,6 +2824,33 @@ def web():
     @api.post("/paper-review/annual-undo")
     async def paper_review_annual_undo(request: Request):
         return await _annual_change(request, False)
+
+    @api.post("/paper-review/annual-cancel-by-email")
+    async def paper_review_annual_cancel_by_email(request: Request):
+        """The business email operator's path for a "cancel" reply: same effect as the one-click link (Stripe
+        cancel_at_period_end, a new link, the confirmation email). Unlike annual-link it says whether a plan
+        matched, because the caller must flag an unmatched sender for Ben instead of guessing. Only callers that
+        hold BACKEND_WEBHOOK_SECRET reach it."""
+        bad = _annual_auth(request)
+        if bad:
+            return bad
+        data = await _annual_json(request)
+        email = (data or {}).get("email", "")
+        if not (isinstance(email, str) and "@" in email and len(email) <= 200):
+            return JSONResponse({"error": "bad_email"}, status_code=400)
+        key = _buddy_canonical_email(email) or _email_key(email)
+        plan = annual.plan_by_email(list(annual_plans_dict.items()), key)
+        if not plan:
+            return JSONResponse({"matched": False})
+        if plan.get("cancel_at_period_end"):
+            return JSONResponse({"matched": True, "already": True, "plan_id": plan["plan_id"],
+                                 "ends": annual.date_label(plan["period_end"])})
+        res = await _annual_apply_change(plan, True)
+        if isinstance(res, JSONResponse):
+            return res
+        logger.info("annual: cancelled by emailed request, plan %s", plan["plan_id"])
+        return JSONResponse({"matched": True, "already": False, "plan_id": plan["plan_id"],
+                             "ends": annual.date_label(plan["period_end"])})
 
     @api.post("/paper-review/annual-link")
     async def paper_review_annual_link(request: Request):

@@ -366,6 +366,29 @@ def test_cancel_a_revoked_plan_is_refused(env):
     assert http.post("/paper-review/annual-cancel", json={"token": tok}, headers=H).status_code == 410
 
 
+def test_operator_cancel_by_email_matches_and_confirms(env):
+    http, app, sent, stripe = env
+    _register(http, email="Buyer+x@uni.edu")
+    stripe["snap"] = _snap(_plan(app)["period_end"])
+    tok = _token(app)
+    miss = http.post("/paper-review/annual-cancel-by-email", json={"email": "nobody@x.org"}, headers=H)
+    assert miss.status_code == 200 and miss.json() == {"matched": False} and stripe["cancel_calls"] == []
+    r = http.post("/paper-review/annual-cancel-by-email", json={"email": "buyer@uni.edu"}, headers=H)
+    assert r.status_code == 200 and r.json()["matched"] is True and r.json()["already"] is False
+    assert stripe["cancel_calls"] == [(SUB, True)] and _plan(app)["cancel_at_period_end"] is True
+    assert sent[-1]["tag"] == "annual_cancel" and "Undo the cancellation" in sent[-1]["html"]
+    assert http.post("/paper-review/annual-plan", json={"token": tok}, headers=H).status_code == 410
+    again = http.post("/paper-review/annual-cancel-by-email", json={"email": "buyer@uni.edu"}, headers=H)
+    assert again.json()["already"] is True and len(stripe["cancel_calls"]) == 1
+
+
+def test_operator_cancel_by_email_needs_the_secret(env):
+    http, *_ = env
+    _register(http)
+    assert http.post("/paper-review/annual-cancel-by-email", json={"email": "buyer@uni.edu"}).status_code == 401
+    assert http.post("/paper-review/annual-cancel-by-email", json={"email": "nope"}, headers=H).status_code == 400
+
+
 def test_link_request_is_enumeration_safe_and_rotates(env):
     http, app, sent, _ = env
     _register(http, email="Buyer+x@uni.edu")
