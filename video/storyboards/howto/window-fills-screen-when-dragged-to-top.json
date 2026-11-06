@@ -1,0 +1,45 @@
+{
+ "id": "howto-window-fills-screen-when-dragged-to-top",
+ "app": "panely",
+ "title": "Window fills the screen when dragged to the top on Mac (turn off Drag windows to menu bar)",
+ "short_title": "Mac window fills the screen when you drag it up? One switch stops it",
+ "url": "purplelink.llc/panely",
+ "page": "https://purplelink.llc/panely/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://discussions.apple.com/thread/255762463",
+  "https://discussions.apple.com/thread/255765083",
+  "https://discussions.apple.com/thread/255773101"
+ ],
+ "verify": {
+  "runs": [],
+  "docs": [
+   "https://support.apple.com/guide/mac-help/mchl118087b0/mac",
+   "https://support.apple.com/guide/mac-help/mchl9674d0b0/mac"
+  ],
+  "notes": "GUI-only fix, no Terminal output on screen. Apple's Mac User Guide 'Change window tiling settings on Mac' (macOS 27 version, read 2026-11-05) lists the switch \"Drag windows to menu bar to fill screen\" under System Settings, Desktop & Dock, Windows, next to \"Drag windows to left or right edge of screen to tile\". Apple's 'Mac window tiling icons & keyboard shortcuts' page (read the same day) lists Return to Previous Size, Fn-Control-R: make the active window the size it was before it was tiled. The com.apple.WindowManager keys for these switches are unset on Ben's Mac mini (macOS 27.0.1) and not documented by Apple, so the video has no Terminal check. Panely claims are from its page: it acts when you ask (a shortcut, the menu, a drag, or a layout), a translucent preview shows the result of a drag before you let go, and ignored apps are never moved by shortcut or by dragging."
+ },
+ "scenes": [
+  {"type": "hook", "short": true, "kicker": "Window tiling on a Mac", "title": "Window fills the screen", "sub": "You only wanted to move it.",
+   "narration": "You drag a window up to move it, it touches the menu bar, and suddenly it fills the whole screen. Here is how to get it back, and how to stop it happening."},
+  {"type": "cause", "text": "A window tiling setting fills the screen when a window reaches the menu bar.",
+   "narration": "This is window tiling, not a bug. One of its settings fills the screen with any window you drag to the menu bar, whether you meant it or not."},
+  {"type": "steps", "short": true, "label": "Get it back",
+   "lines": ["Click the window that filled the screen", "Press Fn-Control-R"],
+   "ui": "Return to Previous Size, from Apple's tiling shortcuts.",
+   "narration": "To undo it, click the window and press Function, Control, R. That is Return to Previous Size, and the window goes back to the size it had before."},
+  {"type": "steps", "short": true, "label": "System Settings",
+   "lines": ["Open System Settings", "Click Desktop & Dock", "Go to Windows", "Turn off Drag windows to menu bar to fill screen"],
+   "ui": "Dragging to the left or right edge is a separate switch, just above it.",
+   "narration": "To stop it, open System Settings and click Desktop and Dock. Go to the Windows section and turn off Drag windows to menu bar to fill screen. If windows also tile when you drag them to the side, the switch just above it turns that off too."},
+  {"type": "app", "name": "Panely", "line": "Snaps windows when you ask, with a shortcut or a drag, and shows a preview before a dragged window lands.",
+   "url": "purplelink.llc/panely", "img": "site/panely/img/drag-to-corner.webp", "icon": "site/assets/panely-icon.webp",
+   "narration": "Panely is a menu bar app that snaps windows when you ask, with a shortcut, the menu, or a drag. While you drag, a translucent preview shows where the window will land before you let go. And you can choose apps whose windows it never moves."}
+ ],
+ "thumbs": {
+  "A": {"kind": "error", "pill": "Window tiling", "msg": "Window fills the screen"},
+  "B": {"kind": "long", "pill": "Window tiling", "msg": "Drag to menu bar fills screen", "n": 1, "unit": "switch", "sub": "turns it off"},
+  "C": {"kind": "product", "name": "Panely", "line": "Snap windows when you ask", "img": "site/panely/img/drag-to-corner.webp", "icon": "site/assets/panely-icon.webp", "zoom": 1.2, "pos": "50% 50%"}
+ }
+}

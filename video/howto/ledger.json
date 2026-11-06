@@ -447,5 +447,33 @@
    "ok": true,
    "utm_content": "howto-bibtex-found-no-citation-commands-biblatex-reel"
   }
+ },
+ {
+  "slug": "howto-window-fills-screen-when-dragged-to-top",
+  "app": "panely",
+  "date": "2026-11-05",
+  "title": "Window fills the screen when dragged to the top on Mac (turn off Drag windows to menu bar)",
+  "long_id": "l0NiDfhhVGM",
+  "short_id": "vdBN7n9F6LU",
+  "link_arm": "B",
+  "link_utm_content": "howto-window-fills-screen-when-dragged-to-top",
+  "short_utm_content": "howto-window-fills-screen-when-dragged-to-top-short",
+  "sources": [
+   "https://discussions.apple.com/thread/255762463",
+   "https://discussions.apple.com/thread/255765083",
+   "https://discussions.apple.com/thread/255773101"
+  ],
+  "captions": {
+   "long": {
+    "ok": true
+   },
+   "short": {
+    "ok": true
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-window-fills-screen-when-dragged-to-top-reel"
+  }
  }
 ]
