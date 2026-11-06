@@ -574,8 +574,8 @@ test("the update check is described the same way everywhere: app name, version, 
 
 test("the Suite page, the Suite terms and llms.txt say the same about updates and the update check", () => {
   const terms = read("terms/index.html");
-  assert.match(terms, /all updates to Keyfeel, Tapefolio, Panely, Summonly and Née, updates to the version of Legroom you receive/);
-  assert.match(read("suite/index.html"), /so is every Keyfeel, Tapefolio, Panely, Summonly and Née update\. Legroom updates to the version you buy are included/);
+  assert.match(terms, /all updates to Keyfeel, Tapefolio, Panely, Summonly, Née and Lenses, updates to the version of Legroom you receive/);
+  assert.match(read("suite/index.html"), /so is every Keyfeel, Tapefolio, Panely, Summonly, Née and Lenses update\. Legroom updates to the version you buy are included/);
   assert.match(read("suite/index.html"), /its check for a new version, which sends the app's name, its version and the macOS version\. The third is macOS itself/);
 });
 

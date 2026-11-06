@@ -49,7 +49,7 @@ test("with no signing seed there is no key (never a fake one)", () => {
 
 test("SUITE: a Mac Suite purchase is entitled to Née, with the other two keyed apps", () => {
   assert.equal(suiteIncludes("nee"), true);
-  assert.deepEqual(licensedSlugsFor("app-suite").sort(), ["legroom", "nee", "outbound-veil"]);
+  assert.deepEqual(licensedSlugsFor("app-suite").sort(), ["legroom", "lenses", "nee", "outbound-veil"]);
 });
 
 test("a single Née purchase is entitled to its own key", () => {
@@ -61,11 +61,11 @@ test("`inSuite: false` still keeps a hidden product out of the Suite (the switch
   try {
     entry.inSuite = false;
     assert.equal(suiteIncludes("nee"), false);
-    assert.deepEqual(licensedSlugsFor("app-suite").sort(), ["legroom", "outbound-veil"]);
+    assert.deepEqual(licensedSlugsFor("app-suite").sort(), ["legroom", "lenses", "outbound-veil"]);
   } finally {
     delete entry.inSuite;
   }
-  assert.deepEqual(licensedSlugsFor("app-suite").sort(), ["legroom", "nee", "outbound-veil"]);
+  assert.deepEqual(licensedSlugsFor("app-suite").sort(), ["legroom", "lenses", "nee", "outbound-veil"]);
 });
 
 test("Outbound Veil and Legroom behave exactly as before: still in the Suite, keys byte-identical to the pre-Née code", () => {

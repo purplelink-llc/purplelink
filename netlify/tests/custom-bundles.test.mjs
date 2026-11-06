@@ -234,7 +234,7 @@ test("purchase-license returns a bundle's keys and its parts, and the Suite's ke
   session = { id: SID, payment_status: "paid", metadata: { product: "app-suite" } };
   body = await (await ask()).json();
   assert.equal(body.parts, undefined);
-  assert.equal(body.keys.length, 4, "ModernTex, Outbound Veil, Legroom and Née");
+  assert.equal(body.keys.length, 5, "ModernTex, Outbound Veil, Legroom, Née and Lenses");
   session = bundle("bundle-2", "moderntex,legroom,keyfeel");
   assert.equal((await ask()).status, 403, "a bundle with a bad parts list is refused");
 });

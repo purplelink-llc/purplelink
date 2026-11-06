@@ -133,12 +133,12 @@ const REFUND_TEXT = {
   "tapefolio": `${REFUND_EMAIL} the full $29.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "lenscrib": `${REFUND_EMAIL} the full $19.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "nee": `${REFUND_EMAIL} the full $14.99 to the original payment method. You don't need to give a reason. A refunded purchase's license key is no longer licensed for use.`,
-  "lenses": `${REFUND_EMAIL} the full $4.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
+  "lenses": `${REFUND_EMAIL} the full $4.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working and its license key is no longer licensed for use.`,
   "panely": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "summonly": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   // The annual Paper Review plan. Mirrors the "Refunds." sentence of its /terms/ auto-renewal section.
   "paper-review-annual": "Renews at $79 a year on the same date until you cancel. Cancel in one click from any plan email. We email you 30 and 7 days before each renewal. Unused reviews end with the year; cancelling stops the next charge and is not a refund for the current year.",
-  "app-suite": `${REFUND_EMAIL} the full amount you paid to the original payment method. You don't need to give a reason. A refunded Suite's download links stop working, and its ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Née license keys and its Vitae Plus key are no longer licensed for use.`,
+  "app-suite": `${REFUND_EMAIL} the full amount you paid to the original payment method. You don't need to give a reason. A refunded Suite's download links stop working, and its ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and Lenses license keys and its Vitae Plus key are no longer licensed for use.`,
 };
 
 // Defense-in-depth: cap how many Checkout Sessions one IP can spin up per

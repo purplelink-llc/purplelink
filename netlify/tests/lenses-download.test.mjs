@@ -1,5 +1,4 @@
-// Lenses delivery: the purchase door only (a paid lenses session; the Suite and bundles do not include it).
-// No license, no trial, no update channel. Stripe and Netlify Blobs are stubbed.
+// Lenses delivery: three doors (purchase, public trial, token-gated Sparkle update channel). Stripe and Netlify Blobs are stubbed.
 //
 // Run with: node --experimental-test-module-mocks --test netlify/tests/lenses-download.test.mjs
 
@@ -17,7 +16,7 @@ const blobsModule = {
 };
 try { mock.module("@netlify/blobs", { exports: blobsModule }); } catch { mock.module("@netlify/blobs", { namedExports: blobsModule }); }
 
-const env = { STRIPE_SECRET_KEY: "sk_test_dummy" };
+const env = { STRIPE_SECRET_KEY: "sk_test_dummy", LENSES_UPDATE_TOKEN: "tok_lenses_test_0123456789" };
 globalThis.Netlify = { env: { get: (k) => env[k] } };
 
 const handler = (await import("../functions/lenses-download.mjs")).default;
@@ -129,12 +128,97 @@ test("a malformed or missing session id never reaches Stripe", async () => {
   assert.equal(stripeCalls, 0);
 });
 
-test("there is no public, trial, feed or update door: they all need a session", async () => {
-  for (const q of ["download=1", "trial=1", "feed=1", "update=Lenses-1.0.0.dmg", "stats=1"]) {
-    const res = await call(q);
-    assert.equal(res.status, 400, q);
+test("there is no open download door: without a session, a token or trial=1 the request is refused", async () => {
+  const res = await call("download=1");
+  assert.equal(res.status, 400);
+  assert.equal(stripeCalls, 0);
+});
+
+// ---- trial door ----
+
+test("the trial door is public, never asks Stripe, and serves the newest DMG", async () => {
+  const res = await call("trial=1");
+  assert.equal(res.status, 200);
+  assert.match(res.headers.get("content-disposition"), /filename="Lenses-1\.10\.0\.dmg"/);
+  assert.equal(await res.text(), "bytes:Lenses-1.10.0.dmg");
+  assert.equal(stripeCalls, 0);
+});
+
+test("the trial door never serves 1.0.0, which had no trial and no license check", async () => {
+  stores.clear();
+  stores.set("lenses-files/Lenses-1.0.0.dmg", "x");
+  const res = await call("trial=1");
+  assert.equal(res.status, 404);
+  assert.equal((await res.json()).error, "no_trial");
+});
+
+test("the trial door answers 404 while no DMG is staged", async () => {
+  stores.clear();
+  assert.equal((await call("trial=1")).status, 404);
+});
+
+test("the trial door is capped per address per day", async () => {
+  for (let i = 0; i < 20; i++) assert.equal((await call("trial=1")).status, 200);
+  const res = await call("trial=1");
+  assert.equal(res.status, 429);
+  assert.equal((await res.json()).error, "rate_limited");
+});
+
+// ---- update channel (Sparkle) ----
+
+const withToken = (query, token = "tok_lenses_test_0123456789") =>
+  handler(new Request(`https://purplelink.llc/.netlify/functions/lenses-download?${query}`, {
+    headers: token === null ? {} : { "x-lenses-channel": token },
+  }), {});
+
+test("the appcast, an update DMG and the stats need the channel token", async () => {
+  stores.set("lenses-files/appcast.xml", '<rss><enclosure url="https://x/y/Lenses-1.1.0.dmg"/></rss>');
+  for (const q of ["feed=1", "update=Lenses-1.1.0.dmg", "stats=1"]) {
+    for (const token of [null, "", "wrong", "tok_lenses_test_012345678"]) {
+      const res = await withToken(q, token);
+      assert.equal(res.status, 403, `${q} with ${JSON.stringify(token)}`);
+    }
   }
   assert.equal(stripeCalls, 0);
+});
+
+test("with no LENSES_UPDATE_TOKEN configured the update channel stays closed, even for an empty header", async () => {
+  delete env.LENSES_UPDATE_TOKEN;
+  try {
+    assert.equal((await withToken("feed=1", "")).status, 403);
+    assert.equal((await withToken("feed=1", "anything")).status, 403);
+  } finally {
+    env.LENSES_UPDATE_TOKEN = "tok_lenses_test_0123456789";
+  }
+});
+
+test("with the token the feed is served and its enclosure URLs point at the update door", async () => {
+  stores.set("lenses-files/appcast.xml", '<rss><enclosure url="https://x/y/Lenses-1.1.0.dmg" length="1"/></rss>');
+  const res = await withToken("feed=1");
+  assert.equal(res.status, 200);
+  assert.match(res.headers.get("content-type"), /rss\+xml/);
+  assert.match(await res.text(), /url="https:\/\/purplelink\.llc\/\.netlify\/functions\/lenses-download\?update=Lenses-1\.1\.0\.dmg"/);
+});
+
+test("a signed feed is served byte for byte", async () => {
+  const xml = '<rss><enclosure url="https://x/y/Lenses-1.1.0.dmg"/></rss>\n<!-- sparkle-signatures:\nedSignature: abc\n-->';
+  stores.set("lenses-files/appcast.xml", xml);
+  assert.equal(await (await withToken("feed=1")).text(), xml);
+});
+
+test("with the token an update DMG streams and is counted; a bad name is refused", async () => {
+  const res = await withToken("update=Lenses-1.1.0.dmg");
+  assert.equal(res.status, 200);
+  assert.equal(await res.text(), "bytes:Lenses-1.1.0.dmg");
+  assert.equal((await withToken("update=Lenses-1.1.0.dmg")).status, 200);
+  const stats = await (await withToken("stats=1")).json();
+  assert.equal(stats.downloads["Lenses-1.1.0.dmg"], 2);
+  assert.equal((await withToken("update=..%2Fappcast.xml")).status, 400);
+  assert.equal((await withToken("update=Lenses-1.1.dmg")).status, 400);
+});
+
+test("a missing appcast is a plain 404", async () => {
+  assert.equal((await withToken("feed=1")).status, 404);
 });
 
 test("path traversal and other names in file= are not served", async () => {
