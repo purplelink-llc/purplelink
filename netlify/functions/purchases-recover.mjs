@@ -26,6 +26,7 @@ import { issueModernTexLicense, licenseKeysForSession, BLOB_DELIVERED_PRODUCTS, 
 import { addonPartsOf, entitledParts, isBundleProduct, partsSentence, bundlePartsOf } from "../lib/bundles.mjs";
 import { addonsFromSession } from "../lib/addons.mjs";
 import { revocationFor, paymentIntentOf } from "../lib/refunds.mjs";
+import { lookupKeys } from "../lib/stripe-account.mjs";
 
 const SITE_ORIGIN = "https://purplelink.llc";
 const RESEND_API_URL = "https://api.resend.com/emails";
@@ -70,6 +71,10 @@ async function stripeGet(path, secretKey) {
 /** Paid ModernTex and kit purchases made with this address, newest first. */
 export async function purchasesForEmail(email, secretKey) {
   const found = new Map();
+  // A list is not a 404 when the buyer is in the other account, so past buyers are found by listing each account in turn:
+  // the key passed in first, then the new account's key once STRIPE_SECRET_KEY_NEW is set (netlify/lib/stripe-account.mjs).
+  const keys = [...new Set([secretKey, ...lookupKeys()])];
+  for (const [keyIndex, key] of keys.entries())
   // Stripe matches the email as stored; try it as typed and in lower case.
   for (const address of new Set([email, email.toLowerCase()])) {
     let after = "";
@@ -77,8 +82,8 @@ export async function purchasesForEmail(email, secretKey) {
       const query =
         `/checkout/sessions?customer_details%5Bemail%5D=${encodeURIComponent(address)}&limit=100&expand%5B%5D=data.line_items` +
         (after ? `&starting_after=${encodeURIComponent(after)}` : "");
-      const res = await stripeGet(query, secretKey);
-      if (res.error) return { error: res.error };
+      const res = await stripeGet(query, key);
+      if (res.error) { if (keyIndex === 0) return { error: res.error }; break; }
       const rows = res.data?.data ?? [];
       for (const s of rows) {
         const product = s?.metadata?.product || "";
