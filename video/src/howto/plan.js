@@ -83,6 +83,10 @@ export function sceneCues(sc, words, dur) {
   const ok = sc.type === "check" ? Math.max(end + 0.15, have ? (anchor(sc.ok || "fixed", words) || { at: 0 }).at : 0) : null;
   const ui = sc.ui ? Math.max(end, have ? (anchor(sc.ui, words) || { at: end }).at : end) : null;
   const c = { lines: plan, ok, ui };
+  if (sc.type === "panel") { // the before/after wipe starts on a spoken word (wipe_cue), else just after the first line
+    const w = have && sc.wipe_cue ? anchor(sc.wipe_cue, words) : null;
+    c.wipe = Math.max(0.8, w ? w.at : (plan.length ? plan[0].s + 0.6 : 1.5));
+  }
   c.hold = Math.min(dur - 1, Math.max(end + 0.1, (ok == null ? 0 : ok + 0.6), (ui == null ? 0 : ui + 0.6)));
   return c;
 }

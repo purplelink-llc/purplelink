@@ -56,7 +56,7 @@ const stage = (src) => {
   fs.copyFileSync(path.join(REPO, src), path.join(pub, "img", name));
   return `img/${name}`;
 };
-const sbProps = { ...storyboard, scenes: storyboard.scenes.map((s) => ({ ...s, img: stage(s.img), icon: stage(s.icon) })) };
+const sbProps = { ...storyboard, scenes: storyboard.scenes.map((s) => ({ ...s, img: stage(s.img), icon: stage(s.icon), before: stage(s.before), after: stage(s.after), imgs: s.imgs?.map(stage) })) };
 
 const serveUrl = await bundle({ entryPoint: path.join(ROOT, "src", "index.jsx"), publicDir: pub });
 const stills = opt("stills", "");
