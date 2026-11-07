@@ -34,7 +34,18 @@
     var art = a.closest('.show').querySelector('.show-logo, .show-suite-art');
     clear();
     if (art) art.setAttribute('data-vt-active', '');
+    // Exit first, then change page: the words fade away while the next page
+    // downloads, so the browser's morph starts from a clean stage.
+    var ok = art && window.CSS && CSS.supports('selector(:has(*))') && !matchMedia('(prefers-reduced-motion: reduce)').matches &&
+      document.startViewTransition && !a.target && a.origin === location.origin;
+    if (!ok) return;
+    e.preventDefault();
+    var href = a.href;
+    document.documentElement.classList.add('vt-leaving');
+    try { fetch(href, { credentials: 'same-origin' }).catch(function () {}); } catch (x) { /* warm-up only */ }
+    setTimeout(function () { location.assign(href); }, 320);
   });
+  window.addEventListener('pageshow', function () { document.documentElement.classList.remove('vt-leaving'); });
 })();
 
 /* Load the next page before it is clicked, so the page change is one smooth

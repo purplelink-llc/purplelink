@@ -30,6 +30,16 @@
   ::view-transition-old(app-art),
   ::view-transition-new(app-art) { height: 100%; object-fit: contain; }
 
+  /* Exit: everything but the clicked scene's render fades away first. */
+  html.vt-leaving body > :not(main),
+  html.vt-leaving main > :not(.showcase),
+  html.vt-leaving .showcase > :not(.show),
+  html.vt-leaving .show:not(:has([data-vt-active])),
+  html.vt-leaving .show:has([data-vt-active]) :is(.show-copy, .dev) {
+    opacity: 0 !important;
+    transition: opacity 0.28s ease-in;
+  }
+
   @keyframes vt-out { to { opacity: 0; } }
   @keyframes vt-in { from { opacity: 0; } }
 }
