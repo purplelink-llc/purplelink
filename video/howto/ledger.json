@@ -503,5 +503,33 @@
    "ok": true,
    "utm_content": "howto-spotlight-clipboard-history-empty-reel"
   }
+ },
+ {
+  "slug": "howto-find-and-replace-misses-names-in-transcript",
+  "app": "tapefolio",
+  "date": "2026-11-07",
+  "title": "Names left in your interview transcript on Mac (find and replace misses misspellings)",
+  "long_id": "Ham3ch2gZIY",
+  "short_id": "0DezHHtoFkg",
+  "link_arm": "B",
+  "link_utm_content": "howto-find-and-replace-misses-names-in-transcript",
+  "short_utm_content": "howto-find-and-replace-misses-names-in-transcript-short",
+  "sources": [
+   "https://gotranscript.com/en/blog/de-identification-checklist-qualitative-transcripts-pii-indirect-identifiers"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "Ham3ch2gZIY",
+    "caption_id": "AUieDaZsQMOhIxLDTDnC54mM6YdJgo0wlB0UrVqu8OGkiwkjjs83helF"
+   },
+   "short": {
+    "video_id": "0DezHHtoFkg",
+    "caption_id": "AUieDaZHXfOh9D-Arqswfmn5PeXJ2nlgvL017khsvUZbbcjMWSXkeUng"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-find-and-replace-misses-names-in-transcript-reel"
+  }
  }
 ]
