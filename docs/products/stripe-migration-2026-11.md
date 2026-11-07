@@ -135,6 +135,17 @@ Already built and off (`netlify/lib/managed-payments.mjs`, `STRIPE_MANAGED_PAYME
 3. **Cutover date.** After the 12-06 price read (scheduled task `managed-payments-switch-2026-12-07`), outside a launch week, early morning ET.
 4. **Outstanding codes.** Re-mint buyer and referral codes in the new account, or hold them back until they expire.
 
+## MuscleOnGLP (getmuscleonglp.com), ported 2026-11-07
+
+Separate Netlify site and repo (purplelink-llc/muscleonglp), so it has its own env. Same two-key pattern as above, different names:
+
+- `lib/stripe-keys.mjs`: a product sells on the new account only when `STRIPE_SECRET_KEY_NEW` and that product's `STRIPE_PRICE_*_NEW` are both set, else the old account. No global flag.
+- Checkout drops `payment_method_types` on the new account. `download.mjs` tries the new key then the old, so pre-move buyers' links work. The webhook accepts either endpoint's signing secret.
+- New account: 11 products and prices at the old amounts (lookup_key `mog_<env name>`), one webhook endpoint (`checkout.session.completed`) for `muscleonglp.netlify.app`. The monthly guide cron (`backend/monthly_guide/app.py`) now creates each new month's price on both accounts.
+- Runtime key is the restricted key (keychain `stripe-live-secret-new`); the webhook secret is in the keychain as `stripe-webhook-secret-muscleonglp-new`.
+- Managed Payments is NOT on for MuscleOnGLP: the PDF guides need an eligible tax code and a check first. Follow-up.
+- Rollback: unset `STRIPE_SECRET_KEY_NEW` in the muscleonglp Netlify env (next build).
+
 ## Not touched
 
 The old account, its webhook, every live env var, ExtensionPay, and Scholar Utility Belt Pro. No account was created and no key was entered by this work.
