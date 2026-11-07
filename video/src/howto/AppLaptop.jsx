@@ -24,7 +24,7 @@ function windowTexture(img, make) {
 function AppWindow({ t, win }) {
   const appear = span(t, 0.95, 1.6);
   const lift = span(t, 1.9, 3.1);
-  const maxW = SCREEN.w * 0.9, maxH = SCREEN.h * 0.86;
+  const maxW = SCREEN.w * 0.95, maxH = SCREEN.h * 0.92;
   const w = Math.min(maxW, maxH * win.aspect), h = w / win.aspect;
   return (
     <group position={[0, 0, 0.01 + lift * 0.24]} scale={lerp(0.94, 1, appear)} visible={appear > 0.001}>
@@ -46,9 +46,9 @@ function AppWindow({ t, win }) {
 
 // Camera: settles in from high right over the first 1.8 s, then a slow move across to the left until the scene ends.
 const pathFor = (dur, v) => makeCameraPath(v ? [
-  { t: 0, p: [3.9, 3.6, 9.4], q: [0, 0.95, 0] },
-  { t: 1.8, p: [1.7, 2.0, 7.4], q: [0, 1.12, 0.1] },
-  { t: Math.max(2.5, dur), p: [-1.0, 1.85, 7.1], q: [0, 1.12, 0.1] },
+  { t: 0, p: [4.4, 4.2, 12.6], q: [0, 0.95, 0] },
+  { t: 1.8, p: [1.0, 2.6, 12.4], q: [0, 1.12, 0.1] },
+  { t: Math.max(2.5, dur), p: [-0.5, 2.5, 12.0], q: [0, 1.12, 0.1] },
 ] : [
   { t: 0, p: [4.6, 3.4, 7.8], q: [0, 0.9, 0] },
   { t: 1.8, p: [2.1, 1.95, 6.2], q: [0, 1.12, 0.1] },
@@ -69,7 +69,7 @@ export function AppLaptop({ img, t, dur, v, width, height }) {
       gl={{ ...GL, alpha: true }} dpr={1.5}>
       <Rig at={cam(t)} />
       <Studio />
-      <group position={[0, (rise - 1) * 0.35, 0]}>
+      <group position={[v ? 0.0 : 1.1, (rise - 1) * 0.35 + (v ? -1.35 : 0), 0]}>
         <Laptop angle={angle} wall={tex.wall}>
           {tex.win && <AppWindow t={t} win={tex.win} />}
         </Laptop>
