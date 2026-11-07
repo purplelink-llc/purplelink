@@ -78,6 +78,7 @@ test("applyManagedPayments removes the parameters Stripe rejects and keeps every
     "line_items[0][price_data][product_data][name]": "ModernTex for macOS",
     "metadata[product]": "moderntex",
     "custom_fields[0][key]": "heard",
+    "custom_text[submit][message]": "Full refund within 14 days.",
     allow_promotion_codes: "true",
   }, "moderntex");
   assert.deepEqual(Object.keys(p).sort(), [
