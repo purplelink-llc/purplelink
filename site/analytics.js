@@ -182,7 +182,12 @@
   };
 
   // Pageview on load (covers article reads and tool-page visits).
-  window.plTrack("pageview");
+  // A page the browser loads ahead of a click is not a visit yet: count it when the visitor arrives.
+  if (document.prerendering) {
+    document.addEventListener("prerenderingchange", function () { window.plTrack("pageview"); }, { once: true });
+  } else {
+    window.plTrack("pageview");
+  }
 
   // Wrap fetch: any call to the tools' Modal backend is a real tool run.
   try {

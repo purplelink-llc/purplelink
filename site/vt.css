@@ -1,0 +1,45 @@
+/* Page-to-page transition for the home page and the app pages.
+   On a click from the home page (and again on the way back), the words fade out, the 3D render stays in
+   front and glides to the app icon on the next page, and the new page fades
+   in around it. Browsers without cross-document view transitions, and
+   visitors who asked for reduced motion, get an ordinary page change. */
+
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+
+  /* Destination side: the icon the render lands on. */
+  .app-hero-icon,
+  .suite-icons { view-transition-name: app-art; }
+
+  /* Origin side: set by showcase.js on the scene whose link was clicked. */
+  [data-vt-active] { view-transition-name: app-art; }
+
+  /* Coming back: the app page's back link lands on its scene, and that
+     scene's render is where the icon travels to. */
+  html:not(:has([data-vt-active])) .show:target .show-logo,
+  html:not(:has([data-vt-active])) .show:target .show-suite-art { view-transition-name: app-art; }
+
+  ::view-transition-group(root) { background: var(--bg); }
+  ::view-transition-old(root) { animation: vt-out 0.3s ease-in both; }
+  ::view-transition-new(root) { animation: vt-in 0.5s 0.35s ease-out both; }
+
+  ::view-transition-group(app-art) {
+    animation-duration: 0.85s;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  ::view-transition-old(app-art),
+  ::view-transition-new(app-art) { height: 100%; object-fit: contain; }
+
+  /* Exit: everything but the clicked scene's render fades away first. */
+  html.vt-leaving body > :not(main),
+  html.vt-leaving main > :not(.showcase),
+  html.vt-leaving .showcase > :not(.show),
+  html.vt-leaving .show:not(:has([data-vt-active])),
+  html.vt-leaving .show:has([data-vt-active]) :is(.show-copy, .dev) {
+    opacity: 0 !important;
+    transition: opacity 0.28s ease-in;
+  }
+
+  @keyframes vt-out { to { opacity: 0; } }
+  @keyframes vt-in { from { opacity: 0; } }
+}
