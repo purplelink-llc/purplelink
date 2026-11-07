@@ -221,7 +221,7 @@
 
   function setProgress(pct, stage) {
     pct = Math.max(0, Math.min(100, parseInt(pct || 0, 10)));
-    progressFill.style.width = pct + "%";
+    progressFill.style.setProperty("--p", String(pct / 100));
     progressPct.textContent = pct + "%";
     stageLabel.textContent = STAGE_LABEL[stage] || stage || "Working…";
     setStage(stage || ACTIVE_CONFIG.order[0]);

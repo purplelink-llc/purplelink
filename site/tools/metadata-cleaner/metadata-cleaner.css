@@ -52,7 +52,10 @@
 .mc-size, .mc-note { color: var(--muted); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
 .mc-prog-label { color: var(--muted); font-size: 0.92rem; }
 .mc-prog { height: 6px; border-radius: 999px; background: var(--line); overflow: hidden; }
-.mc-prog-fill { display: block; height: 100%; width: var(--p, 3%); background: var(--purple); border-radius: inherit; transition: width 0.25s ease-out; }
+.mc-prog-fill { display: block; height: 100%; width: 100%; background: var(--purple); border-radius: inherit; transform: scaleX(var(--p, 0.03)); transform-origin: 0 50%; }
+@media (prefers-reduced-motion: no-preference) {
+  .mc-prog-fill { transition: transform 0.25s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)); }
+}
 .mc-sizebar { height: 6px; border-radius: 999px; background: var(--line); overflow: hidden; }
 .mc-sizebar-fill { display: block; height: 100%; width: var(--w, 100%); background: var(--purple); border-radius: inherit; }
 .mc-summary { font-weight: 600; display: flex; align-items: center; gap: 8px; }

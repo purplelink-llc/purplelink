@@ -284,14 +284,14 @@
   .reward[data-in] .reward-line:nth-child(3) { animation-delay: 0.8s; } .reward[data-in] .reward-line:nth-child(4) { animation-delay: 0.95s; }
   .reward[data-in] .next-card { animation: ui-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.45s backwards; }
   .reward[data-levelup] .reward-head h2 { animation: ui-pop 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.3s backwards; }
-  .fx-float { animation: ui-float 1.2s ease-out forwards; }
+  .fx-float { animation: ui-float 1.2s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) forwards; }
 }
 @keyframes ui-rise { from { transform: translateY(14px); } }
 @keyframes ui-pop { from { transform: scale(0.82); } 60% { transform: scale(1.06); } }
 @keyframes ui-ring { 0%, 100% { opacity: 0.35; transform: scale(0.96); } 50% { opacity: 0.9; transform: scale(1.04); } }
 @keyframes ui-glint { 0%, 100% { transform: none; } 50% { transform: translateY(-2px); } }
 @keyframes ui-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
-@keyframes ui-float { from { opacity: 1; margin-top: 0; } to { opacity: 0; margin-top: -48px; } }
+@keyframes ui-float { from { opacity: 1; translate: 0 0; } to { opacity: 0; translate: 0 -48px; } }
 
 /* ---------- game feedback: used by the games through PLFX ---------- */
 @keyframes fx-flip { 0% { transform: rotateX(0); } 50% { transform: rotateX(90deg); } 100% { transform: rotateX(0); } }
