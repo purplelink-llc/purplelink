@@ -65,11 +65,12 @@
 .dock-link {
   position: relative; display: inline-flex; align-items: center; gap: 8px; height: 44px; min-width: 44px; justify-content: center;
   padding: 0; border-radius: 22px; background: var(--gc); color: var(--gc-ink); text-decoration: none;
-  font: 800 0.9rem/1 var(--font-body); box-shadow: 0 3px 0 var(--gc-d); transition: transform 0.12s ease-out, box-shadow 0.12s;
+  font: 800 0.9rem/1 var(--font-body); box-shadow: 0 3px 0 var(--gc-d); transition: transform 120ms var(--motion-ease), box-shadow 120ms var(--motion-ease);
 }
 .dock-link .gl { width: 24px; height: 24px; }
 .dock-link .dock-name { display: none; white-space: nowrap; }
-.dock-link:hover { transform: translateY(-2px); box-shadow: 0 5px 0 var(--gc-d); }
+.dock-link:hover { box-shadow: 0 5px 0 var(--gc-d); }
+@media (hover: hover) and (pointer: fine) { .dock-link:hover { transform: translateY(-2px); } }
 .dock-link:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--gc-d); }
 .dock-link:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
 .dock-link[aria-current="page"] { padding: 0 18px 0 14px; }
@@ -160,10 +161,11 @@
 .tile {
   --lift: 0px;
   position: relative; display: flex; flex-direction: column; border-radius: 22px; overflow: hidden; background: var(--panel); color: inherit; text-decoration: none;
-  border: 2px solid var(--line); transform: translateY(var(--lift)); transition: transform 0.18s ease-out, border-color 0.18s, box-shadow 0.18s;
+  border: 2px solid var(--line); transform: translateY(var(--lift)); transition: transform 180ms var(--motion-ease), border-color 180ms, box-shadow 180ms;
   box-shadow: 0 5px 0 var(--line);
 }
-.tile:hover { --lift: -4px; border-color: var(--gc); box-shadow: 0 9px 0 var(--gc-d); }
+.tile:hover { border-color: var(--gc); box-shadow: 0 9px 0 var(--gc-d); }
+@media (hover: hover) and (pointer: fine) { .tile:hover { --lift: -4px; } }
 .tile:active { --lift: 2px; box-shadow: 0 2px 0 var(--gc-d); }
 .tile:focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; }
 .tile-art { position: relative; display: block; aspect-ratio: 10 / 7; background: var(--gc); overflow: hidden; }
@@ -176,9 +178,11 @@
 .tile-art svg .ar { fill: none; stroke: var(--gc-ink); stroke-width: 11; stroke-linecap: round; stroke-linejoin: round; }
 .tile-art svg .a6 { fill: none; stroke: var(--gc-d); stroke-width: 10; stroke-linecap: round; stroke-linejoin: round; }
 .tile-art svg text { font-family: var(--font-body); font-weight: 800; }
-.tile-art svg .mv { transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1); transform-box: fill-box; transform-origin: center; }
-.tile:hover .tile-art svg .mv { transform: translateY(-5px) rotate(-2deg); }
-.tile:hover .tile-art svg .mv2 { transform: translateY(4px) rotate(2deg); }
+.tile-art svg .mv { transition: transform 350ms var(--motion-ease); transform-box: fill-box; transform-origin: center; }
+@media (hover: hover) and (pointer: fine) {
+  .tile:hover .tile-art svg .mv { transform: translateY(-5px) rotate(-2deg); }
+  .tile:hover .tile-art svg .mv2 { transform: translateY(4px) rotate(2deg); }
+}
 .tile-badge { position: absolute; left: 12px; top: 12px; display: none; align-items: center; gap: 5px; height: 26px; padding: 0 10px; border-radius: 13px; background: var(--ink); color: var(--bg); font: 800 0.74rem/1 var(--font-body); }
 .tile[data-spot] .tile-badge { display: inline-flex; }
 .tile-check { position: absolute; right: 12px; top: 12px; width: 32px; height: 32px; border-radius: 50%; background: var(--ink); color: var(--bg); display: none; place-items: center; border: 3px solid var(--gc); }
@@ -280,24 +284,33 @@
   .reward[data-in] .reward-line:nth-child(3) { animation-delay: 0.8s; } .reward[data-in] .reward-line:nth-child(4) { animation-delay: 0.95s; }
   .reward[data-in] .next-card { animation: ui-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.45s backwards; }
   .reward[data-levelup] .reward-head h2 { animation: ui-pop 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.3s backwards; }
-  .fx-float { animation: ui-float 1.2s ease-out forwards; }
+  .fx-float { animation: ui-float 1.2s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) forwards; }
 }
 @keyframes ui-rise { from { transform: translateY(14px); } }
 @keyframes ui-pop { from { transform: scale(0.82); } 60% { transform: scale(1.06); } }
 @keyframes ui-ring { 0%, 100% { opacity: 0.35; transform: scale(0.96); } 50% { opacity: 0.9; transform: scale(1.04); } }
 @keyframes ui-glint { 0%, 100% { transform: none; } 50% { transform: translateY(-2px); } }
 @keyframes ui-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
-@keyframes ui-float { from { opacity: 1; margin-top: 0; } to { opacity: 0; margin-top: -48px; } }
+@keyframes ui-float { from { opacity: 1; translate: 0 0; } to { opacity: 0; translate: 0 -48px; } }
 
 /* ---------- game feedback: used by the games through PLFX ---------- */
 @keyframes fx-flip { 0% { transform: rotateX(0); } 50% { transform: rotateX(90deg); } 100% { transform: rotateX(0); } }
-@keyframes fx-pop { 0% { transform: scale(1); } 40% { transform: scale(1.14); } 100% { transform: scale(1); } }
+@keyframes fx-pop { 0% { transform: scale(1); } 40% { transform: scale(1.06); } 100% { transform: scale(1); } }
 @keyframes fx-shake { 0%, 100% { transform: none; } 20% { transform: translateX(-6px); } 40% { transform: translateX(5px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(3px); } }
 @keyframes fx-hop { 0%, 100% { transform: none; } 40% { transform: translateY(-14px); } 70% { transform: translateY(2px); } }
 @keyframes fx-flash { 0% { filter: brightness(1.7); } 100% { filter: none; } }
 @keyframes fx-glow { 0% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--gc, var(--purple)) 70%, transparent); } 100% { box-shadow: 0 0 0 14px transparent; } }
-.fx-flip { animation: fx-flip 0.5s ease-in-out backwards; }
-.fx-pop { animation: fx-pop 0.14s ease-out; }
+.fx-flip { animation: fx-flip 0.3s ease-in-out backwards; }
+.fx-flip[data-col="1"] { animation-delay: 60ms; }
+.fx-flip[data-col="2"] { animation-delay: 120ms; }
+.fx-flip[data-col="3"] { animation-delay: 180ms; }
+.fx-flip[data-col="4"] { animation-delay: 240ms; }
+.fx-flip[data-col="5"] { animation-delay: 300ms; }
+.fx-flip[data-col="6"] { animation-delay: 360ms; }
+.fx-flip[data-col="7"] { animation-delay: 420ms; }
+.fx-flip[data-col="8"] { animation-delay: 480ms; }
+.fx-flip[data-col="9"] { animation-delay: 540ms; }
+.fx-pop { animation: fx-pop 0.12s ease-out; }
 .fx-shake { animation: fx-shake 0.38s ease-out; }
 .fx-hop { animation: fx-hop 0.6s ease-out backwards; }
 .fx-flash { animation: fx-flash 0.5s ease-out; }

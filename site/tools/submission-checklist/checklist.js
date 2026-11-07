@@ -18,7 +18,7 @@
     const done = boxes.filter((b) => b.checked).length;
     if (count) count.textContent = String(done);
     if (total) total.textContent = String(boxes.length);
-    if (bar) bar.style.width = Math.round((done / boxes.length) * 100) + "%";
+    if (bar) bar.style.setProperty("--p", String(done / boxes.length));
     boxes.forEach((b) => b.closest("li").classList.toggle("is-done", b.checked));
   };
 

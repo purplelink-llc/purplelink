@@ -281,7 +281,7 @@ select { max-width: 100%; }
   font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s;
+  transition: transform 160ms var(--motion-ease), box-shadow 160ms var(--motion-ease), opacity 0.15s;
   cursor: pointer;
 }
 
@@ -302,7 +302,8 @@ select { max-width: 100%; }
   color: var(--ink);
 }
 
-.btn:hover { transform: translateY(-1px); }
+@media (hover: hover) and (pointer: fine) { .btn:hover { transform: translateY(-1px); } }
+.btn:active { transform: scale(0.97); transition: transform 100ms var(--motion-ease); }
 
 .btn-primary {
   background: var(--purple);
@@ -2659,10 +2660,11 @@ dd {
 .tool-card {
   display: block; padding: 18px 20px; border: 1px solid var(--line);
   border-radius: 12px; background: var(--panel); text-decoration: none;
-  color: var(--ink); transition: transform .2s, box-shadow .2s, border-color .2s;
+  color: var(--ink); transition: transform 200ms var(--motion-ease), box-shadow 200ms var(--motion-ease), border-color 200ms var(--motion-ease);
 }
+@media (hover: hover) and (pointer: fine) { .tool-card:hover { transform: translateY(-2px); } }
 .tool-card:hover {
-  transform: translateY(-2px); border-color: var(--purple-dim);
+  border-color: var(--purple-dim);
   box-shadow: 0 6px 20px oklch(50% 0.24 310 / 0.08);
 }
 .tool-card h3 { font-family: var(--font-display); margin: 0 0 6px; font-size: 1.08rem; }
@@ -2683,18 +2685,18 @@ dd {
   background: var(--panel);
   text-decoration: none;
   color: var(--ink);
-  transition: transform .2s, box-shadow .2s, border-color .2s;
+  transition: transform 200ms var(--motion-ease), box-shadow 200ms var(--motion-ease), border-color 200ms var(--motion-ease);
 }
+@media (hover: hover) and (pointer: fine) { .tool-card-lg:hover { transform: translateY(-3px); } }
 .tool-card-lg:hover {
-  transform: translateY(-3px);
   border-color: var(--purple-dim);
   box-shadow: 0 12px 32px oklch(50% 0.24 310 / 0.12);
 }
 .tool-card-lg-price { font-family: var(--font-display); font-weight: 700; font-size: 1.02rem; color: var(--purple); }
 .tool-card-lg h3 { font-family: var(--font-display); margin: 0; font-size: clamp(1.3rem, 2.2vw, 1.6rem); }
 .tool-card-lg p { color: var(--muted); margin: 0; font-size: 1rem; line-height: 1.5; }
-.tool-card-lg-cta { margin-top: auto; padding-top: 10px; font-weight: 600; color: var(--purple); transition: transform .15s; }
-.tool-card-lg:hover .tool-card-lg-cta { transform: translateX(3px); }
+.tool-card-lg-cta { margin-top: auto; padding-top: 10px; font-weight: 600; color: var(--purple); transition: transform 160ms var(--motion-ease); }
+@media (hover: hover) and (pointer: fine) { .tool-card-lg:hover .tool-card-lg-cta { transform: translateX(3px); } }
 /* Paper Review is the flagship of this grid — the same tinted-panel
    emphasis already used for .pr-tier-premium on its own page, not a new
    pattern. */
@@ -4027,11 +4029,15 @@ main input:focus-visible {
 
 .checklist-bar span {
   display: block;
-  width: 0;
+  width: 100%;
   height: 100%;
   border-radius: inherit;
   background: var(--purple);
-  transition: width 0.3s ease;
+  transform: scaleX(var(--p, 0));
+  transform-origin: 0 50%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .checklist-bar span { transition: transform 0.25s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)); }
 }
 
 .checklist-list { list-style: none; counter-reset: step; display: grid; gap: 0; }
@@ -5736,15 +5742,6 @@ dialog, [role="dialog"], [aria-modal="true"], .sales-scroll { overscroll-behavio
 .theme-fade *::before,
 .theme-fade *::after {
   transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, fill 0.25s ease, stroke 0.25s ease !important;
-}
-
-/* On touch screens :hover sticks after a tap, which left cards and buttons lifted. Lifts are for pointers. */
-@media (hover: none) {
-  .btn:hover,
-  .tool-card:hover,
-  .tool-card-lg:hover,
-  .tool-card-lg:hover .tool-card-lg-cta,
-  .dock-app:hover { transform: none; }
 }
 
 /* Headings that set no leading of their own were inheriting the body's 1.6. Zero specificity, so every

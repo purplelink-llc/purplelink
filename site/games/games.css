@@ -180,7 +180,7 @@
 @media (prefers-reduced-motion: no-preference) {
   .wg-boards.wg-shake { animation: wg-shake 0.4s ease-in-out; }
   .wg-tile { transition: background-color 0.25s ease, border-color 0.15s ease; }
-  .wg-tile.wg-filled { animation: wg-pop 0.12s ease-out; }
+  .wg-tile.wg-filled:not(.fx-flip) { animation: wg-pop 0.12s ease-out; }
   .game-card { transition: border-color 0.15s ease; }
 }
 @keyframes wg-pop { from { transform: scale(0.92); } to { transform: scale(1); } }
