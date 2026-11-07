@@ -43,7 +43,7 @@ import { pickAddons, setOptionalItems } from "../lib/addons.mjs";
 import { recoveryParams, isRecoveryParamError } from "../lib/checkout-recovery.mjs";
 import { checkCode, STORE as BUYER_CODE_STORE } from "../lib/buyer-codes.mjs";
 import { REF_RE, FRIEND_COUPON, FRIEND_PERCENT, friendEligible, checkRef, ensureFriendCoupon } from "../lib/referrals.mjs";
-import { checkoutSecretKey, priceEnvName } from "../lib/stripe-account.mjs";
+import { checkoutSecretKey, priceEnvName, newAccountActive } from "../lib/stripe-account.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 
@@ -610,6 +610,12 @@ export default async function handler(request) {
     }
   }
 
+  // The new Stripe account rejects payment_method_types ("no longer supported"; methods come from the Dashboard
+  // settings there, which must stay limited to card and Link). Live error 2026-11-06 on Paper Review.
+  if (newAccountActive()) {
+    delete params["payment_method_types[0]"];
+    delete params["payment_method_types[1]"];
+  }
   if (managed) applyManagedPayments(params, product);
   if (addonRows.length) {
     setOptionalItems(params, addonRows);
