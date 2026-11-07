@@ -381,6 +381,8 @@ PREVIEW_MAX_CONCURRENT = 2          # per web container, so paid routes keep CPU
 anthropic_secret = modal.Secret.from_name("anthropic-secret")
 paper_review_shared_secret = modal.Secret.from_name("paper-review-shared")
 stripe_secret = modal.Secret.from_name("stripe-secret")
+# New Stripe account (STRIPE_SECRET_KEY_NEW, STRIPE_NEW_ACCOUNT); the old stripe-secret stays for past buyers.
+stripe_secret_new = modal.Secret.from_name("stripe-secret-new")
 subscribe_secret = modal.Secret.from_name("subscribe-secret")
 resend_secret = modal.Secret.from_name("resend")
 # Feature flags for the coherence check (latextools/coherence.py). Holds COHERENCE_IN_REVIEW=1 since
@@ -1434,7 +1436,7 @@ def pdf_structure_run(pdf_bytes: bytes) -> dict:
     # namespaced, rather than minting a new one). The paid tools' Anthropic
     # key is NOT mounted here; only the heavy pipelines need it. buddy_secret
     # carries the site chat's own, separately limited key.
-    secrets=[paper_review_shared_secret, stripe_secret, resend_secret, subscribe_secret, buddy_secret],
+    secrets=[paper_review_shared_secret, stripe_secret, stripe_secret_new, resend_secret, subscribe_secret, buddy_secret],
 )
 @modal.concurrent(max_inputs=4)
 @modal.asgi_app()
@@ -5685,7 +5687,7 @@ def _sessions_with_later_purchase(entries) -> set:
 @app.function(
     image=modal.Image.debian_slim(python_version="3.11").pip_install("httpx").add_local_python_source("latextools").add_local_python_source("stripe_account"),
     timeout=900,
-    secrets=[stripe_secret, subscribe_secret],
+    secrets=[stripe_secret, stripe_secret_new, subscribe_secret],
 )
 def backfill_buyer_ledger(max_pages: int = 200) -> dict:
     """One-off: add every paid Checkout Session before referrals shipped to buyer_ledger_dict, so a past buyer
@@ -5731,7 +5733,7 @@ def backfill_buyer_ledger(max_pages: int = 200) -> dict:
     image=modal.Image.debian_slim(python_version="3.11").pip_install("httpx").add_local_python_source("latextools").add_local_python_source("stripe_account"),
     schedule=modal.Cron("0 14 * * *"),  # daily, 14:00 UTC — mid-morning US
     timeout=600,
-    secrets=[resend_secret, subscribe_secret, stripe_secret],
+    secrets=[resend_secret, subscribe_secret, stripe_secret, stripe_secret_new],
 )
 def lifecycle_email_sweep() -> dict:
     """Advance every customer_lifecycle_dict entry to its next due stage.
