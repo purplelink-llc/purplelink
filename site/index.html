@@ -132,15 +132,17 @@
     <link rel="preload" href="/assets/fonts/fraunces-italic-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     <script src="/theme.js"></script>
+    <script src="/defer-css.js" defer></script>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="/motion.css">
     <link rel="stylesheet" href="/home.css">
     <link rel="stylesheet" href="/showcase.css">
-    <link rel="stylesheet" href="/rf-promo.css">
+    <link rel="stylesheet" href="/rf-promo.css" media="print" data-defer-css>
+    <noscript><link rel="stylesheet" href="/rf-promo.css"></noscript>
     <script src="/site.js" defer></script>
     <script src="/motion.js" defer></script>
     <script src="/showcase.js" defer></script>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+    <script src="/ads-defer.js" defer></script>
     <script src="/buddy-chat/loader.js" defer></script>
 </head>
   <body>
@@ -194,8 +196,8 @@
             <a class="btn btn-ghost" href="/moderntex/" data-track="home_cta" data-track-meta="show-moderntex">See ModernTex</a>
           </div>
           <div class="show-stage" data-tilt>
-            <div class="dev dev-mac"><div class="dev-lid"><img class="dev-screen" src="/assets/home/screen-moderntex.webp" alt="Screenshot of the ModernTex editor with the PDF preview beside the source" width="1800" height="1125" loading="lazy" fetchpriority="low" decoding="async"></div><div class="dev-base" aria-hidden="true"></div></div>
-            <img class="show-logo" src="/assets/home/logo-moderntex.webp" alt="" width="660" height="710" loading="lazy" fetchpriority="low" decoding="async">
+            <div class="dev dev-mac"><div class="dev-lid"><img class="dev-screen" src="/assets/home/screen-moderntex.webp" srcset="/assets/home/screen-s-moderntex.webp 900w, /assets/home/screen-moderntex.webp 1800w" sizes="(max-width: 820px) 92vw, 58vw" alt="Screenshot of the ModernTex editor with the PDF preview beside the source" width="1800" height="1125" loading="lazy" fetchpriority="low" decoding="async"></div><div class="dev-base" aria-hidden="true"></div></div>
+            <img class="show-logo" src="/assets/home/logo-moderntex.webp" srcset="/assets/home/logo-s-moderntex.webp 330w, /assets/home/logo-moderntex.webp 660w" sizes="(max-width: 820px) 140px, 230px" alt="" width="660" height="710" loading="lazy" fetchpriority="low" decoding="async">
           </div>
         </article>
 
@@ -208,8 +210,8 @@
             <a class="btn btn-ghost" href="/outbound-veil/" data-track="home_cta" data-track-meta="show-outbound-veil">See Outbound Veil</a>
           </div>
           <div class="show-stage" data-tilt>
-            <div class="dev dev-mac"><div class="dev-lid"><img class="dev-screen" src="/assets/home/screen-outbound-veil.webp" alt="Outbound Veil findings list showing personal information found in a message" width="1800" height="1125" loading="lazy" fetchpriority="low" decoding="async"></div><div class="dev-base" aria-hidden="true"></div></div>
-            <img class="show-logo" src="/assets/home/logo-outbound-veil.webp" alt="" width="660" height="710" loading="lazy" fetchpriority="low" decoding="async">
+            <div class="dev dev-mac"><div class="dev-lid"><img class="dev-screen" src="/assets/home/screen-outbound-veil.webp" srcset="/assets/home/screen-s-outbound-veil.webp 900w, /assets/home/screen-outbound-veil.webp 1800w" sizes="(max-width: 820px) 92vw, 58vw" alt="Outbound Veil findings list showing personal information found in a message" width="1800" height="1125" loading="lazy" fetchpriority="low" decoding="async"></div><div class="dev-base" aria-hidden="true"></div></div>
+            <img class="show-logo" src="/assets/home/logo-outbound-veil.webp" srcset="/assets/home/logo-s-outbound-veil.webp 330w, /assets/home/logo-outbound-veil.webp 660w" sizes="(max-width: 820px) 140px, 230px" alt="" width="660" height="710" loading="lazy" fetchpriority="low" decoding="async">
           </div>
         </article>
 
@@ -222,8 +224,8 @@
             <a class="btn btn-ghost" href="/legroom/" data-track="home_cta" data-track-meta="show-legroom">See Legroom</a>
           </div>
           <div class="show-stage" data-tilt>
-            <div class="dev dev-mac"><div class="dev-lid"><img class="dev-screen" src="/assets/home/screen-legroom.webp" alt="Legroom Space Map and menu-bar dropdown" width="1800" height="1125" loading="lazy" fetchpriority="low" decoding="async"></div><div class="dev-base" aria-hidden="true"></div></div>
-            <img class="show-logo" src="/assets/home/logo-legroom.webp" alt="" width="660" height="710" loading="lazy" fetchpriority="low" decoding="async">
+            <div class="dev dev-mac"><div class="dev-lid"><img class="dev-screen" src="/assets/home/screen-legroom.webp" srcset="/assets/home/screen-s-legroom.webp 900w, /assets/home/screen-legroom.webp 1800w" sizes="(max-width: 820px) 92vw, 58vw" alt="Legroom Space Map and menu-bar dropdown" width="1800" height="1125" loading="lazy" fetchpriority="low" decoding="async"></div><div class="dev-base" aria-hidden="true"></div></div>
+            <img class="show-logo" src="/assets/home/logo-legroom.webp" srcset="/assets/home/logo-s-legroom.webp 330w, /assets/home/logo-legroom.webp 660w" sizes="(max-width: 820px) 140px, 230px" alt="" width="660" height="710" loading="lazy" fetchpriority="low" decoding="async">
           </div>
         </article>
 
@@ -236,8 +238,8 @@
             <a class="btn btn-ghost" href="/keyfeel/" data-track="home_cta" data-track-meta="show-keyfeel">See Keyfeel</a>
           </div>
           <div class="show-stage" data-tilt>
-            <div class="dev dev-mac"><div class="dev-lid"><img class="dev-screen" src="/assets/home/screen-keyfeel.webp" alt="Keyfeel on a Mac desk (illustration)" width="1800" height="1125" loading="lazy" fetchpriority="low" decoding="async"></div><div class="dev-base" aria-hidden="true"></div></div>
-            <img class="show-logo" src="/assets/home/logo-keyfeel.webp" alt="" width="660" height="710" loading="lazy" fetchpriority="low" decoding="async">
+            <div class="dev dev-mac"><div class="dev-lid"><img class="dev-screen" src="/assets/home/screen-keyfeel.webp" srcset="/assets/home/screen-s-keyfeel.webp 900w, /assets/home/screen-keyfeel.webp 1800w" sizes="(max-width: 820px) 92vw, 58vw" alt="Keyfeel on a Mac desk (illustration)" width="1800" height="1125" loading="lazy" fetchpriority="low" decoding="async"></div><div class="dev-base" aria-hidden="true"></div></div>
+            <img class="show-logo" src="/assets/home/logo-keyfeel.webp" srcset="/assets/home/logo-s-keyfeel.webp 330w, /assets/home/logo-keyfeel.webp 660w" sizes="(max-width: 820px) 140px, 230px" alt="" width="660" height="710" loading="lazy" fetchpriority="low" decoding="async">
           </div>
         </article>
 
@@ -250,8 +252,8 @@
             <a class="btn btn-ghost" href="/tapefolio/" data-track="home_cta" data-track-meta="show-tapefolio">See Tapefolio</a>
           </div>
           <div class="show-stage" data-tilt>
-            <div class="dev dev-mac"><div class="dev-lid"><img class="dev-screen" src="/assets/home/screen-tapefolio.webp" alt="Tapefolio review screen with audio player and highlighted words" width="1800" height="1125" loading="lazy" fetchpriority="low" decoding="async"></div><div class="dev-base" aria-hidden="true"></div></div>
-            <img class="show-logo" src="/assets/home/logo-tapefolio.webp" alt="" width="660" height="710" loading="lazy" fetchpriority="low" decoding="async">
+            <div class="dev dev-mac"><div class="dev-lid"><img class="dev-screen" src="/assets/home/screen-tapefolio.webp" srcset="/assets/home/screen-s-tapefolio.webp 900w, /assets/home/screen-tapefolio.webp 1800w" sizes="(max-width: 820px) 92vw, 58vw" alt="Tapefolio review screen with audio player and highlighted words" width="1800" height="1125" loading="lazy" fetchpriority="low" decoding="async"></div><div class="dev-base" aria-hidden="true"></div></div>
+            <img class="show-logo" src="/assets/home/logo-tapefolio.webp" srcset="/assets/home/logo-s-tapefolio.webp 330w, /assets/home/logo-tapefolio.webp 660w" sizes="(max-width: 820px) 140px, 230px" alt="" width="660" height="710" loading="lazy" fetchpriority="low" decoding="async">
           </div>
         </article>
 
@@ -264,8 +266,8 @@
             <a class="btn btn-ghost" href="/panely/" data-track="home_cta" data-track-meta="show-panely">See Panely</a>
           </div>
           <div class="show-stage" data-tilt>
-            <div class="dev dev-mac"><div class="dev-lid"><img class="dev-screen" src="/assets/home/screen-panely.webp" alt="Panely window layout illustration" width="1800" height="1125" loading="lazy" fetchpriority="low" decoding="async"></div><div class="dev-base" aria-hidden="true"></div></div>
-            <img class="show-logo" src="/assets/home/logo-panely.webp" alt="" width="660" height="710" loading="lazy" fetchpriority="low" decoding="async">
+            <div class="dev dev-mac"><div class="dev-lid"><img class="dev-screen" src="/assets/home/screen-panely.webp" srcset="/assets/home/screen-s-panely.webp 900w, /assets/home/screen-panely.webp 1800w" sizes="(max-width: 820px) 92vw, 58vw" alt="Panely window layout illustration" width="1800" height="1125" loading="lazy" fetchpriority="low" decoding="async"></div><div class="dev-base" aria-hidden="true"></div></div>
+            <img class="show-logo" src="/assets/home/logo-panely.webp" srcset="/assets/home/logo-s-panely.webp 330w, /assets/home/logo-panely.webp 660w" sizes="(max-width: 820px) 140px, 230px" alt="" width="660" height="710" loading="lazy" fetchpriority="low" decoding="async">
           </div>
         </article>
 
@@ -278,8 +280,8 @@
             <a class="btn btn-ghost" href="/summonly/" data-track="home_cta" data-track-meta="show-summonly">See Summonly</a>
           </div>
           <div class="show-stage" data-tilt>
-            <div class="dev dev-mac"><div class="dev-lid"><img class="dev-screen" src="/assets/home/screen-summonly.webp" alt="Summonly search panel" width="1800" height="1125" loading="lazy" fetchpriority="low" decoding="async"></div><div class="dev-base" aria-hidden="true"></div></div>
-            <img class="show-logo" src="/assets/home/logo-summonly.webp" alt="" width="660" height="710" loading="lazy" fetchpriority="low" decoding="async">
+            <div class="dev dev-mac"><div class="dev-lid"><img class="dev-screen" src="/assets/home/screen-summonly.webp" srcset="/assets/home/screen-s-summonly.webp 900w, /assets/home/screen-summonly.webp 1800w" sizes="(max-width: 820px) 92vw, 58vw" alt="Summonly search panel" width="1800" height="1125" loading="lazy" fetchpriority="low" decoding="async"></div><div class="dev-base" aria-hidden="true"></div></div>
+            <img class="show-logo" src="/assets/home/logo-summonly.webp" srcset="/assets/home/logo-s-summonly.webp 330w, /assets/home/logo-summonly.webp 660w" sizes="(max-width: 820px) 140px, 230px" alt="" width="660" height="710" loading="lazy" fetchpriority="low" decoding="async">
           </div>
         </article>
 
@@ -292,8 +294,8 @@
             <a class="btn btn-ghost" href="/nee/" data-track="home_cta" data-track-meta="show-nee">See Née</a>
           </div>
           <div class="show-stage" data-tilt>
-            <div class="dev dev-mac"><div class="dev-lid"><img class="dev-screen" src="/assets/home/screen-nee.webp" alt="Née ring of actions around the pointer" width="1800" height="1125" loading="lazy" fetchpriority="low" decoding="async"></div><div class="dev-base" aria-hidden="true"></div></div>
-            <img class="show-logo" src="/assets/home/logo-nee.webp" alt="" width="660" height="710" loading="lazy" fetchpriority="low" decoding="async">
+            <div class="dev dev-mac"><div class="dev-lid"><img class="dev-screen" src="/assets/home/screen-nee.webp" srcset="/assets/home/screen-s-nee.webp 900w, /assets/home/screen-nee.webp 1800w" sizes="(max-width: 820px) 92vw, 58vw" alt="Née ring of actions around the pointer" width="1800" height="1125" loading="lazy" fetchpriority="low" decoding="async"></div><div class="dev-base" aria-hidden="true"></div></div>
+            <img class="show-logo" src="/assets/home/logo-nee.webp" srcset="/assets/home/logo-s-nee.webp 330w, /assets/home/logo-nee.webp 660w" sizes="(max-width: 820px) 140px, 230px" alt="" width="660" height="710" loading="lazy" fetchpriority="low" decoding="async">
           </div>
         </article>
 
@@ -306,8 +308,8 @@
             <a class="btn btn-ghost" href="/lenses/" data-track="home_cta" data-track-meta="show-lenses">See Lenses</a>
           </div>
           <div class="show-stage" data-tilt>
-            <div class="dev dev-mac"><div class="dev-lid"><img class="dev-screen" src="/assets/home/screen-lenses.webp" alt="Lenses display profile settings (simulated)" width="1800" height="1125" loading="lazy" fetchpriority="low" decoding="async"></div><div class="dev-base" aria-hidden="true"></div></div>
-            <img class="show-logo" src="/assets/home/logo-lenses.webp" alt="" width="660" height="710" loading="lazy" fetchpriority="low" decoding="async">
+            <div class="dev dev-mac"><div class="dev-lid"><img class="dev-screen" src="/assets/home/screen-lenses.webp" srcset="/assets/home/screen-s-lenses.webp 900w, /assets/home/screen-lenses.webp 1800w" sizes="(max-width: 820px) 92vw, 58vw" alt="Lenses display profile settings (simulated)" width="1800" height="1125" loading="lazy" fetchpriority="low" decoding="async"></div><div class="dev-base" aria-hidden="true"></div></div>
+            <img class="show-logo" src="/assets/home/logo-lenses.webp" srcset="/assets/home/logo-s-lenses.webp 330w, /assets/home/logo-lenses.webp 660w" sizes="(max-width: 820px) 140px, 230px" alt="" width="660" height="710" loading="lazy" fetchpriority="low" decoding="async">
           </div>
         </article>
 
@@ -320,8 +322,8 @@
             <a class="btn btn-ghost" href="/vitae/" data-track="home_cta" data-track-meta="show-vitae">See Vitae</a>
           </div>
           <div class="show-stage" data-tilt>
-            <div class="dev dev-mac"><div class="dev-lid"><img class="dev-screen" src="/assets/home/screen-vitae.webp" alt="Vitae dashboard with submissions and deadlines" width="1800" height="1125" loading="lazy" fetchpriority="low" decoding="async"></div><div class="dev-base" aria-hidden="true"></div></div>
-            <img class="show-logo" src="/assets/home/logo-vitae.webp" alt="" width="660" height="710" loading="lazy" fetchpriority="low" decoding="async">
+            <div class="dev dev-mac"><div class="dev-lid"><img class="dev-screen" src="/assets/home/screen-vitae.webp" srcset="/assets/home/screen-s-vitae.webp 900w, /assets/home/screen-vitae.webp 1800w" sizes="(max-width: 820px) 92vw, 58vw" alt="Vitae dashboard with submissions and deadlines" width="1800" height="1125" loading="lazy" fetchpriority="low" decoding="async"></div><div class="dev-base" aria-hidden="true"></div></div>
+            <img class="show-logo" src="/assets/home/logo-vitae.webp" srcset="/assets/home/logo-s-vitae.webp 330w, /assets/home/logo-vitae.webp 660w" sizes="(max-width: 820px) 140px, 230px" alt="" width="660" height="710" loading="lazy" fetchpriority="low" decoding="async">
           </div>
         </article>
 
@@ -334,8 +336,8 @@
             <a class="btn btn-ghost" href="/globepin/" data-track="home_cta" data-track-meta="show-globepin">See GlobePin</a>
           </div>
           <div class="show-stage" data-tilt>
-            <div class="dev dev-phone"><div class="dev-body"><img class="dev-screen" src="/assets/home/screen-globepin.webp" alt="GlobePin 3D globe on an iPhone" width="620" height="1348" loading="lazy" fetchpriority="low" decoding="async"><span class="dev-island" aria-hidden="true"></span></div></div>
-            <img class="show-logo" src="/assets/home/logo-globepin.webp" alt="" width="660" height="710" loading="lazy" fetchpriority="low" decoding="async">
+            <div class="dev dev-phone"><div class="dev-body"><img class="dev-screen" src="/assets/home/screen-globepin.webp" srcset="/assets/home/screen-s-globepin.webp 400w, /assets/home/screen-globepin.webp 620w" sizes="(max-width: 820px) 300px, 300px" alt="GlobePin 3D globe on an iPhone" width="620" height="1348" loading="lazy" fetchpriority="low" decoding="async"><span class="dev-island" aria-hidden="true"></span></div></div>
+            <img class="show-logo" src="/assets/home/logo-globepin.webp" srcset="/assets/home/logo-s-globepin.webp 330w, /assets/home/logo-globepin.webp 660w" sizes="(max-width: 820px) 140px, 230px" alt="" width="660" height="710" loading="lazy" fetchpriority="low" decoding="async">
           </div>
         </article>
 
@@ -348,8 +350,8 @@
             <a class="btn btn-ghost" href="/haea/" data-track="home_cta" data-track-meta="show-haea">See haea</a>
           </div>
           <div class="show-stage" data-tilt>
-            <div class="dev dev-phone"><div class="dev-body"><img class="dev-screen" src="/assets/home/screen-haea.webp" alt="haea Today screen on an iPhone" width="620" height="1348" loading="lazy" fetchpriority="low" decoding="async"><span class="dev-island" aria-hidden="true"></span></div></div>
-            <img class="show-logo" src="/assets/home/logo-haea.webp" alt="" width="660" height="710" loading="lazy" fetchpriority="low" decoding="async">
+            <div class="dev dev-phone"><div class="dev-body"><img class="dev-screen" src="/assets/home/screen-haea.webp" srcset="/assets/home/screen-s-haea.webp 400w, /assets/home/screen-haea.webp 620w" sizes="(max-width: 820px) 300px, 300px" alt="haea Today screen on an iPhone" width="620" height="1348" loading="lazy" fetchpriority="low" decoding="async"><span class="dev-island" aria-hidden="true"></span></div></div>
+            <img class="show-logo" src="/assets/home/logo-haea.webp" srcset="/assets/home/logo-s-haea.webp 330w, /assets/home/logo-haea.webp 660w" sizes="(max-width: 820px) 140px, 230px" alt="" width="660" height="710" loading="lazy" fetchpriority="low" decoding="async">
           </div>
         </article>
       </section>

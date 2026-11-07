@@ -5,8 +5,6 @@
    and the visitor has not asked for reduced motion. Only transform and
    opacity animate. */
 
-.stage-actions { display: flex; flex-wrap: wrap; gap: 12px; }
-
 .showcase { padding: clamp(56px, 9vw, 120px) 0 clamp(24px, 4vw, 48px); }
 
 .showcase-head {

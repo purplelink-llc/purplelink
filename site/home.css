@@ -253,3 +253,5 @@
   .dock-app:hover,
   .dock-app:focus-visible { transform: none; }
 }
+
+.stage-actions { display: flex; flex-wrap: wrap; gap: 12px; }
