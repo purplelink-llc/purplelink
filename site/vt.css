@@ -20,11 +20,11 @@
   html:not(:has([data-vt-active])) .show:target .show-suite-art { view-transition-name: app-art; }
 
   ::view-transition-group(root) { background: var(--bg); }
-  ::view-transition-old(root) { animation: vt-out 0.2s ease-in both; }
-  ::view-transition-new(root) { animation: vt-in 0.3s 0.2s ease-out both; }
+  ::view-transition-old(root) { animation: vt-out 0.3s ease-in both; }
+  ::view-transition-new(root) { animation: vt-in 0.5s 0.35s ease-out both; }
 
   ::view-transition-group(app-art) {
-    animation-duration: 0.5s;
+    animation-duration: 0.85s;
     animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   }
   ::view-transition-old(app-art),
