@@ -255,3 +255,11 @@
 }
 
 .stage-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* Hero icon strip: the first screen gets most attention, so it carries the 3D logos and jumps to each app. */
+.stage-icons { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0 0 28px; padding: 0; list-style: none; }
+.stage-icons a { display: block; border-radius: 16px; transition: transform .25s ease; }
+.stage-icons img { display: block; width: 52px; height: auto; filter: drop-shadow(0 8px 10px oklch(0% 0 0 / 0.35)); }
+.stage-icons a:focus-visible { outline: 2px solid var(--purple); outline-offset: 4px; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) { .stage-icons a:hover { transform: translateY(-4px) scale(1.06); } }
+@media (min-width: 821px) { .stage-icons img { width: 64px; } .stage-icons { gap: 8px 18px; } }
