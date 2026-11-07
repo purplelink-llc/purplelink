@@ -11,13 +11,19 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@react-three/drei": "10.7.9",
+    "@react-three/fiber": "9.8.2",
+    "@react-three/postprocessing": "3.2.2",
     "@remotion/bundler": "^4.0.530",
     "@remotion/captions": "^4.0.530",
     "@remotion/cli": "^4.0.530",
     "@remotion/renderer": "^4.0.530",
+    "@remotion/three": "4.0.530",
+    "postprocessing": "6.39.6",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "remotion": "^4.0.530"
+    "remotion": "^4.0.530",
+    "three": "0.186.1"
   },
   "private": "true",
   "overrides": {
