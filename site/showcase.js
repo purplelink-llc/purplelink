@@ -20,3 +20,19 @@
     });
   });
 })();
+
+/* Mark the scene whose link was clicked, so its render can travel to the next
+   page (see vt.css). Harmless where view transitions are not supported. */
+(function () {
+  function clear() {
+    document.querySelectorAll('[data-vt-active]').forEach(function (n) { n.removeAttribute('data-vt-active'); });
+  }
+  window.addEventListener('pageshow', clear);
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('.show a[href^="/"]');
+    if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
+    var art = a.closest('.show').querySelector('.show-logo, .show-suite-art');
+    clear();
+    if (art) art.setAttribute('data-vt-active', '');
+  });
+})();
