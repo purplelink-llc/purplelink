@@ -137,9 +137,10 @@
   border: 1px solid color-mix(in oklch, var(--purple) 30%, var(--line)); border-radius: 16px;
   background: color-mix(in oklch, var(--purple) 6%, var(--panel));
   overflow: hidden;
-  transition: border-color 0.2s ease-out, transform 0.2s ease-out;
+  transition: border-color 200ms var(--motion-ease), box-shadow 200ms var(--motion-ease), transform 200ms var(--motion-ease);
 }
-.tools-index .tix-feature:hover { transform: translateY(-1px); border-color: var(--purple-dim); box-shadow: var(--elev-2); }
+.tools-index .tix-feature:hover { border-color: var(--purple-dim); box-shadow: var(--elev-2); }
+@media (hover: hover) and (pointer: fine) { .tools-index .tix-feature:hover { transform: translateY(-1px); } }
 .tix-feature-copy { display: flex; flex-direction: column; gap: 10px; }
 .tools-index .tix-feature h3 { font-family: var(--font-display); font-size: clamp(1.5rem, 2.4vw, 1.9rem); margin: 0; letter-spacing: -0.02em; }
 .tix-feature-text { color: var(--muted); line-height: 1.55; text-wrap: pretty; }
@@ -155,9 +156,10 @@
   display: flex; flex-direction: column; gap: 8px;
   padding: 0 0 22px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
   background: var(--panel);
-  transition: border-color 0.2s ease-out, transform 0.2s ease-out;
+  transition: border-color 200ms var(--motion-ease), box-shadow 200ms var(--motion-ease), transform 200ms var(--motion-ease);
 }
-.tools-index .tix-app:hover { transform: translateY(-1px); border-color: var(--purple-dim); box-shadow: var(--elev-2); }
+.tools-index .tix-app:hover { border-color: var(--purple-dim); box-shadow: var(--elev-2); }
+@media (hover: hover) and (pointer: fine) { .tools-index .tix-app:hover { transform: translateY(-1px); } }
 .tools-index .tix-app > :not(.tix-app-shot) { margin-left: 22px; margin-right: 22px; }
 .tix-app-shot { margin: 0 0 10px; border-radius: 0; border-width: 0 0 1px; }
 .tix-app-shot img { display: block; width: 100%; height: auto; border-radius: 0; }
@@ -203,6 +205,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tix-rail a, .tools-index a.tool-card, .tools-index a.tool-card h3, .tools-index .tix-feature, .tools-index .tix-app { transition: none; }
-  .tools-index .tix-feature:hover, .tools-index .tix-app:hover { transform: none; }
+  .tix-rail a, .tools-index a.tool-card, .tools-index a.tool-card h3 { transition: none; }
+  .tools-index .tix-feature, .tools-index .tix-app { transition: border-color 200ms var(--motion-ease), box-shadow 200ms var(--motion-ease); }
 }

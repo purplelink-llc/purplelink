@@ -201,7 +201,8 @@
   display: block;
 }
 
-.stage-thumb:hover { opacity: 0.95; transform: translateY(-2px); }
+.stage-thumb:hover { opacity: 0.95; }
+@media (hover: hover) and (pointer: fine) { .stage-thumb:hover { transform: translateY(-2px); } }
 .stage-thumb.is-active { opacity: 1; }
 
 .stage-thumb.is-active::after {
@@ -373,7 +374,7 @@
   height: 100%;
   object-fit: cover;
   z-index: -2;
-  transition: transform 1.2s var(--ease-out);
+  transition: transform 0.4s var(--ease-out);
 }
 
 .shop-scrim {
@@ -412,10 +413,12 @@
 
 .shop-cta span { display: inline-block; transition: transform 0.35s var(--ease-out); }
 
-.shop:hover img,
 .shop:focus-visible img { transform: scale(1.045); }
-.shop:hover .shop-cta span,
 .shop:focus-visible .shop-cta span { transform: translateX(6px); }
+@media (hover: hover) and (pointer: fine) {
+  .shop:hover img { transform: scale(1.045); }
+  .shop:hover .shop-cta span { transform: translateX(6px); }
+}
 
 .shop:focus-visible {
   outline: 3px solid var(--purple);
@@ -434,10 +437,10 @@
       animation: shop-parallax linear both;
       animation-timeline: view();
       scale: 1.06;
-      transition: scale 1.2s var(--ease-out);
+      transition: scale 0.4s var(--ease-out);
     }
-    .shop:hover img,
     .shop:focus-visible img { transform: none; scale: 1.09; }
+    @media (hover: hover) and (pointer: fine) { .shop:hover img { transform: none; scale: 1.09; } }
   }
 }
 
@@ -477,11 +480,12 @@
 .license-list a:hover,
 .license-list a:focus-visible { background: var(--purple-xlight); }
 
-.license-list a:hover .license-name,
 .license-list a:focus-visible .license-name { transform: translateX(10px); }
-
-.license-list a:hover .license-go,
 .license-list a:focus-visible .license-go { transform: translateX(6px); }
+@media (hover: hover) and (pointer: fine) {
+  .license-list a:hover .license-name { transform: translateX(10px); }
+  .license-list a:hover .license-go { transform: translateX(6px); }
+}
 
 .license-more { margin-top: 22px; max-width: 46rem; color: var(--muted); }
 .license-more a { color: var(--purple); font-weight: 600; }
@@ -520,7 +524,7 @@
 .more-link:hover { background: var(--purple-dim); }
 .more-link:active { transform: scale(0.98); }
 .more-link span { display: inline-block; transition: transform 0.35s var(--ease-out); }
-.more-link:hover span { transform: translateX(5px); }
+@media (hover: hover) and (pointer: fine) { .more-link:hover span { transform: translateX(5px); } }
 
 .more-disclosure { margin-top: 16px; font-size: 0.9rem; }
 
