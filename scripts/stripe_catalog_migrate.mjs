@@ -103,7 +103,9 @@ for (const name of oldOk ? catalogEnvKeys() : []) {
     const prod = p.product || {};
     const rec = p.recurring;
     const describe = `${prod.name || name} ${(p.unit_amount ?? 0) / 100} ${p.currency}${rec ? ` per ${rec.interval}` : ""}`;
-    const productKey = prod.metadata?.product || "";
+    // Old products often carry no metadata.product; the env name (STRIPE_PRICE_OUTBOUND_VEIL) maps to the same key.
+    const envKey = name.replace(/^STRIPE_PRICE_/, "").toLowerCase().replace(/_/g, "-");
+    const productKey = prod.metadata?.product || (Object.hasOwn(MP_TAX_CODES, envKey) ? envKey : "");
     const price = await ensurePrice({
       lookup, describe,
       create: () => {
