@@ -291,13 +291,22 @@
 
 /* ---------- game feedback: used by the games through PLFX ---------- */
 @keyframes fx-flip { 0% { transform: rotateX(0); } 50% { transform: rotateX(90deg); } 100% { transform: rotateX(0); } }
-@keyframes fx-pop { 0% { transform: scale(1); } 40% { transform: scale(1.14); } 100% { transform: scale(1); } }
+@keyframes fx-pop { 0% { transform: scale(1); } 40% { transform: scale(1.06); } 100% { transform: scale(1); } }
 @keyframes fx-shake { 0%, 100% { transform: none; } 20% { transform: translateX(-6px); } 40% { transform: translateX(5px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(3px); } }
 @keyframes fx-hop { 0%, 100% { transform: none; } 40% { transform: translateY(-14px); } 70% { transform: translateY(2px); } }
 @keyframes fx-flash { 0% { filter: brightness(1.7); } 100% { filter: none; } }
 @keyframes fx-glow { 0% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--gc, var(--purple)) 70%, transparent); } 100% { box-shadow: 0 0 0 14px transparent; } }
-.fx-flip { animation: fx-flip 0.5s ease-in-out backwards; }
-.fx-pop { animation: fx-pop 0.14s ease-out; }
+.fx-flip { animation: fx-flip 0.3s ease-in-out backwards; }
+.fx-flip[data-col="1"] { animation-delay: 60ms; }
+.fx-flip[data-col="2"] { animation-delay: 120ms; }
+.fx-flip[data-col="3"] { animation-delay: 180ms; }
+.fx-flip[data-col="4"] { animation-delay: 240ms; }
+.fx-flip[data-col="5"] { animation-delay: 300ms; }
+.fx-flip[data-col="6"] { animation-delay: 360ms; }
+.fx-flip[data-col="7"] { animation-delay: 420ms; }
+.fx-flip[data-col="8"] { animation-delay: 480ms; }
+.fx-flip[data-col="9"] { animation-delay: 540ms; }
+.fx-pop { animation: fx-pop 0.12s ease-out; }
 .fx-shake { animation: fx-shake 0.38s ease-out; }
 .fx-hop { animation: fx-hop 0.6s ease-out backwards; }
 .fx-flash { animation: fx-flash 0.5s ease-out; }
