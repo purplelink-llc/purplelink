@@ -531,5 +531,34 @@
    "ok": true,
    "utm_content": "howto-find-and-replace-misses-names-in-transcript-reel"
   }
+ },
+ {
+  "slug": "howto-too-many-unprocessed-floats",
+  "app": "moderntex",
+  "date": "2026-11-08",
+  "title": "Too many unprocessed floats on Mac (add \\clearpage between runs of figures)",
+  "long_id": "e3drNH1cz0E",
+  "short_id": "AW--VcxHkag",
+  "link_arm": "A",
+  "link_utm_content": "howto-too-many-unprocessed-floats",
+  "short_utm_content": "howto-too-many-unprocessed-floats-short",
+  "sources": [
+   "https://texfaq.org/FAQ-tmupfl",
+   "https://groups.google.com/g/comp.text.tex/c/waS203fPTaI"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "e3drNH1cz0E",
+    "caption_id": "AUieDaZJG2j_27tHpfxgvzGkl6T5C4IvMFskridELRJ1TbFSXT5dNVAu"
+   },
+   "short": {
+    "video_id": "AW--VcxHkag",
+    "caption_id": "AUieDaaKg1DmvNozqTlYCgbpOWcsnZW6xtsx8_cBtPTGiRrYC-8D-T9j"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-too-many-unprocessed-floats-reel"
+  }
  }
 ]
