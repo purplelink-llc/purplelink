@@ -77,6 +77,35 @@ test("endpoint problems: missing, disabled, wrong events, unreadable, other site
   assert.match(check(r, "Stripe webhook endpoint").detail, /getmuscleonglp\.com/);
 });
 
+test("one unreadable account is named and does not hide the readable one", () => {
+  const ok = check(run({ unreadable: ["new Stripe account"] }), "Stripe webhook endpoint");
+  assert.equal(ok.status, "warn");
+  assert.match(ok.detail, /Enabled and listening/);
+  assert.match(ok.detail, /new Stripe account/);
+  const none = check(run({ endpoints: [], unreadable: ["new Stripe account"] }), "Stripe webhook endpoint");
+  assert.equal(none.status, "warn");
+  assert.match(check(run({ endpoints: null, unreadable: ["new Stripe account"] }), "Stripe webhook endpoint").detail, /new Stripe account/);
+});
+
+test("handler: a key without endpoint access is named, the other account still read", async () => {
+  env.STRIPE_SECRET_KEY_NEW = "sk_test_new";
+  globalThis.fetch = async (url, init) => {
+    const u = String(url);
+    const auth = init?.headers?.Authorization || "";
+    if (u.includes("/v1/webhook_endpoints") && auth.includes("sk_test_new")) return new Response("forbidden", { status: 403 });
+    if (u.includes("/v1/webhook_endpoints")) return new Response(JSON.stringify({ data: [endpoint()], has_more: false }));
+    return new Response(JSON.stringify({ data: [], has_more: false }));
+  };
+  try {
+    const body = await (await call({ headers: { "x-stats-token": env.STATS_TOKEN } })).json();
+    const c = body.checks.find((x) => x.check === "Stripe webhook endpoint");
+    assert.equal(c.status, "warn");
+    assert.match(c.detail, /Enabled and listening on the account that could be read\. .*new Stripe account/);
+  } finally {
+    delete env.STRIPE_SECRET_KEY_NEW;
+  }
+});
+
 test("nothing identifying a buyer is returned", () => {
   const s = session("cs_live_iiiiii999999", 2 * HOUR, { customer_details: { email: "buyer@example.com", name: "A Buyer" }, customer_email: "buyer@example.com" });
   const out = JSON.stringify(run({ sessions: [s], events: [] }));

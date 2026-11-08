@@ -27,7 +27,7 @@
  */
 
 import { timingSafeEqual } from "node:crypto";
-import { lookupKeys } from "../lib/stripe-account.mjs";
+import { isNewKey, lookupKeys } from "../lib/stripe-account.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 const STRIPE_VERSION = "2024-06-20";   // pinned, as in sales.mjs
@@ -94,19 +94,25 @@ const worst = (a, b) => ({ ok: 0, warn: 1, bad: 2 }[b] > { ok: 0, warn: 1, bad: 
  * sessions: Checkout Session objects; events: checkout.session.completed events;
  * endpoints: webhook endpoint objects or null when they could not be read.
  */
-export function evaluate({ sessions, events, endpoints, now, days, truncated = false }) {
+export function evaluate({ sessions, events, endpoints, now, days, truncated = false, unreadable = [] }) {
   const checks = [];
   let status = "ok";
   const add = (check, s, detail) => { checks.push({ n: checks.length + 1, check, status: s, detail }); status = worst(status, s); };
+  // Accounts whose endpoints could not be read: named, so the fix (give that account's key read access to
+  // Webhook Endpoints) is obvious, and never allowed to hide what the readable accounts show.
+  const blind = unreadable.length
+    ? `Could not read the webhook endpoints on the ${unreadable.join(" and ")}. Its Stripe key needs read access to Webhook Endpoints.`
+    : "";
 
   // 1. the endpoint
   if (endpoints == null) {
-    add("Stripe webhook endpoint", "warn", "Could not read the webhook endpoints. The Stripe key may lack read access to them.");
+    add("Stripe webhook endpoint", "warn", blind || "Could not read the webhook endpoints. The Stripe key may lack read access to them.");
   } else {
     const ours = endpoints.filter((e) => String(e.url || "").includes(WEBHOOK_PATH));
     const enabled = ours.filter((e) => e.status === "enabled");
     const listening = enabled.filter((e) => (e.enabled_events || []).some((t) => t === "*" || t === EVENT_TYPE));
-    if (!ours.length) add("Stripe webhook endpoint", "bad", `No webhook endpoint points at ${WEBHOOK_PATH}. No order is being delivered.`);
+    if (blind && !listening.length) add("Stripe webhook endpoint", "warn", `${blind} No listening endpoint was found on the account that could be read.`);
+    else if (!ours.length) add("Stripe webhook endpoint", "bad", `No webhook endpoint points at ${WEBHOOK_PATH}. No order is being delivered.`);
     else if (!enabled.length) add("Stripe webhook endpoint", "bad", "The webhook endpoint is disabled in Stripe. No order is being delivered.");
     else if (!listening.length) add("Stripe webhook endpoint", "bad", `The webhook endpoint does not listen for ${EVENT_TYPE}.`);
     else {
@@ -114,6 +120,7 @@ export function evaluate({ sessions, events, endpoints, now, days, truncated = f
       // listens for checkouts is a site whose buyers get nothing.
       const off = endpoints.filter((e) => e.status !== "enabled" && (e.enabled_events || []).some((t) => t === "*" || t === EVENT_TYPE));
       if (off.length) add("Stripe webhook endpoint", "warn", `Purplelink's endpoint is fine, but ${off.length} other endpoint(s) that listen for checkouts are disabled: ${off.map((e) => new URL(e.url).host).join(", ")}.`);
+      else if (blind) add("Stripe webhook endpoint", "warn", `Enabled and listening on the account that could be read. ${blind}`);
       else add("Stripe webhook endpoint", "ok", "Enabled and listening for completed checkouts.");
     }
   }
@@ -180,16 +187,24 @@ export default async function handler(request) {
   const since = String(now - days * 86400);
 
   try {
-    const [sessions, events, endpoints] = await Promise.all([
+    const [sessions, events, perAccount] = await Promise.all([
       stripeListAll("/checkout/sessions", [["created[gte]", since]], keys),
       stripeListAll("/events", [["type", EVENT_TYPE], ["created[gte]", since]], keys),
-      Promise.all(keys.map((k) => stripeGet("/webhook_endpoints", new URLSearchParams({ limit: "100" }), k).then((b) => b.data || [])))
-        .then((lists) => lists.flat()).catch(() => null),
+      // Each account on its own: one restricted key must not hide the other account's endpoints.
+      Promise.all(keys.map((k) => stripeGet("/webhook_endpoints", new URLSearchParams({ limit: "100" }), k)
+        .then((b) => ({ rows: b.data || [] }))
+        .catch((err) => {
+          const label = isNewKey(k) ? "new Stripe account" : "old Stripe account";
+          console.error(`delivery-health: webhook endpoints unreadable on the ${label}:`, String(err?.message || err).slice(0, 120));
+          return { rows: null, label };
+        }))),
     ]);
+    const readable = perAccount.filter((p) => p.rows);
     const result = evaluate({
       sessions: sessions.rows,
       events: events.rows,
-      endpoints,
+      endpoints: readable.length ? readable.flatMap((p) => p.rows) : null,
+      unreadable: perAccount.filter((p) => !p.rows).map((p) => p.label),
       now,
       days,
       truncated: sessions.truncated || events.truncated,
