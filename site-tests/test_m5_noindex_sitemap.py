@@ -3,7 +3,7 @@ import unittest
 import xml.etree.ElementTree as ET
 from common import SITE, ORIGIN, read_site, has_noindex, sitemap_locs, sitemap_paths
 
-HIDDEN = ["/binnacle/", "/binnacle/terms/", "/budgetcast/", "/budgetcast/privacy/"]
+HIDDEN = ["/binnacle/", "/binnacle/terms/"]
 
 
 class HiddenPages(unittest.TestCase):
@@ -22,6 +22,18 @@ class RemovedPages(unittest.TestCase):
         self.assertFalse((SITE / "watchlight").exists())
         toml = (SITE.parent / "netlify.toml").read_text(encoding="utf-8")
         self.assertRegex(toml, r'from = "/watchlight/\*"\n  to = "/404.html"\n  status = 410\n  force = true')
+
+    def test_budgetcast_removed(self):
+        """Budgetcast was killed 2026-10-14; its pages are gone and answer 410."""
+        self.assertFalse((SITE / "budgetcast").exists())
+        toml = (SITE.parent / "netlify.toml").read_text(encoding="utf-8")
+        self.assertRegex(toml, r'from = "/budgetcast/\*"\n  to = "/404.html"\n  status = 410\n  force = true')
+
+    def test_focus_radio_redirects_to_hearthside(self):
+        """Focus Radio was retired 2026-11-08; its address goes to the Hearthside Pixels channel."""
+        self.assertFalse((SITE / "focus-radio").exists())
+        toml = (SITE.parent / "netlify.toml").read_text(encoding="utf-8")
+        self.assertRegex(toml, r'from = "/focus-radio/\*"\n  to = "https://www.youtube.com/@PixelHearthMusic"\n  status = 301')
 
 
 class Sitemap(unittest.TestCase):
