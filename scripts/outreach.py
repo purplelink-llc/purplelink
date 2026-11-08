@@ -61,7 +61,7 @@ TEXSE_OUT = OUT / "02-community" / "texse-candidates.md"
 LINKEDIN_POSTER = ROOT / "backend" / "scripts" / "linkedin_post.py"
 
 PYTHON = sys.executable
-SENDER_NAME = "Benjamin Ampel"
+SENDER_NAME = "Ben from Purplelink LLC"
 SENDERS = [  # first one whose Keychain item exists wins
     ("ben@purplelink.llc", "icloud-smtp", "smtp.mail.me.com", 587),
     ("ben.ampel@gmail.com", "gmail-imap", "smtp.gmail.com", 465),
