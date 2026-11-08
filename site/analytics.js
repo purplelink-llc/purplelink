@@ -175,8 +175,22 @@
     } catch (e) { /* analytics must never break the page */ }
   }
 
+  // Link checkers and preview fetchers that run JavaScript click the trial link within a moment of loading the page
+  // and never touch it. Trial beacons therefore carry how long the page had been open (dwell_ms) and whether the
+  // visitor had pressed, typed or scrolled before the click (interacted). The server labels the quick, untouched
+  // ones "suspect" and counts them apart; nothing is dropped. Two numbers and a flag, no identifier, nothing stored here.
+  var pageStart = (window.performance && performance.now) ? performance.now() : 0;
+  var interacted = false;
+  ["pointerdown", "keydown", "scroll"].forEach(function (n) {
+    try { window.addEventListener(n, function () { interacted = true; }, { capture: true, passive: true, once: true }); } catch (e) { /* older browser: no flag */ }
+  });
+
   window.plTrack = function (type, meta) {
     var ev = { t: type || "event", p: location.pathname, h: location.hostname, r: refHost(), u: utmSource(), m: meta || "" };
+    if (/_?trial_download$/.test(type || "") && window.performance && performance.now) {
+      ev.dwell_ms = Math.max(0, Math.round(performance.now() - pageStart));
+      ev.interacted = interacted;
+    }
     if (type === "pageview" || FUNNEL.test(type || "")) { ev.ft = channel(); var fc = contentTag(); if (fc) ev.fc = fc; }
     send(ev);
   };
