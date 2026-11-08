@@ -4154,6 +4154,10 @@ AD_FUNNEL_SINCE = "2026-10-07"  # first day analytics.js sends the first-touch c
 # published inside its window. tagged_links.json records hand-tagged batches; the how-to ledger adds its own videos.
 LINK_CHECK_VIEWS_PER_URL = 2
 LINK_CHECK_TRIALS_PER_URL = 2
+# From this day the site labels a trial click under 1.5 s with no interaction as suspect and leaves it out of "trial"
+# (PR 644, merged 2026-11-08, live with that day's 17:00 build). Link checkers' trials are then already gone, so the
+# trial part of the allowance applies only to URLs published before it. Page views are not labelled: that part stays.
+TRIAL_LABEL_SINCE = "2026-11-09"
 # launchd runs a copy of this file from ~/.purplelink/traffic (see the photo-dashboard note below), so each file is
 # looked up next to the script first and then at its place in the repo.
 _REPO = Path("/Volumes/Extreme SSD/Purplelink LLC")
@@ -4190,21 +4194,25 @@ def tagged_link_batches() -> list[dict]:
     return sorted(out, key=lambda b: b["date"])
 
 
-def link_check_allowance(as_of: str, days: int, batches: list[dict] | None = None) -> dict:
-    """{channel: urls published in the window ending as_of} (inclusive, `days` long)."""
+def link_check_allowance(as_of: str, days: int, batches: list[dict] | None = None,
+                         before: str | None = None) -> dict:
+    """{channel: urls published in the window ending as_of} (inclusive, `days` long); with `before`, only URLs
+    published before that day."""
     end = dt.date.fromisoformat(as_of)
     start = (end - dt.timedelta(days=days - 1)).isoformat()
     per: dict[str, int] = {}
     for b in tagged_link_batches() if batches is None else batches:
-        if start <= b["date"] <= end.isoformat():
+        if start <= b["date"] <= end.isoformat() and (before is None or b["date"] < before):
             per[b["channel"]] = per.get(b["channel"], 0) + int(b["urls"])
     return per
 
 
-def human_estimate(pageviews: int, trials: int, urls: int) -> tuple[int, int]:
-    """Page views and trials left after the link-check allowance for `urls` new tagged URLs (never below 0)."""
+def human_estimate(pageviews: int, trials: int, urls: int, trial_urls: int | None = None) -> tuple[int, int]:
+    """Page views and trials left after the link-check allowance for `urls` new tagged URLs (never below 0).
+    `trial_urls` is how many of them still need a trial allowance (published before TRIAL_LABEL_SINCE)."""
+    trial_urls = urls if trial_urls is None else trial_urls
     return (max(0, pageviews - LINK_CHECK_VIEWS_PER_URL * urls),
-            max(0, trials - LINK_CHECK_TRIALS_PER_URL * urls))
+            max(0, trials - LINK_CHECK_TRIALS_PER_URL * trial_urls))
 
 
 def looks_like_scanner(v: dict) -> bool:
@@ -4224,7 +4232,9 @@ def print_ad_funnel(history: dict) -> None:
         return
     days = af.get("days", AD_FUNNEL_DAYS)
     print(f"\n  Funnel by first-touch channel, last {days} days (tracking began {AD_FUNNEL_SINCE}; each visitor counted under how they first arrived)")
-    allow = link_check_allowance(af.get("asOf") or dt.date.today().isoformat(), days)
+    as_of = af.get("asOf") or dt.date.today().isoformat()
+    allow = link_check_allowance(as_of, days)
+    allow_trials = link_check_allowance(as_of, days, before=TRIAL_LABEL_SINCE)
     rows, scanners = [], []
     raw_trials = est_trials = 0
     for name, v in ch.items():
@@ -4233,7 +4243,7 @@ def print_ad_funnel(history: dict) -> None:
         trials = sum((v.get("trial") or {}).values())
         buys = sum((v.get("checkout") or {}).values())
         urls = allow.get(name, 0)
-        hpv, htr = human_estimate(v.get("pageviews", 0), trials, urls)
+        hpv, htr = human_estimate(v.get("pageviews", 0), trials, urls, allow_trials.get(name, 0))
         raw_trials, est_trials = raw_trials + trials, est_trials + htr
         if not urls and "." not in name and ":" not in name and name != "direct" and looks_like_scanner(v):
             scanners.append(name)
@@ -4247,7 +4257,8 @@ def print_ad_funnel(history: dict) -> None:
         print(line)
     if est_trials != raw_trials:
         print(f"   Trials, all channels: {raw_trials} counted, about {est_trials} after the link-check allowance "
-              f"({LINK_CHECK_VIEWS_PER_URL} views and up to {LINK_CHECK_TRIALS_PER_URL} trials per new tagged URL; "
+              f"({LINK_CHECK_VIEWS_PER_URL} views and up to {LINK_CHECK_TRIALS_PER_URL} trials per new tagged URL, trials only "
+              f"for URLs published before {TRIAL_LABEL_SINCE}, when suspect labelling began; "
               "an estimate, a real early visitor is subtracted too)")
     if scanners:
         print(f"   Tags with only 1 or 2 views and nothing else (on an email tag this is often a mail scanner opening the "
