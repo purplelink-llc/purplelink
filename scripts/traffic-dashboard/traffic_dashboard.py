@@ -540,9 +540,20 @@ def fetch_app_stats_blobs(app: str) -> dict | None:
         return None
 
 
-def app_stats_summary(entry: dict | None, today: dt.date | None = None) -> dict | None:
+def own_update_rows(updates: dict | None, product: str | None) -> dict:
+    """The in-app update rows (DMG file name -> count) that belong to `product`: a file name that starts with the
+    product name followed by '-' (Summonly-1.4.0.dmg for summonly). Rows for another app are dropped, so one app's
+    update counts can never show under a different app's block. With no product the rows pass through unchanged."""
+    rows = dict(updates or {})
+    if not product:
+        return rows
+    prefix = product.lower() + "-"
+    return {k: n for k, n in rows.items() if str(k).lower().startswith(prefix)}
+
+
+def app_stats_summary(entry: dict | None, today: dt.date | None = None, product: str | None = None) -> dict | None:
     """Totals from one app's stored counters: public and buyer downloads (all time, last 7 complete days,
-    today) and in-app updates by version."""
+    today) and in-app updates by version. With `product`, only that product's update rows are kept."""
     if not entry:
         return None
     today = today or dt.date.today()
@@ -553,7 +564,8 @@ def app_stats_summary(entry: dict | None, today: dt.date | None = None) -> dict 
     t = by_day.get(today.isoformat()) or {}
     return {"publicAll": sum((entry.get("public") or {}).values()), "buyerAll": sum((entry.get("buyer") or {}).values()),
             "public7": pub7, "buyer7": buy7, "publicToday": t.get("public", 0), "buyerToday": t.get("buyer", 0),
-            "updates": dict(sorted((entry.get("updates") or {}).items())), "updatesAll": sum((entry.get("updates") or {}).values()),
+            "updates": dict(sorted(own_update_rows(entry.get("updates"), product).items())),
+            "updatesAll": sum(own_update_rows(entry.get("updates"), product).values()),
             "firstDay": min(by_day) if by_day else None}
 
 
@@ -4677,7 +4689,7 @@ def panely_report(history: dict) -> dict | None:
                           ledger_match=lambda x: x.get("product") == "panely" and x.get("kind") == "purchase")
     if r is not None:
         r["suiteOrders"] = _suite_orders(history)
-        r["server"] = app_stats_summary((history.get("appStats") or {}).get("panely"))
+        r["server"] = app_stats_summary((history.get("appStats") or {}).get("panely"), product="panely")
     return r
 
 
@@ -4688,7 +4700,7 @@ def summonly_report(history: dict) -> dict | None:
                           ledger_match=lambda x: x.get("product") == "summonly" and x.get("kind") == "purchase")
     if r is not None:
         r["suiteOrders"] = _suite_orders(history)
-        r["server"] = app_stats_summary((history.get("appStats") or {}).get("summonly"))
+        r["server"] = app_stats_summary((history.get("appStats") or {}).get("summonly"), product="summonly")
     return r
 
 
@@ -7117,7 +7129,7 @@ def main() -> int:
             app_entry = fetch_app_stats_blobs(app_key)
             if app_entry is not None:
                 history.setdefault("appStats", {})[app_key] = app_entry
-                sm_ = app_stats_summary(app_entry)
+                sm_ = app_stats_summary(app_entry, product=app_key)
                 print(f"  ok {app_key.title()} downloads: {sm_['publicAll']} public, {sm_['buyerAll']} buyer, "
                       f"{sm_['updatesAll']} in-app update(s)")
 

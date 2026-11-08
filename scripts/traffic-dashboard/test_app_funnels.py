@@ -87,3 +87,20 @@ def test_print_panely_and_summonly_say_what_is_and_is_not_measured(capsys):
     assert "Panely (Mac app, $9.99" in out and "5 public (trial)" in out and "Panely-1.0.0 x3" in out and "trials started" in out
     td.print_summonly(td.summonly_report(h))
     assert "not available this run" in capsys.readouterr().out      # no counters archived for Summonly yet
+
+
+def test_summonly_update_rows_never_show_under_outbound_veil(capsys):
+    # The Outbound Veil block has no update counter. Summonly's update rows stay with Summonly, and any file that is
+    # not Summonly's (a Panely or Outbound Veil DMG in the same store) is dropped from Summonly's own list.
+    h = _two_apps_history({"a": _row("summonly")})
+    h["appStats"] = {"summonly": {"updates": {"Summonly-1.3.1.dmg": 1, "Summonly-1.4.0.dmg": 3, "Panely-1.0.0.dmg": 9},
+                                  "public": {}, "buyer": {}, "byDay": {}}}
+    td.print_outbound_veil(td.outbound_veil_report(h))
+    ov = capsys.readouterr().out
+    assert "Summonly" not in ov and "In-app updates installed" not in ov
+    sv = td.summonly_report(h)["server"]
+    assert list(sv["updates"]) == ["Summonly-1.3.1.dmg", "Summonly-1.4.0.dmg"] and sv["updatesAll"] == 4
+    td.print_summonly(td.summonly_report(h))
+    out = capsys.readouterr().out
+    assert "Summonly-1.4.0 x3" in out and "Panely" not in out
+    assert td.own_update_rows({"A-1.dmg": 1}, None) == {"A-1.dmg": 1}

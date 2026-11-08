@@ -5,7 +5,8 @@
  *   body: { t: "pageview"|"tool_use"|..., p: path, h: host, r: referrer-host,
  *           u: utm_source, m: meta (e.g. the tool's API path),
  *           ft: first-touch channel label, funnel events only,
- *           fc: first-touch link tag (utm_content), funnel events only }
+ *           fc: first-touch link tag (utm_content), funnel events only,
+ *           dwell_ms, interacted: trial downloads only (see isSuspectTrial) }
  *
  * Complements the existing Cloudflare Web Analytics (which gives sampled
  * pageviews but no custom events) by recording which LaTeX tools are actually
@@ -37,6 +38,12 @@ const BOT_RE = /bot|spider|crawl|slurp|bingpreview|headless|lighthouse|preview|f
 export const MAX_BODY_BYTES = 2048;
 export const DAILY_EVENT_LIMIT = 500;
 const TYPE_RE = /^[a-z0-9_]{1,32}$/;
+
+// Under this many milliseconds on the page with no press, key or scroll first: not a person reading a product page.
+export const SUSPECT_DWELL_MS = 1500;
+export function isSuspectTrial(rec) {
+  return typeof rec.dwell_ms === "number" && rec.dwell_ms < SUSPECT_DWELL_MS && rec.interacted === false;
+}
 
 function clip(v, n) {
   return String(v == null ? "" : v).slice(0, n);
@@ -125,6 +132,14 @@ export default async function handler(request, context) {
   const rec = { type, path, host, refHost, utm, meta, vid, ts: Date.now(), cc: countryCode(request, context) };
   if (ft) { rec.ft = ft; rec.os = osFamily(ua); }
   if (fc) rec.fc = fc;
+  // Trial downloads carry how long the page had been open and whether the visitor interacted first (analytics.js).
+  // Both are kept, and a quick click with no interaction is labelled suspect (a link checker, not a person). The event
+  // is never dropped; stats.mjs counts suspect trials apart. Events without the fields (cached older pages) are plain trials.
+  if (/_?trial_download$/.test(type) && Number.isFinite(b.dwell_ms) && typeof b.interacted === "boolean") {
+    rec.dwell_ms = Math.min(Math.max(Math.round(b.dwell_ms), 0), 86400000);
+    rec.interacted = b.interacted;
+    if (isSuspectTrial(rec)) rec.suspect = true;
+  }
 
   // Per-IP daily cap, same shared "rate-limits" store pattern as the other functions. The key holds a hash of the IP,
   // never the IP. Over the cap the event is dropped quietly; a limiter error never blocks the beacon.
