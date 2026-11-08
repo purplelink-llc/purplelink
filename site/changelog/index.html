@@ -73,6 +73,15 @@
         <span class="changelog-date">November 8, 2026</span>
         <div class="changelog-content">
           <span class="changelog-tag tag-update">Update</span>
+          <h2>Legroom 1.12.0</h2>
+          <p>The merged worktrees rule removes more finished worktrees. A worktree is no longer kept just because it holds ignored files that rebuild themselves: a <code>next-env.d.ts</code> beside a <code>package.json</code>, a Gradle build folder, or files the project's <code>.gitignore</code> says a script generates or copies. Any other ignored file, and anything named like a secret, key or database, still keeps the worktree. Because the rule now removes more, Legroom asks you to approve it again. <a href="/legroom/">Legroom</a>.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">November 8, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
           <h2>ModernTex 2.6.2</h2>
           <p>The equation preview no longer covers what you are typing. It sits below the formula (below <code>\end{equation}</code> for a display equation) and moves above only when there is no room. It stays over the editor and never reaches into the PDF pane, shrinking a long formula to fit. The equation number is left out, and Format &gt; Equation Preview Size now offers 100%. <a href="/moderntex/">ModernTex</a></p>
         </div>
