@@ -1,0 +1,114 @@
+{
+ "id": "howto-too-many-unprocessed-floats",
+ "app": "moderntex",
+ "title": "Too many unprocessed floats on Mac (add \\clearpage between runs of figures)",
+ "short_title": "LaTeX says Too many unprocessed floats? Add \\clearpage",
+ "url": "purplelink.llc/moderntex",
+ "page": "https://purplelink.llc/moderntex/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://texfaq.org/FAQ-tmupfl",
+  "https://groups.google.com/g/comp.text.tex/c/waS203fPTaI"
+ ],
+ "verify": {
+  "runs": [
+   {
+    "cmd": "cd \"$(mktemp -d)\" && { print -rl -- '\\documentclass{article}' '\\begin{document}' 'Results.'; for i in {1..60}; do print -r -- \"\\begin{figure}[htbp]\\rule{2cm}{1cm}\\caption{Figure $i}\\end{figure}\"; done; print -r -- '\\end{document}'; } > main.tex && pdflatex -interaction=nonstopmode main.tex > out.txt; grep -m1 '^! LaTeX' out.txt; grep -c 'begin{figure}' main.tex",
+    "output": "! LaTeX Error: Too many unprocessed floats.\n60"
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && { print -rl -- '\\documentclass{article}' '\\begin{document}' 'Results.'; for i in {1..60}; do print -r -- \"\\begin{figure}[htbp]\\rule{2cm}{1cm}\\caption{Figure $i}\\end{figure}\"; [ \"$i\" = 20 -o \"$i\" = 40 ] && print -r -- '\\clearpage'; done; print -r -- '\\end{document}'; } > main.tex && pdflatex -interaction=nonstopmode main.tex > out.txt; grep -c 'clearpage' main.tex; grep -c '^!' out.txt; grep 'Output written' out.txt",
+    "output": "2\n0\nOutput written on main.pdf (9 pages, 17971 bytes)."
+   }
+  ],
+  "docs": [
+   "https://texfaq.org/FAQ-tmupfl"
+  ],
+  "notes": "Each run writes a small article in a fresh temporary folder with sixty figure environments in a row and no text between them, every one marked [htbp], and builds it once with pdfLaTeX from TeX Live 2026. Without \\clearpage the build stops with Too many unprocessed floats: figures wait in a queue for a page break, and the current kernel holds 52 of them. With \\clearpage after figure 20 and figure 40 the queue is emptied twice, the build reports no errors and writes a 9 page PDF. Changing the placement options alone, to [htbp], does not help, which the first run shows."
+ },
+ "scenes": [
+  {
+   "type": "hook",
+   "short": true,
+   "kicker": "LaTeX on a Mac",
+   "title": "Too many unprocessed floats",
+   "sub": "Your figures are waiting for a page that never comes.",
+   "narration": "If LaTeX stops with too many unprocessed floats, the problem is not one figure. It is the queue they wait in."
+  },
+  {
+   "type": "symptom",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ pdflatex main.tex",
+    "! LaTeX Error: Too many unprocessed floats.",
+    "$ grep -c 'begin{figure}' main.tex",
+    "60"
+   ],
+   "narration": "Here is the error. This chapter has sixty figures in a row, with no text between them, and every one already says h t b p."
+  },
+  {
+   "type": "cause",
+   "text": "LaTeX holds each figure in a queue until a page break gives it a place. With no text between figures, no page breaks, and the queue fills up.",
+   "narration": "LaTeX does not place a figure the moment it reads it. It holds it in a queue until a page ends and there is room. With figure after figure and no text, the page never ends, and once the queue is full, the build stops."
+  },
+  {
+   "type": "steps",
+   "short": true,
+   "label": "main.tex",
+   "lines": [
+    "Add \\clearpage after every 20 or so figures",
+    "Or put some text between long runs of figures",
+    "$ pdflatex main.tex"
+   ],
+   "narration": "Add a clear page command after every twenty or so figures. It ends the page and sets every waiting figure before going on. Text between the figures helps too. Then build again."
+  },
+  {
+   "type": "check",
+   "short": true,
+   "label": "Terminal",
+   "ok": "Built without errors",
+   "lines": [
+    "$ grep -c 'clearpage' main.tex",
+    "2",
+    "$ pdflatex main.tex",
+    "Output written on main.pdf (9 pages, 17971 bytes)."
+   ],
+   "narration": "With two clear page commands, the same sixty figures build with no errors, and the PDF has nine pages."
+  },
+  {
+   "type": "app",
+   "name": "ModernTex",
+   "line": "Translates LaTeX build errors into plain explanations with a suggested fix, and marks them in the editor.",
+   "url": "purplelink.llc/moderntex",
+   "img": "site/assets/moderntex-screens/21-error-fix.webp",
+   "icon": "site/assets/moderntex-icon.png",
+   "narration": "If you write LaTeX on a Mac, ModernTex translates build errors into plain explanations with a suggested fix, and marks them in the editor."
+  }
+ ],
+ "thumbs": {
+  "A": {
+   "kind": "diff",
+   "hook": "Stuck figures",
+   "before": "Too many unprocessed floats.",
+   "after": "Output written on main.pdf"
+  },
+  "B": {
+   "kind": "focus",
+   "hook": "Figures\nstuck?",
+   "lines": [
+    "LaTeX Error: Too many",
+    "unprocessed floats."
+   ],
+   "hl": "unprocessed floats."
+  },
+  "C": {
+   "kind": "product",
+   "name": "ModernTex",
+   "line": "Too many floats? Explained",
+   "img": "site/assets/moderntex-screens/21-error-fix.webp",
+   "icon": "site/assets/moderntex-icon.png"
+  }
+ }
+}
