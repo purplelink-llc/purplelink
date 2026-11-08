@@ -19,7 +19,13 @@
   html:not(:has([data-vt-active])) .show:target .show-logo,
   html:not(:has([data-vt-active])) .show:target .show-suite-art { view-transition-name: app-art; }
 
+  /* The browser's default cross-fade adds the two snapshots together
+     (plus-lighter). Over a dark page that sums two dark backgrounds into a
+     grey-white flash, so the page layer blends normally on a solid base. */
+  html { background: var(--bg); }
   ::view-transition-group(root) { background: var(--bg); }
+  ::view-transition-old(root),
+  ::view-transition-new(root) { mix-blend-mode: normal; }
   ::view-transition-old(root) { animation: vt-out 0.3s ease-in both; }
   ::view-transition-new(root) { animation: vt-in 0.5s 0.35s ease-out both; }
 
