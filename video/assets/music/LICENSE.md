@@ -19,4 +19,4 @@ videos. It quotes no existing theme or melody; the prompt describes a style only
   and swagger before the big game, exciting and confident. Serious, not cute, not playful, no cheesy pop. Full
   orchestra with a big brass section and percussion. No vocals."
 
-`mix-circledhoops.py` loops it if an ad runs long and ducks it under the narration.
+`build-circledhoops.mjs` passes it to `mix-circledhoops.py`, which loops it if an ad runs long and ducks it under the narration.
