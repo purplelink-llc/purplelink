@@ -173,13 +173,27 @@ def upload(file: Path, title: str, desc: str, extra: list[str]) -> str:
     return m.group(1)
 
 
+def captions_args(video_id: str, srt: Path) -> list[str]:
+    """yt-captions.py argv. YouTube ids may start with "-" (-7GnRgjBu8s, 2026-11-09), which argparse reads as an
+    option, so the options go first and the positionals after a "--" separator."""
+    return ["--channel", "purplelink", "--", video_id, str(srt)]
+
+
+def reel_args(short_file: Path, short_id: str, title: str, desc_file: str, page: str, long_id: str,
+              utm_content: str = "") -> list[str]:
+    """social.py instagram reel-add argv. Ids ride in --opt=value form so a leading "-" stays the option's value."""
+    return ["instagram", "reel-add", "--video", str(short_file), f"--youtube-id={short_id}", "--title", title,
+            "--description-file", desc_file, "--link", page, f"--also={long_id}",
+            *([f"--utm-content={utm_content}"] if utm_content else [])]
+
+
 def add_captions(video_id: str, srt: Path) -> dict:
     """Caption track from the build's .srt (video/src/howto/srt.js) via scripts/yt-captions.py (channel-guarded).
     Never fails the publish: a missing file, refusal or API error is reported and recorded, the video stays up."""
     if not srt.exists():
         print(f"captions: {srt.name} missing (built before captions existed?); skipped")
         return {"skipped": "no srt"}
-    r = subprocess.run([PY, str(REPO / "scripts" / "yt-captions.py"), video_id, str(srt), "--channel", "purplelink"],
+    r = subprocess.run([PY, str(REPO / "scripts" / "yt-captions.py"), *captions_args(video_id, srt)],
                        capture_output=True, text=True, timeout=300)
     if r.returncode != 0:
         print(f"captions: not added to {video_id} (exit {r.returncode}): {(r.stderr or r.stdout).strip()[-300:]}")
@@ -200,9 +214,7 @@ def add_reel(short_file: Path, short_id: str, title: str, desc: str, page: str, 
     with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False, encoding="utf-8") as fh:
         fh.write(desc)
     try:
-        r = subprocess.run([PY, str(social), "instagram", "reel-add", "--video", str(short_file), "--youtube-id", short_id,
-                            "--title", title, "--description-file", fh.name, "--link", page, "--also", long_id,
-                            *(["--utm-content", utm_content] if utm_content else [])],
+        r = subprocess.run([PY, str(social), *reel_args(short_file, short_id, title, fh.name, page, long_id, utm_content)],
                            capture_output=True, text=True, timeout=1800)
     except Exception as e:
         print(f"instagram: Reel not added ({type(e).__name__}); the channel scan will flag it")
