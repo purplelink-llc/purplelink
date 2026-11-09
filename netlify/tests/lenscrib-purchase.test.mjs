@@ -65,7 +65,7 @@ test("before launch, checkout refuses Lenscrib unless LENSCRIB_SALES_OPEN is 1, 
     assert.equal(res.status, 400, `LENSCRIB_SALES_OPEN=${v}`);
     assert.equal((await res.json()).error, "not_for_sale");
   }
-  assert.equal(calls.filter((c) => c.url.includes("api.stripe.com")).length, 0, "no Stripe session is created");
+  assert.equal(calls.filter((c) => c.url.startsWith("https://api.stripe.com/")).length, 0, "no Stripe session is created");
   env.LENSCRIB_SALES_OPEN = "1";
 });
 
