@@ -87,7 +87,9 @@ fs.mkdirSync(work, { recursive: true });
 // ---- audio, once for all formats ----
 const wav = path.join(work, "mix.wav");
 if (!flag("no-video")) {
-  const spec = { dur: plan.total, vo: plan.vo, sfx: plan.sfx, bed: { ...sb.bed, drop: plan.drop, out_at: plan.total - 1.4 } };
+  // Every Circled Hoops video uses the same music bed (assets/music/LICENSE.md); the storyboard's synth "style" is unused.
+  const track = path.join(ROOT, "assets", "music", "circledhoops-bed.m4a");
+  const spec = { dur: plan.total, vo: plan.vo, sfx: plan.sfx, bed: { ...sb.bed, track, drop: plan.drop, out_at: plan.total - 1.4 } };
   fs.writeFileSync(path.join(work, "mix.json"), JSON.stringify(spec, null, 1));
   console.log(execFileSync("python3", [path.join(ROOT, "mix-circledhoops.py"), path.join(work, "mix.json"), wav], { encoding: "utf8" }).trim());
 }
