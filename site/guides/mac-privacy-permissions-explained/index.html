@@ -34,7 +34,7 @@
         "@id": "https://purplelink.llc/#organization"
       },
       "datePublished": "2026-10-08",
-      "dateModified": "2026-10-08",
+      "dateModified": "2026-11-09",
       "image": "https://purplelink.llc/assets/og/products.png",
       "mainEntityOfPage": "https://purplelink.llc/guides/mac-privacy-permissions-explained/"
     },
@@ -86,7 +86,7 @@
       "name": "Does Apple's October 2026 announcement change anything today?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Not that Apple has said. The note says Apple will add controls going forward and gives no date, no macOS version and no details. Review the Full Disk Access list in System Settings, Privacy & Security now, since it is worth doing either way."
+        "text": "Not on a released macOS yet. Apple has given no date or version. The first macOS 27.3 beta contains early code for it that is switched off. Review the Full Disk Access list in System Settings, Privacy & Security now, since it is worth doing either way."
       }
     },
     {
@@ -177,6 +177,14 @@
         </ul>
         <p><strong>What the note does not say:</strong> when the controls will arrive. It also omits which macOS version will carry them, what they will look like, and whether grants you made earlier will be affected. It says only "going forward". Until Apple ships something, I do not know how existing apps will be affected, and neither does anyone outside Apple. The note is about Full Disk Access only. It says nothing about Input Monitoring or Accessibility.</p>
 
+        <h2 id="macos-27-3-beta">What the macOS 27.3 beta shows so far</h2>
+        <p>The first macOS 27.3 beta contains code that looks like the start of this change. Apple has not documented it, the code is switched off, and betas change before release. What follows comes from <a href="https://www.reddit.com/r/MacOSBeta/comments/1xqifx4/" rel="noopener">a post in r/MacOSBeta</a> and <a href="https://github.com/ipsw-diffs/macos-27/blob/727090bd88949813020653cec4f78ca2a3feaf46/diffs/27_2_26B123_vs_27_3_26C5035r/DYLIBS/System/Library/PrivateFrameworks/TCC.framework/Versions/A/TCC.md" rel="noopener">a public diff of the beta's privacy framework</a>, read on November 9, 2026. I have not installed the beta.</p>
+        <ul>
+          <li><strong>Apps stop appearing in the list on their own.</strong> Today, when an app is refused access to protected files, macOS adds it to the Full Disk Access list with its switch off, and the app asks you to turn it on. With the new code on, refusals are no longer saved. You would add the app yourself: open System Settings, then Privacy &amp; Security, then Full Disk Access, press the plus button and choose the app, or drag it into the list from Applications.</li>
+          <li><strong>A new permission for private folders.</strong> The beta names a new permission set folder by folder, configured like Full Disk Access. It is not fully wired up yet. If it ships, it could let an app reach one protected folder without full access to the disk.</li>
+        </ul>
+        <p>Neither change is in a released version of macOS. This page will be updated when Apple ships 27.3 or says more. Legroom's own steps for Full Disk Access already use the plus button or dragging, so they work either way.</p>
+
         <h2>What each permission lets an app do</h2>
         <p>The first column follows Apple's own descriptions in its <a href="https://support.apple.com/guide/mac-help/mchl211c911f/mac" rel="noopener">Privacy &amp; Security help</a>. The last two are general knowledge about how apps use them, not Apple's wording.</p>
         <div class="u-scroll-x">
@@ -239,7 +247,7 @@
         <ul>
           <li><strong>No safety guarantee.</strong> A permission is a capability. A trustworthy developer can still ship a bug, and macOS does not report what an app does with the access it has.</li>
           <li><strong>Three apps described.</strong> I describe the three I make. For anyone else's, use the five questions above and read their own pages.</li>
-          <li><strong>Apple's plans are unknown.</strong> Whether the Full Disk Access change affects any app on this page is unknown until Apple ships it. By their pages, Legroom works without Full Disk Access, and Keyfeel and Outbound Veil do not ask for it.</li>
+          <li><strong>Apple's plans are unknown.</strong> Whether the Full Disk Access change affects any app on this page is unknown until Apple ships it. The 27.3 beta notes above come from code, not from Apple. By their pages, Legroom works without Full Disk Access, and Keyfeel and Outbound Veil do not ask for it.</li>
         </ul>
 
 
@@ -247,7 +255,7 @@
         <h3>Is it safe to allow Full Disk Access on a Mac?</h3>
         <p>It depends on the app. Full Disk Access gives an app access to nearly everything on the Mac, including data from Mail and Messages. Grant it only to an app whose job needs it (such as a backup tool) and whose developer you trust. Apple said on October 2, 2026 that some developers use it in ways that could put users at risk, and that it will add controls requiring very explicit user action. It gave no date or macOS version.</p>
         <h3>Does Apple's October 2026 announcement change anything today?</h3>
-        <p>Not that Apple has said. The note says Apple will add controls going forward and gives no date, no macOS version and no details. Review the Full Disk Access list in System Settings, Privacy &amp; Security now, since it is worth doing either way.</p>
+        <p>Not on a released macOS yet. Apple has given no date or version. The first macOS 27.3 beta contains early code for it that is switched off. Review the Full Disk Access list in System Settings, Privacy &amp; Security now, since it is worth doing either way.</p>
         <h3>Why does a keyboard sound app need Input Monitoring?</h3>
         <p>To play a sound when you press a key in another app, it has to be told when a key goes down, and macOS puts that behind Input Monitoring. Apple describes the permission as letting an app see what you type. Keyfeel reads the key code, which says which key was pressed, not the characters, and works offline. The permission itself does not enforce that, so check what any such app says it does.</p>
         <h3>Can an app with Accessibility read my passwords?</h3>
