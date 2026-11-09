@@ -540,9 +540,20 @@ def fetch_app_stats_blobs(app: str) -> dict | None:
         return None
 
 
-def app_stats_summary(entry: dict | None, today: dt.date | None = None) -> dict | None:
+def own_update_rows(updates: dict | None, product: str | None) -> dict:
+    """The in-app update rows (DMG file name -> count) that belong to `product`: a file name that starts with the
+    product name followed by '-' (Summonly-1.4.0.dmg for summonly). Rows for another app are dropped, so one app's
+    update counts can never show under a different app's block. With no product the rows pass through unchanged."""
+    rows = dict(updates or {})
+    if not product:
+        return rows
+    prefix = product.lower() + "-"
+    return {k: n for k, n in rows.items() if str(k).lower().startswith(prefix)}
+
+
+def app_stats_summary(entry: dict | None, today: dt.date | None = None, product: str | None = None) -> dict | None:
     """Totals from one app's stored counters: public and buyer downloads (all time, last 7 complete days,
-    today) and in-app updates by version."""
+    today) and in-app updates by version. With `product`, only that product's update rows are kept."""
     if not entry:
         return None
     today = today or dt.date.today()
@@ -553,7 +564,8 @@ def app_stats_summary(entry: dict | None, today: dt.date | None = None) -> dict 
     t = by_day.get(today.isoformat()) or {}
     return {"publicAll": sum((entry.get("public") or {}).values()), "buyerAll": sum((entry.get("buyer") or {}).values()),
             "public7": pub7, "buyer7": buy7, "publicToday": t.get("public", 0), "buyerToday": t.get("buyer", 0),
-            "updates": dict(sorted((entry.get("updates") or {}).items())), "updatesAll": sum((entry.get("updates") or {}).values()),
+            "updates": dict(sorted(own_update_rows(entry.get("updates"), product).items())),
+            "updatesAll": sum(own_update_rows(entry.get("updates"), product).values()),
             "firstDay": min(by_day) if by_day else None}
 
 
@@ -4142,6 +4154,10 @@ AD_FUNNEL_SINCE = "2026-10-07"  # first day analytics.js sends the first-touch c
 # published inside its window. tagged_links.json records hand-tagged batches; the how-to ledger adds its own videos.
 LINK_CHECK_VIEWS_PER_URL = 2
 LINK_CHECK_TRIALS_PER_URL = 2
+# From this day the site labels a trial click under 1.5 s with no interaction as suspect and leaves it out of "trial"
+# (PR 644, merged 2026-11-08, live with that day's 17:00 build). Link checkers' trials are then already gone, so the
+# trial part of the allowance applies only to URLs published before it. Page views are not labelled: that part stays.
+TRIAL_LABEL_SINCE = "2026-11-09"
 # launchd runs a copy of this file from ~/.purplelink/traffic (see the photo-dashboard note below), so each file is
 # looked up next to the script first and then at its place in the repo.
 _REPO = Path("/Volumes/Extreme SSD/Purplelink LLC")
@@ -4178,21 +4194,25 @@ def tagged_link_batches() -> list[dict]:
     return sorted(out, key=lambda b: b["date"])
 
 
-def link_check_allowance(as_of: str, days: int, batches: list[dict] | None = None) -> dict:
-    """{channel: urls published in the window ending as_of} (inclusive, `days` long)."""
+def link_check_allowance(as_of: str, days: int, batches: list[dict] | None = None,
+                         before: str | None = None) -> dict:
+    """{channel: urls published in the window ending as_of} (inclusive, `days` long); with `before`, only URLs
+    published before that day."""
     end = dt.date.fromisoformat(as_of)
     start = (end - dt.timedelta(days=days - 1)).isoformat()
     per: dict[str, int] = {}
     for b in tagged_link_batches() if batches is None else batches:
-        if start <= b["date"] <= end.isoformat():
+        if start <= b["date"] <= end.isoformat() and (before is None or b["date"] < before):
             per[b["channel"]] = per.get(b["channel"], 0) + int(b["urls"])
     return per
 
 
-def human_estimate(pageviews: int, trials: int, urls: int) -> tuple[int, int]:
-    """Page views and trials left after the link-check allowance for `urls` new tagged URLs (never below 0)."""
+def human_estimate(pageviews: int, trials: int, urls: int, trial_urls: int | None = None) -> tuple[int, int]:
+    """Page views and trials left after the link-check allowance for `urls` new tagged URLs (never below 0).
+    `trial_urls` is how many of them still need a trial allowance (published before TRIAL_LABEL_SINCE)."""
+    trial_urls = urls if trial_urls is None else trial_urls
     return (max(0, pageviews - LINK_CHECK_VIEWS_PER_URL * urls),
-            max(0, trials - LINK_CHECK_TRIALS_PER_URL * urls))
+            max(0, trials - LINK_CHECK_TRIALS_PER_URL * trial_urls))
 
 
 def looks_like_scanner(v: dict) -> bool:
@@ -4212,7 +4232,9 @@ def print_ad_funnel(history: dict) -> None:
         return
     days = af.get("days", AD_FUNNEL_DAYS)
     print(f"\n  Funnel by first-touch channel, last {days} days (tracking began {AD_FUNNEL_SINCE}; each visitor counted under how they first arrived)")
-    allow = link_check_allowance(af.get("asOf") or dt.date.today().isoformat(), days)
+    as_of = af.get("asOf") or dt.date.today().isoformat()
+    allow = link_check_allowance(as_of, days)
+    allow_trials = link_check_allowance(as_of, days, before=TRIAL_LABEL_SINCE)
     rows, scanners = [], []
     raw_trials = est_trials = 0
     for name, v in ch.items():
@@ -4221,7 +4243,7 @@ def print_ad_funnel(history: dict) -> None:
         trials = sum((v.get("trial") or {}).values())
         buys = sum((v.get("checkout") or {}).values())
         urls = allow.get(name, 0)
-        hpv, htr = human_estimate(v.get("pageviews", 0), trials, urls)
+        hpv, htr = human_estimate(v.get("pageviews", 0), trials, urls, allow_trials.get(name, 0))
         raw_trials, est_trials = raw_trials + trials, est_trials + htr
         if not urls and "." not in name and ":" not in name and name != "direct" and looks_like_scanner(v):
             scanners.append(name)
@@ -4235,7 +4257,8 @@ def print_ad_funnel(history: dict) -> None:
         print(line)
     if est_trials != raw_trials:
         print(f"   Trials, all channels: {raw_trials} counted, about {est_trials} after the link-check allowance "
-              f"({LINK_CHECK_VIEWS_PER_URL} views and up to {LINK_CHECK_TRIALS_PER_URL} trials per new tagged URL; "
+              f"({LINK_CHECK_VIEWS_PER_URL} views and up to {LINK_CHECK_TRIALS_PER_URL} trials per new tagged URL, trials only "
+              f"for URLs published before {TRIAL_LABEL_SINCE}, when suspect labelling began; "
               "an estimate, a real early visitor is subtracted too)")
     if scanners:
         print(f"   Tags with only 1 or 2 views and nothing else (on an email tag this is often a mail scanner opening the "
@@ -4677,7 +4700,7 @@ def panely_report(history: dict) -> dict | None:
                           ledger_match=lambda x: x.get("product") == "panely" and x.get("kind") == "purchase")
     if r is not None:
         r["suiteOrders"] = _suite_orders(history)
-        r["server"] = app_stats_summary((history.get("appStats") or {}).get("panely"))
+        r["server"] = app_stats_summary((history.get("appStats") or {}).get("panely"), product="panely")
     return r
 
 
@@ -4688,7 +4711,7 @@ def summonly_report(history: dict) -> dict | None:
                           ledger_match=lambda x: x.get("product") == "summonly" and x.get("kind") == "purchase")
     if r is not None:
         r["suiteOrders"] = _suite_orders(history)
-        r["server"] = app_stats_summary((history.get("appStats") or {}).get("summonly"))
+        r["server"] = app_stats_summary((history.get("appStats") or {}).get("summonly"), product="summonly")
     return r
 
 
@@ -7117,7 +7140,7 @@ def main() -> int:
             app_entry = fetch_app_stats_blobs(app_key)
             if app_entry is not None:
                 history.setdefault("appStats", {})[app_key] = app_entry
-                sm_ = app_stats_summary(app_entry)
+                sm_ = app_stats_summary(app_entry, product=app_key)
                 print(f"  ok {app_key.title()} downloads: {sm_['publicAll']} public, {sm_['buyerAll']} buyer, "
                       f"{sm_['updatesAll']} in-app update(s)")
 

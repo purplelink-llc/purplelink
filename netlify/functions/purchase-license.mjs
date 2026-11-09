@@ -15,6 +15,7 @@ import { licenseKeysForSession } from "./stripe-webhook.mjs";
 import { addonPartsOf, entitledParts, isBundleProduct } from "../lib/bundles.mjs";
 import { SESSION_EXPAND, withAddons } from "../lib/addons.mjs";
 import { revocationFor, REVOKED_DETAIL } from "../lib/refunds.mjs";
+import { stripeFetchAny } from "../lib/stripe-account.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 const KEYED_PRODUCTS = new Set(["moderntex", "moderntex-seats", "outbound-veil", "legroom", "keyfeel", "tapefolio", "lenscrib", "nee", "lenses", "panely", "summonly", "app-suite", "bundle-2", "bundle-3"]);
@@ -47,7 +48,7 @@ export default async function handler(request) {
   if (!secretKey) return json(500, { error: "misconfigured" });
   let resp;
   try {
-    resp = await fetch(`${STRIPE_API}/checkout/sessions/${sessionId}?${SESSION_EXPAND}`, { headers: { Authorization: `Bearer ${secretKey}` } });
+    resp = await stripeFetchAny(`${STRIPE_API}/checkout/sessions/${sessionId}?${SESSION_EXPAND}`, { headers: { Authorization: `Bearer ${secretKey}` } });
   } catch {
     return json(502, { error: "stripe_unreachable" });
   }

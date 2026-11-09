@@ -28,6 +28,29 @@ def test_human_estimate_never_goes_below_zero():
     assert td.human_estimate(30, 6, 1) == (28, 4)
 
 
+def test_trial_allowance_stops_once_suspect_labelling_began():
+    batches = [{"date": "2026-11-07", "channel": "youtube-howto", "urls": 2},
+               {"date": td.TRIAL_LABEL_SINCE, "channel": "youtube-howto", "urls": 3}]
+    views = td.link_check_allowance("2026-11-12", 7, batches)
+    trials = td.link_check_allowance("2026-11-12", 7, batches, before=td.TRIAL_LABEL_SINCE)
+    assert views == {"youtube-howto": 5} and trials == {"youtube-howto": 2}
+    # 5 URLs take 10 views; only the 2 published before labelling take trials (4), not 10.
+    assert td.human_estimate(20, 9, 5, 2) == (10, 5)
+    assert td.human_estimate(20, 9, 5, 0) == (10, 9)
+
+
+def test_funnel_does_not_subtract_trials_for_links_published_after_labelling(capsys, monkeypatch):
+    h = {"ledger": {}, "adFunnel": {"asOf": "2026-11-12", "days": 7, "channels": {
+        "youtube-howto": {"pageviews": 12, "pageviewsByPath": {"/legroom/": 12},
+                          "trial": {"legroom": 3}, "checkout": {}}}}}
+    monkeypatch.setattr(td, "tagged_link_batches",
+                        lambda: [{"date": "2026-11-10", "channel": "youtube-howto", "urls": 2}])
+    td.print_ad_funnel(h)
+    out = capsys.readouterr().out
+    assert "est. human: 8 views, 3 trials" in out
+    assert "after the link-check allowance" not in out
+
+
 def test_tagged_links_file_and_howto_ledger_are_read():
     batches = td.tagged_link_batches()
     assert any(b["channel"] == "youtube-latex" and b["urls"] == 14 for b in batches)

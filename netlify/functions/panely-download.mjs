@@ -31,6 +31,7 @@ import { bundleHasPart } from "../lib/bundles.mjs";
 import { SESSION_EXPAND, withAddons } from "../lib/addons.mjs";
 import { issuePanelyLicense } from "../lib/panely-license.mjs";
 import { revocationFor, REVOKED_DETAIL } from "../lib/refunds.mjs";
+import { stripeFetchAny } from "../lib/stripe-account.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 const FILE_STORE = "panely-files";
@@ -82,7 +83,7 @@ async function loadSession(sessionId) {
   if (!secretKey) return { error: json(500, { error: "misconfigured", detail: "STRIPE_SECRET_KEY not set." }) };
   let resp;
   try {
-    resp = await fetch(`${STRIPE_API}/checkout/sessions/${sessionId}?${SESSION_EXPAND}`, {
+    resp = await stripeFetchAny(`${STRIPE_API}/checkout/sessions/${sessionId}?${SESSION_EXPAND}`, {
       headers: { Authorization: `Bearer ${secretKey}` },
     });
   } catch (err) {

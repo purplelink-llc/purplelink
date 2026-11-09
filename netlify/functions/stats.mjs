@@ -337,21 +337,21 @@ export default async function handler(request) {
       // so the dashboard can restrict them to product pages.
       if (rec.ft && !String(rec.meta || "").startsWith("__")) {
         const ft = foldSource(rec.ft);
-        const fc = s.funnelByChannel[ft] || (s.funnelByChannel[ft] = { pageviews: 0, pageviewsByPath: {}, sendToMac: {}, trial: {}, checkout: {}, os: {} });
+        const fc = s.funnelByChannel[ft] || (s.funnelByChannel[ft] = { pageviews: 0, pageviewsByPath: {}, sendToMac: {}, trial: {}, trialSuspect: {}, checkout: {}, os: {} });
         // Operating-system family of the channel's pageviews (records before 2026-10-31 have none and are not counted).
         if (rec.type === "pageview") { fc.pageviews++; bump(fc.pageviewsByPath, rec.path); if (rec.os) bump(fc.os, rec.os); }
         else if (rec.type === "checkout_click") bump(fc.checkout, rec.meta || "unknown");
         else if (rec.type === "send_to_mac") bump(fc.sendToMac, rec.meta || "unknown");
-        else if (/_?trial_download$/.test(rec.type)) bump(fc.trial, rec.meta || rec.type);
+        else if (/_?trial_download$/.test(rec.type)) bump(rec.suspect ? fc.trialSuspect : fc.trial, rec.meta || rec.type);
         else if (rec.type === "guide_mtx_trial") bump(fc.trial, "guide_mtx_trial");
         // The same counts by the first-touch link tag (utm_content), so one placement can be read on its own.
         if (rec.fc) {
           const fk = String(rec.fc).slice(0, 60);
-          const fx = s.funnelByContent[fk] || (s.funnelByContent[fk] = { channel: ft, pageviews: 0, pageviewsByPath: {}, sendToMac: {}, trial: {}, checkout: {}, os: {} });
+          const fx = s.funnelByContent[fk] || (s.funnelByContent[fk] = { channel: ft, pageviews: 0, pageviewsByPath: {}, sendToMac: {}, trial: {}, trialSuspect: {}, checkout: {}, os: {} });
           if (rec.type === "pageview") { fx.pageviews++; bump(fx.pageviewsByPath, rec.path); if (rec.os) bump(fx.os, rec.os); }
           else if (rec.type === "checkout_click") bump(fx.checkout, rec.meta || "unknown");
           else if (rec.type === "send_to_mac") bump(fx.sendToMac, rec.meta || "unknown");
-          else if (/_?trial_download$/.test(rec.type)) bump(fx.trial, rec.meta || rec.type);
+          else if (/_?trial_download$/.test(rec.type)) bump(rec.suspect ? fx.trialSuspect : fx.trial, rec.meta || rec.type);
           else if (rec.type === "guide_mtx_trial") bump(fx.trial, "guide_mtx_trial");
         }
       }
@@ -492,12 +492,12 @@ export default async function handler(request) {
     ...(hostFilter ? {} : { journeysByDay: Object.fromEntries(Object.entries(s.journeysByDay).sort()) }),
     funnelByChannel: Object.fromEntries(Object.entries(s.funnelByChannel).map(([ch, v]) => [ch, {
       pageviews: v.pageviews, pageviewsByPath: Object.fromEntries(topN(v.pageviewsByPath, 40).map((x) => [x.key, x.count])),
-      sendToMac: v.sendToMac, trial: v.trial, checkout: v.checkout, os: v.os,
+      sendToMac: v.sendToMac, trial: v.trial, trialSuspect: v.trialSuspect, checkout: v.checkout, os: v.os,
     }])),
     funnelByContent: Object.fromEntries(Object.entries(s.funnelByContent).map(([k, v]) => [k, {
       channel: v.channel, pageviews: v.pageviews,
       pageviewsByPath: Object.fromEntries(topN(v.pageviewsByPath, 20).map((x) => [x.key, x.count])),
-      sendToMac: v.sendToMac, trial: v.trial, checkout: v.checkout, os: v.os,
+      sendToMac: v.sendToMac, trial: v.trial, trialSuspect: v.trialSuspect, checkout: v.checkout, os: v.os,
     }])),
   });
 }

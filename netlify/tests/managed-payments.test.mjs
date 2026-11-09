@@ -10,11 +10,14 @@ const blobsModule = { getStore: () => ({ get: async () => null, set: async () =>
 try { mock.module("@netlify/blobs", { exports: blobsModule }); } catch { mock.module("@netlify/blobs", { namedExports: blobsModule }); }
 
 let mpFlag = "";
+let newAcct = false;
 globalThis.Netlify = {
   env: {
     get: (key) => {
       if (key === "STRIPE_SECRET_KEY") return "sk_test_dummy";
       if (key === "STRIPE_MANAGED_PAYMENTS") return mpFlag;
+      if (newAcct && key === "STRIPE_SECRET_KEY_NEW") return "sk_test_new";
+      if (newAcct && key === "STRIPE_NEW_ACCOUNT") return "on";
       if (key.startsWith("STRIPE_PRICE_")) return "price_dummy";
       return undefined;
     },
@@ -78,6 +81,7 @@ test("applyManagedPayments removes the parameters Stripe rejects and keeps every
     "line_items[0][price_data][product_data][name]": "ModernTex for macOS",
     "metadata[product]": "moderntex",
     "custom_fields[0][key]": "heard",
+    "custom_text[submit][message]": "Full refund within 14 days.",
     allow_promotion_codes: "true",
   }, "moderntex");
   assert.deepEqual(Object.keys(p).sort(), [
@@ -127,4 +131,15 @@ test("the idempotency key differs between a managed and an unmanaged session, so
   ipCounter -= 1; // same client IP for both calls
   const on = await checkout("keyfeel", "keyfeel");
   assert.notEqual(off.idem, on.idem);
+});
+
+test("new Stripe account: no payment_method_types on any product, Managed Payments or not (live error 2026-11-06)", async () => {
+  newAcct = true;
+  try {
+    for (const [product, flag] of [["paper-review-standard", ""], ["moderntex", ""], ["moderntex", "all"]]) {
+      const { body } = await checkout(product, flag);
+      assert.equal(body.get("payment_method_types[0]"), null, `${product} flag=${flag}`);
+      assert.equal(body.get("payment_method_types[1]"), null, `${product} flag=${flag}`);
+    }
+  } finally { newAcct = false; }
 });

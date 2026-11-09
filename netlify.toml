@@ -194,6 +194,27 @@
   status = 410
   force = true
 
+# Undershelf waitlist closed (product on hold). The old page now goes to the guide it grew out of.
+[[redirects]]
+  from = "/undershelf/*"
+  to = "/guides/mac-mini-under-desk-heat/"
+  status = 301
+
+# Focus Radio retired 2026-11-08: the live stream ended 2026-10-16 and the ambient music now lives on the
+# Hearthside Pixels YouTube channel.
+[[redirects]]
+  from = "/focus-radio/*"
+  to = "https://www.youtube.com/@PixelHearthMusic"
+  status = 301
+  force = true
+
+# Budgetcast (finance app) was killed 2026-10-14; its waitlist page is gone.
+[[redirects]]
+  from = "/budgetcast/*"
+  to = "/404.html"
+  status = 410
+  force = true
+
 [[redirects]]
   from = "/grant-review/*"
   to = "/tools/paper-review/"

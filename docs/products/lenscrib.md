@@ -135,6 +135,7 @@ live. No money moves.
 ## Launch checklist (owner)
 
 1. Set `LENSCRIB_UPDATE_TOKEN` and `LENSCRIB_LICENSE_PRIVATE_KEY` on Netlify (production); run the key check above. Do not print them.
+   Also set `LENSCRIB_SALES_OPEN=1`: until it is set (and deployed), the checkout function refuses `lenscrib` with `not_for_sale`.
 2. Build the app with the same public key, token and header; stage `Lenscrib-<ver>.dmg` and `appcast.xml` in `lenscrib-files`.
 3. Run the test checkout recipe.
 4. Launch commit (separate from this PR): fill in `site/lenscrib/launch.js`; delete the PRE-LAUNCH GUARD test; write the live wording

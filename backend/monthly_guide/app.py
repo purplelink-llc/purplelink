@@ -23,7 +23,9 @@ Required Modal secrets (see README.md):
   github           -> GITHUB_TOKEN         (read+write to purplelink-llc/muscleonglp)
   netlify          -> NETLIFY_AUTH_TOKEN   (deploy + env + blobs on the muscleonglp site)
   resend           -> RESEND_API_KEY       (review email; optional)
-  stripe-secret    -> STRIPE_SECRET_KEY    (LIVE key, same Stripe account as the site)
+  stripe-secret    -> STRIPE_SECRET_KEY    (LIVE key, the old Stripe account)
+  stripe-secret-new -> STRIPE_SECRET_KEY_NEW (the new account, 2026-11). The price is also created there and set
+                       as STRIPE_PRICE_*_NEW; if that fails the guide still sells on the old account.
 """
 from __future__ import annotations
 
@@ -104,6 +106,7 @@ def _resolve_month(month: str) -> tuple[int, int]:
         modal.Secret.from_name("netlify"),
         modal.Secret.from_name("resend"),
         modal.Secret.from_name("stripe-secret"),
+        modal.Secret.from_name("stripe-secret-new"),
     ],
     timeout=1800,
 )
@@ -197,6 +200,17 @@ async def run_monthly_guide(dry_run: bool = False, month: str = ""):
         # 2. Site env var so checkout.mjs can resolve the new product's price.
         key = publish.env_key(slug)
         set_env_var(netlify_token, SITE_ID, key, price_id)
+
+        # 2b. Same price on the new Stripe account (checkout sells there when <key>_NEW is set). Best effort: the
+        # site falls back to the old account's price when _NEW is missing, so a failure here never blocks a sale.
+        stripe_key_new = os.environ.get("STRIPE_SECRET_KEY_NEW", "")
+        if stripe_key_new:
+            try:
+                price_id_new = create_monthly_product(stripe_key_new, title, slug)
+                set_env_var(netlify_token, SITE_ID, f"{key}_NEW", price_id_new)
+                logger.info("monthly: new-account stripe price=%s", price_id_new)
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("monthly: new-account price failed, old account still sells it: %s", exc)
 
         # 3. Upload the PDF to the guide-files Blobs store (download.mjs streams it).
         blobs_set(netlify_token, SITE_ID, FILE_STORE, publish.pdf_filename(slug), str(pdf_path))

@@ -28,6 +28,7 @@
 
 import { createHash, randomBytes } from "node:crypto";
 import { getStore } from "@netlify/blobs";
+import { lookupKeys } from "../lib/stripe-account.mjs";
 
 const SITE_ORIGIN = "https://purplelink.llc";
 const ALLOWED_ORIGINS = new Set([SITE_ORIGIN, "https://www.purplelink.llc"]);
@@ -187,17 +188,19 @@ async function unsubscribe(request, token) {
 
 /** True when this address already bought Outbound Veil or the Mac Suite, so a buyer is never nudged to buy. */
 async function hasBought(email) {
-  const key = Netlify.env.get("STRIPE_SECRET_KEY");
-  if (!key) return null; // unknown: the caller skips this run rather than risk emailing a buyer
-  for (const address of [...new Set([email, email.toLowerCase()])]) {
-    const resp = await fetch(`${STRIPE_API}/checkout/sessions?customer_details%5Bemail%5D=${encodeURIComponent(address)}&limit=100`, {
-      headers: { Authorization: `Bearer ${key}` },
-    });
-    if (!resp.ok) return null;
-    const data = await resp.json().catch(() => null);
-    for (const s of data?.data ?? []) {
-      const p = s?.metadata?.product;
-      if ((p === "outbound-veil" || p === "app-suite") && s.payment_status === "paid") return true;
+  const keys = lookupKeys();
+  if (!keys.length) return null; // unknown: the caller skips this run rather than risk emailing a buyer
+  for (const key of keys) {
+    for (const address of [...new Set([email, email.toLowerCase()])]) {
+      const resp = await fetch(`${STRIPE_API}/checkout/sessions?customer_details%5Bemail%5D=${encodeURIComponent(address)}&limit=100`, {
+        headers: { Authorization: `Bearer ${key}` },
+      });
+      if (!resp.ok) return null;
+      const data = await resp.json().catch(() => null);
+      for (const s of data?.data ?? []) {
+        const p = s?.metadata?.product;
+        if ((p === "outbound-veil" || p === "app-suite") && s.payment_status === "paid") return true;
+      }
     }
   }
   return false;

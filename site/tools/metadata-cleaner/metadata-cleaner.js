@@ -244,7 +244,7 @@
   function paintProgress(item) {
     if (!item.li) return;
     var bar_ = item.li.querySelector(".mc-prog");
-    if (bar_) bar_.style.setProperty("--p", Math.round(item.p * 100) + "%");
+    if (bar_) bar_.style.setProperty("--p", Math.max(0, Math.min(1, item.p)).toFixed(3));
     var lab = item.li.querySelector(".mc-prog-label");
     if (lab) lab.textContent = item.label || "Working…";
   }

@@ -184,17 +184,6 @@
 /* ─── Cards, buttons and links ───────────────────────────────────────── */
 
 @media (prefers-reduced-motion: no-preference) {
-  .btn {
-    transition:
-      transform 0.25s var(--motion-ease),
-      box-shadow 0.25s var(--motion-ease),
-      opacity 0.15s;
-  }
-  .btn:active {
-    transform: translateY(0) scale(0.97);
-    transition-duration: 0.08s;
-  }
-
   .hero-lede a,
   .hero-proof a {
     transition: text-underline-offset 0.3s var(--motion-ease);
@@ -576,6 +565,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .btn { transition: opacity 0.1s; }
+  .btn:active { transform: none; }
   :is(.btn, .catalog-card, .tool-card, .tool-card-lg, .kit-card, .dock-app, .tool-chip, .submit-grid a):active {
     opacity: 0.8;
   }

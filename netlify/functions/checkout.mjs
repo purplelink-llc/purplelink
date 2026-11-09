@@ -43,6 +43,7 @@ import { pickAddons, setOptionalItems } from "../lib/addons.mjs";
 import { recoveryParams, isRecoveryParamError } from "../lib/checkout-recovery.mjs";
 import { checkCode, STORE as BUYER_CODE_STORE } from "../lib/buyer-codes.mjs";
 import { REF_RE, FRIEND_COUPON, FRIEND_PERCENT, friendEligible, checkRef, ensureFriendCoupon } from "../lib/referrals.mjs";
+import { checkoutSecretKey, priceEnvName, newAccountActive } from "../lib/stripe-account.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 
@@ -214,7 +215,9 @@ const PRODUCT_CATALOG = {
   // Lenscrib for macOS: $19.99 one-time, priced inline (no Stripe Price to create), like Tapefolio. Sold on its own:
   // not in the Mac Suite or the custom bundles. Delivery is the session-gated DMG from the lenscrib-files Blobs store;
   // see lenscrib-download.mjs. Product page and success page: /lenscrib/ and /lenscrib/success/. See docs/products/lenscrib.md.
-  "lenscrib":                { amount: 1999, name: "Lenscrib for macOS", successPath: "/lenscrib/success/" },
+  // Not released yet: refused until the Netlify env var LENSCRIB_SALES_OPEN is "1" (set it before the launch test
+  // purchase, docs/products/lenscrib.md). The page's Buy button is also off until site/lenscrib/launch.js says live.
+  "lenscrib":                { amount: 1999, name: "Lenscrib for macOS", successPath: "/lenscrib/success/", openEnv: "LENSCRIB_SALES_OPEN" },
   // Lenses for macOS: $4.99 one-time. The Stripe Price STRIPE_PRICE_LENSES points at (product prod_VZncC6arvZzEdp, created
   // 2026-11-05 with Ben's approval) wins when set; the inline amount is the fallback. Keep both equal to the copy on /lenses/.
   // A paid download only: no license key, no trial, no updater. Sold on its own, not in the Mac Suite or the custom bundles. Delivery is the session-gated DMG from
@@ -377,6 +380,10 @@ export default async function handler(request) {
   if (!entry) {
     return jsonResponse(400, { error: "unknown_product", detail: product });
   }
+  // A product that is not on sale yet: its page has no working Buy button, so only a hand-made request reaches here.
+  if (entry.openEnv && Netlify.env.get(entry.openEnv) !== "1") {
+    return jsonResponse(400, { error: "not_for_sale", detail: "This product is not on sale yet." });
+  }
   // Referral code from a shared report's footer link (?ref=...), passed
   // through as Stripe metadata so stripe-webhook.mjs can forward it to
   // the backend's register-token endpoint. Untrusted input — just a short
@@ -462,15 +469,16 @@ export default async function handler(request) {
     friend = await checkRef(getStore(BUYER_CODE_STORE), referralCode, { secret: Netlify.env.get("BACKEND_WEBHOOK_SECRET") });
   }
 
-  const secretKey = Netlify.env.get("STRIPE_SECRET_KEY");
+  // New sessions use the new Stripe account only while STRIPE_NEW_ACCOUNT is on (netlify/lib/stripe-account.mjs); otherwise unchanged.
+  const secretKey = checkoutSecretKey();
   // An entry with an inline amount may also name an env Price; the env Price wins when it is set.
-  const envPrice = entry.envKey ? Netlify.env.get(entry.envKey) : "";
+  const envPrice = entry.envKey ? Netlify.env.get(priceEnvName(entry.envKey)) : "";
   const priceId = entry.seats ? null : unitAmount ? (envPrice || null) : envPrice;
   const inlinePrice = !priceId && (unitAmount || entry.seats);
   if (!secretKey || (!inlinePrice && !priceId)) {
     return jsonResponse(500, {
       error: "misconfigured",
-      detail: `Set STRIPE_SECRET_KEY and ${entry.envKey} on this site.`,
+      detail: `Set STRIPE_SECRET_KEY and ${priceEnvName(entry.envKey)} on this site.`,
     });
   }
 
@@ -608,6 +616,12 @@ export default async function handler(request) {
     }
   }
 
+  // The new Stripe account rejects payment_method_types ("no longer supported"; methods come from the Dashboard
+  // settings there, which must stay limited to card and Link). Live error 2026-11-06 on Paper Review.
+  if (newAccountActive()) {
+    delete params["payment_method_types[0]"];
+    delete params["payment_method_types[1]"];
+  }
   if (managed) applyManagedPayments(params, product);
   if (addonRows.length) {
     setOptionalItems(params, addonRows);

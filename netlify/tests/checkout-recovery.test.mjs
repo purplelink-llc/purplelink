@@ -20,6 +20,7 @@ try { mock.module("@netlify/blobs", { exports: blobsModule }); } catch { mock.mo
 const env = {
   STRIPE_SECRET_KEY: "sk_test_dummy", STRIPE_WEBHOOK_SECRET: "whsec_test", BACKEND_WEBHOOK_SECRET: "backend",
   RESEND_API_KEY: "re_dummy", FOLLOWUP_UNSUBSCRIBE_SECRET: "unsub_secret",
+  LENSCRIB_SALES_OPEN: "1",   // pre-launch switch (checkout.mjs openEnv); these tests buy every catalog product
 };
 globalThis.Netlify = { env: { get: (k) => (k.startsWith("STRIPE_PRICE_") ? "price_dummy" : env[k]) } };
 

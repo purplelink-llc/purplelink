@@ -45,6 +45,8 @@ run_claude() {
   local model="$1" turns="$2" usd="$3" wd="$4"; shift 4
   case "$model" in sonnet|haiku) ;; *) notify_fail "refusing model '$model' (Sonnet or Haiku only)"; return 2;; esac
   local prompt; prompt="$(cat)"
+  # launchd gives stdin /dev/null: a call without a redirect used to run claude with no prompt (2b drafts, until 11-07)
+  if [ -z "${prompt//[[:space:]]/}" ]; then notify_fail "run_claude called with an empty prompt (missing < prompt file?)"; return 2; fi
   if [ "${GATE_DRYRUN:-0}" = "1" ]; then
     log "DRYRUN claude -p --model $model --max-turns $turns --max-budget-usd $usd cwd=$wd tools=$* prompt_bytes=${#prompt}"
     return 0

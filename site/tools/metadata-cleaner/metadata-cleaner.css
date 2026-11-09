@@ -52,7 +52,10 @@
 .mc-size, .mc-note { color: var(--muted); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
 .mc-prog-label { color: var(--muted); font-size: 0.92rem; }
 .mc-prog { height: 6px; border-radius: 999px; background: var(--line); overflow: hidden; }
-.mc-prog-fill { display: block; height: 100%; width: var(--p, 3%); background: var(--purple); border-radius: inherit; transition: width 0.25s ease-out; }
+.mc-prog-fill { display: block; height: 100%; width: 100%; background: var(--purple); border-radius: inherit; transform: scaleX(var(--p, 0.03)); transform-origin: 0 50%; }
+@media (prefers-reduced-motion: no-preference) {
+  .mc-prog-fill { transition: transform 0.25s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)); }
+}
 .mc-sizebar { height: 6px; border-radius: 999px; background: var(--line); overflow: hidden; }
 .mc-sizebar-fill { display: block; height: 100%; width: var(--w, 100%); background: var(--purple); border-radius: inherit; }
 .mc-summary { font-weight: 600; display: flex; align-items: center; gap: 8px; }
@@ -122,14 +125,14 @@
   .mc-scan { animation: mc-scan 2.6s ease-in-out infinite alternate; }
   .mc-net.is-live .mc-net-dot { animation: mc-ping 1.6s ease-out 2; }
 
-  .mc-item.mc-reveal { animation: mc-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
-  .mc-reveal .mc-sizebar-fill { animation: mc-size 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both; }
-  .mc-reveal .mc-check circle { animation: mc-draw-c 0.6s ease-out 0.2s both; }
-  .mc-reveal .mc-check path { animation: mc-draw-p 0.35s ease-out 0.7s both; }
-  .mc-reveal .mc-gps { animation: mc-flag 0.6s ease-out 0.15s both; }
-  .mc-reveal .mc-row { animation: mc-row-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: calc(var(--i, 0) * 70ms + 200ms); }
-  .mc-reveal .mc-row-v { animation: mc-strike 0.5s ease-out both; animation-delay: calc(var(--i, 0) * 70ms + 800ms); }
-  .mc-reveal .mc-verified { animation: mc-in 0.4s ease-out both; animation-delay: calc(var(--i, 0) * 70ms + 1000ms); }
+  .mc-item.mc-reveal { animation: mc-in 0.2s var(--motion-ease) both; }
+  .mc-reveal .mc-sizebar-fill { transform-origin: left; animation: mc-size 0.28s var(--motion-ease) 0.03s both; }
+  .mc-reveal .mc-check circle { animation: mc-draw-c 0.2s ease-out both; }
+  .mc-reveal .mc-check path { animation: mc-draw-p 0.15s ease-out 0.05s both; }
+  .mc-reveal .mc-gps { animation: mc-flag 0.3s ease-out both; }
+  .mc-reveal .mc-row { animation: mc-row-in 0.2s var(--motion-ease) both; animation-delay: min(calc(var(--i, 0) * 30ms), 120ms); }
+  .mc-reveal .mc-row-v { animation: mc-strike 0.2s ease-out both; animation-delay: calc(min(calc(var(--i, 0) * 30ms), 120ms) + 80ms); }
+  .mc-reveal .mc-verified { animation: mc-in 0.15s ease-out both; animation-delay: calc(min(calc(var(--i, 0) * 20ms), 100ms) + 100ms); }
 
   .mc-demo-file .mc-demo-clean { animation: mc-demo-clean 10s ease-out infinite; }
   .mc-demo-file .mc-demo-clean .mc-check circle { animation: mc-demo-draw 10s ease-out infinite; }
@@ -147,12 +150,12 @@
 @keyframes mc-spin { to { transform: rotate(360deg); } }
 @keyframes mc-scan { from { transform: translateY(-5px); } to { transform: translateY(15px); } }
 @keyframes mc-ping { 0% { box-shadow: 0 0 0 0 oklch(75% 0.16 150 / 0.6); } 100% { box-shadow: 0 0 0 10px oklch(75% 0.16 150 / 0); } }
-@keyframes mc-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-@keyframes mc-size { from { width: 100%; } to { width: var(--w, 100%); } }
+@keyframes mc-in { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+@keyframes mc-size { from { transform: scaleX(0); } to { transform: none; } }
 @keyframes mc-draw-c { from { stroke-dashoffset: 63; } to { stroke-dashoffset: 0; } }
 @keyframes mc-draw-p { from { stroke-dashoffset: 20; } to { stroke-dashoffset: 0; } }
 @keyframes mc-flag { 0% { transform: scale(0.97); box-shadow: 0 0 0 0 var(--purple); } 100% { transform: none; box-shadow: 0 0 0 8px transparent; } }
-@keyframes mc-row-in { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+@keyframes mc-row-in { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: none; } }
 @keyframes mc-strike { from { background-size: 0% 1.5px; color: var(--ink); } to { background-size: 100% 1.5px; color: var(--muted); } }
 @keyframes mc-demo-clean { 0%, 76% { opacity: 0; transform: translateY(4px); } 82%, 92% { opacity: 1; transform: none; } 97%, 100% { opacity: 0; } }
 @keyframes mc-demo-draw { 0%, 80% { stroke-dashoffset: 63; } 88%, 100% { stroke-dashoffset: 0; } }

@@ -62,23 +62,23 @@
 
 /* motion: the page is complete without any of it */
 @media (prefers-reduced-motion: no-preference) {
-  .suite-icons img { animation: suite-pop 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
-  .suite-icons img:nth-child(2) { animation-delay: 0.1s; }
-  .suite-icons img:nth-child(3) { animation-delay: 0.2s; }
-  .suite-icons img:nth-child(4) { animation-delay: 0.3s; }
-  .suite-icons img:nth-child(5) { animation-delay: 0.4s; }
-  .suite-icons img:nth-child(6) { animation-delay: 0.5s; }
-  .suite-rows li { animation: suite-row 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
-  .suite-rows li:nth-child(1) { animation-delay: 0.25s; }
-  .suite-rows li:nth-child(2) { animation-delay: 0.35s; }
-  .suite-rows li:nth-child(3) { animation-delay: 0.45s; }
-  .suite-rows li:nth-child(4) { animation-delay: 0.55s; }
-  .suite-rows li:nth-child(5) { animation-delay: 0.65s; }
-  .suite-rows li:nth-child(6) { animation-delay: 0.75s; }
-  .suite-sum { animation: suite-row 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.9s both; }
-  .suite-sum-amount::after { animation: suite-strike 0.45s cubic-bezier(0.16, 1, 0.3, 1) 1.3s both; }
-  .suite-save { animation: suite-row 0.5s cubic-bezier(0.16, 1, 0.3, 1) 1.55s both; }
-  .suite-deal { animation: suite-deal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 1.6s both; }
+  .suite-icons img { animation: suite-pop 0.35s var(--motion-ease) both; }
+  .suite-icons img:nth-child(2) { animation-delay: 0.04s; }
+  .suite-icons img:nth-child(3) { animation-delay: 0.08s; }
+  .suite-icons img:nth-child(4) { animation-delay: 0.12s; }
+  .suite-icons img:nth-child(5) { animation-delay: 0.16s; }
+  .suite-icons img:nth-child(6) { animation-delay: 0.20s; }
+  .suite-rows li { animation: suite-row 0.3s var(--motion-ease) both; }
+  .suite-rows li:nth-child(1) { animation-delay: 0.05s; }
+  .suite-rows li:nth-child(2) { animation-delay: 0.10s; }
+  .suite-rows li:nth-child(3) { animation-delay: 0.15s; }
+  .suite-rows li:nth-child(4) { animation-delay: 0.20s; }
+  .suite-rows li:nth-child(5) { animation-delay: 0.25s; }
+  .suite-rows li:nth-child(6) { animation-delay: 0.30s; }
+  .suite-sum { animation: suite-row 0.3s var(--motion-ease) 0.2s both; }
+  .suite-sum-amount::after { animation: suite-strike 0.25s var(--motion-ease) 0.35s both; }
+  .suite-save { animation: suite-row 0.3s var(--motion-ease) 0.4s both; }
+  .suite-deal { animation: suite-deal 0.4s var(--motion-ease) 0.4s both; }
 }
 @keyframes suite-pop { from { opacity: 0; transform: translateY(10px) scale(0.92); } to { opacity: 1; transform: none; } }
 @keyframes suite-row { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }

@@ -1,27 +1,23 @@
 #!/bin/bash
-# Dashboard live publish, gated. launchd job com.purplelink.dashboard-live-gate runs this at 11:00, 15:00 and 19:00.
-# Steps 1 to 3 of the desktop task dashboard-live-publish (nothing staged / build still being written / export lock)
-# are plain shell here. Only a staged, consistent build starts `claude -p --model haiku` for the Artifact publish
-# (steps 4 and 5, the task's own prompt).
+# Dashboard publish watchdog. launchd job com.purplelink.dashboard-live-gate runs this at 05:40, 11:40, 15:40 and 19:40,
+# forty minutes after each slot of the desktop task dashboard-live-publish, which does the Artifact publish (headless
+# claude -p has no Artifact tool, so this job no longer publishes; 2026-11-07). It only reads state and notifies:
+# a staged build that missed its slot, or no successful publish for 30 hours, posts one notification per problem a day.
 GATE_NAME=dashboard-live-gate
 . "$HOME/.purplelink/bin/gate-lib.sh" || exit 1
 set -u
 
 T="$HOME/.purplelink/traffic"
-[ -f "$T/publish-pending.json" ] || { log "nothing staged"; exit 0; }
-[ -d "$T/live-build" ] || { log "live-build folder missing"; exit 0; }
-want="$("$PYTHON" -I -c 'import json,sys;print(json.load(open(sys.argv[1]))["sha256"])' "$T/publish-pending.json" 2>/dev/null)"
-have="$(shasum -a 256 "$T/live-build/index.html" 2>/dev/null | cut -d' ' -f1)"
-if [ -z "$want" ] || [ "$want" != "$have" ]; then log "build in progress; skipped"; exit 0; fi
-if [ -e "$T/.export.lock" ]; then log "export running; skipped"; exit 0; fi
-
-WD="$(new_workdir)"
-{
-  echo "Setup note from the launcher: the staged-flag, build-hash and export-lock checks (steps 1 to 3) already passed, so go straight to step 4."
-  echo "Use this folder as <this session's scratchpad>: $WD"
-  echo
-  skill_body dashboard-live-publish
-} | run_claude haiku 40 2 "$WD" Bash Read Write Edit Glob Artifact
+[ -d "$T" ] || { log "traffic folder missing, skipping"; exit 0; }
+msg="$("$PYTHON" -I "$HOME/.purplelink/bin/dashboard_stage.py" watchdog 2>&1)"
 rc=$?
-if [ $rc -ne 0 ]; then notify_fail "claude run exited $rc (staged build left in place for the next slot)"; exit 1; fi
-log "done"
+log "$msg"
+[ $rc -eq 0 ] && exit 0
+# One notification per distinct problem per day, so a desktop app left closed overnight does not ping four times.
+key="$(date +%Y-%m-%d) $(printf '%s' "$msg" | sed 's/[0-9][0-9]-[0-9][0-9] [0-9:]*//g' | shasum | cut -c1-12)"
+seen="$T/.watchdog-notified"
+if [ "$(cat "$seen" 2>/dev/null)" != "$key" ]; then
+  notify_fail "dashboard not published: $msg. Open the Claude app; the desktop task dashboard-live-publish publishes it."
+  printf '%s' "$key" > "$seen"
+fi
+exit 1

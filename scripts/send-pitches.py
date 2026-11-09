@@ -16,7 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 P = ROOT / "photo-licensing-workspace" / "pitches"
-SENDER = "Benjamin Ampel <ben@purplelink.llc>"
+SENDER = "Ben from Purplelink LLC <ben@purplelink.llc>"
 
 
 def esc(s):

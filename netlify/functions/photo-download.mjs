@@ -20,6 +20,7 @@
 import { getStore } from "@netlify/blobs";
 import { revocationFor, REVOKED_DETAIL } from "../lib/refunds.mjs";
 import { clientIp, overDailyLimit } from "../lib/ratelimit.mjs";
+import { stripeFetchAny } from "../lib/stripe-account.mjs";
 
 // Every request with a well-formed session id costs one Stripe API call with the live key.
 // 200 a day covers a buyer who opens the page and fetches every file several times.
@@ -71,7 +72,7 @@ async function loadSession(sessionId) {
   if (!secretKey) return { error: json(500, { error: "misconfigured", detail: "STRIPE_SECRET_KEY not set." }) };
   let resp;
   try {
-    resp = await fetch(`${STRIPE_API}/checkout/sessions/${sessionId}`, {
+    resp = await stripeFetchAny(`${STRIPE_API}/checkout/sessions/${sessionId}`, {
       headers: { Authorization: `Bearer ${secretKey}` },
     });
   } catch (err) {
