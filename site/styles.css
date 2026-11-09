@@ -5845,3 +5845,29 @@ dialog, [role="dialog"], [aria-modal="true"], .sales-scroll { overscroll-behavio
   font-size: 0.9rem;
   color: var(--muted);
 }
+
+/* ─── Black Friday 2026 bar (theme.js adds html.pl-bf26 before first paint; ends 2026-12-01 00:00 ET) ──────
+   The class reserves an estimate of the bar's height so the page does not jump when the bar fills in; once the
+   bar is in the page it takes its own space and the reservation is dropped. No motion, so nothing to reduce. */
+@supports selector(:has(*)) {
+  html.pl-bf26 body { padding-top: 2.75rem; }
+  html.pl-bf26 body:has(> .bf26-bar) { padding-top: 0; }
+  @media (max-width: 719px) { html.pl-bf26 body { padding-top: 3.75rem; } html.pl-bf26 body:has(> .bf26-bar) { padding-top: 0; } }
+  @media (max-width: 479px) { html.pl-bf26 body { padding-top: 4.75rem; } html.pl-bf26 body:has(> .bf26-bar) { padding-top: 0; } }
+}
+.bf26-bar {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  box-sizing: border-box; min-height: 2.75rem; padding: 0.5rem clamp(16px, 4vw, 48px);
+  background: var(--purple-xlight); color: var(--ink);
+  border-bottom: 1px solid var(--line);
+  font-size: 0.875rem; line-height: 1.4;
+}
+.bf26-text { margin: 0; text-wrap: balance; }
+.bf26-text a { color: inherit; text-decoration: underline; text-underline-offset: 0.18em; }
+.bf26-code { font-weight: 700; letter-spacing: 0.03em; white-space: nowrap; }
+.bf26-hide {
+  flex: none; min-height: 27px; padding: 3px 10px; border: 1px solid var(--line); border-radius: 8px;
+  background: transparent; color: var(--ink); font: 600 0.8125rem var(--font-body); cursor: pointer;
+}
+.bf26-hide:hover { background: var(--panel); }
+.bf26-text a:focus-visible, .bf26-hide:focus-visible { outline: 3px solid var(--purple); outline-offset: 2px; }
