@@ -81,6 +81,59 @@ export const PRODUCTS = {
         `<p>Questions: reply to this email and I will answer.</p><p>Benjamin Ampel</p>`,
     }),
   },
+  legroom: {
+    name: "Legroom",
+    email: (link) => ({
+      subject: "Legroom: the download link for your Mac",
+      text:
+        `You asked for this on the Legroom page. Open this email on your Mac and use the link below to download the free trial:\n${link("/legroom/", "buy")}\n\n` +
+        `The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. After that, keeping it is $9.99 once, and it is refunded if you email within 14 days of purchase.\n\n` +
+        `Legroom needs macOS 14 or later, on Apple silicon or Intel.\n\n` +
+        `Questions: reply to this email and I will answer.\n\nBenjamin Ampel`,
+      html:
+        `<p>You asked for this on the Legroom page. Open this email on your Mac and use the link below to download the free trial.</p>` +
+        `<p><a href="${link("/legroom/", "buy")}">Download the Legroom trial</a></p>` +
+        `<p>The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. After that, keeping it is $9.99 once, and it is refunded if you email within 14 days of purchase.</p>` +
+        `<p>Legroom needs macOS 14 or later, on Apple silicon or Intel.</p>` +
+        `<p>Questions: reply to this email and I will answer.</p><p>Benjamin Ampel</p>`,
+    }),
+  },
+  "outbound-veil": {
+    name: "Outbound Veil",
+    email: (link) => ({
+      subject: "Outbound Veil: the download link for your Mac",
+      text:
+        `You asked for this on the Outbound Veil page. Open this email on your Mac and use the link below to download the free trial:\n${link("/outbound-veil/", "buy")}\n\n` +
+        `The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. After that, keeping it is $29.99 once, and it is refunded if you email within 14 days of purchase.\n\n` +
+        `Outbound Veil needs macOS 14 or later, on Apple silicon or Intel.\n\n` +
+        `The first ten minutes, from install to first use:\n${link("/outbound-veil/start/")}\n\n` +
+        `Questions: reply to this email and I will answer.\n\nBenjamin Ampel`,
+      html:
+        `<p>You asked for this on the Outbound Veil page. Open this email on your Mac and use the link below to download the free trial.</p>` +
+        `<p><a href="${link("/outbound-veil/", "buy")}">Download the Outbound Veil trial</a></p>` +
+        `<p>The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. After that, keeping it is $29.99 once, and it is refunded if you email within 14 days of purchase.</p>` +
+        `<p>Outbound Veil needs macOS 14 or later, on Apple silicon or Intel.</p>` +
+        `<p><a href="${link("/outbound-veil/start/")}">The first ten minutes</a>, from install to first use.</p>` +
+        `<p>Questions: reply to this email and I will answer.</p><p>Benjamin Ampel</p>`,
+    }),
+  },
+  nee: {
+    name: "Née",
+    email: (link) => ({
+      subject: "Née: the download link for your Mac",
+      text:
+        `You asked for this on the Née page. Open this email on your Mac and use the link below to download the free trial:\n${link("/nee/", "buy")}\n\n` +
+        `The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. After that, keeping it is $14.99 once, and it is refunded if you email within 14 days of purchase.\n\n` +
+        `Née needs macOS 14 or later, on Apple silicon or Intel.\n\n` +
+        `Questions: reply to this email and I will answer.\n\nBenjamin Ampel`,
+      html:
+        `<p>You asked for this on the Née page. Open this email on your Mac and use the link below to download the free trial.</p>` +
+        `<p><a href="${link("/nee/", "buy")}">Download the Née trial</a></p>` +
+        `<p>The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. After that, keeping it is $14.99 once, and it is refunded if you email within 14 days of purchase.</p>` +
+        `<p>Née needs macOS 14 or later, on Apple silicon or Intel.</p>` +
+        `<p>Questions: reply to this email and I will answer.</p><p>Benjamin Ampel</p>`,
+    }),
+  },
 };
 
 /** Keep only the attribution values that pass their allow-list; anything else becomes "". */

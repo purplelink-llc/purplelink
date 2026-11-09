@@ -162,7 +162,7 @@
   window.plAttribution = function () {
     return { ft: channel(), fc: contentTag(), rdt: rdtClick || "" };
   };
-  var FUNNEL = /^(checkout_click|send_to_mac|trial_download|ov_trial_download|lg_trial_download|kf_trial_download|tf_trial_download|pn_trial_download|sm_trial_download|nee_trial_download|guide_mtx_trial)$/;
+  var FUNNEL = /^(checkout_click|send_to_mac|trial_download|ov_trial_download|lg_trial_download|kf_trial_download|tf_trial_download|pn_trial_download|sm_trial_download|nee_trial_download|guide_mtx_trial|ball_lab_play|ball_lab_share|ball_lab_games|ball_lab_follow)$/;
 
   function send(payload) {
     try {
