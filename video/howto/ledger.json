@@ -560,5 +560,34 @@
    "ok": true,
    "utm_content": "howto-too-many-unprocessed-floats-reel"
   }
+ },
+ {
+  "slug": "howto-trackpad-click-too-loud",
+  "app": "keyfeel",
+  "date": "2026-11-09",
+  "title": "Trackpad click too loud on Mac (turn on Quiet Click)",
+  "long_id": "RH98DXRN8Y4",
+  "short_id": "-7GnRgjBu8s",
+  "link_arm": "B",
+  "link_utm_content": "howto-trackpad-click-too-loud",
+  "short_utm_content": "howto-trackpad-click-too-loud-short",
+  "sources": [
+   "https://forums.macrumors.com/threads/turning-off-the-fake-sound-for-trackpad-click.1880501/",
+   "https://discussions.apple.com/thread/252735755"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "RH98DXRN8Y4",
+    "caption_id": "AUieDaa2roZdzeXLjP_O9U9lCwMPR144EwYEFptI_Sr8pfApgJL9wKeg"
+   },
+   "short": {
+    "video_id": "-7GnRgjBu8s",
+    "caption_id": "AUieDaZkPNBbsiKZDweBYjtFgtfNjH0Midi7ZzG-BO1YbjfpZEEfgXX-"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-trackpad-click-too-loud-2-reel"
+  }
  }
 ]

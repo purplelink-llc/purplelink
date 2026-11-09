@@ -1,0 +1,40 @@
+{
+ "id": "howto-trackpad-click-too-loud",
+ "app": "keyfeel",
+ "title": "Trackpad click too loud on Mac (turn on Quiet Click)",
+ "short_title": "MacBook trackpad click too loud? Turn on Quiet Click",
+ "url": "purplelink.llc/keyfeel",
+ "page": "https://purplelink.llc/keyfeel/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://forums.macrumors.com/threads/turning-off-the-fake-sound-for-trackpad-click.1880501/",
+  "https://discussions.apple.com/thread/252735755"
+ ],
+ "verify": {
+  "runs": [],
+  "docs": [
+   "https://support.apple.com/guide/mac-help/change-trackpad-settings-mchlp1226/mac",
+   "https://support.apple.com/en-us/102309"
+  ],
+  "notes": "GUI-only fix, no Terminal output on screen. Apple's Mac User Guide 'Change Trackpad settings on Mac' (macOS 27 version, read 2026-11-09) lists under Point & Click: Click ('Set how firmly you must press the trackpad to take action'), Quiet Click ('Turn on this option if you don't want your trackpad to make a sound when you click'), Force Click and haptic feedback, and Tap to click ('Tap the trackpad with one finger to perform a click'). Apple's article 102309 says a Force Touch trackpad does not click when the Mac is off, because it needs power to provide haptic feedback like clicks. The MacRumors thread asks how to turn off the trackpad click sound; the Apple Community thread (Silent clicking on MacBook Pro, Big Sur) asks the same, and replies there suggest a lighter Click setting and Tap to click. Keyfeel's page states mouse-click press and release sounds, a Calm set of soft sounds, and an option to keep sounds off the built-in speakers and play them only on headphones or external audio. Nothing on this Mac was changed."
+ },
+ "scenes": [
+  {"type": "hook", "short": true, "kicker": "Trackpad on a Mac", "title": "Trackpad click too loud", "sub": "There is a setting for it.",
+   "narration": "If the click of your MacBook trackpad is louder than you would like, in a library, a lecture or a quiet office, there is a setting that turns it down."},
+  {"type": "cause", "text": "A Force Touch trackpad makes its click with power, not a hinge. So macOS can make it quieter.",
+   "narration": "A Force Touch trackpad does not really move. The click you feel and hear needs power, which is why it does not click when the Mac is off. It also means macOS can make that click quieter."},
+  {"type": "steps", "short": true, "label": "System Settings",
+   "lines": ["Open System Settings", "Click Trackpad, then Point & Click", "Turn on Quiet Click", "No Quiet Click? Try Tap to click"],
+   "ui": "Tap to click lets one light tap count as a click.",
+   "narration": "Open System Settings, click Trackpad, then Point and Click. Turn on Quiet Click, so the trackpad stops making a sound when you click. If your version of macOS does not show Quiet Click, turn on Tap to click instead. Then a light tap counts as a click, and you do not need to press at all."},
+  {"type": "app", "name": "Keyfeel", "line": "Plays the click sound you choose, soft ones included, and can play it only in your headphones.",
+   "url": "purplelink.llc/keyfeel", "img": "site/keyfeel/img/mouse-click.webp", "icon": "site/assets/keyfeel-icon.webp",
+   "narration": "Keyfeel is for when you miss hearing your clicks. It can play a click sound you choose, including a set of soft sounds, and it can play them only in your headphones, so the room stays quiet."}
+ ],
+ "thumbs": {
+  "A": {"kind": "diff", "hook": "Loud click", "after": "Turn on Quiet Click", "afterLabel": "Fix"},
+  "B": {"kind": "focus", "hook": "Trackpad\ntoo loud?", "lines": ["Point & Click", "Turn on Quiet Click"], "hl": "Quiet Click"},
+  "C": {"kind": "product", "name": "Keyfeel", "line": "Your clicks, only in your headphones", "img": "site/keyfeel/img/mouse-click.webp", "icon": "site/assets/keyfeel-icon.webp", "zoom": 1.2, "pos": "50% 50%"}
+ }
+}
