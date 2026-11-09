@@ -1,0 +1,1 @@
+Open the app and choose the file you want to change. The list on the left shows every match, and you can step through them one at a time. When you are happy with the result, save it, and the original stays untouched.

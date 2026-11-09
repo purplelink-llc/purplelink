@@ -1,6 +1,6 @@
 // node build-howto.mjs <slug> [--stills t1,t2] [--skip-narrate] [--skip-gate] [--concurrency N]
 // A daily problem-and-fix video (src/HowTo.jsx) from storyboards/howto/<slug>.json: the publish gate
-// (scripts/howto_gate.py), narration (narrate.py: ElevenLabs, edge-tts fallback), the 16:9 tutorial, the 9:16 Short
+// (scripts/howto_gate.py), narration (narrate.py: Kokoro, or VibeVoice when src/howto/voice-engine.js is switched on), the 16:9 tutorial, the 9:16 Short
 // (scenes marked "short"), and thumbnails A/B/C for Test & Compare (build-thumbs.mjs).
 // Outputs out/howto/<slug>/: <slug>-16x9.mp4, <slug>-9x16.mp4, <slug>-thumb-{A,B,C}.jpg, run-log.txt.
 import fs from "node:fs";
@@ -13,6 +13,7 @@ import { renderMedia, renderStill, selectComposition } from "@remotion/renderer"
 import { buildHowTo } from "./src/howto/plan.js";
 import { stageNarration, stageBrandAudio, addTrendBed } from "./audio.mjs";
 import { buildSrt } from "./src/howto/srt.js";
+import { howtoVoiceEngine, narrateEnv } from "./src/howto/voice-engine.js";
 import { BUMPER, bumperTotal } from "./src/bumper.js";
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
@@ -39,7 +40,10 @@ if (!flag("skip-gate")) {
 }
 const GL = { gl: "angle" }; // macOS: GPU context for the three.js app scene (src/three/kit.jsx)
 const storyboard = JSON.parse(fs.readFileSync(SB, "utf8"));
-if (!flag("skip-narrate")) execFileSync(PY, [path.join(ROOT, "narrate.py"), SB], { stdio: "inherit" });
+if (!flag("skip-narrate")) {
+  say(`voice switch: ${howtoVoiceEngine()}`);
+  execFileSync(PY, [path.join(ROOT, "narrate.py"), SB], { stdio: "inherit", env: narrateEnv() });
+}
 const timing = JSON.parse(fs.readFileSync(path.join(ROOT, ".cache", storyboard.id, "timing.json"), "utf8"));
 say(`narration engines: ${[...new Set(timing.scenes.map((s) => s.engine || "edge"))].join(", ")}`);
 
