@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
-"""Audio for the Circled Hoops ads: narration, the app's own UI sounds, and a synthesised bed.
+"""Audio for the Circled Hoops ads: narration, the app's own UI sounds, and the Circled Hoops music bed.
 
     python3 mix-circledhoops.py spec.json out.wav
 
 spec: {"dur", "vo": [{"file", "t"}], "sfx": [{"file", "t", "gain_db"}],
-       "bed": {"style": {...}, "seed", "gain_db", "drop", "duck_db", "out_at"}}
+       "bed": {"track_gain_db", "duck_db", "out_at"}}
 
-The bed comes from TikTokPipeline's trends/bed.py (oscillators and noise only, no samples). Before `drop` it is
-low-passed (the quiet hook), then opens up. It ducks by `duck_db` under the narration. The result is normalised
+Every Circled Hoops video uses the same bed: assets/music/circledhoops-bed.m4a, the Top 10 track (original, made
+with ACE-Step 1.5, MIT; provenance in assets/music/LICENSE.md). It is stored at about -22 LUFS, looped if an ad runs
+long, and played as it is (no low-pass hook; older storyboard keys "style", "seed", "gain_db" and "drop" are
+ignored). It ducks by `duck_db` under the narration. The result is normalised
 to -14 LUFS integrated, true peak -1.5 dB, with ffmpeg's two-pass loudnorm, then a
 limiter at -2 dBFS so the AAC encode stays under -1 dBTP.
 """
@@ -19,10 +21,9 @@ import wave
 from pathlib import Path
 
 import numpy as np
-from scipy.signal import butter, lfilter
 
 SR = 48000
-sys.path.insert(0, "/Volumes/Extreme SSD/TikTokPipeline/shared_media")
+BED = Path(__file__).resolve().parent / "assets" / "music" / "circledhoops-bed.m4a"
 
 
 def load(path):
@@ -63,21 +64,12 @@ def main(spec_path, out_wav):
         place(fx, load(s["file"]), s["t"], 10 ** (s.get("gain_db", 0) / 20))
 
     b = spec["bed"]
-    from trends.bed import render_bed
-    with tempfile.TemporaryDirectory() as td:
-        render_bed(b["style"], spec["dur"] + 1, Path(td) / "bed.wav", seed=b.get("seed", 0))
-        bed = load(Path(td) / "bed.wav")[:, :n]
-    if bed.shape[1] < n:
-        bed = np.pad(bed, ((0, 0), (0, n - bed.shape[1])))
-    lo_b, lo_a = butter(2, 380 / (SR / 2), "low")
-    low = lfilter(lo_b, lo_a, bed, axis=1) * 1.6
-    drop = int(b.get("drop", 0) * SR)
-    mixk = np.clip((np.arange(n) - drop) / (0.08 * SR), 0, 1)
-    bed = low * (1 - mixk) + bed * mixk
+    track = load(BED)
+    bed = np.tile(track, (1, -(-n // track.shape[1])))[:, :n]
     env = smooth(np.abs(vo).mean(axis=0), 30)
     on = smooth((env > 0.01).astype("f4"), 160)
     duck = 10 ** (-b.get("duck_db", 8) * np.clip(on * 1.5, 0, 1) / 20)
-    bed *= 10 ** (b.get("gain_db", -14) / 20) * duck
+    bed *= 10 ** (b.get("track_gain_db", 0) / 20) * duck
     if b.get("out_at"):
         k = np.clip((np.arange(n) - b["out_at"] * SR) / (1.2 * SR), 0, 1)
         bed *= 1 - k
