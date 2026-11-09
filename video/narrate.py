@@ -213,6 +213,110 @@ def synth_kokoro_batch(items: list[tuple[str, Path]], voice: str, rate: str) -> 
     return out
 
 
+# ---- VibeVoice (opt-in, how-tos) ---------------------------------------------------------------------------------
+# TTS_ENGINE=vibevoice clones one stored narrator voice (video/voices/howto-narrator.wav, designed once with Qwen3-TTS
+# VoiceDesign; synthetic, no real person) with VibeVoice-1.5B, three sentences at a time. build-howto.mjs sets it only
+# when the how-to switch is on. If any scene fails twice, the whole storyboard falls back to Kokoro, so one video never
+# mixes two voices.
+VV_PY = Path(os.environ.get("VIBEVOICE_PY", "/Volumes/Extreme SSD/_tools/vibevoice/venv/bin/python"))
+VV_RUNNER = HERE / "vibevoice_local.py"
+VV_REF = Path(os.environ.get("VIBEVOICE_REF", str(HERE / "voices" / "howto-narrator.wav")))
+# coined names VibeVoice misreads ("Typefolio"): respelled in the spoken text only; captions keep the real spelling
+PRONOUNCE = {"Tapefolio": "Tape-folio", "Lenscrib": "Lens-scrib", "ModernTex": "Modern Tech", "Purplelink": "Purple-link",
+             "Keyfeel": "Key-feel", "Summonly": "Summon-lee", "Panely": "Pane-lee"}
+
+
+def vibevoice_on() -> bool:
+    return ((os.environ.get("TTS_ENGINE") or "").strip().lower() == "vibevoice"
+            and VV_PY.exists() and VV_RUNNER.exists() and VV_REF.exists())
+
+
+def vv_prefix() -> str:
+    return f"vv|{hashlib.sha1(VV_REF.read_bytes()).hexdigest()[:10]}|"
+
+
+def spoken(text: str) -> str:
+    for k, v in PRONOUNCE.items():
+        text = text.replace(k, v)
+    return text
+
+
+def synth_vibevoice_batch(items: list[tuple[str, Path]]) -> dict[Path, list[dict]]:
+    """[(text, mp3)] -> {mp3: words} for the scenes VibeVoice rendered and Whisper confirmed. One model load."""
+    import tempfile
+    out: dict[Path, list[dict]] = {}
+    if not items:
+        return out
+    with tempfile.TemporaryDirectory(prefix="video-vibevoice-") as d:
+        jobs = [{"text": t, "speak": spoken(t), "ref": str(VV_REF), "mp3": str(mp3),
+                 "words": str(Path(d) / f"w{i}.json")} for i, (t, mp3) in enumerate(items)]
+        (Path(d) / "jobs.json").write_text(json.dumps(jobs))
+        env = dict(os.environ, PATH="/opt/homebrew/bin:" + os.environ.get("PATH", "/usr/bin:/bin"))
+        try:
+            p = subprocess.run([str(VV_PY), "-I", str(VV_RUNNER), "--jobs", str(Path(d) / "jobs.json"),
+                                "--results", str(Path(d) / "results.json")], env=env, capture_output=True, text=True,
+                               timeout=240 + 90 * len(items), stdin=subprocess.DEVNULL)
+        except subprocess.TimeoutExpired:
+            print("VibeVoice timed out", file=sys.stderr)
+            return out
+        if p.returncode:
+            print(f"VibeVoice exited {p.returncode}: {p.stderr[-400:]}", file=sys.stderr)
+        for j, (text, mp3) in zip(jobs, items):
+            try:
+                words = json.loads(Path(j["words"]).read_text())
+            except (OSError, ValueError):
+                continue
+            if words and len(words) == len(text.split()) and Path(mp3).exists() and Path(mp3).stat().st_size:
+                out[mp3] = words
+    return out
+
+
+def narrate_vibevoice(sb: dict, out_dir: Path, old: dict, force: bool) -> list[dict] | None:
+    """All scenes in the cloned voice, or None (nothing usable written to timing) so the caller uses Kokoro for all."""
+    vv = vv_prefix()
+    todo, cached = [], {}
+    for i, sc in enumerate(sb["scenes"]):
+        text = (sc.get("narration") or "").strip()
+        if not text:
+            continue
+        h = hashlib.sha1(vv.encode() + text.encode()).hexdigest()[:12]
+        mp3 = out_dir / "audio" / f"scene-{i}.mp3"
+        prev = old.get(i)
+        if not force and prev and prev.get("hash") == h and mp3.exists():
+            cached[i] = prev
+        else:
+            todo.append((i, text, mp3.with_name(f"scene-{i}.vv.mp3"), h))
+    got = synth_vibevoice_batch([(t, m) for _, t, m, _ in todo])
+    retry = [x for x in todo if x[2] not in got]
+    if retry:  # one more take for the scenes that failed the transcript check
+        print(f"VibeVoice: retrying {len(retry)} scene(s)", file=sys.stderr)
+        got.update(synth_vibevoice_batch([(t, m) for _, t, m, _ in retry]))
+    if any(x[2] not in got for x in todo):
+        print("VibeVoice failed on a scene twice; narrating the whole storyboard with the current voice", file=sys.stderr)
+        for _, _, m, _ in todo:
+            m.unlink(missing_ok=True)
+        return None
+    fresh = {i: (t, m, h) for i, t, m, h in todo}
+    scenes = []
+    for i, sc in enumerate(sb["scenes"]):
+        text = (sc.get("narration") or "").strip()
+        if not text:
+            scenes.append({"index": i, "audio": None, "duration": 0, "words": [], "hash": ""})
+        elif i in cached:
+            scenes.append(cached[i])
+            print(f"scene {i}: cached ({cached[i]['duration']:.2f}s)")
+        else:
+            t, take, h = fresh[i]
+            mp3 = out_dir / "audio" / f"scene-{i}.mp3"
+            os.replace(take, mp3)
+            words = restore_punctuation(got[take], t)
+            dur = probe_duration(mp3)
+            scenes.append({"index": i, "audio": f"audio/{sb['id']}/scene-{i}.mp3", "duration": dur,
+                           "words": words, "hash": h, "engine": "vibevoice"})
+            print(f"scene {i}: vibevoice, {len(words)} words, {dur:.2f}s")
+    return scenes
+
+
 def main() -> None:
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     force = "--force" in sys.argv
@@ -229,6 +333,12 @@ def main() -> None:
     if timing_path.exists():
         old = {s["index"]: s for s in json.loads(timing_path.read_text()).get("scenes", [])}
     key = eleven_key()
+    if not key and vibevoice_on():
+        vv_scenes = narrate_vibevoice(sb, out_dir, old, force)
+        if vv_scenes is not None:
+            timing_path.write_text(json.dumps({"voice": voice, "rate": rate, "scenes": vv_scenes}, indent=1))
+            print(f"wrote {timing_path}")
+            return
     use_kokoro = not key and kokoro_on()
     # Kokoro audio is cached under its own hash (voice and speed included), so a storyboard narrated before the switch
     # is re-narrated whole instead of mixing cached edge scenes with new Kokoro ones
