@@ -2031,8 +2031,10 @@ def merge_history(history: dict, key: str, payload: dict) -> None:
         site_hist["byDay"][day] = merged
     site_hist["snapshots"][payload.get("generatedAt", "")[:10] or _utc_today()] = {
         "topPaths": payload.get("topPaths", [])[:12],
-        "topReferrers": payload.get("topReferrers", [])[:12],
-        "topUtm": payload.get("topUtm", [])[:8],
+        # 25, not 12 and 8: small AI sources (gemini 8, perplexity 3) fell off a top-12 list once
+        # Reddit and Instagram grew, which read as a 0% AI share (2026-11-07).
+        "topReferrers": payload.get("topReferrers", [])[:25],
+        "topUtm": payload.get("topUtm", [])[:25],
         "toolRuns": payload.get("toolRuns", [])[:8],
     }
     _record_metric_starts(site_hist, key, payload)
@@ -2207,7 +2209,8 @@ def summarise(site: dict, site_hist: dict) -> dict:
         # window — not the 7-day one the headline uses. Pair it with the
         # matching 30-day pageview total or the "unreferred remainder" is
         # nonsense (it went negative and got silently suppressed once already).
-        "channels": channel_mix(latest.get("topReferrers", []), total(last30_days, "pageviews")),
+        "channels": channel_mix(latest.get("topReferrers", []), total(last30_days, "pageviews"),
+                                latest.get("topUtm", [])),
         "all_time": total(sorted(by_day), "pageviews"),
         "first_day": first_day,
         "days_tracked": len(active),
@@ -2257,29 +2260,64 @@ def summarise(site: dict, site_hist: dict) -> dict:
     }
 
 
-AI_REFERRERS = ("chatgpt", "perplexity", "claude.ai", "copilot", "gemini")
+AI_REFERRERS = ("chatgpt", "openai", "perplexity", "claude.ai", "copilot", "gemini", "doubao", "deepseek")
 SEARCH_REFERRERS = ("google", "bing", "duckduckgo", "brave", "ecosia", "yahoo")
 SOCIAL_REFERRERS = ("reddit", "twitter", "t.co", "x.com", "facebook", "linkedin", "lnkd.in",
                     "instagram", "youtube", "news.ycombinator", "bsky", "mastodon")
 
 
-def channel_mix(referrers: list[dict], pageviews: int) -> list[dict]:
+def _ai_source(key) -> str | None:
+    """The AI_REFERRERS token a referrer host or utm_source belongs to, or None."""
+    k = str(key or "").lower()
+    return next((t for t in AI_REFERRERS if t in k), None)
+
+
+def ai_referred(referrers: list[dict], utms: list[dict] | None = None) -> tuple[int, int, int]:
+    """(AI-assistant pageviews, all referred pageviews, AI views seen only as a utm tag).
+
+    Since late October 2026 ChatGPT links carry utm_source=chatgpt.com and no Referer header, so its
+    visits are in topUtm and not in topReferrers (chatgpt.com left the referrer list on 10-23 and the
+    share read 0% by 11-07 while the utm row showed 211 views). A visit can carry both, so each
+    assistant counts once, at the larger of its two counts; only the utm excess is added to the
+    referred total. Other utm sources (reddit, instagram...) mostly repeat a referrer and are not added.
+    """
+    ref_by: dict[str, int] = {}
+    total = 0
+    for r in referrers:
+        n = int(r.get("count", 0) or 0)
+        total += n
+        src = _ai_source(r.get("key"))
+        if src:
+            ref_by[src] = ref_by.get(src, 0) + n
+    utm_by: dict[str, int] = {}
+    for u in utms or []:
+        src = _ai_source(u.get("key"))
+        if src:
+            utm_by[src] = utm_by.get(src, 0) + int(u.get("count", 0) or 0)
+    extra = sum(max(0, utm_by.get(s, 0) - ref_by.get(s, 0)) for s in utm_by)
+    return sum(ref_by.values()) + extra, total + extra, extra
+
+
+def channel_mix(referrers: list[dict], pageviews: int, utms: list[dict] | None = None) -> list[dict]:
     """Group referrers into channels, and infer the unreferred remainder.
 
     Only referred visits appear in topReferrers, so "Direct / untagged" is
     pageviews minus everything attributed. That bucket is not purely
     bookmark-and-type traffic: Reddit and most link shorteners send
     rel=noreferrer, and apps strip referrers entirely, so real referrals land
-    here too. Labelled accordingly rather than called "direct".
+    here too. Labelled accordingly rather than called "direct". AI assistants
+    that arrive only as a utm tag (ChatGPT) are moved out of that remainder.
+    AI is checked before search so gemini.google.com is not counted as Google.
     """
     buckets = {"Search engines": 0, "AI assistants": 0, "Social & forums": 0, "Other referrers": 0}
+    buckets["AI assistants"] = ai_referred(referrers, utms)[2]  # utm-only AI views; referrer ones added below
     for r in referrers:
         host = str(r.get("key", "")).lower()
         n = int(r.get("count", 0) or 0)
-        if any(t in host for t in SEARCH_REFERRERS):
-            buckets["Search engines"] += n
-        elif any(t in host for t in AI_REFERRERS):
+        if _ai_source(host):
             buckets["AI assistants"] += n
+        elif any(t in host for t in SEARCH_REFERRERS):
+            buckets["Search engines"] += n
         elif any(t in host for t in SOCIAL_REFERRERS):
             buckets["Social & forums"] += n
         else:
@@ -2305,17 +2343,15 @@ def ai_referrer_trend(site_hist: dict, min_points: int = 4) -> list[dict]:
     ~18-20%, while muscleonglp sat at a flat 0% the entire time.
 
     Skips snapshot days with no referred traffic at all (an undefined share,
-    not a real 0%) rather than plotting a misleading floor.
+    not a real 0%) rather than plotting a misleading floor. Reads topUtm too:
+    see ai_referred for why ChatGPT is only there since late October 2026.
     """
     snaps = site_hist.get("snapshots", {})
     points = []
     for day in sorted(snaps.keys()):
-        refs = snaps[day].get("topReferrers", [])
-        total = sum(int(r.get("count", 0) or 0) for r in refs)
+        ai, total, _ = ai_referred(snaps[day].get("topReferrers", []), snaps[day].get("topUtm", []))
         if not total:
             continue
-        ai = sum(int(r.get("count", 0) or 0) for r in refs
-                 if any(t in str(r.get("key", "")).lower() for t in AI_REFERRERS))
         points.append({"day": day, "pct": ai / total * 100, "ai": ai, "total": total})
     return points if len(points) >= min_points else []
 
@@ -2898,7 +2934,8 @@ def ai_trend_card(trend: list[dict]) -> str:
     return (f"<div class='card'><h2 style='margin-top:0'>AI-assistant referral share</h2>"
             f"{trend_line(trend, 'pct')}"
             f"<p class='fnote'>Share of referred pageviews from ChatGPT, Perplexity, "
-            f"Gemini and similar, read from each archived day's trailing "
+            f"Gemini and similar (by referrer or utm_source tag, each assistant counted once), "
+            f"read from each archived day's trailing "
             f"{FETCH_DAYS}-day referrer window ({first['day']} to {last['day']}, "
             f"{len(trend)} snapshot(s)). A slow structural drift, not a daily figure.</p></div>")
 
@@ -3463,6 +3500,17 @@ def load_manual_ads() -> dict:
         return {}
 
 
+ASA_STALE_DAYS = 14
+
+
+def asa_reading_stale(asa: dict, today: dt.date | None = None) -> bool:
+    """True when the Apple Search Ads reading is more than ASA_STALE_DAYS old (an unreadable date is not stale)."""
+    try:
+        return ((today or dt.date.today()) - dt.date.fromisoformat(str(asa.get("asOf"))[:10])).days > ASA_STALE_DAYS
+    except ValueError:
+        return False
+
+
 def manual_ads_block(data: dict, admob: dict | None = None) -> str:
     asa = data.get("appleSearchAds")
     globepin_admob = (admob or {}).get("globepin")
@@ -3471,12 +3519,7 @@ def manual_ads_block(data: dict, admob: dict | None = None) -> str:
 
     asa_html = ""
     spend_total = 0.0
-    asa_stale = False
-    if asa:
-        try:
-            asa_stale = (dt.date.today() - dt.date.fromisoformat(str(asa.get("asOf"))[:10])).days > 14
-        except ValueError:
-            asa_stale = False
+    asa_stale = bool(asa) and asa_reading_stale(asa)
     if asa and asa_stale:
         cs = asa.get("campaigns", [])
         asa_html = (f"<p class='cust-line'>Apple Search Ads: no reading since {html.escape(str(asa.get('asOf')))}. "
@@ -4461,7 +4504,9 @@ def revenue_metrics(history: dict, summaries: list[dict], manual_ads: dict) -> d
     # --- acquisition: what a customer costs vs. what one is worth ---------------
     acq = []
     asa = (manual_ads or {}).get("appleSearchAds") or {}
-    if asa.get("campaigns"):
+    # The table is headed "last 7 days", so an old reading must not sit in it: ASA ended 2026-10-06 and
+    # its 10-05 total ($40.47, 15 installs) showed here for a month. The Ads card still dates it.
+    if asa.get("campaigns") and not asa_reading_stale(asa, today):
         c0 = asa["campaigns"][0]
         spend, inst = c0.get("spend", 0.0), c0.get("installs", 0)
         acq.append({"channel": "Apple Search Ads → GlobePin", "asOf": asa.get("asOf"),
