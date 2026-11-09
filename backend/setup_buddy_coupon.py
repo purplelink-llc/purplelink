@@ -1,3 +1,4 @@
+# NOTE: runs against the key in STRIPE_SECRET_KEY; after the Stripe account cutover, re-run it with the new account's key exported as STRIPE_SECRET_KEY.
 # One-off setup: the Stripe coupon behind Buddy's 20% codes (docs/designs/buddy-coupon.md). Runs inside Modal so the
 # Stripe key stays in the Modal environment and is never printed; prints only the non-secret coupon id and counts.
 #

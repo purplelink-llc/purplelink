@@ -183,11 +183,11 @@
     li._cells.forEach(function (c, k) {
       var s = c._s;
       if (!FX || FX.reduced()) { c.setAttribute("data-s", s); return; }
-      c.style.animationDelay = (k * 120) + "ms";
-      FX.kick(c, "fx-flip", 900);
-      window.setTimeout(function () { c.setAttribute("data-s", s); }, k * 120 + 250);
-      window.setTimeout(function () { FX.play("flip", k); }, k * 120 + 220);
-      wait = k * 120 + 520;
+      c.setAttribute("data-col", k);
+      FX.kick(c, "fx-flip", k * 60 + 400);
+      window.setTimeout(function () { c.setAttribute("data-s", s); }, k * 60 + 150);
+      window.setTimeout(function () { FX.play("flip", k); }, k * 60 + 120);
+      wait = k * 60 + 350;
     });
     $("ag-count").textContent = st.done ? "" : "Guess " + (st.guesses.length + 1) + " of " + st.max;
     hint();

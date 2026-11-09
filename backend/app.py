@@ -12,6 +12,7 @@ import modal
 
 logger = logging.getLogger(__name__)
 
+import stripe_account as _stripe_account
 from latextools import annual
 from latextools import core
 
@@ -83,6 +84,7 @@ image = (
         "test \"$(kpsewhich -var-value=shell_escape)\" = f",
     )
     .add_local_python_source("latextools")
+    .add_local_python_source("stripe_account")
 )
 
 # Isolated JVM image for the free PDF-structure tool. The opendataloader-pdf
@@ -102,6 +104,7 @@ opendataloader_image = (
         "assert glob.glob(os.path.join(p,'jar','*.jar')), 'bundled JAR missing'\"",
     )
     .add_local_python_source("latextools")
+    .add_local_python_source("stripe_account")
 )
 
 # Persistent, low-volume counter store for rate limiting.
@@ -218,6 +221,7 @@ lifecycle_optout_dict = DurableDict(
 PURCHASE_UPLOAD_PATHS = {
     "cover-letter": "/tools/cover-letter/compose/",
     "anonymity-check": "/tools/anonymity-check/upload/",
+    "journal-check": "/tools/paper-review/journal-check/upload/",
     "citation-gap": "/tools/citation-gap/upload/",
     "revision-review": "/tools/paper-review/revision/upload/",
     "response-review": "/tools/response-review/upload/",
@@ -272,13 +276,32 @@ def _email_key(email: str) -> str:
 # report carries a personal referral code in its footer (see
 # _referral_footer_md below). If a co-author they shared it with buys a
 # review using that code AND a .edu email, both sides get a one-time $2
-# credit (see _credit_referral). referral_dict maps code -> the original
+# credit (see _credit_referral, retired 2026-11-05 below). referral_dict maps code -> the original
 # purchaser's email; codes only become live once that purchaser's own
 # review completes (see paper_review_pipeline._run), since you can't share
 # a code from a report you don't have yet.
 referral_dict = DurableDict(
     modal.Dict.from_name("paper-review-referral", create_if_missing=True),
     durable_volume, "referral",
+)
+# Referrals for every product (latextools/referrals.py, 2026-11-05). Since then every buyer's code is live from
+# their first purchase (not only after a finished review) and the .edu $2 credit is retired: a friend gets 20% off
+# their first order and the referrer one free Standard review. buyer_ledger_dict: canonical email -> first paid
+# order (what "first purchase" means). referral_rewards_dict: pending and paid rewards, plus the keys that stop one
+# referred buyer paying out twice (shared with the annual plan's reward).
+buyer_ledger_dict = DurableDict(
+    modal.Dict.from_name("purplelink-buyer-ledger", create_if_missing=True),
+    durable_volume, "buyer-ledger",
+)
+referral_rewards_dict = DurableDict(
+    modal.Dict.from_name("purplelink-referral-rewards", create_if_missing=True),
+    durable_volume, "referral-rewards",
+)
+# What each buyer paid for single Paper Reviews (canonical email -> {"purchases": [...]}), written at purchase
+# time. Read only to show the annual plan comparison after a review (latextools/upgrades.py, 2026-11-05).
+review_spend_dict = DurableDict(
+    modal.Dict.from_name("paper-review-spend", create_if_missing=True),
+    durable_volume, "review-spend",
 )
 
 # Customer feedback from the /feedback/ page (linked from the review-request
@@ -291,7 +314,7 @@ feedback_dict = DurableDict(
     durable_volume, "feedback",
 )
 FEEDBACK_RATINGS = ("useful", "partly", "not_useful")
-FEEDBACK_PRODUCTS = ("paper-review", "citation-gap", "anonymity-check", "cover-letter",
+FEEDBACK_PRODUCTS = ("paper-review", "citation-gap", "anonymity-check", "journal-check", "cover-letter",
                      "revision-review", "response-review", "resume-review", "moderntex", "other")
 
 
@@ -358,6 +381,8 @@ PREVIEW_MAX_CONCURRENT = 2          # per web container, so paid routes keep CPU
 anthropic_secret = modal.Secret.from_name("anthropic-secret")
 paper_review_shared_secret = modal.Secret.from_name("paper-review-shared")
 stripe_secret = modal.Secret.from_name("stripe-secret")
+# New Stripe account (STRIPE_SECRET_KEY_NEW, STRIPE_NEW_ACCOUNT); the old stripe-secret stays for past buyers.
+stripe_secret_new = modal.Secret.from_name("stripe-secret-new")
 subscribe_secret = modal.Secret.from_name("subscribe-secret")
 resend_secret = modal.Secret.from_name("resend")
 # Feature flags for the coherence check (latextools/coherence.py). Holds COHERENCE_IN_REVIEW=1 since
@@ -409,6 +434,9 @@ PAID_PRODUCTS: dict[str, dict] = {
     # rates, so these carry a wide margin rather than a thin one.
     "cover-letter":             {"category": "cover-letter", "qty": 1, "amount": 200},
     "anonymity-check":          {"category": "anonymity-check", "qty": 1, "amount": 200},
+    # The $2 journal check offered after a Standard review (latextools/upgrades.py): the rule-based Journal
+    # tier checklist for one journal, no model call. Its own category, so /paper-review/submit refuses it.
+    "journal-check":            {"category": "journal-check", "qty": 1, "amount": 200},
     "citation-gap":             {"category": "citation-gap", "qty": 1, "amount": 300},
     "revision-review":          {"category": "revision-review", "qty": 1, "amount": 200},
     "response-review":          {"category": "response-review", "qty": 1, "amount": 600},
@@ -583,8 +611,23 @@ def _referral_footer_md(email: str) -> str:
     link = f"https://purplelink.llc/tools/paper-review/?ref={code}"
     return (
         f"\n\n---\n\n*Reviewed with [Purplelink Paper Review]({link}). "
-        f".edu referrals earn both of you a $2 credit.*\n"
+        f"A colleague who buys through this link gets 20% off their first order.*\n"
     )
+
+
+def _referral_link(email: str) -> str:
+    """The buyer's sitewide referral link; registers the code so a friend's checkout can find it."""
+    if not email or not os.environ.get("SUBSCRIBE_SECRET"):
+        return ""
+    from latextools import referrals as _referrals
+    code = _paper_referral_code(email)
+    try:
+        if referral_dict.get(code) != email:
+            referral_dict[code] = email
+    except Exception:
+        logger.exception("referral code registration failed")
+        return ""
+    return _referrals.link_for(code)
 
 
 async def _mint_referral_promo_code(client, email: str) -> str | None:
@@ -595,7 +638,8 @@ async def _mint_referral_promo_code(client, email: str) -> str | None:
     whole crediting flow for both sides."""
     import secrets as _secrets
 
-    stripe_key = os.environ.get("STRIPE_SECRET_KEY", "")
+    # Created in the account checkout runs on, so the code is redeemable there.
+    stripe_key = _stripe_account.checkout_secret_key()
     if not stripe_key:
         logger.warning("_mint_referral_promo_code: STRIPE_SECRET_KEY not set")
         return None
@@ -673,6 +717,21 @@ async def _credit_referral(referrer_email: str, referee_email: str) -> None:
 # polling endpoint just reads from that dict.
 # ---------------------------------------------------------------------------
 
+def _upgrade_offers_for(entry: dict, journal_used: bool) -> dict:
+    """upgrades.build_offers for a token entry. Never raises: a failure means no offers."""
+    try:
+        from latextools import upgrades as _upgrades
+        sold_as = entry.get("product_key", "")
+        purchases = []
+        if sold_as in _upgrades.SINGLE_REVIEW_PRODUCTS and entry.get("email"):
+            canon = _buddy_canonical_email(entry["email"])
+            purchases = ((review_spend_dict.get(canon) or {}).get("purchases") or []) if canon else []
+        return _upgrades.build_offers(sold_as, journal_used, purchases, time.time())
+    except Exception:
+        logger.exception("upgrade offers failed")
+        return {}
+
+
 @app.function(
     image=image,
     timeout=1200,        # 20 min cap — deep tier can take 10+ min (was 900; the 7-call panel now warms a cache first)
@@ -691,8 +750,13 @@ def paper_review_pipeline(
     anonymity_check: bool = False,
     deliver_email: str = "",
     source_note: str = "",
+    upgrade_offers: dict | None = None,
 ) -> None:
     """Run the full Paper Review pipeline (any tier) and persist to dict.
+
+    `upgrade_offers` comes from upgrades.build_offers in the submit handler: the $2 journal check after a review
+    that ran without a journal, and the annual plan comparison for a repeat buyer. Shown under a finished report
+    on the status page and in the ready email; never on an error.
 
     `source_note` is a line the web layer sets when the review ran on a PDF it
     converted from a Word file; it is placed at the top of the report."""
@@ -759,6 +823,7 @@ def paper_review_pipeline(
                     **final,
                     "product": "paper-review",
                     "status": job_status,
+                    **({"upgrade_offers": upgrade_offers} if upgrade_offers and job_status == "done" else {}),
                     **({"ledger_key": ledger_key} if ledger_key else {}),
                     **({"replacement_token": replacement_token} if job_status == "error" else {}),
                 }
@@ -794,6 +859,7 @@ def paper_review_pipeline(
                                     amount_cents=(PAID_PRODUCTS.get(product_key, {}).get("amount", 900)
                                                   // max(1, PAID_PRODUCTS.get(product_key, {}).get("qty", 1))),
                                     attachment=_attachment_kind,
+                                    offers=upgrade_offers or None,
                                 ),
                                 attachments=_attachments or None,
                                 tags=[{"name": "product", "value": "paper-review"}],
@@ -901,6 +967,7 @@ def adjacent_tool_pipeline(
     resume_filename: str = "",
     deliver_email: str = "",
     free_check: bool = False,
+    journal_key: str = "",
 ) -> None:
     """Single dispatcher for cover-letter, anonymity-check, citation-gap,
     revision-review, response-review, resume-review jobs. The product field
@@ -987,6 +1054,27 @@ def adjacent_tool_pipeline(
                     "result_md": md,
                     "error": "" if res.get("status") == "ok" else "analysis_failed",
                     "raw": res,
+                    "finished_at": _time.time(),
+                }
+
+            elif product == "journal-check":
+                # Rule-based only (journals.check_compliance), so no model call and no cost to speak of.
+                from latextools import journals as _journals, upgrades as _upgrades
+                paper_jobs_dict[token] = {
+                    "status": "running", "progress_pct": 30,
+                    "stage": "extracting", "product": product,
+                    "started_at": _time.time(),
+                }
+                struct = papercheck.extract_paper(pdf_bytes)
+                res = _journals.check_compliance(struct, journal_key)
+                ok = bool(res) and not res.get("error")
+                paper_jobs_dict[token] = {
+                    "status": "done" if ok else "error",
+                    "progress_pct": 100,
+                    "stage": "done",
+                    "product": product,
+                    "result_md": _upgrades.compliance_markdown(res) if ok else "",
+                    "error": "" if ok else "analysis_failed",
                     "finished_at": _time.time(),
                 }
 
@@ -1348,7 +1436,7 @@ def pdf_structure_run(pdf_bytes: bytes) -> dict:
     # namespaced, rather than minting a new one). The paid tools' Anthropic
     # key is NOT mounted here; only the heavy pipelines need it. buddy_secret
     # carries the site chat's own, separately limited key.
-    secrets=[paper_review_shared_secret, stripe_secret, resend_secret, subscribe_secret, buddy_secret],
+    secrets=[paper_review_shared_secret, stripe_secret, stripe_secret_new, resend_secret, subscribe_secret, buddy_secret],
 )
 @modal.concurrent(max_inputs=4)
 @modal.asgi_app()
@@ -2527,6 +2615,15 @@ def web():
         product_key = (payload or {}).get("product", "paper-review-standard")
         referral_code = (payload or {}).get("referral_code", "")
         referral_code = referral_code.strip()[:32] if isinstance(referral_code, str) else ""
+        # The buyer's cross-sell code from stripe-webhook.mjs (netlify/lib/buyer-codes.mjs): 30% off one other
+        # product, shown in the purchase email. Untrusted text, so only the code shape and a short date pass.
+        import re as _re
+        _buyer_code = (payload or {}).get("buyer_code", "")
+        _buyer_code = _buyer_code if isinstance(_buyer_code, str) and _re.fullmatch(r"PL-[2-9A-HJKMNP-Z]{8}", _buyer_code) else ""
+        _buyer_code_expires = (payload or {}).get("buyer_code_expires", "")
+        _buyer_code_expires = _buyer_code_expires if isinstance(_buyer_code_expires, str) and _re.fullmatch(r"[A-Za-z]+ \d{1,2}, \d{4}", _buyer_code_expires) else ""
+        if not _buyer_code_expires:
+            _buyer_code = ""
         if not session_id or not isinstance(session_id, str) or len(session_id) > 200:
             return JSONResponse({"error": "missing_session_id"}, status_code=400)
 
@@ -2595,6 +2692,14 @@ def web():
         paper_tokens_dict[session_id] = entry
         for _tok in tokens:
             paper_token_index_dict[_tok] = session_id
+        # Spend on single reviews, for the annual plan comparison shown after a later review. Best effort.
+        try:
+            from latextools import upgrades as _upgrades
+            _canon = _buddy_canonical_email(entry["email"]) if entry["email"] else ""
+            _upgrades.record_spend(review_spend_dict, _canon, session_id, product_key,
+                                   entry["amount_paid"], entry["created_at"])
+        except Exception:
+            logger.exception("review spend record failed for session=%s", session_id[:16])
 
         # Seed the lifecycle-email sequence for this purchase (tips, later
         # review-request, eventual win-back). Skipped if the buyer's email
@@ -2613,20 +2718,10 @@ def web():
                 "last_sent_at": None,
             }
 
-        # Co-author exposure referral loop (task tracked as "referral loop"):
-        # a .edu buyer who came in via a live referral code credits both
-        # themselves and whoever referred them. Gated to .edu specifically
-        # per spec — this is meant to spread within academic circles, not
-        # become a general-purpose discount code.
-        buyer_email = entry["email"]
-        if referral_code and buyer_email and buyer_email.lower().endswith(".edu"):
-            referrer_email = referral_dict.get(referral_code)
-            if referrer_email and _email_key(referrer_email) != _email_key(buyer_email):
-                # Awaited (not backgrounded) to match the volume-pack email
-                # pattern below — best-effort internally (never raises), so
-                # this can't fail the purchase itself, just adds a couple
-                # seconds of webhook latency, which Stripe/Netlify tolerate.
-                await _credit_referral(referrer_email, buyer_email)
+        # The referral reward for this order (if it came through a friend's link) is recorded by
+        # /referral/register, which the Stripe webhook calls for every paid order. The .edu $2 credit that used to
+        # run here was retired on 2026-11-05 so the two programs cannot stack.
+        _ref_link = _referral_link(entry["email"])
 
         # Single purchases: email the upload link, so a buyer who paid on a
         # phone or closed the tab can come back from any device. Paper Review
@@ -2643,7 +2738,9 @@ def web():
                         to=entry["email"],
                         subject=f"Your {_delivery._READY_NAMES.get(category, 'purchase')}: link to start",
                         html=_delivery.html_purchase_link(
-                            product_name=_delivery._READY_NAMES.get(category, "purchase"), link=link),
+                            product_name=_delivery._READY_NAMES.get(category, "purchase"), link=link,
+                            buyer_code=_buyer_code, buyer_code_expires=_buyer_code_expires,
+                            referral_link=_ref_link),
                         tags=[{"name": "product", "value": product_key}],
                     )
                 if _email_result.get("status") != "ok":
@@ -2661,7 +2758,10 @@ def web():
                         _ec,
                         to=entry["email"],
                         subject=f"Your {qty}-pack of Paper Reviews",
-                        html=_delivery.html_volume_pack_tokens(tokens=tokens, pack_size=qty),
+                        html=_delivery.html_volume_pack_tokens(
+                            tokens=tokens, pack_size=qty,
+                            buyer_code=_buyer_code, buyer_code_expires=_buyer_code_expires,
+                            referral_link=_ref_link),
                         tags=[{"name": "product", "value": product_key}],
                     )
                 if _email_result.get("status") != "ok":
@@ -2678,6 +2778,70 @@ def web():
             "qty": qty,
             "status": "registered",
         })
+
+    # ---- Referrals for every product (latextools/referrals.py). Header-authenticated: only the Netlify functions
+    # (stripe-webhook, checkout) call these. ------------------------------------------------------------------------
+
+    @api.post("/referral/register")
+    async def referral_register(request: Request):
+        """Called by the Stripe webhook for every paid order. Records the order in the buyer ledger, makes the buyer's
+        own code live, and, when the order came through someone else's link, records a pending reward for the daily
+        loop. Payload: {session_id, email, product, amount_paid, referral_code}. Returns {code, link}."""
+        import hmac as _hmac
+        from latextools import referrals as _referrals
+        expected = os.environ.get("BACKEND_WEBHOOK_SECRET", "")
+        if not expected:
+            return JSONResponse({"error": "misconfigured"}, status_code=500)
+        if not _hmac.compare_digest(request.headers.get("x-webhook-secret", ""), expected):
+            return JSONResponse({"error": "unauthorized"}, status_code=401)
+        try:
+            data = await request.json()
+        except Exception:
+            data = None
+        if not isinstance(data, dict):
+            return JSONResponse({"error": "invalid_json"}, status_code=400)
+        session_id = data.get("session_id", "")
+        email = data.get("email", "")
+        if not isinstance(session_id, str) or not session_id.startswith("cs_") or len(session_id) > 200:
+            return JSONResponse({"error": "bad_session"}, status_code=400)
+        if not isinstance(email, str) or "@" not in email or len(email) > 200:
+            return JSONResponse({"error": "bad_email"}, status_code=400)
+        product = data.get("product", "")
+        product = product[:80] if isinstance(product, str) else ""
+        paid = data.get("amount_paid")
+        paid = paid if isinstance(paid, int) and paid >= 0 else 0
+        code_in = data.get("referral_code", "")
+        code_in = code_in if isinstance(code_in, str) and _referrals.CODE_RE.match(code_in) else ""
+        now = _time_module.time()
+        canon = _buddy_canonical_email(email) or email.strip().lower()
+        if paid > 0:
+            _referrals.record_purchase(buyer_ledger_dict, canon, session_id, now)
+        result = "no_referral"
+        if code_in:
+            referrer = referral_dict.get(code_in)
+            if referrer:
+                result = _referrals.make_pending(
+                    referral_rewards_dict, session_id=session_id, referrer_email=referrer, referred_email=email,
+                    product=product, paid_cents=paid, now=now, canonical_email=_buddy_canonical_email)
+            else:
+                result = "unknown_code"
+        link = _referral_link(email)
+        return JSONResponse({"code": _paper_referral_code(email) if link else "", "link": link,
+                             "referral": result})
+
+    @api.get("/referral/check")
+    async def referral_check(request: Request):
+        """{valid}: whether a ?ref= code belongs to a buyer. Checkout calls it before applying the friend discount."""
+        import hmac as _hmac
+        from latextools import referrals as _referrals
+        expected = os.environ.get("BACKEND_WEBHOOK_SECRET", "")
+        if not expected:
+            return JSONResponse({"error": "misconfigured"}, status_code=500)
+        if not _hmac.compare_digest(request.headers.get("x-webhook-secret", ""), expected):
+            return JSONResponse({"error": "unauthorized"}, status_code=401)
+        code = request.query_params.get("code", "")
+        valid = bool(_referrals.CODE_RE.match(code or "")) and bool(referral_dict.get(code))
+        return JSONResponse({"valid": valid})
 
     # ---- Paper Review annual plan endpoints (Part D). All header-authenticated: the Netlify functions
     # (stripe-webhook, paper-review-plan) are the only callers. -------------------------------------------------
@@ -2731,8 +2895,25 @@ def web():
         reason = str((data or {}).get("reason", "refund"))[:40]
         if not isinstance(sub_id, str) or not sub_id.startswith("sub_"):
             return JSONResponse({"error": "missing_subscription_id"}, status_code=400)
-        res = annual.revoke(_annual_store(), sub_id, reason, _time_module.time())
+        dispute_id = str((data or {}).get("dispute_id") or "")[:80]
+        res = annual.revoke(_annual_store(), sub_id, reason, _time_module.time(), dispute_id=dispute_id)
         return JSONResponse({"ok": res["ok"], "reason": res["reason"], "dropped": res.get("dropped", 0)})
+
+    @api.post("/paper-review/annual-restore")
+    async def paper_review_annual_restore(request: Request):
+        """A dispute on an annual invoice was closed as won: give the plan back (see annual.restore)."""
+        bad = _annual_auth(request)
+        if bad:
+            return bad
+        data = await _annual_json(request)
+        sub_id = (data or {}).get("subscription_id", "")
+        dispute_id = str((data or {}).get("dispute_id") or "")[:80]
+        if not isinstance(sub_id, str) or not sub_id.startswith("sub_"):
+            return JSONResponse({"error": "missing_subscription_id"}, status_code=400)
+        res = annual.restore(_annual_store(), sub_id, dispute_id, _time_module.time())
+        if res.get("reason") == "restored":
+            logger.info("annual: plan %s restored after a won dispute", res["plan"]["plan_id"])
+        return JSONResponse({"ok": res["ok"], "reason": res["reason"], "restored": res.get("restored", 0)})
 
     @api.post("/paper-review/annual-status")
     async def paper_review_annual_status(request: Request):
@@ -2793,6 +2974,15 @@ def web():
         plan, why = annual.plan_for_token(annual_plans_dict, _annual_secret(), token)
         if not plan:
             return JSONResponse({"error": why}, status_code=404 if why == "invalid" else 410)
+        res = await _annual_apply_change(plan, cancel)
+        if isinstance(res, JSONResponse):
+            return res
+        return JSONResponse(_annual_view_payload(plan, res))
+
+    async def _annual_apply_change(plan: dict, cancel: bool):
+        """Set or clear cancel_at_period_end at Stripe, rotate the plan link and send the confirmation email.
+        Shared by the one-click link and the operator's emailed-cancel path. Returns the new plan token, or an
+        error response."""
         if plan.get("revoked") or plan.get("ended") or plan.get("period_end", 0) < _time_module.time():
             return JSONResponse({"error": "plan_over"}, status_code=409)
         if not await _annual_set_cancel(plan["subscription_id"], cancel):
@@ -2806,8 +2996,7 @@ def web():
             plan["email"], "Your plan will renew again" if not cancel else "Your plan will not renew",
             annual.html_plan_cancel_confirmation(end_label=end, link=link, undone=not cancel),
             "annual_undo" if not cancel else "annual_cancel")
-        new_token = link.split("?t=", 1)[1]
-        return JSONResponse(_annual_view_payload(plan, new_token))
+        return link.split("?t=", 1)[1]
 
     @api.post("/paper-review/annual-cancel")
     async def paper_review_annual_cancel(request: Request):
@@ -2816,6 +3005,33 @@ def web():
     @api.post("/paper-review/annual-undo")
     async def paper_review_annual_undo(request: Request):
         return await _annual_change(request, False)
+
+    @api.post("/paper-review/annual-cancel-by-email")
+    async def paper_review_annual_cancel_by_email(request: Request):
+        """The business email operator's path for a "cancel" reply: same effect as the one-click link (Stripe
+        cancel_at_period_end, a new link, the confirmation email). Unlike annual-link it says whether a plan
+        matched, because the caller must flag an unmatched sender for Ben instead of guessing. Only callers that
+        hold BACKEND_WEBHOOK_SECRET reach it."""
+        bad = _annual_auth(request)
+        if bad:
+            return bad
+        data = await _annual_json(request)
+        email = (data or {}).get("email", "")
+        if not (isinstance(email, str) and "@" in email and len(email) <= 200):
+            return JSONResponse({"error": "bad_email"}, status_code=400)
+        key = _buddy_canonical_email(email) or _email_key(email)
+        plan = annual.plan_by_email(list(annual_plans_dict.items()), key)
+        if not plan:
+            return JSONResponse({"matched": False})
+        if plan.get("cancel_at_period_end"):
+            return JSONResponse({"matched": True, "already": True, "plan_id": plan["plan_id"],
+                                 "ends": annual.date_label(plan["period_end"])})
+        res = await _annual_apply_change(plan, True)
+        if isinstance(res, JSONResponse):
+            return res
+        logger.info("annual: cancelled by emailed request, plan %s", plan["plan_id"])
+        return JSONResponse({"matched": True, "already": False, "plan_id": plan["plan_id"],
+                             "ends": annual.date_label(plan["period_end"])})
 
     @api.post("/paper-review/annual-link")
     async def paper_review_annual_link(request: Request):
@@ -3579,6 +3795,7 @@ def web():
                 anonymity_check=do_anonymity,
                 deliver_email=_deliver_to,
                 source_note=source_note,
+                upgrade_offers=_upgrade_offers_for(entry, bool(chosen_journal)),
             )
         except Exception:
             logger.exception("paper_review_pipeline.spawn failed for token=%s", token[:12])
@@ -3734,6 +3951,7 @@ def web():
                 "compliance_result": entry.get("compliance_result"),
                 "anonymity_result": entry.get("anonymity_result"),
                 "deterministic_findings": entry.get("deterministic_findings"),
+                "upgrade_offers": entry.get("upgrade_offers"),
                 "session_id": session_id_for_invoice,
                 "_note": "This result will be deleted from server storage shortly. Save it now.",
             }
@@ -4055,6 +4273,60 @@ def web():
             )
         return JSONResponse({"token": token, "status_url": f"/paper-review/status?token={token}"})
 
+    @api.post("/journal-check/submit")
+    async def journal_check_submit(
+        request: Request,
+        token: str = Form(...),
+        file: UploadFile = File(...),
+        journal_key: str = Form(""),
+        email: str = Form(""),
+    ):
+        """The $2 journal check: the Journal tier's rule-based checklist for one journal, on its own."""
+        from latextools import journals as _journals
+        if not _enforce_rate_limit(request, "journal-check"):
+            return JSONResponse({"error": "rate_limited"}, status_code=429)
+        if _too_large(request, core.MAX_PAPER_UPLOAD_BYTES):
+            return JSONResponse({"error": "invalid", "detail": "File too large."}, status_code=400)
+        journal_key = (journal_key or "").strip().lower()
+        if journal_key not in _journals.JOURNAL_SPECS:
+            return JSONResponse({"error": "invalid", "detail": "Choose a journal from the list."}, status_code=400)
+        session_id, entry = _lookup_token(token)
+        if entry is None:
+            return JSONResponse({"error": "unknown_token"}, status_code=404)
+        if token in (entry.get("consumed_tokens") or []):
+            return JSONResponse({"error": "already_used"}, status_code=409)
+        _term_refusal = annual.term_refusal(_annual_store(), entry, _time_module.time())
+        if _term_refusal:
+            return JSONResponse({"error": _term_refusal}, status_code=410)
+        if entry.get("expires_at", 0) and entry["expires_at"] < _time_module.time():
+            _expire_token_entry(session_id, entry)
+            return JSONResponse({"error": "expired"}, status_code=410)
+        if (entry.get("product_cfg") or {}).get("category") != "journal-check":
+            return JSONResponse({"error": "wrong_product"}, status_code=400)
+        try:
+            data = await _read_capped(file, core.MAX_PAPER_UPLOAD_BYTES)
+        except _UploadTooLarge:
+            return JSONResponse({"error": "invalid", "detail": "File too large."}, status_code=400)
+        try:
+            core.validate_paper_upload(file.filename or "", len(data))
+        except core.ValidationError as e:
+            return _invalid(e)
+        if not data.startswith(b"%PDF-"):
+            return JSONResponse({"error": "invalid", "detail": "File is not a valid PDF."}, status_code=400)
+        claimed = await _start_adjacent(token, session_id, entry, product="journal-check", spawn_kwargs={
+            "pdf_bytes": data,
+            "journal_key": journal_key,
+            "deliver_email": email if email and "@" in email else "",
+        })
+        if claimed == "already_used":
+            return JSONResponse({"error": "already_used"}, status_code=409)
+        if claimed == "spawn_failed":
+            return JSONResponse(
+                {"error": "spawn_failed", "detail": "Could not start the check. Your token has not been used. Please try again."},
+                status_code=500,
+            )
+        return JSONResponse({"token": token, "status_url": f"/paper-review/status?token={token}"})
+
     @api.post("/citation-gap/submit")
     async def citation_gap_submit(
         request: Request,
@@ -4127,14 +4399,14 @@ def web():
         coupon on, after the Stripe coupon exists), the chat is on and the Stripe key is set. Fails closed."""
         try:
             return (buddy_dict.get("flag:coupon", False) is True and _buddy_on()
-                    and bool(os.environ.get("STRIPE_SECRET_KEY")))
+                    and bool(_stripe_account.checkout_secret_key()))
         except Exception:
             return False
 
     async def _mint_buddy_code(client, expires_at: int, source: str, key: str) -> str | None:
         """One single-use promotion code on the buddy-20 coupon. One retry with a new code (a duplicate code is a
         400), then None."""
-        stripe_key = os.environ.get("STRIPE_SECRET_KEY", "")
+        stripe_key = _stripe_account.checkout_secret_key()  # the account checkout runs on
         for _ in range(2):
             code = _buddy.new_coupon_code()
             try:
@@ -4726,8 +4998,7 @@ def web():
         if token not in (token_entry.get("tokens") or []):
             return JSONResponse({"error": "invalid_token"}, status_code=403)
 
-        stripe_key = os.environ.get("STRIPE_SECRET_KEY")
-        if not stripe_key:
+        if not _stripe_account.lookup_keys():
             return JSONResponse(
                 {"error": "misconfigured", "detail": "STRIPE_SECRET_KEY not set on web function."},
                 status_code=500,
@@ -4739,9 +5010,11 @@ def web():
         # Look up the Checkout Session to find customer + amount
         async with _httpx.AsyncClient(timeout=15.0) as client:
             try:
-                resp = await client.get(
+                # The session lives in one account; try each key and keep using the one that found it, so the
+                # customer and invoice below are created in that same account.
+                resp, stripe_key = await _stripe_account.fetch_any(
+                    client, "GET",
                     f"https://api.stripe.com/v1/checkout/sessions/{_ulp.quote(session_id, safe='')}",
-                    headers={"Authorization": f"Bearer {stripe_key}"},
                 )
                 if resp.status_code != 200:
                     logger.error("stripe checkout session lookup failed: %s", resp.text[:300])
@@ -4920,7 +5193,7 @@ def _buddy_canonical_email(raw: str):
 
 def _annual_store():
     return _NS(plans=annual_plans_dict, tokens=paper_tokens_dict, index=paper_token_index_dict,
-               claims=paper_token_claims_dict)
+               claims=paper_token_claims_dict, referred=referral_rewards_dict)
 
 
 def _annual_gen_token() -> str:
@@ -4934,14 +5207,14 @@ def _annual_secret() -> str:
 
 async def _annual_fetch_subscription(subscription_id: str):
     """The live subscription from Stripe as annual.snapshot_from_stripe() output, or None when it cannot be read."""
-    key = os.environ.get("STRIPE_SECRET_KEY", "")
-    if not key or not isinstance(subscription_id, str) or not subscription_id.startswith("sub_"):
+    if not _stripe_account.lookup_keys() or not isinstance(subscription_id, str) or not subscription_id.startswith("sub_"):
         return None
     import httpx
     try:
         async with httpx.AsyncClient(timeout=15.0) as c:
-            r = await c.get(f"https://api.stripe.com/v1/subscriptions/{subscription_id}",
-                            params={"expand[]": "latest_invoice"}, headers={"Authorization": f"Bearer {key}"})
+            r, _key = await _stripe_account.fetch_any(
+                c, "GET", f"https://api.stripe.com/v1/subscriptions/{subscription_id}",
+                params={"expand[]": "latest_invoice"})
         if r.status_code != 200:
             return None
         return annual.snapshot_from_stripe(r.json())
@@ -4952,15 +5225,14 @@ async def _annual_fetch_subscription(subscription_id: str):
 
 async def _annual_set_cancel(subscription_id: str, cancel: bool) -> bool:
     """Set cancel_at_period_end on the subscription. True when Stripe accepted it."""
-    key = os.environ.get("STRIPE_SECRET_KEY", "")
-    if not key or not isinstance(subscription_id, str) or not subscription_id.startswith("sub_"):
+    if not _stripe_account.lookup_keys() or not isinstance(subscription_id, str) or not subscription_id.startswith("sub_"):
         return False
     import httpx
     try:
         async with httpx.AsyncClient(timeout=15.0) as c:
-            r = await c.post(f"https://api.stripe.com/v1/subscriptions/{subscription_id}",
-                             data={"cancel_at_period_end": "true" if cancel else "false"},
-                             headers={"Authorization": f"Bearer {key}"})
+            r, _key = await _stripe_account.fetch_any(
+                c, "POST", f"https://api.stripe.com/v1/subscriptions/{subscription_id}",
+                data={"cancel_at_period_end": "true" if cancel else "false"})
         return r.status_code == 200
     except Exception:
         logger.exception("annual: Stripe cancel update failed")
@@ -5041,6 +5313,62 @@ async def _annual_sweep_async() -> dict:
 def annual_plan_sweep() -> dict:
     import asyncio
     return asyncio.run(_annual_sweep_async())
+
+
+# ---------------------------------------------------------------------------
+# Referral rewards (latextools/referrals.py): module level so the daily cron and tests can use them.
+# ---------------------------------------------------------------------------
+
+def _referral_store():
+    return _NS(rewards=referral_rewards_dict, ledger=buyer_ledger_dict, tokens=paper_tokens_dict,
+               index=paper_token_index_dict)
+
+
+async def _referral_fetch_charge(session_id: str):
+    """{refunded, disputed, fingerprint} for a paid Checkout Session, or None when Stripe cannot be read."""
+    from latextools import referrals as _referrals
+    if not _stripe_account.lookup_keys() or not isinstance(session_id, str) or not session_id.startswith("cs_"):
+        return None
+    import httpx
+    try:
+        async with httpx.AsyncClient(timeout=15.0) as c:
+            r, _key = await _stripe_account.fetch_any(
+                c, "GET", f"https://api.stripe.com/v1/checkout/sessions/{session_id}",
+                params={"expand[]": "payment_intent.latest_charge"})
+        if r.status_code != 200:
+            return None
+        return _referrals.charge_state(r.json())
+    except Exception:
+        logger.exception("referral: Stripe session read failed")
+        return None
+
+
+async def _referral_send(to: str, subject: str, html: str, tag: str) -> dict:
+    from latextools import delivery as _delivery
+    import httpx
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as c:
+            return await _delivery.send_email(c, to=to, subject=subject, html=html,
+                                              tags=[{"name": "type", "value": tag}])
+    except Exception:
+        logger.exception("referral: email send failed")
+        return {"status": "error"}
+
+
+async def _referral_sweep_async() -> dict:
+    from latextools import referrals as _referrals
+    # Same opt-out the lifecycle emails honour: one unsubscribe stops every purchase follow-up. The token is
+    # still minted (it is the referrer's), only the email is skipped.
+    return await _referrals.run_sweep(
+        _referral_store(), now=time.time(), canonical_email=_buddy_canonical_email, gen_token=_annual_gen_token,
+        fetch_charge=_referral_fetch_charge, referral_code_for=_paper_referral_code,
+        send_email=lambda **kw: _referral_send(kw["to"], kw["subject"], kw["html"], kw["tag"]),
+        opted_out=lambda e: bool(lifecycle_optout_dict.get(_email_key(e))))
+
+
+def referral_reward_sweep() -> dict:
+    import asyncio
+    return asyncio.run(_referral_sweep_async())
 
 
 def sweep_expired_paper_tokens() -> int:
@@ -5357,10 +5685,55 @@ def _sessions_with_later_purchase(entries) -> set:
 
 
 @app.function(
-    image=modal.Image.debian_slim(python_version="3.11").pip_install("httpx").add_local_python_source("latextools"),
+    image=modal.Image.debian_slim(python_version="3.11").pip_install("httpx").add_local_python_source("latextools").add_local_python_source("stripe_account"),
+    timeout=900,
+    secrets=[stripe_secret, stripe_secret_new, subscribe_secret],
+)
+def backfill_buyer_ledger(max_pages: int = 200) -> dict:
+    """One-off: add every paid Checkout Session before referrals shipped to buyer_ledger_dict, so a past buyer
+    cannot earn their referrer a reward as a "first" purchase. Run with `modal run app.py::backfill_buyer_ledger`.
+    The Stripe key stays inside the Modal secret. Idempotent (record_purchase keeps the oldest order first)."""
+    import httpx
+    from latextools import referrals as _referrals
+    keys = _stripe_account.lookup_keys()
+    if not keys:
+        return {"error": "no_stripe_key"}
+    added, pages = 0, 0
+    # A list under the wrong account is a 200 with no rows, so walk every account's sessions and merge.
+    with httpx.Client(timeout=30.0) as c:
+        for key in keys:
+            after, key_pages = "", 0
+            while key_pages < max_pages:
+                params = {"limit": "100", "status": "complete"}
+                if after:
+                    params["starting_after"] = after
+                r = c.get("https://api.stripe.com/v1/checkout/sessions", params=params,
+                          headers={"Authorization": f"Bearer {key}"})
+                r.raise_for_status()
+                body = r.json()
+                pages += 1
+                key_pages += 1
+                for sess in body.get("data", []):
+                    if sess.get("payment_status") != "paid" or not int(sess.get("amount_total") or 0):
+                        continue
+                    email = ((sess.get("customer_details") or {}).get("email") or "").strip()
+                    if not email:
+                        continue
+                    canon = _buddy_canonical_email(email) or email.lower()
+                    _referrals.record_purchase(buyer_ledger_dict, canon, sess["id"], float(sess.get("created") or 0))
+                    added += 1
+                data = body.get("data") or []
+                if not body.get("has_more") or not data:
+                    break
+                after = data[-1]["id"]
+    return {"sessions": added, "pages": pages, "buyers": len(list(buyer_ledger_dict.keys()))}
+
+
+@app.function(
+    image=modal.Image.debian_slim(python_version="3.11").pip_install("httpx").add_local_python_source("latextools").add_local_python_source("stripe_account"),
     schedule=modal.Cron("0 14 * * *"),  # daily, 14:00 UTC — mid-morning US
     timeout=600,
-    secrets=[resend_secret, subscribe_secret, stripe_secret],
+    secrets=[resend_secret, subscribe_secret, stripe_secret, stripe_secret_new],
 )
 def lifecycle_email_sweep() -> dict:
     """Advance every customer_lifecycle_dict entry to its next due stage.
@@ -5392,6 +5765,11 @@ def lifecycle_email_sweep() -> dict:
     except Exception:
         logger.exception("annual_plan_sweep failed")
     try:
+        referral_summary = referral_reward_sweep()
+        logger.info("referral_reward_sweep: %s", referral_summary)
+    except Exception:
+        logger.exception("referral_reward_sweep failed")
+    try:
         purged_tokens = sweep_expired_paper_tokens()
         purged_jobs = sweep_stale_paper_jobs()
         logger.info("paper-review housekeeping: purged %s tokens, %s jobs",
@@ -5400,7 +5778,7 @@ def lifecycle_email_sweep() -> dict:
         logger.warning("paper-review housekeeping sweeps failed: %s", exc)
     try:
         copied = sum(store.backfill() for store in (
-            lifecycle_optout_dict, referral_dict, paper_tokens_dict,
+            lifecycle_optout_dict, referral_dict, paper_tokens_dict, buyer_ledger_dict, referral_rewards_dict,
             customer_lifecycle_dict, usage_ledger_dict, preview_counts_dict, feedback_dict, _buddy_claims(),
         ))
         if copied:

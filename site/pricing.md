@@ -14,12 +14,13 @@ Last checked: 2026-10-17. Prices are in US dollars. Each Mac app is one download
 | Panely | $9.99 once | 7 days | macOS 14 or later | Menu-bar window snapping: halves, thirds, quarters and sixths by shortcut or by dragging to a screen edge, saved layouts, and windows put back when a monitor is reconnected. Works offline. https://purplelink.llc/panely/ |
 | Summonly | $9.99 once | 7 days | macOS 14 or later | Menu-bar launcher that finds files, apps and clipboard history from one box (Option-Space), with quick answers and web search keywords. Private index on your Mac. https://purplelink.llc/summonly/ |
 | Née | $14.99 once | 7 days | macOS 14 or later | File converter: hold Option while dragging files, drop them on one of 51 actions in a ring at the pointer, and the result is saved next to the original. Runs on your Mac. https://purplelink.llc/nee/ |
-| Mac Suite | $59.99 once | 14-day refund | see each app | ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and Vitae Plus for life. https://purplelink.llc/suite/ |
+| Lenses | $4.99 once | 7 days, 14-day refund | macOS 14 or later, Apple silicon | Menu-bar app for AR glasses: sharp display mode, 120 Hz where offered, edge margin, night tint, Dark Mode and a bigger pointer, restored on unplug. Tested on RayNeo Air. Collects nothing; its only network request is the update check. https://purplelink.llc/lenses/ |
+| Mac Suite | $59.99 once | 14-day refund | see each app | ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née, Lenses and Vitae Plus for life. https://purplelink.llc/suite/ |
 | BatteryMeter | Free | n/a | macOS 13 or later, Apple silicon | Menu-bar battery readout: percent, power in watts, volts and amps, capacity against design, cycle count and the five apps using the most power. Collects nothing. https://purplelink.llc/batterymeter/ |
 | Buddy | Free, open source (MIT) | n/a | macOS 14 or later, Apple silicon, Claude Code | Notch companion for Claude Code: shows what each session is doing and opens when one needs you, with session usage and automatic updates. Network only for the daily update check and optional exact usage. Not affiliated with Anthropic. https://purplelink.llc/buddy/ |
 | Vitae | Free; Plus $2.99 a month or $23.99 a year | n/a | macOS 15 or later | Free Mac app for academics to keep submissions, grants and a CV record. https://purplelink.llc/vitae/ |
 
-Pick your own: any 2 of the nine Suite parts for $34.99, or any 3 for $44.99, whichever parts you choose (Vitae Plus counts as one part). Four or more cost more than the Suite. https://purplelink.llc/suite/
+Pick your own: any 2 of the ten Suite parts are 25% off their combined price, and any 3 are 40% off (Vitae Plus counts as one part, at its first-year price). For four or more, the Suite has all ten for $59.99. https://purplelink.llc/suite/
 
 ## Web tools
 

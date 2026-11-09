@@ -1,0 +1,32 @@
+[
+ {
+  "id": "lenses-howto-v2-thumb-A",
+  "kind": "diff",
+  "hook": "Smoother",
+  "before": "60 Hz",
+  "after": "120 Hz",
+  "variant": "A"
+ },
+ {
+  "id": "lenses-howto-v2-thumb-B",
+  "kind": "ba",
+  "hook": "60 Hz vs 120 Hz",
+  "before": "site/assets/lenses/lenses-hz-before.png",
+  "after": "site/assets/lenses/lenses-hz-after.png",
+  "beforeLabel": "60 Hz",
+  "afterLabel": "120 Hz",
+  "pos": "30% 50%",
+  "variant": "B"
+ },
+ {
+  "id": "lenses-howto-v2-thumb-C",
+  "kind": "ba",
+  "hook": "Blurry edges?",
+  "before": "site/assets/lenses/lenses-edges-before.png",
+  "after": "site/assets/lenses/lenses-edges-after.png",
+  "beforeLabel": "Before",
+  "afterLabel": "After",
+  "pos": "50% 50%",
+  "variant": "C"
+ }
+]

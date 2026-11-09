@@ -21,6 +21,7 @@
 
 import { createHash } from "node:crypto";
 import { ownerToken, safeEqual } from "../lib/auth.mjs";
+import { lookupKeys } from "../lib/stripe-account.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 // Pinned so invoice.subscription / invoice.charge keep the shape this code reads,
@@ -37,11 +38,11 @@ const SITE_OF_PRODUCT = new Map(Object.entries({
   "paper-review-standard": "purplelink", "paper-review-journal": "purplelink",
   "paper-review-deep": "purplelink", "paper-review-pack-5": "purplelink",
   "paper-review-pack-20": "purplelink", "cover-letter": "purplelink",
-  "anonymity-check": "purplelink", "citation-gap": "purplelink",
+  "anonymity-check": "purplelink", "journal-check": "purplelink", "citation-gap": "purplelink",
   "revision-review": "purplelink", "response-review": "purplelink",
   "resume-review": "purplelink", "kit-faceless": "purplelink",
   "kit-monetization": "purplelink", "kit-bundle": "purplelink",
-  "kit-clip": "purplelink", "moderntex": "purplelink", "moderntex-seats": "purplelink", "outbound-veil": "purplelink", "legroom": "purplelink", "keyfeel": "purplelink", "tapefolio": "purplelink", "lenscrib": "purplelink", "nee": "purplelink", "panely": "purplelink", "summonly": "purplelink", "freeboard": "purplelink", "app-suite": "purplelink", "bundle-2": "purplelink", "bundle-3": "purplelink",
+  "kit-clip": "purplelink", "moderntex": "purplelink", "moderntex-seats": "purplelink", "outbound-veil": "purplelink", "legroom": "purplelink", "keyfeel": "purplelink", "tapefolio": "purplelink", "lenscrib": "purplelink", "lenses": "purplelink", "nee": "purplelink", "panely": "purplelink", "summonly": "purplelink", "freeboard": "purplelink", "app-suite": "purplelink", "bundle-2": "purplelink", "bundle-3": "purplelink",
   "vitae-plus-monthly": "purplelink", "vitae-plus-annual": "purplelink",
   "digest-monthly": "purplelink", "digest-annual": "purplelink",
   "sheet-submission": "purplelink", "sheet-tenure": "purplelink", "sheet-jobmarket": "purplelink", "sheet-grantpipeline": "purplelink", "sheet-reviewmatrix": "purplelink", "sheet-bundle": "purplelink",
@@ -93,6 +94,12 @@ async function stripeList(path, extra, key) {
   return { rows, truncated: true };
 }
 
+/** The same list from every configured Stripe account, merged (a list under the wrong account is 200 with no rows). */
+async function stripeListAll(path, extra, keys) {
+  const parts = await Promise.all(keys.map((k) => stripeList(path, extra, k)));
+  return { rows: parts.flatMap((p) => p.rows), truncated: parts.some((p) => p.truncated) };
+}
+
 /** Monthly value of one subscription item, in cents. */
 function monthlyCents(item) {
   const price = item.price || {};
@@ -110,8 +117,8 @@ export default async function handler(request) {
   if (!expected) return json(500, { error: "misconfigured", detail: "Set STATS_TOKEN on this site." });
   if (!safeEqual(ownerToken(request, url), expected)) return json(401, { error: "unauthorized" });
 
-  const key = Netlify.env.get("STRIPE_SECRET_KEY");
-  if (!key) return json(500, { error: "misconfigured", detail: "STRIPE_SECRET_KEY not set." });
+  const keys = lookupKeys();
+  if (!keys.length) return json(500, { error: "misconfigured", detail: "STRIPE_SECRET_KEY not set." });
 
   let days = parseInt(url.searchParams.get("days") || "30", 10);
   if (!Number.isFinite(days) || days < 1) days = 30;
@@ -140,10 +147,10 @@ export default async function handler(request) {
   let sessions, invoices, subs, fees;
   try {
     [sessions, invoices, subs, fees] = await Promise.all([
-      stripeList("/checkout/sessions", [["expand[]", "data.payment_intent.latest_charge"]], key),
-      stripeList("/invoices", [["status", "paid"], ["expand[]", "data.charge"]], key),
-      stripeList("/subscriptions", [["status", "all"], ["expand[]", "data.customer"]], key),
-      stripeList("/balance_transactions", [["type", "charge"]], key),
+      stripeListAll("/checkout/sessions", [["expand[]", "data.payment_intent.latest_charge"]], keys),
+      stripeListAll("/invoices", [["status", "paid"], ["expand[]", "data.charge"]], keys),
+      stripeListAll("/subscriptions", [["status", "all"], ["expand[]", "data.customer"]], keys),
+      stripeListAll("/balance_transactions", [["type", "charge"]], keys),
     ]);
   } catch (err) {
     console.error("sales: Stripe unreachable:", String(err).slice(0, 300));
@@ -330,9 +337,12 @@ export default async function handler(request) {
 
   let balance = null;
   try {
-    const b = await stripeGet("/balance", {}, key);
+    const books = await Promise.all(keys.map((k) => stripeGet("/balance", {}, k)));
     const sum = (rows) => (rows || []).reduce((n, r) => n + r.amount, 0);
-    balance = { available: sum(b.available), pending: sum(b.pending) };
+    balance = {
+      available: books.reduce((n, b) => n + sum(b.available), 0),
+      pending: books.reduce((n, b) => n + sum(b.pending), 0),
+    };
   } catch {
     /* balance is a nicety; sales still render without it */
   }

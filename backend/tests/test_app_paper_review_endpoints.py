@@ -114,7 +114,10 @@ def client(monkeypatch):
     monkeypatch.setattr(backend_app, "customer_lifecycle_dict", _FakeDict())
     monkeypatch.setattr(backend_app, "lifecycle_optout_dict", _FakeDict())
     monkeypatch.setattr(backend_app, "referral_dict", _FakeDict())
+    monkeypatch.setattr(backend_app, "buyer_ledger_dict", _FakeDict())
+    monkeypatch.setattr(backend_app, "referral_rewards_dict", _FakeDict())
     monkeypatch.setattr(backend_app, "feedback_dict", _FakeDict())
+    monkeypatch.setattr(backend_app, "review_spend_dict", _FakeDict())
     monkeypatch.setattr(backend_app, "paper_review_pipeline", _FakeSpawnFunction())
     monkeypatch.setattr(backend_app, "adjacent_tool_pipeline", _FakeSpawnFunction())
 
@@ -199,137 +202,99 @@ def test_register_token_mints_and_is_idempotent(client, monkeypatch):
     assert body2["tokens"] == body1["tokens"]
 
 
-def test_register_token_credits_valid_edu_referral(client, monkeypatch):
-    """A .edu buyer using a live referral code (registered by an earlier
-    purchaser's completed review — see paper_review_pipeline._run) should
-    trigger _credit_referral. We don't hit real Stripe/Resend here — just
-    assert the crediting path is invoked with the right two emails."""
-    http, backend_app = client
+def _ref_headers(monkeypatch):
     monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "correct-secret")
-    headers = {"x-webhook-secret": "correct-secret"}
+    monkeypatch.setenv("SUBSCRIBE_SECRET", "test-secret")
+    return {"x-webhook-secret": "correct-secret"}
 
+
+def test_register_token_no_longer_runs_the_edu_credit(client, monkeypatch):
+    """The .edu $2 credit was retired with referrals for every product (2026-11-05): a .edu buyer with a live code
+    gets no promo-code mint, and the purchase email carries the buyer's own referral link instead."""
+    http, backend_app = client
+    headers = _ref_headers(monkeypatch)
     referrer_email = "referrer@example.com"
     code = backend_app._paper_referral_code(referrer_email)
     backend_app.referral_dict[code] = referrer_email
+    calls, mails = [], []
 
-    calls = []
     async def _fake_credit(referrer, referee):
         calls.append((referrer, referee))
+
+    async def _fake_send(_client, **kw):
+        mails.append(kw)
+        return {"status": "ok"}
     monkeypatch.setattr(backend_app, "_credit_referral", _fake_credit)
-
+    from latextools import delivery
+    monkeypatch.setattr(delivery, "send_email", _fake_send)
     payload = {
-        "session_id": "s-edu-referral",
-        "product": "paper-review-standard",
-        "email": "student@school.edu",
-        "amount_paid": backend_app.PAID_PRODUCTS["paper-review-standard"]["amount"],
-        "referral_code": code,
-    }
-    r = http.post("/paper-review/register-token", json=payload, headers=headers)
-    assert r.status_code == 200
-    assert calls == [(referrer_email, "student@school.edu")]
-
-
-def test_register_token_skips_credit_for_non_edu_email(client, monkeypatch):
-    http, backend_app = client
-    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "correct-secret")
-    headers = {"x-webhook-secret": "correct-secret"}
-
-    referrer_email = "referrer@example.com"
-    code = backend_app._paper_referral_code(referrer_email)
-    backend_app.referral_dict[code] = referrer_email
-
-    calls = []
-    async def _fake_credit(referrer, referee):
-        calls.append((referrer, referee))
-    monkeypatch.setattr(backend_app, "_credit_referral", _fake_credit)
-
-    payload = {
-        "session_id": "s-non-edu",
-        "product": "paper-review-standard",
-        "email": "buyer@gmail.com",
-        "amount_paid": backend_app.PAID_PRODUCTS["paper-review-standard"]["amount"],
-        "referral_code": code,
+        "session_id": "s-edu-referral", "product": "paper-review-standard", "email": "student@school.edu",
+        "amount_paid": backend_app.PAID_PRODUCTS["paper-review-standard"]["amount"], "referral_code": code,
     }
     r = http.post("/paper-review/register-token", json=payload, headers=headers)
     assert r.status_code == 200
     assert calls == []
+    own = backend_app._paper_referral_code("student@school.edu")
+    assert backend_app.referral_dict.get(own) == "student@school.edu"
+    assert mails and f"https://purplelink.llc/?ref={own}" in mails[0]["html"]
 
 
-def test_register_token_skips_credit_for_unknown_referral_code(client, monkeypatch):
+def test_referral_register_requires_the_secret(client, monkeypatch):
+    http, _ = client
+    _ref_headers(monkeypatch)
+    r = http.post("/referral/register", json={"session_id": "cs_1", "email": "a@b.com"},
+                  headers={"x-webhook-secret": "wrong"})
+    assert r.status_code == 401
+
+
+def test_referral_register_records_pending_reward_and_returns_link(client, monkeypatch):
     http, backend_app = client
-    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "correct-secret")
-    headers = {"x-webhook-secret": "correct-secret"}
-
-    calls = []
-    async def _fake_credit(referrer, referee):
-        calls.append((referrer, referee))
-    monkeypatch.setattr(backend_app, "_credit_referral", _fake_credit)
-
-    payload = {
-        "session_id": "s-unknown-code",
-        "product": "paper-review-standard",
-        "email": "student@school.edu",
-        "amount_paid": backend_app.PAID_PRODUCTS["paper-review-standard"]["amount"],
-        "referral_code": "not-a-real-code",
-    }
-    r = http.post("/paper-review/register-token", json=payload, headers=headers)
-    assert r.status_code == 200
-    assert calls == []
+    headers = _ref_headers(monkeypatch)
+    referrer = "referrer@example.com"
+    code = backend_app._paper_referral_code(referrer)
+    backend_app.referral_dict[code] = referrer
+    r = http.post("/referral/register", headers=headers, json={
+        "session_id": "cs_friend1", "email": "friend@gmail.com", "product": "moderntex",
+        "amount_paid": 1599, "referral_code": code})
+    body = r.json()
+    assert r.status_code == 200 and body["referral"] == "pending"
+    own = backend_app._paper_referral_code("friend@gmail.com")
+    assert body["code"] == own and body["link"] == f"https://purplelink.llc/?ref={own}"
+    assert backend_app.referral_dict.get(own) == "friend@gmail.com"
+    item = backend_app.referral_rewards_dict.get("rw:cs_friend1")
+    assert item["referrer_email"] == referrer and item["state"] == "pending"
+    assert backend_app.buyer_ledger_dict.get("friend@gmail.com")["first_session"] == "cs_friend1"
 
 
-def test_register_token_skips_credit_for_self_referral(client, monkeypatch):
-    """A buyer can't credit themselves by reusing their own code."""
+def test_referral_register_skips_self_small_and_subscription_orders(client, monkeypatch):
     http, backend_app = client
-    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "correct-secret")
-    headers = {"x-webhook-secret": "correct-secret"}
-
-    same_email = "person@school.edu"
-    code = backend_app._paper_referral_code(same_email)
-    backend_app.referral_dict[code] = same_email
-
-    calls = []
-    async def _fake_credit(referrer, referee):
-        calls.append((referrer, referee))
-    monkeypatch.setattr(backend_app, "_credit_referral", _fake_credit)
-
-    payload = {
-        "session_id": "s-self-referral",
-        "product": "paper-review-standard",
-        "email": same_email,
-        "amount_paid": backend_app.PAID_PRODUCTS["paper-review-standard"]["amount"],
-        "referral_code": code,
-    }
-    r = http.post("/paper-review/register-token", json=payload, headers=headers)
-    assert r.status_code == 200
-    assert calls == []
+    headers = _ref_headers(monkeypatch)
+    me = "person@school.edu"
+    code = backend_app._paper_referral_code(me)
+    backend_app.referral_dict[code] = me
+    cases = [
+        ({"email": "Person@School.EDU", "product": "moderntex", "amount_paid": 1999}, "same_email"),
+        ({"email": "other@x.com", "product": "cover-letter", "amount_paid": 160}, "below_minimum"),
+        ({"email": "other2@x.com", "product": "paper-review-annual", "amount_paid": 7900}, "subscription"),
+        ({"email": "other3@x.com", "product": "moderntex", "amount_paid": 1999, "referral_code": "0123456789"},
+         "unknown_code"),
+    ]
+    for i, (extra, want) in enumerate(cases):
+        body = {"session_id": f"cs_case{i}", "referral_code": code, **extra}
+        r = http.post("/referral/register", headers=headers, json=body)
+        assert r.json()["referral"] == want, (extra, r.json())
+    assert not [k for k, _ in backend_app.referral_rewards_dict.items() if str(k).startswith("rw:")]
 
 
-
-def test_register_token_skips_credit_for_self_referral_with_other_casing(client, monkeypatch):
-    """Changing the capitalisation of the address does not make it a new person."""
+def test_referral_check_reports_known_codes_only(client, monkeypatch):
     http, backend_app = client
-    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "correct-secret")
-    headers = {"x-webhook-secret": "correct-secret"}
+    headers = _ref_headers(monkeypatch)
+    code = backend_app._paper_referral_code("a@b.com")
+    backend_app.referral_dict[code] = "a@b.com"
+    assert http.get(f"/referral/check?code={code}", headers=headers).json() == {"valid": True}
+    assert http.get("/referral/check?code=0000000000", headers=headers).json() == {"valid": False}
+    assert http.get("/referral/check?code=NOTHEX", headers=headers).json() == {"valid": False}
 
-    same_email = "person@school.edu"
-    code = backend_app._paper_referral_code(same_email)
-    backend_app.referral_dict[code] = same_email
-
-    calls = []
-    async def _fake_credit(referrer, referee):
-        calls.append((referrer, referee))
-    monkeypatch.setattr(backend_app, "_credit_referral", _fake_credit)
-
-    payload = {
-        "session_id": "s-self-referral-case",
-        "product": "paper-review-standard",
-        "email": "Person@School.EDU",
-        "amount_paid": backend_app.PAID_PRODUCTS["paper-review-standard"]["amount"],
-        "referral_code": code,
-    }
-    r = http.post("/paper-review/register-token", json=payload, headers=headers)
-    assert r.status_code == 200
-    assert calls == []
 
 def test_register_token_rejects_amount_mismatch(client, monkeypatch):
     """Defense-in-depth: if the Netlify Stripe webhook ever mismaps a

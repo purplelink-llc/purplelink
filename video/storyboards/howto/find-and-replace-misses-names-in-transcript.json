@@ -1,0 +1,114 @@
+{
+ "id": "howto-find-and-replace-misses-names-in-transcript",
+ "app": "tapefolio",
+ "title": "Names left in your interview transcript on Mac (find and replace misses misspellings)",
+ "short_title": "Replaced a name in a transcript? Check for misspellings",
+ "url": "purplelink.llc/tapefolio",
+ "page": "https://purplelink.llc/tapefolio/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://gotranscript.com/en/blog/de-identification-checklist-qualitative-transcripts-pii-indirect-identifiers"
+ ],
+ "verify": {
+  "runs": [
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf 'Interviewer: Thanks for coming, Elena.\\nElaina: Happy to be here.\\nInterviewer: Tell me about the clinic.\\nElena: It was busy.\\n' > transcript.txt && sed 's/Elena/P01/g' transcript.txt > coded.txt && grep -n -i -E 'el(e|ai)na' coded.txt",
+    "output": "2:Elaina: Happy to be here."
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf 'Interviewer: Thanks for coming, Elena.\\nElaina: Happy to be here.\\nInterviewer: Tell me about the clinic.\\nElena: It was busy.\\n' > transcript.txt && sed -E 's/El(e|ai)na/P01/g' transcript.txt > coded.txt && cat coded.txt && grep -c -i -E 'el(e|ai)na' coded.txt || true",
+    "output": "Interviewer: Thanks for coming, P01.\nP01: Happy to be here.\nInterviewer: Tell me about the clinic.\nP01: It was busy.\n0"
+   }
+  ],
+  "docs": [
+   "https://purplelink.llc/tapefolio/",
+   "https://gotranscript.com/en/blog/de-identification-checklist-qualitative-transcripts-pii-indirect-identifiers"
+  ],
+  "notes": "Built 2026-11-07 on Ben's Mac in mktemp folders with an invented four-line transcript. Run 1 replaces the exact spelling Elena with a code and greps for spelling variants: the speech-to-text label Elaina survives. Run 2 replaces both spellings and finds none left. The GoTranscript checklist (read 2026-11-07) says automated find and replace misses context so a human review is needed, recommends participant codes and keeping the mapping in a separate access-controlled place. Tapefolio claims are from its page: identifier removal marks what it found, you replace or keep each one or replace everything left, the key that maps codes back is saved in a separate file, detection misses some identifiers so you read the result, and nothing is uploaded. The video makes no claim about which names the app catches."
+ },
+ "scenes": [
+  {
+   "type": "hook",
+   "short": true,
+   "kicker": "Interview transcripts on a Mac",
+   "title": "Names left in your transcript",
+   "sub": "You replaced the name, and one spelling is still there.",
+   "narration": "You replaced a participant's name with a code, and the transcript still shows it once. Speech to text often spells the same name two ways. Here is how to find the one you missed."
+  },
+  {
+   "type": "symptom",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ grep -n -i -E 'el(e|ai)na' coded.txt",
+    "2:Elaina: Happy to be here."
+   ],
+   "narration": "Here is a short transcript after replacing Elena with P01. A search that allows both spellings finds line two. The transcription wrote Elaina there, so the exact match never touched it."
+  },
+  {
+   "type": "cause",
+   "text": "Find and replace matches one exact spelling. Transcription often writes the same name two or three ways.",
+   "narration": "Find and replace matches one exact spelling. Transcription often writes the same name two or three ways, and speaker labels count too. A person has to look, because the search only finds the spellings you thought of."
+  },
+  {
+   "type": "steps",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ sed -E 's/El(e|ai)na/P01/g' transcript.txt > coded.txt",
+    "Search for each spelling you can think of",
+    "Keep a separate list of codes and names"
+   ],
+   "ui": "Store the list of codes and names apart from the transcript, in a restricted place.",
+   "narration": "List every spelling you can find, then replace them all in one pass. Here that is one command with both spellings. Keep a separate list that maps each code back to the name, and store it apart from the transcript."
+  },
+  {
+   "type": "check",
+   "short": true,
+   "label": "Terminal",
+   "ok": "No spellings left",
+   "lines": [
+    "$ cat coded.txt",
+    "Interviewer: Thanks for coming, P01.",
+    "P01: Happy to be here.",
+    "Interviewer: Tell me about the clinic.",
+    "P01: It was busy.",
+    "$ grep -c -i -E 'el(e|ai)na' coded.txt",
+    "0"
+   ],
+   "narration": "Read the file, then count the leftovers. Zero means none of those spellings remain. It does not mean no identifier remains, so read the whole transcript against the audio as well."
+  },
+  {
+   "type": "app",
+   "name": "Tapefolio",
+   "line": "Marks identifiers it finds in a transcript. You replace or keep each one, and the key that maps codes back is saved in a separate file.",
+   "url": "purplelink.llc/tapefolio",
+   "img": "site/assets/tapefolio-screens/review-decisions.webp",
+   "icon": "site/assets/tapefolio-icon.webp",
+   "narration": "Tapefolio transcribes interviews on your Mac and marks identifiers it finds. You replace or keep each one, and the key that maps codes back is saved in a separate file. Detection misses some, so you still read the result. Your files are not uploaded. There is a seven day free trial."
+  }
+ ],
+ "thumbs": {
+  "A": {
+   "kind": "diff",
+   "hook": "Name still there",
+   "before": "Elaina: Happy to be here.",
+   "after": "P01: Happy to be here."
+  },
+  "B": {
+   "kind": "long",
+   "msg": "Names left in transcript",
+   "n": 1,
+   "unit": "command",
+   "sub": "both spellings replaced"
+  },
+  "C": {
+   "kind": "product",
+   "name": "Tapefolio",
+   "line": "Replace names in a transcript",
+   "img": "site/assets/tapefolio-screens/review-decisions.webp",
+   "icon": "site/assets/tapefolio-icon.webp"
+  }
+ }
+}

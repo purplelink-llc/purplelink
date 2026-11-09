@@ -86,6 +86,8 @@ def main():
     for item in a.items:
         vid, _, path = item.partition("=")
         path = os.path.abspath(path or os.path.join(a.dir or ".", f"{vid}.jpg"))
+        if "placeholder" in os.path.basename(path).lower():
+            print(f"{vid}: {path} is a face placeholder render; placeholders are never uploaded"); bad += 1; continue
         if not os.path.isfile(path):
             print(f"{vid}: no file {path}"); bad += 1; continue
         if os.path.getsize(path) >= 2_000_000:

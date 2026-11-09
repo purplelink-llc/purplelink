@@ -37,6 +37,7 @@ if (!flag("skip-gate")) {
   try { execFileSync(PY, [path.join(REPO, "scripts", "howto_gate.py"), SB, "--rebuild"], { stdio: "inherit" }); }
   catch { console.error("gate failed: not rendering"); process.exit(1); }
 }
+const GL = { gl: "angle" }; // macOS: GPU context for the three.js app scene (src/three/kit.jsx)
 const storyboard = JSON.parse(fs.readFileSync(SB, "utf8"));
 if (!flag("skip-narrate")) execFileSync(PY, [path.join(ROOT, "narrate.py"), SB], { stdio: "inherit" });
 const timing = JSON.parse(fs.readFileSync(path.join(ROOT, ".cache", storyboard.id, "timing.json"), "utf8"));
@@ -56,13 +57,13 @@ const stage = (src) => {
   fs.copyFileSync(path.join(REPO, src), path.join(pub, "img", name));
   return `img/${name}`;
 };
-const sbProps = { ...storyboard, scenes: storyboard.scenes.map((s) => ({ ...s, img: stage(s.img), icon: stage(s.icon) })) };
+const sbProps = { ...storyboard, scenes: storyboard.scenes.map((s) => ({ ...s, img: stage(s.img), icon: stage(s.icon), before: stage(s.before), after: stage(s.after), imgs: s.imgs?.map(stage) })) };
 
 const serveUrl = await bundle({ entryPoint: path.join(ROOT, "src", "index.jsx"), publicDir: pub });
 const stills = opt("stills", "");
 for (const format of ["16x9", "9x16"]) {
   const inputProps = { storyboard: sbProps, timing, format, bumper: BUMPER };
-  const comp = await selectComposition({ serveUrl, id: "HowTo", inputProps });
+  const comp = await selectComposition({ serveUrl, id: "HowTo", inputProps, chromiumOptions: GL });
   const { segs, total } = buildHowTo(storyboard, timing, format);
   say(`${format}: ${segs.length} scenes, content ${total.toFixed(2)}s, with bumpers ${bumperTotal(total, BUMPER).toFixed(2)}s`);
   // caption track for YouTube, on the same timeline as this cut (scripts/howto-publish.py uploads it)
@@ -70,14 +71,14 @@ for (const format of ["16x9", "9x16"]) {
   fs.writeFileSync(path.join(OUT, `${SLUG}-${format}.srt`), srt);
   say(`captions ${format}: ${srt ? srt.trim().split(/\n\n/).length : 0} cues`);
   if (stills) {
-    for (const s of stills.split(",")) await renderStill({ composition: comp, serveUrl, output: path.join(OUT, `still-${format}-${s}.jpg`), imageFormat: "jpeg", jpegQuality: 88, inputProps, frame: Math.min(comp.durationInFrames - 1, Math.round(Number(s) * brand.fps)) });
+    for (const s of stills.split(",")) await renderStill({ composition: comp, serveUrl, output: path.join(OUT, `still-${format}-${s}.jpg`), imageFormat: "jpeg", jpegQuality: 88, inputProps, chromiumOptions: GL, timeoutInMilliseconds: 120000, frame: Math.min(comp.durationInFrames - 1, Math.round(Number(s) * brand.fps)) });
     continue;
   }
   const t = Date.now();
   const raw = path.join(ROOT, ".cache", `howto-${SLUG}-${format}-raw.mp4`);
   const qa = [];
   const onBrowserLog = (l) => { const m = /^QA_RECT (.*)$/.exec(l.text || ""); if (m) { try { const r = JSON.parse(m[1]); qa.push({ name: `scene ${r.scene} ${r.name}`, t: Math.round(r.t * 1000) / 1000, rect: r.rect }); } catch {} } };
-  await renderMedia({ composition: comp, serveUrl, codec: "h264", crf: 18, outputLocation: raw, inputProps, audioCodec: "aac", concurrency: Number(opt("concurrency", "3")), onBrowserLog });
+  await renderMedia({ composition: comp, serveUrl, codec: "h264", crf: 18, outputLocation: raw, inputProps, audioCodec: "aac", concurrency: Number(opt("concurrency", "3")), onBrowserLog, chromiumOptions: GL, timeoutInMilliseconds: 120000 });
   const file = path.join(OUT, `${SLUG}-${format}.mp4`);
   ff(["-i", raw, "-c:v", "copy", "-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart", file]);
   fs.rmSync(raw, { force: true });

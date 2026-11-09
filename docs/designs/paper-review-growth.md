@@ -262,9 +262,10 @@ so a referred sale nets about $6.57 in its first year and $29.85 a year after th
   "/tools/paper-review/packs/success/" }`, the same inline shape as `live-scholar`. If the env var
   `STRIPE_PRICE_PAPER_REVIEW_ANNUAL` is set, checkout uses that Price instead, so either answer to the price question
   works with the same code. No trial (the free first-review offers already cover trying it).
-- No `consent_collection[terms_of_service]` checkbox for now. Stripe refuses it until a Terms of Service URL is set in
-  the Stripe dashboard, and Ben chose to change nothing else in Stripe (2026-11-04). The renewal terms sit directly
-  beside the Pay button and beside our own button; adding the checkbox later is one dashboard setting plus one line.
+- `consent_collection[terms_of_service]=required` (Ben approved 2026-11-05): the buyer ticks the Terms box before
+  paying. Stripe refuses the parameter unless the Terms URL https://purplelink.llc/terms/ is set under Settings >
+  Public details, so that setting must be in place before this ships. The renewal terms also sit beside the Pay button
+  and beside our own button.
 - `custom_text[submit][message]` gets a new `REFUND_TEXT` entry (the test that matches it to `/terms/` is updated):
   "Renews at $79 a year on the same date until you cancel. Cancel in one click from any plan email. We email you 30
   and 7 days before each renewal. Unused reviews end with the year; cancelling stops the next charge and is not a
@@ -299,6 +300,10 @@ is checked at redeem and submit. So:
   cannot find it. The `charge.refunded` and `charge.dispute.created` handlers look up the charge's invoice, then its
   subscription, and call a new Modal `/paper-review/annual-revoke`, which sets `revoked` and drops unused tokens.
   Tested in both directions.
+  A dispute closed as won (`charge.dispute.closed`, status `won`) calls `/paper-review/annual-restore`, which gives
+  the plan back: the current year's unused reviews resolve again and a cancel made before the dispute is kept. It
+  restores only a plan that disputes alone revoked, and only when the last open dispute closes; a refund is never
+  undone. A lost dispute changes nothing.
 - **Lifecycle mail.** The existing tips, review-request and win-back sequence is not seeded for this product; a paying
   subscriber should not get win-back mail.
 
@@ -315,8 +320,17 @@ is checked at redeem and submit. So:
 - **Confirmation email** on every cancel and undo, with the end date.
 - **Without a token:** the plan page has an email box that sends a fresh link, with the enumeration-safe answer and
   rate limits of `subscription-portal.mjs`.
-- **By reply:** every plan email says "or reply 'cancel'". Ben honours it within one business day, effective from the
+- **By reply:** every plan email says "or reply 'cancel'". Honoured within one business day, effective from the
   time of the reply; if a renewal charge lands in between, it is refunded. The terms say this.
+  - Since 2026-11-05 the business email operator handles these replies. It runs
+    `~/.purplelink/operator/bin/annual_cancel_by_email.py <sender>`, which calls the Modal endpoint
+    `/paper-review/annual-cancel-by-email`. That endpoint matches the sender's address to a live plan with
+    `plan_by_email` and then takes the one-click path (`_annual_apply_change`): Stripe `cancel_at_period_end`, a new
+    plan link, and the same confirmation email. The operator logs every call to `annual-cancels.jsonl`.
+  - The endpoint answers `{"matched": false}` when no plan matches. The operator then flags the email for Ben and does
+    not try another address.
+  - Unlike `annual-link`, this endpoint says whether a plan matched. That is safe because only callers holding
+    `BACKEND_WEBHOOK_SECRET` reach it.
 - The Stripe billing portal (30-minute links, restricted config) stays the place for the card and invoices.
 
 ### Warnings before it renews

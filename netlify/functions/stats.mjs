@@ -97,13 +97,13 @@ const zeroed = (keys) => Object.fromEntries(keys.map((k) => [k, 0]));
 // Journeys (analytics backlog AB-20261020-3): of the visitors whose first page of the day was a guide, a tool or
 // anything else, how many viewed a product page later that day, and which one. Built from the daily-salted visitor
 // hash already on every record, so a journey never spans two days and nothing new is stored.
-export const PRODUCT_PAGES = ["moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "lenscrib", "nee", "panely", "summonly", "suite", "vitae", "batterymeter"];
+export const PRODUCT_PAGES = ["moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "lenscrib", "lenses", "nee", "panely", "summonly", "suite", "vitae", "batterymeter"];
 const PRODUCT_RE = new RegExp(`^/(${PRODUCT_PAGES.join("|")})/`);
 export const entryKind = (path) => (/^\/guides\//.test(path) ? "guide" : /^\/tools\//.test(path) ? "tool" : PRODUCT_RE.test(path) ? "product" : "other");
 export const productOf = (path) => { const m = PRODUCT_RE.exec(path || ""); return m ? m[1] : ""; };
 // The ten paid Mac-app pages where the Buddy chat holdout is read (docs/designs/buddy-chat.md, "Conversion pass",
 // section 3): the page itself, localized or not, and not its success or buy subpages.
-const CHAT_APP_PAGE_RE = /^\/(?:(?:de|fr|ja|pt-br|zh-cn)\/)?(?:moderntex|outbound-veil|legroom|keyfeel|tapefolio|panely|summonly|lenscrib|nee|suite)\/?$/;
+const CHAT_APP_PAGE_RE = /^\/(?:(?:de|fr|ja|pt-br|zh-cn)\/)?(?:moderntex|outbound-veil|legroom|keyfeel|tapefolio|panely|summonly|lenscrib|lenses|nee|suite)\/?$/;
 export const isChatAppPage = (path) => CHAT_APP_PAGE_RE.test(path || "");
 /** visits: Map of vid -> [{ ts, path }] for one day. Returns { guide|tool|product|other: { visitors, reachedProduct, byProduct } }. */
 export function journeysOf(visits) {
@@ -337,21 +337,21 @@ export default async function handler(request) {
       // so the dashboard can restrict them to product pages.
       if (rec.ft && !String(rec.meta || "").startsWith("__")) {
         const ft = foldSource(rec.ft);
-        const fc = s.funnelByChannel[ft] || (s.funnelByChannel[ft] = { pageviews: 0, pageviewsByPath: {}, sendToMac: {}, trial: {}, checkout: {}, os: {} });
+        const fc = s.funnelByChannel[ft] || (s.funnelByChannel[ft] = { pageviews: 0, pageviewsByPath: {}, sendToMac: {}, trial: {}, trialSuspect: {}, checkout: {}, os: {} });
         // Operating-system family of the channel's pageviews (records before 2026-10-31 have none and are not counted).
         if (rec.type === "pageview") { fc.pageviews++; bump(fc.pageviewsByPath, rec.path); if (rec.os) bump(fc.os, rec.os); }
         else if (rec.type === "checkout_click") bump(fc.checkout, rec.meta || "unknown");
         else if (rec.type === "send_to_mac") bump(fc.sendToMac, rec.meta || "unknown");
-        else if (/_?trial_download$/.test(rec.type)) bump(fc.trial, rec.meta || rec.type);
+        else if (/_?trial_download$/.test(rec.type)) bump(rec.suspect ? fc.trialSuspect : fc.trial, rec.meta || rec.type);
         else if (rec.type === "guide_mtx_trial") bump(fc.trial, "guide_mtx_trial");
         // The same counts by the first-touch link tag (utm_content), so one placement can be read on its own.
         if (rec.fc) {
           const fk = String(rec.fc).slice(0, 60);
-          const fx = s.funnelByContent[fk] || (s.funnelByContent[fk] = { channel: ft, pageviews: 0, pageviewsByPath: {}, sendToMac: {}, trial: {}, checkout: {}, os: {} });
+          const fx = s.funnelByContent[fk] || (s.funnelByContent[fk] = { channel: ft, pageviews: 0, pageviewsByPath: {}, sendToMac: {}, trial: {}, trialSuspect: {}, checkout: {}, os: {} });
           if (rec.type === "pageview") { fx.pageviews++; bump(fx.pageviewsByPath, rec.path); if (rec.os) bump(fx.os, rec.os); }
           else if (rec.type === "checkout_click") bump(fx.checkout, rec.meta || "unknown");
           else if (rec.type === "send_to_mac") bump(fx.sendToMac, rec.meta || "unknown");
-          else if (/_?trial_download$/.test(rec.type)) bump(fx.trial, rec.meta || rec.type);
+          else if (/_?trial_download$/.test(rec.type)) bump(rec.suspect ? fx.trialSuspect : fx.trial, rec.meta || rec.type);
           else if (rec.type === "guide_mtx_trial") bump(fx.trial, "guide_mtx_trial");
         }
       }
@@ -492,12 +492,12 @@ export default async function handler(request) {
     ...(hostFilter ? {} : { journeysByDay: Object.fromEntries(Object.entries(s.journeysByDay).sort()) }),
     funnelByChannel: Object.fromEntries(Object.entries(s.funnelByChannel).map(([ch, v]) => [ch, {
       pageviews: v.pageviews, pageviewsByPath: Object.fromEntries(topN(v.pageviewsByPath, 40).map((x) => [x.key, x.count])),
-      sendToMac: v.sendToMac, trial: v.trial, checkout: v.checkout, os: v.os,
+      sendToMac: v.sendToMac, trial: v.trial, trialSuspect: v.trialSuspect, checkout: v.checkout, os: v.os,
     }])),
     funnelByContent: Object.fromEntries(Object.entries(s.funnelByContent).map(([k, v]) => [k, {
       channel: v.channel, pageviews: v.pageviews,
       pageviewsByPath: Object.fromEntries(topN(v.pageviewsByPath, 20).map((x) => [x.key, x.count])),
-      sendToMac: v.sendToMac, trial: v.trial, checkout: v.checkout, os: v.os,
+      sendToMac: v.sendToMac, trial: v.trial, trialSuspect: v.trialSuspect, checkout: v.checkout, os: v.os,
     }])),
   });
 }

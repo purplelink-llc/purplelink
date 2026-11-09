@@ -204,6 +204,7 @@ _READY_NAMES = {
     "paper-review": "Paper Review",
     "citation-gap": "Citation Gap report",
     "anonymity-check": "Anonymity Check",
+    "journal-check": "Journal check",
     "cover-letter": "cover letter draft",
     "revision-review": "Revision Review",
     "response-review": "Response to Reviewers check",
@@ -286,7 +287,7 @@ _READY_DELETION = (
 
 def html_review_ready(
     *, status_url: str, manuscript_title: str = "", amount_cents: int = 900,
-    product: str = "paper-review", attachment: str = "",
+    product: str = "paper-review", attachment: str = "", offers: Optional[dict] = None,
 ) -> str:
     """*attachment* is the kind returned by build_report_attachment(). Left
     empty (the adjacent tools, which attach nothing), the email keeps the
@@ -315,6 +316,11 @@ def html_review_ready(
         cta = "Open it"
     next_step = _READY_NEXT.get(product, "")
     next_html = f'\n  <p style="color: #555; font-size: 0.9em;">{next_step}</p>' if next_step else ""
+    if offers:
+        from latextools import upgrades as _upgrades
+        _offers_html = _upgrades.offers_email_html(offers, _LINK)
+        if _offers_html:
+            next_html += "\n  " + _offers_html
     return f"""
 <div style="{_EMAIL_BASE_CSS}">
   <h2 style="color: #6d28d9;">Your {name} is ready</h2>
@@ -339,7 +345,31 @@ def html_review_ready(
 """
 
 
-def html_purchase_link(*, product_name: str, link: str) -> str:
+def _buyer_code_html(buyer_code: str, expires: str) -> str:
+    """The cross-sell code paragraph (netlify/lib/buyer-codes.mjs): 30% off one other product, once."""
+    if not buyer_code or not expires:
+        return ""
+    url = f"https://purplelink.llc/products/?code={_html.escape(buyer_code)}"
+    return (
+        f'<p>Your code <strong>{_html.escape(buyer_code)}</strong> takes 30% off one other Purplelink '
+        f'product, once, until {_html.escape(expires)}. <a href="{url}">See the products</a>; the code '
+        f'is applied at checkout.</p>'
+    )
+
+
+def _referral_html(referral_link: str) -> str:
+    """The buyer's referral link (backend/latextools/referrals.py): a friend gets 20% off their first order."""
+    if not referral_link:
+        return ""
+    url = _html.escape(referral_link)
+    return (
+        f'<p>Your referral link: <a href="{url}">{url}</a>. A friend who makes their first Purplelink purchase '
+        f'through it gets 20% off, and two weeks later you get a free Standard Paper Review.</p>'
+    )
+
+
+def html_purchase_link(*, product_name: str, link: str, buyer_code: str = "", buyer_code_expires: str = "",
+                       referral_link: str = "") -> str:
     """Sent at purchase for single-use tools, so a buyer who paid on one
     device, or closed the tab, can upload later from another."""
     return f"""
@@ -358,6 +388,8 @@ def html_purchase_link(*, product_name: str, link: str) -> str:
   </p>
   <p style="color: #555; font-size: 0.9em;">Keep this email until you have
   used the link. Anyone with it can use your purchase.</p>
+  {_buyer_code_html(buyer_code, buyer_code_expires)}
+  {_referral_html(referral_link)}
   <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0;">
   <p style="color: #888; font-size: 0.85em;">Sent by Purplelink LLC. Questions:
   reply to this email.</p>
@@ -389,7 +421,8 @@ def html_purchase_waiting(*, product_name: str, link: str, ends: str) -> str:
 """
 
 
-def html_volume_pack_tokens(*, tokens: list[str], pack_size: int) -> str:
+def html_volume_pack_tokens(*, tokens: list[str], pack_size: int, buyer_code: str = "", buyer_code_expires: str = "",
+                            referral_link: str = "") -> str:
     rows = "".join(
         f'<tr><td style="padding:6px 10px;border:1px solid #eee;font-family:monospace;font-size:13px;">{t}</td>'
         f'<td style="padding:6px 10px;border:1px solid #eee;">'
@@ -418,6 +451,8 @@ def html_volume_pack_tokens(*, tokens: list[str], pack_size: int) -> str:
     Store this email somewhere safe. The tokens above are your only copy.
     If you misplace them, reply to this email with your Stripe receipt.
   </p>
+  {_buyer_code_html(buyer_code, buyer_code_expires)}
+  {_referral_html(referral_link)}
   <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0;">
   <p style="color: #888; font-size: 0.85em;">Sent by Purplelink LLC.</p>
 </div>

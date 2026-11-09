@@ -145,8 +145,125 @@ function SplitThumb({ msg, img, after = "Compiles" }) {
   );
 }
 
+
+// ---- Refresh templates (2026-11-06). One focal object, 2-3 display words that add to the title instead of repeating it,
+// no small pills or footers, a light or vivid background so the feed does not read as one dark wall.
+//   focus - light background, big hook on the left, one dark card with the real error text (`hl` is marked)
+//   diff  - vivid background, hook, then the real before line (red) and after line (green) from the video
+//   face  - reaction face slot on the left, hook and the real error text on the right. `face` is a repo-relative image
+//           (a ChatGPT-made synthetic face on a flat background); without it a marked placeholder is drawn.
+const LILAC = "oklch(95% 0.035 310)";
+const HL = "oklch(88% 0.17 95)";
+const GREEN = "oklch(72% 0.17 150)";
+const RED = "oklch(66% 0.2 22)";
+
+function Marked({ text, hl, color = HL }) {
+  if (!hl || !text.includes(hl)) return <>{text}</>;
+  const [a, ...rest] = text.split(hl);
+  return <>{a}<span style={{ background: color, color: INK, borderRadius: 8, padding: "0 8px" }}>{hl}</span>{rest.join(hl)}</>;
+}
+
+function CodeCard({ lines, hl, size, style, tone = ERR }) {
+  const longest = Math.max(...lines.map((l) => l.length));
+  const px = size ?? fit("x".repeat(longest), [[16, 78], [22, 66], [30, 54], [40, 44], [99, 36]]);
+  return (
+    <div style={{ position: "absolute", background: PANEL, borderRadius: 28, padding: "34px 40px", boxShadow: "0 30px 70px oklch(20% 0.1 310 / 0.4)", fontFamily: MONO, fontWeight: 700, fontSize: px, lineHeight: 1.22, color: CODE, letterSpacing: "-0.02em", ...style }}>
+      {lines.map((l, i) => (
+        <div key={i} style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+          {i === 0 && <span style={{ color: tone }}>! </span>}<Marked text={l} hl={hl} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+const hookSize = (h, width = 560) => { const w = Math.max(...h.split("\n").map((x) => x.length)); return Math.min(180, Math.floor(width / (w * 0.5))); };
+
+function FocusThumb({ hook, lines, hl, big }) {
+  return (
+    <AbsoluteFill style={{ background: `linear-gradient(135deg, ${LILAC}, oklch(90% 0.06 310))` }}>
+      <div style={{ position: "absolute", left: 70, top: 90, width: 560, fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: hookSize(hook, 540), lineHeight: 0.98, letterSpacing: "-0.03em", color: INK, whiteSpace: "pre-line" }}>{hook}</div>
+      {big && <div style={{ position: "absolute", left: 640, top: 40, fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 330, lineHeight: 1, color: PURPLE }}>{big}</div>}
+      <CodeCard lines={lines} hl={hl} size={lines.join("").length > 30 ? 46 : 58} style={{ left: 630, top: big ? 400 : 180, width: 600 }} />
+    </AbsoluteFill>
+  );
+}
+
+function DiffThumb({ hook, before, after, beforeLabel = "Before", afterLabel = "After" }) {
+  const longest = Math.max((before || "").length, after.length);
+  const px = fit("x".repeat(longest), [[24, 62], [32, 50], [44, 40], [99, 32]]);
+  const row = (text, color, label, top, mark) => (
+    <div style={{ position: "absolute", left: 70, top, width: 1130, borderRadius: 24, background: PANEL, borderLeft: `20px solid ${color}`, padding: "20px 36px", display: "flex", alignItems: "center", gap: 28, boxShadow: "0 24px 60px oklch(10% 0.1 310 / 0.45)" }}>
+      <span style={{ fontFamily: FONT_BODY, fontWeight: 800, fontSize: 30, letterSpacing: "0.06em", textTransform: "uppercase", color, width: 130, flex: "none" }}>{label}</span>
+      <span style={{ fontFamily: MONO, fontWeight: 700, fontSize: px, color: CODE, letterSpacing: "-0.02em", wordBreak: "break-all" }}>{mark}{text}</span>
+    </div>
+  );
+  return (
+    <AbsoluteFill style={{ background: `linear-gradient(150deg, oklch(46% 0.24 310), oklch(30% 0.17 300))` }}>
+      <div style={{ position: "absolute", left: 70, top: 70, fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 190, lineHeight: 1, letterSpacing: "-0.03em", color: "white", whiteSpace: "pre-line" }}>{hook}</div>
+      {before && row(before, RED, beforeLabel, 330, null)}
+      {row(after, GREEN, afterLabel, before ? 480 : 380, null)}
+    </AbsoluteFill>
+  );
+}
+
+// Before and after stills side by side (Lenses). `before`/`after` are staged images; the small label says they are
+// simulated views, not footage through the glasses.
+function BaThumb({ hook, before, after, beforeLabel = "Before", afterLabel = "After", pos = "50% 50%", pill }) {
+  const half = (src, label, right, hl) => (
+    <div style={{ position: "absolute", left: right ? 644 : 0, top: 0, width: 636, height: 720, overflow: "hidden" }}>
+      <Img src={staticFile(src)} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: pos, display: "block" }} />
+      <span style={{ position: "absolute", left: 28, top: 26, fontFamily: FONT_BODY, fontWeight: 800, fontSize: 44, letterSpacing: "0.04em", color: "white", background: hl ? "oklch(50% 0.24 310)" : "oklch(14% 0.07 310)", borderRadius: 999, padding: "8px 30px" }}>{label}</span>
+    </div>
+  );
+  return (
+    <AbsoluteFill style={{ background: "oklch(14% 0.07 310)" }}>
+      {half(before, beforeLabel, false, false)}
+      {half(after, afterLabel, true, true)}
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 250, background: "linear-gradient(180deg, transparent, oklch(10% 0.08 310 / 0.92) 55%)" }} />
+      <div style={{ position: "absolute", left: 40, bottom: 46, fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 112, lineHeight: 1, letterSpacing: "-0.03em", color: "white" }}>{hook}</div>
+      <span style={{ position: "absolute", right: 24, bottom: 14, fontFamily: FONT_BODY, fontWeight: 600, fontSize: 22, color: "oklch(90% 0.03 310)" }}>Simulated</span>
+    </AbsoluteFill>
+  );
+}
+
+function FaceSlot({ face, mood }) {
+  const box = { position: "absolute", left: 0, top: 0, width: 560, height: 720 };
+  if (face) {
+    return (
+      <div style={{ ...box, overflow: "hidden" }}>
+        <Img src={staticFile(face)} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 30%", display: "block" }} />
+      </div>
+    );
+  }
+  return (
+    <div style={{ ...box, background: "oklch(58% 0.12 310)", overflow: "hidden" }}>
+      <svg width="560" height="720" viewBox="0 0 560 720" style={{ position: "absolute" }}>
+        <circle cx="280" cy="300" r="120" fill="oklch(72% 0.06 310)" />
+        <path d="M60 720c0-170 90-260 220-260s220 90 220 260z" fill="oklch(72% 0.06 310)" />
+        <rect x="14" y="14" width="532" height="692" rx="26" fill="none" stroke="white" strokeWidth="6" strokeDasharray="22 14" />
+      </svg>
+      <div style={{ position: "absolute", left: 40, right: 40, top: 560, textAlign: "center", fontFamily: FONT_BODY, fontWeight: 800, fontSize: 40, color: "white", lineHeight: 1.1 }}>FACE PLACEHOLDER<br /><span style={{ fontSize: 30, fontWeight: 600 }}>{mood}</span></div>
+    </div>
+  );
+}
+
+function FaceThumb({ hook, lines, hl, face, mood = "shocked" }) {
+  return (
+    <AbsoluteFill style={{ background: "linear-gradient(135deg, oklch(44% 0.24 310), oklch(26% 0.15 295))" }}>
+      <FaceSlot face={face} mood={mood} />
+      <div style={{ position: "absolute", left: 600, top: 60, width: 640, fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: Math.min(170, hookSize(hook, 620)), lineHeight: 0.98, letterSpacing: "-0.03em", color: "white", whiteSpace: "pre-line" }}>{hook}</div>
+      <CodeCard lines={lines} hl={hl} size={lines.join("").length > 44 ? 38 : 46} style={{ left: 600, top: 400, width: 600 }} />
+    </AbsoluteFill>
+  );
+}
+
 export function Thumb(props) {
   useFonts();
+  if (props.kind === "focus") return <FocusThumb {...props} />;
+  if (props.kind === "ba") return <BaThumb {...props} />;
+  if (props.kind === "diff") return <DiffThumb {...props} />;
+  if (props.kind === "face") return <FaceThumb {...props} />;
   if (props.kind === "split") return <SplitThumb {...props} />;
   if (props.kind === "error") return <ErrorThumb {...props} />;
   if (props.kind === "long") return <LongThumb {...props} />;

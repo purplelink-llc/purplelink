@@ -1,3 +1,4 @@
+# NOTE: runs against the key in STRIPE_SECRET_KEY; after the Stripe account cutover, re-run it with the new account's key exported as STRIPE_SECRET_KEY.
 # One-off setup script — creates the live Stripe Price for the new
 # Resume Review product ($5, one-time). Run via `modal run` so the secret
 # key stays inside the Modal execution environment and is never printed

@@ -690,7 +690,10 @@ def render(t: Track) -> np.ndarray:
     def inst(names, ts):
         return names[1] if section_at(t, ts).name.startswith("B") else names[0]
 
-    studio = snd.get("studio") or {}               # channels played on Apple's sampled instruments instead (studio.py)
+    studio = {}                                    # channels played on Apple's sampled instruments instead (studio.py, opt-in only)
+    if snd.get("studio"):
+        import studio as S
+        studio = S.kit(snd)
 
     def play(group, channel, names, p, gain, pad_alt=False):
         if channel in studio:

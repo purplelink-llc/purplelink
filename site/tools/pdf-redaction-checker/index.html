@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>PDF Redaction Checker: Is Text Still Readable Under the Black Boxes? | Purplelink</title>
+    <meta name="description" content="Check a PDF for text that is still readable under black boxes after redaction. Free, runs in your browser, and the file is never uploaded.">
+    <link rel="canonical" href="https://purplelink.llc/tools/pdf-redaction-checker/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="PDF Redaction Checker: is text still readable under the boxes?">
+    <meta property="og:description" content="Check a PDF for text that is still readable under black boxes after redaction. Free, runs in your browser, and the file is never uploaded.">
+    <meta property="og:url" content="https://purplelink.llc/tools/pdf-redaction-checker/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/tools-pdf-redaction-checker.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PDF Redaction Checker: is text still readable under the boxes?">
+    <meta name="twitter:description" content="Check a PDF for text that is still readable under black boxes after redaction. Free, runs in your browser, and the file is never uploaded.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/tools-pdf-redaction-checker.jpg">
+    <meta name="twitter:image:alt" content="PDF Redaction Checker: is text still readable under the boxes?">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "PDF Redaction Checker",
+      "url": "https://purplelink.llc/tools/pdf-redaction-checker/",
+      "description": "Check a PDF for text that is still readable under black boxes after redaction. Free, runs in your browser, and the file is never uploaded.",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is my PDF uploaded?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The file is read in your browser with a copy of pdf.js hosted on this site, and nothing is sent anywhere. You can disconnect from the network after the page loads and it still works."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why can text be read under a black box?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A black rectangle drawn over a page is a separate object on top of the text. The words are still in the file, so they can be selected, copied and searched. Redaction removes the words themselves."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What does the check actually do?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It draws each page in your browser, finds every word in the text layer and looks at the pixels where that word sits. If the area is solid dark with no light pixels showing, the word is under a box. It also reads shapes and markups added to the page, whether a scanned page has an OCR text layer, and the title, author and creator fields."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does a clean result mean the file is safe?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It means this check found nothing. It does not look at images under boxes, text that was converted to outlines, hidden layers, attachments or older versions saved inside the file. Look at the result as one check, not a clearance."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why does a scan show up here?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Many scanning apps add an invisible text layer so the scan can be searched. If a black box is drawn over a scan, or burned into it, that invisible text may still be under it. The page card says when a scan has an OCR text layer."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can this tool redact a file for me?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. It only checks. To redact on a Mac, use the steps on this page and run the check again on the saved file."
+          }
+        }
+      ]
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Tools",
+          "item": "https://purplelink.llc/tools/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "PDF Redaction Checker",
+          "item": "https://purplelink.llc/tools/pdf-redaction-checker/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/motion.css">
+    <script src="/site.js" defer></script>
+    <script src="/motion.js" defer></script>
+    <link rel="stylesheet" href="/tools/pdf-redaction-checker/pdf-redaction-checker.css">
+    <script src="/tools/pdf-redaction-checker/pdf-redaction-core.js" defer></script>
+    <script src="/tools/pdf-redaction-checker/pdf-redaction-checker.js" defer></script>
+    <script src="/buddy-chat/loader.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/" aria-current="page">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/tools/">← All tools</a>
+      <div class="tools-hero">
+        <p class="eyebrow">Free web tool</p>
+        <h1>PDF Redaction Checker</h1>
+        <p>Drop in a PDF you have redacted and see whether the text under the black boxes can still be read. <strong>The PDF never leaves your browser.</strong></p>
+      </div>
+
+      <div class="tool-app rc-app">
+        <section class="rc-limits" aria-labelledby="rc-limits-h">
+          <h2 id="rc-limits-h">What this can and cannot tell you</h2>
+          <ul>
+            <li>It checks the text layer and simple dark shapes. A page that comes back clean is not proven safe.</li>
+            <li>It does not check images under boxes, text converted to outlines, hidden layers, attachments or older versions saved inside the file.</li>
+            <li>It cannot redact anything. It only checks the file you give it.</li>
+          </ul>
+        </section>
+
+        <div class="rc-drop" id="rc-drop">
+          <label for="rc-file" class="rc-drop-label"><strong>Choose a PDF</strong> or drop it here</label>
+          <input id="rc-file" type="file" accept="application/pdf,.pdf">
+          <p class="rc-hint">Up to 200 MB. Most files take a few seconds.</p>
+        </div>
+        <p class="rc-status" id="rc-status" role="status" aria-live="polite"></p>
+        <div class="rc-results" id="rc-results" tabindex="-1" hidden></div>
+      </div>
+
+      <section class="rc-howto" aria-labelledby="rc-how-h">
+        <h2 id="rc-how-h">How to redact properly on a Mac</h2>
+        <div class="rc-howto-box">
+          <ol>
+            <li>Open the PDF in Preview.</li>
+            <li>Choose Tools, then Redact. Preview shows the redact controls.</li>
+            <li>Drag over the text you want to remove. Do not use the rectangle shape from the markup toolbar. A shape only covers the text.</li>
+            <li>Close the document and choose to save. Preview applies redactions when the file closes, and it warns that redacted content is permanently removed.</li>
+            <li>Open the saved file here and run the check again. Keep the original in a safe place, because the saved file cannot be undone.</li>
+          </ol>
+          <p>Redaction does not clear the title, author and creator fields. The results list them so you can remove any that name someone.</p>
+          <p>If you redact transcripts or scanned documents often, <a href="/tapefolio/?utm_source=purplelink&amp;utm_medium=tool&amp;utm_campaign=redaction-crosslink&amp;utm_content=pdf-redaction-checker" data-track="offer_click" data-track-meta="tapefolio">Tapefolio</a> finds many identifying details in transcripts and scans and replaces them with codes, and it misses some, so read the result before you share it. Free for 7 days.</p>
+        </div>
+      </section>
+
+      <section class="tool-faq">
+        <h2>Questions</h2>
+        <details><summary>Is my PDF uploaded?</summary><div class="faq-body">No. The file is read in your browser with a copy of pdf.js hosted on this site, and nothing is sent anywhere. You can disconnect from the network after the page loads and it still works.</div></details>
+        <details><summary>Why can text be read under a black box?</summary><div class="faq-body">A black rectangle drawn over a page is a separate object on top of the text. The words are still in the file, so they can be selected, copied and searched. Redaction removes the words themselves.</div></details>
+        <details><summary>What does the check actually do?</summary><div class="faq-body">It draws each page in your browser, finds every word in the text layer and looks at the pixels where that word sits. If the area is solid dark with no light pixels showing, the word is under a box. It also reads shapes and markups added to the page, whether a scanned page has an OCR text layer, and the title, author and creator fields.</div></details>
+        <details><summary>Does a clean result mean the file is safe?</summary><div class="faq-body">No. It means this check found nothing. It does not look at images under boxes, text that was converted to outlines, hidden layers, attachments or older versions saved inside the file. Look at the result as one check, not a clearance.</div></details>
+        <details><summary>Why does a scan show up here?</summary><div class="faq-body">Many scanning apps add an invisible text layer so the scan can be searched. If a black box is drawn over a scan, or burned into it, that invisible text may still be under it. The page card says when a scan has an OCR text layer.</div></details>
+        <details><summary>Can this tool redact a file for me?</summary><div class="faq-body">No. It only checks. To redact on a Mac, use the steps on this page and run the check again on the saved file.</div></details>
+      </section>
+    </main>
+
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/nee/">Née</a></li>
+            <li><a href="/lenses/">Lenses</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/suite/">Mac Suite</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+    <script src="/analytics.js" defer></script>
+  </body>
+</html>

@@ -27,6 +27,7 @@
 import { getStore } from "@netlify/blobs"
 import { createHmac, timingSafeEqual } from "node:crypto"
 import { escapeHtml, page } from "../lib/fn-page.mjs"
+import { stripeFetchAny } from "../lib/stripe-account.mjs"
 
 const STRIPE_API = "https://api.stripe.com/v1"
 
@@ -43,7 +44,8 @@ async function cancelStripeSubscription(subscriptionId) {
     return
   }
   try {
-    const resp = await fetch(`${STRIPE_API}/subscriptions/${subscriptionId}`, {
+    // The subscription is in whichever Stripe account sold it: stripeFetchAny tries each key.
+    const resp = await stripeFetchAny(`${STRIPE_API}/subscriptions/${subscriptionId}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${secretKey}` },
     })

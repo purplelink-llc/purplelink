@@ -59,7 +59,7 @@ test("crockford round trip", () => {
 });
 
 test("the suite entitles all three licensed apps (Outbound Veil, Legroom and Née); a single app only itself", () => {
-  assert.deepEqual(licensedSlugsFor("app-suite").sort(), ["legroom", "nee", "outbound-veil"]);
+  assert.deepEqual(licensedSlugsFor("app-suite").sort(), ["legroom", "lenses", "nee", "outbound-veil"]);
   assert.deepEqual(licensedSlugsFor("legroom"), ["legroom"]);
   assert.deepEqual(licensedSlugsFor("moderntex"), []);
 });

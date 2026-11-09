@@ -244,6 +244,42 @@ test("a dispute on an annual invoice revokes the plan", async () => {
   assert.deepEqual(modalCalls().map((c) => [c.path, c.body.reason]), [["/paper-review/annual-revoke", "dispute"]]);
 });
 
+test("a dispute revoke carries the dispute id", async () => {
+  stripeData["/v1/charges/ch_1"] = { id: "ch_1", invoice: "in_1", payment_intent: "pi_1" };
+  stripeData["/v1/invoices/in_1"] = { id: "in_1", subscription: "sub_1" };
+  stripeData["/v1/subscriptions/sub_1"] = annualSub();
+  const ev = { id: "evt_dp2", type: "charge.dispute.created", data: { object: { id: "dp_7", charge: "ch_1", payment_intent: "pi_1" } } };
+  await webhook(signed(ev));
+  assert.equal(modalCalls()[0].body.dispute_id, "dp_7");
+});
+
+test("a won dispute on an annual invoice restores the plan", async () => {
+  stripeData["/v1/charges/ch_1"] = { id: "ch_1", invoice: "in_1", payment_intent: "pi_1" };
+  stripeData["/v1/invoices/in_1"] = { id: "in_1", subscription: "sub_1" };
+  stripeData["/v1/subscriptions/sub_1"] = annualSub();
+  const ev = { id: "evt_dw", type: "charge.dispute.closed", data: { object: { id: "dp_1", charge: "ch_1", payment_intent: "pi_1", status: "won" } } };
+  const res = await webhook(signed(ev));
+  assert.equal(res.status, 200);
+  assert.deepEqual(modalCalls().map((c) => [c.path, c.body]), [["/paper-review/annual-restore", { subscription_id: "sub_1", dispute_id: "dp_1" }]]);
+});
+
+test("a lost dispute on an annual invoice leaves the plan revoked", async () => {
+  stripeData["/v1/charges/ch_1"] = { id: "ch_1", invoice: "in_1", payment_intent: "pi_1" };
+  const ev = { id: "evt_dl", type: "charge.dispute.closed", data: { object: { id: "dp_1", charge: "ch_1", payment_intent: "pi_1", status: "lost" } } };
+  const res = await webhook(signed(ev));
+  assert.equal(res.status, 200);
+  assert.equal(modalCalls().length, 0);
+});
+
+test("a won dispute on an ordinary charge does not call Modal", async () => {
+  stripeData["/v1/charges/ch_9"] = { id: "ch_9", payment_intent: "pi_9" };
+  stripeData["/v1/invoice_payments"] = { data: [] };
+  const ev = { id: "evt_dw9", type: "charge.dispute.closed", data: { object: { id: "dp_9", charge: "ch_9", payment_intent: "pi_9", status: "won" } } };
+  const res = await webhook(signed(ev));
+  assert.equal(res.status, 200);
+  assert.equal(modalCalls().length, 0);
+});
+
 // ---------------------------------------------------------------------------------------------- plan page
 
 const planReq = (method, { query = "", form } = {}) => new Request(`https://purplelink.llc/tools/paper-review/plan/${query}`, {
@@ -353,7 +389,7 @@ test("annual checkout uses the configured Stripe Price and asks for terms consen
   assert.equal(res.status, 200);
   assert.equal(body.get("mode"), "subscription");
   assert.equal(body.get("line_items[0][price]"), "price_1UYByUJkzNxf3fKqUtZInNif");
-  assert.equal(body.get("consent_collection[terms_of_service]"), null); // needs a Stripe dashboard Terms URL; see checkout.mjs
+  assert.equal(body.get("consent_collection[terms_of_service]"), "required");
   assert.match(body.get("custom_text[submit][message]") || "", /Renews at \$79 a year/);
   assert.equal(body.get("metadata[product]"), "paper-review-annual");
   assert.equal(body.get("subscription_data[metadata][product]"), "paper-review-annual");

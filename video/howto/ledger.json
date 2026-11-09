@@ -447,5 +447,118 @@
    "ok": true,
    "utm_content": "howto-bibtex-found-no-citation-commands-biblatex-reel"
   }
+ },
+ {
+  "slug": "howto-window-fills-screen-when-dragged-to-top",
+  "app": "panely",
+  "date": "2026-11-05",
+  "title": "Window fills the screen when dragged to the top on Mac (turn off Drag windows to menu bar)",
+  "long_id": "l0NiDfhhVGM",
+  "short_id": "vdBN7n9F6LU",
+  "link_arm": "B",
+  "link_utm_content": "howto-window-fills-screen-when-dragged-to-top",
+  "short_utm_content": "howto-window-fills-screen-when-dragged-to-top-short",
+  "sources": [
+   "https://discussions.apple.com/thread/255762463",
+   "https://discussions.apple.com/thread/255765083",
+   "https://discussions.apple.com/thread/255773101"
+  ],
+  "captions": {
+   "long": {
+    "ok": true
+   },
+   "short": {
+    "ok": true
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-window-fills-screen-when-dragged-to-top-reel"
+  }
+ },
+ {
+  "slug": "howto-spotlight-clipboard-history-empty",
+  "app": "summonly",
+  "date": "2026-11-06",
+  "title": "Spotlight clipboard history empty on Mac (turn on Results from Clipboard)",
+  "long_id": "sefuRTWKmyI",
+  "short_id": "J9FV-SQH-Mo",
+  "link_arm": "A",
+  "link_utm_content": "howto-spotlight-clipboard-history-empty",
+  "short_utm_content": "howto-spotlight-clipboard-history-empty-short",
+  "sources": [
+   "https://discussions.apple.com/thread/256139237"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "sefuRTWKmyI",
+    "caption_id": "AUieDabg0arm738z_VP_zDq6Y7Ocxh99UNDU1bh-dJUAswHzlHt3-NrO"
+   },
+   "short": {
+    "video_id": "J9FV-SQH-Mo",
+    "caption_id": "AUieDaZxToOkp-A1EoIbXFGPYsaFQ6Ijc11d_zUNTkaaW8NabSPUh9mL"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-spotlight-clipboard-history-empty-reel"
+  }
+ },
+ {
+  "slug": "howto-find-and-replace-misses-names-in-transcript",
+  "app": "tapefolio",
+  "date": "2026-11-07",
+  "title": "Names left in your interview transcript on Mac (find and replace misses misspellings)",
+  "long_id": "Ham3ch2gZIY",
+  "short_id": "0DezHHtoFkg",
+  "link_arm": "B",
+  "link_utm_content": "howto-find-and-replace-misses-names-in-transcript",
+  "short_utm_content": "howto-find-and-replace-misses-names-in-transcript-short",
+  "sources": [
+   "https://gotranscript.com/en/blog/de-identification-checklist-qualitative-transcripts-pii-indirect-identifiers"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "Ham3ch2gZIY",
+    "caption_id": "AUieDaZsQMOhIxLDTDnC54mM6YdJgo0wlB0UrVqu8OGkiwkjjs83helF"
+   },
+   "short": {
+    "video_id": "0DezHHtoFkg",
+    "caption_id": "AUieDaZHXfOh9D-Arqswfmn5PeXJ2nlgvL017khsvUZbbcjMWSXkeUng"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-find-and-replace-misses-names-in-transcript-reel"
+  }
+ },
+ {
+  "slug": "howto-too-many-unprocessed-floats",
+  "app": "moderntex",
+  "date": "2026-11-08",
+  "title": "Too many unprocessed floats on Mac (add \\clearpage between runs of figures)",
+  "long_id": "e3drNH1cz0E",
+  "short_id": "AW--VcxHkag",
+  "link_arm": "A",
+  "link_utm_content": "howto-too-many-unprocessed-floats",
+  "short_utm_content": "howto-too-many-unprocessed-floats-short",
+  "sources": [
+   "https://texfaq.org/FAQ-tmupfl",
+   "https://groups.google.com/g/comp.text.tex/c/waS203fPTaI"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "e3drNH1cz0E",
+    "caption_id": "AUieDaZJG2j_27tHpfxgvzGkl6T5C4IvMFskridELRJ1TbFSXT5dNVAu"
+   },
+   "short": {
+    "video_id": "AW--VcxHkag",
+    "caption_id": "AUieDaaKg1DmvNozqTlYCgbpOWcsnZW6xtsx8_cBtPTGiRrYC-8D-T9j"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-too-many-unprocessed-floats-reel"
+  }
  }
 ]

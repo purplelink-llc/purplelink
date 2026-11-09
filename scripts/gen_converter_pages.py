@@ -1736,7 +1736,7 @@ def suite_html(p: dict) -> str:
     """A line that convert-shell.js shows after the first file converts, naming the Mac Suite."""
     href = (f"/suite/?utm_source=purplelink&amp;utm_medium=tool&amp;utm_campaign=suite-placement"
             f"&amp;utm_content=converter-done-{p['slug']}")
-    return (f'      <p class="cv-app-link" id="cv-suite" hidden>Our nine Mac apps are also sold together in the '
+    return (f'      <p class="cv-app-link" id="cv-suite" hidden>Our ten Mac apps are also sold together in the '
             f'<a href="{href}" data-track="offer_click" data-track-meta="suite">Mac Suite</a>, $59.99 once. Each has '
             f'a free trial or a free version.</p>\n')
 

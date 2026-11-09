@@ -108,7 +108,8 @@ def test_missing_instrument_fails_loudly():
 
 
 @needs_host
-def test_studio_track_render_is_deterministic():
+def test_studio_track_render_is_deterministic(monkeypatch):
+    monkeypatch.setenv(S.OPT_IN, "1")
     def track():
         t = c.plan(313, era="synth", mood=0.85, mode_weights=Racer.music["modes"], style="racer")
         t.sound.update(copy.deepcopy(Racer.music["sound"]))
@@ -116,10 +117,34 @@ def test_studio_track_render_is_deterministic():
     assert np.array_equal(c.render(track()), c.render(track()))
 
 
-def test_racer_description_admits_the_sampled_instruments():
+def test_racer_description_admits_the_sampled_instruments_when_opted_in(monkeypatch):
+    monkeypatch.setenv(S.OPT_IN, "1")
     md = lp.build_metadata("racer", 7200, "music-to-run-to-2h", music=True, pomodoro=False, seed=313)
     assert "Nothing in this video is sampled" not in md["description"]
     assert "GarageBand and Logic sound library" in md["description"]
+    assert "electric bass" in md["description"]
+
+
+def test_studio_is_off_by_default(monkeypatch):
+    """Since 2026-11-06 the studio kit plays only with CHIPTUNE_STUDIO=1 (GarageBand licence; docs/designs/studio-sound.md section 5)."""
+    monkeypatch.delenv(S.OPT_IN, raising=False)
+    assert S.kit(Racer.music["sound"]) == {}
+    md = lp.build_metadata("racer", 7200, "music-to-run-to-2h", music=True, pomodoro=False, seed=313)
+    assert "Nothing in this video is sampled" in md["description"]
+    assert "GarageBand" not in md["description"] and "electric bass" not in md["description"]
+    monkeypatch.setenv(S.OPT_IN, "1")
+    assert set(S.kit(Racer.music["sound"])) == {"bass", "pad", "drums"}
+
+
+def test_default_racer_render_uses_no_studio_code(monkeypatch):
+    monkeypatch.delenv(S.OPT_IN, raising=False)
+    def boom(*a, **k):
+        raise AssertionError("studio voice called without opt-in")
+    monkeypatch.setattr(S, "sampled_stem", boom)
+    monkeypatch.setattr(S, "drum_stem", boom)
+    t = c.plan(313, era="synth", mood=0.85, mode_weights=Racer.music["modes"], style="racer")
+    t.sound.update(copy.deepcopy(Racer.music["sound"]))
+    assert np.abs(c.render(t)).max() > 0
 
 
 def test_chip_themes_keep_the_nothing_sampled_line():

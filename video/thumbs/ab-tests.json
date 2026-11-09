@@ -164,5 +164,49 @@
   "started": "2026-11-04",
   "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
   "checked": "2026-11-04"
+ },
+ {
+  "video": "l0NiDfhhVGM",
+  "variants": {
+   "A": "video/out/howto/window-fills-screen-when-dragged-to-top/window-fills-screen-when-dragged-to-top-thumb-A.jpg",
+   "B": "video/out/howto/window-fills-screen-when-dragged-to-top/window-fills-screen-when-dragged-to-top-thumb-B.jpg",
+   "C": "video/out/howto/window-fills-screen-when-dragged-to-top/window-fills-screen-when-dragged-to-top-thumb-C.jpg"
+  },
+  "started": "2026-11-05",
+  "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
+  "checked": "2026-11-05"
+ },
+ {
+  "video": "sefuRTWKmyI",
+  "variants": {
+   "A": "video/out/howto/spotlight-clipboard-history-empty/spotlight-clipboard-history-empty-thumb-A.jpg",
+   "B": "video/out/howto/spotlight-clipboard-history-empty/spotlight-clipboard-history-empty-thumb-B.jpg",
+   "C": "video/out/howto/spotlight-clipboard-history-empty/spotlight-clipboard-history-empty-thumb-C.jpg"
+  },
+  "started": "2026-11-06",
+  "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
+  "checked": "2026-11-06"
+ },
+ {
+  "video": "Ham3ch2gZIY",
+  "variants": {
+   "A": "video/out/howto/find-and-replace-misses-names-in-transcript/find-and-replace-misses-names-in-transcript-thumb-A.jpg",
+   "B": "video/out/howto/find-and-replace-misses-names-in-transcript/find-and-replace-misses-names-in-transcript-thumb-B.jpg",
+   "C": "video/out/howto/find-and-replace-misses-names-in-transcript/find-and-replace-misses-names-in-transcript-thumb-C.jpg"
+  },
+  "started": "2026-11-07",
+  "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
+  "checked": "2026-11-07"
+ },
+ {
+  "video": "e3drNH1cz0E",
+  "variants": {
+   "A": "video/out/howto/too-many-unprocessed-floats/too-many-unprocessed-floats-thumb-A.jpg",
+   "B": "video/out/howto/too-many-unprocessed-floats/too-many-unprocessed-floats-thumb-B.jpg",
+   "C": "video/out/howto/too-many-unprocessed-floats/too-many-unprocessed-floats-thumb-C.jpg"
+  },
+  "started": "2026-11-08",
+  "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
+  "checked": "2026-11-08"
  }
 ]

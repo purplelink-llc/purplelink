@@ -25,6 +25,15 @@ BIN = HERE / ".aurender-bin"
 LOGIC = Path("/Library/Application Support/Logic/Sampler Instruments")
 KITS = Path("/Library/Application Support/Logic/Ultrabeat Samples/Drum Machine Designer")
 TIMEOUT = 900                                   # seconds for one stem; a 2-hour bass stem takes about 2 minutes
+OPT_IN = "CHIPTUNE_STUDIO"                      # set to 1 to play a theme's studio kit; off by default (see kit())
+
+
+def kit(sound: dict) -> dict:
+    """The theme's studio kit when this run opted in with CHIPTUNE_STUDIO=1, otherwise {} (all channels on the numpy voices).
+
+    Off by default since 2026-11-06: GarageBand 10.4.14's licence forbids using its sounds outside the Apple software, and this module
+    loads them in its own host. See docs/designs/studio-sound.md, section 5."""
+    return (sound.get("studio") or {}) if os.environ.get(OPT_IN) == "1" else {}
 
 
 def ensure_binary() -> Path:

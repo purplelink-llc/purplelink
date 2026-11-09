@@ -6,9 +6,18 @@ price went to $54 on the `keyfeel-store` branch (2026-10-07, see `keyfeel.md`); 
 price ends in .99, so the Suite became $59.99 (Outbound Veil $29.99, Legroom $9.99); Tapefolio joined on 2026-10-09 with
 the price left at $59.99 by the owner's decision (see "Tapefolio joined" below and `tapefolio.md`).
 
+## Lenses joins (2026-11-06), price unchanged
+Lenses ($4.99, `lenses.md`) is the ninth Mac app, so the Suite is nine apps and Vitae Plus: ten parts in custom bundles, and
+it stays $59.99 (Ben decided yes in chat on 2026-11-06). The custom bundles became percent tiers the same day (see "Custom bundles" below). The parts come to
+$163.90 the first year (the Née list plus Lenses $4.99); the Suite and products pages round that to $164 and "Save 63%".
+Past Suite buyers get Lenses at no charge: their `app-suite` session unlocks `lenses-download`; a bundle that names Lenses
+is entitled through `bundleHasPart`. Lenses has no license key, trial or updater, so nothing key-shaped was added: the
+Suite email says "ten things" and names the Lenses download, `/suite/success/` has a Lenses box that just offers the DMG,
+and the `app-suite` REFUND_TEXT and its Terms sentence are unchanged. `bundle.js` carries `"lenses":499`.
+
 ## Née joins (2026-11-02, with the Née launch PR), price unchanged
 Née ($14.99, `nee.md`) is the eighth Mac app, so the Suite is eight apps and Vitae Plus: nine parts in custom bundles, and
-it stays $59.99 (Ben decided yes on 2026-11-02; the pick-2 $34.99 and pick-3 $44.99 prices are unchanged too). The parts
+it stays $59.99 (Ben decided yes on 2026-11-02; the bundle prices were fixed then, and are percent tiers since 2026-11-06). The parts
 come to $158.91 the first year (ModernTex $19.99, Outbound Veil $29.99, Legroom $9.99, Keyfeel $9.99, Tapefolio $29.99,
 Panely $9.99, Summonly $9.99, Née $14.99, Vitae Plus $23.99); the Suite and products pages round that to $159.
 `legroom-site.test.mjs` checks the rows against the shown total. Past Suite buyers get Née at no charge: their
@@ -108,9 +117,17 @@ rejects that JWK. It passes on Node 22.
 
 ## Custom bundles (added 2026-10-11)
 
-Pick any 2 of the six parts for $34.99, or any 3 for $44.99, the same price whichever parts. The six parts are the five apps and
-a lifetime Vitae Plus key; all six stays the Suite at $59.99, and there is no pick 4 or 5 (it would sit within $5 of the Suite). The
-picker on `/suite/` sends four or more parts to the Suite, and refuses a pair or triple that costs less bought separately.
+**Percent tiers (Ben, 2026-11-06), replacing the fixed $34.99 and $44.99 of 2026-10-11.** Any 2 parts are 25% off their combined
+own prices, any 3 are 40% off, whichever parts. Price in cents is `Math.round(sumOfPartCents * (100 - percent) / 100)` from
+`PART_CENTS` and `bundleCents()` in `netlify/lib/bundles.mjs` (ModernTex + Outbound Veil: $49.98 becomes $37.49; Lenses +
+Legroom: $14.98 becomes $11.24). The ten parts are the nine apps and a lifetime Vitae Plus key (counted at its first-year
+$23.99); all ten stays the Suite at $59.99, and there is no pick 4 or 5. The picker on `/suite/` shows the separate total
+struck through, the dollar saving and, at two picks, what a third app would add; at four or more it offers the Suite and
+says plainly when the chosen apps cost less on their own. A percent off is always cheaper than buying separately, so the
+old "pick different parts" block is gone. Product keys `bundle-2` and `bundle-3` are unchanged, so delivery, licenses,
+webhook and reports are unaffected. Buyer codes and the friend discount still never apply to bundles; a Stripe promotion
+code applies on top of the bundle amount. A bundle recovery email states the session's own amount, else the percent off.
+Older bundle sales were the fixed prices; for a causal read, split on 2026-11-06 (`scripts/log_change.py`).
 
 - **Price analysis:** `docs/growth-briefs/custom-bundle-pricing-2026-10-11.md` (git-ignored; model in `custom-bundle-model-2026-10-11.py`).
   Rules: every bundle costs more than the dearest single app ($29.99); price against the dearest combination, not the average; the Suite

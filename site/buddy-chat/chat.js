@@ -309,7 +309,7 @@
     var copy = el("button", "bc-chip", "Copy");
     copy.type = "button";
     copy.addEventListener("click", function () {
-      try { navigator.clipboard.writeText(code).then(function () { copy.textContent = "Copied"; }); } catch (e) {}
+      try { navigator.clipboard.writeText(code).then(function () { copy.textContent = "Copied"; setTimeout(function () { copy.textContent = "Copy"; }, 1600); }); } catch (e) {}
     });
     p.appendChild(copy);
     p.appendChild(el("p", null, "Enter it at checkout under Add promotion code within 10 minutes" +
@@ -452,7 +452,17 @@
     });
   }
 
+  var closeTimer = 0;
+  function finishClose(e) {
+    if (e && e.target !== panel) return; // ignore child animations bubbling up
+    clearTimeout(closeTimer);
+    closeTimer = 0;
+    panel.removeEventListener("animationend", finishClose);
+    panel.classList.remove("is-closing");
+    panel.hidden = true;
+  }
   function show() {
+    if (closeTimer) finishClose();
     panel.hidden = false;
     launcher.setAttribute("aria-expanded", "true");
     blinkLoop();
@@ -460,7 +470,14 @@
     track("chat_open", location.pathname);
   }
   function hide() {
-    panel.hidden = true;
+    var calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (calm) panel.hidden = true;
+    else if (!closeTimer) {
+      // short exit toward the launcher; the timeout guarantees the panel ends hidden even if animationend never fires
+      panel.classList.add("is-closing");
+      panel.addEventListener("animationend", finishClose);
+      closeTimer = setTimeout(finishClose, 160);
+    }
     clearTimeout(blinkTimer);
     launcher.setAttribute("aria-expanded", "false");
     launcher.focus();
@@ -485,7 +502,7 @@
     toggle: function (btn) {
       launcher = btn;
       if (!panel) build();
-      if (panel.hidden) show(); else hide();
+      if (panel.hidden || panel.classList.contains("is-closing")) show(); else hide();
     }
   };
 })();

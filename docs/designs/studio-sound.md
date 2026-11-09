@@ -1,6 +1,6 @@
 # Studio sound for Hearthside Pixels long-form videos
 
-Status: approved v2, 2026-11-04. Written after an EGM review of v1 and built on branch `studio-sound`. Ben listened to the
+Status: approved v2, 2026-11-04; studio kits opt-in only since 2026-11-06 (section 5). Written after an EGM review of v1 and built on branch `studio-sound`. Ben listened to the
 A/B clips and approved this scope.
 
 Owner decisions so far (Ben, 2026-11-04): "These don't need to be chiptune... use any synth macOS tool or drive
@@ -113,6 +113,20 @@ GarageBand's licence lets its audio content be used royalty-free in your own ori
 projects, which may be broadcast and distributed; the sound files may not be distributed on their own. Monetised
 YouTube videos of original compositions fit. **Gate:** before the first studio upload, re-read the current GarageBand
 licence text and record the date and wording in this doc. We play notes on instruments; no Apple Loops are used.
+
+**Licence re-read, 2026-11-06 (GarageBand 10.4.14, `GarageBand License Agreement.pdf` in the app bundle).** The gate
+failed. The audio-content clause allows royalty-free use "to create your own original soundtracks", which "You may
+broadcast and/or distribute", but the agreement also says: "You may not use, extract or distribute ... on a standalone
+basis, any Digital Materials ... or otherwise use the Digital Materials outside the context of its intended use as part
+of the Apple Software." `studio.py` loads the `.exs` instruments and drum hits in its own host, outside GarageBand and
+Logic, which is the use that clause rules out. Ben's decision the same day: re-render job 29 on the synth voices and
+make them the default.
+
+So since 2026-11-06 a theme's `studio` kit plays only when the run sets `CHIPTUNE_STUDIO=1` (`studio.kit()`); without
+it every channel uses the numpy voices and the description keeps "Nothing in this video is sampled". The racer's sound
+line describes the synth voices by default (`sound_music`) and the sampled ones only on opt-in (`sound_music_studio`).
+Do not opt in for a published video unless the sounds are played inside Apple's software (for example a Logic or
+GarageBand bounce of the composer's MIDI), or Apple's terms change.
 
 ### 6. Measured (prototype, 2026-11-04)
 

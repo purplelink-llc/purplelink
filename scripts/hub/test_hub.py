@@ -275,6 +275,26 @@ def test_stop_rule_and_interval():
     assert hub.channel_stats(pls[:7], links, assets, {"windows": {"45": {}}}, [], today)[0][9] == "building"
 
 
+def test_suspect_trials_are_counted_apart():
+    # stats.mjs puts trial clicks made under 1.5 s with no interaction in "trialSuspect"; they never join "trials".
+    import datetime as dt
+    today = dt.date(2026, 10, 23)
+    assets = {"widget": {"kind": "product", "url": "https://purplelink.llc/widget/"}}
+    start = (today - dt.timedelta(days=44)).isoformat()
+    pls = [{"id": f"p{i}", "channel": "youtube", "status": "live", "date": start, "url": "", "landing_url": "", "utm": ""}
+           for i in range(8)]
+    links = {f"p{i}": ["widget"] for i in range(8)}
+    fun = {"asOf": "x", "windows": {"45": {"youtube": {"pageviewsByPath": {"/widget/": 150}, "trial": {"widget": 6},
+                                                       "trialSuspect": {"widget": 4, "widget-s2m": 1}}}}}
+    row = hub.channel_stats(pls, links, assets, fun, [], today)[0]
+    assert row[4] == 6 and row[11] == 5                       # trials 6, suspect 5, not 11
+    assert "5 more trial click(s)" in row[10]
+    # a funnel from before the field existed has no suspect map and counts none
+    old = {"asOf": "x", "windows": {"45": {"youtube": {"pageviewsByPath": {"/widget/": 150}, "trial": {"widget": 6}}}}}
+    assert hub.channel_stats(pls, links, assets, old, [], today)[0][11] == 0
+    assert hub.suspect_of({"trials": 3}) == 0                 # a database built before the column existed
+
+
 def test_listing_checks():
     assert hub.listing_check({"error": "403"}, {"version": "1.2.0"}) == "manual"
     assert hub.listing_check({"versions": [], "prices": []}, {"version": "1.2.0"}) == "manual"
@@ -638,7 +658,7 @@ def test_rechecks():
     run("import")
     con = db()
     con.execute("DELETE FROM channel_stats")
-    con.executemany("INSERT INTO channel_stats VALUES (?,?,?,?,?,?,?,?,?,?,?)", [
+    con.executemany("INSERT INTO channel_stats (product, channel, placements, visits, trials, orders, heard, rate_lo, rate_hi, verdict, why) VALUES (?,?,?,?,?,?,?,?,?,?,?)", [
         ("widget", "email", 60, 5, 1, 0, 0, None, None, "unmeasured", ""),
         ("gadget", "email", 3, 4, 0, 0, 0, None, None, "building", ""),
         ("widget", "directory", 2, 1, 0, 0, 0, None, None, "building", "")])
@@ -1007,6 +1027,7 @@ if __name__ == "__main__":
     test_results_and_followups()
     test_follow_up_rules()
     test_stop_rule_and_interval()
+    test_suspect_trials_are_counted_apart()
     test_listing_checks()
     test_fetch_funnel_keeps_token_out_of_url()
     test_funnel_stale_until_fetched_on_the_day()
@@ -1118,6 +1139,14 @@ def test_crm_labs_and_pilots():
     labs = json.loads(crm_file.read_text())["labs"]
     assert len(labs) == 3 and [l for l in labs if l["name"] == "Smith Lab"][0]["status"] == "interviewed"
     assert [l for l in labs if l["name"] == "Smith Lab"][0]["notes"].startswith("met at")  # blank cells never erase
+
+    # the warm-labs brief's headers map too
+    brief = tmp / "brief.md"
+    brief.write_text("| # | Lab / group | PI | Institution | Tie to Ben | Why Paper Review fits | Public lab URL | Suggested first contact |\n"
+                     "|---|---|---|---|---|---|---|---|\n| 1 | Brief Lab | Dr B | Uni (unverified affiliation) | co-author | big lab | https://b.edu | email |\n")
+    assert "1 added" in run("crm", "import-labs", str(brief))
+    b = [l for l in json.loads(crm_file.read_text())["labs"] if l["name"] == "Brief Lab"][0]
+    assert b["tie"] == "co-author" and b["url"] == "https://b.edu" and "unverified" in b["institution"]
 
     # Georgia State / GSU refused everywhere, and nothing is written
     before = crm_file.read_text()

@@ -70,6 +70,7 @@ body:has(.bc-launcher) .pl-toast { bottom: 88px; }
   font-size: 15px;
   line-height: 1.5;
   overflow: hidden;
+  transform-origin: bottom right;
 }
 .bc-panel[hidden] { display: none; }
 @media (max-width: 480px) {
@@ -193,13 +194,17 @@ a.bc-chip { display: inline-flex; align-items: center; text-decoration: none; co
 
 /* Motion: only when the visitor allows it */
 @media (prefers-reduced-motion: no-preference) {
-  .bc-panel:not([hidden]) { animation: bc-rise 0.22s ease-out; }
+  .bc-panel:not([hidden]) { animation: bc-rise 0.2s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)); }
+  .bc-panel.is-closing { animation: bc-sink 0.12s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) forwards; pointer-events: none; }
+  .bc-msg--buddy:not(.bc-msg--wait) { animation: bc-msg-in 0.15s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) backwards; }
   .bc-blink .bc-eye-open { animation: bc-blink 0.17s ease-in-out; }
   .is-thinking .bc-eyes { animation: bc-glance 2.4s ease-in-out infinite; }
   .bc-launcher { transition: transform 0.16s ease-out; }
   .bc-launcher:hover { transform: translateY(-2px); }
   .is-happy .bc-face { animation: bc-hop 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
 }
+@keyframes bc-sink { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(6px) scale(0.97); } }
+@keyframes bc-msg-in { from { opacity: 0; transform: translateY(4px); } }
 @keyframes bc-rise { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
 @keyframes bc-blink { 0%, 100% { transform: scaleY(1); } 40% { transform: scaleY(0.12); } }
 @keyframes bc-glance { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 60% { transform: translateX(4px); } }

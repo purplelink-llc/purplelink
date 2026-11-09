@@ -74,3 +74,21 @@ def test_html_review_ready_refund_amount_is_tier_aware():
         status_url="https://purplelink.llc/x", amount_cents=1500,
     )
     assert "refund the $15" in deep_out
+
+
+def test_purchase_emails_carry_the_cross_sell_code_only_when_given():
+    plain = delivery.html_purchase_link(product_name="Cover Letter", link="https://purplelink.llc/x")
+    assert "30% off" not in plain
+    out = delivery.html_purchase_link(
+        product_name="Cover Letter", link="https://purplelink.llc/x",
+        buyer_code="PL-23456789", buyer_code_expires="December 5, 2026",
+    )
+    assert "PL-23456789" in out
+    assert "December 5, 2026" in out
+    assert "https://purplelink.llc/products/?code=PL-23456789" in out
+    pack = delivery.html_volume_pack_tokens(
+        tokens=["t1"], pack_size=5, buyer_code="PL-23456789", buyer_code_expires="December 5, 2026",
+    )
+    assert "PL-23456789" in pack
+    assert delivery._buyer_code_html("PL-23456789", "") == ""
+    assert "<b>" not in delivery._buyer_code_html("<b>", "December 5, 2026")

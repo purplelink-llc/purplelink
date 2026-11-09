@@ -33,6 +33,7 @@ export const FOLLOWUP_PRODUCTS = {
   keyfeel: "Keyfeel",
   tapefolio: "Tapefolio",
   lenscrib: "Lenscrib",
+  lenses: "Lenses",
   nee: "Née",
   panely: "Panely",
   summonly: "Summonly",

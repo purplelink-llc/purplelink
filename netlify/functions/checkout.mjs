@@ -35,11 +35,15 @@
 
 import { readAttrCookie, touchFromCookie } from "../lib/attr-cookie.mjs";
 import { MAX_SEATS, parseSeats, seatUnitCents } from "../lib/seats.mjs";
-import { BUNDLES, parseBundleParts, partsSentence } from "../lib/bundles.mjs";
+import { BUNDLES, bundleCents, parseBundleParts, partsSentence } from "../lib/bundles.mjs";
 import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import { managedPaymentsOn, applyManagedPayments } from "../lib/managed-payments.mjs";
+import { pickAddons, setOptionalItems } from "../lib/addons.mjs";
 import { recoveryParams, isRecoveryParamError } from "../lib/checkout-recovery.mjs";
+import { checkCode, STORE as BUYER_CODE_STORE } from "../lib/buyer-codes.mjs";
+import { REF_RE, FRIEND_COUPON, FRIEND_PERCENT, friendEligible, checkRef, ensureFriendCoupon } from "../lib/referrals.mjs";
+import { checkoutSecretKey, priceEnvName, newAccountActive } from "../lib/stripe-account.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
 
@@ -131,11 +135,12 @@ const REFUND_TEXT = {
   "tapefolio": `${REFUND_EMAIL} the full $29.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "lenscrib": `${REFUND_EMAIL} the full $19.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "nee": `${REFUND_EMAIL} the full $14.99 to the original payment method. You don't need to give a reason. A refunded purchase's license key is no longer licensed for use.`,
+  "lenses": `${REFUND_EMAIL} the full $4.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working and its license key is no longer licensed for use.`,
   "panely": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "summonly": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   // The annual Paper Review plan. Mirrors the "Refunds." sentence of its /terms/ auto-renewal section.
   "paper-review-annual": "Renews at $79 a year on the same date until you cancel. Cancel in one click from any plan email. We email you 30 and 7 days before each renewal. Unused reviews end with the year; cancelling stops the next charge and is not a refund for the current year.",
-  "app-suite": `${REFUND_EMAIL} the full amount you paid to the original payment method. You don't need to give a reason. A refunded Suite's download links stop working, and its ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Née license keys and its Vitae Plus key are no longer licensed for use.`,
+  "app-suite": `${REFUND_EMAIL} the full amount you paid to the original payment method. You don't need to give a reason. A refunded Suite's download links stop working, and its ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and Lenses license keys and its Vitae Plus key are no longer licensed for use.`,
 };
 
 // Defense-in-depth: cap how many Checkout Sessions one IP can spin up per
@@ -172,6 +177,8 @@ const PRODUCT_CATALOG = {
   "paper-review-annual":     { envKey: "STRIPE_PRICE_PAPER_REVIEW_ANNUAL", amount: 7900, name: "Paper Review: a year of reviews (12 Journal reviews)", interval: "year", mode: "subscription", successPath: "/tools/paper-review/packs/success/" },
   "cover-letter":            { envKey: "STRIPE_PRICE_COVER_LETTER",            successPath: "/tools/cover-letter/compose/" },
   "anonymity-check":         { envKey: "STRIPE_PRICE_ANONYMITY_CHECK",         successPath: "/tools/anonymity-check/upload/" },
+  // $2 journal checklist offered after a Standard review (backend/latextools/upgrades.py). Inline price, no env Price.
+  "journal-check":           { amount: 200, name: "Paper Review: journal check", successPath: "/tools/paper-review/journal-check/upload/" },
   "citation-gap":            { envKey: "STRIPE_PRICE_CITATION_GAP",            successPath: "/tools/citation-gap/upload/" },
   "revision-review":         { envKey: "STRIPE_PRICE_REVISION_REVIEW",         successPath: "/tools/paper-review/revision/upload/" },
   "response-review":         { envKey: "STRIPE_PRICE_RESPONSE_REVIEW",         successPath: "/tools/response-review/upload/" },
@@ -208,7 +215,15 @@ const PRODUCT_CATALOG = {
   // Lenscrib for macOS: $19.99 one-time, priced inline (no Stripe Price to create), like Tapefolio. Sold on its own:
   // not in the Mac Suite or the custom bundles. Delivery is the session-gated DMG from the lenscrib-files Blobs store;
   // see lenscrib-download.mjs. Product page and success page: /lenscrib/ and /lenscrib/success/. See docs/products/lenscrib.md.
-  "lenscrib":                { amount: 1999, name: "Lenscrib for macOS", successPath: "/lenscrib/success/" },
+  // Not released yet: refused until the Netlify env var LENSCRIB_SALES_OPEN is "1" (set it before the launch test
+  // purchase, docs/products/lenscrib.md). The page's Buy button is also off until site/lenscrib/launch.js says live.
+  "lenscrib":                { amount: 1999, name: "Lenscrib for macOS", successPath: "/lenscrib/success/", openEnv: "LENSCRIB_SALES_OPEN" },
+  // Lenses for macOS: $4.99 one-time. The Stripe Price STRIPE_PRICE_LENSES points at (product prod_VZncC6arvZzEdp, created
+  // 2026-11-05 with Ben's approval) wins when set; the inline amount is the fallback. Keep both equal to the copy on /lenses/.
+  // A paid download only: no license key, no trial, no updater. Sold on its own, not in the Mac Suite or the custom bundles. Delivery is the session-gated DMG from
+  // the lenses-files Blobs store; see lenses-download.mjs. Product page and success page: /lenses/ and /lenses/success/.
+  // See docs/products/lenses.md.
+  "lenses":                  { envKey: "STRIPE_PRICE_LENSES", amount: 499, name: "Lenses for macOS", successPath: "/lenses/success/" },
   // Née for macOS: $14.99 one-time, priced inline (no Stripe Price to create), like Lenscrib. Licensed with the shared
   // PurplelinkLicenseV1 scheme (NEE1 keys, netlify/lib/license.mjs). Part of the Mac Suite and the custom bundles
   // (Ben, 2026-11-02; the `inSuite` gate in license.mjs is open). Delivery is the session-gated DMG from the
@@ -219,19 +234,19 @@ const PRODUCT_CATALOG = {
   // Delivery is the session-gated DMG from the panely-files / summonly-files Blobs stores. Pages: /panely/ and /summonly/.
   "panely":                { amount: 999, name: "Panely for macOS", successPath: "/panely/success/" },
   "summonly":                { amount: 999, name: "Summonly for macOS", successPath: "/summonly/success/" },
-  // Purplelink Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Panely + Summonly + Née + Vitae Plus for life,
+  // Purplelink Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Panely + Summonly + Née + Lenses + Vitae Plus for life,
   // $59.99 one-time (was $54.99 until 2026-10-12 and $54 until 2026-10-07; $49 with four apps, $39 before Legroom; Tapefolio
-  // joined 2026-10-09 at the same price, Panely and Summonly joined 2026-10-12 and Née at launch, all with this price). Priced inline (no Stripe
-  // Price to create). One session unlocks all nine: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and
-  // Née download functions accept it, and vitae-license.mjs signs a 100-year Vitae Plus key from it. See
+  // joined 2026-10-09 at the same price, Panely and Summonly joined 2026-10-12 and Née at launch, Lenses joined 2026-11-06, all with this price). Priced inline (no Stripe
+  // Price to create). One session unlocks all ten: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and
+  // Lenses download functions accept it, and vitae-license.mjs signs a 100-year Vitae Plus key from it. See
   // docs/products/app-suite.md.
-  "app-suite":               { amount: 5999, name: "Purplelink Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and Vitae Plus for life", successPath: "/suite/success/" },
-  // Custom bundles of the Mac Suite: pick any 2 for $34.99 or any 3 for $44.99, the same price whichever parts are
-  // chosen (the nine parts are the eight apps and a lifetime Vitae Plus key; all nine is the Suite above). The client sends
-  // only `apps`; the price is the table in netlify/lib/bundles.mjs. Delivery reuses /suite/success/ and the per-app
-  // download functions, which read metadata.apps back. See docs/growth-briefs/custom-bundle-pricing-2026-10-11.md.
-  "bundle-2":                { amount: BUNDLES["bundle-2"].cents, bundle: true, name: "Purplelink Mac Suite custom bundle (any 2)", successPath: "/suite/success/" },
-  "bundle-3":                { amount: BUNDLES["bundle-3"].cents, bundle: true, name: "Purplelink Mac Suite custom bundle (any 3)", successPath: "/suite/success/" },
+  "app-suite":               { amount: 5999, name: "Purplelink Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née, Lenses and Vitae Plus for life", successPath: "/suite/success/" },
+  // Custom bundles of the Mac Suite: any 2 parts for 25% off their combined price, any 3 for 40% off, whichever parts
+  // are chosen. The client sends only `apps`; the amount is computed per request from netlify/lib/bundles.mjs
+  // (bundleCents), so these entries carry no fixed `amount`. Delivery reuses /suite/success/ and the per-app
+  // download functions, which read metadata.apps back. See docs/products/app-suite.md.
+  "bundle-2":                { bundle: true, name: `Purplelink Mac Suite bundle, ${BUNDLES["bundle-2"].percent}% off`, successPath: "/suite/success/" },
+  "bundle-3":                { bundle: true, name: `Purplelink Mac Suite bundle, ${BUNDLES["bundle-3"].percent}% off`, successPath: "/suite/success/" },
   // Vitae Plus: optional subscription for the free Vitae app ($2.99/month or
   // $23.99/year, 7-day trial). The success page asks vitae-license.mjs for a
   // signed key; the app refreshes it from the same function about monthly.
@@ -365,6 +380,10 @@ export default async function handler(request) {
   if (!entry) {
     return jsonResponse(400, { error: "unknown_product", detail: product });
   }
+  // A product that is not on sale yet: its page has no working Buy button, so only a hand-made request reaches here.
+  if (entry.openEnv && Netlify.env.get(entry.openEnv) !== "1") {
+    return jsonResponse(400, { error: "not_for_sale", detail: "This product is not on sale yet." });
+  }
   // Referral code from a shared report's footer link (?ref=...), passed
   // through as Stripe metadata so stripe-webhook.mjs can forward it to
   // the backend's register-token endpoint. Untrusted input — just a short
@@ -422,15 +441,44 @@ export default async function handler(request) {
     }
   }
 
-  const secretKey = Netlify.env.get("STRIPE_SECRET_KEY");
+  // The amount in cents this session charges per unit: a bundle's is computed from the chosen parts, every other
+  // entry's is fixed in the catalog. Buyer codes and the friend discount never apply to bundles (both refuse them),
+  // so a bundle is charged exactly this amount; a Stripe promotion code the buyer types is applied by Stripe on top.
+  const unitAmount = entry.bundle ? bundleCents(bundleParts) : entry.amount;
+
+  // A buyer's cross-sell code (netlify/lib/buyer-codes.mjs): 30% off one other product, once. A code that does not
+  // apply is refused with a plain reason (the page shows it, and site.js forgets the code so the next press goes
+  // through at full price); it is never silently dropped, so nobody pays full price thinking the code was used.
+  let buyerCode = null;
+  if (typeof body.code === "string" && body.code.trim()) {
+    let check;
+    try {
+      check = await checkCode(getStore(BUYER_CODE_STORE), body.code, product, entry);
+    } catch (err) {
+      console.error("checkout: buyer code check failed:", err?.message);
+      return jsonResponse(503, { error: "code_check_failed", detail: "Could not check your code just now. Try again in a minute." });
+    }
+    if (!check.ok) return jsonResponse(400, { error: "code_not_valid", detail: `${check.detail} Press the button again to buy at the full price.` });
+    buyerCode = check;
+  }
+
+  // A friend's referral link (netlify/lib/referrals.mjs): 20% off when the code belongs to a real buyer and the
+  // product qualifies. Never with a buyer code. Any failure to check means the full price, never a blocked sale.
+  let friend = false;
+  if (!buyerCode && REF_RE.test(referralCode) && friendEligible(product, entry)) {
+    friend = await checkRef(getStore(BUYER_CODE_STORE), referralCode, { secret: Netlify.env.get("BACKEND_WEBHOOK_SECRET") });
+  }
+
+  // New sessions use the new Stripe account only while STRIPE_NEW_ACCOUNT is on (netlify/lib/stripe-account.mjs); otherwise unchanged.
+  const secretKey = checkoutSecretKey();
   // An entry with an inline amount may also name an env Price; the env Price wins when it is set.
-  const envPrice = entry.envKey ? Netlify.env.get(entry.envKey) : "";
-  const priceId = entry.seats ? null : entry.amount ? (envPrice || null) : envPrice;
-  const inlinePrice = !priceId && (entry.amount || entry.seats);
+  const envPrice = entry.envKey ? Netlify.env.get(priceEnvName(entry.envKey)) : "";
+  const priceId = entry.seats ? null : unitAmount ? (envPrice || null) : envPrice;
+  const inlinePrice = !priceId && (unitAmount || entry.seats);
   if (!secretKey || (!inlinePrice && !priceId)) {
     return jsonResponse(500, {
       error: "misconfigured",
-      detail: `Set STRIPE_SECRET_KEY and ${entry.envKey} on this site.`,
+      detail: `Set STRIPE_SECRET_KEY and ${priceEnvName(entry.envKey)} on this site.`,
     });
   }
 
@@ -454,8 +502,15 @@ export default async function handler(request) {
   const prPreview = product.startsWith("paper-review") && body?.pr_preview === 1;
   const managed = managedPaymentsOn(product, Netlify.env.get("STRIPE_MANAGED_PAYMENTS"));
   const timeBucket = Math.floor(Date.now() / IDEMPOTENCY_WINDOW_MS);
+  // Optional second app at 25% off (netlify/lib/addons.mjs). Single Mac apps only, never with a discount or Managed
+  // Payments. Any failure to find the Prices gives [] and the checkout is exactly what it was. It is part of the
+  // idempotency key below, so a retry that finds different rows gets a fresh session instead of a Stripe key clash.
+  let addonRows = [];
+  try {
+    addonRows = await pickAddons({ product, entry, managed, discounted: !!(buyerCode || friend), secretKey });
+  } catch (_) { addonRows = []; }
   const idempotencyKey = createHash("sha256")
-    .update(`v6:${managed ? "mp:" : ""}${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${trialDay}:${appSource}:${redditAd ? "r" + redditClick : ""}:${photo}:${seats}:${bundleParts.join("+")}:${prPreview ? "pv" : ""}`)
+    .update(`v6:${buyerCode ? "xs" + buyerCode.code + ":" : ""}${friend ? "fr:" : ""}${managed ? "mp:" : ""}${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${trialDay}:${appSource}:${redditAd ? "r" + redditClick : ""}:${photo}:${seats}:${bundleParts.join("+")}:${prPreview ? "pv" : ""}${addonRows.length ? ":ao" + addonRows.map((r) => r[0]).join("+") : ""}`)
     .digest("hex");
 
   // Attach the product key as Stripe metadata so the webhook can route
@@ -474,7 +529,7 @@ export default async function handler(request) {
     ...(inlinePrice
       ? {
           "line_items[0][price_data][currency]": "usd",
-          "line_items[0][price_data][unit_amount]": String(entry.seats ? seatUnit : entry.amount),
+          "line_items[0][price_data][unit_amount]": String(entry.seats ? seatUnit : unitAmount),
           "line_items[0][price_data][product_data][name]": photo ? `${entry.name}: ${photo}` : entry.bundle ? `${entry.name}: ${partsSentence(bundleParts)}` : entry.name,
           ...(entry.interval ? { "line_items[0][price_data][recurring][interval]": entry.interval } : {}),
         }
@@ -552,15 +607,38 @@ export default async function handler(request) {
     params["subscription_data[metadata][product]"] = product;
     if (attrFirst) params["subscription_data[metadata][attr_first]"] = attrFirst;
     if (attrLast) params["subscription_data[metadata][attr_last]"] = attrLast;
-    // paper-review-annual: no consent_collection[terms_of_service]. Stripe refuses that parameter until a Terms URL is
-    // set in the dashboard, and Ben chose to change nothing else in Stripe (2026-11-04). The renewal terms are shown
-    // beside the Pay button (REFUND_TEXT) and beside the button on our own page instead.
+    // paper-review-annual: the buyer ticks "I agree to the Terms of Service" before paying for an auto-renewing plan.
+    // Stripe refuses this parameter unless a Terms URL (https://purplelink.llc/terms/) is set under Settings > Public
+    // details in the dashboard (Ben approved setting it, 2026-11-05). The renewal terms also sit beside the Pay button.
+    if (product === "paper-review-annual") params["consent_collection[terms_of_service]"] = "required";
     if (entry.trialDays) {
       params["subscription_data[trial_period_days]"] = String(entry.trialDays);
     }
   }
 
+  // The new Stripe account rejects payment_method_types ("no longer supported"; methods come from the Dashboard
+  // settings there, which must stay limited to card and Link). Live error 2026-11-06 on Paper Review.
+  if (newAccountActive()) {
+    delete params["payment_method_types[0]"];
+    delete params["payment_method_types[1]"];
+  }
   if (managed) applyManagedPayments(params, product);
+  if (addonRows.length) {
+    setOptionalItems(params, addonRows);
+    // Only says which rows were OFFERED (the webhook reads the paid line items for what was bought).
+    params["metadata[addon_offered]"] = addonRows.map((r) => r[0]).join(",");
+  }
+
+  // Stripe takes either a fixed discount or the promotion-code box, not both, so a code replaces the box.
+  if (buyerCode) {
+    delete params.allow_promotion_codes;
+    params["discounts[0][coupon]"] = buyerCode.coupon;
+    params["metadata[buyer_code]"] = buyerCode.code;
+  } else if (friend) {
+    delete params.allow_promotion_codes;
+    params["discounts[0][coupon]"] = FRIEND_COUPON;
+    params["metadata[friend_discount]"] = String(FRIEND_PERCENT);
+  }
 
   // Checkout recovery (netlify/lib/checkout-recovery.mjs): consent box plus a recovery link when the session
   // expires unpaid. If Stripe ever rejects those parameters, the session is created again without them, so the
@@ -593,8 +671,48 @@ export default async function handler(request) {
     return jsonResponse(502, { error: "stripe_unreachable", detail: "Could not reach the payment processor. Try again in a minute." });
   }
 
+  // If Stripe refuses the optional rows, the session is created again without them, so the upsell can never block a sale.
+  if (!resp.ok && addonRows.length && /optional_items/i.test(`${data?.error?.param || ""} ${data?.error?.message || ""}`)) {
+    console.error("checkout: optional items rejected, retrying without them:", data?.error?.param || data?.error?.code);
+    const bare = { ...params };
+    for (const k of Object.keys(bare)) if (k.startsWith("optional_items[")) delete bare[k];
+    delete bare["metadata[addon_offered]"];
+    try {
+      ({ resp, data } = await post({ ...bare, ...recovery }, `${idempotencyKey}:noaddon`));
+    } catch (err) {
+      console.error("checkout: stripe request failed:", err?.name, err?.message);
+      return jsonResponse(502, { error: "stripe_unreachable", detail: "Could not reach the payment processor. Try again in a minute." });
+    }
+  }
+
   if (data === null) {
     return jsonResponse(502, { error: "stripe_bad_response" });
+  }
+
+  // The friend coupon is made the first time it is needed. If Stripe still refuses it, the sale goes ahead at the
+  // full price with the promotion-code box back.
+  const couponError = (d) => /coupon|discount/i.test(`${d?.error?.param || ""} ${d?.error?.code || ""} ${d?.error?.message || ""}`);
+  if (!resp.ok && friend && couponError(data)) {
+    try {
+      if (/no such coupon/i.test(data?.error?.message || "") && (await ensureFriendCoupon(secretKey))) {
+        ({ resp, data } = await post({ ...params, ...recovery }, `${idempotencyKey}:coupon`));
+      }
+      if (!resp.ok && couponError(data)) {
+        console.error("checkout: friend coupon refused, retrying at full price:", data?.error?.code);
+        const plain = { ...params, allow_promotion_codes: "true" };
+        delete plain["discounts[0][coupon]"];
+        delete plain["metadata[friend_discount]"];
+        ({ resp, data } = await post({ ...plain, ...recovery }, `${idempotencyKey}:nofriend`));
+      }
+    } catch (err) {
+      console.error("checkout: stripe request failed:", err?.name, err?.message);
+      return jsonResponse(502, { error: "stripe_unreachable", detail: "Could not reach the payment processor. Try again in a minute." });
+    }
+    if (data === null) return jsonResponse(502, { error: "stripe_bad_response" });
+  }
+
+  if (!resp.ok && buyerCode && /coupon|discount/i.test(`${data?.error?.param || ""} ${data?.error?.code || ""} ${data?.error?.message || ""}`)) {
+    return jsonResponse(400, { error: "code_not_valid", detail: "That code has already been used or has expired. Press the button again to buy at the full price." });
   }
 
   if (!resp.ok) {

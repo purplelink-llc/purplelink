@@ -85,6 +85,21 @@ def trial_count(trial, prod):
     return t.get(prod, 0) + t.get(f"{prod}-s2m", 0)
 
 
+# stats.mjs keeps trial clicks made under 1.5 s after the page loaded with no press, key or scroll first in a separate
+# map, "trialSuspect" (a link checker, not a person; docs: track.mjs isSuspectTrial). Every figure above counts "trial"
+# only; the suspect count is shown beside it in brackets and never added in.
+def trial_suspect_count(trial_suspect, prod):
+    return trial_count(trial_suspect, prod)
+
+
+def suspect_of(row) -> int:
+    """trials_suspect of a channel_stats row (sqlite Row or dict); 0 for a database built before the column existed."""
+    try:
+        return row["trials_suspect"] or 0
+    except (KeyError, IndexError):
+        return 0
+
+
 def trial_total(trial):
     return sum(n for k, n in (trial or {}).items() if not str(k).endswith("-not-mac"))
 
@@ -127,7 +142,7 @@ CREATE TABLE placements (
   url TEXT, landing_url TEXT, utm TEXT, approval TEXT, contact_ref TEXT, notes TEXT,
   follow_up_due TEXT, facts_seen TEXT, check_state TEXT);
 CREATE TABLE channel_stats (product TEXT, channel TEXT, placements INTEGER, visits INTEGER, trials INTEGER,
-  orders INTEGER, heard INTEGER, rate_lo REAL, rate_hi REAL, verdict TEXT, why TEXT, PRIMARY KEY (product, channel));
+  orders INTEGER, heard INTEGER, rate_lo REAL, rate_hi REAL, verdict TEXT, why TEXT, trials_suspect INTEGER, PRIMARY KEY (product, channel));
 CREATE TABLE heard (product TEXT, answer TEXT, channel TEXT, orders INTEGER, PRIMARY KEY (product, answer));
 CREATE TABLE placement_assets (placement_id TEXT, asset_id TEXT, PRIMARY KEY (placement_id, asset_id));
 CREATE TABLE results (placement_id TEXT, date TEXT, metric TEXT, value REAL, source TEXT, confidence TEXT);
@@ -985,13 +1000,14 @@ def channel_stats(pls: list, links: dict, assets: dict, funnel: dict, orders: li
     rows = []
     for (prod, ch), g in sorted(groups.items()):
         path = site_path(assets[prod]["url"]) or f"/{prod}/"
-        visits = trials = None
+        visits = trials = suspect = None
         if fun is not None:
-            visits = trials = 0
+            visits = trials = suspect = 0
             for fk, v in fun.items():
                 if key_matches(fk, g["keys"]):
                     visits += sum(c for pth, c in (v.get("pageviewsByPath") or {}).items() if pth.startswith(path))
                     trials += trial_count(v.get("trial"), prod)
+                    suspect += trial_suspect_count(v.get("trialSuspect"), prod)
         n_orders = sum(1 for o in orders if o["product"] == prod and o["date"] >= since and order_matches(o, g["keys"]))
         n_heard = sum(1 for o in orders if o["product"] == prod and o["date"] >= since and HEARD_CHANNEL.get(o["heard"]) == ch)
         # Trials start on guide pages too, while visits count the product's own pages only. Where trials outnumber
@@ -1012,7 +1028,9 @@ def channel_stats(pls: list, links: dict, assets: dict, funnel: dict, orders: li
             verdict, why = "working", f"{trials} trials in {visits} visits"
         if visits and (trials or 0) >= visits > 0 and trials:
             why += f"; {trials} trials against {visits} product-page visits: trials also start on guides, and link checkers can trigger them, so no rate is given"
-        rows.append((prod, ch, g["n"], visits, trials, n_orders, n_heard, lo, hi, verdict, why))
+        if suspect:
+            why += f"; {suspect} more trial click(s) under 1.5 s with no interaction counted apart as suspect"
+        rows.append((prod, ch, g["n"], visits, trials, n_orders, n_heard, lo, hi, verdict, why, suspect))
     return rows
 
 
@@ -1921,7 +1939,7 @@ def build(p: dict) -> dict:
         con.executemany("INSERT OR IGNORE INTO placement_assets VALUES (?,?)", [(pl["id"], a) for a in links[pl["id"]]])
     con.executemany("INSERT INTO results VALUES (?,?,?,?,?,?)", results)
     crm_build(con, p)
-    con.executemany(f"INSERT INTO channel_stats VALUES ({','.join('?' * 11)})", chan)
+    con.executemany(f"INSERT INTO channel_stats VALUES ({','.join('?' * 12)})", chan)
     con.executemany("INSERT INTO heard VALUES (?,?,?,?)", [(k[0], k[1], HEARD_CHANNEL.get(k[1], ""), n) for k, n in heard.items()])
     now = dt.datetime.now().astimezone().isoformat(timespec="minutes")
     con.executemany("INSERT INTO meta VALUES (?,?)", [("built", now), ("unmatched", str(unmatched)),
@@ -1962,6 +1980,9 @@ IMPORT_COLUMNS = {
     "link": "url", "website": "url", "warmth": "warmth", "tie": "tie", "status": "status", "next": "next",
     "next step": "next", "next date": "next_date", "next_date": "next_date", "due": "next_date", "notes": "notes",
     "note": "notes",
+    # the warm-labs brief's own headers (docs/growth-briefs/paper-review-pilots/warm-labs-*.md)
+    "lab / group": "name", "tie to ben": "tie", "public lab url": "url", "suggested first contact": "next",
+    "why paper review fits": "notes",
 }
 
 
@@ -2389,11 +2410,13 @@ def cmd_channels(a, p):
     rows = con.execute(q, (a.product,) if a.product else ()).fetchall()
     meta = dict(con.execute("SELECT key, value FROM meta").fetchall())
     print(f"last {STOP_DAYS} days; funnel as of {meta.get('funnel_asof') or 'never (run import --fetch)'}")
-    print(f"  {'product':15} {'channel':13} {'placed':>6} {'visits':>6} {'trials':>6} {'orders':>6} {'heard':>5}  verdict")
+    print(f"  {'product':15} {'channel':13} {'placed':>6} {'visits':>6} {'trials':>8} {'orders':>6} {'heard':>5}  verdict")
     for r in rows:
         v = "-" if r["visits"] is None else r["visits"]
         t = "-" if r["trials"] is None else r["trials"]
-        print(f"  {r['product']:15} {r['channel']:13} {r['placements']:>6} {v:>6} {t:>6} {r['orders']:>6} {r['heard']:>5}  {r['verdict']}: {r['why']}")
+        if suspect_of(r):
+            t = f"{t} [{suspect_of(r)}]"
+        print(f"  {r['product']:15} {r['channel']:13} {r['placements']:>6} {v:>6} {t:>8} {r['orders']:>6} {r['heard']:>5}  {r['verdict']}: {r['why']}")
     heard = con.execute("SELECT * FROM heard ORDER BY orders DESC").fetchall()
     if heard:
         print("how buyers say they heard (Checkout answers, all time): " + ", ".join(f"{h['product']} {h['answer']} {h['orders']}" for h in heard))
@@ -2494,8 +2517,8 @@ def export_rows(p: dict) -> dict:
     order = {"stale": 0, "manual": 1, "unchecked": 2, "no-link": 3, "ok": 4}
     listings.sort(key=lambda r: (order.get(r["state"], 4), r["product"] or ""))
     channels = [{"product": r["product"], "channel": r["channel"], "placements": r["placements"], "visits": r["visits"],
-                 "trials": r["trials"], "orders": r["orders"], "heard": r["heard"], "rateLo": r["rate_lo"],
-                 "rateHi": r["rate_hi"], "verdict": r["verdict"], "why": r["why"]}
+                 "trials": r["trials"], "trialsSuspect": suspect_of(r), "orders": r["orders"], "heard": r["heard"],
+                 "rateLo": r["rate_lo"], "rateHi": r["rate_hi"], "verdict": r["verdict"], "why": r["why"]}
                 for r in con.execute("SELECT * FROM channel_stats ORDER BY product, placements DESC")]
     heard = [dict(r) for r in con.execute("SELECT product, answer, channel, orders FROM heard ORDER BY orders DESC")]
     summary = [{
@@ -2606,10 +2629,10 @@ def cmd_week(a, p):
         m = week_measure(p, today)
         lines = [f"# Marketing hub: the week measured ({today.isoformat()})", "",
                  "Live placements in the last 7 days by channel: " + (", ".join(f"{r['channel']} {r['n']}" for r in m["live7"]) or "none") + ".", "",
-                 "## Channels, last 45 days", "", "| Product | Channel | Placed | Visits | Trials | Orders | Reading |", "|---|---|---|---|---|---|---|"]
+                 "## Channels, last 45 days", "", "| Product | Channel | Placed | Visits | Trials [suspect] | Orders | Reading |", "|---|---|---|---|---|---|---|"]
         for r in m["channels"]:
             lines.append(f"| {r['product']} | {r['channel']} | {r['placements']} | {r['visits'] if r['visits'] is not None else '-'} | "
-                         f"{r['trials'] if r['trials'] is not None else '-'} | {r['orders']} | {r['verdict']}: {r['why']} |")
+                         f"{r['trials'] if r['trials'] is not None else '-'}{' [' + str(suspect_of(r)) + ']' if suspect_of(r) else ''} | {r['orders']} | {r['verdict']}: {r['why']} |")
         lines += ["", f"Follow-ups due: {m['followups_due']}. Marked no-response (28 days): {m['no_response']}.",
                   "Listings out of date: " + (", ".join(f"{s['asset_id']} on {s['target']}" for s in m["stale"]) or "none") + ".",
                   "Placements whose own link brought trials: " + (", ".join(f"{x['id']} ({int(x['value'])})" for x in m["link_trials"]) or "none yet (link tags are counted from 2026-10-23)") + ".",

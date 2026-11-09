@@ -1,0 +1,21 @@
+/* /lenses/ page. External file so the strict CSP permits it. */
+
+/* Hero: copy plus the edge margin before/after still. */
+.app-hero.lenses-hero { grid-template-columns: minmax(0, 1fr); }
+.lenses-hero .lenses-figure { margin: 0; max-width: 720px; }
+.lenses-hero .lenses-figure figcaption { margin-top: 12px; font-size: 0.85rem; color: var(--muted); }
+@media (min-width: 960px) {
+  .app-hero.lenses-hero { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
+  .lenses-hero .app-hero-copy { max-width: 560px; }
+}
+
+/* Before/after stills: 1600x628 images with their own labels. */
+.lenses-pair { display: block; width: 100%; height: auto; border-radius: 14px; border: 1px solid var(--line); }
+.lenses-ba-grid { display: grid; gap: 32px; max-width: 1100px; }
+.lenses-ba { margin: 0; }
+.lenses-ba figcaption { margin-top: 10px; color: var(--muted); max-width: 70ch; }
+.lenses-ba figcaption strong { color: var(--ink); }
+
+.lenses-table td, .lenses-table th { vertical-align: top; }
+.lenses-profile-list { padding-left: 1.2em; max-width: 70ch; }
+.lenses-profile-list li { margin-top: 8px; }

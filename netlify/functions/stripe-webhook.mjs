@@ -26,15 +26,16 @@
  *   https://purplelink.llc/.netlify/functions/stripe-webhook
  *   subscribed to events: checkout.session.completed, customer.subscription.deleted,
  *   charge.refunded, charge.dispute.created, charge.dispute.closed, checkout.session.expired
- *   (the last one for ModernTex checkout recovery, netlify/lib/checkout-recovery.mjs),
+ *   (the last one for checkout recovery, netlify/lib/checkout-recovery.mjs),
  *   invoice.paid and customer.subscription.updated (the Paper Review annual plan, below)
  *
  * Paper Review annual plan ("paper-review-annual", $79 a year, auto-renewing): this function forwards
- * the subscription's lifecycle to Modal (/paper-review/annual-renew, -status, -revoke, same shared-secret header):
+ * the subscription's lifecycle to Modal (/paper-review/annual-renew, -status, -revoke, -restore, same shared-secret header):
  *   checkout.session.completed  register-token, plus subscription_id, term end, customer, card fingerprint
  *   invoice.paid (subscription_cycle)  annual-renew
  *   customer.subscription.updated / .deleted  annual-status (cancel_at_period_end, status, period end)
  *   full refund or dispute on one of its invoices  annual-revoke (charge -> invoice -> subscription)
+ *   dispute on one of its invoices closed as won     annual-restore
  * Only subscriptions whose metadata.product is paper-review-annual are forwarded; any other is ignored.
  * Modal also re-reads Stripe itself (reminder loop, plan page), so a missed event is caught later.
  * Needs STRIPE_SECRET_KEY here to read the subscription.
@@ -49,10 +50,52 @@ import { createHmac, timingSafeEqual, randomBytes, sign as edSign } from "node:c
 import { ed25519PrivateKeyFromSeed } from "../lib/ed25519-seed.mjs";
 import { getStore } from "@netlify/blobs";
 import { issueLicense, licensedSlugsFor, LICENSED_PRODUCTS } from "../lib/license.mjs";
-import { bundlePartsOf, entitledParts, isBundleProduct, partsSentence } from "../lib/bundles.mjs";
+import { ADDON_SLUGS, addonPartsOf, bundlePartsOf, entitledParts, isBundleProduct, partsSentence } from "../lib/bundles.mjs";
+import { SESSION_EXPAND, withAddons } from "../lib/addons.mjs";
 import { recordRevocation, clearDispute, paymentIntentOf } from "../lib/refunds.mjs";
 import { handleExpired, markBought, STORE as RECOVERY_STORE } from "../lib/checkout-recovery.mjs";
 import { sendRedditPurchase } from "../lib/reddit-capi.mjs";
+import { issueCode, markUsed, crossSellOffer, expiryText, STORE as BUYER_CODE_STORE } from "../lib/buyer-codes.mjs";
+import { registerBuyer, saveReferral, referralText } from "../lib/referrals.mjs";
+import { currentSecretKey, runWithAccount, setRequestAccount, webhookSecrets } from "../lib/stripe-account.mjs";
+
+/**
+ * Cross-sell code for a paid order (netlify/lib/buyer-codes.mjs): marks a code this order used, then issues the
+ * buyer's own code. Never blocks delivery: any failure is logged and the email goes out without the code.
+ */
+async function buyerCodeFor(session, product, email) {
+  let store;
+  try { store = getStore(BUYER_CODE_STORE); } catch (_) { return null; }
+  try { await markUsed(store, session); } catch (err) { console.warn("stripe-webhook: buyer code mark-used failed", err?.message); }
+  const stripeKey = currentSecretKey();
+  if (!stripeKey) return null;
+  try {
+    return await issueCode({
+      store, stripeKey, secret: Netlify.env.get("STRIPE_WEBHOOK_SECRET"), session, product, email,
+      fetchImpl: (url, opts) => fetch(url, { ...opts, signal: AbortSignal.timeout(5000) }),
+    });
+  } catch (err) {
+    console.warn("stripe-webhook: buyer code not issued", err?.message);
+    return null;
+  }
+}
+
+/**
+ * Referrals (netlify/lib/referrals.mjs): tell Modal about every paid order (the buyer ledger, a pending reward when
+ * it came through someone's link) and keep the buyer's own link for the success page. Never blocks delivery.
+ */
+async function referralFor(session, product, email, backendSecret) {
+  const reg = await registerBuyer({
+    secret: backendSecret, sessionId: session.id, email, product,
+    amountPaid: session.amount_total || 0, referralCode: session.metadata?.referral_code || "",
+  });
+  if (!reg) {
+    console.warn("stripe-webhook: referral register failed", session.id);
+    return null;
+  }
+  try { await saveReferral(getStore(BUYER_CODE_STORE), session.id, reg); } catch (_) { /* best effort */ }
+  return reg;
+}
 
 const MODAL_REGISTER_URL =
   "https://ben-ampel--purplelink-latextools-web.modal.run/paper-review/register-token";
@@ -85,6 +128,7 @@ const PURPLELINK_PRODUCTS = new Set([
   "paper-review-annual",
   "cover-letter",
   "anonymity-check",
+  "journal-check",
   "citation-gap",
   "revision-review",
   "response-review",
@@ -98,6 +142,7 @@ const PURPLELINK_PRODUCTS = new Set([
 // the session is paid (kit-download.mjs, moderntex-download.mjs). They are
 // listed so a ModernTex or kit sale reads as "delivered" in the function log
 // rather than as a foreign product.
+const ADDON_PRODUCTS = new Set(ADDON_SLUGS);
 export const BLOB_DELIVERED_PRODUCTS = new Map([
   ["kit-faceless",      { name: "The Faceless Content Pipeline kit", successPath: "/kits/success/" }],
   ["kit-monetization",  { name: "The Monetization Stack kit",        successPath: "/kits/success/" }],
@@ -110,13 +155,14 @@ export const BLOB_DELIVERED_PRODUCTS = new Map([
   ["keyfeel",           { name: "Keyfeel for macOS",                 successPath: "/keyfeel/success/" }],
   ["tapefolio",         { name: "Tapefolio for macOS",               successPath: "/tapefolio/success/" }],
   ["lenscrib",          { name: "Lenscrib for macOS",                successPath: "/lenscrib/success/" }],
+  ["lenses",            { name: "Lenses for macOS",                  successPath: "/lenses/success/" }],
   ["nee",          { name: "Née for macOS",                successPath: "/nee/success/" }],
   ["panely",          { name: "Panely for macOS",                successPath: "/panely/success/" }],
   ["summonly",          { name: "Summonly for macOS",                successPath: "/summonly/success/" }],
-  // Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Panely + Summonly + Née + Vitae Plus for life. /suite/success/
-  // lists all eight downloads and asks vitae-license.mjs for the lifetime Vitae Plus key.
+  // Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Panely + Summonly + Née + Lenses + Vitae Plus for life. /suite/success/
+  // lists all nine downloads and asks vitae-license.mjs for the lifetime Vitae Plus key.
   ["app-suite",         { name: "the Purplelink Mac Suite",          successPath: "/suite/success/" }],
-  // Custom bundles: any 2 or any 3 of the nine Suite parts, one fixed price (netlify/lib/bundles.mjs). The same page
+  // Custom bundles: any 2 or any 3 of the ten Suite parts, one fixed price (netlify/lib/bundles.mjs). The same page
   // lists only the chosen parts; each download function and vitae-license.mjs read metadata.apps back.
   ["bundle-2",          { name: "the Purplelink Mac Suite custom bundle", successPath: "/suite/success/" }],
   ["bundle-3",          { name: "the Purplelink Mac Suite custom bundle", successPath: "/suite/success/" }],
@@ -209,7 +255,7 @@ function verifyStripeSignature(rawBody, header, secret) {
 
 /** GET a Stripe object (read only). Returns the parsed JSON, or null when it cannot be read. */
 async function stripeGet(path) {
-  const key = Netlify.env.get("STRIPE_SECRET_KEY");
+  const key = currentSecretKey();
   if (!key) return null;
   try {
     const r = await fetch(`https://api.stripe.com${path}`, { headers: { Authorization: `Bearer ${key}` } });
@@ -267,17 +313,41 @@ async function subscriptionOfCharge(charge) {
  * A full refund or a dispute on a charge. If it belongs to a Paper Review annual subscription, tell Modal to
  * revoke the plan. Returns null when it is not an annual charge, else {ok, status}.
  */
-async function revokeAnnualForCharge(charge, reason, backendSecret) {
-  if (!charge || !Netlify.env.get("STRIPE_SECRET_KEY")) return null;
+async function annualSubscriptionOfCharge(charge) {
+  if (!charge || !currentSecretKey()) return "";
   const subId = await subscriptionOfCharge(charge);
-  if (!subId) return null;
+  if (!subId) return "";
   const sub = await stripeGet(`/v1/subscriptions/${encodeURIComponent(subId)}`);
-  if (!sub || sub.metadata?.product !== ANNUAL_PRODUCT) return null;
-  const res = await postModal("/paper-review/annual-revoke", { subscription_id: subId, reason }, backendSecret);
+  return sub && sub.metadata?.product === ANNUAL_PRODUCT ? subId : "";
+}
+
+async function revokeAnnualForCharge(charge, reason, backendSecret, disputeId = "") {
+  const subId = await annualSubscriptionOfCharge(charge);
+  if (!subId) return null;
+  const body = { subscription_id: subId, reason };
+  if (disputeId) body.dispute_id = disputeId;
+  const res = await postModal("/paper-review/annual-revoke", body, backendSecret);
   if (!res.ok) {
     await alertOperator(
       "Annual plan revoke failed after a refund or dispute",
       `subscription_id=${subId}\nreason=${reason}\nmodal_status=${res.status}\ndetail=${res.text.slice(0, 300)}\n\nStripe will retry this webhook.`
+    );
+  }
+  return { ok: res.ok, status: res.status, subscription_id: subId };
+}
+
+/**
+ * A dispute on an annual invoice was closed as won: tell Modal to give the plan back. Modal restores only a plan
+ * that disputes alone revoked (never one a refund revoked). Returns null when it is not an annual charge.
+ */
+async function restoreAnnualForCharge(charge, disputeId, backendSecret) {
+  const subId = await annualSubscriptionOfCharge(charge);
+  if (!subId) return null;
+  const res = await postModal("/paper-review/annual-restore", { subscription_id: subId, dispute_id: disputeId || "" }, backendSecret);
+  if (!res.ok) {
+    await alertOperator(
+      "Annual plan restore failed after a won dispute",
+      `subscription_id=${subId}\ndispute_id=${disputeId}\nmodal_status=${res.status}\ndetail=${res.text.slice(0, 300)}\n\nStripe will retry this webhook.`
     );
   }
   return { ok: res.ok, status: res.status, subscription_id: subId };
@@ -367,10 +437,10 @@ export function issueModernTexLicense(sessionId, index) {
  * Suite entitles all of them; a custom bundle (`apps` = its chosen parts, comma-separated) entitles only those. Keys are derived from the session id, so every caller gets the same key.
  * An entry is left out, never faked, when its signing secret is not configured.
  */
-export function licenseKeysForSession(productKey, sessionId, { seats = 0, apps = "" } = {}) {
+export function licenseKeysForSession(productKey, sessionId, { seats = 0, apps = "", addons = "" } = {}) {
   const out = [];
   // What the purchase entitles: the whole Suite, the chosen parts of a custom bundle, or the single app.
-  const parts = entitledParts(productKey, { apps });
+  const parts = entitledParts(productKey, { apps, addons });
   if (productKey === "moderntex-seats") {
     // One key per seat, each from its own index so the keys differ yet stay the same for a given purchase.
     // Slug "moderntex-seat" (not "moderntex") so the recovery email lists them with the other session keys.
@@ -388,7 +458,7 @@ export function licenseKeysForSession(productKey, sessionId, { seats = 0, apps =
   const seedB64 = Netlify.env.get("PURPLELINK_LICENSE_PRIVATE_KEY");
   // PURPLELINK_LICENSE_PUBLIC_KEY is only ever set by tests; production uses the key baked into license.mjs.
   const publicB64 = Netlify.env.get("PURPLELINK_LICENSE_PUBLIC_KEY") || undefined;
-  const licensedSlugs = isBundleProduct(productKey) ? Object.keys(LICENSED_PRODUCTS).filter((x) => parts.has(x)) : licensedSlugsFor(productKey);
+  const licensedSlugs = isBundleProduct(productKey) || addonPartsOf(productKey, { addons }).length ? Object.keys(LICENSED_PRODUCTS).filter((x) => parts.has(x)) : licensedSlugsFor(productKey);
   for (const slug of licensedSlugs) {
     const key = issueLicense(slug, { sessionId, seedB64, publicB64 });
     if (key) out.push({ slug, label: LICENSED_PRODUCTS[slug].label, key });
@@ -416,7 +486,7 @@ export function paperReviewOffer(productKey, nowMs = Date.now()) {
 // when a calendar stops being a sensible gift. Ben approved this exact text on 2026-10-31 (photo-arm plan, idea 3).
 // Stop rule: no calendar sale by December 10 means this line comes out early.
 export const CALENDAR_LINE_LAST_DAY_MS = Date.UTC(2027, 0, 15, 23, 59, 59);
-const CALENDAR_LINE_PRODUCTS = new Set(["moderntex", "moderntex-seats", "outbound-veil", "legroom", "keyfeel", "tapefolio", "lenscrib", "nee",
+const CALENDAR_LINE_PRODUCTS = new Set(["moderntex", "moderntex-seats", "outbound-veil", "legroom", "keyfeel", "tapefolio", "lenscrib", "lenses", "nee",
   "panely", "summonly", "app-suite", "bundle-2", "bundle-3"]);
 
 export function calendarOffer(productKey, nowMs = Date.now()) {
@@ -439,7 +509,7 @@ export function calendarOffer(productKey, nowMs = Date.now()) {
  * paid buyer with neither the page nor the email is exactly what the alert
  * exists for.
  */
-async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = "" } = {}) {
+async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = "", addons = "", buyerCode = null, referralLink = "" } = {}) {
   const apiKey = Netlify.env.get("RESEND_API_KEY");
   const entry = BLOB_DELIVERED_PRODUCTS.get(productKey);
   if (!apiKey || !to || !entry) return false;
@@ -449,9 +519,10 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
   // download email, so a missing key is simply left out and the buyer still gets the link.
   const isSuite = productKey === "app-suite";
   const isBundle = isBundleProduct(productKey);
-  const parts = entitledParts(productKey, { apps });
+  const parts = entitledParts(productKey, { apps, addons });
   const bundleParts = isBundle ? bundlePartsOf({ product: productKey, apps }) : [];
-  const keys = licenseKeysForSession(productKey, sessionId, { seats, apps });
+  const addonParts = addonPartsOf(productKey, { addons });
+  const keys = licenseKeysForSession(productKey, sessionId, { seats, apps, addons });
   const isSeats = productKey === "moderntex-seats";
   const keyHint = (k) => (k.slug === "moderntex" ? `"Enter license key" (older trial copies say "Have a license key?")` : `"Enter license key"`);
   const licenseTextBlock = isSeats && keys.length
@@ -483,14 +554,17 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
   const reviewTextBlock = reviewApp ? `${reviewAsk}\n\n` : "";
   const prOffer = paperReviewOffer(productKey);
   const calOffer = calendarOffer(productKey);
+  const xsOffer = crossSellOffer(buyerCode);
+  const refOffer = referralText(referralLink);
+  if (refOffer.text) refOffer.text += "\n\n";
   const reviewHtmlBlock = reviewApp ? `<p>${reviewAsk}</p>` : "";
   // Mac Suite: say what is on the page, since one link carries six things.
   const suiteText = isSuite
-    ? `That page has nine things: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Née downloads, and your Vitae Plus key ` +
+    ? `That page has ten things: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and Lenses downloads, and your Vitae Plus key ` +
       `(for life; in Vitae open Settings, then Vitae Plus, paste it and click Activate). Vitae itself is a free download from the same page.\n\n`
     : "";
   const suiteHtml = isSuite
-    ? `<p>That page has nine things: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly and Née downloads, and your Vitae Plus key ` +
+    ? `<p>That page has ten things: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and Lenses downloads, and your Vitae Plus key ` +
       `(for life; in Vitae open Settings, then Vitae Plus, paste it and click Activate). Vitae itself is a free download from the same page.</p>`
     : "";
   // Custom bundle: name the chosen parts, and say that the page lists those and nothing else.
@@ -502,8 +576,12 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
       (bundleVitae ? `${bundleApps.length ? " and " : ""}your lifetime Vitae Plus key (in Vitae open Settings, then Vitae Plus, paste it and click Activate; Vitae itself is a free download from the same page)` : "") +
       "."
     : "";
-  const bundleText = bundleLine ? `${bundleLine}\n\n` : "";
-  const bundleHtml = bundleLine ? `<p>${bundleLine}</p>` : "";
+  // A second app added at checkout (25% off): say so once, and that the page carries both.
+  const addonLine = addonParts.length
+    ? `Your order also includes ${partsSentence(addonParts)}, added at checkout. That page has the ${partsSentence([productKey, ...addonParts])} download${addonParts.length > 0 ? "s" : ""} and each app's license key below.`
+    : "";
+  const bundleText = bundleLine ? `${bundleLine}\n\n` : addonLine ? `${addonLine}\n\n` : "";
+  const bundleHtml = bundleLine ? `<p>${bundleLine}</p>` : addonLine ? `<p>${addonLine}</p>` : "";
   // Outbound Veil: the one step new users trip on is macOS Accessibility, so point at the setup guide.
   const startUrl = `${SITE_ORIGIN}/outbound-veil/start/`;
   const startText = productKey === "outbound-veil"
@@ -584,6 +662,13 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     "so read every field before you save.";
   const lenscribText = lenscribKey.text + (isLenscrib ? lenscribNote + "\n\n" : "");
   const lenscribHtml = lenscribKey.html + (isLenscrib ? `<p>${lenscribNote}</p>` : "");
+  // Lenses: its key is in the generic keys block (shared PurplelinkLicenseV1 scheme, LN1), so this is the one practical note.
+  // It goes to anyone whose purchase includes Lenses: the app itself, the Suite, or a custom bundle that has it.
+  const isLenses = productKey === "lenses" || parts.has("lenses");
+  const lensesNote = "Lenses needs macOS 14 or later on an Apple silicon Mac. It is a menu bar app with an Open at Login option in its menu. " +
+    "Lenses has no account and sends nothing about your displays; the only network request it makes is the update check.";
+  const lensesText = isLenses ? lensesNote + "\n\n" : "";
+  const lensesHtml = isLenses ? `<p>${lensesNote}</p>` : "";
   // Née's key is in the generic keys block above (shared PurplelinkLicenseV1 scheme), so this is only the one practical
   // note: how the ring opens and what it asks for. It goes to anyone whose purchase includes Née: the app itself, the
   // Suite, or a custom bundle that has it.
@@ -601,6 +686,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     keyfeelText +
     tapefolioText +
     lenscribText +
+    lensesText +
     neeText +
     panelyText +
     summonlyText +
@@ -611,6 +697,8 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     reviewTextBlock +
     prOffer.text +
     calOffer.text +
+    xsOffer.text +
+    refOffer.text +
     `Purplelink LLC, Atlanta, Georgia`;
   const html =
     `<p>Thanks for buying ${entry.name}.</p>` +
@@ -621,6 +709,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     keyfeelHtml +
     tapefolioHtml +
     lenscribHtml +
+    lensesHtml +
     neeHtml +
     panelyHtml +
     summonlyHtml +
@@ -631,6 +720,8 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     reviewHtmlBlock +
     prOffer.html +
     calOffer.html +
+    xsOffer.html +
+    refOffer.html +
     `<p>Purplelink LLC, Atlanta, Georgia</p>`;
   try {
     const resp = await fetch(RESEND_API_URL, {
@@ -740,14 +831,19 @@ async function emailLiveSetupLink(to, sessionId, productKey) {
   return false;
 }
 
-export default async function handler(request, context) {
+export default function handler(request, context) {
+  return runWithAccount(() => handleStripeEvent(request, context));
+}
+
+async function handleStripeEvent(request, context) {
   if (request.method !== "POST") {
     return jsonResponse(405, { error: "method_not_allowed" });
   }
 
-  const stripeSecret = Netlify.env.get("STRIPE_WEBHOOK_SECRET");
+  // The old account's endpoint secret, and the new account's once STRIPE_WEBHOOK_SECRET_NEW is set (netlify/lib/stripe-account.mjs).
+  const stripeSecrets = webhookSecrets();
   const backendSecret = Netlify.env.get("BACKEND_WEBHOOK_SECRET");
-  if (!stripeSecret || !backendSecret) {
+  if (stripeSecrets.length === 0 || !backendSecret) {
     return jsonResponse(500, {
       error: "misconfigured",
       detail: "STRIPE_WEBHOOK_SECRET or BACKEND_WEBHOOK_SECRET not set.",
@@ -757,9 +853,12 @@ export default async function handler(request, context) {
   // Stripe signature verification requires the raw request body.
   const rawBody = await request.text();
   const signature = request.headers.get("stripe-signature");
-  if (!verifyStripeSignature(rawBody, signature, stripeSecret)) {
+  const verified = stripeSecrets.find((s) => verifyStripeSignature(rawBody, signature, s.secret));
+  if (!verified) {
     return jsonResponse(400, { error: "invalid_signature" });
   }
+  // Calls to Stripe below use the key of the account whose endpoint signed this event.
+  setRequestAccount(verified.account);
 
   let event;
   try {
@@ -867,10 +966,15 @@ export default async function handler(request, context) {
   if (event.type === "charge.dispute.created" || event.type === "charge.dispute.closed") {
     const dispute = event.data?.object || {};
     const pi = paymentIntentOf(dispute);
-    if (event.type === "charge.dispute.created" && dispute.charge && Netlify.env.get("STRIPE_SECRET_KEY")) {
+    if (event.type === "charge.dispute.created" && dispute.charge && currentSecretKey()) {
       const chargeObj = await stripeGet(`/v1/charges/${encodeURIComponent(idOf(dispute.charge))}`);
-      const annualDispute = await revokeAnnualForCharge(chargeObj, "dispute", backendSecret);
+      const annualDispute = await revokeAnnualForCharge(chargeObj, "dispute", backendSecret, dispute.id || "");
       if (annualDispute && !annualDispute.ok) return jsonResponse(502, { error: "modal_revoke_failed" });
+    }
+    if (event.type === "charge.dispute.closed" && dispute.status === "won" && dispute.charge && currentSecretKey()) {
+      const chargeObj = await stripeGet(`/v1/charges/${encodeURIComponent(idOf(dispute.charge))}`);
+      const annualWon = await restoreAnnualForCharge(chargeObj, dispute.id || "", backendSecret);
+      if (annualWon && !annualWon.ok) return jsonResponse(502, { error: "modal_restore_failed" });
     }
     if (!pi) return jsonResponse(200, { status: "ignored_no_payment_intent", type: event.type });
     if (event.type === "charge.dispute.created") {
@@ -885,7 +989,7 @@ export default async function handler(request, context) {
   // An unpaid checkout expired: one recovery email when the buyer consented (netlify/lib/checkout-recovery.mjs).
   // A failed send returns 502 so Stripe retries; the session key makes the retry safe.
   if (event.type === "checkout.session.expired") {
-    const secret = Netlify.env.get("FOLLOWUP_UNSUBSCRIBE_SECRET") || stripeSecret;
+    const secret = Netlify.env.get("FOLLOWUP_UNSUBSCRIBE_SECRET") || Netlify.env.get("STRIPE_WEBHOOK_SECRET");
     const apiKey = Netlify.env.get("RESEND_API_KEY");
     const status = await handleExpired(event.data?.object, {
       store: getStore(RECOVERY_STORE),
@@ -968,6 +1072,19 @@ export default async function handler(request, context) {
   // fails, we return 502, and Stripe retries for ~3 days while alerting the
   // operator each time. Ignore anything that is not ours.
   if (BLOB_DELIVERED_PRODUCTS.has(rawProduct)) {
+    // A second app added at checkout is on the paid line items only: re-read the session with them expanded. If that
+    // read fails, Stripe is asked to retry (502) rather than delivering one app of two to a buyer who paid for both.
+    // Checkout stamps metadata.addon_offered only when it sent optional rows, so every other order keeps the event's own session.
+    let deliverSession = session;
+    if (ADDON_PRODUCTS.has(rawProduct) && session.metadata?.addon_offered) {
+      const full = await stripeGet(`/v1/checkout/sessions/${encodeURIComponent(sessionId)}?${SESSION_EXPAND}`);
+      if (!full) {
+        await alertOperator("Could not read a paid order's line items",
+          `session_id=${sessionId}\nproduct=${rawProduct}\n\nStripe will retry this webhook. If it keeps failing, a buyer may be owed a second app.`);
+        return jsonResponse(502, { error: "line_items_unreadable" });
+      }
+      deliverSession = withAddons({ ...session, line_items: full.line_items });
+    }
     // Stripe explicitly warns a webhook event can be delivered more than
     // once. Without a dedupe, a duplicate delivery here would call
     // emailDownloadLink() again, which for ModernTex mints and emails a
@@ -980,9 +1097,12 @@ export default async function handler(request, context) {
       return jsonResponse(200, { status: "duplicate_event_ignored", product: rawProduct, event_id: event.id || null });
     }
     await dedupeStore.set(dedupeKey, new Date().toISOString());
+    const deliverMeta = deliverSession.metadata || {};
     // A buyer who later lets another checkout expire must not get a "you did not finish" email.
-    try { await markBought(getStore(RECOVERY_STORE), rawProduct, email); } catch (_) { /* best effort */ }
-    const emailed = await emailDownloadLink(email, sessionId, rawProduct, { seats: parseInt(session.metadata?.seats || "0", 10) || 0, apps: session.metadata?.apps || "" });
+    try { await markBought(getStore(RECOVERY_STORE), rawProduct, email, entitledParts(rawProduct, deliverMeta)); } catch (_) { /* best effort */ }
+    const buyerCode = await buyerCodeFor(deliverSession, rawProduct, email);
+    const ref = await referralFor(session, rawProduct, email, backendSecret);
+    const emailed = await emailDownloadLink(email, sessionId, rawProduct, { seats: parseInt(session.metadata?.seats || "0", 10) || 0, apps: session.metadata?.apps || "", addons: deliverMeta.addons || "", buyerCode, referralLink: ref?.link || "" });
     if (LIFECYCLE_PRODUCTS.has(rawProduct) && email) {
       // Day-3 tips and a day-21 note, sent by the backend's daily sweep with
       // an unsubscribe link. The buyer already has the key and download, so
@@ -1059,10 +1179,14 @@ export default async function handler(request, context) {
   // this point (checked above) — digest and Blobs-delivered products already
   // returned earlier, so what's left is a genuine Paper Review price key.
   const product = rawProduct;
+  // A buyer who later lets another checkout expire must not get a "you did not finish" email.
+  try { await markBought(getStore(RECOVERY_STORE), product, email); } catch (_) { /* best effort */ }
   // See checkout.mjs — passed through unchanged so the backend can credit
   // the referral loop (task: "co-author exposure referral loop"). Validated
   // server-side against referral_dict there, not trusted here.
   const referralCode = (session.metadata && session.metadata.referral_code) || "";
+  // The buyer's cross-sell code, for the purchase email Modal sends (the annual plan is a subscription and earns none).
+  const buyerCode = await buyerCodeFor(session, product, email);
 
   // The annual plan registers a subscription, not a one-off payment: read it so Modal can record the
   // subscription id, the end of the paid year and the card fingerprint (for the referral abuse check).
@@ -1114,6 +1238,7 @@ export default async function handler(request, context) {
         amount_subtotal: amountSubtotal,
         product,
         referral_code: referralCode,
+        ...(buyerCode ? { buyer_code: buyerCode.code, buyer_code_expires: expiryText(buyerCode.expires) } : {}),
         ...annualExtras,
       }),
     });
@@ -1145,6 +1270,9 @@ export default async function handler(request, context) {
       detail: detail.slice(0, 300),
     });
   }
+
+  // After the token exists (a retry above never records the order twice: Modal's ledger and rewards are per session).
+  await referralFor(session, product, email, backendSecret);
 
   return jsonResponse(200, { status: "registered", session_id: sessionId });
 }

@@ -1,0 +1,189 @@
+{
+ "id": "howto-lenses-ar-glasses-mac-v2",
+ "app": "lenses",
+ "standalone": true,
+ "title": "AR glasses on a Mac: each setting, before and after",
+ "short_title": "60 Hz vs 120 Hz on AR glasses, and five more settings",
+ "url": "purplelink.llc/lenses",
+ "page": "https://purplelink.llc/lenses/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "verify": {
+  "runs": [],
+  "docs": [
+   "https://support.apple.com/guide/mac-help/mchl52e1c2d2/mac"
+  ],
+  "notes": "No terminal output on screen. Second cut of the Lenses launch video, after Ben's 2026-11-06 feedback that the drawings were weak. Claims come from the launch facts file (lenses-launch-facts-2026-11-05.md) and /Volumes/Extreme SSD/Lenses/README.md: tested on RayNeo Air only; System Settings has no edge margin or glasses-only night tint for these glasses. Dark Mode page: Apple's Mac User Guide, Use a light or dark appearance on your Mac. Every picture is simulated and labelled so on screen: the Mac text is real HTML rendered by Chrome (the low-resolution frame is a half-size render stretched to the panel), the soft lens edge, see-through room, warm tint and 60 vs 120 Hz persistence are models made by video/src/LensesSim.jsx. The 60 vs 120 Hz scene steps the real update intervals (every frame at 120 Hz, every second frame at 60 Hz) in 4x slow motion, labelled as slowed and simulated; it is not footage through the glasses. The price is left out of the video (gate rule) and goes in the description. See-Through Mode panel (added 2026-11-06 with Lenses 1.2.0): the room is Ben's own photograph (Nikon DSC_7720, a library reading room, no people), dimmed to model the glasses' shaded front; the display is simulated with a screen blend, since these glasses only add light. Feature per Lenses CHANGELOG 1.2.0: Dark Mode, black desktop on the glasses' screen, edge margin capped at 90%."
+ },
+ "thumbs": {
+  "A": {
+   "kind": "diff",
+   "hook": "Smoother",
+   "before": "60 Hz",
+   "after": "120 Hz"
+  },
+  "B": {
+   "kind": "ba",
+   "hook": "60 Hz vs 120 Hz",
+   "before": "site/assets/lenses/lenses-hz-before.png",
+   "after": "site/assets/lenses/lenses-hz-after.png",
+   "beforeLabel": "60 Hz",
+   "afterLabel": "120 Hz",
+   "pos": "30% 50%"
+  },
+  "C": {
+   "kind": "ba",
+   "hook": "Blurry edges?",
+   "before": "site/assets/lenses/lenses-edges-before.png",
+   "after": "site/assets/lenses/lenses-edges-after.png",
+   "beforeLabel": "Before",
+   "afterLabel": "After",
+   "pos": "50% 50%"
+  }
+ },
+ "scenes": [
+  {
+   "type": "hook",
+   "short": true,
+   "kicker": "AR and VR display glasses",
+   "title": "Same Mac, clearer glasses",
+   "sub": "Each setting, before and after",
+   "narration": "Display glasses can look soft, dim at the edges and tiring on a Mac. Here is what each setting changes, before and after. Every picture here is a simulated view, not footage through the glasses."
+  },
+  {
+   "type": "panel",
+   "label": "Sharp text",
+   "lines": [
+    "Open System Settings, then Displays",
+    "Choose the glasses, and hold Option",
+    "Pick a HiDPI size, such as 1920 by 1080"
+   ],
+   "before": "site/assets/lenses/lenses-hidpi-zoom-before.png",
+   "after": "site/assets/lenses/lenses-hidpi-zoom-after.png",
+   "before_sub": "Low-res mode",
+   "after_sub": "HiDPI mode",
+   "wipe_cue": "after",
+   "narration": "First, sharp text. Here is the same text before and after. A low-resolution mode is stretched to fit and looks soft. A HiDPI size draws the text at full detail. Open Displays, choose the glasses, hold Option, and pick a HiDPI size such as 1920 by 1080.",
+   "ui": "HiDPI means the Mac draws the text at twice the size, then scales it down.",
+   "zoomed": true
+  },
+  {
+   "type": "panel",
+   "label": "Refresh rate",
+   "lines": [
+    "Stay in Displays",
+    "Set Refresh Rate to 120 Hz",
+    "If the menu stops at 60 Hz, the glasses offer no more"
+   ],
+   "before": "site/assets/lenses/lenses-hz-before.png",
+   "after": "site/assets/lenses/lenses-hz-after.png",
+   "before_sub": "60 Hz",
+   "after_sub": "120 Hz",
+   "wipe_cue": "hundred",
+   "narration": "Second, refresh rate. At 60 hertz the picture is redrawn sixty times a second. At 120 hertz, a hundred and twenty. When your eye follows moving text, each redraw is held until the next, and that hold smears it. A shorter hold means less smear. In Displays, set Refresh Rate to 120 hertz if the glasses offer it."
+  },
+  {
+   "type": "panel",
+   "short": true,
+   "kind": "slowmo",
+   "label": "Same motion, slowed",
+   "lines": [
+    "Left: 60 redraws a second, so each jump is twice as far",
+    "Right: 120 redraws a second, in steps half the size"
+   ],
+   "narration": "Here is the same motion on both, slowed down four times, because most video plays at sixty frames a second at most. On the left, the picture is redrawn sixty times a second, so every jump is twice as far. On the right, a hundred and twenty times a second, in steps half the size. That is the difference you see in scrolling and in the pointer."
+  },
+  {
+   "type": "panel",
+   "label": "Edge margin",
+   "lines": [
+    "Shrink the picture to 95, 90 or 85 percent",
+    "The soft outer band shows black",
+    "System Settings has no setting for this"
+   ],
+   "before": "site/assets/lenses/lenses-edges-before.png",
+   "after": "site/assets/lenses/lenses-edges-after.png",
+   "before_sub": "Soft edges",
+   "after_sub": "90% margin",
+   "wipe_cue": "shrink",
+   "narration": "Third, the edges. The glasses are soft toward the edge because of the optics, not your eyes and not your Mac. Lenses can shrink the picture to ninety-five, ninety or eighty-five percent, so the soft band shows black. This is called underscan, and System Settings does not offer it for these glasses.",
+   "ui": "This is called underscan."
+  },
+  {
+   "type": "panel",
+   "label": "Night colour",
+   "lines": [
+    "Night Shift warms the Mac's own screen",
+    "It does not reach the glasses",
+    "They need a tint of their own"
+   ],
+   "before": "site/assets/lenses/lenses-night-before.png",
+   "after": "site/assets/lenses/lenses-night-after.png",
+   "before_sub": "White",
+   "after_sub": "Warm tint",
+   "wipe_cue": "adds",
+   "narration": "Fourth, night colour. Night Shift warms the Mac's own screen, but it does not reach the glasses. Lenses adds a warm tint to the glasses only."
+  },
+  {
+   "type": "panel",
+   "label": "Dark Mode",
+   "lines": [
+    "Open System Settings, then Appearance",
+    "Choose Dark"
+   ],
+   "before": "site/assets/lenses/lenses-dark-before.png",
+   "after": "site/assets/lenses/lenses-dark-after.png",
+   "before_sub": "Light Mac",
+   "after_sub": "Dark Mode",
+   "wipe_cue": "light",
+   "narration": "Fifth, Dark Mode. On these displays black is see-through, so a light desktop hides the room behind a bright sheet, and a dark one lets the room show. Open Appearance and choose Dark.",
+   "ui": "On these displays, black is see-through."
+  },
+  {
+   "type": "panel",
+   "short": true,
+   "label": "See-Through Mode",
+   "lines": [
+    "Click Lenses in the menu bar",
+    "Turn on See-Through Mode"
+   ],
+   "before": "site/assets/lenses/lenses-seethrough-before.png",
+   "after": "site/assets/lenses/lenses-seethrough-after.png",
+   "before_sub": "Mac as it ships",
+   "after_sub": "See-Through Mode",
+   "wipe_cue": "black",
+   "narration": "Lenses takes this one step further with See-Through Mode. It turns on Dark Mode, makes the desktop black, and keeps a margin at the edges, so only your windows light up and the room around them stays in view. The room here is a real photograph; the view through the glasses is simulated.",
+   "ui": "Only your windows light up."
+  },
+  {
+   "type": "panel",
+   "label": "Pointer size",
+   "lines": [
+    "Open System Settings, then Accessibility",
+    "Open Display",
+    "Drag Pointer size to the right"
+   ],
+   "before": "site/assets/lenses/lenses-pointer-zoom-before.png",
+   "after": "site/assets/lenses/lenses-pointer-zoom-after.png",
+   "before_sub": "Standard",
+   "after_sub": "Bigger",
+   "wipe_cue": "bigger",
+   "narration": "Sixth, pointer size. In Accessibility, open Display, and drag Pointer size to the right. On a wide picture, a bigger pointer is easier to find.",
+   "zoomed": true
+  },
+  {
+   "type": "app",
+   "short": true,
+   "name": "Lenses",
+   "imgs": [
+    "site/assets/lenses/lenses-hidpi-after.png",
+    "site/assets/lenses/lenses-hz-after.png",
+    "site/assets/lenses/lenses-seethrough-after.png",
+    "site/assets/lenses/lenses-night-after.png"
+   ],
+   "line": "Applies these settings when you plug the glasses in, and puts the Mac back when you unplug them. Tested on RayNeo Air.",
+   "url": "purplelink.llc/lenses",
+   "narration": "Lenses is a menu bar app that applies these settings when you plug the glasses in, and puts your Mac back when you unplug them. It was tested on RayNeo Air. The link is in the description."
+  }
+ ]
+}

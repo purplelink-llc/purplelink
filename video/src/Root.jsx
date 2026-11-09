@@ -8,6 +8,7 @@ import { PRODUCTS } from "./products/index.js";
 import { LatexFix } from "./LatexFix.jsx";
 import { LatexLong } from "./LatexLong.jsx";
 import { Thumb } from "./Thumb.jsx";
+import { LensesStill, LensesPair, PW, PH } from "./LensesSim.jsx";
 import { PhotoQuiz } from "./PhotoQuiz.jsx";
 import { buildQuiz } from "./photoquiz/plan.js";
 import { HowTo } from "./HowTo.jsx";
@@ -20,12 +21,14 @@ import { bumperTotal, BUMPER } from "./Bumper.jsx";
 import { NeeDemo, TOTAL_FRAMES as NEE_FRAMES } from "./nee/NeeDemo.jsx";
 import { NeeSpot, SPOT_FRAMES } from "./nee/NeeSpot.jsx";
 import { FORMATS, brand } from "./theme.js";
+import { KeyfeelPilot, PILOT } from "./three/KeyfeelPilot.jsx";
 import { buildTimeline, totalFrames } from "./timeline.js";
 
 const empty = { id: "empty", scenes: [] };
 
 export const Root = () => (
   <>
+    <Composition id="KeyfeelPilot3D" component={KeyfeelPilot} fps={PILOT.FPS} width={PILOT.W} height={PILOT.H} durationInFrames={PILOT.FPS * PILOT.T} />
     <Composition
       id="Promo"
       component={Promo}
@@ -61,6 +64,8 @@ export const Root = () => (
     <Composition id="PhotoQuiz" component={PhotoQuiz} fps={brand.fps} width={1080} height={1920} durationInFrames={90}
       defaultProps={{ spec: { items: [], url: "" }, timing: { scenes: [] } }}
       calculateMetadata={({ props }) => ({ durationInFrames: Math.max(1, Math.round((props.spec.items.length ? buildQuiz(props.spec, props.timing).total : 3) * brand.fps)) })} />
+    <Composition id="LensesStill" component={LensesStill} fps={brand.fps} width={PW} height={PH} durationInFrames={1} defaultProps={{ scene: "hidpi", side: "before" }} />
+    <Composition id="LensesPair" component={LensesPair} fps={brand.fps} width={1600} height={628} durationInFrames={1} defaultProps={{ before: "", after: "", beforeSub: "", afterSub: "" }} />
     <Composition id="Thumb" component={Thumb} fps={brand.fps} width={1280} height={720} durationInFrames={1} defaultProps={{ kind: "error", msg: "Undefined control sequence" }} />
     <Composition id="ChainDay" component={ChainDay} fps={brand.fps} width={1080} height={1920} durationInFrames={90}
       defaultProps={{ chain: { players: [], hops: [] }, format: "9x16", timing: { scenes: [] }, bumper: BUMPER }}

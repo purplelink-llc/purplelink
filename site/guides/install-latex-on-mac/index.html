@@ -272,6 +272,7 @@ open hello.pdf</code></pre>
           <li><strong>The installer stops near the end.</strong> Apple ends an install whose final setup script runs longer than ten minutes. TUG's download page lists four <code>sudo</code> commands that finish the setup by hand, and says the error might recur in unusual circumstances.</li>
           <li><strong><code>File ... not found</code> for a <code>.sty</code> file.</strong> A package is missing. Use the three steps in the <a href="#tlmgr">tlmgr section</a>.</li>
           <li><strong>More than one distribution is installed.</strong> Run <code>which pdflatex</code> to see which one answers. MacTeX does not overwrite the previous year's TeX Live, and TeX Live Utility has a Configure menu item named "Change Default TeX Live Version". TUG says BasicTeX and MacTeX can coexist. Homebrew lists its <code>mactex</code> and <code>basictex</code> casks as conflicting, so uninstall one before you install the other with brew.</li>
+          <li><strong>TeX Live Utility says "Listing Failed".</strong> It could not get the update list, usually because your TeX Live is from last year or the mirror is down. See <a href="/guides/tex-live-utility-listing-failed-mac/">Fix TeX Live Utility "Listing Failed"</a>.</li>
           <li><strong>You cannot find the TeX folder in Finder.</strong> Finder hides <code>/usr/local</code>. Choose Go, then Go to Folder, and type <code>/usr/local/texlive</code>.</li>
         </ul>
 
@@ -337,6 +338,7 @@ open hello.pdf</code></pre>
             <li><a href="/panely/">Panely</a></li>
             <li><a href="/summonly/">Summonly</a></li>
             <li><a href="/nee/">Née</a></li>
+            <li><a href="/lenses/">Lenses</a></li>
             <li><a href="/batterymeter/">BatteryMeter</a></li>
             <li><a href="/tools/paper-review/">Paper Review</a></li>
             <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>

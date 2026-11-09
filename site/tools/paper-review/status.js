@@ -98,6 +98,20 @@
         null,
       ],
     },
+    "journal-check": {
+      order: ["extracting", "done"],
+      labels: {
+        queued: "Queued…",
+        extracting: "Reading the manuscript and checking the journal's rules…",
+        done: "Done.",
+      },
+      boxes: [
+        ["extracting", "Check", "Journal rules"],
+        null,
+        null,
+        null,
+      ],
+    },
     "citation-gap": {
       order: ["extracting", "analysing", "done"],
       labels: {
@@ -207,7 +221,7 @@
 
   function setProgress(pct, stage) {
     pct = Math.max(0, Math.min(100, parseInt(pct || 0, 10)));
-    progressFill.style.width = pct + "%";
+    progressFill.style.setProperty("--p", String(pct / 100));
     progressPct.textContent = pct + "%";
     stageLabel.textContent = STAGE_LABEL[stage] || stage || "Working…";
     setStage(stage || ACTIVE_CONFIG.order[0]);
@@ -292,6 +306,7 @@
     ],
     "citation-gap": [["/tools/paper-review/", "From $9", "Paper Review", "Seven AI reviewers on methods, statistics and data, with every reference checked against CrossRef."]],
     "anonymity-check": [["/tools/paper-review/", "From $9", "Paper Review", "The full pre-submission read, with an anonymity scan included."]],
+    "journal-check": [["/tools/cover-letter/", "$2", "Cover Letter", "A draft from your abstract and the journal name. It never sees the manuscript."]],
     "cover-letter": [["/tools/paper-review/", "From $9", "Paper Review", "Before you send the letter, a reviewer panel's read of the manuscript itself."]],
     "response-review": [["/tools/paper-review/revision/", "$2", "Revision Review", "Checks the revised manuscript against the findings in your original Paper Review."]],
     "revision-review": [["/tools/response-review/", "$6", "Response to Reviewers", "Checks every reply in your response letter against the reviewer comments."]]
@@ -308,6 +323,29 @@
         '<span class="pr-next-desc">' + it[3] + '</span></a>';
     });
     return out + "</div></aside>";
+  }
+
+  // Upgrade offers the backend attaches to a finished Paper Review (backend/latextools/upgrades.py). Real prices,
+  // no deadline. Text comes from the server and is escaped here; only our own paths are linked.
+  function escText(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function renderUpgradeOffers(offers) {
+    if (!offers || typeof offers !== "object") return "";
+    var out = "";
+    if (offers.journal_addon && offers.journal_addon.text) {
+      out += '<div class="pr-upgrade-item"><h3>Journal check, $2</h3><p>' + escText(offers.journal_addon.text) + '</p>' +
+        '<a class="btn btn-secondary" href="/tools/paper-review/journal-check/?from=after-paper-review">Choose a journal</a></div>';
+    }
+    if (offers.annual && offers.annual.text) {
+      out += '<div class="pr-upgrade-item"><h3>The annual plan</h3><p>' + escText(offers.annual.text) + '</p>' +
+        '<a class="btn btn-secondary" href="/tools/paper-review/packs/?from=after-paper-review">See the annual plan</a></div>';
+    }
+    if (!out) return "";
+    return '<aside class="pr-upgrade" aria-labelledby="pr-upgrade-h"><h2 id="pr-upgrade-h">If it helps</h2>' + out + "</aside>";
   }
 
   function showResult(payload) {
@@ -359,6 +397,7 @@
       '<a href="' + fb + 'useful">Yes, it caught something</a> · ' +
       '<a href="' + fb + 'partly">Partly</a> · ' +
       '<a href="' + fb + 'not_useful">Not really</a></p>';
+    html += renderUpgradeOffers(payload.upgrade_offers);
     html += renderNextSteps(product);
 
     // Invoice form (hidden by default, revealed by "Get invoice" button)

@@ -9,10 +9,10 @@
 //     (test and live are separate). Without that Stripe rejects the session and checkout returns 502.
 //   - API version 2025-03-31.basil or later (the account default was 2026-06-24.dahlia on 2026-10-14).
 //   - Every product has an eligible tax code. Inline prices get it here; products sold through a Stripe Price
-//     (Outbound Veil, Legroom) need it set on the Stripe product once per mode: scripts/stripe-mp-tax-codes.mjs.
+//     (Outbound Veil, Legroom) need it set on the Stripe product once per mode: scripts/stripe_catalog_migrate.mjs --tax-codes.
 //   - These Checkout parameters are not allowed and are removed: payment_method_types (Stripe picks the methods),
-//     automatic_tax, tax_id_collection, invoice_creation, payment_intent_data.receipt_email and statement
-//     descriptors. checkout.mjs only sends payment_method_types today.
+//     automatic_tax, tax_id_collection, invoice_creation, custom_text (live error 2026-11-06: "You cannot use
+//     custom_text with Managed Payments"), payment_intent_data.receipt_email and statement descriptors.
 //
 // Tax codes come from Stripe's eligible list. All of these are desktop apps the buyer downloads with permanent use,
 // so "Downloadable Software - personal use". The business/personal split matters only for US sales; confirm the
@@ -26,6 +26,7 @@ export const MP_TAX_CODES = Object.freeze({
   "keyfeel": "txcd_10202000",
   "tapefolio": "txcd_10202000",
   "lenscrib": "txcd_10202000",
+  "lenses": "txcd_10202000",
   "nee": "txcd_10202000",
   "panely": "txcd_10202000",
   "summonly": "txcd_10202000",
@@ -50,7 +51,7 @@ export function managedPaymentsOn(product, flag) {
 export function applyManagedPayments(params, product) {
   for (const k of Object.keys(params)) {
     if (k.startsWith("payment_method_types[") || k.startsWith("automatic_tax[") || k.startsWith("tax_id_collection[")
-      || k.startsWith("invoice_creation[") || k === "payment_intent_data[receipt_email]"
+      || k.startsWith("invoice_creation[") || k.startsWith("custom_text[") || k === "payment_intent_data[receipt_email]"
       || k.startsWith("payment_intent_data[statement_descriptor")) {
       delete params[k];
     }

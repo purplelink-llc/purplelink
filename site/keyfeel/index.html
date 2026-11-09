@@ -26,6 +26,7 @@
     <script src="/theme.js"></script>
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="/motion.css">
+    <link rel="stylesheet" href="/vt.css">
     <link rel="stylesheet" href="/product-flair.css">
     <link rel="stylesheet" href="/keyfeel/keyfeel.css">
     <script src="/site.js" defer></script>
@@ -34,6 +35,8 @@
     <script src="/motion.js" defer></script>
     <script src="/product-flair.js" defer></script>
     <script src="/keyfeel/launch.js" defer></script>
+    <script src="/tools/mac-keyboard-tester/key-sounds.js" defer></script>
+    <script src="/keyfeel/hear-it.js" defer></script>
     <script src="/tools/paper-review/paid-tool-landing.js" defer></script>
     <script type="application/ld+json">
     {
@@ -168,7 +171,7 @@
     </header>
     <main id="main-content" data-progress>
 
-    <a class="back-link" href="/products/">&larr; All products</a>
+    <a class="back-link" href="/#show-keyfeel">&larr; All apps</a>
 
     <div class="app-hero">
       <img class="app-hero-icon" src="/assets/keyfeel-icon.webp" width="120" height="120" fetchpriority="high" alt="Keyfeel app icon">
@@ -184,6 +187,11 @@
           <button type="button" class="btn btn-ghost pr-checkout-btn" id="checkout-btn" data-product="keyfeel" data-kf-gated data-kf-live-text="Buy Keyfeel">Buy Keyfeel</button>
         </div>
         <p class="buy-assurance">Checkout shows the price in your local currency, and you can switch back to US dollars.</p>
+        <!-- bundle-nudge:start --><p class="buy-bundle">Add any second Mac Suite app and save 25% on both, or any third for 40% off all three. <a href="/suite/?utm_source=purplelink&amp;utm_medium=product-page&amp;utm_campaign=bundle-nudge&amp;utm_content=keyfeel#bundle">Choose the apps</a>.</p><!-- bundle-nudge:end -->
+        <p class="kf-hear">
+          <button type="button" class="btn btn-ghost" id="kf-hear">Hear it</button>
+          <span class="kf-hear-note" id="kf-hear-status" role="status">Plays three keystrokes from the Tactile set. <a href="/tools/mac-keyboard-tester/">Try the keyboard tester</a>.</span>
+        </p>
         <p class="tool-status" id="checkout-status" aria-live="polite"></p>
         <form class="trial-remind" data-reminder-signup data-reminder-api="/.netlify/functions/keyfeel-reminder" data-reminder-link="keyfeel-download" hidden novalidate>
           <p class="trial-remind-head" id="kf-remind-head-1">Your download has started. Want setup tips by email, and one reminder before the trial ends?</p>
@@ -197,7 +205,7 @@
         </form>
         <p class="waitlist-fine-print">The trial is the complete app for seven days from the first time you open it, with no account and nothing to enter. Buying is a single $9.99 payment, for life, with every update included. You get a license key by email and on the page after you pay. Paste it into the same app and it stays unlocked, with no second download. One key works on two of your Macs. Not useful? Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase (<a href="/terms/">terms</a>). <span data-kf-facts>Version 1.7.1, released November 4, 2026. 8 MB disk image.</span> Needs macOS 13 or later, Apple silicon and Intel, and the Input Monitoring permission.</p>
         <p class="waitlist-fine-print">Comparing options? See <a href="/guides/best-keyboard-sound-apps-for-mac/">the keyboard sound apps for Mac compared</a>. Have Mechvibes packs? See <a href="/guides/mechvibes-sound-packs-on-mac/">how to use them on a Mac</a>.</p>
-        <p class="waitlist-fine-print">Also in the <a href="/suite/?utm_source=purplelink&amp;utm_medium=product-page&amp;utm_campaign=suite-placement&amp;utm_content=keyfeel-buy">Mac Suite</a>: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and Vitae Plus for life, $59.99 once.</p>
+        <p class="waitlist-fine-print">Also in the <a href="/suite/?utm_source=purplelink&amp;utm_medium=product-page&amp;utm_campaign=suite-placement&amp;utm_content=keyfeel-buy">Mac Suite</a>: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née, Lenses and Vitae Plus for life, $59.99 once.</p>
       </div>
       <figure class="app-hero-window kf-hero-window">
         <div class="frame-soft">
@@ -505,6 +513,7 @@
             <li><a href="/panely/">Panely</a></li>
             <li><a href="/summonly/">Summonly</a></li>
             <li><a href="/nee/">Née</a></li>
+            <li><a href="/lenses/">Lenses</a></li>
             <li><a href="/batterymeter/">BatteryMeter</a></li>
             <li><a href="/tools/paper-review/">Paper Review</a></li>
             <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>

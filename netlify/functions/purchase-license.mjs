@@ -12,11 +12,13 @@
 import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import { licenseKeysForSession } from "./stripe-webhook.mjs";
-import { entitledParts, isBundleProduct } from "../lib/bundles.mjs";
+import { addonPartsOf, entitledParts, isBundleProduct } from "../lib/bundles.mjs";
+import { SESSION_EXPAND, withAddons } from "../lib/addons.mjs";
 import { revocationFor, REVOKED_DETAIL } from "../lib/refunds.mjs";
+import { stripeFetchAny } from "../lib/stripe-account.mjs";
 
 const STRIPE_API = "https://api.stripe.com/v1";
-const KEYED_PRODUCTS = new Set(["moderntex", "moderntex-seats", "outbound-veil", "legroom", "keyfeel", "tapefolio", "lenscrib", "nee", "panely", "summonly", "app-suite", "bundle-2", "bundle-3"]);
+const KEYED_PRODUCTS = new Set(["moderntex", "moderntex-seats", "outbound-veil", "legroom", "keyfeel", "tapefolio", "lenscrib", "nee", "lenses", "panely", "summonly", "app-suite", "bundle-2", "bundle-3"]);
 const DAILY_LIMIT = 120;
 
 function json(status, body) {
@@ -46,21 +48,25 @@ export default async function handler(request) {
   if (!secretKey) return json(500, { error: "misconfigured" });
   let resp;
   try {
-    resp = await fetch(`${STRIPE_API}/checkout/sessions/${sessionId}`, { headers: { Authorization: `Bearer ${secretKey}` } });
+    resp = await stripeFetchAny(`${STRIPE_API}/checkout/sessions/${sessionId}?${SESSION_EXPAND}`, { headers: { Authorization: `Bearer ${secretKey}` } });
   } catch {
     return json(502, { error: "stripe_unreachable" });
   }
   if (!resp.ok) return json(403, { error: "session_not_found", detail: "That link is not valid for this store." });
-  const session = await resp.json();
+  // A second app added at checkout is derived from the paid line items; see netlify/lib/addons.mjs.
+  const session = withAddons(await resp.json());
   if (session.payment_status !== "paid") return json(403, { error: "not_paid", detail: "This order has not been paid." });
   // Keys verify offline and cannot be revoked, but a fully refunded or disputed order is not handed them again.
   if (await revocationFor(session)) return json(403, { error: "refunded", detail: REVOKED_DETAIL });
   const product = session.metadata?.product || "";
-  if (!KEYED_PRODUCTS.has(product)) return json(403, { error: "not_entitled", detail: "This order has no license key." });
+  const addons = session.metadata?.addons || "";
+  const addonParts = addonPartsOf(product, { addons });
+  // Lenses has no key of its own, but an order that added a keyed app is owed that app's key.
+  if (!KEYED_PRODUCTS.has(product) && !addonParts.length) return json(403, { error: "not_entitled", detail: "This order has no license key." });
 
   const seats = parseInt(session.metadata?.seats || "0", 10) || 0;
   const apps = session.metadata?.apps || "";
-  const keys = licenseKeysForSession(product, sessionId, { seats, apps }).map((k) => ({ product: k.slug, label: k.label, key: k.key }));
+  const keys = licenseKeysForSession(product, sessionId, { seats, apps, addons }).map((k) => ({ product: k.slug, label: k.label, key: k.key }));
   // The success page of a custom bundle shows only the parts that were chosen; it reads them here, from Stripe's
   // own record, rather than trusting anything in the URL. Other products answer without `parts`.
   if (isBundleProduct(product)) {
@@ -68,5 +74,8 @@ export default async function handler(request) {
     if (!parts.length) return json(403, { error: "not_entitled", detail: "This order has no license key." });
     return json(200, { keys, parts });
   }
+  // A single app with a second one added at checkout: the success pages send it to the page that shows both, which
+  // reads the two parts from here.
+  if (addonParts.length) return json(200, { keys, parts: [...entitledParts(product, { addons })] });
   return json(200, { keys });
 }
