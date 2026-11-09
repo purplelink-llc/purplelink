@@ -1,7 +1,7 @@
 # RubbleFront email list (double opt-in, on Resend)
 
 Built 2026-10-12. Code: `netlify/lib/rubblefront-list.mjs` (shared), `netlify/functions/rubblefront-{subscribe,confirm,unsubscribe,broadcast}.mjs`,
-`scripts/rubblefront-broadcast.py`. Tests: `netlify/tests/rubblefront-list.test.mjs`. Site side: `Frontlink/web/rubblefront.com/assets/signup.js`.
+`scripts/rubblefront-broadcast.py`. Tests: `netlify/tests/rubblefront-list.test.mjs`. Site side: `RubbleFront/web/rubblefront.com/assets/signup.js`.
 
 ## Flow
 1. rubblefront.com form (JS) POSTs `{email, source, website}` to `/.netlify/functions/rubblefront-subscribe` (CORS for rubblefront.com, www and purplelink.llc).

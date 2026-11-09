@@ -243,7 +243,7 @@ SITES = [
         "gsc_property": "sc-domain:getmuscleonglp.com",
     },
     {
-        # RubbleFront (rubblefront.com, the Frontlink game's site). Its analytics.js beacons to Purplelink's collector with
+        # RubbleFront (rubblefront.com, the game's site; Frontlink is a retired name for RubbleFront). Its analytics.js beacons to Purplelink's collector with
         # h="rubblefront.com", so its records sit in the same store; stats.mjs keeps them out of Purplelink's own numbers
         # and returns them alone for ?host=rubblefront.com. Same stats token. No Search Console property is set here yet.
         "key": "rubblefront",
