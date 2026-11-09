@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Xcode and the iOS simulators: where the space goes and how to get it back | Purplelink</title>
+    <meta name="description" content="Where Xcode, simulator runtimes, DerivedData and CoreSimulator put their space on a Mac, what Xcode rebuilds, and the simctl commands Apple provides to remove runtimes and simulators safely.">
+    <link rel="canonical" href="https://purplelink.llc/guides/clean-up-xcode-simulators-mac/">
+    <meta property="og:title" content="Xcode and the iOS simulators: where the space goes and how to get it back">
+    <meta property="og:description" content="Where Xcode, simulator runtimes, DerivedData and CoreSimulator put their space on a Mac, what Xcode rebuilds, and the simctl commands Apple provides to remove runtimes and simulators safely.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/clean-up-xcode-simulators-mac/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/guides-clean-up-xcode-simulators-mac.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Xcode and the iOS simulators: where the space goes and how to get it back">
+    <meta name="twitter:description" content="Where Xcode, simulator runtimes, DerivedData and CoreSimulator put their space on a Mac, what Xcode rebuilds, and the simctl commands Apple provides to remove runtimes and simulators safely.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/guides-clean-up-xcode-simulators-mac.jpg">
+    <meta name="twitter:image:alt" content="Xcode and iOS simulator storage on a Mac: where the space goes">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "Xcode and the iOS simulators: where the space goes and how to get it back",
+      "description": "Where Xcode, simulator runtimes, DerivedData and CoreSimulator put their space on a Mac, what Xcode rebuilds, and the simctl commands Apple provides to remove runtimes and simulators safely.",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "datePublished": "2026-11-09",
+      "dateModified": "2026-11-09",
+      "image": "https://purplelink.llc/assets/og/brand.png",
+      "mainEntityOfPage": "https://purplelink.llc/guides/clean-up-xcode-simulators-mac/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://purplelink.llc/guides/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Xcode and the iOS simulators: where the space goes",
+          "item": "https://purplelink.llc/guides/clean-up-xcode-simulators-mac/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is it safe to delete DerivedData?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, in the sense that Xcode builds it again. MacPaw describes it as build products, indexes and caches, and says the next build is slower. Quit Xcode first and delete the folders inside DerivedData, then build as usual."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will deleting a simulator delete my app's code?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Your source code lives in your project folder. A simulator holds an installed copy of the app and the data it saved there, such as its database and settings. Deleting the simulator removes those, and the next run installs the app again."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I see what is installed before I delete anything?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Run xcrun simctl runtime list for the runtimes and xcrun simctl list devices for the simulators. Both only read. The first ends with a total, which on one Mac with Xcode 26.3 was 2 disk images and 11.4 GB."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I delete the folder in /System/Library/AssetsV2 by hand?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. On recent Xcode, macOS stores the runtimes there and the folder is protected. Remove runtimes with Xcode or xcrun simctl runtime delete. A forum report describes one runtime that stayed behind after deletion, and Apple's engineer there said turning off SIP to remove it is not supported."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why is System Data still large after cleaning?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Several things count toward it that are not Xcode, and free space can lag. One forum poster said the savings appeared only after a Time Machine backup ran. The guide on why System Data is so big on a Mac lists the other usual causes."
+      }
+    }
+  ]
+}
+    </script>
+    <script src="/theme.js"></script>
+<link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/motion.css">
+    <script src="/site.js" defer></script>
+    <script src="/motion.js" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+    <script src="/buddy-chat/loader.js" defer></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">Guide</p>
+        <h1 class="post-title">Xcode and the iOS simulators: where the space goes and how to get it back</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-11-09">November 9, 2026</time></p>
+        <p class="post-lede">Most of the space Xcode takes sits in five places: simulator runtimes, simulator devices, DerivedData, iOS DeviceSupport and Archives. Xcode rebuilds most of it. Archives it cannot. This guide says what each folder holds, what is safe to remove, and which commands Apple provides.</p>
+      </div>
+
+      <article class="post-body">
+        <p><strong>Disclosure up front:</strong> Purplelink, which publishes this site, makes one app mentioned near the end, <a href="/legroom/">Legroom</a>, a menu-bar app sold as a 7-day trial and a $9.99 one-time purchase. I took the sizes and command output below from my own Mac on November 9, 2026 (macOS 27.0.1, Xcode 26.3, build 17C529). Every command I ran was read-only. I did not run any delete command. For those, I read the syntax from the help that ships with this Xcode. Sizes are from one Mac and yours will differ.</p>
+
+        <h2>The short answer</h2>
+        <p>Xcode keeps the simulators' operating systems (runtimes), the simulators themselves, its build output and the symbol files for devices you have plugged in. They add up quickly. The folders Xcode regenerates are safe to clear once you quit Xcode. Your shipped builds in Archives are not, because you may need them to read crash reports later. For the runtimes, which are the largest items, use Xcode or <code>xcrun simctl runtime delete</code>, not Finder.</p>
+
+        <h2 id="folders">What each folder holds</h2>
+        <p>Sizes in the last column are what <code>du -sh</code> reported on my Mac. It had 14 iOS and 5 watchOS simulators and had never archived or connected a device for debugging, so two folders do not exist there.</p>
+        <div class="u-scroll-x">
+          <table class="u-table-wide">
+            <thead><tr><th class="u-th" scope="col">Folder</th><th class="u-th" scope="col">What it holds</th><th class="u-th" scope="col">If you delete it</th><th class="u-th" scope="col">On my Mac</th></tr></thead>
+            <tbody>
+              <tr><td class="u-cell"><code>~/Library/Developer/Xcode/DerivedData</code></td><td class="u-cell">Build products, indexes and caches</td><td class="u-cell">Xcode builds it again, and the next build is slower</td><td class="u-cell">5.4 GB</td></tr>
+              <tr><td class="u-cell"><code>~/Library/Developer/Xcode/iOS DeviceSupport</code></td><td class="u-cell">Symbol files for each iOS version of devices you have connected</td><td class="u-cell">Copied again the next time that device is connected</td><td class="u-cell">Not present</td></tr>
+              <tr><td class="u-cell"><code>~/Library/Developer/Xcode/Archives</code></td><td class="u-cell">Your archived builds and their debug symbols</td><td class="u-cell">Gone. Keep any you may need for crash reports</td><td class="u-cell">Not present</td></tr>
+              <tr><td class="u-cell"><code>~/Library/Developer/CoreSimulator/Devices</code></td><td class="u-cell">One folder per simulator, with the apps and data installed in it</td><td class="u-cell">The simulator's apps and data go. Delete simulators with <code>simctl</code>, not by hand</td><td class="u-cell">5.7 GB</td></tr>
+              <tr><td class="u-cell"><code>/Library/Developer/CoreSimulator/Caches</code></td><td class="u-cell">Simulator caches shared by all users</td><td class="u-cell">Not documented by Apple. I left it alone</td><td class="u-cell">6.3 GB</td></tr>
+              <tr><td class="u-cell">Simulator runtimes</td><td class="u-cell">The simulated iOS, watchOS, tvOS and visionOS systems</td><td class="u-cell">Download again in Xcode when needed. Remove with Xcode or <code>simctl</code></td><td class="u-cell">11.4 GB for two</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>The sources agree on the broad picture. <a href="https://macpaw.com/how-to/why-xcode-so-big" rel="noopener">MacPaw's article</a> (last updated September 21, 2026) lists DerivedData, CoreSimulator, DeviceSupport and Archives, and advises keeping archives for builds that are live or in review and making sure crash-report symbols are uploaded before deleting any. <a href="https://donnywals.com/delete-old-simulators-and-device-support-files-to-free-disk-space" rel="noopener">Donny Wals</a> (2020) covers DeviceSupport and notes that macOS may clear Device Support files unused for 180 days. <a href="https://storageradar.app/blog/xcode-simulator-taking-up-space-on-mac" rel="noopener">StorageRadar's page</a> (updated August 31, 2026) is on the same topic. StorageRadar sells a disk-cleaning app, so it is a competitor of Legroom. Those pages give their own size figures. I do not repeat them, because sizes depend heavily on how many runtimes and simulators you keep.</p>
+
+        <h2 id="measure">Measure first</h2>
+        <p>These commands only read. <code>du</code> may print permission errors for protected folders, and the ones named below were readable on my Mac.</p>
+        <pre><code>du -sh ~/Library/Developer/Xcode/DerivedData
+du -sh ~/Library/Developer/CoreSimulator/Devices
+xcrun simctl runtime list
+xcrun simctl list devices</code></pre>
+        <p>On my Mac, <code>xcrun simctl runtime list</code> printed iOS 26.3.1 (23D8133) and watchOS 26.2 (23S303), both Ready, and ended with "Total Disk Images: 2 (11.4G)". If Xcode is not in your Applications folder, as on my Mac, <code>xcrun</code> needs to know where it is. Set it with <code>xcode-select</code> or the <code>DEVELOPER_DIR</code> variable.</p>
+
+        <h2 id="runtimes">Where the runtimes are</h2>
+        <p>With recent Xcode, macOS stores the runtimes itself. On my Mac, <code>/System/Library/AssetsV2/com_apple_MobileAsset_iOSSimulatorRuntime</code> measured 7.8 GB and the watchOS folder next to it 3.6 GB. Those two add up to the 11.4 GB that <code>simctl</code> reported. That is a protected system folder. Remove runtimes with Xcode or <code>simctl</code>, never by hand. StorageRadar gives the same advice and adds that runtimes are shared by every user account on the Mac.</p>
+        <p>In Xcode, open Settings and look for the Components pane, which lists the installed runtimes and lets you delete them. I did not open it for this guide. The forum thread cited below shows a person using it in Xcode 26.2.</p>
+
+        <h2 id="commands">Apple's commands</h2>
+        <p>I read these from <code>xcrun simctl help delete</code> and <code>xcrun simctl runtime help</code> on Xcode 26.3. I did not run them. Run the list commands first so you know what each one will touch.</p>
+        <h3>Remove simulators</h3>
+        <pre><code>xcrun simctl delete unavailable</code></pre>
+        <p>The help says this deletes simulators that the current Xcode SDK does not support. That is the safest of the delete forms, because those simulators can no longer run. The same help also lists <code>xcrun simctl delete &lt;device&gt;</code> for named simulators and <code>xcrun simctl delete all</code> for every simulator. Deleting a simulator removes the apps and data inside it. A related command, <code>xcrun simctl erase</code>, resets a simulator's contents and settings and keeps the simulator.</p>
+        <h3>Remove runtimes</h3>
+        <p>The runtime help lists this form:</p>
+        <pre><code>xcrun simctl runtime delete (&lt;identifier&gt;|--notUsedSinceDays &lt;days&gt;) [--dry-run]</code></pre>
+        <p>The identifier is the UUID that <code>xcrun simctl runtime list</code> prints beside each runtime. The help says <code>--notUsedSinceDays</code> deletes images not used within that many days, and that <code>--dry-run</code> prints what would be deleted without deleting anything. Use <code>--dry-run</code> first. The help also describes an alias, <code>all</code>, that removes every runtime, and it says any booted simulators on a runtime are shut down first. A deleted runtime is downloaded again in Xcode, which is a large download.</p>
+
+        <h2 id="forum">When a runtime stays after you delete it</h2>
+        <p>This is one forum report, not Apple's guidance. In an <a href="https://developer.apple.com/forums/thread/812992" rel="noopener">Apple Developer Forums thread</a> started in January 2026, a developer on Xcode 26.2 described an iOS 18.5 runtime of about 9 GB left in the AssetsV2 folder. They said Xcode's settings did not list it, <code>simctl runtime delete</code> reported no runtime found, and removing it by hand was refused because the folder is protected. Other users in the thread reported the same. An accepted answer said the problem was fixed in a later Xcode beta, where deleting in the settings removed the leftovers. It also said the savings showed only after a Time Machine backup ran. An Apple engineer there said that turning off SIP, the system protection, to remove the folder is not supported.</p>
+        <p>I did not see this on my Mac, and I do not suggest touching the protected folder. If a runtime does not show in Xcode but still takes space, update Xcode and try Xcode's own removal again, or ask on the forums.</p>
+
+        <h2 id="legroom">Where Legroom fits</h2>
+        <p>Legroom is the app I make. It measures simulator runtimes and CoreSimulator data, so you can see their sizes before you act. It also has a rule that removes simulator runtimes you have not used for a set time. The default is a week, and the rule runs Xcode's own <code>xcrun simctl runtime delete</code> command. The rule also removes the simulators that depend on that runtime. Legroom does not delete anything under <code>/System</code> by hand. Any disk analyzer shows these folders, and the guide on <a href="/guides/best-disk-space-analyzer-for-mac/">disk space analyzers for Mac</a> compares several. <a href="https://purplelink.llc/legroom/?utm_source=site&amp;utm_medium=social&amp;utm_campaign=hub-legroom&amp;utm_content=legroom-site-261109">Legroom is here</a>.</p>
+
+        <h2>Frequently asked</h2>
+        <h3>Is it safe to delete DerivedData?</h3>
+        <p>Yes, in the sense that Xcode builds it again. MacPaw describes it as build products, indexes and caches, and says the next build is slower. Quit Xcode first and delete the folders inside DerivedData, then build as usual.</p>
+        <h3>Will deleting a simulator delete my app's code?</h3>
+        <p>No. Your source code lives in your project folder. A simulator holds an installed copy of the app and the data it saved there, such as its database and settings. Deleting the simulator removes those, and the next run installs the app again.</p>
+        <h3>How do I see what is installed before I delete anything?</h3>
+        <p>Run xcrun simctl runtime list for the runtimes and xcrun simctl list devices for the simulators. Both only read. The first ends with a total, which on one Mac with Xcode 26.3 was 2 disk images and 11.4 GB.</p>
+        <h3>Can I delete the folder in /System/Library/AssetsV2 by hand?</h3>
+        <p>No. On recent Xcode, macOS stores the runtimes there and the folder is protected. Remove runtimes with Xcode or xcrun simctl runtime delete. A forum report describes one runtime that stayed behind after deletion, and Apple's engineer there said turning off SIP to remove it is not supported.</p>
+        <h3>Why is System Data still large after cleaning?</h3>
+        <p>Several things count toward it that are not Xcode, and free space can lag. One forum poster said the savings appeared only after a Time Machine backup ran. The guide on why System Data is so big on a Mac lists the other usual causes.</p>
+
+        <h2>Related guides</h2>
+        <ul>
+          <li><a href="/guides/mac-system-data-huge/">Why is System Data so big on my Mac?</a>: the other usual causes, and what is safe to remove.</li>
+          <li><a href="/guides/best-disk-space-analyzer-for-mac/">Best disk space analyzer and cleaner for Mac (2026)</a>: tools that show these folders.</li>
+          <li><a href="/legroom/">Legroom</a>, <a href="/products/">all products</a> and <a href="/guides/">all guides</a>.</li>
+        </ul>
+      </article>
+    </main>
+
+
+
+        <footer class="footer">
+          <div class="footer-grid">
+            <div class="footer-about">
+              <a class="footer-brand" href="/">
+                <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+                <span>Purplelink LLC</span>
+              </a>
+              <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+              <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+              <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
+            </div>
+            <nav class="footer-col" aria-label="Products">
+              <p class="footer-head">Products</p>
+              <ul>
+                <li><a href="/moderntex/">ModernTex</a></li>
+                <li><a href="/outbound-veil/">Outbound Veil</a></li>
+                <li><a href="/vitae/">Vitae</a></li>
+                <li><a href="/legroom/">Legroom</a></li>
+                <li><a href="/keyfeel/">Keyfeel</a></li>
+                <li><a href="/tapefolio/">Tapefolio</a></li>
+                <li><a href="/panely/">Panely</a></li>
+                <li><a href="/summonly/">Summonly</a></li>
+                <li><a href="/nee/">Née</a></li>
+                <li><a href="/lenses/">Lenses</a></li>
+                <li><a href="/batterymeter/">BatteryMeter</a></li>
+                <li><a href="/tools/paper-review/">Paper Review</a></li>
+                <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+                <li><a href="/suite/">Mac Suite</a></li>
+                <li><a href="/products/">All products</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Free tools">
+              <p class="footer-head">Free tools</p>
+              <ul>
+                <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+                <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+                <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+                <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+                <li><a href="/tools/word-counter/">Word Counter</a></li>
+                <li><a href="/games/">Daily games</a></li>
+                <li><a href="/games/sports/">Sports games</a></li>
+                <li><a href="/tools/">All tools</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Learn">
+              <p class="footer-head">Learn</p>
+              <ul>
+                <li><a href="/guides/">Guides</a></li>
+                <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+                <li><a href="/templates/">LaTeX templates</a></li>
+                <li><a href="/latex-errors/">LaTeX errors</a></li>
+                <li><a href="/format/">Reference formats</a></li>
+                <li><a href="/blog/">Blog</a></li>
+                <li><a href="/changelog/">Changelog</a></li>
+                <li><a href="/search/">Search</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Company">
+              <p class="footer-head">Company</p>
+              <ul>
+                <li><a href="/about/">About</a></li>
+                <li><a href="/pricing/">Pricing</a></li>
+                <li><a href="/press/">Press</a></li>
+                <li><a href="/photography/">Photography</a></li>
+                <li><a href="/support/">Support</a></li>
+                <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+                <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+                <li><a href="/privacy/">Privacy</a></li>
+                <li><a href="/terms/">Terms</a></li>
+                <li><a href="/recover/">Find a purchase</a></li>
+                <li><a href="/labs/">For labs</a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="footer-bottom">
+            <span>&copy; 2026 Purplelink LLC</span>
+            <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+            <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+          </div>
+        </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js" defer></script>
+</body>
+</html>

@@ -999,6 +999,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://purplelink.llc/guides/clean-up-xcode-simulators-mac/</loc>
+    <lastmod>2026-11-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://purplelink.llc/guides/mac-system-data-huge/</loc>
     <lastmod>2026-11-02</lastmod>
     <changefreq>monthly</changefreq>
