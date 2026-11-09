@@ -21,12 +21,14 @@ import { bumperTotal, BUMPER } from "./Bumper.jsx";
 import { NeeDemo, TOTAL_FRAMES as NEE_FRAMES } from "./nee/NeeDemo.jsx";
 import { NeeSpot, SPOT_FRAMES } from "./nee/NeeSpot.jsx";
 import { FORMATS, brand } from "./theme.js";
+import { KeyfeelPilot, PILOT } from "./three/KeyfeelPilot.jsx";
 import { buildTimeline, totalFrames } from "./timeline.js";
 
 const empty = { id: "empty", scenes: [] };
 
 export const Root = () => (
   <>
+    <Composition id="KeyfeelPilot3D" component={KeyfeelPilot} fps={PILOT.FPS} width={PILOT.W} height={PILOT.H} durationInFrames={PILOT.FPS * PILOT.T} />
     <Composition
       id="Promo"
       component={Promo}

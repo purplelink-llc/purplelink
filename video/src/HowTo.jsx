@@ -5,6 +5,8 @@ import { Backdrop, useFonts } from "./V2.jsx";
 import { Bumpered, BUMPER } from "./Bumper.jsx";
 import { buildHowTo, DRIFT } from "./howto/plan.js";
 import { MotionPane, MW, MH, SWEEP } from "./LensesSim.jsx";
+import { AppLaptop } from "./howto/AppLaptop.jsx";
+import { Grade } from "./three/kit.jsx";
 
 // Daily problem-and-fix videos (storyboards/howto/<slug>.json, built by build-howto.mjs). One storyboard, two cuts:
 // 16:9 (every scene) and 9:16 (scenes marked "short"). Scene types:
@@ -95,7 +97,7 @@ function Term({ sc, v, cues, dur, okText }) {
     <AbsoluteFill>
       <Backdrop px={0} py={0} />
       <Drift cues={cues} dur={dur}>
-      <div style={{ position: "absolute", left: v ? 40 : 120, right: v ? 40 : 120, top: v ? 440 : 150, borderRadius: 22, overflow: "hidden", background: PANEL, boxShadow: "0 40px 90px oklch(30% 0.14 310 / 0.34)", ...up(inP, 50) }}>
+      <div style={{ position: "absolute", left: v ? 40 : 120, right: v ? 40 : 120, top: v ? 440 : 150, borderRadius: 22, overflow: "hidden", background: PANEL, boxShadow: "0 40px 90px oklch(30% 0.14 310 / 0.34)", opacity: inP, transformOrigin: "50% 0%", transform: `perspective(1600px) translateY(${(1 - inP) * 50}px) rotateX(${(1 - inP) * 12}deg)` }}>
         <div style={{ height: 58, background: BAR, display: "flex", alignItems: "center", gap: 10, padding: "0 22px" }}>
           {["oklch(70% 0.17 25)", "oklch(82% 0.15 85)", "oklch(75% 0.17 145)"].map((c, i) => <span key={i} style={{ width: 15, height: 15, borderRadius: 99, background: c }} />)}
           <span style={{ marginLeft: 14, fontFamily: FONT_BODY, fontWeight: 600, fontSize: 25, color: "oklch(84% 0.05 310)" }}>{sc.label || "Terminal"}</span>
@@ -287,8 +289,8 @@ function App({ sc, v, cues, dur }) {
         </div>
       )}
       {sc.img && (
-        <div style={{ position: "absolute", ...(v ? { left: 56, right: 56, top: 820, height: 640 } : { left: 940, right: 100, top: 150, height: 640 }), borderRadius: 22, overflow: "hidden", background: "white", boxShadow: "0 40px 90px oklch(30% 0.14 310 / 0.34)", ...up(rv(cues.img, 0.9), 50) }}>
-          <Img src={staticFile(sc.img)} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: sc.pos || "left top", display: "block" }} />
+        <div style={{ position: "absolute", left: 0, top: 0, width: v ? 1080 : 1920, height: v ? 1920 : 1080, opacity: rv(cues.img, 0.5) }}>
+          <AppLaptop img={sc.img} t={t} dur={dur} v={v} width={v ? 1080 : 1920} height={v ? 1920 : 1080} />
         </div>
       )}
       </Drift>
@@ -323,6 +325,7 @@ export function HowTo({ storyboard, timing, format = "16x9", bumper = BUMPER }) 
             {s.audio && <Sequence from={fr(0.3)}><Audio src={staticFile(s.audio)} /></Sequence>}
           </Sequence>
         ))}
+        <Grade t={useCurrentFrame() / brand.fps} grain={0.06} vignette={0.16} />
       </AbsoluteFill>
     </Bumpered>
   );
