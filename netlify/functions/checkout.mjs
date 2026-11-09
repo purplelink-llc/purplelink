@@ -215,7 +215,9 @@ const PRODUCT_CATALOG = {
   // Lenscrib for macOS: $19.99 one-time, priced inline (no Stripe Price to create), like Tapefolio. Sold on its own:
   // not in the Mac Suite or the custom bundles. Delivery is the session-gated DMG from the lenscrib-files Blobs store;
   // see lenscrib-download.mjs. Product page and success page: /lenscrib/ and /lenscrib/success/. See docs/products/lenscrib.md.
-  "lenscrib":                { amount: 1999, name: "Lenscrib for macOS", successPath: "/lenscrib/success/" },
+  // Not released yet: refused until the Netlify env var LENSCRIB_SALES_OPEN is "1" (set it before the launch test
+  // purchase, docs/products/lenscrib.md). The page's Buy button is also off until site/lenscrib/launch.js says live.
+  "lenscrib":                { amount: 1999, name: "Lenscrib for macOS", successPath: "/lenscrib/success/", openEnv: "LENSCRIB_SALES_OPEN" },
   // Lenses for macOS: $4.99 one-time. The Stripe Price STRIPE_PRICE_LENSES points at (product prod_VZncC6arvZzEdp, created
   // 2026-11-05 with Ben's approval) wins when set; the inline amount is the fallback. Keep both equal to the copy on /lenses/.
   // A paid download only: no license key, no trial, no updater. Sold on its own, not in the Mac Suite or the custom bundles. Delivery is the session-gated DMG from
@@ -377,6 +379,10 @@ export default async function handler(request) {
   const entry = Object.hasOwn(PRODUCT_CATALOG, product) ? PRODUCT_CATALOG[product] : undefined;
   if (!entry) {
     return jsonResponse(400, { error: "unknown_product", detail: product });
+  }
+  // A product that is not on sale yet: its page has no working Buy button, so only a hand-made request reaches here.
+  if (entry.openEnv && Netlify.env.get(entry.openEnv) !== "1") {
+    return jsonResponse(400, { error: "not_for_sale", detail: "This product is not on sale yet." });
   }
   // Referral code from a shared report's footer link (?ref=...), passed
   // through as Stripe metadata so stripe-webhook.mjs can forward it to

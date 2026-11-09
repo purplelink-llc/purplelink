@@ -23,6 +23,7 @@ const env = {
   STRIPE_SECRET_KEY: "sk_test_dummy", STRIPE_WEBHOOK_SECRET: "whsec_test", BACKEND_WEBHOOK_SECRET: "backend", RESEND_API_KEY: "re_dummy",
   LENSCRIB_LICENSE_PRIVATE_KEY: Buffer.alloc(32, 9).toString("base64"),
   TAPEFOLIO_LICENSE_PRIVATE_KEY: Buffer.alloc(32, 6).toString("base64"),
+  LENSCRIB_SALES_OPEN: "1",   // the launch switch; the closed case is tested on its own below
 };
 globalThis.Netlify = { env: { get: (k) => env[k] } };
 
@@ -56,6 +57,17 @@ const paid = (metadata, amount, id, sid) => ({ id, type: "checkout.session.compl
 const mailOf = () => JSON.parse(calls.filter((c) => c.url.startsWith("https://api.resend.com/"))[0].opts.body);
 
 // ---- checkout ----
+
+test("before launch, checkout refuses Lenscrib unless LENSCRIB_SALES_OPEN is 1, and never calls Stripe", async () => {
+  for (const v of [undefined, "", "0", "true"]) {
+    if (v === undefined) delete env.LENSCRIB_SALES_OPEN; else env.LENSCRIB_SALES_OPEN = v;
+    const res = await post({ product: "lenscrib" }, `203.0.113.${40 + calls.length}`);
+    assert.equal(res.status, 400, `LENSCRIB_SALES_OPEN=${v}`);
+    assert.equal((await res.json()).error, "not_for_sale");
+  }
+  assert.equal(calls.filter((c) => c.url.includes("api.stripe.com")).length, 0, "no Stripe session is created");
+  env.LENSCRIB_SALES_OPEN = "1";
+});
 
 test("checkout sells Lenscrib at $19.99 from the catalog, with its own success page and refund line", async () => {
   const res = await post({ product: "lenscrib", amount: 1 });
