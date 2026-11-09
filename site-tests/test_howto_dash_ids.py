@@ -4,6 +4,7 @@ howto-publish.py's argv for yt-captions.py and social.py instagram reel-add must
 id starts with "-", and yt-upload.py must keep waiting on "Checks are taking longer than usual ... still running"."""
 import importlib.util
 import sys
+import types
 import unittest
 from pathlib import Path
 
@@ -18,6 +19,12 @@ def load(name, rel):
     spec.loader.exec_module(mod)
     return mod
 
+
+# yt-upload.py imports cdp_tab, which needs websocket-client; CI has no browser, so stand in for it when missing.
+try:
+    import websocket  # noqa: F401
+except ImportError:
+    sys.modules["websocket"] = types.ModuleType("websocket")
 
 hp = load("howto_publish", "scripts/howto-publish.py")
 yc = load("yt_captions", "scripts/yt-captions.py")
