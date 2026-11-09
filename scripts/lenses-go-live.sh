@@ -13,7 +13,7 @@ code=$(curl -s -o /dev/null -w '%{http_code}' -L https://purplelink.llc/guides/a
 [ "${1:-}" = "--dry-run" ] && { echo "pages 200; would make $LONG and $SHORT public, add captions, start the A/B test"; exit 0; }
 PY=/Library/Frameworks/Python.framework/Versions/3.12/bin/python3
 "$PY" scripts/yt-visibility.py public "$LONG" "$SHORT"
-"$PY" scripts/yt-captions.py --channel purplelink "$LONG" "$OUT/lenses-ar-glasses-mac-16x9.srt"
-"$PY" scripts/yt-captions.py --channel purplelink "$SHORT" "$OUT/lenses-ar-glasses-mac-9x16.srt"
+"$PY" scripts/yt-captions.py --channel purplelink -- "$LONG" "$OUT/lenses-ar-glasses-mac-16x9.srt"
+"$PY" scripts/yt-captions.py --channel purplelink -- "$SHORT" "$OUT/lenses-ar-glasses-mac-9x16.srt"
 "$PY" scripts/yt-abtest.py start "$LONG" "$OUT/lenses-ar-glasses-mac-thumb-A.jpg" "$OUT/lenses-ar-glasses-mac-thumb-B.jpg" "$OUT/lenses-ar-glasses-mac-thumb-C.jpg"
 echo "done. Next: ~/.purplelink/social/staging/lenses-enqueue.sh <NOT_BEFORE> $LONG $SHORT, then approve each item on Ben's word."

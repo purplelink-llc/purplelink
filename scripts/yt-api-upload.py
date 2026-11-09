@@ -90,7 +90,7 @@ def add_reel(path, video_id, title, desc):
         fh.write(desc or "")
     try:
         p = subprocess.run([sys.executable, social, "instagram", "reel-add", "--video", os.path.abspath(path),
-                            "--youtube-id", video_id, "--title", title, "--description-file", fh.name],
+                            f"--youtube-id={video_id}", "--title", title, "--description-file", fh.name],
                            capture_output=True, text=True, timeout=1800)
         print(f"instagram: {(p.stdout or p.stderr).strip()[-300:]}")
     except Exception as e:

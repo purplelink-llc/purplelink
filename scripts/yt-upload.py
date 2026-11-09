@@ -128,6 +128,22 @@ def studio_state(vid):
         t.close()
 
 
+def check_state(text: str) -> str:
+    """Classify Studio's content-check footer: "done", "issue" or "checking" (keep waiting).
+
+    "Checks are taking longer than usual to complete but are still running" (seen 2026-11-09) holds the word
+    "complete" but means still checking, so the still-running wording is tested first.
+    """
+    t = (text or "").lower()
+    if "still running" in t or "taking longer" in t or "checking" in t:
+        return "checking"
+    if "complete" in t:
+        return "done"
+    if "issue" in t and "no issues" not in t:
+        return "issue"
+    return "checking"
+
+
 def wait_for_checks(tab, timeout=1500):
     """Block until Studio's automated content check reports it is complete.
 
@@ -135,17 +151,26 @@ def wait_for_checks(tab, timeout=1500):
     left" does not publish: Studio raises "We're still checking your content"
     (Publish anyway / Go back) and the video stays a private draft. That, not
     the visibility radio, is what left three 2026-10-01 uploads as drafts.
+    Never press "Publish anyway". A slow check ("taking longer than usual ...
+    still running") is waited out until `timeout`.
+
+    Recovering a Short left as a draft by hand (2026-11-09): on /video/<id>/edit
+    the "Edit draft" ytcp-button opens YTCP-UPLOADS-DIALOG only when its inner
+    <button> (found by walking shadow roots) gets a DOM .click(); a coordinate
+    tap does nothing. The dialog's innerText reads empty through the shadow
+    roots, so query its elements, not its text.
     """
     js = """(()=>{const all=[];(function walk(r){for(const e of r.querySelectorAll('*')){all.push(e); if(e.shadowRoot)walk(e.shadowRoot);}})(document);
-      const f=all.find(x=>/Checks complete|Checking|issues? found|No issues/i.test(x.innerText||'') && (x.innerText||'').length<120 && x.getBoundingClientRect().width>0);
+      const f=all.find(x=>/Checks complete|Checking|taking longer|still running|issues? found|No issues/i.test(x.innerText||'') && (x.innerText||'').length<120 && x.getBoundingClientRect().width>0);
       return f? f.innerText.trim():''})()"""
     end = time.time() + timeout
     last = ""
     while time.time() < end:
         last = tab.eval(js) or ""
-        if "complete" in last.lower():
+        state = check_state(last)
+        if state == "done":
             return
-        if "issue" in last.lower() and "no issues" not in last.lower():
+        if state == "issue":
             raise RuntimeError("Studio reports a content check issue: " + last[:100])
         time.sleep(15)
     raise TimeoutError("content check did not finish: " + last[:100])
