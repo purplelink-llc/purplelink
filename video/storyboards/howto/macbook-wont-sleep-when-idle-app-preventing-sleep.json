@@ -1,0 +1,104 @@
+{
+ "id": "howto-macbook-wont-sleep-when-idle-app-preventing-sleep",
+ "app": "batterymeter",
+ "title": "MacBook won't go to sleep when idle on Mac (find the app keeping it awake)",
+ "short_title": "MacBook never goes to sleep on its own? Find the app keeping it awake",
+ "url": "purplelink.llc/batterymeter",
+ "page": "https://purplelink.llc/batterymeter/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://discussions.apple.com/thread/3349374",
+  "https://discussions.apple.com/thread/255353987",
+  "https://discussions.apple.com/thread/256322652"
+ ],
+ "verify": {
+  "runs": [
+   {
+    "cmd": "caffeinate -i -t 5 >/dev/null 2>&1 & sleep 1; pmset -g assertions",
+    "output": "Assertion status system-wide:\n   PreventUserIdleSystemSleep     1\nListed by owning process:\nPreventUserIdleSystemSleep named: \"caffeinate command-line tool\"\n\tDetails: caffeinate asserting for 5 secs"
+   }
+  ],
+  "docs": [
+   "https://support.apple.com/guide/activity-monitor/view-energy-consumption-actmntr43697/mac"
+  ],
+  "notes": "Run 2026-11-10 on the recording Mac (Mac mini, macOS 27.0.1) in /private/tmp. caffeinate -i -t 5 is a harmless five-second stand-in for an app that asks macOS not to idle sleep; it ends by itself. man caffeinate: -i 'Create an assertion to prevent the system from idle sleeping.' The video is about idle sleep only (the Mac not sleeping on its own), not lid-closed sleep. The recorded output keeps the stable parts of pmset -g assertions (the pid and timestamp at the start of each process line change every run). Other long-running caffeinate processes on this Mac also hold the assertion, so the line unique to the test, 'caffeinate asserting for 5 secs' (from its Details line), is on screen. Apple's Activity Monitor guide 'View energy consumption in Activity Monitor on Mac' (read 2026-11-10) lists the Energy column Preventing Sleep: 'Whether this app is preventing your Mac from going to sleep.' Apple Community 3349374: idle sleep not working on a MacBook Pro; pmset showed a PreventUserIdleSystemSleep assertion; replies found Spotify, Safari, iTunes or GarageBand and quitting the app restored idle sleep. 255353987: a Mac that won't sleep, reply points to Activity Monitor's Preventing Sleep column. 256322652: overnight battery loss, top reply recommends pmset -g assertions. BatteryMeter's page states its menu lists the top five apps and background processes by energy impact, with Quit and Force Quit (system processes protected); it does not claim to show sleep assertions and the video does not say it does. Nothing on this Mac was changed."
+ },
+ "scenes": [
+  {
+   "type": "hook",
+   "short": true,
+   "kicker": "Mac battery",
+   "title": "MacBook won't sleep when idle",
+   "sub": "And the battery keeps going down.",
+   "narration": "If your MacBook is set to sleep after a few idle minutes, but it stays awake and the battery keeps going down, an app may be holding it awake."
+  },
+  {
+   "type": "symptom",
+   "label": "Terminal, with a test",
+   "lines": [
+    "$ caffeinate -i -t 5 &",
+    "$ pmset -g assertions",
+    "PreventUserIdleSystemSleep     1",
+    "Listed by owning process:",
+    "caffeinate asserting for 5 secs"
+   ],
+   "narration": "Terminal can show you. As a test, caffeinate asks macOS not to idle sleep for five seconds, as an app can. Then p m set, dash g, assertions lists every request, and names caffeinate, asserting for five seconds.",
+   "short": true
+  },
+  {
+   "type": "cause",
+   "text": "An app can ask macOS not to sleep when idle. While it holds that request, your Mac stays awake.",
+   "narration": "Apps make these requests on purpose, to play audio, finish a download, or keep a sync running. If one never lets go, your Mac does not sleep on its own, and on battery the charge keeps draining."
+  },
+  {
+   "type": "steps",
+   "short": true,
+   "label": "Find what keeps it awake",
+   "lines": [
+    "$ pmset -g assertions",
+    "Read the names under Listed by owning process",
+    "Or open Activity Monitor, then Energy",
+    "Quit the app that holds it"
+   ],
+   "ui": "In Activity Monitor, Preventing Sleep shows which app is keeping your Mac awake.",
+   "narration": "Run p m set, dash g, assertions, and read the names under Listed by owning process. Activity Monitor shows the same thing in the Preventing Sleep column of its Energy tab. Quit the app that holds it, or turn off its setting that keeps the Mac awake."
+  },
+  {
+   "type": "app",
+   "name": "BatteryMeter",
+   "line": "Lists the five apps and processes using the most power, with Quit and Force Quit for your own apps.",
+   "url": "purplelink.llc/batterymeter",
+   "img": "site/batterymeter/img/sample-consumers-1120.webp",
+   "icon": "site/assets/batterymeter-icon.webp",
+   "narration": "BatteryMeter is a free app for Apple silicon MacBooks. Its menu lists the five apps and background processes using the most power, with Quit and Force Quit for your own apps, so you can stop the one draining your battery."
+  }
+ ],
+ "thumbs": {
+  "A": {
+   "kind": "diff",
+   "hook": "MacBook won't sleep?",
+   "before": "PreventUserIdleSystemSleep     1",
+   "after": "Quit the app that holds it",
+   "afterLabel": "Fix"
+  },
+  "B": {
+   "kind": "focus",
+   "hook": "Never sleeps\non its own?",
+   "lines": [
+    "pmset -g assertions",
+    "Listed by owning process"
+   ],
+   "hl": "pmset -g assertions"
+  },
+  "C": {
+   "kind": "product",
+   "name": "BatteryMeter",
+   "line": "See what is using the power",
+   "img": "site/batterymeter/img/sample-consumers-1120.webp",
+   "icon": "site/assets/batterymeter-icon.webp",
+   "zoom": 1.2,
+   "pos": "50% 50%"
+  }
+ }
+}
