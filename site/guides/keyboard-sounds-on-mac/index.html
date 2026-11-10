@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>How to get keyboard sounds on a Mac (built in, and with an app) | Purplelink</title>
+    <meta name="description" content="macOS has one built-in key click, hidden in Slow Keys, and it delays every key. How to turn it on, why most people use an app instead, and how to set one up.">
+    <link rel="canonical" href="https://purplelink.llc/guides/keyboard-sounds-on-mac/">
+    <meta property="og:title" content="How to get keyboard sounds on a Mac (built in, and with an app)">
+    <meta property="og:description" content="macOS has one built-in key click, hidden in Slow Keys, and it delays every key. How to turn it on, why most people use an app instead, and how to set one up.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/keyboard-sounds-on-mac/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/guides-keyboard-sounds-on-mac.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="How to get keyboard sounds on a Mac (built in, and with an app)">
+    <meta name="twitter:description" content="macOS has one built-in key click, hidden in Slow Keys, and it delays every key. How to turn it on, why most people use an app instead, and how to set one up.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/guides-keyboard-sounds-on-mac.jpg">
+    <meta name="twitter:image:alt" content="How to get keyboard sounds on a Mac: guide">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "How to get keyboard sounds on a Mac (built in, and with an app)",
+      "description": "macOS has one built-in key click, hidden in Slow Keys, and it delays every key. How to turn it on, why most people use an app instead, and how to set one up.",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "datePublished": "2026-11-10",
+      "dateModified": "2026-11-10",
+      "image": "https://purplelink.llc/assets/og/brand.png",
+      "mainEntityOfPage": "https://purplelink.llc/guides/keyboard-sounds-on-mac/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://purplelink.llc/guides/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "How to get keyboard sounds on a Mac",
+          "item": "https://purplelink.llc/guides/keyboard-sounds-on-mac/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Does macOS have a keyboard click sound?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Only inside Slow Keys. In System Settings, Accessibility, Keyboard, turn on Slow Keys, click its Info button and turn on Use click key sounds. Slow Keys also adds a delay before each key is accepted, so most people use an app instead."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why do my keyboard sounds lag on AirPods?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Bluetooth audio adds its own delay, often 100 milliseconds or more, and no keyboard sound app can remove it. Built-in speakers, wired headphones or a USB audio device keep the sound in step with your keys."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is a keyboard sound app a keylogger?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It needs Input Monitoring, the same permission a keylogger would use, so trust matters. A sound app needs to know a key was pressed, not what you typed. To check an app, run codesign -d --entitlements - /Applications/AppName.app in Terminal. A sandboxed app without the com.apple.security.network.client entitlement cannot open a connection. An app outside the sandbox needs no entitlement for that, so a firewall such as LuLu is the way to see whether it connects anywhere."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use Mechvibes packs?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, in Mechvibes itself and in some other apps that read its pack format. The guide to Mechvibes sound packs on a Mac covers which formats work where."
+      }
+    }
+  ]
+}
+    </script>
+    <script src="/theme.js"></script>
+<link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/motion.css">
+    <script src="/site.js" defer></script>
+    <script src="/motion.js" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+    <script src="/buddy-chat/loader.js" defer></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">Guide</p>
+        <h1 class="post-title">How to get keyboard sounds on a Mac (built in, and with an app)</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-11-10">November 10, 2026</time></p>
+        <p class="post-lede">macOS has one built-in key click, and it is tucked inside an accessibility setting that also slows every key down. This guide shows where it is, why most people use an app instead, and what to check before you give one permission to see your keys.</p>
+      </div>
+
+      <article class="post-body">
+        <p><strong>Disclosure up front:</strong> Purplelink, which publishes this site, makes one keyboard sound app, <a href="/keyfeel/">Keyfeel</a>, sold as a free 7-day trial and then $9.99 once. It comes up once, near the end, and the free options come first.</p>
+
+        <h2>The short answer</h2>
+        <p>macOS has no general keyboard click sound. The one built-in option is Use click key sounds, inside Slow Keys, and Slow Keys also makes the Mac wait before it accepts each key. For a click on every key at normal typing speed you need an app.</p>
+
+        <h2 id="built-in">The built-in way: Slow Keys click sounds</h2>
+        <p>Slow Keys is an accessibility feature for people who press keys by accident. It adds a wait between pressing a key and the Mac accepting it, and it can play a sound for both.</p>
+        <ol>
+          <li>Choose Apple menu, System Settings, then click Accessibility in the sidebar.</li>
+          <li>Click Keyboard. You may need to scroll down to find it.</li>
+          <li>Turn on Slow Keys, then click the Info button next to it.</li>
+          <li>Turn on Use click key sounds.</li>
+          <li>Set Acceptance delay as short as it goes, then type a sentence to see whether you can live with it.</li>
+        </ol>
+        <p>You hear one sound when you press a key and a different one when the Mac accepts it. Apple describes the option this way in its <a href="https://support.apple.com/en-us/guide/mac-help/mchlae61a6de/27/mac/27" rel="noopener">Mac User Guide for macOS 27</a>, and the names above match the settings text on a Mac running macOS 27.0.1 (read November 10, 2026). I did not change the setting on that Mac.</p>
+        <p><strong>The catch:</strong> the delay applies to every key for as long as Slow Keys is on. That is useful when you want to hear that a key registered. It is poor for fast typing, and it is not the mechanical keyboard sound most people are searching for.</p>
+        <p>The on-screen Accessibility Keyboard has its own option to play sounds for keys. It covers only the keys you click on that on-screen keyboard, not your physical one.</p>
+
+        <h2 id="apps">With an app: how they work</h2>
+        <p>A keyboard sound app runs in the menu bar and plays a recorded or generated sound each time you press a key, in every app, with no delay added to your typing.</p>
+        <ol>
+          <li><strong>Install it</strong> from the Mac App Store, the developer's site or the project's own repository, not from a search ad.</li>
+          <li><strong>Grant Input Monitoring</strong> when macOS asks, in System Settings, Privacy &amp; Security, Input Monitoring. This is what lets the app know a key was pressed. The guide to <a href="/guides/mac-privacy-permissions-explained/">Mac privacy permissions</a> explains what it allows.</li>
+          <li><strong>Pick a sound</strong> and set its volume. Most apps keep their own volume apart from the system volume.</li>
+          <li><strong>Choose where the sound plays</strong>, if the app lets you, so it can stay on your speakers or headphones.</li>
+        </ol>
+        <p>One thing no app fixes: Bluetooth audio adds its own delay, often 100 milliseconds or more, so on Bluetooth headphones every one of these sounds late. Built-in speakers, wired headphones or a USB audio device keep the sound in step with your fingers.</p>
+        <p><strong>On calls:</strong> people on a call can hear the clicks through your microphone. Several apps can go quiet while the microphone is in use, and the rest have a mute in the menu bar.</p>
+        <p><strong>In password fields:</strong> while a password field has focus, macOS stops sending key presses to apps like these, so they go silent there. That is macOS protecting the password, not the app failing.</p>
+
+        <h2 id="choosing">Choosing one</h2>
+        <p>Start free. Thock is free and open source on its <a href="https://github.com/kamillobinski/thock" rel="noopener">GitHub page</a>, and <a href="https://keyecho.app/" rel="noopener">KeyEcho</a> is free and open source with optional paid sound packs. Mechvibes is the long-running free one with community sound packs, and a separate guide covers <a href="/guides/mechvibes-sound-packs-on-mac/">using Mechvibes packs on a Mac</a>. Most paid ones, such as Klack at $4.99, cost a few dollars once.</p>
+        <p>For a side-by-side list of free and paid apps, see <a href="/guides/best-keyboard-sound-apps-for-mac/">Best keyboard sound apps for Mac</a>. It compares more than 20 apps by price, macOS version, permission and what each one does not do.</p>
+        <p>Keyfeel is the one I make. It plays recorded switch sounds plus mouse-click and scroll sounds, goes quiet while the microphone or a camera is in use, and is free for 7 days, then $9.99 once.</p>
+
+        <h2 id="typewriter">If you want a typewriter sound</h2>
+        <p>Several apps include one. Keyfeel's Typewriter sound, with a bell on Return, is made by the app rather than recorded from a real machine. For recordings of real typewriters, the comparison guide lists apps that use them, such as Kachunk.</p>
+
+        <h2 id="faq">Frequently asked</h2>
+        <h3>Does macOS have a keyboard click sound?</h3>
+        <p>Only inside Slow Keys. In System Settings, Accessibility, Keyboard, turn on Slow Keys, click its Info button and turn on Use click key sounds. Slow Keys also adds a delay before each key is accepted, so most people use an app instead.</p>
+        <h3>Why do my keyboard sounds lag on AirPods?</h3>
+        <p>Bluetooth audio adds its own delay, often 100 milliseconds or more, and no keyboard sound app can remove it. Built-in speakers, wired headphones or a USB audio device keep the sound in step with your keys.</p>
+        <h3>Is a keyboard sound app a keylogger?</h3>
+        <p>It needs Input Monitoring, the same permission a keylogger would use, so trust matters. A sound app needs to know a key was pressed, not what you typed. To check an app, run <code>codesign -d --entitlements - /Applications/AppName.app</code> in Terminal. A sandboxed app without the <code>com.apple.security.network.client</code> entitlement cannot open a connection. An app outside the sandbox needs no entitlement for that, so a firewall such as LuLu is the way to see whether it connects anywhere.</p>
+        <h3>Can I use Mechvibes packs?</h3>
+        <p>Yes, in Mechvibes itself and in some other apps that read its pack format. The guide to <a href="/guides/mechvibes-sound-packs-on-mac/">Mechvibes sound packs on a Mac</a> covers which formats work where.</p>
+
+        <h2>Related guides</h2>
+        <ul>
+          <li><a href="/guides/best-keyboard-sound-apps-for-mac/">Best keyboard sound apps for Mac (2026)</a>: free and paid apps compared.</li>
+          <li><a href="/guides/mechvibes-sound-packs-on-mac/">Use Mechvibes sound packs on a Mac</a>: community packs and where they work.</li>
+          <li><a href="/guides/mac-privacy-permissions-explained/">Mac privacy permissions explained</a>: what Input Monitoring allows.</li>
+          <li><a href="/keyfeel/">Keyfeel</a>, <a href="/products/">all products</a> and <a href="/guides/">all guides</a>.</li>
+        </ul>
+      </article>
+    </main>
+
+
+
+        <footer class="footer">
+          <div class="footer-grid">
+            <div class="footer-about">
+              <a class="footer-brand" href="/">
+                <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+                <span>Purplelink LLC</span>
+              </a>
+              <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+              <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+              <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
+            </div>
+            <nav class="footer-col" aria-label="Products">
+              <p class="footer-head">Products</p>
+              <ul>
+                <li><a href="/moderntex/">ModernTex</a></li>
+                <li><a href="/outbound-veil/">Outbound Veil</a></li>
+                <li><a href="/vitae/">Vitae</a></li>
+                <li><a href="/legroom/">Legroom</a></li>
+                <li><a href="/keyfeel/">Keyfeel</a></li>
+                <li><a href="/tapefolio/">Tapefolio</a></li>
+                <li><a href="/panely/">Panely</a></li>
+                <li><a href="/summonly/">Summonly</a></li>
+                <li><a href="/nee/">Née</a></li>
+                <li><a href="/lenses/">Lenses</a></li>
+                <li><a href="/batterymeter/">BatteryMeter</a></li>
+                <li><a href="/tools/paper-review/">Paper Review</a></li>
+                <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+                <li><a href="/suite/">Mac Suite</a></li>
+                <li><a href="/products/">All products</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Free tools">
+              <p class="footer-head">Free tools</p>
+              <ul>
+                <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+                <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+                <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+                <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+                <li><a href="/tools/word-counter/">Word Counter</a></li>
+                <li><a href="/games/">Daily games</a></li>
+                <li><a href="/games/sports/">Sports games</a></li>
+                <li><a href="/tools/">All tools</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Learn">
+              <p class="footer-head">Learn</p>
+              <ul>
+                <li><a href="/guides/">Guides</a></li>
+                <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+                <li><a href="/templates/">LaTeX templates</a></li>
+                <li><a href="/latex-errors/">LaTeX errors</a></li>
+                <li><a href="/format/">Reference formats</a></li>
+                <li><a href="/blog/">Blog</a></li>
+                <li><a href="/changelog/">Changelog</a></li>
+                <li><a href="/search/">Search</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Company">
+              <p class="footer-head">Company</p>
+              <ul>
+                <li><a href="/about/">About</a></li>
+                <li><a href="/pricing/">Pricing</a></li>
+                <li><a href="/press/">Press</a></li>
+                <li><a href="/photography/">Photography</a></li>
+                <li><a href="/support/">Support</a></li>
+                <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+                <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+                <li><a href="/privacy/">Privacy</a></li>
+                <li><a href="/terms/">Terms</a></li>
+                <li><a href="/recover/">Find a purchase</a></li>
+                <li><a href="/labs/">For labs</a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="footer-bottom">
+            <span>&copy; 2026 Purplelink LLC</span>
+            <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+            <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+          </div>
+        </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js" defer></script>
+</body>
+</html>
