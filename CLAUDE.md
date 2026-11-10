@@ -51,6 +51,8 @@ The rules are below. The full background (dates, IDs, file paths, why each rule 
 - Outbound Veil is live ($29.99, 7-day trial then license key). Its name is cleared by Ben; don't re-raise trademark
   concerns unless a refusal or a letter arrives. Runbook: `docs/products/outbound-veil.md`.
 - ModernTex and app release steps: `docs/products/moderntex.md` and `docs/agent-context.md`, "Deploy".
+- Every live Mac app UI test runs in the background through `scripts/ui-test/ad.sh` (agent-desktop, headless,
+  pid-targeted typing approved 2026-11-10) on a throwaway `.handtest` copy. Checklist: `docs/mac-app-ui-testing.md`.
 
 ## Marketing and posting
 
