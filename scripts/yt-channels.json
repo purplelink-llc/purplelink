@@ -43,6 +43,15 @@
       "default_category": "22",
       "uploader": "TikTokPipeline",
       "confirmed": true
+    },
+    "circledhoops": {
+      "id": "UCZ6uLCWGdUZSRE4g42fXrZA",
+      "title": "Circled Hoops",
+      "token": "~/.config/purplelink/yt_token_circledhoops.json",
+      "kinds": ["circledhoops-top10"],
+      "default_category": "17",
+      "uploader": "lockin",
+      "confirmed": true
     }
   }
 }
