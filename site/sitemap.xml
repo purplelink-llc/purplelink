@@ -658,7 +658,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/guides/best-keyboard-sound-apps-for-mac/</loc>
-    <lastmod>2026-11-03</lastmod>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -1007,6 +1007,12 @@
   <url>
     <loc>https://purplelink.llc/guides/mac-system-data-huge/</loc>
     <lastmod>2026-11-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://purplelink.llc/guides/keyboard-sounds-on-mac/</loc>
+    <lastmod>2026-11-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
