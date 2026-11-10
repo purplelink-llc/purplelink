@@ -94,7 +94,7 @@
       "name": "Is a keyboard sound app a keylogger?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "It needs Input Monitoring, the same permission a keylogger would use, so trust matters. A sound app needs to know a key was pressed, not what you typed. To check an app, run codesign -d --entitlements - /Applications/AppName.app in Terminal. A sandboxed app without the com.apple.security.network.client entitlement cannot open a connection. An app outside the sandbox needs no entitlement for that, so a firewall such as LuLu is the way to see whether it connects anywhere."
+        "text": "It usually needs Input Monitoring, the same permission a keylogger would use, so trust matters. A sound app needs to know a key was pressed, not what you typed. To check an app, run codesign -d --entitlements - /Applications/AppName.app in Terminal. A sandboxed app without the com.apple.security.network.client entitlement cannot open a connection. An app outside the sandbox needs no entitlement for that, so a firewall that shows outgoing connections is the way to see whether it connects anywhere."
       }
     },
     {
@@ -163,17 +163,17 @@
         <p>A keyboard sound app runs in the menu bar and plays a recorded or generated sound each time you press a key, in every app, with no delay added to your typing.</p>
         <ol>
           <li><strong>Install it</strong> from the Mac App Store, the developer's site or the project's own repository, not from a search ad.</li>
-          <li><strong>Grant Input Monitoring</strong> when macOS asks, in System Settings, Privacy &amp; Security, Input Monitoring. This is what lets the app know a key was pressed. The guide to <a href="/guides/mac-privacy-permissions-explained/">Mac privacy permissions</a> explains what it allows.</li>
+          <li><strong>Grant the permission</strong> when macOS asks, usually Input Monitoring, in System Settings, Privacy &amp; Security. This is what lets the app know a key was pressed. The guide to <a href="/guides/mac-privacy-permissions-explained/">Mac privacy permissions</a> explains what it allows.</li>
           <li><strong>Pick a sound</strong> and set its volume. Most apps keep their own volume apart from the system volume.</li>
           <li><strong>Choose where the sound plays</strong>, if the app lets you, so it can stay on your speakers or headphones.</li>
         </ol>
         <p>One thing no app fixes: Bluetooth audio adds its own delay, often 100 milliseconds or more, so on Bluetooth headphones every one of these sounds late. Built-in speakers, wired headphones or a USB audio device keep the sound in step with your fingers.</p>
-        <p><strong>On calls:</strong> people on a call can hear the clicks through your microphone. Several apps can go quiet while the microphone is in use, and the rest have a mute in the menu bar.</p>
+        <p><strong>On calls:</strong> people on a call can hear the clicks through your microphone. Several apps can go quiet while the microphone is in use. With the others, turn the app off before a call.</p>
         <p><strong>In password fields:</strong> while a password field has focus, macOS stops sending key presses to apps like these, so they go silent there. That is macOS protecting the password, not the app failing.</p>
 
         <h2 id="choosing">Choosing one</h2>
         <p>Start free. Thock is free and open source on its <a href="https://github.com/kamillobinski/thock" rel="noopener">GitHub page</a>, and <a href="https://keyecho.app/" rel="noopener">KeyEcho</a> is free and open source with optional paid sound packs. Mechvibes is the long-running free one with community sound packs, and a separate guide covers <a href="/guides/mechvibes-sound-packs-on-mac/">using Mechvibes packs on a Mac</a>. Most paid ones, such as Klack at $4.99, cost a few dollars once.</p>
-        <p>For a side-by-side list of free and paid apps, see <a href="/guides/best-keyboard-sound-apps-for-mac/">Best keyboard sound apps for Mac</a>. It compares more than 20 apps by price, macOS version, permission and what each one does not do.</p>
+        <p>For a side-by-side list of free and paid apps, see <a href="/guides/best-keyboard-sound-apps-for-mac/">Best keyboard sound apps for Mac</a>. It compares them by price, macOS version, permission and what each one does not do.</p>
         <p>Keyfeel is the one I make. It plays recorded switch sounds plus mouse-click and scroll sounds, goes quiet while the microphone or a camera is in use, and is free for 7 days, then $9.99 once.</p>
 
         <h2 id="typewriter">If you want a typewriter sound</h2>
@@ -185,7 +185,7 @@
         <h3>Why do my keyboard sounds lag on AirPods?</h3>
         <p>Bluetooth audio adds its own delay, often 100 milliseconds or more, and no keyboard sound app can remove it. Built-in speakers, wired headphones or a USB audio device keep the sound in step with your keys.</p>
         <h3>Is a keyboard sound app a keylogger?</h3>
-        <p>It needs Input Monitoring, the same permission a keylogger would use, so trust matters. A sound app needs to know a key was pressed, not what you typed. To check an app, run <code>codesign -d --entitlements - /Applications/AppName.app</code> in Terminal. A sandboxed app without the <code>com.apple.security.network.client</code> entitlement cannot open a connection. An app outside the sandbox needs no entitlement for that, so a firewall such as LuLu is the way to see whether it connects anywhere.</p>
+        <p>It usually needs Input Monitoring, the same permission a keylogger would use, so trust matters. A sound app needs to know a key was pressed, not what you typed. To check an app, run <code>codesign -d --entitlements - /Applications/AppName.app</code> in Terminal. A sandboxed app without the <code>com.apple.security.network.client</code> entitlement cannot open a connection. An app outside the sandbox needs no entitlement for that, so a firewall that shows outgoing connections is the way to see whether it connects anywhere.</p>
         <h3>Can I use Mechvibes packs?</h3>
         <p>Yes, in Mechvibes itself and in some other apps that read its pack format. The guide to <a href="/guides/mechvibes-sound-packs-on-mac/">Mechvibes sound packs on a Mac</a> covers which formats work where.</p>
 
