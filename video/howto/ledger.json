@@ -589,5 +589,35 @@
    "ok": true,
    "utm_content": "howto-trackpad-click-too-loud-2-reel"
   }
+ },
+ {
+  "slug": "howto-macbook-wont-sleep-when-idle-app-preventing-sleep",
+  "app": "batterymeter",
+  "date": "2026-11-10",
+  "title": "MacBook won't go to sleep when idle on Mac (find the app keeping it awake)",
+  "long_id": "WMwYLPdpuCs",
+  "short_id": "eETWE4VelFw",
+  "link_arm": "A",
+  "link_utm_content": "howto-macbook-wont-sleep-when-idle-app-preventing-sleep",
+  "short_utm_content": "howto-macbook-wont-sleep-when-idle-app-preventing-sleep-short",
+  "sources": [
+   "https://discussions.apple.com/thread/3349374",
+   "https://discussions.apple.com/thread/255353987",
+   "https://discussions.apple.com/thread/256322652"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "WMwYLPdpuCs",
+    "caption_id": "AUieDaagpFn1scJC0bhDdD9wJoLQqbfRamZURz7tbQdtmI3S7XKJzAI2"
+   },
+   "short": {
+    "video_id": "eETWE4VelFw",
+    "caption_id": "AUieDabLBrIuuSNv_DJSMkgKlGu01Vd-TCm6solyul-Ec4VZhI4oYxrF"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-macbook-wont-sleep-when-idle-app-preventing-sleep-reel"
+  }
  }
 ]
