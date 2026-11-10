@@ -73,6 +73,18 @@
         <span class="changelog-date">November 10, 2026</span>
         <div class="changelog-content">
           <span class="changelog-tag tag-update">Update</span>
+          <h2>Legroom 1.13.0</h2>
+          <p>New rule action: Compress in place. Files keep their names and places and open as before, while macOS stores them compressed. Legroom reads every file back and compares it byte for byte after compressing it, and puts the original back if anything differs. Open, hard-linked, cloned, sparse and already compressed files are left alone. APFS disks only; the rule still shows its preview and waits for your approval.</p>
+          <p>Suggestions can now look at other disks, such as an external SSD, once you switch a disk on in Settings, General, Other disks. Legroom only reads them: large files nobody has opened in 90 days are listed for you to look at, and nothing on that disk is moved, deleted or compressed because of it. Time Machine disks are never searched.</p>
+          <p>New developer cleanups. A Colima Disk Space rule removes old anonymous Docker volumes no container uses, then trims the VM's disk so its file on this Mac shrinks; a VM with a running container is skipped, and a stopped VM is never started. A Simulator Data rule erases simulators that have not been started for a while; the simulators themselves stay. Clear temporary files now also takes rebuildable build folders such as node_modules, .build and .venv, only beside the file that shows what they are, so Legroom asks you to approve that rule again.</p>
+          <p>Rules that never run now say so: an automatic rule that was never approved, or one whose last three runs all stopped at the same folder problem, shows a line in the menu with a button to open Rules.</p>
+        </div>
+      </div>
+
+      <div class="changelog-entry">
+        <span class="changelog-date">November 10, 2026</span>
+        <div class="changelog-content">
+          <span class="changelog-tag tag-update">Update</span>
           <h2>Legroom 1.12.2</h2>
           <p>The trial-ended notice is now an ordinary window. Before, it could open under the menu and leave the menu's options unresponsive. If macOS cannot read the trial record in the Keychain on the first launch, the seven-day trial now starts anyway instead of showing that it has ended.</p>
         </div>
