@@ -112,3 +112,27 @@ def test_a_real_zero_for_an_earlier_day_still_counts(tmp_path):
         "2026-10-28,2026-10-28T13:44:30,nl,Total,2026-10-20,0.0,USD\n"
     )
     assert td.tiktok_api_daily(p)["nl"] == {"2026-10-20": 0.0}
+
+
+def test_a_morning_snapshots_zero_for_yesterday_is_not_reported_yet(tmp_path):
+    # 2026-11-10 09:31: TikTok listed up to Nov 9 only, with Nov 9 at 0.00; the dashboard read it as a $0 day.
+    p = tmp_path / "income.csv"
+    p.write_text(
+        "snapshot_date,snapshot_at,pipeline,program,day,est_income,currency\n"
+        "2026-11-10,2026-11-10T09:31:49,nl,Total,2026-11-08,0.26,USD\n"
+        "2026-11-10,2026-11-10T09:31:49,nl,Total,2026-11-09,0.0,USD\n"
+    )
+    assert td.tiktok_api_daily(p)["nl"] == {"2026-11-08": 0.26}
+    p.write_text(p.read_text() + "2026-11-10,2026-11-10T21:45:00,nl,Total,2026-11-09,0.44,USD\n"
+                                 "2026-11-10,2026-11-10T21:45:00,nl,Total,2026-11-10,0.0,USD\n")
+    assert td.tiktok_api_daily(p)["nl"] == {"2026-11-08": 0.26, "2026-11-09": 0.44}
+
+
+def test_yesterdays_zero_counts_once_a_newer_day_is_listed(tmp_path):
+    p = tmp_path / "income.csv"
+    p.write_text(
+        "snapshot_date,snapshot_at,pipeline,program,day,est_income,currency\n"
+        "2026-11-11,2026-11-11T21:40:00,nl,Total,2026-11-10,0.0,USD\n"
+        "2026-11-11,2026-11-11T21:40:00,nl,Total,2026-11-11,0.0,USD\n"
+    )
+    assert td.tiktok_api_daily(p)["nl"] == {"2026-11-10": 0.0}
