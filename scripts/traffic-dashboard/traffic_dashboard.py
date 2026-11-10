@@ -5531,21 +5531,34 @@ def tiktok_api_daily(path: Path | None = None) -> dict[str, dict[str, float]]:
     latest: dict[tuple, tuple] = {}
     try:
         with open(path or TIKTOK_DAILY_INCOME_CSV, newline="", encoding="utf-8") as f:
-            for r in csv.DictReader(f):
-                if r.get("program") != "Total" or not re.match(r"^\d{4}-\d\d-\d\d$", r.get("day") or ""):
-                    continue
-                try:
-                    val = float(r.get("est_income") or 0)
-                except ValueError:
-                    continue
-                # TikTok lists the snapshot's own day as 0.00 until it has the figure (2026-10-27 read 0.00 at 21:36 and
-                # 0.48 the next afternoon), so a zero for that day is "not reported yet", not a zero day.
-                if val == 0 and r["day"] >= (r.get("snapshot_date") or (r.get("snapshot_at") or "")[:10] or "9999"):
-                    continue
-                key = (r.get("pipeline") or "", r["day"])
-                at = r.get("snapshot_at") or ""
-                if key not in latest or at >= latest[key][0]:
-                    latest[key] = (at, val)
+            rows = [r for r in csv.DictReader(f)
+                    if r.get("program") == "Total" and re.match(r"^\d{4}-\d\d-\d\d$", r.get("day") or "")]
+        newest: dict[tuple, str] = {}               # the newest day each snapshot lists, per pipeline
+        for r in rows:
+            k = (r.get("pipeline") or "", r.get("snapshot_at") or "")
+            newest[k] = max(newest.get(k, ""), r["day"])
+        for r in rows:
+            try:
+                val = float(r.get("est_income") or 0)
+            except ValueError:
+                continue
+            # TikTok lists the newest day it shows as 0.00 until it has the figure (2026-10-27 read 0.00 at 21:36 and
+            # 0.48 the next afternoon), so a zero there is "not reported yet", not a zero day. That day is usually the
+            # snapshot's own date, but a morning run sees only up to yesterday (2026-11-10 09:31 listed Nov 9 as 0.00
+            # and no Nov 10), so a zero on the snapshot's own date, or on its newest listed day when that is yesterday,
+            # is skipped. A zero further back is a real zero day.
+            snap_day = r.get("snapshot_date") or (r.get("snapshot_at") or "")[:10] or "9999"
+            last = newest.get((r.get("pipeline") or "", r.get("snapshot_at") or ""), "9999")
+            try:
+                yday = (dt.date.fromisoformat(snap_day) - dt.timedelta(days=1)).isoformat()
+            except ValueError:
+                yday = snap_day
+            if val == 0 and (r["day"] >= snap_day or (r["day"] == last and r["day"] >= yday)):
+                continue
+            key = (r.get("pipeline") or "", r["day"])
+            at = r.get("snapshot_at") or ""
+            if key not in latest or at >= latest[key][0]:
+                latest[key] = (at, val)
     except OSError:
         return {}
     out: dict[str, dict[str, float]] = {}
