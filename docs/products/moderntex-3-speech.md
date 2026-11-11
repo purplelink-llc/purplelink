@@ -45,11 +45,11 @@ Competitors (from web research on 2026-11-11, not each verified by hand):
 
 - **Overleaf:** no built-in speech. People use browser extensions (dictation extensions, small "talk to LaTeX"
   projects).
-- **Texifier / Texpad, TeXstudio, TeXShop:** nothing found beyond the system speech menu.
+- **Texifier / Texpad:** nothing found beyond the system speech menu.
 - **Word:** Read Aloud reads equations in words; Dictation works for prose. This is the bar users will compare with.
 - **MathType / EquatIO:** EquatIO has speech input for math (proprietary, browser and Office).
 - **Talon, Serenade:** voice coding tools; Talon is the RSI community's choice and can be scripted for LaTeX, but it is
-  a separate tool with a learning curve.
+  a separate tool with a learning curve. (General knowledge, not researched for this note.)
 - **Research:** MathBridge (arXiv 2408.07081) is a 23M-pair spoken-math to LaTeX dataset; a fine-tuned T5 reached BLEU
   about 47. MathSpeech pairs an ASR model with a 120M-parameter corrector and reports that plain Whisper large-v3 gets
   about a third of formula tokens wrong. Speech-to-LaTeX (arXiv 2508.03542) and Phoenix (arXiv 2508.07576) are recent
@@ -73,7 +73,7 @@ Speech to text:
 | --- | --- | --- | --- | --- |
 | System Dictation (Fn Fn) | 0 | live | system | Already works in any `NSTextView`. Prose only. No code needed. |
 | `SpeechAnalyzer` + `SpeechTranscriber` / `DictationTranscriber` | OS-managed (installed through `AssetInventory`, not in our bundle) | live, streaming | system | macOS 26 only, about 10 languages. Supports contextual strings for custom vocabulary. Tapefolio already uses it. |
-| Parakeet TDT 0.6B (FluidAudio) | about 600 MB | about 0.2 s per short utterance on M4 (vendor figure) | CC BY 4.0 (v2 English, v3 25 languages) | Tapefolio already ships it. Attribution needed. |
+| Parakeet TDT 0.6B (FluidAudio) | 0.6B parameters (several hundred MB; not measured) | about 0.2 s per short utterance on M4 (vendor figure) | CC BY 4.0 (v2 English, v3 25 languages) | Tapefolio already ships it. Attribution needed. |
 | Whisper large-v3-turbo (WhisperKit) | about 550 to 600 MB | about 1 s per short utterance on M4 (vendor figure) | MIT | Tapefolio already ships it. Slower than Parakeet, more languages. |
 
 Latency and size figures are from vendor pages and model cards, not measured by us.
@@ -99,7 +99,8 @@ The spike's converter (`ModernTexCore/LaTeXSpeech.swift`) does two things:
   "X transpose"; big operators as "the sum from i equals 1 to n of"; plus Greek letters, relations, roots, accents,
   `\mathbb{R}` ("the reals"). Unknown commands are read by name rather than dropped.
 
-On the ICML template (about 30,000 characters) the converter takes under 10 ms and the output reads cleanly. Known
+On the ICML template (about 30,000 characters) the converter takes under 10 ms and the output reads cleanly. A silent render through `AVSpeechSynthesizer.write` (no playback) produced about 6 seconds of audio for a
+one-sentence sample, so the real voice path works. Known
 gaps: a dropped `\ref` or `\cite` can leave "as shown in." (a better fix is to say "reference" where no cue word comes
 before it); English only; no matrices yet; no SSML pauses yet.
 
@@ -123,8 +124,9 @@ Approach for a later beta:
 
 ## Where it lives in the editor (UX)
 
-- **3.0 read aloud:** reuse Edit > Speech > Start Speaking and Stop Speaking (and the same items in the editor's
-  context menu). With nothing selected it reads the whole document; with a selection it reads that. Add a keyboard
+- **3.0 read aloud:** reuse the system Speech > Start Speaking and Stop Speaking commands. The editor's right-click
+  menu keeps the system Speech submenu (checked in the code); the Edit menu's Speech submenu comes from SwiftUI's
+  default text commands and was not checked in the running app. With nothing selected it reads the whole document; with a selection it reads that. Add a keyboard
   shortcut and a small play/stop control in the toolbar. A Settings row picks the voice and rate, and a "Read math in
   words" switch (on by default) lets people hear the raw source if they want it.
 - **Highlighting:** a later step is highlighting the sentence being read, using the synthesizer's delegate callbacks
