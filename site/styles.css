@@ -5871,3 +5871,22 @@ dialog, [role="dialog"], [aria-modal="true"], .sales-scroll { overscroll-behavio
 }
 .bf26-hide:hover { background: var(--panel); }
 .bf26-text a:focus-visible, .bf26-hide:focus-visible { outline: 3px solid var(--purple); outline-offset: 2px; }
+
+/* Guide flowcharts (inline SVG, drawn with diagram-design). Colours come from the theme tokens, so the chart follows the
+   light/dark toggle. Below ~640px the chart keeps its size and scrolls sideways rather than shrinking text to 5px. */
+.guide-flow-scroll { overflow-x: auto; border-radius: 12px; }
+.guide-flow-scroll:focus-visible { outline: 2px solid var(--purple); outline-offset: 4px; }
+.guide-flow svg { display: block; width: 100%; height: auto; min-width: 600px; }
+.guide-flow .gf-line line, .guide-flow .gf-line path { fill: none; stroke: var(--muted); stroke-width: 1.2; }
+.guide-flow .gf-line-accent line, .guide-flow .gf-line-accent path { fill: none; stroke: var(--purple); stroke-width: 1.4; }
+.guide-flow .gf-head { fill: var(--muted); }
+.guide-flow .gf-head-accent, .guide-flow .gf-dot-accent { fill: var(--purple); }
+.guide-flow .gf-dot { fill: var(--ink); }
+.guide-flow .gf-node { fill: var(--panel); stroke: var(--ink); stroke-width: 1; }
+.guide-flow .gf-term { fill: color-mix(in oklch, var(--ink) 3%, var(--bg)); stroke: color-mix(in oklch, var(--ink) 35%, var(--bg)); stroke-width: 1; }
+.guide-flow .gf-end { fill: color-mix(in oklch, var(--purple) 10%, var(--bg)); stroke: var(--purple); stroke-width: 1; }
+.guide-flow .gf-mask { fill: var(--bg); }
+.guide-flow text { text-anchor: middle; }
+.guide-flow .gf-name { fill: var(--ink); font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 12px; font-weight: 600; }
+.guide-flow .gf-sub { fill: var(--muted); font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 9px; }
+.guide-flow .gf-tag { fill: var(--muted); font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 8px; letter-spacing: 0.12em; }
