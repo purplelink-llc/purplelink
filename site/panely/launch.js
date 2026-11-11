@@ -16,7 +16,7 @@
 // and logs why to the console, so a half-filled launch cannot sell anything.
 window.PANELY_LAUNCH = {
   live: true,
-  version: "1.2.0",
+  version: "1.2.1",
   sizeMb: "4",
   released: "2026-11-04"
 };
