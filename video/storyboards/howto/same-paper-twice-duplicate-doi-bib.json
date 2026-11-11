@@ -1,0 +1,126 @@
+{
+ "id": "howto-same-paper-twice-duplicate-doi-bib",
+ "app": "vitae",
+ "title": "Same paper listed twice in your bibliography on Mac (find duplicate DOIs in a .bib file)",
+ "short_title": "Same paper twice in your references? Two BibTeX keys, one DOI",
+ "url": "purplelink.llc/vitae",
+ "page": "https://purplelink.llc/vitae/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://discourse.jabref.org/t/smart-log-while-merging-duplicated-entries-or-better-ways-of-citing-two-bibtex-files/1002",
+  "https://forums.zotero.org/discussion/comment/386517"
+ ],
+ "verify": {
+  "runs": [
+   {
+    "cmd": "printf '@article{knuth1984literate,\\n  title = {Literate programming},\\n  author = {Knuth, Donald Ervin},\\n  year = {1984},\\n  doi = {10.1093/comjnl/27.2.97}\\n}\\n@article{Knuth_1984,\\n  title={Literate Programming},\\n  author={Knuth, D. E.},\\n  year={1984},\\n  DOI={10.1093/comjnl/27.2.97}\\n}\\n' | grep -i '@\\|title'",
+    "output": "@article{knuth1984literate,\n  title = {Literate programming},\n@article{Knuth_1984,\n  title={Literate Programming},"
+   },
+   {
+    "cmd": "printf '@article{knuth1984literate,\\n  title = {Literate programming},\\n  author = {Knuth, Donald Ervin},\\n  year = {1984},\\n  doi = {10.1093/comjnl/27.2.97}\\n}\\n@article{Knuth_1984,\\n  title={Literate Programming},\\n  author={Knuth, D. E.},\\n  year={1984},\\n  DOI={10.1093/comjnl/27.2.97}\\n}\\n' | grep -io 'doi *= *{[^}]*' | sed 's/.*{//' | sort -f | uniq -di",
+    "output": "10.1093/comjnl/27.2.97"
+   },
+   {
+    "cmd": "printf '@article{knuth1984literate,\\n  title = {Literate programming},\\n  author = {Knuth, Donald Ervin},\\n  year = {1984},\\n  doi = {10.1093/comjnl/27.2.97}\\n}\\n@article{Knuth_1984,\\n  title={Literate Programming},\\n  author={Knuth, D. E.},\\n  year={1984},\\n  DOI={10.1093/comjnl/27.2.97}\\n}\\n' | grep -i -B4 'comjnl/27.2.97' | grep @",
+    "output": "@article{knuth1984literate,\n@article{Knuth_1984,"
+   },
+   {
+    "cmd": "printf '@article{knuth1984literate,\\n  title = {Literate programming},\\n  author = {Knuth, Donald Ervin},\\n  year = {1984},\\n  doi = {10.1093/comjnl/27.2.97}\\n}\\n' | grep -ic 'comjnl/27.2.97'",
+    "output": "1"
+   }
+  ],
+  "docs": [],
+  "notes": "Run 2026-11-11 on the Mac mini with /bin/zsh and PATH=/usr/bin:/bin (BSD grep, sed, sort, uniq). The gate re-runs commands in TMPDIR with no files, so each run pipes a two-entry sample .bib in with printf; the screen shows the same pipeline reading refs.bib. The sample is one real paper (Knuth, Literate Programming, DOI 10.1093/comjnl/27.2.97) as a Google Scholar style key and as the Crossref style key Crossref returns for that DOI. The duplicate finder only reads brace-style doi = {...} fields in any case and spacing; it misses quoted values and entries without a DOI. grep -B4 assumes the DOI sits within four lines of the @ line, as in the sample. Some publishers reuse one DOI for several items (Zotero forum), so the narration says to check both entries before removing one, and to change the removed key in the .tex file, or LaTeX reports the citation as undefined. The check run is the same file with the second entry removed. Vitae claims are from purplelink.llc/vitae: it brings in publications from DOIs, pasted BibTeX or Zotero, shows each for review before saving, and exports publications as RIS and BibTeX; the page makes no duplicate-detection claim for publications, so the video makes none."
+ },
+ "scenes": [
+  {
+   "type": "hook",
+   "short": true,
+   "kicker": "BibTeX",
+   "title": "Same paper listed twice",
+   "sub": "One paper, two keys in your .bib file.",
+   "narration": "If one paper shows up twice in your reference list, your bib file most likely holds it twice, under two different keys. Here is how to find those pairs in Terminal."
+  },
+  {
+   "type": "symptom",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ grep -i '@\\|title' refs.bib",
+    "@article{knuth1984literate,",
+    "  title = {Literate programming},",
+    "@article{Knuth_1984,",
+    "  title={Literate Programming},"
+   ],
+   "narration": "Here is a typical case. The same article came in twice, once copied from Google Scholar and once from Crossref. Each copy has its own key, and the paper is cited by both."
+  },
+  {
+   "type": "cause",
+   "text": "To BibTeX, two keys are two papers, even when the DOI is the same.",
+   "narration": "BibTeX only goes by the key. Two entries with different keys count as two papers, even when the title and the D O I match. So the D O I is the thing to compare."
+  },
+  {
+   "type": "steps",
+   "short": true,
+   "label": "Find the pairs",
+   "lines": [
+    "$ grep -io 'doi *= *{[^}]*' refs.bib | sed 's/.*{//' | sort -f | uniq -di",
+    "10.1093/comjnl/27.2.97",
+    "$ grep -i -B4 'comjnl/27.2.97' refs.bib | grep @",
+    "@article{knuth1984literate,",
+    "@article{Knuth_1984,",
+    "Keep one entry, cite its key"
+   ],
+   "ui": "Check both entries first. A few publishers reuse one DOI for several items.",
+   "narration": "The first command pulls every D O I out of the file, ignores capital letters, and prints any that appear more than once. Search for that D O I to see both keys. Check the two entries, keep one, and change the other key in your tex file, or LaTeX will call that citation undefined."
+  },
+  {
+   "type": "check",
+   "short": true,
+   "label": "Terminal",
+   "ok": "One entry left",
+   "lines": [
+    "$ grep -ic 'comjnl/27.2.97' refs.bib",
+    "1"
+   ],
+   "narration": "Count the D O I again. One entry is left, and the paper appears once in your references."
+  },
+  {
+   "type": "app",
+   "name": "Vitae",
+   "line": "Brings in publications from DOIs, pasted BibTeX or Zotero, and shows each one for review before saving.",
+   "url": "purplelink.llc/vitae",
+   "img": "site/assets/vitae-screens/cv-1440.webp",
+   "icon": "site/assets/vitae-icon.webp",
+   "narration": "If you keep your publication list on a Mac, Vitae is a free app that brings in publications from D O Is, pasted BibTeX or Zotero, and shows each one for review before saving. It exports your publications as BibTeX or R I S."
+  }
+ ],
+ "thumbs": {
+  "A": {
+   "kind": "diff",
+   "hook": "Same paper twice?",
+   "before": "@article{Knuth_1984,",
+   "after": "Keep one entry, cite its key",
+   "afterLabel": "Fix"
+  },
+  "B": {
+   "kind": "focus",
+   "hook": "Listed twice\nin your references?",
+   "lines": [
+    "sort -f | uniq -di",
+    "10.1093/comjnl/27.2.97"
+   ],
+   "hl": "sort -f | uniq -di"
+  },
+  "C": {
+   "kind": "product",
+   "name": "Vitae",
+   "line": "Review each paper before saving",
+   "img": "site/assets/vitae-screens/cv-1440.webp",
+   "icon": "site/assets/vitae-icon.webp",
+   "zoom": 1.4,
+   "pos": "30% 70%"
+  }
+ }
+}

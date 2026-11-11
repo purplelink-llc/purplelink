@@ -619,5 +619,34 @@
    "ok": true,
    "utm_content": "howto-macbook-wont-sleep-when-idle-app-preventing-sleep-reel"
   }
+ },
+ {
+  "slug": "howto-same-paper-twice-duplicate-doi-bib",
+  "app": "vitae",
+  "date": "2026-11-11",
+  "title": "Same paper listed twice in your bibliography on Mac (find duplicate DOIs in a .bib file)",
+  "long_id": "8EAm5Vf0OCg",
+  "short_id": "voDN2bOIpds",
+  "link_arm": "B",
+  "link_utm_content": "howto-same-paper-twice-duplicate-doi-bib",
+  "short_utm_content": "howto-same-paper-twice-duplicate-doi-bib-short",
+  "sources": [
+   "https://discourse.jabref.org/t/smart-log-while-merging-duplicated-entries-or-better-ways-of-citing-two-bibtex-files/1002",
+   "https://forums.zotero.org/discussion/comment/386517"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "8EAm5Vf0OCg",
+    "caption_id": "AUieDaZl0zH8PPFKvLd65xgS79lNMjYSQTKG1O1UfkT95OJ72nz7M7vy"
+   },
+   "short": {
+    "video_id": "voDN2bOIpds",
+    "caption_id": "AUieDaYh4iDhmUkuMjy0cCC5qBsKa26-IK2dnu1MG0GFFhuJxqGKdUya"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-same-paper-twice-duplicate-doi-bib-reel"
+  }
  }
 ]

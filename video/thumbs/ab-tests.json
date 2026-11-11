@@ -230,5 +230,16 @@
   "started": "2026-11-10",
   "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
   "checked": "2026-11-10"
+ },
+ {
+  "video": "8EAm5Vf0OCg",
+  "variants": {
+   "A": "video/out/howto/same-paper-twice-duplicate-doi-bib/same-paper-twice-duplicate-doi-bib-thumb-A.jpg",
+   "B": "video/out/howto/same-paper-twice-duplicate-doi-bib/same-paper-twice-duplicate-doi-bib-thumb-B.jpg",
+   "C": "video/out/howto/same-paper-twice-duplicate-doi-bib/same-paper-twice-duplicate-doi-bib-thumb-C.jpg"
+  },
+  "started": "2026-11-11",
+  "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
+  "checked": "2026-11-11"
  }
 ]
