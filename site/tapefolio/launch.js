@@ -17,9 +17,9 @@
 // and logs why to the console, so a half-filled launch cannot sell anything.
 window.TAPEFOLIO_LAUNCH = {
   live: true,
-  version: "1.3.0",
+  version: "1.4.0",
   sizeMb: "44",
-  released: "2026-11-04"
+  released: "2026-11-11"
 };
 
 (function () {
