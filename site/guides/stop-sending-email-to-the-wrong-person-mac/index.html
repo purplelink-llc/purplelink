@@ -34,7 +34,7 @@
         "@id": "https://purplelink.llc/#organization"
       },
       "datePublished": "2026-10-14",
-      "dateModified": "2026-10-28",
+      "dateModified": "2026-11-11",
       "image": "https://purplelink.llc/assets/og/outbound-veil.png",
       "mainEntityOfPage": "https://purplelink.llc/guides/stop-sending-email-to-the-wrong-person-mac/"
     },
@@ -79,6 +79,14 @@
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "Within a short window, yes. Apple's Mail guide says to click Undo Send at the bottom of the sidebar within 10 seconds of sending, or choose Edit, Undo. You can change the delay or turn it off in Mail, Settings, Composing. MacRumors lists the delay options as Off, 10, 20 and 30 seconds and says the feature needs macOS 13 or later. After the window closes, the message has been sent."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "I sent a client's email to the wrong client. What now?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Try Undo Send if the window is still open. If not, write down what was sent, to whom and when, then ask the recipient in one short reply to delete the message and any copies and to confirm. Work out whether it held identifiers or only names. If you are a HIPAA covered entity or business associate, 45 CFR 164.402 presumes a breach unless you demonstrate, based on a risk assessment, a low probability that the information was compromised. If you are a lawyer, Missouri Informal Opinion 2022-07 says to assess what confidential information went out, take reasonable steps to limit the harm, and tell the client as far as the client needs to make informed decisions. This is general information, not legal advice."
       }
     },
     {
@@ -187,6 +195,16 @@
           <li><strong>Be slow on Reply All.</strong> Look at who is on the thread first.</li>
         </ol>
 
+        <h2 id="already-sent">If it already went to the wrong person</h2>
+        <p>This section is general information, not legal advice. If the message has already left, speed matters more than wording. Try Undo Send first, as described in <a href="#apple">the Apple Mail section</a> above. Then write down what went, to whom and when, before you do anything else.</p>
+        <ol>
+          <li><strong>Ask the recipient to delete it.</strong> Reply once, briefly: it was sent in error, please delete it and any copies, and confirm when done. Keep their answer. Do not resend the details to explain.</li>
+          <li><strong>Work out what was in it.</strong> Names only, or identifiers such as a Social Security number, account numbers or health details? The answer decides what comes next. For Social Security numbers, see <a href="/guides/is-it-safe-to-email-social-security-number/#already-sent">If you already sent it</a> in that guide.</li>
+        </ol>
+        <p><strong>If you are a HIPAA covered entity or business associate.</strong> Under 45 CFR 164.402, a disclosure of protected health information that the rules do not permit is presumed to be a breach unless you demonstrate a low probability that the information has been compromised, based on a risk assessment. The regulation says the assessment covers at least four factors: the nature and extent of the information involved, including the types of identifiers and the likelihood of re-identification; who received it; whether it was actually acquired or viewed; and how far the risk has been mitigated. The text is on <a href="https://www.law.cornell.edu/cfr/text/45/164.402" rel="noopener">Cornell LII</a>.</p>
+        <p><strong>If you are a lawyer.</strong> One state's view is Missouri Informal Opinion 2022-07, which dealt with an assistant who emailed a letter to the wrong address. It says to assess what confidential information the letter held beyond the client's name and the meeting, take reasonable steps to limit the harm to the client, and tell the client as far as reasonably necessary for the client to make informed decisions. It is advisory, not binding, and your own state's rules govern. The opinion is on <a href="https://mo-legal-ethics.org/informal-opinion/2022-07/" rel="noopener">Missouri's legal ethics site</a>.</p>
+        <p>This is not legal advice. Your bar, your compliance contact or your insurer has the final word.</p>
+
         <h2 id="veil">Where Outbound Veil fits</h2>
         <p>Outbound Veil checks typed text for personal details such as names, phone numbers, card numbers and Social Security numbers. Its pages describe nothing that checks recipients or attachments, so do not count on it for either. Its page says names are recognized in Latin script only, that it will miss some things, and that it can flag things that are not personal information.</p>
         <p>Since version 1.3.0 (October 24, 2026) it reads the body of a new message in Apple Mail and highlights personal details as you type. It does not offer Redact all there, because rewriting the message would lose its formatting and attachments, so you edit the highlighted details by hand. The <a href="/outbound-veil/works-in/">table of tested apps and fields</a> also lists TextEdit, Notes, Messages, Microsoft Word and Chrome text areas, including the ChatGPT and claude.ai prompt boxes. Safari, Slack and most other apps have not been tested.</p>
@@ -198,6 +216,8 @@
         <h2>Frequently asked</h2>
         <h3>Can I unsend an email in Apple Mail on a Mac?</h3>
         <p>Within a short window, yes. Apple's Mail guide says to click Undo Send at the bottom of the sidebar within 10 seconds of sending, or choose Edit, Undo. You can change the delay or turn it off in Mail, Settings, Composing. MacRumors lists the delay options as Off, 10, 20 and 30 seconds and says the feature needs macOS 13 or later. After the window closes, the message has been sent.</p>
+        <h3>I sent a client's email to the wrong client. What now?</h3>
+        <p>Try Undo Send if the window is still open. If not, write down what was sent, to whom and when, then ask the recipient in one short reply to delete the message and any copies and to confirm. Work out whether it held identifiers or only names. If you are a HIPAA covered entity or business associate, 45 CFR 164.402 presumes a breach unless you demonstrate, based on a risk assessment, a low probability that the information was compromised. If you are a lawyer, Missouri Informal Opinion 2022-07 says to assess what confidential information went out, take reasonable steps to limit the harm, and tell the client as far as the client needs to make informed decisions. This is general information, not legal advice.</p>
         <h3>Does Apple Mail warn me if the address looks wrong?</h3>
         <p>Nothing I read on Apple's Mail pages describes a warning about who a message is addressed to. Undo Send and Send Later change when a message goes, not who it goes to.</p>
         <h3>Does Outbound Veil check the recipient or the attachment?</h3>
