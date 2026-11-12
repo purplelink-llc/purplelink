@@ -240,3 +240,50 @@ test("a browser that has signed in, or asked for a link, is never offered the si
   assert.equal(G.offerQuiet(), true);                   // "Not now" still silences it for a week
   delete globalThis.localStorage;
 });
+
+// The crossword froze on 2026-11-12 and its last new puzzle is 2026-11-14. Load the hub's progress layer as if it were
+// a given day: through the 14th the crossword is in the daily run; from the 15th the run, quests, tiers and the
+// achievements that need "every game today" use the other four games.
+function gamesOn(ymd) {
+  const store = {};
+  const RealDate = Date;
+  class FixedDate extends RealDate { constructor(...a) { if (a.length) super(...a); else super(ymd + "T09:00:00"); } static now() { return new RealDate(ymd + "T09:00:00").getTime(); } }
+  const ctx = {
+    localStorage: { getItem: (k) => store[k] ?? null, setItem: (k, v) => { store[k] = v; }, removeItem: (k) => { delete store[k]; } },
+    document: { getElementById: () => null, querySelector: () => null, querySelectorAll: () => [], createElement: () => ({ setAttribute() {}, appendChild() {}, style: {} }), body: { appendChild() {} }, addEventListener() {}, dispatchEvent() {} },
+    CustomEvent: class {}, Buffer, setTimeout: () => 0, Date: FixedDate,
+  };
+  ctx.window = ctx;
+  vm.createContext(ctx);
+  for (const f of ["core.js", "achievements.js", "goals.js"]) vm.runInContext(readFileSync("site/games/" + f, "utf8"), ctx);
+  return ctx;
+}
+
+test("the crossword leaves the daily run after its last puzzle (2026-11-14)", () => {
+  const before = gamesOn("2026-11-14"), after = gamesOn("2026-11-15");
+  const ids = (c) => JSON.parse(JSON.stringify(c.PLGoals.summary().games.map((g) => g.id)));
+  assert.deepEqual(ids(before), ["linkle", "quadlink", "crossword", "peaklink", "lockerlink"]);
+  assert.deepEqual(ids(after), ["linkle", "quadlink", "peaklink", "lockerlink"]);
+  assert.equal(before.PLGoals.TIERS[2].n, 5);
+  assert.equal(after.PLGoals.TIERS[2].n, 4);
+  const P = after.PLGoals, idx = P.todayIdx();
+  for (let d = idx; d < idx + 60; d++) {
+    assert.notEqual(P.spotFor(d), "crossword");
+    assert.ok(!P.questsFor(d).includes("long"));
+  }
+  assert.notEqual(P.summary().next.id, "crossword");
+  assert.equal(P.QUESTS.five.text, "Finish all four games");
+  // before the cutoff the quest pool and its order are what they were, so recorded quest bits keep their meaning
+  assert.ok(Array.from({ length: 30 }, (_, k) => before.PLGoals.questsFor(k)).flat().includes("long"));
+});
+
+test("after the crossword stops, the daily set and full set can be finished without it", () => {
+  const c = gamesOn("2026-11-15"), G = c.PLGames, A = c.PLAch, idx = c.PLGoals.todayIdx();
+  for (const g of ["linkle", "quadlink", "peaklink", "lockerlink"]) G.setGame(g, { today: { idx, done: true } });
+  const got = JSON.parse(JSON.stringify(A.check({ game: "lockerlink", idx }).map((d) => d.id)));
+  assert.ok(got.includes("daily-set") && got.includes("full-set"));
+  // on or before the 14th the daily set still needs the crossword
+  const b = gamesOn("2026-11-14"), bi = b.PLGoals.todayIdx();
+  for (const g of ["linkle", "quadlink", "peaklink", "lockerlink"]) b.PLGames.setGame(g, { today: { idx: bi, done: true } });
+  assert.ok(!b.PLAch.check({ game: "lockerlink", idx: bi }).some((d) => d.id === "daily-set"));
+});

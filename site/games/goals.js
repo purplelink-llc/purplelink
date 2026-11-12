@@ -7,25 +7,31 @@
   if (!G) return;
   var EPOCH = "2026-10-04", EPOCH_DOW = 0;
 
+  function todayIdx() { return G.dayIndex(new Date(), EPOCH); }
+
   // Display order. `min` is a rough playing time; `kind` groups games for quests.
-  var GAMES = [
+  var ALL = [
     { id: "linkle", name: "Linkle", path: "/games/linkle/", min: 3, kind: "word" },
     { id: "quadlink", name: "Quadlink", path: "/games/quadlink/", min: 5, kind: "word" },
     { id: "crossword", name: "Daily Crossword", path: "/games/crossword/", min: 10, kind: "word" },
     { id: "peaklink", name: "Peaklink", path: "/games/peaklink/", min: 3, kind: "guess" },
     { id: "lockerlink", name: "Lockerlink", path: "/games/lockerlink/", min: 4, kind: "sports" }
   ];
+  // New crosswords stopped with the 2026-11-14 puzzle (games freeze, 2026-11-12). Through that day the crossword is
+  // part of the daily run; from the next day the run is the other four games and the crossword page only replays.
+  var CW_LAST = G.dayIndex(new Date("2026-11-14T12:00:00"), EPOCH);
+  var CW_RUN = todayIdx() <= CW_LAST;
+  var GAMES = CW_RUN ? ALL : ALL.filter(function (g) { return g.id !== "crossword"; });
+  var NUM = ["zero", "one", "two", "three", "four", "five"];
   // Daily puzzles outside the run (none since the 2026-11-12 games freeze; kept so callers can still read it).
   var MORE = [];
-  var BY = {}; GAMES.concat(MORE).forEach(function (g) { BY[g.id] = g; });
-  var QUICK_FIRST = ["linkle", "peaklink", "lockerlink", "quadlink", "crossword"];
+  var BY = {}; ALL.concat(MORE).forEach(function (g) { BY[g.id] = g; });
+  var QUICK_FIRST = ["linkle", "peaklink", "lockerlink", "quadlink", "crossword"].filter(function (id) { return GAMES.some(function (g) { return g.id === id; }); });
   var TIERS = [
     { n: 2, name: "Warm-up", xp: 20 },
     { n: 3, name: "Steady", xp: 20 },     // 40 in total
-    { n: 5, name: "Full run", xp: 60 }    // 100 in total
+    { n: GAMES.length, name: "Full run", xp: 60 }    // 100 in total
   ];
-
-  function todayIdx() { return G.dayIndex(new Date(), EPOCH); }
 
   function isDone(all, id, idx) {
     var s = all[id] || {};
@@ -48,7 +54,7 @@
   // Quest pool. f(S) -> [have, need]. "count" quests are limited to one per day.
   var QUESTS = {
     three: { text: "Finish any three games", count: true, f: function (S) { return [S.count, 3]; } },
-    five: { text: "Finish all five games", count: true, f: function (S) { return [S.count, 5]; } },
+    five: { text: "Finish all " + NUM[GAMES.length] + " games", count: true, f: function (S) { return [S.count, GAMES.length]; } },
     mix: { text: "Finish one word game and one of Peaklink or Lockerlink", f: function (S) { return [(anyOf(S, kindIds("word")) ? 1 : 0) + (anyOf(S, ["peaklink", "lockerlink"]) ? 1 : 0), 2]; } },
     pair: { text: "Finish Linkle and Quadlink", f: function (S) { return [countOf(S, ["linkle", "quadlink"]), 2]; } },
     guess: { text: "Finish Peaklink and Lockerlink", f: function (S) { return [countOf(S, ["peaklink", "lockerlink"]), 2]; } },
@@ -56,7 +62,8 @@
     fresh: { text: "Finish a game you have played fewer than five times", f: function (S) {
       return [GAMES.some(function (g) { return S.done[g.id] && S.played[g.id] < 5; }) ? 1 : 0, 1]; } }
   };
-  var QUEST_IDS = Object.keys(QUESTS);
+  // The crossword quest leaves the pool once the crossword leaves the run.
+  var QUEST_IDS = Object.keys(QUESTS).filter(function (id) { return id !== "long" || CW_RUN; });
 
   function rng(seed) {   // mulberry32
     var a = (seed * 2654435761 + 12345) >>> 0;
@@ -83,7 +90,7 @@
     var g = all.goals && typeof all.goals === "object" ? all.goals : {};
     return { d: g.d || {}, w: g.w || {}, banked: g.banked || 0 };
   }
-  function tierFor(count) { return count >= 5 ? 3 : count >= 3 ? 2 : count >= 2 ? 1 : 0; }
+  function tierFor(count) { return count >= TIERS[2].n ? 3 : count >= 3 ? 2 : count >= 2 ? 1 : 0; }
 
   // Monday-to-Sunday stamps for the week containing `idx`: a day is stamped once two puzzles were finished.
   function weekStamps(g, idx) {
@@ -200,5 +207,5 @@
     document.dispatchEvent(new CustomEvent("pl-reward", { detail: info }));
   }
 
-  window.PLGoals = { GAMES: GAMES, MORE: MORE, BY: BY, TIERS: TIERS, QUESTS: QUESTS, todayIdx: todayIdx, refresh: refresh, summary: summary, afterResult: afterResult, nextFor: nextFor, spotFor: spotFor, isDone: isDone, questsFor: questsFor };
+  window.PLGoals = { GAMES: GAMES, CW_LAST: CW_LAST, MORE: MORE, BY: BY, TIERS: TIERS, QUESTS: QUESTS, todayIdx: todayIdx, refresh: refresh, summary: summary, afterResult: afterResult, nextFor: nextFor, spotFor: spotFor, isDone: isDone, questsFor: questsFor };
 })();

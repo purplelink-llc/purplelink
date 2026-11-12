@@ -155,7 +155,7 @@ BYSLUG = {m["slug"]: m for m in META.values()}
 TAGLINE = {
     "linkle": "Five letters, six tries, and a new twist every weekday.",
     "quadlink": "Four hidden words at once, with a new twist every weekday.",
-    "crossword": "A themeless crossword, easy Monday to hard Sunday.",
+    "crossword": "A themeless crossword. New puzzles stop after November 14.",
     "peaklink": "Guess the mountain from height, place and volcano clues.",
     "lockerlink": "Link two players from any era through real teammates.",
     "chess-puzzles": "Unlimited rated tactics, plus a three-minute Rush mode.",
@@ -371,7 +371,7 @@ page("games/quadlink/",
 # ---------------- Crossword ----------------
 CW_FAQ = [
     ('What does Pencil do?', 'Pencil mode marks the letters you type as tentative: they show lighter until you tap Ink all. They count exactly like any other letter when you check or finish.'),
-    ("Is there a new crossword every day?", "Yes. A new themeless puzzle is ready at midnight your time. Monday is the easiest and Sunday the hardest, with bigger grids and trickier clues as the week goes on."),
+    ("Are there still new crosswords?", "Not for now. New crosswords are paused, and the last new one is for Saturday, November 14, 2026. After that the page shows that puzzle to play again; replays do not count toward stats, streaks or the leaderboard."),
     ("How is the crossword made?", "The grids are built by a program that fills a symmetric pattern from a word list, and the clues are written for each puzzle. The size of the grid, how rare the words are and how the clues are phrased all grow from Monday to Sunday."),
     ("What do Check and Reveal do?", "You can check one letter, one word or the whole puzzle, and wrong letters turn red. Auto-check marks a wrong letter as soon as you type it. Reveal fills in a letter, a word or the whole puzzle. Using any of them is shown as solving with help, and only unaided solves count toward your best time."),
     ("Where are my times and streak stored?", "Saved in your browser on this device. If you sign in with an email link, your streaks and achievements also follow you to other devices; without signing in, clearing site data or switching devices starts fresh."),
@@ -391,9 +391,10 @@ CW_BODY = """      <div class="games-wrap">
           <h1>Daily Crossword</h1>
           <span class="game-num" id="cw-number"></span>
         </div>
-        <p class="game-lede">A new themeless crossword every day. Easiest on Monday, hardest on Sunday.</p>
-        <p id="cw-loading" class="games-note">Loading today's crossword.</p>
+        <p class="game-lede">A themeless crossword, easiest on Monday and hardest on Sunday. New crosswords stop after November 14, 2026.</p>
+        <p id="cw-loading" class="games-note">Loading the crossword.</p>
         <p id="cw-missing" class="games-note" hidden>Today's crossword is not ready yet. Please check back soon.</p>
+        <p id="cw-paused" class="games-note" hidden>New crosswords are paused. Here is the most recent one to play again; it does not count toward your stats.</p>
         <div id="cw-game" hidden>
           <div class="cw-layout">
             <div class="cw-main">
@@ -436,7 +437,7 @@ CW_BODY = """      <div class="games-wrap">
                   <span class="game-note" id="cw-share-note"></span>
                 </div>
                 <textarea class="wg-share-text" id="cw-share-text" hidden readonly aria-label="Result text"></textarea>
-                <p class="game-next">Next crossword in <span id="cw-next-in"></span>.</p>
+                <p class="game-next" id="cw-next">Next crossword in <span id="cw-next-in"></span>.</p>
               </section>
             </div>
             <div class="cw-clues">
@@ -452,10 +453,10 @@ CW_BODY = """      <div class="games-wrap">
       </div>"""
 page("games/crossword/",
      "Daily Crossword: a free themeless puzzle, easy Monday to hard Sunday | Purplelink",
-     "A new free crossword every day, easiest on Monday and hardest on Sunday. No third-party ads, and you do not need an account.",
+     "A free themeless crossword, easiest on Monday and hardest on Sunday. New crosswords stop after November 14, 2026, and the last one stays here to play again. No account needed.",
      CW_BODY,
      {"@context": "https://schema.org", "@graph": [
-         game_app("Daily Crossword", "https://purplelink.llc/games/crossword/", "A free daily themeless crossword that gets harder from Monday to Sunday."),
+         game_app("Daily Crossword", "https://purplelink.llc/games/crossword/", "A free themeless crossword. New puzzles stop after November 14, 2026, and the last one stays here to play again."),
          faq(CW_FAQ),
          crumbs(("Home", "https://purplelink.llc/"), ("Games", "https://purplelink.llc/games/"), ("Daily Crossword", "https://purplelink.llc/games/crossword/"))]},
      ["/games/core.js", "/games/sync.js", "/games/achievements.js", "/games/confetti.js", "/games/crossword.js"])

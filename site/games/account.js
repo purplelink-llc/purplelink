@@ -84,7 +84,7 @@
         var bits = [];
         if (res.body.chess) bits.push("Chess Puzzles " + res.body.chess.r + " (" + res.body.chess.n + " played)");
         if (res.body.sudoku) bits.push("Sudoku Unlimited " + res.body.sudoku.r + " (" + res.body.sudoku.n + " played)");
-        $("ac-ratings").textContent = bits.length ? "Your ratings: " + bits.join(", ") + "." : "You have no puzzle ratings yet. Try Chess Puzzles or Sudoku Unlimited.";
+        $("ac-ratings").textContent = bits.length ? "Your ratings: " + bits.join(", ") + "." : "You have no puzzle ratings yet. Try Chess Puzzles.";
       }, function () {});
     }
   }

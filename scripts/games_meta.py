@@ -43,8 +43,8 @@ GAMES = {
     "games/crossword/": dict(
         slug="crossword", name="Daily Crossword", genre="Crossword puzzle", minutes=10,
         title="Daily Crossword: a free themeless puzzle, easy Monday to hard Sunday",
-        desc="A new free crossword every day, easiest on Monday and hardest on Sunday, with letter, word and puzzle checking. No account needed and no third-party ads.",
-        answer="Daily Crossword is a free daily themeless crossword puzzle. The grid grows and the clues get trickier from Monday to Sunday, and you can check one letter, one word or the whole puzzle, or turn on auto-check.",
+        desc="A free themeless crossword, easiest on Monday and hardest on Sunday, with letter, word and puzzle checking. New crosswords stop after November 14, 2026, and the last one stays here to play again. No account needed.",
+        answer="Daily Crossword is a free themeless crossword puzzle. New crosswords stop after November 14, 2026; after that the last puzzle stays here to play again. You can check one letter, one word or the whole puzzle, or turn on auto-check.",
         features=["Grids from 9 by 9 on Monday to 15 by 15 on Sunday", "Check a letter, a word or the puzzle, plus auto-check", "Reveal a letter, a word or the puzzle", "Best time per weekday for unaided solves"],
         steps=[("Select a clue or a square", "Click a square and type. Click it again, or press Space, to switch between across and down."),
                ("Fill in the answers", "Arrow keys move around the grid, Tab jumps to the next clue and Backspace deletes."),
@@ -117,7 +117,7 @@ GAMES = {
 
 HUB = dict(
     title="Free daily games: Linkle, Quadlink, crossword and more",
-    desc="Free daily puzzles from Purplelink: a word game, a four-board word game, a crossword, a mountain guessing game and a sports teammate puzzle, plus unlimited chess puzzles. New every midnight.",
-    answer="Purplelink's daily games are a set of free puzzles that change every day at midnight: Linkle, Quadlink, a themeless crossword, Peaklink (guess the mountain) and Lockerlink (link two athletes from the NBA, NFL, MLB or NHL through their teammates). You can play without an account. The daily games have no third-party ads. Chess Puzzles adds unlimited rated puzzles and leaderboards, and shows Google ads.",
+    desc="Free daily puzzles from Purplelink: a word game, a four-board word game, a mountain guessing game and a sports teammate puzzle, new every midnight, plus a crossword and unlimited chess puzzles.",
+    answer="Purplelink's daily games are a set of free puzzles that change every day at midnight: Linkle, Quadlink, Peaklink (guess the mountain) and Lockerlink (link two athletes from the NBA, NFL, MLB or NHL through their teammates). There is also a themeless crossword; new crosswords stop after November 14, 2026, and the last one stays to play again. You can play without an account. The daily games have no third-party ads. Chess Puzzles adds unlimited rated puzzles and leaderboards, and shows Google ads.",
     og_photo="dsc-3940",
 )

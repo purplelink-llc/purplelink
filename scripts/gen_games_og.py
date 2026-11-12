@@ -27,7 +27,7 @@ h1 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 104px; line-he
 .url { font-size: 26px; font-weight: 600; color: oklch(80% 0.12 310); }
 """
 TAG = {"linkle": "Five letters. Six tries. A new twist every weekday.", "quadlink": "Four words at once, in nine guesses.",
-       "crossword": "A new crossword daily. Easy Monday, hard Sunday.", "peaklink": "Guess the mountain.",
+       "crossword": "A themeless crossword. New puzzles stop Nov 14.", "peaklink": "Guess the mountain.",
        "lockerlink": "Link two players through teammates.", "chess-puzzles": "Unlimited puzzles. Climb the rating.", "leaderboard": "Top ratings in chess and Lockerlink."}
 
 def card(name, kind, tag, photo, site):
@@ -42,7 +42,7 @@ def card(name, kind, tag, photo, site):
 
 def main():
     site = SITE.as_uri()
-    jobs = [(m["slug"], m["name"], m["genre"] + ", free daily", TAG[m["slug"]], ("logo:" + m["slug"]) if m["slug"] == "lockerlink" else m["og_photo"]) for m in GAMES.values()]
+    jobs = [(m["slug"], m["name"], m["genre"] + (", free" if m["slug"] == "crossword" else ", free daily"), TAG[m["slug"]], ("logo:" + m["slug"]) if m["slug"] == "lockerlink" else m["og_photo"]) for m in GAMES.values()]
     jobs.append(("hub", "Daily games", "Free, every midnight", "Word games, a crossword, chess and more.", HUB["og_photo"]))
     tmp = Path(tempfile.mkdtemp()) / "card.html"
     with sync_playwright() as p:

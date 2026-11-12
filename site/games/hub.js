@@ -116,7 +116,7 @@
 
   function paintReach() {
     var ul = $("reach"), A = window.PLAch; if (!ul || !A) return;
-    var have = A.unlocked() || {}, locked = A.defs.filter(function (d) { return have[d.id] === undefined; });
+    var have = A.unlocked() || {}, locked = A.defs.filter(function (d) { return have[d.id] === undefined && !d.retired; });
     var n = P.todayIdx(), picks = [];
     for (var k = 0; k < locked.length && picks.length < 3; k++) picks.push(locked[(n * 7 + k * 5) % locked.length]);
     var seen = {}; picks = picks.filter(function (d) { return !seen[d.id] && (seen[d.id] = 1); });
@@ -127,17 +127,21 @@
       ul.appendChild(li);
     });
     var line = $("hub-ach");
-    if (line) line.textContent = Object.keys(have).length + " of " + A.defs.length + " achievements unlocked. ";
+    if (line) line.textContent = Object.keys(have).length + " of " + A.defs.filter(function (d) { return !d.retired || have[d.id] !== undefined; }).length + " achievements unlocked. ";
   }
 
   function paint(first) {
     var all = G.all(), sum = P.summary();
     drawRing(sum);
+    // The run has five games through 2026-11-14 and four after it (the crossword stops); the markup says five.
+    var tot = document.querySelector(".run-count small"); if (tot) tot.textContent = "/" + sum.total;
+    var full = document.querySelector(".run-tier:last-of-type");
+    if (full) { full.setAttribute("data-n", String(sum.total)); var fs = full.querySelector("span"); if (fs) fs.textContent = "All " + sum.total + ", +60 XP"; }
     var n = $("run-n"); if (n) { if (first && FX) { n.textContent = "0"; FX.count(n, sum.count, 900); } else n.textContent = String(sum.count); }
     var line = $("run-line");
     if (line) {
       if (sum.count === sum.total) line.textContent = "A full run. New puzzles arrive at midnight.";
-      else if (sum.toNextTier) line.textContent = sum.count === 0 ? "Finish two puzzles for a Warm-up, three for Steady, all five for a Full run." : sum.toNextTier.need + " more for " + sum.toNextTier.name + " (+" + sum.toNextTier.xp + " XP).";
+      else if (sum.toNextTier) line.textContent = sum.count === 0 ? "Finish two puzzles for a Warm-up, three for Steady, all " + (sum.total === 4 ? "four" : "five") + " for a Full run." : sum.toNextTier.need + " more for " + sum.toNextTier.name + " (+" + sum.toNextTier.xp + " XP).";
     }
     Array.prototype.forEach.call(document.querySelectorAll(".run-tier"), function (li) { li.toggleAttribute("data-got", sum.count >= Number(li.getAttribute("data-n"))); });
     var btn = $("hub-next");

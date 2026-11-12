@@ -267,7 +267,7 @@
 - Daily games and unlimited rated puzzles (Linkle, Quadlink, crossword, Peaklink, Lockerlink, Chess Puzzles, leaderboards): https://purplelink.llc/games/
   - Linkle: Linkle is a free daily word game. https://purplelink.llc/games/linkle/
   - Quadlink: Quadlink is a free daily word game where you solve four hidden five-letter words at once in nine guesses. https://purplelink.llc/games/quadlink/
-  - Daily Crossword: Daily Crossword is a free daily themeless crossword puzzle. https://purplelink.llc/games/crossword/
+  - Daily Crossword: a free themeless crossword puzzle; new puzzles stop after November 14, 2026, and the last one stays to replay. https://purplelink.llc/games/crossword/
   - Chess Puzzles: Chess Puzzles is a free, unlimited chess tactics trainer. https://purplelink.llc/games/chess-puzzles/
   - Leaderboards: The Purplelink puzzle leaderboards list the highest ratings in Chess Puzzles and Lockerlink, plus the biggest rating gains this week. https://purplelink.llc/games/leaderboard/
   - Peaklink: Peaklink is a free daily geography game about mountains. https://purplelink.llc/games/peaklink/
