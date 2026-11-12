@@ -275,6 +275,7 @@
         <p class="game-lede">Daily Crossword is a free daily themeless crossword puzzle. The grid grows and the clues get trickier from Monday to Sunday. You can check one letter, one word or the whole puzzle, or turn on auto-check.</p>
         <p id="cw-loading" class="games-note">Loading today's crossword.</p>
         <p id="cw-missing" class="games-note" hidden>Today's crossword is not ready yet. Please check back soon.</p>
+        <p id="cw-paused" class="games-note" hidden>New crosswords are paused. Here is the most recent one to play again; it does not count toward your stats.</p>
         <div id="cw-game" hidden>
           <div class="cw-layout">
             <div class="cw-main">
@@ -317,7 +318,7 @@
                   <span class="game-note" id="cw-share-note"></span>
                 </div>
                 <textarea class="wg-share-text" id="cw-share-text" hidden readonly aria-label="Result text"></textarea>
-                <p class="game-next">Next crossword in <span id="cw-next-in"></span>.</p>
+                <p class="game-next" id="cw-next">Next crossword in <span id="cw-next-in"></span>.</p>
               </section>
             </div>
             <div class="cw-clues">
