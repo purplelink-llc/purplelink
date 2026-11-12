@@ -12,7 +12,7 @@ really is before anyone opens it.
 
 ## What it does (v1)
 
-- A hotkey (Control-Option-Command-Q) or the menu-bar icon scans every display once. Vision finds QR, Micro QR and
+- A hotkey (Control-Option-Command-Q; one key from Control-Command-Q, Lock Screen, so the default may change) or the menu-bar icon scans every display once. Vision finds QR, Micro QR and
   Aztec codes. Quishcheck's own windows are left out of the capture.
 - Each code gets an outline drawn on top of it, coloured by verdict, on whichever display it is on.
 - Clicking a code opens a card with the exact address, the registrable domain in bold, and a Safe / Caution / Danger
@@ -33,7 +33,7 @@ really is before anyone opens it.
 | IP-address host, `user@host` trick, `javascript:` / `data:` scheme | Mac | Danger |
 | Brand name inside a longer label ("microsoft-login"), cheap TLD, shortener, free hosting, open redirector, plain http, odd port, long URL, file download | Mac | Caution |
 | Domain registered under 30 days (Danger) or under 180 days (Caution), 3+ years (good) | RDAP, sends only the registrable domain, only when the domain is not on the popularity list | as stated |
-| On a popularity list of widely visited domains | Mac, list on disk, refreshed weekly | good |
+| On a popularity list of widely visited domains | Mac, list on disk (weekly refresh planned; the script exists but has not run) | good |
 | Redirect chain: every hop checked, cookie-less, page never rendered, 10 hops max | Network, opt-in | the worst hop counts |
 
 Rules: any Danger signal makes the verdict Danger. Safe needs at least one good signal and nothing worse than
@@ -46,22 +46,22 @@ the sender this person looked. The card offers it as a separate click, and a men
 
 | Source | Use in a paid app | Decision |
 |---|---|---|
-| Google Safe Browsing | Terms say non-commercial only; commercial use is the paid Web Risk API | Not used |
-| OpenPhish community feed | Terms bar commercial use without written consent | Not used |
-| URLhaus (abuse.ch) | Needs an Auth-Key; commercial use "may require a paid subscription" via Spamhaus; terms bar AI training on the data | Not used |
-| PhishTank | New registrations disabled, so no key | Not used |
-| Tranco top list | No licence of its own; one input (Cloudflare Radar) is CC BY-NC | Not used |
-| Majestic Million | CC BY 3.0 (from memory, confirm before shipping) | Popularity list, credited in About |
-| RDAP via the IANA bootstrap file, rdap.org fallback | Public registry data; rdap.org asks for 10 requests per 10 s at most | Domain age, cached |
+| Google Safe Browsing | Non-commercial only ([usage limits](https://developers.google.com/safe-browsing/v4/usage-limits)); commercial use is the paid [Web Risk](https://cloud.google.com/web-risk/pricing) API | Not used |
+| OpenPhish community feed | [Terms](https://openphish.com/terms.html) bar commercial use without written consent | Not used |
+| URLhaus (abuse.ch) | Needs an Auth-Key; commercial use "may require a paid subscription" via Spamhaus ([API](https://urlhaus.abuse.ch/api/), [terms](https://abuse.ch/terms-of-use/)); terms bar AI training on the data | Not used |
+| PhishTank | [New registrations disabled](https://phishtank.org/register.php), so no key | Not used |
+| [Tranco](https://tranco-list.eu/) top list | No licence of its own; one input (Cloudflare Radar) is CC BY-NC | Not used |
+| Majestic Million | CC BY 3.0 Unported, per [its page](https://majestic.com/reports/majestic-million) (checked 2026-11-12); attribution required, commercial use allowed | Popularity list, credited in About |
+| RDAP via the IANA bootstrap file, rdap.org fallback | Public registry data ([IANA bootstrap](https://data.iana.org/rdap/dns.json)); [rdap.org](https://about.rdap.org/) allows 10 requests per 10 s | Domain age, cached |
 
 The code has a `ThreatList` hook for a licensed blocklist later. Asking OpenPhish or Spamhaus for terms is outreach and
-is Ben's call.
+is Ben's call. The bundled public suffix list is MPL 2.0 and also gets an About credit.
 
 ## Privacy stance
 
 The scan, decoding and every check except RDAP and redirects run on the Mac. Screen images are never saved or sent.
 RDAP gets the registrable domain only, never the full link. Redirects are followed only when the user asks. No
-account, no telemetry, no analytics. The app needs Screen Recording permission and says why on first use.
+account, no telemetry, no analytics. The app needs Screen Recording permission; the planned onboarding says why before macOS asks (not built yet).
 
 ## Price and packaging
 
@@ -104,7 +104,8 @@ not done for any of them.
   positive evidence, and a compromised popular site would still pass. The card should keep saying what was checked.
 - **Screen Recording permission.** It scares some people and macOS asks again from time to time. The onboarding
   has to explain it plainly.
-- **Popularity list licence** not yet confirmed; without a list almost nothing reaches Safe.
+- **Abuse of popular hosts.** Quishing often lands on user content under a popular domain (Google Forms, Workers and Pages hosting, search-engine redirect URLs). Those hosts are on the free-hosting and open-redirector lists, so they read as Caution even when the domain ranks high: checked on the prototype with google.com, workers.dev and github.io on the list, all three came out Caution. A file share or form host missing from those lists would get Safe.
+- **Popularity list.** Without it almost nothing reaches Safe. Majestic is CC BY 3.0, so it can ship with credit.
 - **The heuristics will miss things.** A new domain with a plain name and no brand word reads as Caution, not Danger,
   unless RDAP says it is days old.
 - **Free competitors** may add a basic check.
@@ -123,7 +124,8 @@ Not exercised yet:
 - overlay placement across several displays and mixed Retina scales
 - the hotkey
 - real RDAP and redirect requests against the network
-- the 1M-domain list load time
+- the 1M-domain list load time and `scripts/refresh-data.sh`
+- onboarding, licence key and About credits (not built)
 
 Next step if this goes ahead: run a test copy with Screen Recording granted on a second display, then the onboarding,
 licence key and About credits.
