@@ -5,8 +5,8 @@
   python3 scripts/check_games.py --strict   # exit 1 if anything is short (used by the content routine)
 
 A short buffer must never block a deploy of unrelated pages, so the build only reports.
-Word games are generated a long way ahead (730 days); the crossword buffer is the one that
-runs out, because its clues are written by a routine. Games retired in the 2026-11-12 freeze
+Word games are generated a long way ahead (730 days); the crossword is frozen (2026-11-12):
+no new puzzles are added and the page replays the latest one. Games retired in the 2026-11-12 freeze
 (trivia, photo, daily chess, Sudoku, horoscope, the attribute games except Peaklink) are not checked.
 """
 from __future__ import annotations
@@ -98,8 +98,10 @@ def main() -> int:
         last = max((date.fromisoformat(k) for k in cw), default=None)
         left = (last - today).days if last else -1
         notes.append(f"crossword.json: puzzles through {last} ({left} days ahead)")
+        # Frozen 2026-11-12: no new puzzles are added and the page replays the latest one, so a short
+        # runway is expected and is only a note.
         if left < CW_MIN:
-            problems.append(f"crossword.json: only {left} days of crosswords ahead (need {CW_MIN}); the clue routine may have stalled")
+            notes.append(f"crossword frozen: {left} days ahead (no new puzzles; the page replays the latest)")
         gdir = Path(__file__).resolve().parent / "games-data" / "crossword"
         waiting = sorted(g.name.split(".")[0] for g in gdir.glob("*.grid.json")
                          if g.name.split(".")[0] not in cw and date.fromisoformat(g.name.split(".")[0]) >= today)

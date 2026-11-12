@@ -345,6 +345,10 @@
 
   function finish(fresh) {
     var saved = G.getGame(NAME), clean = !st.checks && !st.reveals;
+    if (fresh && st.frozen) {
+      if (window.PLConfetti) window.PLConfetti.big();
+      fresh = false;
+    }
     if (fresh) {
       saved.stats = G.recordResult(saved.stats, st.idx, true, 1);
       saved.best = saved.best || {};
@@ -450,8 +454,16 @@
     $("cw-loading").hidden = true;
     if (!p) {
       var later = Object.keys(data.days).filter(function (k) { return k > st.key; }).sort()[0];
-      if (later) { var dt = new Date(later + "T12:00:00"); $("cw-missing").textContent = "No crossword today. The next one is " + dt.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" }) + "."; }
-      $("cw-missing").hidden = false; return;
+      var past = Object.keys(data.days).filter(function (k) { return k < st.key; }).sort().pop();
+      if (later || !past) {
+        if (later) { var dt = new Date(later + "T12:00:00"); $("cw-missing").textContent = "No crossword today. The next one is " + dt.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" }) + "."; }
+        $("cw-missing").hidden = false; return;
+      }
+      // New crosswords are paused: offer the most recent puzzle as a replay. It does not count toward
+      // stats, streaks, achievements or the leaderboard, and there is no "next crossword" countdown.
+      st.frozen = true; st.key = past; p = data.days[past];
+      st.idx = G.dayIndex(new Date(past + "T12:00:00"), EPOCH);
+      $("cw-paused").hidden = false; $("cw-next").hidden = true;
     }
     build(p);
     $("cw-number").textContent = p.weekday + ", puzzle " + (st.idx + 1);
