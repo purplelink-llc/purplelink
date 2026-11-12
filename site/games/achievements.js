@@ -12,6 +12,9 @@
   // history still counts. RUN is today's daily lineup.
   var PLAYED = ["linkle", "quadlink", "crossword", "peaklink", "lockerlink", "daily-five", "daily-photo", "daily-chess", "sudoku"];
   var RUN = ["linkle", "quadlink", "crossword", "peaklink", "lockerlink"];
+  // New crosswords stopped with the 2026-11-14 puzzle; after that day the daily set is the other four games.
+  var CW_LAST = G.dayIndex(new Date("2026-11-14T12:00:00"), EPOCH);
+  function runFor(idx) { return idx > CW_LAST ? RUN.filter(function (g) { return g !== "crossword"; }) : RUN; }
   function best(all) { return PLAYED.reduce(function (n, g) { return Math.max(n, stats(all, g).max || 0); }, 0); }
   function played(all) { return PLAYED.reduce(function (n, g) { return n + (stats(all, g).played || 0); }, 0); }
   function dowOf(idx) { return (EPOCH_DOW + idx) % 7; }
@@ -38,10 +41,12 @@
     { id: "sudoku-first", retired: true, name: "Digits in place", desc: "Solve your first daily Sudoku.", test: function (a) { return stats(a, "sudoku").won >= 1; } },
     { id: "sudoku-hard", retired: true, name: "No pencil needed", desc: "Solve a Hard or Expert Sudoku with no help.", test: function (a, c) { return c.game === "sudoku" && c.clean && (c.level === "Hard" || c.level === "Expert"); } },
     { id: "sudoku-clean-5", retired: true, name: "Sharp eyes", desc: "Solve five Sudokus with no help.", test: function (a) { return ((a.sudoku && a.sudoku.clean) || 0) >= 5; } },
-    { id: "cw-first", name: "First crossword", desc: "Solve your first daily crossword.", test: function (a) { return stats(a, "crossword").won >= 1; } },
-    { id: "cw-monday", name: "Quick Monday", desc: "Solve a Monday crossword with no help in under four minutes.", test: function (a, c) { return c.game === "crossword" && c.clean && c.weekdayName === "Monday" && c.seconds < 240; } },
-    { id: "cw-sunday", name: "Sunday finisher", desc: "Solve a Sunday crossword with no help.", test: function (a, c) { return c.game === "crossword" && c.clean && c.weekdayName === "Sunday"; } },
-    { id: "cw-clean-5", name: "Unaided", desc: "Solve five crosswords with no help.", test: function (a) { return ((a.crossword && a.crossword.clean) || 0) >= 5; } },
+    // The crossword achievements are retired with the freeze: a replay of the last puzzle does not count, so they
+    // can only be earned through 2026-11-14 and show only to players who earned them.
+    { id: "cw-first", retired: true, name: "First crossword", desc: "Solve your first daily crossword.", test: function (a) { return stats(a, "crossword").won >= 1; } },
+    { id: "cw-monday", retired: true, name: "Quick Monday", desc: "Solve a Monday crossword with no help in under four minutes.", test: function (a, c) { return c.game === "crossword" && c.clean && c.weekdayName === "Monday" && c.seconds < 240; } },
+    { id: "cw-sunday", retired: true, name: "Sunday finisher", desc: "Solve a Sunday crossword with no help.", test: function (a, c) { return c.game === "crossword" && c.clean && c.weekdayName === "Sunday"; } },
+    { id: "cw-clean-5", retired: true, name: "Unaided", desc: "Solve five crosswords with no help.", test: function (a) { return ((a.crossword && a.crossword.clean) || 0) >= 5; } },
     { id: "rush-10", name: "Rush ten", desc: "Solve ten puzzles in one Rush run.", test: function (a, c) { return c.game === "chess-puzzles" && c.rush >= 10; } },
     { id: "rush-20", name: "Rush twenty", desc: "Solve twenty puzzles in one Rush run.", test: function (a, c) { return c.game === "chess-puzzles" && c.rush >= 20; } },
     { id: "rated-first", name: "Rated", desc: "Finish your first rated chess puzzle.", test: function (a, c) { return c.game === "chess-puzzles" && c.n >= 1; } },
@@ -57,10 +62,10 @@
     { id: "streak-3", name: "On a roll", desc: "Keep a three-day streak in any game.", test: function (a) { return best(a) >= 3; } },
     { id: "streak-7", name: "Week streak", desc: "Keep a seven-day streak in any game.", test: function (a) { return best(a) >= 7; } },
     { id: "streak-30", name: "Month streak", desc: "Keep a thirty-day streak in any game.", test: function (a) { return best(a) >= 30; } },
-    { id: "full-set", name: "Full set", desc: "Finish Linkle, Quadlink, Peaklink and the crossword on the same day.", test: function (a, c) {
-      return ["linkle", "quadlink", "peaklink", "crossword"].every(function (g) { var t = a[g] && a[g].today; return t && t.done && t.idx === c.idx; }); } },
+    { id: "full-set", name: "Full set", desc: "Finish Linkle, Quadlink and Peaklink on the same day.", test: function (a, c) {
+      return ["linkle", "quadlink", "peaklink"].every(function (g) { var t = a[g] && a[g].today; return t && t.done && t.idx === c.idx; }); } },
     { id: "daily-set", name: "Daily set", desc: "Finish every daily puzzle on the same day.", test: function (a, c) {
-      return RUN.every(function (g) { var t = a[g] && a[g].today; return t && t.done && t.idx === c.idx; }); } },
+      return runFor(c.idx).every(function (g) { var t = a[g] && a[g].today; return t && t.done && t.idx === c.idx; }); } },
     { id: "close-call", name: "Close call", desc: "Let the weekly streak saver rescue a streak.", test: function (a) {
       return PLAYED.some(function (g) { return (stats(a, g).freezes || []).length > 0; }); } },
     { id: "level-5", name: "Level 5", desc: "Reach level 5.", test: function (a) { return G.xpOf(a).level >= 5; } },
