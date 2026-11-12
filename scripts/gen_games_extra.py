@@ -325,25 +325,11 @@ def chess_days(src: Path, epoch: str, days: int) -> dict:
 
 
 def build(src: Path, epoch: str, days: int, enc) -> dict[str, str]:
+    # Games freeze 2026-11-12: trivia, chess, Sudoku, photo and stars data are no longer built (those games 301 to /games/).
     files: dict[str, str] = {}
-    t = trivia(src, epoch, days, enc_text)
-    if t:
-        files["trivia.json"] = json.dumps(t, ensure_ascii=False, separators=(",", ":")) + "\n"
-    ch = chess_days(src, epoch, days)
-    if ch:
-        files["chess.json"] = json.dumps(ch, ensure_ascii=False, separators=(",", ":")) + "\n"
-    sd = src / "sudoku.json"
-    if sd.exists():
-        files["sudoku.json"] = sd.read_text(encoding="utf-8")
-    ph = photo_days(src.parent.parent, epoch, 150)   # 150 days is ~280 KB; the page wraps around after that
-    if ph:
-        files["photo.json"] = json.dumps(ph, ensure_ascii=False, separators=(",", ":")) + "\n"
     cw = crossword(src)
     if cw:
         files["crossword.json"] = json.dumps(cw, ensure_ascii=False, separators=(",", ":")) + "\n"
-    s = stars(src, epoch)
-    if s:
-        files["stars.json"] = json.dumps(s, ensure_ascii=False, separators=(",", ":")) + "\n"
     try:
         from gen_attr import build as attr_build
     except ImportError:

@@ -27,11 +27,8 @@ h1 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 104px; line-he
 .url { font-size: 26px; font-weight: 600; color: oklch(80% 0.12 310); }
 """
 TAG = {"linkle": "Five letters. Six tries. A new twist every weekday.", "quadlink": "Four words at once, in nine guesses.",
-       "daily-five": "Five trivia questions, every day.", "daily-photo": "Five photographs. Which country?",
-       "daily-chess": "A new tactics puzzle from Lichess.", "sudoku": "Harder every week of the season.",
-       "crossword": "A new crossword daily. Easy Monday, hard Sunday.", "daily-stars": "A short horoscope for every sign.",
-       "landlink": "Guess the country from seven clues.", "citylink": "Guess the city with a compass.", "peaklink": "Guess the mountain.", "codelink": "Guess the programming language.", "thinkerlink": "Guess the scientist.", "riverlink": "Guess the river.", "wildlink": "Guess the animal.", "atomlink": "Guess the element on the periodic table.", "prizelink": "Guess the Nobel laureate.",
-       "lockerlink": "Link two players through teammates.", "gridlink": "Fill the grid with players who fit.", "under-the-cap": "Build a team. Go undefeated.", "tanklink": "Aim, fire, and win a quick round of tanks.", "chess-puzzles": "Unlimited puzzles. Climb the rating.", "sudoku-unlimited": "Unlimited Sudoku, five levels, rated.", "leaderboard": "Top ratings in chess and Sudoku."}
+       "crossword": "A new crossword daily. Easy Monday, hard Sunday.", "peaklink": "Guess the mountain.",
+       "lockerlink": "Link two players through teammates.", "chess-puzzles": "Unlimited puzzles. Climb the rating.", "leaderboard": "Top ratings in chess and Lockerlink."}
 
 def card(name, kind, tag, photo, site):
     logo = photo.startswith("logo:")
@@ -45,8 +42,8 @@ def card(name, kind, tag, photo, site):
 
 def main():
     site = SITE.as_uri()
-    jobs = [(m["slug"], m["name"], m["genre"] + ", free daily", TAG[m["slug"]], ("logo:" + m["slug"]) if m["slug"] in ("lockerlink", "gridlink", "under-the-cap", "tanklink") else m["og_photo"]) for m in GAMES.values()]
-    jobs.append(("hub", "Daily games", "Free, every midnight", "Word games, trivia, chess, Sudoku and a crossword.", HUB["og_photo"]))
+    jobs = [(m["slug"], m["name"], m["genre"] + ", free daily", TAG[m["slug"]], ("logo:" + m["slug"]) if m["slug"] == "lockerlink" else m["og_photo"]) for m in GAMES.values()]
+    jobs.append(("hub", "Daily games", "Free, every midnight", "Word games, a crossword, chess and more.", HUB["og_photo"]))
     tmp = Path(tempfile.mkdtemp()) / "card.html"
     with sync_playwright() as p:
         b = p.chromium.launch(); pg = b.new_page(viewport={"width": 1200, "height": 630})

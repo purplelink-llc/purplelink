@@ -12,7 +12,7 @@
     u.setAttribute("href", "/games/glyphs.svg#" + id); s.appendChild(u); return s;
   }
 
-  // The ring is eight arcs, one per game, each lit in that game's colour once it is finished.
+  // The ring is one arc per game in the daily run, one per game, each lit in that game's colour once it is finished.
   function drawRing(sum) {
     var svg = $("run-svg"); if (!svg) return;
     var R = 72, C = 2 * Math.PI * R, gap = 10, seg = C / sum.games.length - gap;
@@ -54,7 +54,7 @@
   // Rated pages: show the player's rating on their tiles.
   function paintRated() {
     var RT = window.PLRating; if (!RT) return;
-    [["chess-puzzles", "chess"], ["sudoku-unlimited", "sudoku"]].forEach(function (x) {
+    [["chess-puzzles", "chess"]].forEach(function (x) {
       var card = document.querySelector('.tile[data-game="' + x[0] + '"]'); if (!card) return;
       var rec = RT.get(x[1]), st = card.querySelector("[data-status]"), go = card.querySelector("[data-go]");
       if (st) st.textContent = rec.n ? "Rating " + rec.r + ". " + rec.n + " played" : "Unlimited. Starts at 1000";
@@ -137,7 +137,7 @@
     var line = $("run-line");
     if (line) {
       if (sum.count === sum.total) line.textContent = "A full run. New puzzles arrive at midnight.";
-      else if (sum.toNextTier) line.textContent = sum.count === 0 ? "Finish two puzzles for a Warm-up, four for Steady, all eight for a Full run." : sum.toNextTier.need + " more for " + sum.toNextTier.name + " (+" + sum.toNextTier.xp + " XP).";
+      else if (sum.toNextTier) line.textContent = sum.count === 0 ? "Finish two puzzles for a Warm-up, three for Steady, all five for a Full run." : sum.toNextTier.need + " more for " + sum.toNextTier.name + " (+" + sum.toNextTier.xp + " XP).";
     }
     Array.prototype.forEach.call(document.querySelectorAll(".run-tier"), function (li) { li.toggleAttribute("data-got", sum.count >= Number(li.getAttribute("data-n"))); });
     var btn = $("hub-next");

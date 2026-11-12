@@ -1,4 +1,4 @@
-/* The game center's progress layer: the list of games, the daily run (2, 4 and all 8 puzzles), three daily
+/* The game center's progress layer: the list of games, the daily run (2, 3 and all 5 puzzles), three daily
    quests, the day's spotlight game and the weekly stamps. Everything is derived from saved progress plus a small
    `goals` record (so it follows a signed-in player between devices). Load after core.js and achievements.js. */
 (function () {
@@ -11,42 +11,24 @@
   var GAMES = [
     { id: "linkle", name: "Linkle", path: "/games/linkle/", min: 3, kind: "word" },
     { id: "quadlink", name: "Quadlink", path: "/games/quadlink/", min: 5, kind: "word" },
-    { id: "daily-five", name: "Daily Five", path: "/games/daily-five/", min: 2, kind: "trivia" },
-    { id: "daily-photo", name: "Daily Photo", path: "/games/daily-photo/", min: 2, kind: "trivia" },
-    { id: "daily-chess", name: "Daily Chess", path: "/games/daily-chess/", min: 3, kind: "logic" },
-    { id: "sudoku", name: "Sudoku", path: "/games/sudoku/", min: 12, kind: "logic" },
     { id: "crossword", name: "Daily Crossword", path: "/games/crossword/", min: 10, kind: "word" },
-    { id: "daily-stars", name: "Daily Stars", path: "/games/daily-stars/", min: 1, kind: "stars" }
-  ];
-  // More daily puzzles: they keep streaks, XP and achievements but are not part of the eight-puzzle daily run.
-  var MORE = [
-    { id: "landlink", name: "Landlink", path: "/games/landlink/", min: 3, kind: "guess" },
-    { id: "atomlink", name: "Atomlink", path: "/games/atomlink/", min: 3, kind: "guess" },
-    { id: "prizelink", name: "Prizelink", path: "/games/prizelink/", min: 3, kind: "guess" },
-    { id: "citylink", name: "Citylink", path: "/games/citylink/", min: 3, kind: "guess" },
     { id: "peaklink", name: "Peaklink", path: "/games/peaklink/", min: 3, kind: "guess" },
-    { id: "codelink", name: "Codelink", path: "/games/codelink/", min: 3, kind: "guess" },
-    { id: "thinkerlink", name: "Thinkerlink", path: "/games/thinkerlink/", min: 3, kind: "guess" },
-    { id: "riverlink", name: "Riverlink", path: "/games/riverlink/", min: 3, kind: "guess" },
-    { id: "wildlink", name: "Wildlink", path: "/games/wildlink/", min: 3, kind: "guess" },
-    { id: "lockerlink", name: "Lockerlink", path: "/games/lockerlink/", min: 4, kind: "sports" },
-    { id: "gridlink", name: "Gridlink", path: "/games/gridlink/", min: 4, kind: "sports" },
-    { id: "under-the-cap", name: "Under the Cap", path: "/games/under-the-cap/", min: 5, kind: "sports" },
-    { id: "tanklink", name: "Tanklink", path: "/games/tanklink/", min: 3, kind: "strategy" }
+    { id: "lockerlink", name: "Lockerlink", path: "/games/lockerlink/", min: 4, kind: "sports" }
   ];
+  // Daily puzzles outside the run (none since the 2026-11-12 games freeze; kept so callers can still read it).
+  var MORE = [];
   var BY = {}; GAMES.concat(MORE).forEach(function (g) { BY[g.id] = g; });
-  var QUICK_FIRST = ["daily-stars", "daily-photo", "daily-five", "daily-chess", "linkle", "quadlink", "crossword", "sudoku"];
+  var QUICK_FIRST = ["linkle", "peaklink", "lockerlink", "quadlink", "crossword"];
   var TIERS = [
     { n: 2, name: "Warm-up", xp: 20 },
-    { n: 4, name: "Steady", xp: 20 },     // 40 in total
-    { n: 8, name: "Full run", xp: 60 }    // 100 in total
+    { n: 3, name: "Steady", xp: 20 },     // 40 in total
+    { n: 5, name: "Full run", xp: 60 }    // 100 in total
   ];
 
   function todayIdx() { return G.dayIndex(new Date(), EPOCH); }
 
   function isDone(all, id, idx) {
     var s = all[id] || {};
-    if (id === "daily-stars") return (s.viewed || []).indexOf(idx) >= 0;
     return !!(s.today && s.today.idx === idx && s.today.done);
   }
 
@@ -66,16 +48,13 @@
   // Quest pool. f(S) -> [have, need]. "count" quests are limited to one per day.
   var QUESTS = {
     three: { text: "Finish any three games", count: true, f: function (S) { return [S.count, 3]; } },
-    five: { text: "Finish any five games", count: true, f: function (S) { return [S.count, 5]; } },
-    mix: { text: "Finish one word game and one logic game", f: function (S) { return [(anyOf(S, kindIds("word")) ? 1 : 0) + (anyOf(S, kindIds("logic")) ? 1 : 0), 2]; } },
-    quick: { text: "Finish two quick ones: Daily Five, Daily Photo or Daily Stars", f: function (S) { return [countOf(S, ["daily-five", "daily-photo", "daily-stars"]), 2]; } },
+    five: { text: "Finish all five games", count: true, f: function (S) { return [S.count, 5]; } },
+    mix: { text: "Finish one word game and one of Peaklink or Lockerlink", f: function (S) { return [(anyOf(S, kindIds("word")) ? 1 : 0) + (anyOf(S, ["peaklink", "lockerlink"]) ? 1 : 0), 2]; } },
     pair: { text: "Finish Linkle and Quadlink", f: function (S) { return [countOf(S, ["linkle", "quadlink"]), 2]; } },
-    board: { text: "Finish Sudoku and Daily Chess", f: function (S) { return [countOf(S, ["sudoku", "daily-chess"]), 2]; } },
-    long: { text: "Finish a long one: Sudoku or the crossword", f: function (S) { return [anyOf(S, ["sudoku", "crossword"]) ? 1 : 0, 1]; } },
+    guess: { text: "Finish Peaklink and Lockerlink", f: function (S) { return [countOf(S, ["peaklink", "lockerlink"]), 2]; } },
+    long: { text: "Finish the crossword", f: function (S) { return [anyOf(S, ["crossword"]) ? 1 : 0, 1]; } },
     fresh: { text: "Finish a game you have played fewer than five times", f: function (S) {
-      return [GAMES.some(function (g) { return S.done[g.id] && S.played[g.id] < 5 && g.id !== "daily-stars"; }) ? 1 : 0, 1]; } },
-    trivia: { text: "Finish Daily Five and Daily Photo", f: function (S) { return [countOf(S, ["daily-five", "daily-photo"]), 2]; } },
-    stars: { text: "Read your stars, then finish one other game", f: function (S) { return [(S.done["daily-stars"] ? 1 : 0) + (S.count - (S.done["daily-stars"] ? 1 : 0) > 0 ? 1 : 0), 2]; } }
+      return [GAMES.some(function (g) { return S.done[g.id] && S.played[g.id] < 5; }) ? 1 : 0, 1]; } }
   };
   var QUEST_IDS = Object.keys(QUESTS);
 
@@ -104,7 +83,7 @@
     var g = all.goals && typeof all.goals === "object" ? all.goals : {};
     return { d: g.d || {}, w: g.w || {}, banked: g.banked || 0 };
   }
-  function tierFor(count) { return count >= 8 ? 3 : count >= 4 ? 2 : count >= 2 ? 1 : 0; }
+  function tierFor(count) { return count >= 5 ? 3 : count >= 3 ? 2 : count >= 2 ? 1 : 0; }
 
   // Monday-to-Sunday stamps for the week containing `idx`: a day is stamped once two puzzles were finished.
   function weekStamps(g, idx) {
@@ -212,7 +191,7 @@
     };
     if (FX) {
       var big = ok && (ctx.score === 5 || ctx.clean || (ctx.tries !== undefined && ctx.tries <= 2));
-      if (ctx.game === "daily-stars") FX.play("good"); else FX.play(ok ? (big ? "big" : "win") : "lose");
+      FX.play(ok ? (big ? "big" : "win") : "lose");
       var t = 900;
       if (r.newQuests.length || r.newTier || r.spotlight) { window.setTimeout(function () { FX.play("quest"); }, t); t += 700; }
       if (leveled || r.week) window.setTimeout(function () { FX.play("level"); }, t);
