@@ -23,7 +23,8 @@ The rules are below. The full background (dates, IDs, file paths, why each rule 
   stale-main commits; `com.benampel.main-sync` fast-forwards `main` safely every 15 minutes.
 - Scheduled and cloud sessions never push `main`: branch, `gh pr create`, wait for every check, squash-merge only when
   green. Before a PR with a new page: `python3 scripts/gen_og_cards.py --only <section>/<slug>`, then
-  `python3 -m pytest -q site-tests` and `node --experimental-test-module-mocks --test netlify/tests/*.test.mjs`.
+  `python3 -m pytest -q site-tests` and `npm ci && node --experimental-test-module-mocks --test netlify/tests/*.test.mjs` (without `npm ci`,
+  75 tests fail on a missing `@netlify/blobs`).
   (The Modal digest cron is the one job that commits to `main` by design.)
 - Build output is not committed: never `git add` `site/search-index.json` or `site/llms-full.txt`; pages carry no
   `?v=` stamps (strip with `python3 scripts/fingerprint_assets.py --strip`); `backend/latextools/buddy_facts.py` is
