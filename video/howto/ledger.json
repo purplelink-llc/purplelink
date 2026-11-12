@@ -648,5 +648,34 @@
    "ok": true,
    "utm_content": "howto-same-paper-twice-duplicate-doi-bib-reel"
   }
+ },
+ {
+  "slug": "howto-bbbk-already-defined-newtxmath-amssymb",
+  "app": "moderntex",
+  "date": "2026-11-12",
+  "title": "Command \\Bbbk already defined on Mac (remove amssymb when you use newtxmath)",
+  "long_id": "ve3lSRsAyqc",
+  "short_id": "C-GhSEG9R3A",
+  "link_arm": "A",
+  "link_utm_content": "howto-bbbk-already-defined-newtxmath-amssymb",
+  "short_utm_content": "howto-bbbk-already-defined-newtxmath-amssymb-short",
+  "sources": [
+   "https://info.arxiv.org/help/faq/mistakes.html",
+   "https://programmerah.com/solved-latex-error-command-bbbk-already-defined-40454/"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "ve3lSRsAyqc",
+    "caption_id": "AUieDabl3wbY3b88G10KiPPR9metUWtgX54yhfg56096SSnavRRVx35m"
+   },
+   "short": {
+    "video_id": "C-GhSEG9R3A",
+    "caption_id": "AUieDaYZ2FDkRaU6c6qtZIHuv84jHkvOW_Mm3BNJEUmxaIEgy_BnPwsF"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-bbbk-already-defined-newtxmath-amssymb-reel"
+  }
  }
 ]

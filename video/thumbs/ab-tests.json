@@ -241,5 +241,16 @@
   "started": "2026-11-11",
   "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
   "checked": "2026-11-11"
+ },
+ {
+  "video": "ve3lSRsAyqc",
+  "variants": {
+   "A": "video/out/howto/bbbk-already-defined-newtxmath-amssymb/bbbk-already-defined-newtxmath-amssymb-thumb-A.jpg",
+   "B": "video/out/howto/bbbk-already-defined-newtxmath-amssymb/bbbk-already-defined-newtxmath-amssymb-thumb-B.jpg",
+   "C": "video/out/howto/bbbk-already-defined-newtxmath-amssymb/bbbk-already-defined-newtxmath-amssymb-thumb-C.jpg"
+  },
+  "started": "2026-11-12",
+  "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
+  "checked": "2026-11-12"
  }
 ]

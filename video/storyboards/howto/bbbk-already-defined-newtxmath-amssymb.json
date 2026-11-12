@@ -1,0 +1,117 @@
+{
+ "id": "howto-bbbk-already-defined-newtxmath-amssymb",
+ "app": "moderntex",
+ "title": "Command \\Bbbk already defined on Mac (remove amssymb when you use newtxmath)",
+ "short_title": "LaTeX says Command \\Bbbk already defined? Drop amssymb",
+ "url": "purplelink.llc/moderntex",
+ "page": "https://purplelink.llc/moderntex/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://info.arxiv.org/help/faq/mistakes.html",
+  "https://programmerah.com/solved-latex-error-command-bbbk-already-defined-40454/"
+ ],
+ "verify": {
+  "runs": [
+   {
+    "cmd": "cd \"$(mktemp -d)\" && print -rl -- '\\documentclass{article}' '\\usepackage{newtxmath}' '\\usepackage{amssymb}' '\\begin{document}' 'Let $x \\in \\mathbb{R}$.' '\\end{document}' > main.tex && pdflatex -interaction=nonstopmode main.tex > out.txt; grep -m1 '^! LaTeX' out.txt; grep -n 'usepackage' main.tex",
+    "output": "! LaTeX Error: Command `\\Bbbk' already defined.\n2:\\usepackage{newtxmath}\n3:\\usepackage{amssymb}"
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && print -rl -- '\\documentclass{article}' '\\usepackage{newtxmath}' '\\begin{document}' 'Let $x \\in \\mathbb{R}$.' '\\end{document}' > main.tex && pdflatex -interaction=nonstopmode main.tex > out.txt; grep -c 'amssymb' main.tex; grep -c '^!' out.txt; grep 'Output written' out.txt",
+    "output": "0\n0\nOutput written on main.pdf (1 page, 32219 bytes)."
+   }
+  ],
+  "docs": [
+   "https://ctan.org/pkg/newtx",
+   "https://ctan.org/pkg/mnras",
+   "https://info.arxiv.org/help/faq/mistakes.html"
+  ],
+  "notes": "Each run writes a small article in a fresh temporary folder and builds it once with pdfLaTeX from TeX Live 2026. With newtxmath loaded and then amssymb, the build stops with Command \\Bbbk already defined, because both packages define the blackboard bold k symbol. With the amssymb line removed, the same document, which still uses \\mathbb, builds with no errors. The arXiv FAQ names newtxmath with amssymb as the most common cause of this error, and the MNRAS class guide on CTAN says to avoid amssymb when newtxmath is enabled because newtxmath covers the same symbols."
+ },
+ "scenes": [
+  {
+   "type": "hook",
+   "short": true,
+   "kicker": "LaTeX on a Mac",
+   "title": "Command \\Bbbk already defined",
+   "sub": "Two packages are defining the same symbol.",
+   "narration": "If LaTeX stops with command B b b k already defined, you did not write that command. Two of your packages did."
+  },
+  {
+   "type": "symptom",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ pdflatex main.tex",
+    "! LaTeX Error: Command `\\Bbbk' already defined.",
+    "$ grep -n 'usepackage' main.tex",
+    "2:\\usepackage{newtxmath}",
+    "3:\\usepackage{amssymb}"
+   ],
+   "narration": "Here is the error. The preamble loads new t x math for Times style maths, and then a m s symb for extra symbols."
+  },
+  {
+   "type": "cause",
+   "text": "newtxmath already includes the AMS symbols, including the blackboard bold k. When amssymb loads after it, LaTeX refuses to define the same command twice.",
+   "narration": "New t x math already includes the A M S symbols, and one of them is a blackboard bold k, called B b b k. When a m s symb loads second and tries to define it again, LaTeX stops. Journal templates that load new t x math for you hit this often."
+  },
+  {
+   "type": "steps",
+   "short": true,
+   "label": "main.tex",
+   "lines": [
+    "Delete the line \\usepackage{amssymb}",
+    "Keep \\usepackage{newtxmath}, it has the same symbols",
+    "$ pdflatex main.tex"
+   ],
+   "narration": "Delete the line that loads a m s symb. Keep new t x math, which gives you the same symbols in a matching font. Then build again."
+  },
+  {
+   "type": "check",
+   "short": true,
+   "label": "Terminal",
+   "ok": "Built without errors",
+   "lines": [
+    "$ grep -c 'amssymb' main.tex",
+    "0",
+    "$ pdflatex main.tex",
+    "Output written on main.pdf (1 page, 32219 bytes)."
+   ],
+   "narration": "With a m s symb gone, the same document, which still uses blackboard bold R, builds with no errors."
+  },
+  {
+   "type": "app",
+   "name": "ModernTex",
+   "line": "Translates LaTeX build errors into plain explanations with a suggested fix, and marks them in the editor.",
+   "url": "purplelink.llc/moderntex",
+   "img": "site/assets/moderntex-screens/21-error-fix.webp",
+   "icon": "site/assets/moderntex-icon.png",
+   "narration": "If you write LaTeX on a Mac, ModernTex translates build errors into plain explanations with a suggested fix, and marks them in the editor."
+  }
+ ],
+ "thumbs": {
+  "A": {
+   "kind": "diff",
+   "hook": "Package clash",
+   "before": "`\\Bbbk' already defined.",
+   "after": "Output written on main.pdf"
+  },
+  "B": {
+   "kind": "focus",
+   "hook": "\\Bbbk\nerror?",
+   "lines": [
+    "LaTeX Error: Command",
+    "`\\Bbbk' already defined."
+   ],
+   "hl": "already defined."
+  },
+  "C": {
+   "kind": "product",
+   "name": "ModernTex",
+   "line": "\\Bbbk error? Explained",
+   "img": "site/assets/moderntex-screens/21-error-fix.webp",
+   "icon": "site/assets/moderntex-icon.png"
+  }
+ }
+}
