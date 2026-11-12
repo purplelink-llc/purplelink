@@ -60,6 +60,7 @@ PAGES = [
     "guides/overleaf-alternative-mac/",
     "guides/texshop-alternative-mac/",
     "guides/install-latex-on-mac/",
+    "guides/latex-grammar-check-mac/",
     "guides/overleaf-compile-timeout/",
     "guides/latex-compile-time-benchmark-mac/",
     "guides/submit-latex-source-to-journal-zip/",

@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>LaTeX grammar check on a Mac, offline: 4 options | Purplelink</title>
+    <meta name="description" content="Check grammar in a .tex file without uploading it: LanguageTool in TeXstudio, LTeX+ in VS Code, TeXtidote in Terminal, and ModernTex. Setup steps and limits.">
+    <link rel="canonical" href="https://purplelink.llc/guides/latex-grammar-check-mac/">
+    <meta property="og:title" content="LaTeX grammar check on a Mac, offline: 4 options">
+    <meta property="og:description" content="Four LaTeX grammar checkers that keep your paper on your Mac, with the setup for each and what they skip: commands, citations and maths.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/latex-grammar-check-mac/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/guides-latex-grammar-check-mac.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="LaTeX grammar check on a Mac, offline: 4 options">
+    <meta name="twitter:description" content="Four LaTeX grammar checkers that keep your paper on your Mac, with the setup for each and what they skip: commands, citations and maths.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/guides-latex-grammar-check-mac.jpg">
+    <meta name="twitter:image:alt" content="How to check grammar in LaTeX on a Mac, guide">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "LaTeX grammar check on a Mac, offline: 4 options",
+      "description": "How to check grammar in a LaTeX file on a Mac without uploading it: LanguageTool with a local server in TeXstudio, LTeX+ in VS Code, TeXtidote on the command line and ModernTex Manuscript Checks, with setup steps and limits.",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "datePublished": "2026-11-12",
+      "dateModified": "2026-11-12",
+      "image": "https://purplelink.llc/assets/og/cards/guides-latex-grammar-check-mac.jpg",
+      "mainEntityOfPage": "https://purplelink.llc/guides/latex-grammar-check-mac/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://purplelink.llc/guides/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Check grammar in LaTeX on a Mac",
+          "item": "https://purplelink.llc/guides/latex-grammar-check-mac/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Can I check grammar in LaTeX without uploading my paper?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. LanguageTool can run as a server on your own Mac for TeXstudio, LTeX+ checks offline inside VS Code, and TeXtidote runs LanguageTool from Terminal. ModernTex uses the macOS spelling and grammar checker. None of these needs to send the text anywhere."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does my grammar checker flag every \\cite?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It is reading the file as plain text, so commands and citation keys look like misspelled words. Use a checker that understands LaTeX: LTeX+, TeXtidote and TeXstudio with LanguageTool remove or skip the markup, and ModernTex skips commands, citation keys and maths in its spelling check."
+      }
+    }
+  ]
+}
+</script>
+    <script src="/theme.js"></script>
+<link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/motion.css">
+    <script src="/site.js" defer></script>
+    <script src="/motion.js" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+    <script src="/buddy-chat/loader.js" defer></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">How-to</p>
+        <h1 class="post-title">Check grammar in LaTeX on a Mac without uploading your paper</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-11-12">November 12, 2026</time></p>
+        <p class="post-lede">Most grammar checkers read prose, not LaTeX. Commands, citations and maths show up as errors, and many tools send your draft to a server. These are the options that understand LaTeX, and all four keep the text on your Mac.</p>
+      </div>
+
+      <article class="post-body">
+        <p>A <code>.tex</code> file mixes the sentences you wrote with markup such as <code>\cite{smith2024}</code>, <code>$x_i$</code> and <code>\begin{equation}</code>. A checker built for plain text marks that markup as misspelled words or broken sentences, so the real mistakes get lost in the noise. The tools below either strip the markup before checking or skip it when they report.</p>
+
+        <h2 id="options">The four options</h2>
+        <table class="compare-table compare-stack">
+          <caption>LaTeX grammar checkers that run on a Mac, read November 12, 2026</caption>
+          <thead>
+            <tr>
+              <th scope="col">Tool</th>
+              <th scope="col">Where you use it</th>
+              <th scope="col">What you need</th>
+              <th scope="col">Cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">LanguageTool with a local server</th>
+              <td data-label="Where you use it">TeXstudio, as you type</td>
+              <td data-label="What you need">LanguageTool and Java installed on the Mac</td>
+              <td data-label="Cost">Free</td>
+            </tr>
+            <tr>
+              <th scope="row">LTeX+</th>
+              <td data-label="Where you use it">VS Code, as you type</td>
+              <td data-label="What you need">The LTeX+ extension, plus LaTeX Workshop for <code>.tex</code> files</td>
+              <td data-label="Cost">Free</td>
+            </tr>
+            <tr>
+              <th scope="row">TeXtidote</th>
+              <td data-label="Where you use it">Terminal, one report per run</td>
+              <td data-label="What you need">Java</td>
+              <td data-label="Cost">Free</td>
+            </tr>
+            <tr>
+              <th scope="row">ModernTex Manuscript Checks</th>
+              <td data-label="Where you use it">ModernTex, when you run the checks</td>
+              <td data-label="What you need">ModernTex on macOS</td>
+              <td data-label="Cost">$19.99 once, after a 7-day trial</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>I read each tool's own documentation on November 12, 2026. I did not run the three free tools on a paper for this page, and I do not rank them by accuracy.</p>
+
+        <h2 id="languagetool-texstudio">LanguageTool with a local server in TeXstudio</h2>
+        <p>LanguageTool is the grammar engine behind the next three options. It can run as a small server on your own Mac, and TeXstudio knows how to talk to it. TeXstudio's manual says the grammar checker needs a separate install of LanguageTool and Java. Once LanguageTool is running, it serves at <code>http://localhost:8081/</code> and TeXstudio connects to it when TeXstudio starts. Paragraphs you type go to that local server, not to the internet.</p>
+        <ol>
+          <li>Install Java and LanguageTool. LanguageTool's server page gives a Homebrew route for macOS, though the LanguageTool team does not support it: <code>brew install languagetool</code>, then <code>brew services start languagetool</code> to run the server in the background. If it says Java cannot be found, install Java 8 or later first.</li>
+          <li>Or start it by hand from the unzipped LanguageTool folder: <code>java -cp languagetool-server.jar org.languagetool.server.HTTPServer --config server.properties --port 8081</code>. If you have no settings to add, create an empty <code>server.properties</code> file first.</li>
+          <li>Check that it answers: <code>curl -d "language=en-US" -d "text=a simple test" http://localhost:8081/v2/check</code> should return a short JSON reply.</li>
+          <li>Start TeXstudio. To have TeXstudio start LanguageTool for you, enter the path to the LanguageTool jar on the grammar page of TeXstudio's settings, and the path to Java if it is not on the default path.</li>
+        </ol>
+        <p><strong>Limits:</strong> you look after Java and the server yourself, and the checking happens only inside TeXstudio. LanguageTool says its AI-based rules are only available in the cloud, so a local server does not have them. The long-running <a href="https://tex.stackexchange.com/q/155148" rel="noopener">TeX Stack Exchange question on LanguageTool in TeXstudio</a> collects the problems people hit with this setup.</p>
+
+        <h2 id="ltex-plus">LTeX+ in VS Code</h2>
+        <p>LTeX+ is a VS Code extension that runs LanguageTool against LaTeX, Markdown and other markup. Its README says it comes with everything included, with no need to install Java or LanguageTool, and that offline checking does not upload anything. On first use it downloads its language server if it cannot find one, and the project documents an offline installation as well. VS Code does not know LaTeX on its own, so install LaTeX Workshop next to it.</p>
+        <ol>
+          <li>Install LaTeX Workshop and LTeX+ from the VS Code extensions view.</li>
+          <li>Open a <code>.tex</code> file. Possible errors are underlined in the editor.</li>
+                  </ol>
+        <p>The latest releases on GitHub were vscode-ltex-plus 15.7.1 and ltex-ls-plus 18.7.0, both from June 13, 2026. LTeX+ describes itself as the successor to the original LTeX extension, whose GitHub repositories are now archived. If you search for <em>ltex vscode not working</em>, check first which of the two you have installed: the archived one gets no fixes.</p>
+        <p><strong>Limits:</strong> it lives inside VS Code, and the first run needs a download unless you install offline.</p>
+
+        <h2 id="textidote">TeXtidote on the command line</h2>
+        <p>TeXtidote reads your <code>.tex</code> file, removes the markup, passes the clean text to the LanguageTool library and maps each finding back to the right line of your source. It is a Java program. <code>brew install textidote</code> installs it with Java and gives you a <code>textidote</code> command; if you download the jar from GitHub instead, type <code>java -jar textidote.jar</code> where the steps say <code>textidote</code>.</p>
+        <ol>
+          <li>Run it with a language and an HTML report: <code>textidote --check en --output html paper.tex &gt; report.html</code>.</li>
+          <li>Open <code>report.html</code> in a browser to see your source with the findings marked.</li>
+          <li>Add <code>--dict words.txt</code> with one word per line for names and terms it should accept.</li>
+        </ol>
+        <p><strong>Limits:</strong> there is no live highlighting while you type. You run it, read the report and go back to your editor.</p>
+
+        <h2 id="moderntex">ModernTex Manuscript Checks</h2>
+        <p>ModernTex runs a spelling and grammar pass in Manuscript Checks. It uses the spelling and grammar checker built into macOS, and the text stays on your Mac. Spelling skips commands, citation keys, labels and maths. Grammar is on by default and can be turned off with <strong>Check Grammar in Manuscript Checks</strong> in Settings. I make ModernTex.</p>
+        <p><strong>Limits:</strong> it is Apple's checker, not LanguageTool, so it is less thorough on style. Grammar findings come back for whole sentences, so a sentence dense with markup can still draw an odd finding. If that gets noisy, switch grammar off and keep the spelling check.</p>
+
+        <h2 id="overleaf">If you write in Overleaf</h2>
+        <p>Overleaf's own help lists Writefull language suggestions, described as grammar and fluency edits for academic writing, among the AI features you switch on in Overleaf. Your project already lives on Overleaf's servers, so the choice there is about which features you enable, not about uploading. To check grammar on your Mac instead, download the project as a ZIP and use one of the tools above.</p>
+
+        <h2 id="last-checked">Last checked</h2>
+        <p>November 12, 2026. Commands, requirements and versions were read from these pages on that day. Versions change, so check the source before you rely on a detail.</p>
+        <ul>
+          <li>LanguageTool: <a href="https://dev.languagetool.org/http-server" rel="noopener">HTTP server</a> (server command, Homebrew service, test URL).</li>
+          <li>TeXstudio: <a href="https://texstudio-org.github.io/configuration.html" rel="noopener">configuration manual</a> (configuring the grammar checker).</li>
+          <li>LTeX+: <a href="https://github.com/ltex-plus/vscode-ltex-plus" rel="noopener">vscode-ltex-plus</a> and <a href="https://github.com/ltex-plus/ltex-ls-plus" rel="noopener">ltex-ls-plus</a> on GitHub (README, releases) and the <a href="https://ltex-plus.github.io/ltex-plus/" rel="noopener">documentation</a>.</li>
+          <li>TeXtidote: <a href="https://github.com/sylvainhalle/textidote" rel="noopener">README</a> (options and report format) and the <a href="https://formulae.brew.sh/formula/textidote" rel="noopener">Homebrew formula</a> (version 0.9).</li>
+          <li>TeX Stack Exchange: <a href="https://tex.stackexchange.com/q/155148" rel="noopener">LanguageTool in TeXstudio</a>.</li>
+          <li>Overleaf: <a href="https://www.overleaf.com/learn/how-to/Writefull_integration" rel="noopener">Writefull integration</a>.</li>
+        </ul>
+        <p>If something here is out of date or wrong, write to <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> and I will fix it.</p>
+      </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>Can I check grammar in LaTeX without uploading my paper?</summary><div class="faq-body">Yes. LanguageTool can run as a server on your own Mac for TeXstudio, LTeX+ checks offline inside VS Code, and TeXtidote runs LanguageTool from Terminal. ModernTex uses the macOS spelling and grammar checker. None of these needs to send the text anywhere.</div></details>
+        <details><summary>Why does my grammar checker flag every \cite?</summary><div class="faq-body">It is reading the file as plain text, so commands and citation keys look like misspelled words. Use a checker that understands LaTeX: LTeX+, TeXtidote and TeXstudio with LanguageTool remove or skip the markup, and ModernTex skips commands, citation keys and maths in its spelling check.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools and guides">
+        <h2>Related tools and guides</h2>
+        <ul>
+          <li><a href="/moderntex/">ModernTex, a LaTeX editor for Mac</a></li>
+          <li><a href="/guides/best-mac-latex-editors/">Best LaTeX editors for Mac</a></li>
+          <li><a href="/guides/install-latex-on-mac/">How to install LaTeX on a Mac</a></li>
+          <li><a href="/guides/overleaf-alternative-mac/">Overleaf alternatives for Mac</a></li>
+          <li><a href="/guides/latex/">LaTeX guides hub</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/nee/">Née</a></li>
+            <li><a href="/lenses/">Lenses</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/suite/">Mac Suite</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/games/sports/">Sports games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js" defer></script>
+</body>
+</html>
