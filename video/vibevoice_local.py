@@ -16,7 +16,8 @@ Why this shape (TTS bake-off 2026-11-09, Ben's pick): VibeVoice keeps a cloned v
 long pass speeds up (212 wpm on a 90 s script), so text is read three sentences at a time and joined with a short
 pause. The model gives no timings, so Whisper large-v3-turbo transcribes the result with word timestamps and the
 script's tokens are matched to Whisper's words (difflib); unmatched tokens get times interpolated from neighbours.
-A take whose transcript matches under MIN_MATCH of the script fails, and narrate.py falls back to the current voice.
+A take whose transcript matches under MIN_MATCH of the script is still written but marked not ok; narrate.py retries it
+and keeps the best take (Ben 2026-11-12: VibeVoice only, never another voice).
 """
 import argparse
 import difflib
@@ -114,16 +115,17 @@ def main():
                     heard.append({"word": w["word"].strip(), "start": float(w["start"]), "end": float(w["end"])})
             words, match = align(j["text"].split(), heard)
             r["match"] = round(match, 3)
-            if match < MIN_MATCH:
-                raise RuntimeError(f"transcript matched {match:.0%} of the script (need {MIN_MATCH:.0%})")
             subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", wav, "-c:a", "libmp3lame", "-b:a", "192k",
                             j["mp3"]], check=True, stdin=subprocess.DEVNULL)
             os.remove(wav)
             tmp = j["words"] + ".tmp"
             json.dump(words, open(tmp, "w"))
             os.replace(tmp, j["words"])
-            r["ok"] = True
-        except Exception as e:  # one failed take fails the job; narrate.py decides the fallback
+            # a take under MIN_MATCH is still written (mp3 + words) so narrate.py can keep the best of several takes
+            r["ok"] = match >= MIN_MATCH
+            if not r["ok"]:
+                r["error"] = f"transcript matched {match:.0%} of the script (need {MIN_MATCH:.0%})"
+        except Exception as e:  # no audio for this job; narrate.py retries it
             r["error"] = f"{type(e).__name__}: {str(e)[:200]}"
         results.append(r)
         print(json.dumps(r), file=sys.stderr)

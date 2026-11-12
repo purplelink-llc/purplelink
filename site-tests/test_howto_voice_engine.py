@@ -1,5 +1,5 @@
-"""How-to narration switch (2026-11-09): VibeVoice with the stored narrator voice is opt-in and off by default, and a
-failed take puts the whole video back on the current voice. No model runs here: the runner's alignment is pure Python
+"""How-to narration (2026-11-12, Ben): VibeVoice with the stored narrator voice for every how-to, never another voice.
+A take under the transcript bar is retried (up to VV_TAKES) and the best kept; a scene with no audio stops the build. No model runs here: the runner's alignment is pure Python
 and the batch call is replaced by a fake."""
 import importlib.util
 import json
@@ -39,25 +39,18 @@ class Switch(unittest.TestCase):
             out = subprocess.run(["node", "--input-type=module", "-e", js], capture_output=True, text=True, check=True)
             return json.loads(out.stdout)
 
-    def test_off_by_default(self):
-        self.assertEqual(self.engine({}), ["default", None])
-
-    def test_file_turns_it_on(self):
+    def test_on_by_default(self):
+        self.assertEqual(self.engine({}), ["vibevoice", "vibevoice"])
         self.assertEqual(self.engine({}, "vibevoice\n"), ["vibevoice", "vibevoice"])
 
-    def test_env_wins_over_file(self):
-        self.assertEqual(self.engine({"HOWTO_TTS_ENGINE": "vibevoice"}), ["vibevoice", "vibevoice"])
+    def test_kokoro_only_when_asked(self):
         self.assertEqual(self.engine({"HOWTO_TTS_ENGINE": "kokoro"}, "vibevoice"), ["default", None])
+        self.assertEqual(self.engine({}, "kokoro\n"), ["default", None])
+        self.assertEqual(self.engine({"HOWTO_TTS_ENGINE": "vibevoice"}, "kokoro"), ["vibevoice", "vibevoice"])
 
-    def test_unknown_values_and_stray_engine_stay_off(self):
-        self.assertEqual(self.engine({}, "on"), ["default", None])
-        self.assertEqual(self.engine({"TTS_ENGINE": "vibevoice"}), ["default", None])
-        self.assertEqual(self.engine({"TTS_ENGINE": "edge"}), ["default", "edge"])
-
-    def test_this_mac_has_the_switch_off(self):
-        f = Path.home() / ".config" / "purplelink" / "howto-voice-engine"
-        if f.exists():
-            self.assertNotEqual(f.read_text().strip().lower(), "vibevoice", "switch is on; Ben has not turned it on")
+    def test_unknown_values_stay_on(self):
+        self.assertEqual(self.engine({}, "on"), ["vibevoice", "vibevoice"])
+        self.assertEqual(self.engine({"TTS_ENGINE": "edge"}), ["vibevoice", "vibevoice"])
 
 
 class EngineGate(unittest.TestCase):
@@ -67,9 +60,18 @@ class EngineGate(unittest.TestCase):
         with mock.patch.dict("os.environ", {"TTS_ENGINE": "kokoro"}):
             self.assertFalse(nar.vibevoice_on())
 
-    def test_kokoro_stays_on_with_vibevoice(self):  # the fallback must still be available
-        with mock.patch.dict("os.environ", {"TTS_ENGINE": "vibevoice"}):
-            self.assertEqual(nar.kokoro_on(), nar.KOKORO_PY.exists() and nar.KOKORO_RUNNER.exists())
+    def test_requested_but_missing_stops(self):
+        with mock.patch.dict("os.environ", {"TTS_ENGINE": "vibevoice"}), \
+             mock.patch.object(nar, "VV_PY", Path("/nonexistent/python")), \
+             mock.patch.object(sys, "argv", ["narrate.py", str(VIDEO / "storyboards" / "howto" / "none.json")]), \
+             mock.patch.object(Path, "read_text", return_value=json.dumps({"id": "t", "scenes": []})), \
+             mock.patch.object(Path, "mkdir"):
+            with self.assertRaises(SystemExit) as cm:
+                nar.main()
+        self.assertIn("not narrating with another voice", str(cm.exception.code))
+
+    def test_bars_agree(self):
+        self.assertEqual(nar.VV_MIN_MATCH, vvl.MIN_MATCH)
 
     def test_respelling_is_spoken_only(self):
         self.assertEqual(nar.spoken("Open Tapefolio and ModernTex."), "Open Tape-folio and Modern Tech.")
@@ -112,7 +114,7 @@ class Runner(unittest.TestCase):
         self.assertGreaterEqual(vvl.MIN_MATCH, 0.8)
 
 
-class Fallback(unittest.TestCase):
+class VibeVoiceOnly(unittest.TestCase):
     SB = {"id": "t", "scenes": [{"narration": "First line here."}, {"narration": ""}, {"narration": "Second line."}]}
 
     def run_vv(self, fake, live=b"KOKORO"):
@@ -127,7 +129,11 @@ class Fallback(unittest.TestCase):
              mock.patch.object(nar, "probe_duration", return_value=1.0):
             return nar.narrate_vibevoice(self.SB, out, {}, False), out
 
-    def test_any_failure_falls_back_for_the_whole_video(self):
+    @staticmethod
+    def words(t):
+        return [{"word": w.strip("."), "start": 0, "end": 0} for w in t.split()]
+
+    def test_no_audio_after_every_take_stops_and_leaves_live_audio(self):
         calls = []
 
         def fake(items):
@@ -136,25 +142,71 @@ class Fallback(unittest.TestCase):
             for t, m in items:
                 if t.startswith("First"):
                     m.write_bytes(b"VV")
-                    got[m] = [{"word": w, "start": 0, "end": 0} for w in t.split()]
+                    got[m] = (self.words(t), 1.0)
+            return got
+        with self.assertRaises(nar.VibeVoiceFailed):
+            self.run_vv(fake)
+        self.assertEqual(calls, [2] + [1] * (nar.VV_TAKES - 1))  # retries only the failed scene
+
+    def test_failure_leaves_live_audio_untouched(self):
+        def fake(items):
+            return {}
+        d = tempfile.TemporaryDirectory()
+        self.addCleanup(d.cleanup)
+        out = Path(d.name)
+        (out / "audio").mkdir()
+        (out / "audio" / "scene-0.mp3").write_bytes(b"LIVE")
+        with mock.patch.object(nar, "synth_vibevoice_batch", side_effect=fake), \
+             mock.patch.object(nar, "vv_prefix", return_value="vv|x|"):
+            with self.assertRaises(nar.VibeVoiceFailed):
+                nar.narrate_vibevoice(self.SB, out, {}, False)
+        self.assertEqual(sorted(p.name for p in (out / "audio").iterdir()), ["scene-0.mp3"])
+        self.assertEqual((out / "audio" / "scene-0.mp3").read_bytes(), b"LIVE")
+
+    def test_low_match_keeps_best_take_never_another_voice(self):
+        scores = iter([0.70, 0.80, 0.75])  # scene 2's three takes; scene 0 passes first time
+
+        def fake(items):
+            got = {}
+            for t, m in items:
+                s = 1.0 if t.startswith("First") else next(scores)
+                m.write_bytes(f"VV{s}".encode())
+                got[m] = (self.words(t), s)
             return got
         scenes, out = self.run_vv(fake)
-        self.assertIsNone(scenes)
-        self.assertEqual(calls, [2, 1])  # one retry, only for the failed scene
-        self.assertEqual(sorted(p.name for p in (out / "audio").iterdir()), ["scene-0.mp3", "scene-2.mp3"])
-        self.assertEqual((out / "audio" / "scene-0.mp3").read_bytes(), b"KOKORO")  # live audio untouched
+        self.assertEqual([s.get("engine") for s in scenes], ["vibevoice", None, "vibevoice"])
+        self.assertEqual((out / "audio" / "scene-2.mp3").read_bytes(), b"VV0.8")
+        self.assertEqual(scenes[2]["match"], 0.8)
+        self.assertTrue(scenes[2]["hash"])  # kept: a rebuild reuses it
+        self.assertFalse([p for p in (out / "audio").iterdir() if ".vv" in p.name])
+
+    def test_stops_retrying_once_a_take_passes(self):
+        calls = []
+        scores = iter([0.5, 0.9])
+
+        def fake(items):
+            calls.append(len(items))
+            got = {}
+            for t, m in items:
+                s = 1.0 if t.startswith("First") else next(scores)
+                m.write_bytes(b"VV")
+                got[m] = (self.words(t), s)
+            return got
+        scenes, _ = self.run_vv(fake)
+        self.assertEqual(calls, [2, 1])
+        self.assertEqual(scenes[2]["match"], 0.9)
 
     def test_success_moves_takes_into_place(self):
         def fake(items):
             got = {}
             for t, m in items:
                 m.write_bytes(b"VV")
-                got[m] = [{"word": w.strip("."), "start": 0, "end": 0} for w in t.split()]
+                got[m] = (self.words(t), 1.0)
             return got
         scenes, out = self.run_vv(fake)
         self.assertEqual([s.get("engine") for s in scenes], ["vibevoice", None, "vibevoice"])
         self.assertEqual((out / "audio" / "scene-2.mp3").read_bytes(), b"VV")
-        self.assertFalse(list((out / "audio").glob("*.vv.mp3")))
+        self.assertFalse([p for p in (out / "audio").iterdir() if ".vv" in p.name])
         self.assertEqual(scenes[0]["words"][-1]["display"], "here.")
 
 

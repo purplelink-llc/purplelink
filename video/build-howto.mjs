@@ -1,6 +1,6 @@
 // node build-howto.mjs <slug> [--stills t1,t2] [--skip-narrate] [--skip-gate] [--concurrency N]
 // A daily problem-and-fix video (src/HowTo.jsx) from storyboards/howto/<slug>.json: the publish gate
-// (scripts/howto_gate.py), narration (narrate.py: Kokoro, or VibeVoice when src/howto/voice-engine.js is switched on), the 16:9 tutorial, the 9:16 Short
+// (scripts/howto_gate.py), narration (narrate.py: VibeVoice only, see src/howto/voice-engine.js; a failed narration stops the build), the 16:9 tutorial, the 9:16 Short
 // (scenes marked "short"), and thumbnails A/B/C for Test & Compare (build-thumbs.mjs).
 // Outputs out/howto/<slug>/: <slug>-16x9.mp4, <slug>-9x16.mp4, <slug>-thumb-{A,B,C}.jpg, run-log.txt.
 import fs from "node:fs";

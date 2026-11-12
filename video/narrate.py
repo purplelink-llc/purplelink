@@ -213,11 +213,12 @@ def synth_kokoro_batch(items: list[tuple[str, Path]], voice: str, rate: str) -> 
     return out
 
 
-# ---- VibeVoice (opt-in, how-tos) ---------------------------------------------------------------------------------
+# ---- VibeVoice (how-tos) ------------------------------------------------------------------------------------------
 # TTS_ENGINE=vibevoice clones one stored narrator voice (video/voices/howto-narrator.wav, designed once with Qwen3-TTS
-# VoiceDesign; synthetic, no real person) with VibeVoice-1.5B, three sentences at a time. build-howto.mjs sets it only
-# when the how-to switch is on. If any scene fails twice, the whole storyboard falls back to Kokoro, so one video never
-# mixes two voices.
+# VoiceDesign; synthetic, no real person) with VibeVoice-1.5B, three sentences at a time. build-howto.mjs sets it for
+# every how-to (src/howto/voice-engine.js). VibeVoice only (Ben 2026-11-12): no fallback to Kokoro or edge. A scene whose
+# take misses the transcript bar gets up to VV_TAKES takes and keeps the best; a scene with no audio at all stops the
+# build (exit 3) rather than switching voice.
 VV_PY = Path(os.environ.get("VIBEVOICE_PY", "/Volumes/Extreme SSD/_tools/vibevoice/venv/bin/python"))
 VV_RUNNER = HERE / "vibevoice_local.py"
 VV_REF = Path(os.environ.get("VIBEVOICE_REF", str(HERE / "voices" / "howto-narrator.wav")))
@@ -226,9 +227,16 @@ PRONOUNCE = {"Tapefolio": "Tape-folio", "Lenscrib": "Lens-scrib", "ModernTex": "
              "Keyfeel": "Key-feel", "Summonly": "Summon-lee", "Panely": "Pane-lee"}
 
 
+VV_TAKES = 3
+VV_MIN_MATCH = 0.85  # same bar as vibevoice_local.MIN_MATCH (a test keeps them equal)
+
+
+def vibevoice_requested() -> bool:
+    return (os.environ.get("TTS_ENGINE") or "").strip().lower() == "vibevoice"
+
+
 def vibevoice_on() -> bool:
-    return ((os.environ.get("TTS_ENGINE") or "").strip().lower() == "vibevoice"
-            and VV_PY.exists() and VV_RUNNER.exists() and VV_REF.exists())
+    return vibevoice_requested() and VV_PY.exists() and VV_RUNNER.exists() and VV_REF.exists()
 
 
 def vv_prefix() -> str:
@@ -241,10 +249,11 @@ def spoken(text: str) -> str:
     return text
 
 
-def synth_vibevoice_batch(items: list[tuple[str, Path]]) -> dict[Path, list[dict]]:
-    """[(text, mp3)] -> {mp3: words} for the scenes VibeVoice rendered and Whisper confirmed. One model load."""
+def synth_vibevoice_batch(items: list[tuple[str, Path]]) -> dict[Path, tuple[list[dict], float]]:
+    """[(text, mp3)] -> {mp3: (words, match)} for every scene VibeVoice produced audio for, including takes under the
+    transcript bar (match < VV_MIN_MATCH). One model load."""
     import tempfile
-    out: dict[Path, list[dict]] = {}
+    out: dict[Path, tuple[list[dict], float]] = {}
     if not items:
         return out
     with tempfile.TemporaryDirectory(prefix="video-vibevoice-") as d:
@@ -261,18 +270,28 @@ def synth_vibevoice_batch(items: list[tuple[str, Path]]) -> dict[Path, list[dict
             return out
         if p.returncode:
             print(f"VibeVoice exited {p.returncode}: {p.stderr[-400:]}", file=sys.stderr)
+        try:
+            match = {r["mp3"]: float(r.get("match") or 0)
+                     for r in json.loads((Path(d) / "results.json").read_text()).get("jobs", [])}
+        except (OSError, ValueError):
+            match = {}
         for j, (text, mp3) in zip(jobs, items):
             try:
                 words = json.loads(Path(j["words"]).read_text())
             except (OSError, ValueError):
                 continue
             if words and len(words) == len(text.split()) and Path(mp3).exists() and Path(mp3).stat().st_size:
-                out[mp3] = words
+                out[mp3] = (words, match.get(str(mp3), 0.0))
     return out
 
 
-def narrate_vibevoice(sb: dict, out_dir: Path, old: dict, force: bool) -> list[dict] | None:
-    """All scenes in the cloned voice, or None (nothing usable written to timing) so the caller uses Kokoro for all."""
+class VibeVoiceFailed(RuntimeError):
+    pass
+
+
+def narrate_vibevoice(sb: dict, out_dir: Path, old: dict, force: bool) -> list[dict]:
+    """All scenes in the cloned voice. Up to VV_TAKES takes per scene, keeping the best transcript match; raises
+    VibeVoiceFailed (live audio untouched) when a scene has no audio after every take. Never another voice."""
     vv = vv_prefix()
     todo, cached = [], {}
     for i, sc in enumerate(sb["scenes"]):
@@ -285,18 +304,34 @@ def narrate_vibevoice(sb: dict, out_dir: Path, old: dict, force: bool) -> list[d
         if not force and prev and prev.get("hash") == h and mp3.exists():
             cached[i] = prev
         else:
-            todo.append((i, text, mp3.with_name(f"scene-{i}.vv.mp3"), h))
-    got = synth_vibevoice_batch([(t, m) for _, t, m, _ in todo])
-    retry = [x for x in todo if x[2] not in got]
-    if retry:  # one more take for the scenes that failed the transcript check
-        print(f"VibeVoice: retrying {len(retry)} scene(s)", file=sys.stderr)
-        got.update(synth_vibevoice_batch([(t, m) for _, t, m, _ in retry]))
-    if any(x[2] not in got for x in todo):
-        print("VibeVoice failed on a scene twice; narrating the whole storyboard with the current voice", file=sys.stderr)
-        for _, _, m, _ in todo:
-            m.unlink(missing_ok=True)
-        return None
-    fresh = {i: (t, m, h) for i, t, m, h in todo}
+            todo.append((i, text, h))
+    best: dict[int, tuple[float, Path, list[dict]]] = {}  # scene -> (match, take file, words)
+    for n in range(VV_TAKES):
+        want = [x for x in todo if x[0] not in best or best[x[0]][0] < VV_MIN_MATCH]
+        if not want:
+            break
+        if n:
+            print(f"VibeVoice: take {n + 1} of {VV_TAKES} for {len(want)} scene(s)", file=sys.stderr)
+        takes = {i: out_dir / "audio" / f"scene-{i}.vv{n}.mp3" for i, _, _ in want}
+        got = synth_vibevoice_batch([(t, takes[i]) for i, t, _ in want])
+        for i, _, _ in want:
+            take = takes[i]
+            if take not in got:
+                take.unlink(missing_ok=True)
+                continue
+            words, m = got[take]
+            if i not in best or m > best[i][0]:
+                if i in best:
+                    best[i][1].unlink(missing_ok=True)
+                best[i] = (m, take, words)
+            else:
+                take.unlink(missing_ok=True)
+    missing = [i for i, _, _ in todo if i not in best]
+    if missing:
+        for m, take, _ in best.values():
+            take.unlink(missing_ok=True)
+        raise VibeVoiceFailed(f"VibeVoice produced no audio for scene(s) {missing} after {VV_TAKES} takes")
+    fresh = {i: (t, h) for i, t, h in todo}
     scenes = []
     for i, sc in enumerate(sb["scenes"]):
         text = (sc.get("narration") or "").strip()
@@ -306,14 +341,21 @@ def narrate_vibevoice(sb: dict, out_dir: Path, old: dict, force: bool) -> list[d
             scenes.append(cached[i])
             print(f"scene {i}: cached ({cached[i]['duration']:.2f}s)")
         else:
-            t, take, h = fresh[i]
+            t, h = fresh[i]
+            m, take, raw = best[i]
             mp3 = out_dir / "audio" / f"scene-{i}.mp3"
             os.replace(take, mp3)
-            words = restore_punctuation(got[take], t)
+            words = restore_punctuation(raw, t)
             dur = probe_duration(mp3)
-            scenes.append({"index": i, "audio": f"audio/{sb['id']}/scene-{i}.mp3", "duration": dur,
-                           "words": words, "hash": h, "engine": "vibevoice"})
-            print(f"scene {i}: vibevoice, {len(words)} words, {dur:.2f}s")
+            scene = {"index": i, "audio": f"audio/{sb['id']}/scene-{i}.mp3", "duration": dur,
+                     "words": words, "hash": h, "engine": "vibevoice", "match": round(m, 3)}
+            if m < VV_MIN_MATCH:
+                # kept anyway (best of VV_TAKES): a low score is usually Whisper spelling a spelled-out name differently
+                # ("a m s symb" heard as "AMS Sim", 2026-11-12), not missing speech
+                print(f"WARNING scene {i}: best VibeVoice take matched {m:.0%} of the script "
+                      f"(bar {VV_MIN_MATCH:.0%}); kept it, no other voice", file=sys.stderr)
+            scenes.append(scene)
+            print(f"scene {i}: vibevoice, {len(words)} words, {dur:.2f}s, match {m:.0%}")
     return scenes
 
 
@@ -332,13 +374,19 @@ def main() -> None:
     old = {}
     if timing_path.exists():
         old = {s["index"]: s for s in json.loads(timing_path.read_text()).get("scenes", [])}
+    if vibevoice_requested():  # how-tos: VibeVoice only, never another voice (Ben 2026-11-12)
+        if not vibevoice_on():
+            sys.exit(f"VibeVoice requested but not installed (need {VV_PY}, {VV_RUNNER}, {VV_REF}); "
+                     "not narrating with another voice")
+        try:
+            vv_scenes = narrate_vibevoice(sb, out_dir, old, force)
+        except VibeVoiceFailed as e:
+            print(f"ERROR {e}; not narrating with another voice", file=sys.stderr)
+            sys.exit(3)
+        timing_path.write_text(json.dumps({"voice": voice, "rate": rate, "scenes": vv_scenes}, indent=1))
+        print(f"wrote {timing_path}")
+        return
     key = eleven_key()
-    if not key and vibevoice_on():
-        vv_scenes = narrate_vibevoice(sb, out_dir, old, force)
-        if vv_scenes is not None:
-            timing_path.write_text(json.dumps({"voice": voice, "rate": rate, "scenes": vv_scenes}, indent=1))
-            print(f"wrote {timing_path}")
-            return
     use_kokoro = not key and kokoro_on()
     # Kokoro audio is cached under its own hash (voice and speed included), so a storyboard narrated before the switch
     # is re-narrated whole instead of mixing cached edge scenes with new Kokoro ones
