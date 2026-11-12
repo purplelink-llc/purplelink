@@ -4,21 +4,21 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
-    <title>Free Citation Generator: APA, MLA, IEEE | Purplelink</title>
-    <meta name="description" content="Free citation generator. Enter a DOI, arXiv ID, or ISBN and get a formatted citation in APA, MLA, Chicago, and IEEE - copy with one click. Nothing stored.">
+    <title>Free Citation Generator: APA, MLA, IEEE, ACM | Purplelink</title>
+    <meta name="description" content="Free citation generator. Enter a DOI, arXiv ID, or ISBN and get a formatted citation in APA, MLA, Chicago, IEEE, and ACM - copy with one click. Nothing stored.">
     <link rel="canonical" href="https://purplelink.llc/tools/citation-generator/">
-    <meta property="og:title" content="Free Citation Generator - APA, MLA, Chicago & IEEE">
-    <meta property="og:description" content="Free citation generator. Enter a DOI, arXiv ID, or ISBN and get a formatted citation in APA, MLA, Chicago, and IEEE - copy with one click. Nothing stored.">
+    <meta property="og:title" content="Free Citation Generator - APA, MLA, Chicago, IEEE & ACM">
+    <meta property="og:description" content="Free citation generator. Enter a DOI, arXiv ID, or ISBN and get a formatted citation in APA, MLA, Chicago, IEEE, and ACM - copy with one click. Nothing stored.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://purplelink.llc/tools/citation-generator/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/citation-generator.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Free Citation Generator - APA, MLA, Chicago & IEEE">
-    <meta name="twitter:description" content="Free citation generator. Enter a DOI, arXiv ID, or ISBN and get a formatted citation in APA, MLA, Chicago, and IEEE - copy with one click. Nothing stored.">
+    <meta name="twitter:title" content="Free Citation Generator - APA, MLA, Chicago, IEEE & ACM">
+    <meta name="twitter:description" content="Free citation generator. Enter a DOI, arXiv ID, or ISBN and get a formatted citation in APA, MLA, Chicago, IEEE, and ACM - copy with one click. Nothing stored.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/citation-generator.png">
-    <meta name="twitter:image:alt" content="Free Citation Generator - APA, MLA, Chicago & IEEE">
+    <meta name="twitter:image:alt" content="Free Citation Generator - APA, MLA, Chicago, IEEE & ACM">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -31,11 +31,11 @@
           "operatingSystem": "Any (web-based)",
           "browserRequirements": "Requires JavaScript",
           "image": "https://purplelink.llc/assets/og/citation-generator.png",
-          "description": "A free citation generator. Enter a DOI, arXiv ID, or ISBN and get a formatted citation in APA, MLA, Chicago, and IEEE. Lookups go directly from your browser to public APIs - nothing is stored.",
+          "description": "A free citation generator. Enter a DOI, arXiv ID, or ISBN and get a formatted citation in APA, MLA, Chicago, IEEE, and ACM. Lookups go directly from your browser to public APIs - nothing is stored.",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
           "featureList": [
             "Auto-detect DOI, arXiv ID, or ISBN",
-            "Format citations in APA 7th, MLA 9th, Chicago author-date, and IEEE",
+            "Format citations in APA 7th, MLA 9th, Chicago author-date, IEEE, and ACM Reference Format",
             "One-click copy and manual entry - nothing is stored"
           ],
           "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
@@ -104,7 +104,7 @@
       <div class="tools-hero">
         <p class="eyebrow">Free web tool</p>
         <h1>Citation Generator</h1>
-        <p>Enter a <strong>DOI</strong>, <strong>arXiv ID</strong>, or <strong>ISBN</strong> and get a formatted citation in four styles: APA 7th, MLA 9th, Chicago (author-date), and IEEE. Copy any of them with one click, or type the details in by hand.</p>
+        <p>Enter a <strong>DOI</strong>, <strong>arXiv ID</strong>, or <strong>ISBN</strong> and get a formatted citation in five styles: APA 7th, MLA 9th, Chicago (author-date), IEEE, and the ACM Reference Format used by ACM conferences and journals. Copy any of them with one click, or type the details in by hand.</p>
       </div>
 
       <div class="tool-app">
@@ -181,7 +181,7 @@
         <h2>How to generate a citation</h2>
         <ol>
           <li>Paste a <strong>DOI</strong>, <strong>arXiv ID</strong>, or <strong>ISBN</strong> into the box (a doi.org or arxiv.org URL works too).</li>
-          <li>Click <strong>Generate</strong>. Your browser looks the reference up and formats it in four styles.</li>
+          <li>Click <strong>Generate</strong>. Your browser looks the reference up and formats it in five styles.</li>
           <li>Click <strong>Copy</strong> on the style you need. Don't have an identifier? Use <strong>enter details manually</strong> instead.</li>
           <li>Proofread the result against your style guide. Automated metadata is usually good but can contain errors.</li>
         </ol>
@@ -210,7 +210,7 @@
         <ul>
                     <li><a href="/guides/format-citation-from-doi-arxiv-id/"><span class="rel-kind">Guide</span>Format a citation from a DOI or arXiv ID</a></li>
                     <li><a href="/guides/citation-styles-explained/"><span class="rel-kind">Guide</span>IEEE vs APA vs MLA vs Chicago</a></li>
-<li><a href="/guides/citation-styles-explained/"><span class="rel-kind">Guide</span>IEEE vs APA vs MLA vs Chicago</a></li>
+<li><a href="/templates/acm-acmart/"><span class="rel-kind">Template</span>ACM LaTeX template (acmart)</a></li>
           <li><a href="/tools/bib-builder/">Build a BibTeX bibliography</a></li>
           <li><a href="/tools/bib-validator/">Validate a .bib file</a></li>
           <li><a href="/tools/">All LaTeX tools</a></li>
@@ -436,13 +436,50 @@
             return joinNonEmpty(parts, " ");
           }
 
+          // ACM Reference Format, as acmart's bibliography style prints it:
+          // full names, year after the authors, "Vol, Issue (Year), pages".
+          function acmAuthors(authors) {
+            var list = authors.map(givenFamily).filter(Boolean);
+            if (list.length === 0) return "";
+            if (list.length === 1) return list[0];
+            if (list.length === 2) return list[0] + " and " + list[1];
+            return list.slice(0, -1).join(", ") + ", and " + list[list.length - 1];
+          }
+
+          function formatACM(d) {
+            var parts = [];
+            var auth = acmAuthors(d.authors);
+            if (auth) parts.push(auth + ".");
+            if (d.year) parts.push(esc(d.year) + ".");
+            var pages = d.pages ? esc(String(d.pages).replace(/\s*-+\s*/g, "\u2013")) : "";
+            if (d.type === "book") {
+              if (d.title) parts.push("<em>" + esc(d.title) + "</em>.");
+              if (d.publisher) parts.push(esc(d.publisher) + ".");
+            } else if (d.type === "website") {
+              if (d.title) parts.push(esc(d.title) + ".");
+              if (d.container) parts.push(esc(d.container) + ".");
+              if (d.url) parts.push(esc(d.url));
+            } else {
+              if (d.title) parts.push(esc(d.title) + ".");
+              var src = d.container ? "<em>" + esc(d.container) + "</em>" : "";
+              if (d.volume) src = joinNonEmpty([src, esc(d.volume) + (d.issue ? ", " + esc(d.issue) : "")], " ");
+              if (d.year && (d.volume || d.issue)) src = joinNonEmpty([src, "(" + esc(d.year) + ")"], " ");
+              if (pages) src = src ? src + ", " + pages : pages;
+              if (src) parts.push(src + ".");
+              if (d.doi) parts.push("https://doi.org/" + esc(d.doi));
+              else if (d.url) parts.push(esc(d.url));
+            }
+            return joinNonEmpty(parts, " ");
+          }
+
           // ---- rendering --------------------------------------------------
           function renderCitations(d) {
             var styles = [
               ["APA 7th", formatAPA(d)],
               ["MLA 9th", formatMLA(d)],
               ["Chicago (author-date)", formatChicago(d)],
-              ["IEEE", formatIEEE(d)]
+              ["IEEE", formatIEEE(d)],
+              ["ACM Reference Format", formatACM(d)]
             ];
             resultEl.innerHTML = "";
             styles.forEach(function (s) {
