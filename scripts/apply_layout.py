@@ -81,7 +81,6 @@ FOOTER_COLUMNS = [
         ("LaTeX Diff", "/tools/latex-diff/"),
         ("Word Counter", "/tools/word-counter/"),
         ("Daily games", "/games/"),
-        ("Sports games", "/games/sports/"),
         ("All tools", "/tools/"),
     ]),
     ("Learn", [

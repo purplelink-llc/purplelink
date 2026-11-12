@@ -157,7 +157,8 @@ def _animals(rows):
     return cols, out, list(range(len(out)))
 
 
-GAMES = {"thinkerlink": ("scientists", _scientists), "riverlink": ("rivers", _rivers), "wildlink": ("animals", _animals), "citylink": ("cities", _cities), "peaklink": ("peaks", _peaks), "codelink": ("languages", _languages), "landlink": ("countries", _countries), "atomlink": ("elements", _elements), "prizelink": ("laureates", _laureates)}
+# Games freeze 2026-11-12: only Peaklink is still live; the other attribute games 301 to /games/.
+GAMES = {"peaklink": ("peaks", _peaks)}
 
 
 def build(src: Path, epoch: str, days: int, enc_text) -> dict[str, str]:

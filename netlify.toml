@@ -742,12 +742,12 @@
 
 [[redirects]]
   from = "/games/unbeaten/*"
-  to = "/games/under-the-cap/:splat"
+  to = "/games/"
   status = 301
 
 [[redirects]]
   from = "/games/unbeaten"
-  to = "/games/under-the-cap/"
+  to = "/games/"
   status = 301
 
 [[redirects]]
@@ -758,6 +758,187 @@
 [[redirects]]
   from = "/games/teamlink"
   to = "/games/lockerlink/"
+  status = 301
+
+# Games freeze (2026-11-12): low-traffic games were retired; their addresses go to the hub.
+[[redirects]]
+  from = "/games/atomlink/*"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/atomlink"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/citylink/*"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/citylink"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/codelink/*"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/codelink"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/daily-chess/*"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/daily-chess"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/daily-five/*"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/daily-five"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/daily-photo/*"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/daily-photo"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/daily-stars/*"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/daily-stars"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/gridlink/*"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/gridlink"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/landlink/*"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/landlink"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/prizelink/*"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/prizelink"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/riverlink/*"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/riverlink"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/sudoku/*"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/sudoku"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/sudoku-unlimited/*"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/sudoku-unlimited"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/tanklink/*"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/tanklink"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/thinkerlink/*"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/thinkerlink"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/under-the-cap/*"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/under-the-cap"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/wildlink/*"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/wildlink"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/sports/*"
+  to = "/games/"
+  status = 301
+
+[[redirects]]
+  from = "/games/sports"
+  to = "/games/"
   status = 301
 
 [[redirects]]

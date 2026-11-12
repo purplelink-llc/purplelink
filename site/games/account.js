@@ -4,7 +4,9 @@
   var G = window.PLGames, A = window.PLAch;
   if (!G || !A) return;
   var $ = function (id) { return document.getElementById(id); };
-  var GAMES = [["linkle", "Linkle"], ["quadlink", "Quadlink"], ["daily-five", "Daily Five"], ["daily-photo", "Daily Photo"], ["daily-chess", "Daily Chess"], ["sudoku", "Sudoku"], ["landlink", "Landlink"], ["atomlink", "Atomlink"], ["prizelink", "Prizelink"], ["citylink", "Citylink"], ["peaklink", "Peaklink"], ["codelink", "Codelink"], ["thinkerlink", "Thinkerlink"], ["riverlink", "Riverlink"], ["wildlink", "Wildlink"], ["lockerlink", "Lockerlink"], ["gridlink", "Gridlink"], ["under-the-cap", "Under the Cap"], ["tanklink", "Tanklink"], ["crossword", "Crossword"]];
+  // The games retired on 2026-11-12 (the third field) show only for players who have finished one.
+  var GAMES = [["linkle", "Linkle"], ["quadlink", "Quadlink"], ["crossword", "Crossword"], ["peaklink", "Peaklink"], ["lockerlink", "Lockerlink"],
+    ["daily-five", "Daily Five", 1], ["daily-photo", "Daily Photo", 1], ["daily-chess", "Daily Chess", 1], ["sudoku", "Sudoku", 1], ["landlink", "Landlink", 1], ["atomlink", "Atomlink", 1], ["prizelink", "Prizelink", 1], ["citylink", "Citylink", 1], ["codelink", "Codelink", 1], ["thinkerlink", "Thinkerlink", 1], ["riverlink", "Riverlink", 1], ["wildlink", "Wildlink", 1], ["gridlink", "Gridlink", 1], ["under-the-cap", "Under the Cap", 1], ["tanklink", "Tanklink", 1]];
 
   function msg(t) { $("ac-msg").textContent = t || ""; }
   function fmt(sec) { var m = Math.floor(sec / 60), s = sec % 60; return m + ":" + (s < 10 ? "0" : "") + s; }
@@ -20,6 +22,7 @@
     box.appendChild(head);
     GAMES.forEach(function (g) {
       var rec = all[g[0]] || {}, s = rec.stats || {}, p = rec.pct;
+      if (g[2] && !s.played) return;
       var row = document.createElement("div");
       row.className = "ac-row";
       var cells = [g[1], String(s.played || 0), String(s.streak || 0), String(s.max || 0), p && p.count ? Math.round(p.sum / p.count) + "%" : "none yet"];
@@ -46,9 +49,12 @@
   function renderAch() {
     var have = A.unlocked(), list = $("ac-ach"), n = 0;
     list.textContent = "";
+    var shown = 0;
     A.defs.forEach(function (d) {
-      var li = document.createElement("li");
       var got = have[d.id] !== undefined;
+      if (d.retired && !got) return;   // achievements for retired games show only once earned
+      shown++;
+      var li = document.createElement("li");
       if (got) n++;
       li.className = "ac-ach-item";
       li.setAttribute("data-got", got ? "1" : "0");
@@ -61,7 +67,7 @@
       li.appendChild(h); li.appendChild(p); li.appendChild(st);
       list.appendChild(li);
     });
-    $("ac-ach-count").textContent = n + " of " + A.defs.length;
+    $("ac-ach-count").textContent = n + " of " + shown;
   }
 
   function renderAccount() {

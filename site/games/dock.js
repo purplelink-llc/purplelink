@@ -88,7 +88,7 @@
     if (info.levelUp) card.setAttribute("data-levelup", "");
 
     var head = el("div", "reward-head");
-    var h = el("h2", null, info.levelUp ? "Level up" : info.game === "daily-stars" ? "Reading saved" : info.ok ? "Puzzle done" : "Done for today");
+    var h = el("h2", null, info.levelUp ? "Level up" : info.ok ? "Puzzle done" : "Done for today");
     h.id = "reward-h";
     head.appendChild(h);
     if (info.gain > 0) {

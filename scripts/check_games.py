@@ -5,8 +5,9 @@
   python3 scripts/check_games.py --strict   # exit 1 if anything is short (used by the content routine)
 
 A short buffer must never block a deploy of unrelated pages, so the build only reports.
-Word games and trivia are generated a long way ahead (730 days); the horoscope buffer is
-the one that runs out, because it is written by the weekly routine.
+Word games are generated a long way ahead (730 days); the crossword buffer is the one that
+runs out, because its clues are written by a routine. Games retired in the 2026-11-12 freeze
+(trivia, photo, daily chess, Sudoku, horoscope, the attribute games except Peaklink) are not checked.
 """
 from __future__ import annotations
 
@@ -17,9 +18,6 @@ from pathlib import Path
 
 DATA = Path(__file__).resolve().parent.parent / "site" / "games" / "data"
 LONG_MIN = 60      # days ahead for generated games
-STARS_MIN = 5      # days ahead for the horoscope buffer
-STARS_FAIL = 0     # strict mode fails at or below this
-SUDOKU_MIN = 21    # days of Sudoku ahead (generation takes minutes, so the buffer is shorter)
 CW_MIN = 4         # days of clued crosswords ahead
 
 
@@ -34,7 +32,7 @@ def main() -> int:
     problems: list[str] = []
     notes: list[str] = []
 
-    for name, key in (("linkle.json", "answers"), ("quadlink.json", "days"), ("trivia.json", "days"), ("photo.json", "days"), ("chess.json", "days"), ("sudoku.json", "days")):
+    for name, key in (("linkle.json", "answers"), ("quadlink.json", "days")):
         p = DATA / name
         if not p.exists():
             problems.append(f"{name}: missing")
@@ -42,17 +40,6 @@ def main() -> int:
         d = json.loads(p.read_text(encoding="utf-8"))
         left = len(d[key]) - day_index(d["epoch"], today)
         notes.append(f"{name}: {left} days ahead")
-        if name == "photo.json":
-            continue   # wraps around after 150 days by design
-        if name == "sudoku.json":
-            if left < SUDOKU_MIN:
-                problems.append(f"sudoku.json: only {left} days of puzzles ahead (need {SUDOKU_MIN}); run scripts/gen_sudoku.py --days N")
-            continue
-        if name == "chess.json":
-            for i, day in enumerate(d[key]):
-                if not day.get("f") or not day.get("m"):
-                    problems.append(f"chess.json: day {i} is malformed")
-                    break
         if left < LONG_MIN:
             problems.append(f"{name}: only {left} days of puzzles ahead (need {LONG_MIN})")
         if name == "quadlink.json":
@@ -60,13 +47,8 @@ def main() -> int:
                 if len(set(day)) != 4:
                     problems.append(f"{name}: day {i} repeats a word")
                     break
-        if name == "trivia.json":
-            for i, day in enumerate(d[key]):
-                if len(day) != 5 or any(len(q[2]) != 4 for q in day):
-                    problems.append(f"{name}: day {i} is malformed")
-                    break
 
-    # unlimited rated pools: every chess bucket from 500 up to the top that has puzzles, and some Sudoku at every level
+    # unlimited rated chess pool (Chess Puzzles)
     pool = DATA / "chess-pool"
     if not (pool / "1000.json").exists():
         problems.append("chess-pool: missing")
@@ -75,14 +57,8 @@ def main() -> int:
         notes.append(f"chess-pool: {n} puzzles")
         if n < 3000:
             problems.append(f"chess-pool: only {n} puzzles")
-    for lv in range(1, 6):
-        f = DATA / "sudoku-pool" / f"level-{lv}.json"
-        have = len(json.loads(f.read_text(encoding="utf-8"))["p"]) if f.exists() else 0
-        if have < 40:
-            problems.append(f"sudoku-pool level {lv}: only {have} puzzles (run scripts/gen_sudoku_pool.py)")
-    notes.append("sudoku-pool: ok")
 
-    for gid in ("landlink", "atomlink", "prizelink", "citylink", "peaklink", "codelink", "thinkerlink", "riverlink", "wildlink"):
+    for gid in ("peaklink",):
         f = DATA / f"{gid}.json"
         if not f.exists():
             problems.append(f"{gid}.json: missing")
@@ -95,7 +71,7 @@ def main() -> int:
             problems.append(f"{gid}.json: rows with the wrong number of values: {bad[:3]}")
 
 
-    # sports games: every sport in the rotation has a data file, enough days of puzzles, and a connected teammate graph
+    # Lockerlink: every sport in the rotation has a data file, enough days of puzzles, and a connected teammate graph
     sx = DATA / "sports-index.json"
     if not sx.exists():
         problems.append("sports-index.json: missing (run scripts/gen_sports.py)")
@@ -111,24 +87,8 @@ def main() -> int:
             notes.append(f"sports-{sport}.json: {len(d['p'])} players, {len(d['tl'])} link days, {len(d['gr'])} grids")
             if bad:
                 problems.append(f"sports-{sport}.json: link puzzles name players not in the pool: {sorted(set(bad))[:3]}")
-            if len(d["tl"]) < 200 or len(d["gr"]) < 200:
+            if len(d["tl"]) < 200:
                 problems.append(f"sports-{sport}.json: fewer than 200 days of puzzles")
-
-    sp = DATA / "stars.json"
-    if not sp.exists():
-        problems.append("stars.json: missing")
-    else:
-        stars = json.loads(sp.read_text(encoding="utf-8"))["days"]
-        last = max(date.fromisoformat(k) for k in stars)
-        left = (last - today).days
-        notes.append(f"stars.json: readings through {last} ({left} days ahead)")
-        if left < STARS_MIN:
-            problems.append(f"stars.json: only {left} days of horoscopes ahead (need {STARS_MIN}); the weekly routine may have stalled")
-        if left < STARS_FAIL + 1 and strict:
-            pass
-        for k, v in stars.items():
-            if len(v["signs"]) != 12:
-                problems.append(f"stars.json: {k} has {len(v['signs'])} signs, need 12")
 
     # crossword: days with a published puzzle ahead (grid and valid clues), and grids still waiting for clues
     cp = DATA / "crossword.json"

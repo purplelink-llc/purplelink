@@ -8,7 +8,10 @@
 
   function stats(all, g) { return (all[g] && all[g].stats) || {}; }
   function wins(all, g) { return stats(all, g).wins || []; }
-  var PLAYED = ["linkle", "quadlink", "daily-five", "daily-photo", "daily-chess", "sudoku", "crossword"];
+  // PLAYED counts toward streak and total achievements; it keeps the games retired on 2026-11-12 so earned
+  // history still counts. RUN is today's daily lineup.
+  var PLAYED = ["linkle", "quadlink", "crossword", "peaklink", "lockerlink", "daily-five", "daily-photo", "daily-chess", "sudoku"];
+  var RUN = ["linkle", "quadlink", "crossword", "peaklink", "lockerlink"];
   function best(all) { return PLAYED.reduce(function (n, g) { return Math.max(n, stats(all, g).max || 0); }, 0); }
   function played(all) { return PLAYED.reduce(function (n, g) { return n + (stats(all, g).played || 0); }, 0); }
   function dowOf(idx) { return (EPOCH_DOW + idx) % 7; }
@@ -25,16 +28,16 @@
     { id: "sage", name: "Sage", desc: "Win 100 Linkle puzzles.", test: function (a) { return stats(a, "linkle").won >= 100; } },
     { id: "quad-first", name: "Four at once", desc: "Win your first Quadlink.", test: function (a) { return stats(a, "quadlink").won >= 1; } },
     { id: "quad-fast", name: "Quick quad", desc: "Solve Quadlink in seven guesses or fewer.", test: function (a, c) { return c.game === "quadlink" && c.won && c.tries <= 7; } },
-    { id: "five-perfect", name: "Perfect five", desc: "Answer all five Daily Five questions correctly.", test: function (a, c) { return c.game === "daily-five" && c.score === 5; } },
-    { id: "five-habit", name: "Quiz habit", desc: "Finish Daily Five on ten different days.", test: function (a) { return stats(a, "daily-five").played >= 10; } },
-    { id: "photo-perfect", name: "Globetrotter", desc: "Place all five photographs in Daily Photo correctly.", test: function (a, c) { return c.game === "daily-photo" && c.score === 5; } },
-    { id: "photo-habit", name: "Armchair traveller", desc: "Finish Daily Photo on ten different days.", test: function (a) { return stats(a, "daily-photo").played >= 10; } },
-    { id: "chess-first", name: "First checkmate", desc: "Solve your first Daily Chess puzzle.", test: function (a) { return stats(a, "daily-chess").won >= 1; } },
-    { id: "chess-clean", name: "Clean tactic", desc: "Solve a chess puzzle with no wrong moves and no hints.", test: function (a, c) { return c.game === "daily-chess" && c.won && c.clean; } },
-    { id: "chess-hard", name: "Grandmaster eyes", desc: "Solve a chess puzzle rated 1900 or higher.", test: function (a, c) { return c.game === "daily-chess" && c.won && c.rating >= 1900; } },
-    { id: "sudoku-first", name: "Digits in place", desc: "Solve your first daily Sudoku.", test: function (a) { return stats(a, "sudoku").won >= 1; } },
-    { id: "sudoku-hard", name: "No pencil needed", desc: "Solve a Hard or Expert Sudoku with no help.", test: function (a, c) { return c.game === "sudoku" && c.clean && (c.level === "Hard" || c.level === "Expert"); } },
-    { id: "sudoku-clean-5", name: "Sharp eyes", desc: "Solve five Sudokus with no help.", test: function (a) { return ((a.sudoku && a.sudoku.clean) || 0) >= 5; } },
+    { id: "five-perfect", retired: true, name: "Perfect five", desc: "Answer all five Daily Five questions correctly.", test: function (a, c) { return c.game === "daily-five" && c.score === 5; } },
+    { id: "five-habit", retired: true, name: "Quiz habit", desc: "Finish Daily Five on ten different days.", test: function (a) { return stats(a, "daily-five").played >= 10; } },
+    { id: "photo-perfect", retired: true, name: "Globetrotter", desc: "Place all five photographs in Daily Photo correctly.", test: function (a, c) { return c.game === "daily-photo" && c.score === 5; } },
+    { id: "photo-habit", retired: true, name: "Armchair traveller", desc: "Finish Daily Photo on ten different days.", test: function (a) { return stats(a, "daily-photo").played >= 10; } },
+    { id: "chess-first", retired: true, name: "First checkmate", desc: "Solve your first Daily Chess puzzle.", test: function (a) { return stats(a, "daily-chess").won >= 1; } },
+    { id: "chess-clean", retired: true, name: "Clean tactic", desc: "Solve a chess puzzle with no wrong moves and no hints.", test: function (a, c) { return c.game === "daily-chess" && c.won && c.clean; } },
+    { id: "chess-hard", retired: true, name: "Grandmaster eyes", desc: "Solve a chess puzzle rated 1900 or higher.", test: function (a, c) { return c.game === "daily-chess" && c.won && c.rating >= 1900; } },
+    { id: "sudoku-first", retired: true, name: "Digits in place", desc: "Solve your first daily Sudoku.", test: function (a) { return stats(a, "sudoku").won >= 1; } },
+    { id: "sudoku-hard", retired: true, name: "No pencil needed", desc: "Solve a Hard or Expert Sudoku with no help.", test: function (a, c) { return c.game === "sudoku" && c.clean && (c.level === "Hard" || c.level === "Expert"); } },
+    { id: "sudoku-clean-5", retired: true, name: "Sharp eyes", desc: "Solve five Sudokus with no help.", test: function (a) { return ((a.sudoku && a.sudoku.clean) || 0) >= 5; } },
     { id: "cw-first", name: "First crossword", desc: "Solve your first daily crossword.", test: function (a) { return stats(a, "crossword").won >= 1; } },
     { id: "cw-monday", name: "Quick Monday", desc: "Solve a Monday crossword with no help in under four minutes.", test: function (a, c) { return c.game === "crossword" && c.clean && c.weekdayName === "Monday" && c.seconds < 240; } },
     { id: "cw-sunday", name: "Sunday finisher", desc: "Solve a Sunday crossword with no help.", test: function (a, c) { return c.game === "crossword" && c.clean && c.weekdayName === "Sunday"; } },
@@ -47,28 +50,26 @@
     { id: "rated-1800", name: "Expert tactics", desc: "Reach a chess puzzle rating of 1800.", test: function (a, c) { return c.game === "chess-puzzles" && c.rating >= 1800; } },
     { id: "rated-run-10", name: "Ten in a row", desc: "Solve ten rated chess puzzles in a row.", test: function (a, c) { return c.game === "chess-puzzles" && c.streak >= 10; } },
     { id: "rated-hard-hit", name: "Giant killer", desc: "Solve a chess puzzle rated 400 or more above you.", test: function (a, c) { return c.game === "chess-puzzles" && c.won && c.puzzleRating - c.rating >= 300; } },
-    { id: "su-rated-first", name: "Rated grid", desc: "Finish your first rated Sudoku.", test: function (a, c) { return c.game === "sudoku-unlimited" && c.n >= 1; } },
-    { id: "su-rated-1500", name: "Sharp grid", desc: "Reach a Sudoku rating of 1500.", test: function (a, c) { return c.game === "sudoku-unlimited" && c.rating >= 1500; } },
-    { id: "su-rated-expert", name: "Expert grid", desc: "Solve an Expert Sudoku in Sudoku Unlimited with no help.", test: function (a, c) { return c.game === "sudoku-unlimited" && c.clean && c.level === "Expert"; } },
-    { id: "su-run-10", name: "Ten grids", desc: "Solve ten rated Sudokus in a row.", test: function (a, c) { return c.game === "sudoku-unlimited" && c.streak >= 10; } },
+    { id: "su-rated-first", retired: true, name: "Rated grid", desc: "Finish your first rated Sudoku.", test: function (a, c) { return c.game === "sudoku-unlimited" && c.n >= 1; } },
+    { id: "su-rated-1500", retired: true, name: "Sharp grid", desc: "Reach a Sudoku rating of 1500.", test: function (a, c) { return c.game === "sudoku-unlimited" && c.rating >= 1500; } },
+    { id: "su-rated-expert", retired: true, name: "Expert grid", desc: "Solve an Expert Sudoku in Sudoku Unlimited with no help.", test: function (a, c) { return c.game === "sudoku-unlimited" && c.clean && c.level === "Expert"; } },
+    { id: "su-run-10", retired: true, name: "Ten grids", desc: "Solve ten rated Sudokus in a row.", test: function (a, c) { return c.game === "sudoku-unlimited" && c.streak >= 10; } },
     { id: "streak-3", name: "On a roll", desc: "Keep a three-day streak in any game.", test: function (a) { return best(a) >= 3; } },
     { id: "streak-7", name: "Week streak", desc: "Keep a seven-day streak in any game.", test: function (a) { return best(a) >= 7; } },
     { id: "streak-30", name: "Month streak", desc: "Keep a thirty-day streak in any game.", test: function (a) { return best(a) >= 30; } },
-    { id: "full-set", name: "Full set", desc: "Finish Linkle, Quadlink, Daily Five and the crossword on the same day.", test: function (a, c) {
-      return ["linkle", "quadlink", "daily-five", "crossword"].every(function (g) { var t = a[g] && a[g].today; return t && t.done && t.idx === c.idx; }); } },
-    { id: "daily-set", name: "Daily set", desc: "Finish every daily puzzle and read your sign on the same day.", test: function (a, c) {
-      var five = PLAYED.every(function (g) { var t = a[g] && a[g].today; return t && t.done && t.idx === c.idx; });
-      var stars = ((a["daily-stars"] && a["daily-stars"].viewed) || []).indexOf(c.idx) >= 0;
-      return five && stars; } },
+    { id: "full-set", name: "Full set", desc: "Finish Linkle, Quadlink, Peaklink and the crossword on the same day.", test: function (a, c) {
+      return ["linkle", "quadlink", "peaklink", "crossword"].every(function (g) { var t = a[g] && a[g].today; return t && t.done && t.idx === c.idx; }); } },
+    { id: "daily-set", name: "Daily set", desc: "Finish every daily puzzle on the same day.", test: function (a, c) {
+      return RUN.every(function (g) { var t = a[g] && a[g].today; return t && t.done && t.idx === c.idx; }); } },
     { id: "close-call", name: "Close call", desc: "Let the weekly streak saver rescue a streak.", test: function (a) {
       return PLAYED.some(function (g) { return (stats(a, g).freezes || []).length > 0; }); } },
     { id: "level-5", name: "Level 5", desc: "Reach level 5.", test: function (a) { return G.xpOf(a).level >= 5; } },
     { id: "top-tenth", name: "Top tenth", desc: "Finish ahead of 90% of the day's players (at least 20 played).", test: function (a, c) { return c.pct >= 90 && c.total >= 20; } },
     { id: "regular", name: "Regular", desc: "Finish 30 daily puzzles.", test: function (a) { return played(a) >= 30; } },
     { id: "centurion", name: "Centurion", desc: "Finish 100 daily puzzles.", test: function (a) { return played(a) >= 100; } },
-    { id: "tank-first", name: "First shot", desc: "Win your first Tanklink round.", test: function (a) { return stats(a, "tanklink").won >= 1; } },
-    { id: "tank-clean", name: "Untouched", desc: "Win Tanklink without taking a hit.", test: function (a, c) { return c.game === "tanklink" && c.won && c.clean; } },
-    { id: "stargazer", name: "Stargazer", desc: "Read your sign on seven different days.", test: function (a) { return ((a["daily-stars"] && a["daily-stars"].viewed) || []).length >= 7; } }
+    { id: "tank-first", retired: true, name: "First shot", desc: "Win your first Tanklink round.", test: function (a) { return stats(a, "tanklink").won >= 1; } },
+    { id: "tank-clean", retired: true, name: "Untouched", desc: "Win Tanklink without taking a hit.", test: function (a, c) { return c.game === "tanklink" && c.won && c.clean; } },
+    { id: "stargazer", retired: true, name: "Stargazer", desc: "Read your sign on seven different days.", test: function (a) { return ((a["daily-stars"] && a["daily-stars"].viewed) || []).length >= 7; } }
   ];
 
   function toast(list) {

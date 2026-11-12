@@ -1,26 +1,22 @@
 /* Leaderboards: all-time boards for every daily game (wins, best streak, average percentile) and the rating boards
-   (all-time and this week) for Chess Puzzles, Sudoku Unlimited, Lockerlink, Gridlink and Under the Cap. */
+   (all-time and this week) for Chess Puzzles and Lockerlink. */
 (function () {
   "use strict";
   var G = window.PLGames, R = window.PLRating;
   if (!G || !R) return;
   var $ = function (id) { return document.getElementById(id); };
   var q = new URLSearchParams(window.location.search);
-  var RATED = { chess: ["/games/chess-puzzles/", "chess-puzzles", "Play rated chess puzzles"], sudoku: ["/games/sudoku-unlimited/", "sudoku-unlimited", "Play rated Sudoku"],
-    lockerlink: ["/games/lockerlink/", "lockerlink", "Play today's Lockerlink"], gridlink: ["/games/gridlink/", "gridlink", "Play today's Gridlink"], "under-the-cap": ["/games/under-the-cap/", "under-the-cap", "Play today's Under the Cap"] };
+  var RATED = { chess: ["/games/chess-puzzles/", "chess-puzzles", "Play rated chess puzzles"], lockerlink: ["/games/lockerlink/", "lockerlink", "Play today's Lockerlink"] };
   var DAILY_BOARDS = [["day", "Today"], ["yday", "Yesterday"], ["wins", "All-time wins"], ["streak", "Best streak"], ["pct", "Average percentile"]];
   var EPOCH = "2026-10-04";
-  // What a daily score means, for each game. Lower is better; 99 is a loss. Crossword and Sudoku keep time in blocks.
+  // What a daily score means, for each game. Lower is better; 99 is a loss. The crossword keeps time in blocks.
   function two(n) { return (n < 10 ? "0" : "") + n; }
   function clock(sec) { return Math.floor(sec / 60) + ":" + two(sec % 60); }
   function plural(n, one, many) { return n + " " + (n === 1 ? one : many); }
   // Keys come from the URL, so look up own entries only ("constructor" and the like are not games).
   function own(o, k) { return typeof k === "string" && Object.prototype.hasOwnProperty.call(o, k); }
   var SCORE_TEXT = new Map(Object.entries({
-    crossword: function (v) { return "about " + clock(v * 20); }, sudoku: function (v) { return "about " + clock(v * 30); },
-    "daily-five": function (v) { return v ? plural(v, "miss", "misses") : "perfect"; }, "daily-photo": function (v) { return v ? plural(v, "miss", "misses") : "perfect"; },
-    "daily-chess": function (v) { return v ? plural(v, "slip", "slips") : "clean"; }, lockerlink: function (v) { return v ? "par +" + v : "par"; },
-    gridlink: function (v) { return v ? plural(v, "empty cell", "empty cells") : "complete"; }, "under-the-cap": function (v) { return plural(v, "loss", "losses"); }
+    crossword: function (v) { return "about " + clock(v * 20); }, lockerlink: function (v) { return v ? "par +" + v : "par"; }
   }));
   function dayScoreText(game, v) {
     if (v >= 99) return "X";
