@@ -168,14 +168,14 @@
         <p>I read each tool's own documentation on November 12, 2026. I did not run the three free tools on a paper for this page, and I do not rank them by accuracy.</p>
 
         <h2 id="languagetool-texstudio">LanguageTool with a local server in TeXstudio</h2>
-        <p>LanguageTool is the grammar engine most LaTeX tools build on. It can run as a small server on your own Mac, and TeXstudio knows how to talk to it. TeXstudio's manual says the grammar checker needs a separate install of LanguageTool and Java. Once LanguageTool is running, it serves at <code>http://localhost:8081/</code> and TeXstudio connects to it when TeXstudio starts. Paragraphs you type go to that local server, not to the internet.</p>
+        <p>LanguageTool is the grammar engine behind the next three options. It can run as a small server on your own Mac, and TeXstudio knows how to talk to it. TeXstudio's manual says the grammar checker needs a separate install of LanguageTool and Java. Once LanguageTool is running, it serves at <code>http://localhost:8081/</code> and TeXstudio connects to it when TeXstudio starts. Paragraphs you type go to that local server, not to the internet.</p>
         <ol>
-          <li>Install Java and LanguageTool. LanguageTool's server page gives a Homebrew route for macOS: <code>brew services start languagetool</code> starts the server in the background. If it says Java cannot be found, install Java first.</li>
-          <li>Or start it by hand from the unzipped LanguageTool folder: <code>java -cp languagetool-server.jar org.languagetool.server.HTTPServer --config server.properties --port 8081</code>.</li>
+          <li>Install Java and LanguageTool. LanguageTool's server page gives a Homebrew route for macOS, though the LanguageTool team does not support it: <code>brew install languagetool</code>, then <code>brew services start languagetool</code> to run the server in the background. If it says Java cannot be found, install Java 8 or later first.</li>
+          <li>Or start it by hand from the unzipped LanguageTool folder: <code>java -cp languagetool-server.jar org.languagetool.server.HTTPServer --config server.properties --port 8081</code>. If you have no settings to add, create an empty <code>server.properties</code> file first.</li>
           <li>Check that it answers: <code>curl -d "language=en-US" -d "text=a simple test" http://localhost:8081/v2/check</code> should return a short JSON reply.</li>
           <li>Start TeXstudio. To have TeXstudio start LanguageTool for you, enter the path to the LanguageTool jar on the grammar page of TeXstudio's settings, and the path to Java if it is not on the default path.</li>
         </ol>
-        <p><strong>Limits:</strong> you look after Java and the server yourself, and the checking happens only inside TeXstudio. The long-running <a href="https://tex.stackexchange.com/q/155148" rel="noopener">TeX Stack Exchange question on LanguageTool in TeXstudio</a> collects the problems people hit with this setup.</p>
+        <p><strong>Limits:</strong> you look after Java and the server yourself, and the checking happens only inside TeXstudio. LanguageTool says its AI-based rules are only available in the cloud, so a local server does not have them. The long-running <a href="https://tex.stackexchange.com/q/155148" rel="noopener">TeX Stack Exchange question on LanguageTool in TeXstudio</a> collects the problems people hit with this setup.</p>
 
         <h2 id="ltex-plus">LTeX+ in VS Code</h2>
         <p>LTeX+ is a VS Code extension that runs LanguageTool against LaTeX, Markdown and other markup. Its README says it comes with everything included, with no need to install Java or LanguageTool, and that offline checking does not upload anything. On first use it downloads its language server if it cannot find one, and the project documents an offline installation as well. VS Code does not know LaTeX on its own, so install LaTeX Workshop next to it.</p>
@@ -187,9 +187,9 @@
         <p><strong>Limits:</strong> it lives inside VS Code, and the first run needs a download unless you install offline.</p>
 
         <h2 id="textidote">TeXtidote on the command line</h2>
-        <p>TeXtidote reads your <code>.tex</code> file, removes the markup, passes the clean text to the LanguageTool library and maps each finding back to the right line of your source. It is a Java program, and Homebrew has a <code>textidote</code> formula that installs Java with it.</p>
+        <p>TeXtidote reads your <code>.tex</code> file, removes the markup, passes the clean text to the LanguageTool library and maps each finding back to the right line of your source. It is a Java program. <code>brew install textidote</code> installs it with Java and gives you a <code>textidote</code> command; if you download the jar from GitHub instead, type <code>java -jar textidote.jar</code> where the steps say <code>textidote</code>.</p>
         <ol>
-          <li>Run it with a language and an HTML report: <code>java -jar textidote.jar --check en --output html paper.tex &gt; report.html</code>.</li>
+          <li>Run it with a language and an HTML report: <code>textidote --check en --output html paper.tex &gt; report.html</code>.</li>
           <li>Open <code>report.html</code> in a browser to see your source with the findings marked.</li>
           <li>Add <code>--dict words.txt</code> with one word per line for names and terms it should accept.</li>
         </ol>
@@ -208,7 +208,8 @@
           <li>LanguageTool: <a href="https://dev.languagetool.org/http-server" rel="noopener">HTTP server</a> (server command, Homebrew service, test URL).</li>
           <li>TeXstudio: <a href="https://texstudio-org.github.io/configuration.html" rel="noopener">configuration manual</a> (configuring the grammar checker).</li>
           <li>LTeX+: <a href="https://github.com/ltex-plus/vscode-ltex-plus" rel="noopener">vscode-ltex-plus</a> and <a href="https://github.com/ltex-plus/ltex-ls-plus" rel="noopener">ltex-ls-plus</a> on GitHub (README, releases) and the <a href="https://ltex-plus.github.io/ltex-plus/" rel="noopener">documentation</a>.</li>
-          <li>TeXtidote: <a href="https://github.com/sylvainhalle/textidote" rel="noopener">README</a> (options and report format) and the <a href="https://formulae.brew.sh/formula/textidote" rel="noopener">Homebrew formula</a>.</li>
+          <li>TeXtidote: <a href="https://github.com/sylvainhalle/textidote" rel="noopener">README</a> (options and report format) and the <a href="https://formulae.brew.sh/formula/textidote" rel="noopener">Homebrew formula</a> (version 0.9).</li>
+          <li>TeX Stack Exchange: <a href="https://tex.stackexchange.com/q/155148" rel="noopener">LanguageTool in TeXstudio</a>.</li>
           <li>Overleaf: <a href="https://www.overleaf.com/learn/how-to/Writefull_integration" rel="noopener">Writefull integration</a>.</li>
         </ul>
         <p>If something here is out of date or wrong, write to <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> and I will fix it.</p>
