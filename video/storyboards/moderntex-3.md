@@ -24,17 +24,17 @@ library. The voice is the best installed macOS voice, set once before capture an
 
 | Clip | Seconds | App state at start | Action to record |
 |---|---|---|---|
-| c01-zen-open | 5 | paper.tex open, caret in the Introduction, zen mode off | press [ZEN_SHORTCUT]; the editor fades to zen mode |
-| c02-read-from-click | 12 | zen mode, introduction paragraph visible | click mid-paragraph, press [READ_ALOUD_BUTTON]; hold while 3 sentences are read and highlighted. appAudio |
-| c03-pause-skip | 9 | reading in progress | [PAUSE_SHORTCUT] (pause), [SKIP_BACK_SHORTCUT], [SKIP_FORWARD_SHORTCUT], [PAUSE_SHORTCUT] (resume) |
+| c01-zen-open | 5 | paper.tex open, caret in the Introduction, zen mode off | press Control-Shift-F; the editor fades to zen mode |
+| c02-read-from-click | 12 | zen mode, introduction paragraph visible | click mid-paragraph, press Option-Command-R; hold while 3 sentences are read and highlighted. appAudio |
+| c03-pause-skip | 9 | reading in progress | Space (pause), Left Arrow, Right Arrow, Space (resume) |
 | c04-caption-table | 11 | scroll to the figure and the results table | read through the figure caption and into the table summary. appAudio. The table summary must use only numbers in the source |
-| c05-stop-resume | 7 | reading mid-section | press [STOP_SHORTCUT]; caret rests on the stopped sentence; press [READ_ALOUD_BUTTON]; it resumes there |
+| c05-stop-resume | 7 | reading mid-section | press Option-Command-R; caret rests on the stopped sentence; press Option-Command-R; it resumes there |
 | c06-catch-typo | 7 | sample paragraph with the planted "the the" | read aloud over it; the doubled word is audible. appAudio |
-| c07-dictate | 11 | caret at the end of a sentence in a blank line | press [DICTATION_SHORTCUT]; say the line from the narration script; text lands with capital and spacing, percent escaped |
+| c07-dictate | 11 | caret at the end of a sentence in a blank line | press Control-Shift-M; say the line from the narration script; text lands with capital and spacing, percent escaped |
 | c08-undo | 5 | dictated text inserted | press Cmd+Z once; the whole passage disappears |
-| v01-click-read | 3.5 | portrait crop, zen mode | click a paragraph, press [READ_ALOUD_BUTTON] |
+| v01-click-read | 3.5 | portrait crop, zen mode | click a paragraph, press Option-Command-R |
 | v02-read | 9 | reading in progress | hold on 2 highlighted sentences. appAudio |
-| v03-dictate | 6 | caret on a new line | [DICTATION_SHORTCUT] and say one sentence containing "percent" |
+| v03-dictate | 6 | caret on a new line | Control-Shift-M and say one sentence containing "percent" |
 
 Dictation line to speak (c07 and v03): "Accuracy rose by twelve percent comma and the sample stayed small period". Expected
 source: `Accuracy rose by twelve \% , and the sample stayed small.` Ben to confirm the exact output once the build exists; fix the
@@ -74,7 +74,7 @@ Title (Short): `Proofread your LaTeX by ear (ModernTex 3.0) #shorts`
 Descriptions are files: `moderntex-3-desc-demo.txt` and `moderntex-3-desc-short.txt` (utm links made with `hub.py utm`,
 assets `moderntex-3-demo-16x9` and `moderntex-3-short-9x16`, channel `youtube`; the content suffix carries the make date 261112,
 regenerate if that matters). Chapter stamps assume the 1.8 s opening bumper and the current scene durations; re-check them against the
-rendered cut (each chapter is over 10 s, YouTube's minimum). `[VOICE_NAME]` in the demo description must be filled before upload.
+rendered cut (each chapter is over 10 s, YouTube's minimum). The demo description names no voice; check before upload.
 
 Tags: ModernTex, LaTeX editor, LaTeX Mac, read aloud, text to speech, proofreading, dictation, speech to text, academic writing,
 Overleaf alternative, manuscript, PhD, thesis writing. Category 28. The dry run shows `containsSyntheticMedia: False` by default. The narration is TTS; Ben decides whether to declare it before the flip.

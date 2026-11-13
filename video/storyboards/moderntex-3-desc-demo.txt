@@ -8,6 +8,6 @@ ModernTex 3.0 reads your LaTeX aloud, sentence by sentence, and takes dictation 
 Blog post: https://purplelink.llc/blog/moderntex-3-hear-your-manuscript-and-dictate-into-latex/?utm_source=youtube&utm_medium=video&utm_campaign=hub-moderntex-3-demo-16x9&utm_content=moderntex-3-demo-16x9-youtube-261112
 ModernTex: https://purplelink.llc/moderntex/
 
-Voice shown in the read-aloud clips: [VOICE_NAME], the best voice installed on this Mac.
+The read-aloud clips use the best voice installed on the Mac; pick any voice in Settings.
 
 #ModernTex #LaTeX #AcademicWriting
