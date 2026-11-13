@@ -187,7 +187,7 @@
       "name": "Is an AI paper review a substitute for peer review?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No. In my test the AI reviews found real errors the human reviewers missed, and the human reviewers raised points about theory and design that the AI reviews only partly covered. Every AI review also said at least one thing that was wrong. Use one alongside at least one human reader who knows your area."
+        "text": "No. In my test the AI reviews found real errors the human reviewers missed, and the human reviewers raised points about theory and design that the AI reviews only partly covered. Paper Review made a confident mistake, and every AI review missed something another one caught. Use one alongside at least one human reader who knows your area."
       }
     }
   ]
@@ -251,11 +251,11 @@
         <p>The test paper is <a href="https://doi.org/10.64898/2026.03.04.709582" rel="noopener">"Betrayal is worse than loss during cooperation"</a> by Tang, Tan, Gao, Lin, Gan, Ding and Gao, a bioRxiv preprint released under CC BY 4.0. It has a behavioural task, computational models and EEG, so there is a lot for a reviewer to check. eLife reviewed it and published the reviews as <a href="https://elifesciences.org/reviewed-preprints/111043" rel="noopener">reviewed preprint 111043</a>. I condensed those reviews into 12 distinct points and used them as the answer key.</p>
         <ul>
           <li><strong>Paper Review, Deep tier.</strong> Run on November 13, 2026 with a single-use code, so no money changed hands. The list price is $39.</li>
-          <li><strong>Plain Claude chat.</strong> Claude Sonnet 5.5, one plain prompt asking for a critical review, the paper's extracted text as input, no web search and no code tools.</li>
+          <li><strong>Plain Claude chat.</strong> Claude Sonnet 5.5 with one plain prompt asking for a critical review. It was given the paper's extracted text as a file it could read, with no web search and no way to run code. Pasting the text into a Claude or ChatGPT chat is the closest everyday equivalent.</li>
           <li><strong>Manusights free Readiness Scan.</strong> Run the same day. The paid Full Review was not bought.</li>
           <li><strong>Stanford's PaperReview.ai.</strong> Submitted the same day. It sends results by email and the result had not arrived when this was published.</li>
         </ul>
-        <p>Each review was graded against the 12 points: raised in full, partly raised, or missed. The grading was done by an AI grader and checked by me, and both of us knew which review was ours. Every finding this page calls correct or wrong, I checked against the manuscript myself. Treat the split between "full" and "partly" as a judgement call. Points 4, 7 and 8 were the close ones, and with looser grading both reviews would score about 9 or 10 of 12.</p>
+        <p>Each review was graded against the 12 points: raised in full, partly raised, or missed. The grading was done by an AI grader that knew which review was ours. Every finding this page calls correct or wrong was checked against the manuscript text. Treat the split between "full" and "partly" as a judgement call. Points 4, 7 and 8 were the close ones, and with looser grading both reviews would score about 9 or 10 of 12.</p>
 
         <h2 id="hands-on">What each review found</h2>
         <p>Rows are tools; adding a tool I run later is one more row. "Not run" means I have not tested it, not that it failed.</p>
@@ -264,10 +264,10 @@
             <thead><tr><th>Tool (tested 2026-11-13)</th><th>Time and cost</th><th>eLife points, of 12</th><th>Correct finds the eLife reviewers did not raise</th><th>Mistakes</th></tr></thead>
             <tbody>
               <tr><td>Paper Review, Deep</td><td>Minutes (10 to 15 stated), $39</td><td>5 in full, 7 partly, 0 missed</td><td>Abstract says the late brain response increased with loss aversion, but the Results report a decrease. A z-test reported as p = 0.198 is one-tailed; two-tailed it is 0.395. An F of 297 for a task effect whose means differ by 0.09 points. Simple slopes exactly double what the model implies. Model 1 called "linear" in the Results and nonlinear in the Methods. A duplicated citation.</td><td>Called a mislabelled odds-ratio column a high-confidence contradiction and suggested different analysis runs. Probably misread one figure label. Read only 4 of the references. Its automated check reported no code statement, though the paper links its data and code (the report itself noted this was likely a miss).</td></tr>
-              <tr><td>Plain Claude chat (Sonnet 5.5)</td><td>A few minutes, inside an existing plan</td><td>6 in full, 6 partly, 0 missed</td><td>Supplementary Table S2 does not add up: a parameter count is wrong, a nested model fits worse than the simpler one, and the stated formula does not give the reported number. The odds-ratio column is mislabelled "log odds". Person-level parameters entered into trial-level models. Parameters fitted to the same choices they then "predict". A reference with the authors' first names printed as surnames.</td><td>None I could find among the claims I could check. It could not recompute statistics, so it missed the one-tailed test.</td></tr>
+              <tr><td>Plain Claude chat (Sonnet 5.5)</td><td>Minutes, inside an existing plan</td><td>6 in full, 6 partly, 0 missed</td><td>Supplementary Table S2 does not add up: a parameter count is wrong, a nested model fits worse than the simpler one, and the stated formula does not give the reported number. The odds-ratio column is mislabelled "log odds". Person-level parameters entered into trial-level models. Parameters fitted to the same choices they then "predict". A reference with the authors' first names printed as surnames.</td><td>None I could find among the claims I could check. It could not recompute statistics, so it missed the one-tailed test.</td></tr>
               <tr><td>Manusights, free Readiness Scan</td><td>About 2 minutes, $0</td><td>Shows 1 of 3 risks; it partly matches points 3 and 9</td><td>None beyond the eLife points in what the free scan shows.</td><td>Repeated the one-tailed p = 0.198 without noticing it.</td></tr>
               <tr><td>Stanford PaperReview.ai</td><td>Results by email, free</td><td>Pending</td><td>Pending</td><td>Reads only the first 15 pages</td></tr>
-              <tr><td>Reviewer3, q.e.d, Explore Science, Trinka</td><td>Free tiers exist</td><td>Not run</td><td>Not run</td><td>Each needs an account; not tested yet</td></tr>
+              <tr><td>Reviewer3, q.e.d, Explore Science, Trinka, Thesify, Paperpal, SciScore</td><td>See prices below</td><td>Not run</td><td>Not run</td><td>Each needs an account or a purchase; not tested yet</td></tr>
             </tbody>
           </table>
         </div>
@@ -349,7 +349,7 @@
         <p>These are crops of the Deep tier's annotated PDF. The captions say which items were right and which were wrong.</p>
         <figure class="frame-soft">
           <img src="/assets/guides/ai-reviewers/deep-verified-checks.webp" alt="Paper Review verified checks: a z-test whose two-tailed p recomputes to 0.395, a repeated word, and a no-code-statement notice" width="1200" height="475" loading="lazy" decoding="async">
-          <figcaption>Recomputed statistics. The z-test warning is correct. The code-availability notice is wrong: the paper links its data and code on OSF.</figcaption>
+          <figcaption>Recomputed statistics. The z-test warning is correct. The automated code-availability check missed the paper's OSF data and code statement; the report itself flags this as a likely detection miss.</figcaption>
         </figure>
         <figure class="frame-soft">
           <img src="/assets/guides/ai-reviewers/deep-blind-spots.webp" alt="Paper Review critical blind spots: the first item on logistic coefficients, the second on the abstract contradicting the results" width="1200" height="998" loading="lazy" decoding="async">
@@ -402,16 +402,16 @@
         <h3>Explore Science, formerly Paper-Wizard (not run)</h3>
         <p>A scorecard review with reference checks and a chat assistant, plus journal and funding matching. One full review is free after you verify an account; after that it is $50 a paper or a monthly plan. The site says the review takes hours. <strong>Best for</strong> one free full review when you are not in a hurry.</p>
 
-        <h3>Thesify</h3>
+        <h3>Thesify (not run)</h3>
         <p>Critiques argument, methods, evidence and structure, graded by severity, with journal suggestions. No free review was offered on the pricing page; one review is €14.95. It says documents are not used to train public models. <strong>Best for</strong> students and early-career authors who want feedback on the argument at a low one-off price.</p>
 
         <h3>Trinka (not run)</h3>
         <p>Mainly an academic grammar and language tool, with plagiarism, citation and "technical" checks bought as credits. The free Basic plan covers 5,000 words a month. Only the $300-a-year Confidential Data plan states no AI training. <strong>Best for</strong> language polishing, not methods critique.</p>
 
-        <h3>Paperpal Preflight and Penelope.ai</h3>
+        <h3>Paperpal Preflight and Penelope.ai (not run)</h3>
         <p>Both check a manuscript against a journal's submission rules: word limits, required sections, declarations, reference style. Neither judges the science. Paperpal's pages did not show a price in the version I could read. Penelope.ai is sold to journals, from £750 a year, so most authors meet it at submission. <strong>Best for</strong> avoiding a formatting desk rejection.</p>
 
-        <h3>SciScore</h3>
+        <h3>SciScore (not run)</h3>
         <p>Checks a life-science methods section against rigor and reporting standards (blinding, randomisation, sample size, resource identifiers). Authors now start through Aseda Sciences with an ORCID sign-in; I did not find a current price. <strong>Best for</strong> wet-lab and animal studies, and little else.</p>
 
         <h3>No longer available or out of scope</h3>
@@ -432,8 +432,8 @@
             </tbody>
           </table>
         </div>
-        <p>Whichever you pick, read every finding against your own paper. Every tool in this test, ours included, said at least one thing that was wrong or unverifiable. For how to fit AI tools around human readers, see <a href="/guides/get-feedback-on-a-paper-before-submitting/">how to get feedback on a paper before submitting</a>.</p>
-        <p><small>Test paper: Tang R., Tan J., Gao Y., Lin C., Gan J., Ding X., Gao D., "Betrayal is worse than loss during cooperation", bioRxiv, 2026, doi:10.64898/2026.03.04.709582, CC BY 4.0. Reviewer points summarised from the public eLife reviews of reviewed preprint 111043.</small></p>
+        <p>Whichever you pick, read every finding against your own paper. In this test Paper Review made a confident mistake, the Manusights scan repeated an error from the paper, and the chat missed things the others caught. For how to fit AI tools around human readers, see <a href="/guides/get-feedback-on-a-paper-before-submitting/">how to get feedback on a paper before submitting</a>.</p>
+        <p><small>Test paper: Tang, Tan, Gao, Lin, Gan, Ding and Gao, "Betrayal is worse than loss during cooperation", bioRxiv, 2026, doi:10.64898/2026.03.04.709582, CC BY 4.0. Reviewer points summarised from the public eLife reviews of reviewed preprint 111043.</small></p>
       </article>
 
       <section class="tool-faq" id="faq">
@@ -444,7 +444,7 @@
         <details><summary>How much does an AI manuscript review cost?</summary><div class="faq-body">From the vendors' own pages on November 13, 2026: Purplelink Paper Review is $14 Standard, $24 with a journal check and $39 Deep, with a $5 Revision Review and a $12 Response Review ($24 with a drafted letter). Manusights is $39 for a full review. Reviewer3 Pro is $29 a month. Thesify is €14.95 for one review. Explore Science is $50 a paper. Prices change, so check before you pay.</div></details>
         <details><summary>Did Paper Review make mistakes in the test?</summary><div class="faq-body">Yes. It called a mislabelled odds-ratio column a high-confidence contradiction, read only 4 of the paper's references, and its automated check missed the paper's data and code statement. It also caught errors no other review found, including a one-tailed p-value reported as two-tailed. Read every finding against your paper, whichever tool you use.</div></details>
         <details><summary>What happens to my manuscript if I use Purplelink Paper Review?</summary><div class="faq-body">It is sent to Anthropic's Claude API for analysis. Anthropic retains inputs for up to 30 days and does not train on them. Purplelink deletes the manuscript and the review from its own servers within about a day after you first open the result, or within 48 hours if you never do. Save the report before closing the tab.</div></details>
-        <details><summary>Is an AI paper review a substitute for peer review?</summary><div class="faq-body">No. In my test the AI reviews found real errors the human reviewers missed, and the human reviewers raised points about theory and design that the AI reviews only partly covered. Every AI review also said at least one thing that was wrong. Use one alongside at least one human reader who knows your area.</div></details>
+        <details><summary>Is an AI paper review a substitute for peer review?</summary><div class="faq-body">No. In my test the AI reviews found real errors the human reviewers missed, and the human reviewers raised points about theory and design that the AI reviews only partly covered. Paper Review made a confident mistake, and every AI review missed something another one caught. Use one alongside at least one human reader who knows your area.</div></details>
       </section>
 
       <section class="waitlist-section">
