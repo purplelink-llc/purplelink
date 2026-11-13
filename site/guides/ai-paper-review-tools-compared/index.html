@@ -245,7 +245,7 @@
         <h2 id="short-answer">The short answer</h2>
         <p>On one psychology and neuroscience manuscript, the Paper Review Deep tier and a single plain prompt to Claude each raised all 12 of the eLife reviewers' points at least in part. Deep raised 5 in full and the Claude chat raised 6. Reviewer3's free review raised 4 in full and 4 in part, and missed the other 4, which are about theory and task design. Each review also found real errors the human reviewers did not mention, and they found different ones. Deep recomputed the statistics and caught a one-tailed test reported as two-tailed. The chat caught a supplementary table whose numbers do not add up. Reviewer3 caught several of the contradictions the other two found, read a mislabelled table column correctly, and raised one confound in the brain-response analysis that no one else did.</p>
         <p>Deep also made a mistake. It marked as a "high confidence" contradiction a set of results that are really a mislabelled table column, and it suggested the numbers might come from different analysis runs. The chat and Reviewer3 both read the same table correctly. So the honest result is this: on this paper, a $39 structured review was not clearly better than a careful chat prompt, and a free Reviewer3 review found about as many numerical errors while covering fewer of the reviewers' broader points. Paper Review's advantages were recomputed statistics, a fixed report format and an annotated PDF, not more correct findings.</p>
-        <p>One manuscript is a small test. It does not rank these tools in general, and the tools I could not run yet are marked "not run" below rather than guessed at.</p>
+        <p>One manuscript is a small test. It does not rank these tools in general, and the tools I did not run are marked "not run" below and described from their own public pages rather than guessed at.</p>
 
         <h2 id="how-we-tested">How I tested</h2>
         <p>The test paper is <a href="https://doi.org/10.64898/2026.03.04.709582" rel="noopener">"Betrayal is worse than loss during cooperation"</a> by Tang, Tan, Gao, Lin, Gan, Ding and Gao, a bioRxiv preprint released under CC BY 4.0. It has a behavioural task, computational models and EEG, so there is a lot for a reviewer to check. eLife reviewed it and published the reviews as <a href="https://elifesciences.org/reviewed-preprints/111043" rel="noopener">reviewed preprint 111043</a>. I condensed those reviews into 12 distinct points and used them as the answer key.</p>
@@ -254,12 +254,12 @@
           <li><strong>Plain Claude chat.</strong> Claude Sonnet 5.5 with one plain prompt asking for a critical review. It was given the paper's extracted text as a file it could read, with no web search and no way to run code. Pasting the text into a Claude or ChatGPT chat is the closest everyday equivalent.</li>
           <li><strong>Manusights free Readiness Scan.</strong> Run the same day. The paid Full Review was not bought.</li>
           <li><strong>Reviewer3, free plan.</strong> The same PDF, figures included, uploaded the same day. The review was ready in about 10 minutes. The free plan gives one full review with no card.</li>
-          <li><strong>Stanford's PaperReview.ai.</strong> Submitted the same day. It sends results by email and the result had not arrived when this was published.</li>
+          <li><strong>Stanford's PaperReview.ai.</strong> Submitted the same day. It sends results by email, and its result is not scored here.</li>
         </ul>
         <p>Each review was graded against the 12 points: raised in full, partly raised, or missed. The grading was done by an AI grader that knew which review was ours. Every finding this page calls correct or wrong was checked against the manuscript text. Paper Review and Reviewer3 read the PDF; the chat saw extracted text only. Treat the split between "full" and "partly" as a judgement call. Points 4, 7 and 8 were the close ones, and with looser grading Paper Review and the chat would each score about 9 or 10 of 12. Reviewer3's four misses were clear misses: it made no comment on those topics.</p>
 
         <h2 id="hands-on">What each review found</h2>
-        <p>Rows are tools; adding a tool I run later is one more row. "Not run" means I have not tested it, not that it failed.</p>
+        <p>Rows are tools. "Not run" means I did not test it, not that it failed.</p>
         <div class="u-scroll-x">
           <table class="u-table-wide">
             <thead><tr><th>Tool (tested 2026-11-13)</th><th>Time and cost</th><th>eLife points, of 12</th><th>Correct finds the eLife reviewers did not raise</th><th>Mistakes</th></tr></thead>
@@ -268,8 +268,8 @@
               <tr><td>Plain Claude chat (Sonnet 5.5)</td><td>Minutes, inside an existing plan</td><td>6 in full, 6 partly, 0 missed</td><td>Supplementary Table S2 does not add up: a parameter count is wrong, a nested model fits worse than the simpler one, and the stated formula does not give the reported number. The odds-ratio column is mislabelled "log odds". Person-level parameters entered into trial-level models. Parameters fitted to the same choices they then "predict". A reference with the authors' first names printed as surnames.</td><td>None I could find among the claims I could check. It could not recompute statistics, so it missed the one-tailed test.</td></tr>
               <tr><td>Reviewer3, free plan</td><td>About 10 minutes, $0 (one free review)</td><td>4 in full, 4 partly, 4 missed</td><td>The "log odds" column is really odds ratios. The F of 297 belongs to the feedback effect, not the task effect. Table S2 lists the wrong number of parameters, and the winning model beats its task-specific rival by only 0.3 AIC. The brain responses are measured after the stake appears, but the betrayal predictor depends only on the probability shown about 3 seconds earlier. Also found the late-response direction, decision-time direction and Model 1 contradictions that Deep found.</td><td>One comment reads the odds ratios as log odds, against its own correct reading elsewhere. One aside about the AIC formula does not check out. 42 comments cover about 26 distinct issues, so many repeat. Missed the one-tailed test and eLife's points on task design and motives.</td></tr>
               <tr><td>Manusights, free Readiness Scan</td><td>About 2 minutes, $0</td><td>Shows 1 of 3 risks; it partly matches points 3 and 9</td><td>None beyond the eLife points in what the free scan shows.</td><td>Repeated the one-tailed p = 0.198 without noticing it.</td></tr>
-              <tr><td>Stanford PaperReview.ai</td><td>Results by email, free</td><td>Pending</td><td>Pending</td><td>Reads only the first 15 pages</td></tr>
-              <tr><td>q.e.d, Explore Science, Trinka, Thesify, Paperpal, SciScore</td><td>See prices below</td><td>Not run</td><td>Not run</td><td>Not tested yet. q.e.d needs an institutional sign-up, Explore Science a verified phone number, Trinka a signed-in account; the rest need a purchase</td></tr>
+              <tr><td>Stanford PaperReview.ai</td><td>Results by email, free</td><td>Not scored</td><td>Not scored</td><td>Reads only the first 15 pages</td></tr>
+              <tr><td>q.e.d, Explore Science, Trinka, Thesify, Paperpal, SciScore</td><td>See prices below</td><td>Not run</td><td>Not run</td><td>Described from their public pages only</td></tr>
             </tbody>
           </table>
         </div>
@@ -408,21 +408,21 @@
         <p>The closest direct competitor to Paper Review. The free Readiness Scan took about two minutes and returned a score of 68 out of 100 and one of its three top risks: that the paper's early-then-late brain-response claim rests on a single modest effect. That is a fair point and overlaps two of eLife's. It repeated the one-tailed p-value without noticing. The full review ($39) and a dossier with simulated reviewers ($99) were not bought. Its pages say uploads are not used for training and offer a 60-day money-back guarantee on the Full Review. <strong>Best for</strong> a free first look at your biggest risk, and journal-fit help if you pay.</p>
 
         <h3>Stanford PaperReview.ai</h3>
-        <p>A free reviewer from a Stanford research group. It takes a PDF up to 10 MB, reads only the first 15 pages, and emails the review. It is tuned toward fields that post on arXiv, and the pages I read did not state a data policy. My result is pending and this entry will be updated. <strong>Best for</strong> a free second opinion on a short, computational paper.</p>
+        <p>A free reviewer from a Stanford research group. It takes a PDF up to 10 MB, reads only the first 15 pages, and emails the review. It is tuned toward fields that post on arXiv, and the pages I read did not state a data policy. <strong>Best for</strong> a free second opinion on a short, computational paper.</p>
 
         <h3>Reviewer3</h3>
         <p>Splits a paper into claims and checks the evidence for each, verifies references, looks for fatal flaws and can rerun submitted code. The free plan gives one full review with no card; Pro is $29 a month. In this test the free review took about 10 minutes and left 42 comments pinned to quotes in the manuscript. It was the best of the three at contradictions inside the paper: the odds-ratio label, the swapped ANOVA effect, the Table S2 counts and the near-tie between models. It said nothing about whether the task really measures betrayal, and many comments repeat each other. Its security page says uploads are never used for training. <strong>Best for</strong> papers that ship code you want rerun against the text, and anyone with several papers a month.</p>
 
-        <h3>q.e.d Science (not run yet: sign-up pending)</h3>
+        <h3>q.e.d Science (not run)</h3>
         <p>Breaks a paper or grant into claims, marks gaps with suggested fixes and places the findings against related work. It is free for researchers with an institutional email. Its data statements conflict: the site says uploads are not used to train language models, while its terms allow it to train and evaluate its own models. <strong>Best for</strong> a free claims-and-gaps read, if those terms are acceptable for your manuscript.</p>
 
-        <h3>Explore Science, formerly Paper-Wizard (not run: needs a verified phone number)</h3>
+        <h3>Explore Science, formerly Paper-Wizard (not run)</h3>
         <p>A scorecard review with reference checks and a chat assistant, plus journal and funding matching. One full review is free after you verify an account; after that it is $50 a paper or a monthly plan. The site says the review takes hours. <strong>Best for</strong> one free full review when you are not in a hurry.</p>
 
         <h3>Thesify (not run)</h3>
         <p>Critiques argument, methods, evidence and structure, graded by severity, with journal suggestions. No free review was offered on the pricing page; one review is €14.95. It says documents are not used to train public models. <strong>Best for</strong> students and early-career authors who want feedback on the argument at a low one-off price.</p>
 
-        <h3>Trinka (not run: sign-in not completed)</h3>
+        <h3>Trinka (not run)</h3>
         <p>Mainly an academic grammar and language tool, with plagiarism, citation and "technical" checks bought as credits. The free Basic plan covers 5,000 words a month. Only the $300-a-year Confidential Data plan states no AI training. <strong>Best for</strong> language polishing, not methods critique.</p>
 
         <h3>Paperpal Preflight and Penelope.ai (not run)</h3>
