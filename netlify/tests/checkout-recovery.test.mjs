@@ -21,6 +21,7 @@ const env = {
   STRIPE_SECRET_KEY: "sk_test_dummy", STRIPE_WEBHOOK_SECRET: "whsec_test", BACKEND_WEBHOOK_SECRET: "backend",
   RESEND_API_KEY: "re_dummy", FOLLOWUP_UNSUBSCRIBE_SECRET: "unsub_secret",
   LENSCRIB_SALES_OPEN: "1",   // pre-launch switch (checkout.mjs openEnv); these tests buy every catalog product
+  PAPER_REVIEW_ANNUAL_OPEN: "1", PUBLICATION_PACK_OPEN: "1", LAB_PLANS_OPEN: "1",
 };
 globalThis.Netlify = { env: { get: (k) => (k.startsWith("STRIPE_PRICE_") ? "price_dummy" : env[k]) } };
 
@@ -225,6 +226,7 @@ const PAGE_PRICE = {
   "kit-monetization": ["site/kits/index.html", "$29"],
   "kit-clip": ["site/kits/index.html", "$10"],
   "kit-bundle": ["site/kits/index.html", "$59"],
+  "publication-pack": ["site/tools/paper-review/index.html", "$59"],
 };
 
 test("every one-time product in checkout has a recovery entry, and nothing else does", async () => {
@@ -274,7 +276,7 @@ test("app emails say updates are included; other products only say once", () => 
   assert.equal(app.subject, "Your Keyfeel checkout");
   const review = recoveryEmail({ to: "a@example.edu", product: "paper-review-standard", url, secret: "s" });
   assert.match(review.text, /You started buying a Paper Review \(Standard\) on purplelink\.llc/);
-  assert.match(review.text, /\(\$9\.00, once\)/);
+  assert.match(review.text, /\(\$14\.00, once\)/);
   assert.doesNotMatch(review.text, /updates/);
   assert.equal(review.subject, "Your Paper Review (Standard) checkout");
   assert.equal(recoveryEmail({ to: "a@example.edu", product: "bundle-2", url, secret: "s" }).subject, "Your Purplelink bundle checkout");

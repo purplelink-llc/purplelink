@@ -24,7 +24,7 @@ Pick your own: any 2 of the ten Suite parts are 25% off their combined price, an
 
 ## Web tools
 
-- Paper Review (AI pre-submission manuscript review) and six smaller checks: $2 to $15 per use, no account. https://purplelink.llc/tools/paper-review/
+- Paper Review (AI pre-submission manuscript review) and six smaller checks: $2 to $39 per use, no account. https://purplelink.llc/tools/paper-review/
 - Free browser tools and daily games: free, no account. https://purplelink.llc/tools/
 - Scholar Utility Belt (Chrome extension): free core; Pro through ExtensionPay. https://purplelink.llc/scholar-utility-belt/
 - Circled Hoops (weekly fantasy basketball, web; iPhone app in App Store review): every feature free for every league. The iPhone app shows one small banner; an optional Ad-free subscription at $0.99 a month removes it. No betting. https://purplelink.llc/circled-hoops/

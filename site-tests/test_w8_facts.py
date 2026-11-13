@@ -14,4 +14,4 @@ class W8(unittest.TestCase):
         self.assertNotIn("no in-app purchase", sec.lower())
 
     def test_homepage_paper_review_button(self):
-        self.assertRegex(read_site("index.html"), r">\s*Start a review, from \$9\s*<")
+        self.assertRegex(read_site("index.html"), r">\s*Start a review, from \$14\s*<")

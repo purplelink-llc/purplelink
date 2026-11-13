@@ -344,6 +344,29 @@ def test_register_token_rejects_wrong_list_price_or_overpayment(client, monkeypa
     assert r.status_code == 400 and r.json()["error"] == "amount_mismatch"
 
 
+@pytest.mark.parametrize("product,subtotal,ok", [
+    ("paper-review-standard", 900, True),     # a session opened at the old $9 and paid after the reprice
+    ("paper-review-standard", 1400, True),
+    ("paper-review-pack-5", 3800, True),
+    ("paper-review-pack-5", 15000, False),    # another product's legacy price is still a mismatch
+    ("revision-review", 1200, False),
+])
+def test_register_token_accepts_the_pre_reprice_amount(client, monkeypatch, product, subtotal, ok):
+    """2026-11-13 reprice: legacy_amounts keeps old-price checkout sessions delivering, and nothing else."""
+    http, backend_app = client
+    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "correct-secret")
+    sid = f"s-legacy-{product}-{subtotal}"
+    r = http.post("/paper-review/register-token", headers={"x-webhook-secret": "correct-secret"}, json={
+        "session_id": sid, "product": product, "email": "a@b.com",
+        "amount_paid": subtotal, "amount_subtotal": subtotal,
+    })
+    if ok:
+        assert r.status_code == 200, r.text
+        assert len(backend_app.paper_tokens_dict._data[sid]["tokens"]) == backend_app.PAID_PRODUCTS[product]["qty"]
+    else:
+        assert r.status_code == 400 and r.json()["error"] == "amount_mismatch"
+
+
 def test_register_token_rejects_out_of_bounds_qty(client, monkeypatch):
     """Defense-in-depth: PAID_PRODUCTS qty is static today (1, 5, or 20), but
     the catalog comment notes entries can be overridden by env vars at
@@ -2093,7 +2116,7 @@ def test_schedule_decision_reminder_caps_and_skips_missing_entries(client):
 def test_decision_reminder_template():
     from latextools import delivery
     html = delivery.html_lifecycle_decision_reminder(manuscript_title="<b>My paper</b>", unsubscribe_url="https://x/u")
-    assert "&lt;b&gt;My paper&lt;/b&gt;" in html and "Response to Reviewers ($6)" in html and "https://x/u" in html
+    assert "&lt;b&gt;My paper&lt;/b&gt;" in html and "Response to Reviewers ($12)" in html and "https://x/u" in html
 
 
 def test_sweep_sends_due_decision_reminder_once(client, monkeypatch):
