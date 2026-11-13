@@ -97,13 +97,12 @@ synthetic); do not pass `--not-synthetic`.
 
 ## Thumbnails (A/B for Test & Compare, 3 variants, `thumbs/ab/moderntex-3.json`)
 
-- A, product: app window in zen mode with one sentence highlighted, headline "Click. Listen. Fix." Needs crop
-  `video/thumbs/assets/moderntex3-readaloud-crop.png` (from c02).
-- B, text: "Proofread LaTeX by ear" with "2 new tools: read aloud and dictation". No capture needed.
-- C, split: dictated text appearing in source, "Dictate into LaTeX", "% & _ escaped for you". Needs crop
-  `video/thumbs/assets/moderntex3-dictate-crop.png` (from c07).
+- A, product: existing editor screenshot (`site/assets/moderntex-screens/01-editor-clean.webp`) as an interim, headline
+  "Click. Listen. Fix." Phase 2 should swap in a crop of c02 (zen mode, one sentence highlighted) once it exists.
+- B, text: "Proofread LaTeX by ear", "2 new tools: read aloud and dictation". No capture needed.
+- C, text: "Dictate into LaTeX", "5 characters escaped: % & _ $ # never break the build". No capture needed.
 
-Render: `node video/build-thumbs.mjs` per the README, after the two crops exist. Upload A first; `yt-abtest.py start` after the
+Render: `node video/build-thumbs.mjs --spec thumbs/ab/moderntex-3.json` (rendered once as a check; looks right). Upload A first; `yt-abtest.py start` after the
 video is public.
 
 ## Phase 2 run order

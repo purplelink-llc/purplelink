@@ -4,7 +4,7 @@
   "kind": "product",
   "name": "ModernTex 3.0",
   "line": "Click. Listen. Fix.",
-  "img": "video/thumbs/assets/moderntex3-readaloud-crop.png",
+  "img": "site/assets/moderntex-screens/01-editor-clean.webp",
   "icon": "site/assets/moderntex-icon.png",
   "pos": "top",
   "variant": "A"
@@ -22,10 +22,13 @@
  },
  {
   "id": "moderntex-3-thumb-C",
-  "kind": "split",
+  "kind": "long",
+  "pill": "ModernTex 3.0",
   "msg": "Dictate into LaTeX",
-  "img": "video/thumbs/assets/moderntex3-dictate-crop.png",
-  "after": "% & _ escaped for you",
-  "variant": "C"
+  "n": 5,
+  "unit": "characters escaped",
+  "sub": "% & _ $ # never break the build",
+  "variant": "C",
+  "bang": false
  }
 ]
