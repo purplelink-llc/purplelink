@@ -159,3 +159,39 @@ def compliance_markdown(res: Optional[dict]) -> str:
     if sources:
         lines += ["", "## Source for these rules", ""] + [f"- {s}" for s in sources]
     return "\n".join(lines) + "\n"
+
+
+# A Deep Paper Review bought in the last 30 days comes with one free Revision Review (2026-11-13).
+# One claim per Deep purchase (keyed by its Stripe session), only for a paid row in the buyer's spend
+# record, and the link only ever goes to the address that paid. See /revision-review/free-claim in app.py.
+FREE_REVISION_SOURCE_PRODUCT = "paper-review-deep"
+FREE_REVISION_WINDOW_SECONDS = 30 * 86400
+FREE_REVISION_CLAIM_PREFIX = "free-revision:"
+
+
+def free_revision_sessions(purchases, now: float) -> list:
+    """Deep purchase session ids, newest first, still inside the 30-day window. Paid rows only."""
+    rows = []
+    for r in purchases or []:
+        if not isinstance(r, dict) or r.get("product") != FREE_REVISION_SOURCE_PRODUCT:
+            continue
+        if not isinstance(r.get("amount_paid"), int) or r["amount_paid"] <= 0:
+            continue
+        try:
+            at = float(r.get("at") or 0)
+        except (TypeError, ValueError):
+            continue
+        if not isinstance(r.get("session"), str) or not r["session"]:
+            continue
+        if 0 <= now - at <= FREE_REVISION_WINDOW_SECONDS:
+            rows.append((at, r["session"]))
+    return [s for _, s in sorted(rows, reverse=True)]
+
+
+def claim_free_revision(store, purchases, now: float, claim_value) -> Optional[str]:
+    """Claim the first unclaimed eligible Deep session; returns its id, or None when nothing is left.
+    The atomic put-if-absent decides between two racing claims for the same purchase."""
+    for session in free_revision_sessions(purchases, now):
+        if store.put(f"{FREE_REVISION_CLAIM_PREFIX}{session}", claim_value, skip_if_exists=True):
+            return session
+    return None

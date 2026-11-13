@@ -323,6 +323,132 @@ challenging an item. No emojis. Output ONLY the Markdown report.
 """
 
 
+
+class PanelSynthesisError(RuntimeError):
+    """The synthesis call failed; the panel findings alone are not a report."""
+
+
+async def run_panel_and_synthesis(
+    client,
+    structure: PaperStructure,
+    parsed_reviewers: list[dict],
+    author_response: str,
+    *,
+    persona_note: str = "",
+    on_panel_done=None,
+) -> dict:
+    """The three-persona panel plus the synthesis report, on an already extracted manuscript.
+
+    Shared by the critique-only Response Review and the drafting product (which runs it on its own
+    draft letter). persona_note, when set, is added after the persona prompt, in the uncached part
+    of the request, so the cached manuscript block and RR_PANEL_SYSTEM stay byte-identical.
+    Returns {"skeptical", "tone", "editor", "md", "truncated"}; raises PanelSynthesisError.
+    """
+    reviewers_json = _compact_json(parsed_reviewers)
+    shared_block = {
+        "type": "text",
+        "text": (
+            _safety.wrap_user_content(structure.title or "", "manuscript_title") + "\n"
+            + _safety.wrap_user_content(structure.abstract or "", "manuscript_abstract") + "\n\n"
+            + _safety.wrap_user_content(reviewers_json, "reviewer_comments_parsed") + "\n\n"
+            + _safety.wrap_user_content(author_response[:30_000], "author_response") + "\n\n"
+            + _safety.wrap_user_content(structure.body or "", "revised_manuscript_body")
+        ),
+        "cache_control": dict(_CACHE),
+    }
+    # The Tone Editor judges phrasing only, so it gets the letter and the comments but not the
+    # manuscript (about 20,000 tokens it has no use for).
+    tone_block = {
+        "type": "text",
+        "text": (
+            _safety.wrap_user_content(reviewers_json, "reviewer_comments_parsed") + "\n\n"
+            + _safety.wrap_user_content(author_response[:30_000], "author_response")
+        ),
+    }
+    note = f"\n\n{persona_note}" if persona_note else ""
+
+    async def _persona(persona_key: str, persona_prompt: str) -> dict:
+        blocks = [tone_block if persona_key == "tone_editor" else shared_block,
+                  {"type": "text", "text": f"{persona_prompt}{note}\n\nNow produce your JSON array."}]
+        try:
+            findings, call_status = await _call_json_findings(
+                client,
+                system=RR_PANEL_SYSTEM,
+                user_content=blocks,
+                max_tokens=PERSONA_MAX_OUTPUT_TOKENS,
+                model=RESPONSE_REVIEW_MODEL,
+            )
+        except Exception:
+            logger.exception("RR persona %s failed", persona_key)
+            return {"persona": persona_key, "findings": [], "status": "error"}
+        flag_unverified_quotes(findings, structure.body)
+        for f in findings:
+            f["persona"] = persona_key
+        return {"persona": persona_key, "findings": findings,
+                "status": "error" if call_status == "unparsed" else "ok"}
+
+    async def _skeptical_and_editor() -> tuple[dict, dict]:
+        # Both read the same cached manuscript block: write the cache once, then run them together.
+        if estimate_input_tokens(RR_PANEL_SYSTEM, [shared_block]) >= _PREWARM_MIN_TOKENS:
+            if not await _prewarm_cache(client, system=RR_PANEL_SYSTEM, user_content=[shared_block],
+                                        model=RESPONSE_REVIEW_MODEL):
+                first = await _persona("skeptical_reviewer", _RR_SKEPTICAL)
+                return first, await _persona("editor_in_chief", _RR_EDITOR_IN_CHIEF)
+        return tuple(await asyncio.gather(
+            _persona("skeptical_reviewer", _RR_SKEPTICAL),
+            _persona("editor_in_chief", _RR_EDITOR_IN_CHIEF),
+        ))
+
+    tone_task = asyncio.create_task(_persona("tone_editor", _RR_TONE_EDITOR))
+    (skeptical, editor), tone = await asyncio.gather(_skeptical_and_editor(), tone_task)
+    if on_panel_done is not None:
+        try:
+            on_panel_done()
+        except Exception:
+            logger.exception("on_panel_done callback raised")
+
+    synth_user = (
+        _safety.wrap_user_content(
+            f"Title: {structure.title}", "paper_metadata",
+        ) + "\n\n"
+        + _safety.wrap_user_content(
+            _truncate_reviewers_json(parsed_reviewers, 20_000),
+            "reviewer_comments_parsed",
+        ) + "\n\n"
+        + _safety.wrap_user_content(
+            author_response[:30_000], "author_response",
+        ) + "\n\n"
+        + _safety.wrap_user_content(
+            _compact_json(skeptical.get('findings', []))[:30_000],
+            "skeptical_reviewer_findings",
+        ) + "\n\n"
+        + _safety.wrap_user_content(
+            _compact_json(tone.get('findings', []))[:10_000],
+            "tone_editor_findings",
+        ) + "\n\n"
+        + _safety.wrap_user_content(
+            _compact_json(editor.get('findings', []))[:5_000],
+            "editor_in_chief_verdict",
+        ) + "\n\n"
+        + (f"{persona_note}\n\n" if persona_note else "")
+        + "Produce the final Markdown report now."
+    )
+    truncated: list[bool] = []
+    try:
+        md = await _anthropic_message(
+            client,
+            system=_safety.SAFETY_PREAMBLE + "\n\n" + _RR_SYNTHESIS_SYSTEM,
+            user_content=[{"type": "text", "text": synth_user}],
+            max_tokens=RR_SYNTHESIS_MAX_OUTPUT_TOKENS,
+            model=RESPONSE_REVIEW_MODEL,
+            on_truncated=lambda _m: truncated.append(True),
+        )
+    except Exception as exc:
+        logger.exception("RR synthesis failed")
+        raise PanelSynthesisError("synthesis_failed") from exc
+    return {"skeptical": skeptical, "tone": tone, "editor": editor, "md": md, "truncated": bool(truncated)}
+
+
 async def run_response_review(
     pdf_bytes: bytes,
     reviewer_comments: str,
@@ -386,111 +512,20 @@ async def run_response_review(
         timeout=httpx.Timeout(connect=10.0, read=300.0, write=10.0, pool=10.0),
         limits=httpx.Limits(max_connections=10, max_keepalive_connections=5),
     ) as client:
-
-        reviewers_json = _compact_json(parsed_reviewers)
-        shared_block = {
-            "type": "text",
-            "text": (
-                _safety.wrap_user_content(structure.title or "", "manuscript_title") + "\n"
-                + _safety.wrap_user_content(structure.abstract or "", "manuscript_abstract") + "\n\n"
-                + _safety.wrap_user_content(reviewers_json, "reviewer_comments_parsed") + "\n\n"
-                + _safety.wrap_user_content(author_response[:30_000], "author_response") + "\n\n"
-                + _safety.wrap_user_content(structure.body or "", "revised_manuscript_body")
-            ),
-            "cache_control": dict(_CACHE),
-        }
-        # The Tone Editor judges phrasing only, so it gets the letter and the comments but not the
-        # manuscript (about 20,000 tokens it has no use for).
-        tone_block = {
-            "type": "text",
-            "text": (
-                _safety.wrap_user_content(reviewers_json, "reviewer_comments_parsed") + "\n\n"
-                + _safety.wrap_user_content(author_response[:30_000], "author_response")
-            ),
-        }
-
-        async def _persona(persona_key: str, persona_prompt: str) -> dict:
-            blocks = [tone_block if persona_key == "tone_editor" else shared_block,
-                      {"type": "text", "text": f"{persona_prompt}\n\nNow produce your JSON array."}]
-            try:
-                findings, call_status = await _call_json_findings(
-                    client,
-                    system=RR_PANEL_SYSTEM,
-                    user_content=blocks,
-                    max_tokens=PERSONA_MAX_OUTPUT_TOKENS,
-                    model=RESPONSE_REVIEW_MODEL,
-                )
-            except Exception:
-                logger.exception("RR persona %s failed", persona_key)
-                return {"persona": persona_key, "findings": [], "status": "error"}
-            flag_unverified_quotes(findings, structure.body)
-            for f in findings:
-                f["persona"] = persona_key
-            return {"persona": persona_key, "findings": findings,
-                    "status": "error" if call_status == "unparsed" else "ok"}
-
-        async def _skeptical_and_editor() -> tuple[dict, dict]:
-            # Both read the same cached manuscript block: write the cache once, then run them together.
-            if estimate_input_tokens(RR_PANEL_SYSTEM, [shared_block]) >= _PREWARM_MIN_TOKENS:
-                if not await _prewarm_cache(client, system=RR_PANEL_SYSTEM, user_content=[shared_block],
-                                            model=RESPONSE_REVIEW_MODEL):
-                    first = await _persona("skeptical_reviewer", _RR_SKEPTICAL)
-                    return first, await _persona("editor_in_chief", _RR_EDITOR_IN_CHIEF)
-            return tuple(await asyncio.gather(
-                _persona("skeptical_reviewer", _RR_SKEPTICAL),
-                _persona("editor_in_chief", _RR_EDITOR_IN_CHIEF),
-            ))
-
-        tone_task = asyncio.create_task(_persona("tone_editor", _RR_TONE_EDITOR))
-        (skeptical, editor), tone = await asyncio.gather(_skeptical_and_editor(), tone_task)
-
-        progress.progress_pct = 80
-        progress.stage = "rectifying"
-        _emit()
-
-        # Synthesis
-        synth_user = (
-            _safety.wrap_user_content(
-                f"Title: {structure.title}", "paper_metadata",
-            ) + "\n\n"
-            + _safety.wrap_user_content(
-                _truncate_reviewers_json(parsed_reviewers, 20_000),
-                "reviewer_comments_parsed",
-            ) + "\n\n"
-            + _safety.wrap_user_content(
-                author_response[:30_000], "author_response",
-            ) + "\n\n"
-            + _safety.wrap_user_content(
-                _compact_json(skeptical.get('findings', []))[:30_000],
-                "skeptical_reviewer_findings",
-            ) + "\n\n"
-            + _safety.wrap_user_content(
-                _compact_json(tone.get('findings', []))[:10_000],
-                "tone_editor_findings",
-            ) + "\n\n"
-            + _safety.wrap_user_content(
-                _compact_json(editor.get('findings', []))[:5_000],
-                "editor_in_chief_verdict",
-            ) + "\n\n"
-            + "Produce the final Markdown report now."
-        )
-        truncated: list[bool] = []
         try:
-            md = await _anthropic_message(
-                client,
-                system=_safety.SAFETY_PREAMBLE + "\n\n" + _RR_SYNTHESIS_SYSTEM,
-                user_content=[{"type": "text", "text": synth_user}],
-                max_tokens=RR_SYNTHESIS_MAX_OUTPUT_TOKENS,
-                model=RESPONSE_REVIEW_MODEL,
-                on_truncated=lambda _m: truncated.append(True),
+            panel = await run_panel_and_synthesis(
+                client, structure, parsed_reviewers, author_response,
+                on_panel_done=lambda: (setattr(progress, "progress_pct", 80),
+                                       setattr(progress, "stage", "rectifying"), _emit()),
             )
-        except Exception:
-            logger.exception("RR synthesis failed")
+        except PanelSynthesisError:
             progress.status = "error"
             progress.error = "synthesis_failed"
             progress.finished_at = time.time()
             _emit()
             return {"status": "error", "error": "synthesis_failed"}
+    md, truncated = panel["md"], panel["truncated"]
+    skeptical, tone = panel["skeptical"], panel["tone"]
 
     progress.progress_pct = 100
     progress.stage = "done"

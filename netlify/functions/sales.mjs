@@ -39,7 +39,7 @@ const SITE_OF_PRODUCT = new Map(Object.entries({
   "paper-review-deep": "purplelink", "paper-review-pack-5": "purplelink",
   "paper-review-pack-20": "purplelink", "cover-letter": "purplelink",
   "anonymity-check": "purplelink", "journal-check": "purplelink", "citation-gap": "purplelink",
-  "revision-review": "purplelink", "response-review": "purplelink",
+  "revision-review": "purplelink", "response-review": "purplelink", "response-draft": "purplelink",
   "resume-review": "purplelink", "kit-faceless": "purplelink",
   "kit-monetization": "purplelink", "kit-bundle": "purplelink",
   "kit-clip": "purplelink", "moderntex": "purplelink", "moderntex-seats": "purplelink", "outbound-veil": "purplelink", "legroom": "purplelink", "keyfeel": "purplelink", "tapefolio": "purplelink", "lenscrib": "purplelink", "lenses": "purplelink", "nee": "purplelink", "panely": "purplelink", "summonly": "purplelink", "freeboard": "purplelink", "app-suite": "purplelink", "bundle-2": "purplelink", "bundle-3": "purplelink",

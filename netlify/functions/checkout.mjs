@@ -32,6 +32,7 @@
  *   STRIPE_PRICE_CITATION_GAP              (citation-gap, $3)
  *   STRIPE_PRICE_REVISION_REVIEW_V2        (revision-review, $5)
  *   STRIPE_PRICE_RESPONSE_REVIEW_V2        (response-review, $12)
+ *   STRIPE_PRICE_RESPONSE_DRAFT            (response-draft, $24) — drafts the letter, then the panel checks it
  *   STRIPE_PRICE_RESUME_REVIEW             (resume-review, $5) — first non-academic product
  *   STRIPE_PRICE_VITAE_PLUS_MONTHLY        (vitae-plus-monthly, $2.99/month subscription, 7-day trial)
  *   STRIPE_PRICE_VITAE_PLUS_ANNUAL         (vitae-plus-annual, $23.99/year subscription, 7-day trial)
@@ -198,6 +199,7 @@ const PRODUCT_CATALOG = {
   "citation-gap":            { envKey: "STRIPE_PRICE_CITATION_GAP",            successPath: "/tools/citation-gap/upload/" },
   "revision-review":         { envKey: "STRIPE_PRICE_REVISION_REVIEW_V2", amount: 500, name: "Revision Review", successPath: "/tools/paper-review/revision/upload/" },
   "response-review":         { envKey: "STRIPE_PRICE_RESPONSE_REVIEW_V2", amount: 1200, name: "Response Review: response letter check", successPath: "/tools/response-review/upload/" },
+  "response-draft":          { envKey: "STRIPE_PRICE_RESPONSE_DRAFT", amount: 2400, name: "Response Review: response letter draft and check", successPath: "/tools/response-review/draft/upload/" },
   "resume-review":           { envKey: "STRIPE_PRICE_RESUME_REVIEW",           successPath: "/tools/resume-review/upload/" },
   // Digital "kits" (downloadable products). Delivery is a token-gated PDF from
   // the kits-delivery Blobs store; see download.mjs. Success page lists the links.
