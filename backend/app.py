@@ -225,6 +225,7 @@ PURCHASE_UPLOAD_PATHS = {
     "citation-gap": "/tools/citation-gap/upload/",
     "revision-review": "/tools/paper-review/revision/upload/",
     "response-review": "/tools/response-review/upload/",
+    "response-draft": "/tools/response-review/draft/upload/",
     "resume-review": "/tools/resume-review/upload/",
 }
 
@@ -258,7 +259,7 @@ def _purchases_waiting(entries, now: float) -> list:
             continue
         if entry.get("consumed_tokens") or entry.get("waiting_reminded_at"):
             continue
-        if entry.get("source") == "buddy-free":   # a free check, not a purchase: no "still waiting" email
+        if entry.get("source") in ("buddy-free", "deep-free-revision"):   # free, not a purchase: no "still waiting" email
             continue
         if now - (entry.get("created_at") or now) < PURCHASE_WAITING_AFTER_DAYS * 86400:
             continue
@@ -315,7 +316,8 @@ feedback_dict = DurableDict(
 )
 FEEDBACK_RATINGS = ("useful", "partly", "not_useful")
 FEEDBACK_PRODUCTS = ("paper-review", "citation-gap", "anonymity-check", "journal-check", "cover-letter",
-                     "revision-review", "response-review", "resume-review", "moderntex", "other")
+                     "revision-review", "response-review", "response-draft", "resume-review", "moderntex",
+                     "other")
 
 
 def _feedback_signature(session_id: str) -> str:
@@ -440,6 +442,10 @@ PAID_PRODUCTS: dict[str, dict] = {
     "citation-gap":             {"category": "citation-gap", "qty": 1, "amount": 300},
     "revision-review":          {"category": "revision-review", "qty": 1, "amount": 200},
     "response-review":          {"category": "response-review", "qty": 1, "amount": 600},
+    # Response Review with drafting (2026-11-13): drafts the letter, checks every stated change against the
+    # revised manuscript, then runs the Response Review panel on the draft (latextools/response_draft.py).
+    # Its own category, so a $6 critique token can never start a drafting run.
+    "response-draft":           {"category": "response-draft", "qty": 1, "amount": 2400},
     # First non-academic product — same 3-persona-panel shape as
     # response-review (comparable cost), priced the same way ($5, between
     # citation-gap's $3 and response-review's $6) rather than a subscription,
@@ -946,7 +952,8 @@ def coherence_check_job(data: bytes, filename: str, use_model: bool = True) -> d
 
 @app.function(
     image=image,
-    timeout=600,
+    # Response drafting runs drafting calls, then the three-persona panel and a synthesis: allow 20 minutes.
+    timeout=1200,
     cpu=1.0,
     memory=3072,
     max_containers=4,
@@ -962,6 +969,8 @@ def adjacent_tool_pipeline(
     original_review_md: str = "",
     reviewer_comments: str = "",
     author_response: str = "",
+    author_notes: str = "",
+    revised_pdf_bytes: bytes = b"",
     abstract_only: str = "",
     title_only: str = "",
     resume_filename: str = "",
@@ -981,7 +990,7 @@ def adjacent_tool_pipeline(
     import time as _time
     import httpx
 
-    from latextools import papercheck, paperreview_extras, response_review, resume_review, delivery
+    from latextools import papercheck, paperreview_extras, response_review, response_draft, resume_review, delivery
 
     def _persist(progress_dict: dict) -> None:
         paper_jobs_dict[token] = progress_dict
@@ -1128,6 +1137,25 @@ def adjacent_tool_pipeline(
                 final = await response_review.run_response_review(
                     pdf_bytes, reviewer_comments or "", author_response or "",
                     on_progress=_emit,
+                )
+                paper_jobs_dict[token] = {
+                    **final, "product": product,
+                }
+
+            elif product == "response-draft":
+                def _emit_draft(progress) -> None:
+                    paper_jobs_dict[token] = {
+                        "status": progress.status,
+                        "progress_pct": progress.progress_pct,
+                        "stage": progress.stage,
+                        "product": product,
+                        "started_at": progress.started_at,
+                        "result_md": progress.result_md if progress.status == "done" else None,
+                    }
+                final = await response_draft.run_response_draft(
+                    pdf_bytes, reviewer_comments or "", author_notes or "",
+                    revised_pdf_bytes=revised_pdf_bytes or None,
+                    on_progress=_emit_draft,
                 )
                 paper_jobs_dict[token] = {
                     **final, "product": product,
@@ -4803,6 +4831,85 @@ def web():
         claims[f"claim:{akey}"] = {**claim, "state": "redeemed", "redeemed_at": now}
         return JSONResponse({"token": token, "product": "citation-gap", "category": "citation-gap"})
 
+    # Generic answer for every free-claim request, so the endpoint never says whether an address bought anything.
+    _FREE_REVISION_SENT = {
+        "ok": True,
+        "message": "If that address bought a Deep Paper Review in the last 30 days, the link is on its way. "
+                   "Check your inbox.",
+    }
+
+    @api.post("/revision-review/free-claim")
+    async def revision_review_free_claim(request: Request):
+        """One free Revision Review per Deep Paper Review bought in the last 30 days (2026-11-13).
+
+        The buyer types their email; the link goes only to that address, and only when it paid for a Deep
+        review. The token is never returned here, so knowing someone's address gets you nothing."""
+        if not _enforce_rate_limit(request, "revision-free-claim"):
+            return JSONResponse({"error": "rate_limited"}, status_code=429)
+        try:
+            body = await request.json()
+        except Exception:
+            return JSONResponse({"error": "invalid_json"}, status_code=400)
+        raw = str((body or {}).get("email") or "").strip() if isinstance(body, dict) else ""
+        if not raw or len(raw) > 200 or "@" not in raw:
+            return JSONResponse({"ok": False, "message": "That email address does not look right."}, status_code=400)
+        from latextools import upgrades as _upgrades
+        canon = _buddy_canonical_email(raw)
+        if not canon:
+            return JSONResponse({"ok": False, "message": "That email address does not look right."}, status_code=400)
+        now = _time_module.time()
+        purchases = (review_spend_dict.get(canon) or {}).get("purchases") or []
+        try:
+            deep_session = _upgrades.claim_free_revision(review_spend_dict, purchases, now, {"at": now})
+        except Exception:
+            logger.exception("free revision claim failed")
+            return JSONResponse({"ok": False, "message": "Something went wrong. Please try again later."}, status_code=500)
+        if not deep_session:
+            return JSONResponse(_FREE_REVISION_SENT)
+        # Send to the address that paid for the Deep review, not to whatever spelling was typed.
+        deep_entry = paper_tokens_dict.get(deep_session) or {}
+        to_addr = deep_entry.get("email") if isinstance(deep_entry, dict) else ""
+        if not to_addr or _buddy_canonical_email(to_addr) != canon:
+            to_addr = raw
+        token = _gen_token()
+        session_id = f"deep-free-revision:{_gen_token()}"
+        paper_tokens_dict[session_id] = {
+            "tokens": [token],
+            "product_key": "revision-review",
+            "product_cfg": PAID_PRODUCTS["revision-review"],
+            "email": to_addr[:200],
+            "amount_paid": 0,
+            "source": "deep-free-revision",
+            "deep_session": deep_session,
+            "redeemed": False,
+            "consumed_tokens": [],
+            "created_at": now,
+            "expires_at": now + PAPER_TOKEN_TTL_SECONDS,
+        }
+        paper_token_index_dict[token] = session_id
+        claim_key = f"{_upgrades.FREE_REVISION_CLAIM_PREFIX}{deep_session}"
+        review_spend_dict[claim_key] = {"at": now, "session_id": session_id}
+        import httpx as _hx
+        from latextools import delivery as _delivery
+        try:
+            async with _hx.AsyncClient(timeout=10.0) as c:
+                result = await _delivery.send_email(
+                    c, to=to_addr, subject="Your free Revision Review",
+                    html=_delivery.html_free_revision_link(
+                        link=_purchase_start_link(session_id, paper_tokens_dict[session_id])),
+                    tags=[{"name": "kind", "value": "deep-free-revision"}])
+        except Exception:
+            logger.exception("free revision email failed")
+            result = {"status": "error"}
+        if result.get("status") != "ok":
+            # Undo so the buyer can ask again; the unsent token is withdrawn.
+            paper_token_index_dict.pop(token, None)
+            paper_tokens_dict.pop(session_id, None)
+            review_spend_dict.pop(claim_key, None)
+            return JSONResponse({"ok": False, "message": "The email did not go out. Please try again later."},
+                                status_code=502)
+        return JSONResponse(_FREE_REVISION_SENT)
+
     @api.post("/revision-review/submit")
     async def revision_review_submit(
         request: Request,
@@ -4905,6 +5012,79 @@ def web():
         if claimed == "spawn_failed":
             return JSONResponse(
                 {"error": "spawn_failed", "detail": "Could not start the review. Your token has not been used — please try again."},
+                status_code=500,
+            )
+        return JSONResponse({"token": token, "status_url": f"/paper-review/status?token={token}"})
+
+    @api.post("/response-review/draft/submit")
+    async def response_draft_submit(
+        request: Request,
+        token: str = Form(...),
+        file: UploadFile = File(...),
+        reviewer_comments: str = Form(...),
+        revised_file: UploadFile | None = File(None),
+        author_notes: str = Form(""),
+        email: str = Form(""),
+    ):
+        """Response letter drafting (2026-11-13, latextools/response_draft.py). The original manuscript and
+        the reviewer comments are required; the revised manuscript is optional but is the only thing that
+        lets a "we changed X" line be verified, so without it every change is a placeholder."""
+        if not _enforce_rate_limit(request, "response-draft"):
+            return JSONResponse({"error": "rate_limited"}, status_code=429)
+        # Two PDFs plus text fields can come in one request.
+        if _too_large(request, 2 * core.MAX_PAPER_UPLOAD_BYTES + 256 * 1024):
+            return JSONResponse({"error": "invalid", "detail": "Files too large."}, status_code=400)
+        session_id, entry = _lookup_token(token)
+        if entry is None:
+            return JSONResponse({"error": "unknown_token"}, status_code=404)
+        if token in (entry.get("consumed_tokens") or []):
+            return JSONResponse({"error": "already_used"}, status_code=409)
+        _term_refusal = annual.term_refusal(_annual_store(), entry, _time_module.time())
+        if _term_refusal:
+            return JSONResponse({"error": _term_refusal}, status_code=410)
+        if entry.get("expires_at", 0) and entry["expires_at"] < _time_module.time():
+            _expire_token_entry(session_id, entry)
+            return JSONResponse({"error": "expired"}, status_code=410)
+        if (entry.get("product_cfg") or {}).get("category") != "response-draft":
+            return JSONResponse({"error": "wrong_product"}, status_code=400)
+        if not reviewer_comments or len(reviewer_comments) > 60_000:
+            return JSONResponse({"error": "invalid", "detail": "Reviewer comments required (≤ 60k)."}, status_code=400)
+        if len(author_notes or "") > 60_000:
+            return JSONResponse({"error": "invalid", "detail": "Notes too long (≤ 60k)."}, status_code=400)
+
+        async def _read_pdf(upload: UploadFile, label: str):
+            try:
+                data = await _read_capped(upload, core.MAX_PAPER_UPLOAD_BYTES)
+            except _UploadTooLarge:
+                return None, JSONResponse({"error": "invalid", "detail": f"{label} too large."}, status_code=400)
+            try:
+                core.validate_paper_upload(upload.filename or "", len(data))
+            except core.ValidationError as e:
+                return None, _invalid(e)
+            if not data.startswith(b"%PDF-"):
+                return None, JSONResponse({"error": "invalid", "detail": f"{label} is not a valid PDF."}, status_code=400)
+            return data, None
+
+        data, err = await _read_pdf(file, "Original manuscript")
+        if err is not None:
+            return err
+        revised = b""
+        if revised_file is not None and (revised_file.filename or ""):
+            revised, err = await _read_pdf(revised_file, "Revised manuscript")
+            if err is not None:
+                return err
+        claimed = await _start_adjacent(token, session_id, entry, product="response-draft", spawn_kwargs={
+            "pdf_bytes": data,
+            "revised_pdf_bytes": revised,
+            "reviewer_comments": reviewer_comments,
+            "author_notes": author_notes or "",
+            "deliver_email": email if email and "@" in email else "",
+        })
+        if claimed == "already_used":
+            return JSONResponse({"error": "already_used"}, status_code=409)
+        if claimed == "spawn_failed":
+            return JSONResponse(
+                {"error": "spawn_failed", "detail": "Could not start the draft. Your token has not been used — please try again."},
                 status_code=500,
             )
         return JSONResponse({"token": token, "status_url": f"/paper-review/status?token={token}"})

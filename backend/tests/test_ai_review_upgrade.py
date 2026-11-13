@@ -637,6 +637,7 @@ def _snapshot_texts() -> dict:
         p.PERSONA_PROMPTS["methodology_critic"] + p._DEEP_PASS_SUFFIX, s, l1, l2, "general",
         tail="<other findings go here>\n\nNow produce your SECOND-PASS JSON array of findings.\n\n")
     from latextools import response_review as rr
+    from latextools import response_draft as rd
 
     def render(blocks):
         return "\n".join(
@@ -650,6 +651,9 @@ def _snapshot_texts() -> dict:
         "l4_system.txt": p.L4_SYSTEM,
         "l1_system.txt": p.L1_SYSTEM,
         "response_review_panel_system.txt": rr.RR_PANEL_SYSTEM,
+        "response_draft_system.txt": rd._DRAFT_SYSTEM,
+        "response_draft_panel_note.txt": rd.PANEL_DRAFT_NOTE,
+        "response_draft_notice.txt": rd.DRAFT_NOTICE,
         "retry_note.txt": p._RETRY_JSON_NOTE,
         "cover_letter_system.txt": pre._COVER_LETTER_SYSTEM,
         "anonymity_system.txt": pre._ANONYMITY_SYSTEM,

@@ -208,6 +208,7 @@ _READY_NAMES = {
     "cover-letter": "cover letter draft",
     "revision-review": "Revision Review",
     "response-review": "Response to Reviewers check",
+    "response-draft": "response letter draft",
     "resume-review": "Resume Review",
 }
 _LINK = 'style="color: #6d28d9;"'
@@ -232,6 +233,11 @@ _READY_NEXT = {
     "response-review": (
         f'For the manuscript itself, <a href="https://purplelink.llc/tools/paper-review/revision/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Revision Review</a> '
         '($2) checks the revision against the findings in your original Paper Review.'
+    ),
+    "response-draft": (
+        'The draft is yours to edit: fill every [PLACEHOLDER] and resolve every [CHECK] before you send it. '
+        f'For the manuscript itself, <a href="https://purplelink.llc/tools/paper-review/revision/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Revision Review</a> '
+        'checks the revision against the findings in your original Paper Review.'
     ),
     "revision-review": (
         f'For the letter that goes with it, <a href="https://purplelink.llc/tools/response-review/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Response to Reviewers</a> '
@@ -393,6 +399,32 @@ def html_purchase_link(*, product_name: str, link: str, buyer_code: str = "", bu
   <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0;">
   <p style="color: #888; font-size: 0.85em;">Sent by Purplelink LLC. Questions:
   reply to this email.</p>
+</div>
+"""
+
+
+def html_free_revision_link(*, link: str) -> str:
+    """Sent when a Deep review buyer claims the Revision Review that comes with it."""
+    return f"""
+<div style="{_EMAIL_BASE_CSS}">
+  <h2 style="color: #6d28d9;">Your free Revision Review</h2>
+  <p>A Deep Paper Review in the last 30 days comes with one Revision Review
+  at no charge. Open this link to upload the revised manuscript. It works on
+  any device, and you can use it once within 7 days.</p>
+  <p>
+    <a href="{_html.escape(link)}"
+       style="display: inline-block; background: #7c3aed; color: #fff;
+              padding: 12px 22px; border-radius: 6px; text-decoration: none;
+              font-weight: 600;">
+      Start my Revision Review
+    </a>
+  </p>
+  <p style="color: #555; font-size: 0.9em;">Keep this email until you have
+  used the link. Anyone with it can use it.</p>
+  <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0;">
+  <p style="color: #888; font-size: 0.85em;">Sent by Purplelink LLC because
+  someone asked for it on purplelink.llc with this address. If that was not
+  you, ignore this email.</p>
 </div>
 """
 

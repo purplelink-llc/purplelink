@@ -51,6 +51,7 @@ export const RECOVERY_PRODUCTS = Object.freeze({
   "citation-gap":               { name: "the citation gap check", price: "$3.00", cents: 300, kind: "once" },
   "revision-review":            { name: "the revision review", price: "$2.00", cents: 200, kind: "once" },
   "response-review":            { name: "the response letter review", price: "$6.00", cents: 600, kind: "once" },
+  "response-draft":             { name: "the response letter draft", price: "$24.00", cents: 2400, kind: "once" },
   "resume-review":              { name: "the resume review", price: "$5.00", cents: 500, kind: "once" },
   "kit-faceless":               { name: "the Faceless Content Pipeline kit", price: "$49.00", cents: 4900, kind: "once" },
   "kit-monetization":           { name: "the Monetization Stack kit", price: "$29.00", cents: 2900, kind: "once" },

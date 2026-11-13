@@ -25,7 +25,7 @@ export const LIST_CENTS = {
   "paper-review-standard": 900, "paper-review-journal": 1100, "paper-review-deep": 1500,
   "paper-review-pack-5": 3800, "paper-review-pack-20": 15000,
   "cover-letter": 200, "anonymity-check": 200, "citation-gap": 300, "revision-review": 200,
-  "response-review": 600, "resume-review": 500,
+  "response-review": 600, "response-draft": 2400, "resume-review": 500,
   "kit-faceless": 4900, "kit-monetization": 2900, "kit-clip": 1000,
   "outbound-veil": 2999, "legroom": 999,
 };

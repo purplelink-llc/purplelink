@@ -214,7 +214,9 @@ def test_truncate_reviewers_json_empty_list():
 
 
 def test_author_response_truncation_consistent_across_pipeline_stages():
-    source = inspect.getsource(run_response_review)
+    # The panel and synthesis live in run_panel_and_synthesis (shared with the drafting product).
+    from latextools.response_review import run_panel_and_synthesis
+    source = inspect.getsource(run_panel_and_synthesis)
     limits = [
         int(m.group(1).replace("_", ""))
         for m in re.finditer(r"author_response\[:(\d[\d_]*)\]", source)
