@@ -386,7 +386,8 @@
       return;
     }
     forgetSavedStatus();
-    pageTitle.textContent = "Your review is ready";
+    pageTitle.textContent = (payload.product || ACTIVE_PRODUCT) === "response-draft"
+      ? "Your response letter draft is ready" : "Your review is ready";
     // Paper Review also emails the report as a PDF; the other tools do not.
     pageBlurb.innerHTML = (payload.product || ACTIVE_PRODUCT) === "paper-review"
       ? "<strong>A PDF of the report is on its way to your email.</strong> If it has not arrived, download a copy below. " + DELETION_SENTENCE
