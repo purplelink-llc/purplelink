@@ -43,7 +43,7 @@ class KeyfeelSoundCreditsPage(unittest.TestCase):
     def test_no_inline_style_and_no_version_number_promise(self):
         self.assertNotRegex(self.text, r'\sstyle="')
         self.assertNotRegex(self.text, r"<style\b")
-        self.assertIn("from the next update", self.text)
+        self.assertIn("Since version 1.8.0, the app also shows this", self.text)
 
     def test_stylesheet_has_no_color_scheme_rule_for_table(self):
         css = (SITE / "styles.css").read_text(encoding="utf-8")
