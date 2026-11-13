@@ -1,5 +1,5 @@
-// Selling the response letter draft ($24, response-draft): closed until RESPONSE_DRAFT_OPEN is 1, then sold at the
-// catalog's $24 (or the env Price when one is set) with the drafting upload page as the success page. Stripe is stubbed.
+// Selling the response letter draft ($24, response-draft): on sale with no env switch (the upload page shipped with
+// it), at the catalog's $24 or the env Price when one is set, landing on the drafting upload page. Stripe is stubbed.
 //
 // Run with: node --experimental-test-module-mocks --test netlify/tests/response-draft-checkout.test.mjs
 
@@ -33,18 +33,15 @@ const post = (body) => checkout(new Request("https://purplelink.llc/.netlify/fun
 const stripeParams = () => new URLSearchParams(calls.find((c) => c.url.includes("/checkout/sessions")).opts.body);
 const stripeCalls = () => calls.filter((c) => c.url.startsWith("https://api.stripe.com/")).length;
 
-test("response-draft is not for sale until RESPONSE_DRAFT_OPEN is 1, and never reaches Stripe", async () => {
-  for (const v of [undefined, "", "0", "true"]) {
+test("response-draft is on sale with no env switch set", async () => {
+  for (const v of [undefined, "", "0"]) {
     if (v === undefined) delete env.RESPONSE_DRAFT_OPEN; else env.RESPONSE_DRAFT_OPEN = v;
     const res = await post({ product: "response-draft" });
-    assert.equal(res.status, 400, `RESPONSE_DRAFT_OPEN=${v}`);
-    assert.equal((await res.json()).error, "not_for_sale");
+    assert.equal(res.status, 200, `RESPONSE_DRAFT_OPEN=${v}`);
   }
-  assert.equal(stripeCalls(), 0, "no Stripe session is created");
 });
 
-test("once open, response-draft sells at the catalog's $24 and lands on the drafting upload page", async () => {
-  env.RESPONSE_DRAFT_OPEN = "1";
+test("response-draft sells at the catalog's $24 and lands on the drafting upload page", async () => {
   const res = await post({ product: "response-draft", amount: 1 });
   assert.equal(res.status, 200);
   const p = stripeParams();
@@ -53,8 +50,7 @@ test("once open, response-draft sells at the catalog's $24 and lands on the draf
   assert.equal(p.get("metadata[product]"), "response-draft");
 });
 
-test("once open, an env Price for response-draft wins over the inline amount", async () => {
-  env.RESPONSE_DRAFT_OPEN = "1";
+test("an env Price for response-draft wins over the inline amount", async () => {
   env.STRIPE_PRICE_RESPONSE_DRAFT = "price_test_draft";
   const res = await post({ product: "response-draft" });
   assert.equal(res.status, 200);
