@@ -9,7 +9,7 @@ import assert from "node:assert/strict";
 const blobsModule = { getStore: () => ({ get: async () => null, set: async () => {} }) };
 try { mock.module("@netlify/blobs", { exports: blobsModule }); } catch { mock.module("@netlify/blobs", { namedExports: blobsModule }); }
 globalThis.Netlify = {
-  env: { get: (k) => (k === "STRIPE_SECRET_KEY" ? "sk_test_dummy" : k.startsWith("STRIPE_PRICE_") ? "price_dummy" : undefined) },
+  env: { get: (k) => (k === "STRIPE_SECRET_KEY" ? "sk_test_dummy" : k === "PAPER_REVIEW_ANNUAL_OPEN" ? "1" : k.startsWith("STRIPE_PRICE_") ? "price_dummy" : undefined) },
 };
 const { default: handler } = await import("../functions/checkout.mjs");
 

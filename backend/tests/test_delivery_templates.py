@@ -60,8 +60,8 @@ def test_html_review_ready_status_url_still_interpolated():
 
 def test_html_review_ready_refund_amount_defaults_to_standard_price():
     out = delivery.html_review_ready(status_url="https://purplelink.llc/x")
-    assert "refund the $9" in out
-    assert "$5" not in out
+    assert "refund the $14" in out
+    assert "refund the $5" not in out
 
 
 def test_html_review_ready_refund_amount_is_tier_aware():

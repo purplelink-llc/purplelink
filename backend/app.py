@@ -419,27 +419,28 @@ PAID_PRODUCTS: dict[str, dict] = {
     # usage_ledger_dict has real per-job cost data (see _write_usage_ledger),
     # revisit these against actual COGS — see docs/paper-review-runbook.md
     # "Cost & margin tracking".
-    "paper-review-standard":    {"category": "paper-review", "tier": "standard", "qty": 1, "amount": 900, "bundled_anonymity": True},
-    "paper-review-journal":     {"category": "paper-review", "tier": "standard", "qty": 1, "amount": 1100, "bundled_anonymity": True, "bundled_journal": True},
-    "paper-review-deep":        {"category": "paper-review", "tier": "deep",     "qty": 1, "amount": 1500, "bundled_anonymity": True, "bundled_journal": True},
-    # Volume packs (mint N tokens of standard Paper Review). ~15-17% off vs.
-    # buying à la carte at $9 each.
-    # Pack tokens are Standard reviews, so they carry Standard's bundled
-    # anonymity scan (the packs page, FAQ and /labs/ say so).
-    "paper-review-pack-5":      {"category": "paper-review", "tier": "standard", "qty": 5,  "amount": 3800, "bundled_anonymity": True},
-    "paper-review-pack-20":     {"category": "paper-review", "tier": "standard", "qty": 20, "amount": 15000, "bundled_anonymity": True},
-    # A year of reviews: $79/year auto-renewing, 12 Journal reviews per paid year (annual.py).
+    "paper-review-standard":    {"category": "paper-review", "tier": "standard", "qty": 1, "amount": 1400, "legacy_amounts": [900], "bundled_anonymity": True},
+    "paper-review-journal":     {"category": "paper-review", "tier": "standard", "qty": 1, "amount": 2400, "legacy_amounts": [1100], "bundled_anonymity": True, "bundled_journal": True},
+    "paper-review-deep":        {"category": "paper-review", "tier": "deep",     "qty": 1, "amount": 3900, "legacy_amounts": [1500], "bundled_anonymity": True, "bundled_journal": True},
+    # Lab packs (2026-11-13): N Journal reviews each ($99 for 5, $349 for 20; $24 each singly). Pack tokens
+    # carry the Journal tier's checklist and the anonymity scan. legacy_amounts: the old $38/$150 Standard packs,
+    # accepted only so a checkout session opened before the reprice still delivers.
+    "paper-review-pack-5":      {"category": "paper-review", "tier": "standard", "qty": 5,  "amount": 9900, "legacy_amounts": [3800], "bundled_anonymity": True, "bundled_journal": True},
+    "paper-review-pack-20":     {"category": "paper-review", "tier": "standard", "qty": 20, "amount": 34900, "legacy_amounts": [15000], "bundled_anonymity": True, "bundled_journal": True},
+    # A year of reviews: $79/year auto-renewing, 12 Journal reviews per paid year (annual.py). New sales stopped
+    # 2026-11-13 (checkout gate PAPER_REVIEW_ANNUAL_OPEN); current subscribers keep renewing.
     "paper-review-annual":      {"category": "paper-review", "tier": "standard", "qty": 12, "amount": 7900, "bundled_anonymity": True, "bundled_journal": True},
     # Auxiliary paid tools — single/few-call pipelines, cheap even at Fable
     # rates, so these carry a wide margin rather than a thin one.
     "cover-letter":             {"category": "cover-letter", "qty": 1, "amount": 200},
     "anonymity-check":          {"category": "anonymity-check", "qty": 1, "amount": 200},
-    # The $2 journal check offered after a Standard review (latextools/upgrades.py): the rule-based Journal
+    # The $10 journal check offered after a Standard review (latextools/upgrades.py): the rule-based Journal
     # tier checklist for one journal, no model call. Its own category, so /paper-review/submit refuses it.
-    "journal-check":            {"category": "journal-check", "qty": 1, "amount": 200},
+    # $10 since 2026-11-13: the gap between Standard ($14) and Journal ($24).
+    "journal-check":            {"category": "journal-check", "qty": 1, "amount": 1000, "legacy_amounts": [200]},
     "citation-gap":             {"category": "citation-gap", "qty": 1, "amount": 300},
-    "revision-review":          {"category": "revision-review", "qty": 1, "amount": 200},
-    "response-review":          {"category": "response-review", "qty": 1, "amount": 600},
+    "revision-review":          {"category": "revision-review", "qty": 1, "amount": 500, "legacy_amounts": [200]},
+    "response-review":          {"category": "response-review", "qty": 1, "amount": 1200, "legacy_amounts": [600]},
     # First non-academic product — same 3-persona-panel shape as
     # response-review (comparable cost), priced the same way ($5, between
     # citation-gap's $3 and response-review's $6) rather than a subscription,
@@ -856,7 +857,7 @@ def paper_review_pipeline(
                                     status_url=f"https://purplelink.llc/tools/paper-review/status/?token={token}",
                                     manuscript_title=(final.get("structure_summary") or {}).get("title", ""),
                                     # A pack token's refund is its share of the pack.
-                                    amount_cents=(PAID_PRODUCTS.get(product_key, {}).get("amount", 900)
+                                    amount_cents=(PAID_PRODUCTS.get(product_key, {}).get("amount", 1400)
                                                   // max(1, PAID_PRODUCTS.get(product_key, {}).get("qty", 1))),
                                     attachment=_attachment_kind,
                                     offers=upgrade_offers or None,
@@ -1183,7 +1184,7 @@ def adjacent_tool_pipeline(
                             subject=f"Your {delivery._READY_NAMES.get(product, 'result')} is ready",
                             html=delivery.html_review_ready(
                                 status_url=f"https://purplelink.llc/tools/paper-review/status/?token={token}&product={product}",
-                                amount_cents=PAID_PRODUCTS.get(product, {}).get("amount", 900),
+                                amount_cents=PAID_PRODUCTS.get(product, {}).get("amount", 1400),
                                 product=product,
                             ),
                             tags=[{"name": "product", "value": product}],
@@ -2640,10 +2641,13 @@ def web():
         # was actually charged. Cross-check amount_paid against the
         # catalog's expected amount for this product before minting tokens,
         # so a mismapped 5-pack can't mint a 20-pack's worth of tokens.
+        # legacy_amounts: the price before a reprice, so a checkout session opened at the old price (or
+        # recovered from one) and paid after the reprice build still delivers.
         expected_amount = product_cfg.get("amount")
+        accepted_amounts = {expected_amount, *product_cfg.get("legacy_amounts", ())}
         list_amount = amount_subtotal if isinstance(amount_subtotal, int) else 0
         paid_amount = amount_paid if isinstance(amount_paid, int) else 0
-        if expected_amount is not None and (list_amount != expected_amount or not 0 <= paid_amount <= list_amount):
+        if expected_amount is not None and (list_amount not in accepted_amounts or not 0 <= paid_amount <= list_amount):
             return JSONResponse(
                 {
                     "error": "amount_mismatch",

@@ -1083,7 +1083,7 @@
     { id: 'vitae', name: 'Vitae', href: '/vitae/', icon: '/assets/vitae-icon.webp', cta: 'Get it free',
       text: 'Track submissions, grants and your CV in one place. Free for Mac, with an optional Plus subscription from $2.99 a month.', own: ['/vitae/'] },
     { id: 'paper-review', name: 'Paper Review', href: '/tools/paper-review/', icon: '/assets/purplelink-logo-64.png', cta: 'See how it works',
-      text: 'AI reviewers read your manuscript the way a journal would, before you submit. From $9.', own: ['/tools/paper-review/'] },
+      text: 'AI reviewers read your manuscript the way a journal would, before you submit. From $14.', own: ['/tools/paper-review/'] },
     { id: 'scholar-utility-belt', name: 'Scholar Utility Belt', href: '/scholar-utility-belt/', icon: '/assets/scholar-utility-belt-icon.webp', cta: 'Add to Chrome',
       text: 'Journal rankings, h-index and retraction alerts inside Google Scholar. A free Chrome extension.', own: ['/scholar-utility-belt/'] },
     { id: 'mac-suite', name: 'Mac Suite', href: '/suite/', icon: '/assets/moderntex-icon-2.webp', cta: 'See the bundle',

@@ -302,14 +302,21 @@
     "paper-review": [
       ["/tools/citation-gap/", "$3", "Citation Gap Analysis", "Prior work a reviewer may expect you to cite, with a reason for each."],
       ["/tools/cover-letter/", "$2", "Cover Letter", "A draft from your abstract and the journal name. It never sees the manuscript."],
-      ["/tools/paper-review/revision/", "$2", "Revision Review", "After you revise, checks the fixes against this report. Keep the Markdown file: it reads it."]
+      ["/tools/paper-review/revision/", "$5", "Revision Review", "After you revise, checks the fixes against this report. Keep the Markdown file: it reads it."],
+      ["/tools/response-review/", "$12", "Response Review", "When the reviews come back, checks every reply in your response letter against the comments."]
     ],
-    "citation-gap": [["/tools/paper-review/", "From $9", "Paper Review", "Seven AI reviewers on methods, statistics and data, with every reference checked against CrossRef."]],
-    "anonymity-check": [["/tools/paper-review/", "From $9", "Paper Review", "The full pre-submission read, with an anonymity scan included."]],
+    "citation-gap": [["/tools/paper-review/", "From $14", "Paper Review", "Seven AI reviewers on methods, statistics and data, with every reference checked against CrossRef."]],
+    "anonymity-check": [["/tools/paper-review/", "From $14", "Paper Review", "The full pre-submission read, with an anonymity scan included."]],
     "journal-check": [["/tools/cover-letter/", "$2", "Cover Letter", "A draft from your abstract and the journal name. It never sees the manuscript."]],
-    "cover-letter": [["/tools/paper-review/", "From $9", "Paper Review", "Before you send the letter, a reviewer panel's read of the manuscript itself."]],
-    "response-review": [["/tools/paper-review/revision/", "$2", "Revision Review", "Checks the revised manuscript against the findings in your original Paper Review."]],
-    "revision-review": [["/tools/response-review/", "$6", "Response to Reviewers", "Checks every reply in your response letter against the reviewer comments."]]
+    "cover-letter": [["/tools/paper-review/", "From $14", "Paper Review", "Before you send the letter, a reviewer panel's read of the manuscript itself."]],
+    "response-review": [["/tools/paper-review/revision/", "$5", "Revision Review", "Checks the revised manuscript against the findings in your original Paper Review."]],
+    "revision-review": [["/tools/response-review/", "$12", "Response Review", "Checks every reply in your response letter against the reviewer comments."]]
+  };
+
+  var WORKFLOW_PRODUCTS = {
+    "paper-review": "Steps 1 to 3 of 5",
+    "revision-review": "Step 4 of 5",
+    "response-review": "Step 5 of 5"
   };
 
   function renderNextSteps(product) {
@@ -322,7 +329,12 @@
         '<strong>' + it[2] + '</strong>' +
         '<span class="pr-next-desc">' + it[3] + '</span></a>';
     });
-    return out + "</div></aside>";
+    out += "</div>";
+    if (WORKFLOW_PRODUCTS[product]) {
+      out += '<p class="pr-next-flow">' + WORKFLOW_PRODUCTS[product] +
+        ' in the <a href="/tools/paper-review/#workflow">publication workflow</a>: review, coherence, citations, revision, response.</p>';
+    }
+    return out + "</aside>";
   }
 
   // Upgrade offers the backend attaches to a finished Paper Review (backend/latextools/upgrades.py). Real prices,

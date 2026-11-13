@@ -20,17 +20,14 @@
   if (!btn) return;
 
   var TIER_LABELS = {
-    "paper-review-standard": "Start a review, $9",
-    "paper-review-journal": "Start a review, $11",
-    "paper-review-deep": "Start a review, $15",
-    "paper-review-annual": "Start the annual plan, $79 a year",
+    "paper-review-standard": "Start a review, $14",
+    "paper-review-journal": "Start a review, $24",
+    "paper-review-deep": "Start a review, $39",
   };
 
   function updateButton() {
     var chosen = (document.querySelector('input[name="tier"]:checked') || {}).value || "paper-review-standard";
     btn.textContent = TIER_LABELS[chosen] || "Start review";
-    var renew = document.getElementById("renew-note");
-    if (renew) renew.hidden = chosen !== "paper-review-annual";
   }
 
   document.querySelectorAll('input[name="tier"]').forEach(function (input) {

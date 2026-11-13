@@ -14,10 +14,10 @@ UPLOAD = "tools/paper-review/journal-check/upload/index.html"
 
 
 class JournalCheckPages(unittest.TestCase):
-    def test_landing_sells_the_journal_check_at_two_dollars(self):
+    def test_landing_sells_the_journal_check_at_ten_dollars(self):
         page = read_site(LANDING)
         self.assertIn('data-product="journal-check"', page)
-        self.assertIn("$2", page)
+        self.assertIn("$10", page)
         self.assertIn("paid-tool-landing.js", page)
         self.assertIn('name="robots" content="noindex, follow"', page)
         self.assertNotIn("style=", page)
@@ -43,9 +43,9 @@ class JournalCheckPages(unittest.TestCase):
 
     def test_checkout_and_backend_agree_on_the_product(self):
         checkout = (ROOT / "netlify/functions/checkout.mjs").read_text()
-        self.assertRegex(checkout, r'"journal-check":\s*\{\s*amount:\s*200')
+        self.assertRegex(checkout, r'"journal-check":\s*\{\s*amount:\s*1000')
         app = (ROOT / "backend/app.py").read_text()
-        self.assertRegex(app, r'"journal-check":\s*\{"category":\s*"journal-check",\s*"qty":\s*1,\s*"amount":\s*200\}')
+        self.assertRegex(app, r'"journal-check":\s*\{"category":\s*"journal-check",\s*"qty":\s*1,\s*"amount":\s*1000,\s*"legacy_amounts":\s*\[200\]\}')
         self.assertIn('@api.post("/journal-check/submit")', app)
 
     def test_status_page_renders_upgrade_offers(self):

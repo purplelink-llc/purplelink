@@ -9,7 +9,7 @@ main 4-layer pipeline but don't justify their own modules:
     information that breaks double-blind review.
   - run_citation_gap — $5 standalone: finds prior art that the manuscript
     should cite but doesn't.
-  - run_revision_review — $2 second-pass: re-evaluates a revised paper
+  - run_revision_review — $5 second-pass: re-evaluates a revised paper
     against the original review's flagged issues, plus a light pass for new
     problems introduced by the revision.
 
@@ -389,7 +389,7 @@ async def run_citation_gap(
 
 
 # ---------------------------------------------------------------------------
-# Revision Review  ($2 second-pass)
+# Revision Review  ($5 second-pass)
 # ---------------------------------------------------------------------------
 
 _REVISION_SYSTEM = """You are the senior reviewer evaluating whether the

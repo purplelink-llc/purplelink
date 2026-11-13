@@ -182,7 +182,7 @@
 
         <p class="tool-status" id="status" aria-live="polite"></p>
         <div class="tool-result" id="result"></div>
-        <p class="tool-next" id="bib-unmatched-next" hidden><span id="bib-unmatched-count"></span> <a data-track="tool_next" data-track-meta="bib-validator" href="/tools/paper-review/?utm_source=tool-bib-validator&amp;utm_medium=tool&amp;utm_campaign=paper-review&amp;utm_content=unmatched">Paper Review</a> checks the references inside your manuscript the same way, flags retracted sources, and in the $9 review checks whether each cited paper supports the claim it is attached to. Its reference check is free.</p>
+        <p class="tool-next" id="bib-unmatched-next" hidden><span id="bib-unmatched-count"></span> <a data-track="tool_next" data-track-meta="bib-validator" href="/tools/paper-review/?utm_source=tool-bib-validator&amp;utm_medium=tool&amp;utm_campaign=paper-review&amp;utm_content=unmatched">Paper Review</a> checks the references inside your manuscript the same way, flags retracted sources, and in the $14 review checks whether each cited paper supports the claim it is attached to. Its reference check is free.</p>
         <p class="tool-privacy">The file is read on our server for the check and not kept. Its contents are not logged.</p>
       </div>
 
@@ -516,7 +516,7 @@
           if (!crCol) {
             html += '<p class="bib-next">This run checked the format of each entry, not whether the paper exists. Tick the <strong>CrossRef</strong> option above and run it again to look each one up.</p>';
           } else {
-            html += '<p class="bib-next">A reference can exist and still not say what the sentence citing it claims. <a href="/tools/paper-review/" data-track="bib_next_paper_review">Paper Review</a> ($9) reads the manuscript with its references and checks the most important citations against the cited abstracts.</p>';
+            html += '<p class="bib-next">A reference can exist and still not say what the sentence citing it claims. <a href="/tools/paper-review/" data-track="bib_next_paper_review">Paper Review</a> ($14) reads the manuscript with its references and checks the most important citations against the cited abstracts.</p>';
           }
 
           resultEl.innerHTML = html;

@@ -59,7 +59,8 @@ test("the friend discount skips bundles, seats, subscriptions and the small tool
   assert.equal(lib.friendEligible("paper-review-standard", { envKey: "X" }), true);
   assert.equal(lib.friendEligible("legroom", { envKey: "X" }), true);
   assert.equal(lib.friendEligible("cover-letter", { envKey: "X" }), false);
-  assert.equal(lib.friendEligible("response-review", { envKey: "X" }), false);
+  assert.equal(lib.friendEligible("revision-review", { envKey: "X" }), false);
+  assert.equal(lib.friendEligible("response-review", { envKey: "X" }), true); // $12 since 2026-11-13
   assert.equal(lib.friendEligible("lenses", { amount: 499 }), false);
   assert.equal(lib.friendEligible("bundle-2", { bundle: true }), false);
   assert.equal(lib.friendEligible("moderntex-seats", { seats: true }), false);
