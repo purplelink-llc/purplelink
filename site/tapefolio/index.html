@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>Tapefolio - Private Transcription and OCR for Researchers on Mac | Purplelink LLC</title>
-    <meta name="description" content="Transcribe interviews and read scanned pages on your Mac. Speaker labels, case-by-case identifier removal, MAXQDA export. Nothing is uploaded. Free for 7 days.">
+    <meta name="description" content="Transcribe interviews on your Mac. Speaker labels, identifier removal, exports for MAXQDA, NVivo, ATLAS.ti and Dedoose. Nothing is uploaded. Free for 7 days.">
     <link rel="canonical" href="https://purplelink.llc/tapefolio/">
     <meta property="og:title" content="Tapefolio - Private Transcription and OCR for Researchers on Mac">
     <meta property="og:description" content="Transcribe interviews, label speakers, replace names and other identifiers you choose, and read scanned pages, all on your Mac. Your files are not uploaded.">
@@ -53,13 +53,13 @@
           "softwareRequirements": "macOS 26 or later on a Mac with Apple silicon.",
           "processorRequirements": "Apple silicon",
           "featureList": [
-            "Transcribes audio on the Mac, with the time of every word",
+            "Transcribes audio and video files on the Mac, with the time of every word",
             "Transcribes with Apple's on-device speech recognition until you download a speech model; optional models from Hugging Face (NVIDIA Parakeet, Whisper base, Whisper large-v3 turbo, and NVIDIA Nemotron 3 Diarization, which is recommended for speaker labels and used automatically once installed) can be deleted from Settings",
             "Speaker labels, with speaker naming and merging in the review screen",
             "Optional speaker memory, off until you turn it on for a project, with a recorded consent note, stored encrypted on the Mac, suggestions only, and deletable",
             "Identifier removal that finds names, places, organizations, emails, phone numbers, addresses, links, ID numbers and dates of birth and replaces them with codes, one case at a time, with the key file kept separately",
             "Review screen with an audio player and word highlighting",
-            "Exports to Word, HTML, Markdown, text, SRT, VTT and JSON, and a timestamped Word file for MAXQDA",
+            "Exports to Word, HTML, Markdown, text, SRT, VTT and JSON, and files made to import into MAXQDA, NVivo, ATLAS.ti and Dedoose",
             "Record from the microphone, or record a call with the call's sound on its own track beside the microphone (manual start, with a consent reminder each time)",
             "Find in the open transcript, with matches highlighted and the audio cued to each one",
             "A word list for names and jargon, used as hints for Whisper and Apple's recognition and as corrections after transcription",
@@ -309,12 +309,12 @@
       <h2 id="does-h">What it does</h2>
       <table class="compare-table specs-table" data-motion="rows">
         <tbody>
-          <tr><th scope="row">Transcription</th><td>Transcribes audio on your Mac, with word timing. Until you download a speech model it uses Apple's on-device speech recognition, and macOS may fetch Apple's own model once the first time. Better models are optional downloads in Settings, from Hugging Face, each once: NVIDIA Parakeet, Whisper base and Whisper large-v3 turbo. Settings can delete any of them. Tapefolio transcribes English only for now, with every model.</td></tr>
+          <tr><th scope="row">Transcription</th><td>Transcribes audio and video files on your Mac, such as .m4a, .mp3, .mp4 and .mov, with word timing. Until you download a speech model it uses Apple's on-device speech recognition, and macOS may fetch Apple's own model once the first time. Better models are optional downloads in Settings, from Hugging Face, each once: NVIDIA Parakeet, Whisper base and Whisper large-v3 turbo. Settings can delete any of them. Each interview can have its own spoken language. Whisper large-v3 turbo can detect it, and Apple's speech recognition uses the language you pick. Parakeet and Whisper base are English only.</td></tr>
           <tr><th scope="row">Speakers</th><td>Labels who is speaking, using the standard speaker-separation models that come with the app. In the review screen you name each speaker once and merge labels that belong to one person. NVIDIA Nemotron 3 Diarization is recommended instead. It was far better on the real two-person recordings measured below, Tapefolio uses it automatically once it is installed, and it is a 190 MB download.</td></tr>
           <tr><th scope="row">Speaker memory</th><td>Optional, and opt-in for each project. Tapefolio requires a recorded consent note before it saves a voice. Voices are stored encrypted on your Mac, the app only suggests matches for you to confirm, and you can delete them.</td></tr>
           <tr><th scope="row">Identifier removal</th><td>Finds names, places, organizations, emails, phone numbers, addresses, links, ID numbers and dates of birth, and replaces them with consistent codes. You review case by case: replace or keep each one, or replace all that remain. The key file that maps the codes back is kept separately. It misses some, so you read the result.</td></tr>
           <tr><th scope="row">Review screen</th><td>An audio player next to the transcript, with the current word highlighted. Turns are editable, and you can rename or merge speakers and go through the identifier review without leaving the screen.</td></tr>
-          <tr><th scope="row">Export</th><td>Word, HTML, Markdown, plain text, SRT, VTT and JSON, and a timestamped Word file made to import into MAXQDA.</td></tr>
+          <tr><th scope="row">Export</th><td>Word, HTML, Markdown, plain text, SRT, VTT and JSON, and files made to import into MAXQDA, NVivo, ATLAS.ti and Dedoose, following each program's own import instructions.</td></tr>
           <tr><th scope="row">Recording</th><td>Record from the microphone in the app, then transcribe straight into the review screen.</td></tr>
           <tr><th scope="row">Call recording</th><td>Records a Zoom, Microsoft Teams, Google Meet or FaceTime call with the call's sound on its own track beside your microphone, and no bot joins the call. Your words are labelled You from the microphone track, and the people on the call are told apart on the call track. You start and stop it yourself, and before each call Tapefolio asks you to confirm that everyone has agreed to be recorded. Recording laws differ, and in some places everyone on the call must agree.</td></tr>
           <tr><th scope="row">Find and word list</th><td>Find any word or phrase in the open transcript and jump the audio to it. A word list of names, places and jargon helps Whisper and Apple's recognition spell them, and fixes words it hears wrong, such as a participant's pseudonym.</td></tr>
@@ -333,7 +333,7 @@
           <tr><th scope="row">Get every word right</th><td>It will mishear words and mislabel speakers. Overlapping voices, quiet speech and short replies such as okay and yep are where it loses the most. Check any text you plan to quote against the recording.</td></tr>
           <tr><th scope="row">Anonymize a transcript</th><td>Identifier removal finds many identifiers and misses some, and it cannot tell when a detail identifies someone only in context. It does not make a study compliant. That is for you and your ethics board. Read every transcript before you share it.</td></tr>
           <tr><th scope="row">Read handwriting or phone photos reliably</th><td>OCR has been measured only on generated test files. Real handwriting and real phone photos of pages have not been tested.</td></tr>
-          <tr><th scope="row">Promise results in other languages</th><td>What has been measured is English meeting audio. Tapefolio transcribes English only for now, with every model, including Whisper large-v3 turbo. Accents and a quiet two-person interview have not been measured.</td></tr>
+          <tr><th scope="row">Promise results in other languages</th><td>What has been measured is English meeting audio. Whisper large-v3 turbo and Apple's speech recognition transcribe other languages, but accuracy has been measured in English only. Accents and a quiet two-person interview have not been measured.</td></tr>
           <tr><th scope="row">Run on an Intel Mac or an older macOS</th><td>It needs macOS 26 or later and Apple silicon. There is no Windows, iPhone or iPad version.</td></tr>
           <tr><th scope="row">Send your files anywhere</th><td>There is no cloud transcription and there are no accounts. Nothing you open in Tapefolio is uploaded. The one exception is your choice: if you connect an AI app such as Claude Desktop, the text it reads goes to that app's servers.</td></tr>
         </tbody>
@@ -381,7 +381,7 @@
           <tr><th scope="row">Apple's speech recognition</th><td>Transcription, used until you download a model</td><td>None from Tapefolio. macOS may fetch Apple's model once</td></tr>
           <tr><th scope="row">NVIDIA Parakeet</th><td>English transcription</td><td class="tf-num">About 470 MB</td></tr>
           <tr><th scope="row">Whisper base</th><td>English transcription, a small download</td><td class="tf-num">About 150 MB</td></tr>
-          <tr><th scope="row">Whisper large-v3 turbo</th><td>The largest model, and the slowest; English only in Tapefolio for now</td><td class="tf-num">About 650 MB</td></tr>
+          <tr><th scope="row">Whisper large-v3 turbo</th><td>The largest model, and the slowest; many languages, and it can detect each interview's language</td><td class="tf-num">About 650 MB</td></tr>
           <tr><th scope="row">NVIDIA Nemotron 3 Diarization</th><td>Separating speakers. Recommended, and used automatically once installed</td><td class="tf-num">About 190 MB</td></tr>
         </tbody>
       </table>
@@ -478,7 +478,7 @@
         </details>
         <details class="faq-item">
           <summary>Which speech model should I use?</summary>
-          <div class="faq-body">Start with the default, Apple's on-device speech recognition, which needs no download from Tapefolio. On the two meetings measured, Apple's engine, Parakeet and Whisper large-v3 turbo were within about two points of each other, so none is proven better. Whisper base made more errors in the same tests. Parakeet was the fastest and is English only. Whisper large-v3 turbo was the slowest. All of them transcribe English only in Tapefolio for now.</div>
+          <div class="faq-body">Start with the default, Apple's on-device speech recognition, which needs no download from Tapefolio. On the two meetings measured, Apple's engine, Parakeet and Whisper large-v3 turbo were within about two points of each other, so none is proven better. Whisper base made more errors in the same tests. Parakeet was the fastest and is English only. Whisper large-v3 turbo was the slowest. For interviews in another language, use Whisper large-v3 turbo or Apple's engine, since Parakeet and Whisper base are English only.</div>
         </details>
         <details class="faq-item">
           <summary>Why is the first run slow?</summary>
