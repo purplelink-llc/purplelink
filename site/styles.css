@@ -5890,6 +5890,9 @@ dialog, [role="dialog"], [aria-modal="true"], .sales-scroll { overscroll-behavio
 .guide-flow .gf-name { fill: var(--ink); font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 12px; font-weight: 600; }
 .guide-flow .gf-sub { fill: var(--muted); font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 9px; }
 .guide-flow .gf-tag { fill: var(--muted); font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 8px; letter-spacing: 0.12em; }
+.guide-flow .gf-left { text-anchor: start; }
+.guide-flow .gf-row { fill: var(--ink); font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 12px; }
+.guide-flow .gf-ring { fill: none; stroke: var(--purple); stroke-width: 1.6; }
 
 /* Keyfeel sound credits: provenance table scrolls inside its own wrapper. */
 .credits-scroll { margin: 1rem 0 1.5rem; }
