@@ -1,6 +1,6 @@
 # ModernTex 3.0 launch video plan
 
-Files: `moderntex-3-demo.json` (16:9, 72 s cut, 75.9 s with bumpers), `moderntex-3-short.json` (9:16, 22 s cut, 25.9 s),
+Files: `moderntex-3-demo.json` (16:9, 74 s cut, 77.9 s with bumpers), `moderntex-3-short.json` (9:16, 23.5 s cut, 27.4 s),
 `../src/moderntex3/` (composition), `../build-moderntex3.mjs` (build), `../thumbs/ab/moderntex-3.json` (thumbnails),
 `../assets/moderntex3/sample-paper/` (the capture document). Menu names and shortcuts are placeholders until the app is final.
 
@@ -71,55 +71,53 @@ Channel `purplelink` (kinds `product`, `howto-short` are allowed by `scripts/yt-
 Title (demo): `ModernTex 3.0: hear your LaTeX read aloud, and dictate into it`
 Title (Short): `Proofread your LaTeX by ear (ModernTex 3.0) #shorts`
 
-Description (demo), links made with `hub.py utm` (asset `moderntex-3-demo-16x9`, channel `youtube`):
-
-```
-ModernTex 3.0 reads your LaTeX aloud, sentence by sentence, and takes dictation into the source. Both run on your Mac.
-
-00:00 Read aloud from where you click
-00:07 Pause, skip, stop and resume
-00:42 Dictation that is safe for LaTeX
-01:00 Privacy
-
-Blog post: https://purplelink.llc/blog/moderntex-3-hear-your-manuscript-and-dictate-into-latex/?utm_source=youtube&utm_medium=video&utm_campaign=hub-moderntex-3-demo-16x9&utm_content=moderntex-3-demo-16x9-youtube-261112
-ModernTex: https://purplelink.llc/moderntex/
-
-Voice shown: [VOICE_NAME], the best voice installed on this Mac.
-```
-
-Re-time the chapters after render (the offsets above include the 1.8 s opening bumper; verify against the cut). The UTM content
-suffix carries the date it was made; regenerate with `hub.py utm` if the date matters. Short description: one line plus the same
-blog link with asset `moderntex-3-short-9x16`.
+Descriptions are files: `moderntex-3-desc-demo.txt` and `moderntex-3-desc-short.txt` (utm links made with `hub.py utm`,
+assets `moderntex-3-demo-16x9` and `moderntex-3-short-9x16`, channel `youtube`; the content suffix carries the make date 261112,
+regenerate if that matters). Chapter stamps assume the 1.8 s opening bumper and the current scene durations; re-check them against the
+rendered cut (each chapter is over 10 s, YouTube's minimum). `[VOICE_NAME]` in the demo description must be filled before upload.
 
 Tags: ModernTex, LaTeX editor, LaTeX Mac, read aloud, text to speech, proofreading, dictation, speech to text, academic writing,
-Overleaf alternative, manuscript, PhD, thesis writing. Category 28. Narration is TTS, so leave the upload default (declared
-synthetic); do not pass `--not-synthetic`.
+Overleaf alternative, manuscript, PhD, thesis writing. Category 28. The dry run shows `containsSyntheticMedia: False` by default. The narration is TTS; Ben decides whether to declare it before the flip.
 
 ## Thumbnails (A/B for Test & Compare, 3 variants, `thumbs/ab/moderntex-3.json`)
 
 - A, product: existing editor screenshot (`site/assets/moderntex-screens/01-editor-clean.webp`) as an interim, headline
   "Click. Listen. Fix." Phase 2 should swap in a crop of c02 (zen mode, one sentence highlighted) once it exists.
 - B, text: "Proofread LaTeX by ear", "2 new tools: read aloud and dictation". No capture needed.
-- C, text: "Dictate into LaTeX", "5 characters escaped: % & _ $ # never break the build". No capture needed.
+- C, text: "Dictate into LaTeX", "5 symbols, escaped for you: % & _ $ #". No capture needed.
 
 Render: `node video/build-thumbs.mjs --spec thumbs/ab/moderntex-3.json` (rendered once as a check; looks right). Upload A first; `yt-abtest.py start` after the
 video is public.
 
 ## Phase 2 run order
 
+Work from the worktree (or the merged branch): the build script is not on `main` until the PR merges. `video/node_modules` is a
+symlink to the main checkout's, git-ignored.
+
 ```
 set -u
-cd "/Volumes/Extreme SSD/Purplelink LLC/video"   # main checkout has node_modules; or symlink it into the worktree
+cd "/Volumes/Extreme SSD/_worktrees/Purplelink LLC/moderntex-3-launch/video"
+export ELEVENLABS_DISABLE=1          # local Kokoro narration, no spend
 # 1. capture the 11 clips into $MT3_CLIPS (default /Volumes/Extreme SSD/PurplelinkVideos/moderntex-3/clips)
-# 2. check, then render
+# 2. check, then render with --no-bed and mix the real bed afterwards (see Music bed); omit --no-bed to take the trend bed instead
 node build-moderntex3.mjs moderntex-3-demo --check
-node build-moderntex3.mjs moderntex-3-demo
-node build-moderntex3.mjs moderntex-3-short
-# 3. watch both files once, with sound; confirm the read-aloud audio level and no notification sounds
-# 4. upload PRIVATE
-python3 ../scripts/yt-api-upload.py --channel purplelink --kind product out/moderntex3/moderntex-3-demo.mp4 \
-  --title "ModernTex 3.0: hear your LaTeX read aloud, and dictate into it" --description-file desc-demo.txt \
-  --tags "ModernTex,LaTeX editor,..." --category 28 --privacy private
-python3 ../scripts/yt-api-upload.py --channel purplelink --kind howto-short out/moderntex3/moderntex-3-short.mp4 \
-  --title "Proofread your LaTeX by ear (ModernTex 3.0) #shorts" --description-file desc-short.txt --privacy private
+node build-moderntex3.mjs moderntex-3-demo --no-bed
+node build-moderntex3.mjs moderntex-3-short --no-bed
+# 3. mix the bed (mixbed.py), watch both files once with sound; confirm read-aloud level and no notification sounds
+# 4. upload PRIVATE (the Purplelink token exists; add --dry-run first)
 ```
+
+Use this form for the uploads (run from the main checkout `/Volumes/Extreme SSD/Purplelink LLC`, `V` = the worktree's `video`):
+
+```
+set -u
+V="/Volumes/Extreme SSD/_worktrees/Purplelink LLC/moderntex-3-launch/video"
+python3 scripts/yt-api-upload.py --channel purplelink --kind product "$V/out/moderntex3/moderntex-3-demo.mp4" \
+  --title "ModernTex 3.0: hear your LaTeX read aloud, and dictate into it" --description-file "$V/storyboards/moderntex-3-desc-demo.txt" \
+  --tags "ModernTex,LaTeX editor,LaTeX Mac,read aloud,text to speech,proofreading,dictation,speech to text,academic writing,Overleaf alternative,manuscript,PhD,thesis writing" \
+  --category 28 --privacy private
+python3 scripts/yt-api-upload.py --channel purplelink --kind howto-short "$V/out/moderntex3/moderntex-3-short.mp4" \
+  --title "Proofread your LaTeX by ear (ModernTex 3.0) #shorts" --description-file "$V/storyboards/moderntex-3-desc-short.txt" \
+  --tags "ModernTex,LaTeX,read aloud,dictation,proofreading" --category 28 --privacy private
+```
+`yt-visibility.py` and `yt-abtest.py` drive the automation Chrome on port 9340 (signed in to Studio); start it first.

@@ -26,8 +26,8 @@
   "pill": "ModernTex 3.0",
   "msg": "Dictate into LaTeX",
   "n": 5,
-  "unit": "characters escaped",
-  "sub": "% & _ $ # never break the build",
+  "unit": "symbols",
+  "sub": "escaped for you: % & _ $ #",
   "variant": "C",
   "bang": false
  }
