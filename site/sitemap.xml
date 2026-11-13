@@ -729,6 +729,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://purplelink.llc/guides/find-intel-apps-on-mac/</loc>
+    <lastmod>2026-11-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://purplelink.llc/guides/fix-bibtex-errors/</loc>
     <lastmod>2026-11-02</lastmod>
     <changefreq>monthly</changefreq>
