@@ -199,7 +199,9 @@ const PRODUCT_CATALOG = {
   "citation-gap":            { envKey: "STRIPE_PRICE_CITATION_GAP",            successPath: "/tools/citation-gap/upload/" },
   "revision-review":         { envKey: "STRIPE_PRICE_REVISION_REVIEW_V2", amount: 500, name: "Revision Review", successPath: "/tools/paper-review/revision/upload/" },
   "response-review":         { envKey: "STRIPE_PRICE_RESPONSE_REVIEW_V2", amount: 1200, name: "Response Review: response letter check", successPath: "/tools/response-review/upload/" },
-  "response-draft":          { envKey: "STRIPE_PRICE_RESPONSE_DRAFT", amount: 2400, name: "Response Review: response letter draft and check", successPath: "/tools/response-review/draft/upload/" },
+  // Closed until its upload page ships (RESPONSE_DRAFT_OPEN=1 opens it): the inline amount would otherwise sell it
+  // before a buyer has anywhere to send the manuscript.
+  "response-draft":          { envKey: "STRIPE_PRICE_RESPONSE_DRAFT", amount: 2400, name: "Response Review: response letter draft and check", openEnv: "RESPONSE_DRAFT_OPEN", successPath: "/tools/response-review/draft/upload/" },
   "resume-review":           { envKey: "STRIPE_PRICE_RESUME_REVIEW",           successPath: "/tools/resume-review/upload/" },
   // Digital "kits" (downloadable products). Delivery is a token-gated PDF from
   // the kits-delivery Blobs store; see download.mjs. Success page lists the links.
