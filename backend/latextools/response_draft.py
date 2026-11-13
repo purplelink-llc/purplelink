@@ -422,7 +422,8 @@ def worst_case_cost_usd(n_items: int = MAX_DRAFT_ITEMS) -> float:
     """Upper bound on one order's model spend, from the caps in this module and the panel's.
 
     Assumes every call sends its whole input uncached (no cache reads), every output hits its cap, and every
-    call is retried once (the JSON retry in _call_json_findings). Real runs cost far less.
+    call is retried once (the JSON retry in _call_json_findings), plus the cache prewarm. The coherence check
+    is rule-based and costs nothing. Real runs cost far less.
     """
     def price(model: str) -> dict:
         return MODEL_PRICING_PER_MTOK.get(model, MODEL_PRICING_PER_MTOK[DEFAULT_MODEL])
@@ -433,13 +434,14 @@ def worst_case_cost_usd(n_items: int = MAX_DRAFT_ITEMS) -> float:
     d = price(RESPONSE_DRAFT_MODEL)
     batch_in = manuscript_tokens * CACHE_WRITE_MULTIPLIER + 4_000
     draft = 2 * batches * (batch_in * d["input"] + DRAFT_MAX_OUTPUT_TOKENS * d["output"]) / 1e6
+    prewarm = manuscript_tokens * CACHE_WRITE_MULTIPLIER * d["input"] / 1e6     # the max_tokens=0 cache write
 
     r = price(RESPONSE_REVIEW_MODEL)
     panel_in = (MAX_BODY_CHARS + 30_000 + 60_000) / chars_per_token * CACHE_WRITE_MULTIPLIER
     panel = 2 * 3 * (panel_in * r["input"] + PERSONA_MAX_OUTPUT_TOKENS * r["output"]) / 1e6
     synth_in = (20_000 + 30_000 + 45_000) / chars_per_token
     synth = (synth_in * r["input"] + RR_SYNTHESIS_MAX_OUTPUT_TOKENS * r["output"]) / 1e6
-    return draft + panel + synth
+    return prewarm + draft + panel + synth
 
 
 def typical_cost_usd(n_items: int = 25, manuscript_chars: int = 60_000, revised: bool = True) -> float:

@@ -4868,6 +4868,8 @@ def web():
             return JSONResponse(_FREE_REVISION_SENT)
         # Send to the address that paid for the Deep review, not to whatever spelling was typed.
         deep_entry = paper_tokens_dict.get(deep_session) or {}
+        _deep_at = max((float(r.get("at") or 0) for r in purchases
+                        if isinstance(r, dict) and r.get("session") == deep_session), default=now)
         to_addr = deep_entry.get("email") if isinstance(deep_entry, dict) else ""
         if not to_addr or _buddy_canonical_email(to_addr) != canon:
             to_addr = raw
@@ -4884,7 +4886,9 @@ def web():
             "redeemed": False,
             "consumed_tokens": [],
             "created_at": now,
-            "expires_at": now + PAPER_TOKEN_TTL_SECONDS,
+            # The claim is one per Deep review and permanent, so the link lasts until the 30-day window closes
+            # (never less than the usual 7 days): an author can claim early and upload the revision later.
+            "expires_at": max(now + PAPER_TOKEN_TTL_SECONDS, _deep_at + _upgrades.FREE_REVISION_WINDOW_SECONDS),
         }
         paper_token_index_dict[token] = session_id
         claim_key = f"{_upgrades.FREE_REVISION_CLAIM_PREFIX}{deep_session}"
@@ -4896,7 +4900,8 @@ def web():
                 result = await _delivery.send_email(
                     c, to=to_addr, subject="Your free Revision Review",
                     html=_delivery.html_free_revision_link(
-                        link=_purchase_start_link(session_id, paper_tokens_dict[session_id])),
+                        link=_purchase_start_link(session_id, paper_tokens_dict[session_id]),
+                        expires_at=paper_tokens_dict[session_id]["expires_at"]),
                     tags=[{"name": "kind", "value": "deep-free-revision"}])
         except Exception:
             logger.exception("free revision email failed")

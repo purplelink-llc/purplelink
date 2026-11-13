@@ -341,8 +341,10 @@ def test_free_claim_emails_a_link_and_never_returns_the_token(client, sent):  # 
     sid, entry = free[0]
     assert entry["amount_paid"] == 0 and entry["product_cfg"]["category"] == "revision-review"
     assert entry["source"] == "deep-free-revision" and entry["deep_session"] == "cs_deep_1"
+    assert entry["expires_at"] > time.time() + 28 * DAY   # Deep bought 1 day ago: link lasts to day 30
     assert backend_app.paper_token_index_dict[entry["tokens"][0]] == sid
     assert "/tools/paper-review/revision/upload/?session_id=" in sent[0]["html"]
+    assert "within 7 days" not in sent[0]["html"] and ", until " in sent[0]["html"]
     # Second claim for the same Deep purchase: same generic answer, no second email, no second token.
     r2 = http.post("/revision-review/free-claim", json={"email": "first.last@gmail.com"})
     assert r2.json() == r.json() and len(sent) == 1
@@ -393,3 +395,86 @@ def test_free_revision_is_not_sent_a_still_waiting_reminder():
     entry = {"email": "a@example.com", "source": "deep-free-revision", "created_at": now - 3 * DAY,
              "expires_at": now + 4 * DAY, "consumed_tokens": []}
     assert backend_app._purchases_waiting([("deep-free-revision:x", entry)], now) == []
+
+
+# ---------------------------------------------------------------------------
+# The real adjacent_tool_pipeline body for response-draft (run with .local(), model calls faked)
+# ---------------------------------------------------------------------------
+
+@pytest.fixture
+def pipeline_app(monkeypatch):
+    import app as backend_app
+    for name in ("paper_jobs_dict", "paper_tokens_dict", "paper_token_index_dict", "usage_ledger_dict"):
+        monkeypatch.setattr(backend_app, name, _FakeDict())
+    token = "tok-pipe"
+    backend_app.paper_tokens_dict["s-pipe"] = {
+        "tokens": [token], "product_key": "response-draft",
+        "product_cfg": backend_app.PAID_PRODUCTS["response-draft"], "email": "buyer@example.com",
+        "amount_paid": 2400, "redeemed": True, "consumed_tokens": [token], "created_at": time.time(),
+        "expires_at": time.time() + 7 * DAY,
+    }
+    backend_app.paper_token_index_dict[token] = "s-pipe"
+    return backend_app, token
+
+
+def _run_pipeline(backend_app, token):
+    backend_app.adjacent_tool_pipeline.local(
+        token, "response-draft", pdf_bytes=PDF_BYTES, revised_pdf_bytes=PDF_BYTES,
+        reviewer_comments=COMMENTS, author_notes="n", deliver_email="buyer@example.com")
+    return backend_app.paper_jobs_dict.get(token)
+
+
+def test_pipeline_done_stores_result_and_emails(pipeline_app, sent, monkeypatch):
+    backend_app, token = pipeline_app
+    seen = {}
+
+    async def fake_run(pdf, comments, notes="", *, revised_pdf_bytes=None, on_progress=None):
+        seen.update(revised=revised_pdf_bytes, comments=comments, notes=notes)
+        return {"status": "done", "result_md": "# Response Letter Draft\n\nok", "progress_pct": 100}
+
+    monkeypatch.setattr(rd, "run_response_draft", fake_run)
+    job = _run_pipeline(backend_app, token)
+    assert job["status"] == "done" and job["product"] == "response-draft"
+    assert job["result_md"].startswith("# Response Letter Draft")
+    assert seen == {"revised": PDF_BYTES, "comments": COMMENTS, "notes": "n"}
+    assert len(sent) == 1 and "response letter draft" in sent[0]["subject"]
+    assert "replacement_token" not in job
+
+
+def test_pipeline_soft_error_reissues_the_token(pipeline_app, sent, monkeypatch):
+    backend_app, token = pipeline_app
+
+    async def fake_run(*a, **k):
+        return {"status": "error", "error": "drafting_failed"}
+
+    monkeypatch.setattr(rd, "run_response_draft", fake_run)
+    job = _run_pipeline(backend_app, token)
+    assert job["status"] == "error" and job["replacement_token"]
+    assert job["replacement_token"] in backend_app.paper_tokens_dict["s-pipe"]["tokens"]
+
+
+def test_pipeline_cost_ceiling_ends_in_a_reissued_token(pipeline_app, sent, monkeypatch):
+    backend_app, token = pipeline_app
+    from latextools import papercheck
+
+    async def fake_run(*a, **k):
+        raise papercheck.CostCeilingExceeded("over the order ceiling")
+
+    monkeypatch.setattr(rd, "run_response_draft", fake_run)
+    job = _run_pipeline(backend_app, token)
+    assert job["status"] == "error" and job["error"] == "pipeline_failed" and job["replacement_token"]
+    assert "ceiling" not in job["error"]
+
+
+def test_free_claim_after_a_real_deep_registration(client, sent, monkeypatch):  # noqa: F811
+    """No hand-seeded spend row: register-token writes it, the claim reads it."""
+    http, backend_app = client
+    monkeypatch.setenv("BACKEND_WEBHOOK_SECRET", "correct-secret")
+    r = http.post("/paper-review/register-token", headers={"x-webhook-secret": "correct-secret"},
+                  json={"session_id": "cs_real_deep", "product": "paper-review-deep", "email": "Real.Buyer@example.com",
+                        "amount_paid": backend_app.PAID_PRODUCTS["paper-review-deep"]["amount"]})
+    assert r.status_code == 200, r.text
+    sent.clear()   # the purchase email
+    r = http.post("/revision-review/free-claim", json={"email": "real.buyer@example.com"})
+    assert r.status_code == 200
+    assert len(sent) == 1 and sent[0]["to"] == "Real.Buyer@example.com"

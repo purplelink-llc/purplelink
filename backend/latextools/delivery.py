@@ -403,14 +403,17 @@ def html_purchase_link(*, product_name: str, link: str, buyer_code: str = "", bu
 """
 
 
-def html_free_revision_link(*, link: str) -> str:
+def html_free_revision_link(*, link: str, expires_at: float = 0) -> str:
     """Sent when a Deep review buyer claims the Revision Review that comes with it."""
+    import datetime as _dt
+    until = (f"until {_dt.datetime.fromtimestamp(expires_at, _dt.timezone.utc):%B %-d, %Y}" if expires_at
+             else "within 7 days")
     return f"""
 <div style="{_EMAIL_BASE_CSS}">
   <h2 style="color: #6d28d9;">Your free Revision Review</h2>
   <p>A Deep Paper Review in the last 30 days comes with one Revision Review
   at no charge. Open this link to upload the revised manuscript. It works on
-  any device, and you can use it once within 7 days.</p>
+  any device, and you can use it once, {until}.</p>
   <p>
     <a href="{_html.escape(link)}"
        style="display: inline-block; background: #7c3aed; color: #fff;
