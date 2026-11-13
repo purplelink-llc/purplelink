@@ -1,0 +1,94 @@
+{
+ "id": "moderntex-3-demo",
+ "series": "moderntex",
+ "title": "ModernTex 3.0: hear your manuscript, and dictate into LaTeX",
+ "source": "https://purplelink.llc/blog/moderntex-3-hear-your-manuscript-and-dictate-into-latex/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "format": "16x9",
+ "note": "dur = seconds of the clip used. appAudio: the capture's own read-aloud audio plays at full level and narration stays silent. narration scenes are voiced by narrate.py; captions are burned in.",
+ "scenes": [
+  {
+   "id": "s1",
+   "clip": "c01-zen-open",
+   "dur": 5.0,
+   "tag": "Zen mode",
+   "cap": "You have read this paragraph ten times.",
+   "narration": "You have read this paragraph ten times. Listen to it instead."
+  },
+  {
+   "id": "s2",
+   "clip": "c02-read-from-click",
+   "dur": 12.0,
+   "tag": "Read aloud",
+   "cap": "Click anywhere. Press one button.",
+   "appAudio": true
+  },
+  {
+   "id": "s3",
+   "clip": "c03-pause-skip",
+   "dur": 9.0,
+   "tag": "Controls",
+   "cap": "Pause. Back a sentence. Forward a sentence.",
+   "narration": "Pause, skip back a sentence, skip forward, and carry on."
+  },
+  {
+   "id": "s4",
+   "clip": "c04-caption-table",
+   "dur": 11.0,
+   "tag": "Captions and tables",
+   "cap": "Captions are read. Tables are summarised from their own source.",
+   "appAudio": true
+  },
+  {
+   "id": "s5",
+   "clip": "c05-stop-resume",
+   "dur": 7.0,
+   "tag": "Stop",
+   "cap": "Stop remembers your place.",
+   "narration": "Stop, and it remembers where you were. Press again and it carries on from there."
+  },
+  {
+   "id": "s6",
+   "clip": "c06-catch-typo",
+   "dur": 7.0,
+   "tag": "Proofread by ear",
+   "cap": "A repeated word is easier to hear than to see.",
+   "appAudio": true
+  },
+  {
+   "id": "s7",
+   "clip": "c07-dictate",
+   "dur": 11.0,
+   "tag": "Dictation",
+   "cap": "Speak. It lands in your source, safe for LaTeX.",
+   "narration": "Dictation puts what you say into the source. The percent sign is escaped for you, and spoken punctuation works."
+  },
+  {
+   "id": "s8",
+   "clip": "c08-undo",
+   "dur": 5.0,
+   "tag": "One undo",
+   "cap": "One Undo removes the whole passage.",
+   "narration": "One undo takes the whole passage back out."
+  },
+  {
+   "id": "s9",
+   "clip": null,
+   "dur": 5.0,
+   "tag": "Privacy",
+   "cap": "Both run on your Mac. Nothing is sent off it.",
+   "narration": "Both run on your Mac. Nothing is sent off it. ModernTex 3.0 is a free update for owners.",
+   "end": true
+  }
+ ],
+ "bumper": {
+  "open": 2.2,
+  "close": 2.5,
+  "xf": 0.4,
+  "url": "purplelink.llc/moderntex"
+ },
+ "bed": {
+  "plan": "ACE-Step SFT take, cover re-render, -22 LUFS, ducked under narration and app audio (see moderntex-3.md)"
+ }
+}

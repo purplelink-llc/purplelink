@@ -1,0 +1,31 @@
+[
+ {
+  "id": "moderntex-3-thumb-A",
+  "kind": "product",
+  "name": "ModernTex 3.0",
+  "line": "Click. Listen. Fix.",
+  "img": "video/thumbs/assets/moderntex3-readaloud-crop.png",
+  "icon": "site/assets/moderntex-icon.png",
+  "pos": "top",
+  "variant": "A"
+ },
+ {
+  "id": "moderntex-3-thumb-B",
+  "kind": "long",
+  "pill": "ModernTex 3.0",
+  "msg": "Proofread LaTeX by ear",
+  "n": 2,
+  "unit": "new tools",
+  "sub": "read aloud and dictation",
+  "variant": "B",
+  "bang": false
+ },
+ {
+  "id": "moderntex-3-thumb-C",
+  "kind": "split",
+  "msg": "Dictate into LaTeX",
+  "img": "video/thumbs/assets/moderntex3-dictate-crop.png",
+  "after": "% & _ escaped for you",
+  "variant": "C"
+ }
+]

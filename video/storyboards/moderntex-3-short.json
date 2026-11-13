@@ -1,0 +1,50 @@
+{
+ "id": "moderntex-3-short",
+ "series": "moderntex",
+ "format": "9x16",
+ "title": "Proofread your LaTeX by ear (ModernTex 3.0)",
+ "source": "https://purplelink.llc/blog/moderntex-3-hear-your-manuscript-and-dictate-into-latex/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "scenes": [
+  {
+   "id": "h1",
+   "clip": "v01-click-read",
+   "dur": 3.5,
+   "tag": "Read aloud",
+   "cap": "Click. One button. It reads.",
+   "narration": "Click anywhere in your LaTeX. Press one button."
+  },
+  {
+   "id": "h2",
+   "clip": "v02-read",
+   "dur": 9.0,
+   "tag": "Sentence by sentence",
+   "cap": "Each sentence is highlighted as it is read.",
+   "appAudio": true
+  },
+  {
+   "id": "h3",
+   "clip": "v03-dictate",
+   "dur": 6.0,
+   "tag": "Dictation",
+   "cap": "Or dictate. % & _ are escaped for you.",
+   "narration": "Or dictate. The characters that break a build are escaped."
+  },
+  {
+   "id": "h4",
+   "clip": null,
+   "dur": 3.5,
+   "tag": "Privacy",
+   "cap": "Runs on your Mac. Nothing is sent off it.",
+   "narration": "ModernTex 3.0. Everything stays on your Mac.",
+   "end": true
+  }
+ ],
+ "bumper": {
+  "open": 2.2,
+  "close": 2.5,
+  "xf": 0.4,
+  "url": "purplelink.llc/moderntex"
+ }
+}
