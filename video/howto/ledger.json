@@ -677,5 +677,34 @@
    "ok": true,
    "utm_content": "howto-bbbk-already-defined-newtxmath-amssymb-reel"
   }
+ },
+ {
+  "slug": "howto-doi-not-found-mistyped-doi-references",
+  "app": "paper-review",
+  "date": "2026-11-13",
+  "title": "Error: DOI Not Found on Mac (find the mistyped DOI in your reference list)",
+  "long_id": "0lZqAWLi6l4",
+  "short_id": "R5sKfGi6zno",
+  "link_arm": "B",
+  "link_utm_content": "howto-doi-not-found-mistyped-doi-references",
+  "short_utm_content": "howto-doi-not-found-mistyped-doi-references-short",
+  "sources": [
+   "https://www.editage.com/insights/what-is-the-meaning-of-error-doi-not-found",
+   "https://gpugrid.net/gpugrid/forum_thread.php?id=3545"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "0lZqAWLi6l4",
+    "caption_id": "AUieDaZBYs3_KVOrOlnDCZIYS1OQ_7KVmnzHU3zL57cHidu0VPH-qmN-"
+   },
+   "short": {
+    "video_id": "R5sKfGi6zno",
+    "caption_id": "AUieDabANjO3Gkf1M5k6ef9BuwpdVAkXl-o8FqVSpHSi4ts8iFC8jPna"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-doi-not-found-mistyped-doi-references-reel"
+  }
  }
 ]

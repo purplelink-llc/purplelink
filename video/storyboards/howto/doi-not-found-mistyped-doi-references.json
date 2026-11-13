@@ -1,0 +1,135 @@
+{
+ "id": "howto-doi-not-found-mistyped-doi-references",
+ "app": "paper-review",
+ "title": "Error: DOI Not Found on Mac (find the mistyped DOI in your reference list)",
+ "short_title": "DOI Not Found? Find the broken DOI in your .bib file",
+ "url": "purplelink.llc/tools/paper-review",
+ "page": "https://purplelink.llc/tools/paper-review/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://www.editage.com/insights/what-is-the-meaning-of-error-doi-not-found",
+  "https://gpugrid.net/gpugrid/forum_thread.php?id=3545"
+ ],
+ "verify": {
+  "runs": [
+   {
+    "cmd": "curl -s https://doi.org/10.1038/nature1453 | grep -o 'Error: [^<]*'",
+    "output": "Error: DOI Not Found"
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf '%s\\n' '@article{knuth1984, doi = {10.1093/comjnl/27.2.97}}' '@article{lecun2015, doi = {10.1038/nature1453}}' '@article{vosoughi2018, doi = {10.1126/science.aap9559}}' > refs.bib && for d in $(grep -o '10\\.[^}]*' refs.bib); do curl -s -o /dev/null -w \"%{http_code} $d\\n\" https://doi.org/$d; done",
+    "output": "302 10.1093/comjnl/27.2.97\n404 10.1038/nature1453\n302 10.1126/science.aap9559"
+   },
+   {
+    "cmd": "curl -s 'https://api.crossref.org/works?query.bibliographic=LeCun+Bengio+Hinton+Deep+learning+2015&rows=1' | jq -r '.message.items[0].DOI'",
+    "output": "10.1038/nature14539"
+   },
+   {
+    "cmd": "curl -s https://api.crossref.org/works/10.1038/nature14539 | jq -r '.message.title[0]'",
+    "output": "Deep learning"
+   },
+   {
+    "cmd": "curl -s -o /dev/null -w '%{http_code}\\n' https://doi.org/10.1038/nature14593",
+    "output": "302"
+   },
+   {
+    "cmd": "curl -s https://api.crossref.org/works/10.1038/nature14593 | jq -r '.message.title[0]'",
+    "output": "Eye-like ocelloids are built from different endosymbiotically acquired components"
+   },
+   {
+    "cmd": "for d in 10.1038/nature14539 10.1038/nature14593; do curl -s https://api.crossref.org/works/$d | jq -r '.message.title[0]'; done",
+    "output": "Deep learning\nEye-like ocelloids are built from different endosymbiotically acquired components"
+   }
+  ],
+  "docs": [
+   "https://www.doi.org/the-identifier/resources/factsheets/doi-resolution-documentation",
+   "https://www.crossref.org/documentation/retrieve-metadata/rest-api/",
+   "https://search.crossref.org/"
+  ],
+  "notes": "Run 2026-11-13 on the Mac mini under /bin/zsh with curl and /usr/bin/jq. 10.1038/nature14539 is LeCun, Bengio and Hinton, Deep learning, Nature 2015; 10.1038/nature1453 (one digit dropped) answers 404 at doi.org with the page title 'Error: DOI Not Found'. The loop reads every DOI from a three-entry refs.bib and prints the doi.org status beside each one: 302 means the DOI resolves, 404 means it does not exist. A CrossRef bibliographic search for the authors, title and year returns 10.1038/nature14539 as the first hit (search.crossref.org is the web form for the same index), and the CrossRef record for that DOI has the title Deep learning. The last run shows why the check reads the title: 10.1038/nature14593 (two digits swapped) also resolves, to a different paper, so a 302 alone does not prove the DOI is right; its CrossRef title is 'Eye-like ocelloids are built from different endosymbiotically acquired components', shown in the check scene. The Paper Review page states the free check shows how many references CrossRef can confirm and whether any cited paper has been retracted, and that every review checks each reference against CrossRef; the app scene claims only that."
+ },
+ "scenes": [
+  {
+   "type": "hook",
+   "short": true,
+   "kicker": "Reference list",
+   "title": "Error: DOI Not Found",
+   "sub": "One wrong character, and the link goes nowhere.",
+   "narration": "You click a DOI in your reference list and get Error, DOI Not Found. Usually the paper is fine. The DOI in your bib file has a typo."
+  },
+  {
+   "type": "symptom",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ curl -s https://doi.org/10.1038/nature1453 | grep -o 'Error: [^<]*'",
+    "Error: DOI Not Found"
+   ],
+   "narration": "Here is the DOI for the Nature paper Deep learning, as it was typed into a reference list. The DOI resolver answers with DOI Not Found."
+  },
+  {
+   "type": "cause",
+   "text": "A digit was dropped when the DOI was copied: nature1453 instead of nature14539.",
+   "narration": "One digit was dropped when the DOI was copied by hand. A missing character, or an extra full stop after it, gives a DOI that does not exist."
+  },
+  {
+   "type": "steps",
+   "short": true,
+   "label": "Terminal, in your paper's folder",
+   "lines": [
+    "$ for d in $(grep -o '10\\.[^}]*' refs.bib); do curl -s -o /dev/null -w \"%{http_code} $d\\n\" https://doi.org/$d; done",
+    "302 10.1093/comjnl/27.2.97",
+    "404 10.1038/nature1453",
+    "302 10.1126/science.aap9559"
+   ],
+   "ui": "Search the 404 paper's title at search.crossref.org and paste its DOI into refs.bib.",
+   "narration": "To find the broken one, loop over every DOI in your bib file and ask the resolver about each. The one that answers four oh four is the typo. Search that paper's title on the Crossref search site, and paste the correct DOI into your bib file."
+  },
+  {
+   "type": "check",
+   "short": true,
+   "label": "Terminal",
+   "ok": "Right DOI, right paper",
+   "lines": [
+    "$ for d in 10.1038/nature14539 10.1038/nature14593; do curl -s https://api.crossref.org/works/$d | jq -r '.message.title[0]'; done",
+    "Deep learning",
+    "Eye-like ocelloids are built from different endosymbiotically acquired components"
+   ],
+   "narration": "Then check the title CrossRef has for the new DOI. It says Deep learning. Check the title, not just the link. Swap two digits, and the DOI still works, but it belongs to a paper about eye-like ocelloids."
+  },
+  {
+   "type": "app",
+   "name": "Paper Review",
+   "line": "A free check shows how many of your references CrossRef can confirm, and whether any cited paper was retracted.",
+   "url": "purplelink.llc/tools/paper-review",
+   "img": "site/assets/tool-shots/paper-review-sample.webp",
+   "narration": "Before you submit, Paper Review's free check shows how many of your references CrossRef can confirm, and whether any cited paper has been retracted."
+  }
+ ],
+ "thumbs": {
+  "A": {
+   "kind": "diff",
+   "hook": "Broken DOI in your refs",
+   "before": "Error: DOI Not Found",
+   "after": "Deep learning"
+  },
+  "B": {
+   "kind": "focus",
+   "hook": "DOI Not\nFound?",
+   "lines": [
+    "404 10.1038/nature1453",
+    "Error: DOI Not Found"
+   ],
+   "hl": "DOI Not Found"
+  },
+  "C": {
+   "kind": "product",
+   "name": "Paper Review",
+   "line": "Check your references before you submit",
+   "img": "site/assets/tool-shots/paper-review-sample.webp",
+   "zoom": 1.2,
+   "pos": "30% 40%"
+  }
+ }
+}

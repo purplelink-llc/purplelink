@@ -252,5 +252,16 @@
   "started": "2026-11-12",
   "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
   "checked": "2026-11-12"
+ },
+ {
+  "video": "0lZqAWLi6l4",
+  "variants": {
+   "A": "video/out/howto/doi-not-found-mistyped-doi-references/doi-not-found-mistyped-doi-references-thumb-A.jpg",
+   "B": "video/out/howto/doi-not-found-mistyped-doi-references/doi-not-found-mistyped-doi-references-thumb-B.jpg",
+   "C": "video/out/howto/doi-not-found-mistyped-doi-references/doi-not-found-mistyped-doi-references-thumb-C.jpg"
+  },
+  "started": "2026-11-13",
+  "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
+  "checked": "2026-11-13"
  }
 ]
