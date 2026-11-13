@@ -581,6 +581,26 @@ l.42 As shown by <span class="fix-bad">\citeauthr</span>
       </div>
     </section>
 
+    <section class="features-section bg-purple-xlight" id="speech" aria-labelledby="speech-h">
+      <h2 id="speech-h">Hear your manuscript, and dictate into it</h2>
+      <p class="section-intro">New in 3.0. Both features run on your Mac. Nothing is sent off it.</p>
+      <div class="feature-grid">
+        <div class="feature-item">
+          <h3>Read aloud</h3>
+          <p>Click anywhere in your LaTeX, press one button, and ModernTex reads from there in the best voice installed on your Mac, highlighting each sentence as it goes. Commands and maths are handled, figure captions are read, and a table is summarised from its own source with no numbers added. Pause, resume, or skip a sentence back or forward. Stop remembers your place.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Proofread by ear in Zen mode</h3>
+          <p>Read aloud works in Zen mode. A repeated word or a sentence that runs on is easier to hear than to see once you have read a draft many times.</p>
+        </div>
+        <div class="feature-item">
+          <h3>Dictation into LaTeX</h3>
+          <p>Speak and the text lands at the caret, recognised on your Mac. The characters that break a build (% &amp; _ $ #) are escaped, capitals and spacing follow the caret, spoken punctuation works, and each passage is one undo step. It does not dictate maths.</p>
+        </div>
+      </div>
+      <p class="section-intro section-outro"><a href="/blog/moderntex-3-hear-your-manuscript-and-dictate-into-latex/">Read the 3.0 post on the blog &rarr;</a></p>
+    </section>
+
     <section class="specs-section" aria-labelledby="specs-h">
       <h2 id="specs-h">ModernTex, in facts</h2>
       <table class="compare-table specs-table" data-motion="rows">
@@ -600,6 +620,7 @@ l.42 As shown by <span class="fix-bad">\citeauthr</span>
       <div class="release-strip" id="changelog">
         <h3 class="release-strip-head">Sixty updates since launch on September 4</h3>
         <ol class="release-list" data-motion="stagger">
+          <li><time datetime="2026-11-13">Nov 13</time><strong>3.0.0</strong><span>Read aloud with sentence highlighting from wherever you click (it works in Zen mode), and dictation into LaTeX that escapes % &amp; _ $ #. Both run on your Mac.</span></li>
           <li><time datetime="2026-11-12">Nov 12</time><strong>2.8.4</strong><span>Typos further down a long document are underlined again after you edit it on macOS 27, and entering or leaving Zen mode keeps your place.</span></li>
           <li><time datetime="2026-11-12">Nov 12</time><strong>2.8.3</strong><span>Typos after \begin{document} are underlined again on newer macOS versions: spell check now judges each word on its own.</span></li>
           <li><time datetime="2026-11-12">Nov 12</time><strong>2.8.2</strong><span>An unclosed maths environment or bracket no longer turns off spell check for the rest of the file, and keys in % comments are no longer marked.</span></li>

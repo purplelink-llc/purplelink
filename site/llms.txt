@@ -36,6 +36,7 @@
 - **Seats for labs and departments:** one license key per seat, bought on https://purplelink.llc/moderntex/#departments. 5 seats $69.95 ($13.99 each), 10 seats $124.90 ($12.49), 15 seats $172.35 ($11.49), 20 seats $209.80 ($10.49), 25 to 500 seats $9.99 each. Invoices and a W-9 on request.
 - **Privacy:** No cloud sync, no data collection
 - **Status:** Shipping. Current version 2.8.4 (November 12, 2026). Every update since the 1.0 launch on September 4, 2026 is listed at https://purplelink.llc/moderntex/#changelog.
+- **Speech (3.0):** Read aloud from the caret in the best installed macOS voice with each sentence highlighted (works in Zen mode; LaTeX commands and maths handled, captions read, tables summarised from their own source), and dictation into LaTeX that escapes % & _ $ # and inserts as one undo step. Both run on the Mac; nothing is sent off it. https://purplelink.llc/blog/moderntex-3-hear-your-manuscript-and-dictate-into-latex/
 - **Trial and purchase:** https://purplelink.llc/moderntex/
 - **Setup guide:** https://purplelink.llc/moderntex/start/ (first ten minutes: install, MacTeX or TinyTeX setup, first build, first error, venue templates, submission checks)
 - **German page (Deutsch):** https://purplelink.llc/de/moderntex/ (ModernTex product page in German; same price, USD 19.99 once, 7-day free trial; the app interface can be shown in German, beta)
@@ -517,6 +518,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 
 ## Blog (articles & updates)
 - Blog index: https://purplelink.llc/blog/
+- ModernTex 3.0: hear your manuscript, and dictate into LaTeX: https://purplelink.llc/blog/moderntex-3-hear-your-manuscript-and-dictate-into-latex/ - ModernTex 3.0 reads your LaTeX aloud with each sentence highlighted, and takes dictation into your source. Both run on your Mac and nothing is sent off it.
 - Starting Purplelink: https://purplelink.llc/blog/starting-purplelink/ - Why I formed a software LLC, what I'm building with it, and the philosophy behind making software that's...
 - Why we built haea on-device: https://purplelink.llc/blog/why-haea-is-on-device/ - Why haea keeps all your health data on your iPhone - and why that decision shapes everything about how the...
 - What GlobePin does that no other travel app does: https://purplelink.llc/blog/what-globepin-does-differently/ - Why GlobePin is different from every travel tracking app on the market - and what we built that the others...
