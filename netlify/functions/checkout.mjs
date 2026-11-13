@@ -16,17 +16,22 @@
  * These dollar amounts are the source of truth; the Stripe Price objects
  * created at launch must match them exactly, and so must the visible copy
  * on each tool's landing page. Repriced 2026-07-03 for the Fable 5 model
- * upgrade (see backend/app.py PAID_PRODUCTS for the margin rationale):
- *   STRIPE_PRICE_PAPER_REVIEW_STANDARD     (paper-review-standard, $9)
- *   STRIPE_PRICE_PAPER_REVIEW_JOURNAL      (paper-review-journal, $11)
- *   STRIPE_PRICE_PAPER_REVIEW_DEEP         (paper-review-deep, $15)
- *   STRIPE_PRICE_PAPER_REVIEW_PACK_5       (paper-review-pack-5, $38)
- *   STRIPE_PRICE_PAPER_REVIEW_PACK_20      (paper-review-pack-20, $150)
+ * upgrade (see backend/app.py PAID_PRODUCTS for the margin rationale), and the publication workflow
+ * (Paper Review -> Revision Review -> Response Review) repriced 2026-11-13. The _V2 names are new
+ * Stripe Prices; the inline amount is the fallback, so price and page copy flip in the same build:
+ *   STRIPE_PRICE_PAPER_REVIEW_STANDARD_V2  (paper-review-standard, $14)
+ *   STRIPE_PRICE_PAPER_REVIEW_JOURNAL_V2   (paper-review-journal, $24)
+ *   STRIPE_PRICE_PAPER_REVIEW_DEEP_V2      (paper-review-deep, $39)
+ *   STRIPE_PRICE_PAPER_REVIEW_PACK_5_V2    (paper-review-pack-5, lab pack of 5 Journal reviews, $99)
+ *   STRIPE_PRICE_PAPER_REVIEW_PACK_20_V2   (paper-review-pack-20, lab pack of 20 Journal reviews, $349)
+ *   STRIPE_PRICE_PUBLICATION_PACK          (publication-pack, $59; gated by PUBLICATION_PACK_OPEN)
+ *   STRIPE_PRICE_LAB_MONTHLY / _ANNUAL     (lab-monthly $199/mo, lab-annual $1,990/yr; gated by LAB_PLANS_OPEN)
+ *   STRIPE_PRICE_LAB_PLUS_MONTHLY / _ANNUAL (lab-plus-monthly $349/mo, lab-plus-annual $3,490/yr; same gate)
  *   STRIPE_PRICE_COVER_LETTER              (cover-letter, $2)
  *   STRIPE_PRICE_ANONYMITY_CHECK           (anonymity-check, $2)
  *   STRIPE_PRICE_CITATION_GAP              (citation-gap, $3)
- *   STRIPE_PRICE_REVISION_REVIEW           (revision-review, $2)
- *   STRIPE_PRICE_RESPONSE_REVIEW           (response-review, $6)
+ *   STRIPE_PRICE_REVISION_REVIEW_V2        (revision-review, $5)
+ *   STRIPE_PRICE_RESPONSE_REVIEW_V2        (response-review, $12)
  *   STRIPE_PRICE_RESPONSE_DRAFT            (response-draft, $24) — drafts the letter, then the panel checks it
  *   STRIPE_PRICE_RESUME_REVIEW             (resume-review, $5) — first non-academic product
  *   STRIPE_PRICE_VITAE_PLUS_MONTHLY        (vitae-plus-monthly, $2.99/month subscription, 7-day trial)
@@ -168,22 +173,33 @@ async function checkoutRateLimited(clientIp) {
 
 // product key -> {env var name for price_id, success path}
 const PRODUCT_CATALOG = {
-  "paper-review-standard":   { envKey: "STRIPE_PRICE_PAPER_REVIEW_STANDARD",   successPath: "/tools/paper-review/upload/" },
-  "paper-review-journal":    { envKey: "STRIPE_PRICE_PAPER_REVIEW_JOURNAL",    successPath: "/tools/paper-review/upload/" },
-  "paper-review-deep":       { envKey: "STRIPE_PRICE_PAPER_REVIEW_DEEP",       successPath: "/tools/paper-review/upload/" },
-  "paper-review-pack-5":     { envKey: "STRIPE_PRICE_PAPER_REVIEW_PACK_5",     successPath: "/tools/paper-review/packs/success/" },
-  "paper-review-pack-20":    { envKey: "STRIPE_PRICE_PAPER_REVIEW_PACK_20",    successPath: "/tools/paper-review/packs/success/" },
-  // A year of reviews: 12 Journal reviews, $79, renews yearly until cancelled (docs/designs/paper-review-growth.md, Part D).
-  // Uses the Stripe Price in STRIPE_PRICE_PAPER_REVIEW_ANNUAL when set; otherwise the inline amount below.
-  "paper-review-annual":     { envKey: "STRIPE_PRICE_PAPER_REVIEW_ANNUAL", amount: 7900, name: "Paper Review: a year of reviews (12 Journal reviews)", interval: "year", mode: "subscription", successPath: "/tools/paper-review/packs/success/" },
+  // Repriced 2026-11-13 (publication workflow). New _V2 Price names so the env Price and this inline amount, and
+  // the page copy, change in the same build. Lab packs mint Journal-tier credits (backend PAID_PRODUCTS).
+  "paper-review-standard":   { envKey: "STRIPE_PRICE_PAPER_REVIEW_STANDARD_V2", amount: 1400, name: "Paper Review: Standard", successPath: "/tools/paper-review/upload/" },
+  "paper-review-journal":    { envKey: "STRIPE_PRICE_PAPER_REVIEW_JOURNAL_V2",  amount: 2400, name: "Paper Review: Journal", successPath: "/tools/paper-review/upload/" },
+  "paper-review-deep":       { envKey: "STRIPE_PRICE_PAPER_REVIEW_DEEP_V2",     amount: 3900, name: "Paper Review: Deep", successPath: "/tools/paper-review/upload/" },
+  "paper-review-pack-5":     { envKey: "STRIPE_PRICE_PAPER_REVIEW_PACK_5_V2",   amount: 9900, name: "Paper Review: lab pack of 5 Journal reviews", successPath: "/tools/paper-review/packs/success/" },
+  "paper-review-pack-20":    { envKey: "STRIPE_PRICE_PAPER_REVIEW_PACK_20_V2",  amount: 34900, name: "Paper Review: lab pack of 20 Journal reviews", successPath: "/tools/paper-review/packs/success/" },
+  // A year of reviews: 12 Journal reviews, $79, renews yearly until cancelled. New sales stopped 2026-11-13 (lab
+  // plans replace it); current subscribers keep renewing through the webhook. Reopen only with PAPER_REVIEW_ANNUAL_OPEN=1.
+  "paper-review-annual":     { envKey: "STRIPE_PRICE_PAPER_REVIEW_ANNUAL", amount: 7900, name: "Paper Review: a year of reviews (12 Journal reviews)", interval: "year", mode: "subscription", openEnv: "PAPER_REVIEW_ANNUAL_OPEN", successPath: "/tools/paper-review/packs/success/" },
+  // Publication Pack: one Deep review, one Revision Review, one response letter draft and check. Closed until the
+  // backend mints the three tokens together (PUBLICATION_PACK_OPEN=1 opens it).
+  "publication-pack":        { envKey: "STRIPE_PRICE_PUBLICATION_PACK", amount: 5900, name: "Publication Pack: Deep review, Revision Review, response letter draft and check", openEnv: "PUBLICATION_PACK_OPEN", successPath: "/tools/paper-review/packs/success/" },
+  // Lab plans: monthly review credits (20 or 40), revision and response checks under fair use. Closed until the
+  // backend plan records and renewals ship (LAB_PLANS_OPEN=1 opens all four).
+  "lab-monthly":             { envKey: "STRIPE_PRICE_LAB_MONTHLY",       amount: 19900,  name: "Paper Review Lab: 20 reviews a month", interval: "month", mode: "subscription", openEnv: "LAB_PLANS_OPEN", successPath: "/tools/paper-review/packs/success/" },
+  "lab-annual":              { envKey: "STRIPE_PRICE_LAB_ANNUAL",        amount: 199000, name: "Paper Review Lab, yearly: 20 reviews a month", interval: "year", mode: "subscription", openEnv: "LAB_PLANS_OPEN", successPath: "/tools/paper-review/packs/success/" },
+  "lab-plus-monthly":        { envKey: "STRIPE_PRICE_LAB_PLUS_MONTHLY",  amount: 34900,  name: "Paper Review Lab Plus: 40 reviews a month and group seats", interval: "month", mode: "subscription", openEnv: "LAB_PLANS_OPEN", successPath: "/tools/paper-review/packs/success/" },
+  "lab-plus-annual":         { envKey: "STRIPE_PRICE_LAB_PLUS_ANNUAL",   amount: 349000, name: "Paper Review Lab Plus, yearly: 40 reviews a month and group seats", interval: "year", mode: "subscription", openEnv: "LAB_PLANS_OPEN", successPath: "/tools/paper-review/packs/success/" },
   "cover-letter":            { envKey: "STRIPE_PRICE_COVER_LETTER",            successPath: "/tools/cover-letter/compose/" },
   "anonymity-check":         { envKey: "STRIPE_PRICE_ANONYMITY_CHECK",         successPath: "/tools/anonymity-check/upload/" },
-  // $2 journal checklist offered after a Standard review (backend/latextools/upgrades.py). Inline price, no env Price.
-  "journal-check":           { amount: 200, name: "Paper Review: journal check", successPath: "/tools/paper-review/journal-check/upload/" },
+  // $10 journal checklist offered after a Standard review (backend/latextools/upgrades.py). Inline price, no env Price.
+  "journal-check":           { amount: 1000, name: "Paper Review: journal check", successPath: "/tools/paper-review/journal-check/upload/" },
   "citation-gap":            { envKey: "STRIPE_PRICE_CITATION_GAP",            successPath: "/tools/citation-gap/upload/" },
-  "revision-review":         { envKey: "STRIPE_PRICE_REVISION_REVIEW",         successPath: "/tools/paper-review/revision/upload/" },
-  "response-review":         { envKey: "STRIPE_PRICE_RESPONSE_REVIEW",         successPath: "/tools/response-review/upload/" },
-  "response-draft":          { envKey: "STRIPE_PRICE_RESPONSE_DRAFT",          successPath: "/tools/response-review/draft/upload/" },
+  "revision-review":         { envKey: "STRIPE_PRICE_REVISION_REVIEW_V2", amount: 500, name: "Revision Review", successPath: "/tools/paper-review/revision/upload/" },
+  "response-review":         { envKey: "STRIPE_PRICE_RESPONSE_REVIEW_V2", amount: 1200, name: "Response Review: response letter check", successPath: "/tools/response-review/upload/" },
+  "response-draft":          { envKey: "STRIPE_PRICE_RESPONSE_DRAFT", amount: 2400, name: "Response Review: response letter draft and check", successPath: "/tools/response-review/draft/upload/" },
   "resume-review":           { envKey: "STRIPE_PRICE_RESUME_REVIEW",           successPath: "/tools/resume-review/upload/" },
   // Digital "kits" (downloadable products). Delivery is a token-gated PDF from
   // the kits-delivery Blobs store; see download.mjs. Success page lists the links.

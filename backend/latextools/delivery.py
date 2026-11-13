@@ -216,23 +216,27 @@ _READY_NEXT = {
     "paper-review": (
         f'Next, if you need it: <a href="https://purplelink.llc/tools/citation-gap/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Citation Gap Analysis</a> '
         f'($3) lists prior work a reviewer may expect you to cite, and <a href="https://purplelink.llc/tools/cover-letter/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Cover Letter</a> '
-        '($2) drafts the letter from your abstract.'
+        '($2) drafts the letter from your abstract. When the reviews come back, '
+        f'<a href="https://purplelink.llc/tools/paper-review/revision/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Revision Review</a> '
+        f'($5) and <a href="https://purplelink.llc/tools/response-review/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Response Review</a> '
+        '($12) are the next two steps of the '
+        f'<a href="https://purplelink.llc/tools/paper-review/?utm_source=email&amp;utm_campaign=ready#workflow" {_LINK}>publication workflow</a>.'
     ),
     "citation-gap": (
         f'For the full read, <a href="https://purplelink.llc/tools/paper-review/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Paper Review</a> '
-        '($9) puts the manuscript in front of seven AI reviewers and checks every reference against CrossRef.'
+        '($14) puts the manuscript in front of seven AI reviewers and checks every reference against CrossRef.'
     ),
     "anonymity-check": (
         f'For the full read, <a href="https://purplelink.llc/tools/paper-review/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Paper Review</a> '
-        '($9) covers methods, statistics and references, with an anonymity scan included.'
+        '($14) covers methods, statistics and references, with an anonymity scan included.'
     ),
     "cover-letter": (
         f'Before you send it, <a href="https://purplelink.llc/tools/paper-review/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Paper Review</a> '
-        '($9) reads the manuscript the way a reviewer panel would.'
+        '($14) reads the manuscript the way a reviewer panel would.'
     ),
     "response-review": (
         f'For the manuscript itself, <a href="https://purplelink.llc/tools/paper-review/revision/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Revision Review</a> '
-        '($2) checks the revision against the findings in your original Paper Review.'
+        '($5) checks the revision against the findings in your original Paper Review.'
     ),
     "response-draft": (
         'The draft is yours to edit: fill every [PLACEHOLDER] and resolve every [CHECK] before you send it. '
@@ -241,7 +245,7 @@ _READY_NEXT = {
     ),
     "revision-review": (
         f'For the letter that goes with it, <a href="https://purplelink.llc/tools/response-review/?utm_source=email&amp;utm_campaign=ready" {_LINK}>Response to Reviewers</a> '
-        '($6) checks every reply against the reviewer comments.'
+        '($12) checks every reply against the reviewer comments.'
     ),
 }
 
@@ -292,7 +296,7 @@ _READY_DELETION = (
 
 
 def html_review_ready(
-    *, status_url: str, manuscript_title: str = "", amount_cents: int = 900,
+    *, status_url: str, manuscript_title: str = "", amount_cents: int = 1400,
     product: str = "paper-review", attachment: str = "", offers: Optional[dict] = None,
 ) -> str:
     """*attachment* is the kind returned by build_report_attachment(). Left
@@ -545,7 +549,7 @@ def html_lifecycle_tips(*, manuscript_title: str = "", unsubscribe_url: str) -> 
     that disagreement is still useful: it tells you the reasoning isn't
     landing on the page and needs to be made explicit.</li>
     <li>After you revise, <a href="https://purplelink.llc/tools/paper-review/revision/?utm_source=email&amp;utm_campaign=tips" style="color: #6d28d9;">Revision Review</a>
-    ($2) checks the new version against this review's findings and flags
+    ($5) checks the new version against this review's findings and flags
     anything the edits introduced. Keep the Markdown file; it reads it.</li>
   </ul>
   <p>
@@ -605,7 +609,7 @@ def html_lifecycle_winback(*, unsubscribe_url: str) -> str:
 <div style="{_EMAIL_BASE_CSS}">
   <h2 style="color: #6d28d9;">Still writing?</h2>
   <p>It has been a while since your last Paper Review. If a new manuscript
-  is close to submission, another review costs $9 and takes a few minutes,
+  is close to submission, another review costs $14 and takes a few minutes,
   which leaves time to fix what it finds before a journal's reviewers do.</p>
   <p>
     <a href="https://purplelink.llc/tools/paper-review/"
@@ -677,7 +681,7 @@ def html_lifecycle_mtx_before_submit(*, unsubscribe_url: str, **_ignored) -> str
     upload the PDF or a Word file and it checks every reference against
     CrossRef, flags any cited paper that has been retracted, and scans for
     details that identify the authors. No account, nothing kept. The full
-    review ($9) adds AI reviewers on methods, statistics and data integrity,
+    review ($14) adds AI reviewers on methods, statistics and data integrity,
     a table pairing your central claims with the evidence offered for them,
     and quotes of the passages it questions. Results in minutes; the
     manuscript is deleted 30 minutes after you first open the result.</li>
@@ -707,10 +711,10 @@ def html_lifecycle_decision_reminder(*, manuscript_title: str = "", unsubscribe_
   email around the time you expected a decision. This is that email.</p>
   <p>If the decision is a revise and resubmit, two checks help:</p>
   <ul style="padding-left: 20px;">
-    <li><strong>Response to Reviewers ($6)</strong> reads your response letter
+    <li><strong>Response to Reviewers ($12)</strong> reads your response letter
     against every reviewer comment and flags replies that are missing,
     vague, or likely to read as defensive.</li>
-    <li><strong>Revision Review ($2)</strong> checks the revised manuscript
+    <li><strong>Revision Review ($5)</strong> checks the revised manuscript
     against the findings in your original Paper Review. It needs the
     Markdown file you saved from that review.</li>
   </ul>
@@ -765,7 +769,7 @@ def html_lifecycle_deadline_week(*, venue: str = "", deadline: str = "", kind: s
     <li><strong>Check the references.</strong> The free
     <a href="https://purplelink.llc/tools/bib-validator/?{utm}" {_LINK}>BibTeX Validator</a>
     finds malformed entries, missing fields and DOIs that do not resolve.</li>
-    <li><strong>Get a read before a reviewer does.</strong> Paper Review ($9)
+    <li><strong>Get a read before a reviewer does.</strong> Paper Review ($14)
     has seven AI reviewers read the manuscript for methods, statistics and
     claims the data do not support, and checks every reference against
     CrossRef. It takes a few minutes, which leaves the week for fixing.</li>
@@ -806,10 +810,10 @@ def _html_resubmission_week(*, venue: str, deadline: str, unsubscribe_url: str) 
     <a href="https://purplelink.llc/tools/response-letter-template/?{utm}" {_LINK}>response letter template</a>
     numbers and quotes each reviewer comment so none is skipped.</li>
     <li><strong>The letter, read as a reviewer would.</strong> Response to
-    Reviewers ($6) reads your letter against each comment and flags replies
+    Reviewers ($12) reads your letter against each comment and flags replies
     that are missing, vague, or likely to read as defensive.</li>
     <li><strong>The revision, checked against the review.</strong> If you ran
-    a Paper Review on the first version, Revision Review ($2) checks the
+    a Paper Review on the first version, Revision Review ($5) checks the
     revised manuscript against its findings. The free
     <a href="https://purplelink.llc/tools/latex-diff/?{utm}" {_LINK}>LaTeX Diff</a>
     makes the marked-up PDF many journals ask for.</li>

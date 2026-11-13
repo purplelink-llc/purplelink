@@ -46,7 +46,7 @@ test("the price with the code is 30% off, rounded to the cent", () => {
 test("ModernTex suggests a Standard review and the submission tracker", () => {
   const s = suggestionsFor({ source_product: "moderntex", family: "moderntex", owned_parts: [] });
   assert.deepEqual(s, [
-    { product: "paper-review-standard", name: "Paper Review (Standard)", path: "/tools/paper-review/", price: "$9.00", price_with_code: "$6.30" },
+    { product: "paper-review-standard", name: "Paper Review (Standard)", path: "/tools/paper-review/", price: "$14.00", price_with_code: "$9.80" },
     { product: "sheet-submission", name: "Journal Submission & R&R Tracker", path: "/sheets/submission-tracker/", price: "$12.00", price_with_code: "$8.40" },
   ]);
 });

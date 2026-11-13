@@ -322,16 +322,16 @@ def test_input_estimate_counts_text_and_images():
 
 def test_order_cost_ceiling_is_the_unit_price(monkeypatch):
     import app
-    assert app._order_cost_ceiling("paper-review-standard") == pytest.approx(9.0)
-    assert app._order_cost_ceiling("paper-review-deep") == pytest.approx(15.0)
-    assert app._order_cost_ceiling("paper-review-pack-5") == pytest.approx(7.6)
-    assert app._order_cost_ceiling("paper-review-pack-20") == pytest.approx(7.5)
+    assert app._order_cost_ceiling("paper-review-standard") == pytest.approx(14.0)
+    assert app._order_cost_ceiling("paper-review-deep") == pytest.approx(39.0)
+    assert app._order_cost_ceiling("paper-review-pack-5") == pytest.approx(19.8)
+    assert app._order_cost_ceiling("paper-review-pack-20") == pytest.approx(17.45)
     assert app._order_cost_ceiling("cover-letter") == pytest.approx(2.0)
     assert app._order_cost_ceiling("not-a-product") is None
     monkeypatch.setenv("ORDER_COST_CEILING_FACTOR", "0.5")
-    assert app._order_cost_ceiling("paper-review-standard") == pytest.approx(4.5)
+    assert app._order_cost_ceiling("paper-review-standard") == pytest.approx(7.0)
     monkeypatch.setenv("ORDER_COST_CEILING_FACTOR", "junk")
-    assert app._order_cost_ceiling("paper-review-standard") == pytest.approx(9.0)
+    assert app._order_cost_ceiling("paper-review-standard") == pytest.approx(14.0)
 
 
 # ---------------------------------------------------------------------------

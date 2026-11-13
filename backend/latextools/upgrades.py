@@ -2,7 +2,7 @@
 
 Two offers, both with real prices and no deadline:
 
-1. The journal check add-on ($2). A Standard review (single or pack) runs without a target journal. The add-on
+1. The journal check add-on ($10 since 2026-11-13; was $2). A Standard review (single or pack) runs without a target journal. The add-on
    runs the same rule-based journal checklist the Journal tier uses (journals.check_compliance: abstract and body
    word counts, page count, required and recommended sections, reference style) on the manuscript for one journal.
    No model call, so it costs almost nothing to run.
@@ -20,13 +20,16 @@ import html as _html
 from typing import Optional
 
 ANNUAL_PRODUCT = "paper-review-annual"
+# The $79 plan stopped taking new buyers on 2026-11-13 (lab plans replace it), so the comparison is not shown.
+# Set True only if checkout's PAPER_REVIEW_ANNUAL_OPEN is turned back on.
+ANNUAL_OFFER_OPEN = False
 ANNUAL_CENTS = 7900
 ANNUAL_REVIEWS = 12
 SINGLE_REVIEW_PRODUCTS = ("paper-review-standard", "paper-review-journal", "paper-review-deep")
 # Reviews that ran without a journal checklist: the add-on is offered only after these.
 ADDON_ELIGIBLE = ("paper-review-standard", "paper-review-pack-5", "paper-review-pack-20")
 JOURNAL_ADDON_PRODUCT = "journal-check"
-JOURNAL_ADDON_CENTS = 200
+JOURNAL_ADDON_CENTS = 1000  # $10 since 2026-11-13 (was $2)
 JOURNAL_ADDON_PAGE = "https://purplelink.llc/tools/paper-review/journal-check/"
 ANNUAL_PAGE = "https://purplelink.llc/tools/paper-review/packs/"
 YEAR_SECONDS = 365 * 86400
@@ -100,7 +103,7 @@ def build_offers(sold_as: str, journal_used: bool, purchases, now: float) -> dic
                      f"count, required sections, reference style) for {_dollars(JOURNAL_ADDON_CENTS)}. "
                      "It is a rule-based checklist; the reviewers do not run again."),
         }
-    if sold_as in SINGLE_REVIEW_PRODUCTS:
+    if ANNUAL_OFFER_OPEN and sold_as in SINGLE_REVIEW_PRODUCTS:
         c = annual_comparison(purchases, now)
         if c:
             offers["annual"] = {**c, "url": ANNUAL_PAGE, "text": comparison_sentence(c)}

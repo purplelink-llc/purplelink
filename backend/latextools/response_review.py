@@ -1,4 +1,4 @@
-"""Response-to-Reviewers tool — $6 standalone paid product.
+"""Response-to-Reviewers tool — $12 standalone paid product.
 
 Input: the original manuscript PDF + the reviewer comments (pasted text or
 PDF) + the author's draft response (pasted text or PDF).

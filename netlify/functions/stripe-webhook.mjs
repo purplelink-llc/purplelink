@@ -133,6 +133,7 @@ const PURPLELINK_PRODUCTS = new Set([
   "revision-review",
   "response-review",
   "response-draft",
+  "publication-pack",
   "resume-review",
   "digest-monthly",
   "digest-annual",

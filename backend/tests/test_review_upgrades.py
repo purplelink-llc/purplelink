@@ -59,18 +59,25 @@ def test_build_offers_eligibility():
     now = 2_000_000_000.0
     two = _rows(900, 900, now=now, product="paper-review-standard")
     o = upgrades.build_offers("paper-review-standard", False, two, now)
-    assert set(o) == {"journal_addon", "annual"}
-    assert o["journal_addon"]["price_cents"] == 200
-    assert set(upgrades.build_offers("paper-review-standard", True, two, now)) == {"annual"}
+    assert set(o) == {"journal_addon"}  # the $79 plan is closed to new buyers, so no comparison
+    assert o["journal_addon"]["price_cents"] == 1000
+    assert upgrades.build_offers("paper-review-standard", True, two, now) == {}
     assert set(upgrades.build_offers("paper-review-pack-5", False, two, now)) == {"journal_addon"}
     assert upgrades.build_offers("paper-review-journal", True, [], now) == {}
     assert upgrades.build_offers("paper-review-annual", False, two, now) == {}
 
 
+def test_annual_comparison_returns_if_the_plan_reopens(monkeypatch):
+    now = 2_000_000_000.0
+    two = _rows(900, 900, now=now, product="paper-review-standard")
+    monkeypatch.setattr(upgrades, "ANNUAL_OFFER_OPEN", True)
+    assert set(upgrades.build_offers("paper-review-standard", True, two, now)) == {"annual"}
+
+
 def test_offers_email_html_escapes_and_tags_links():
     o = upgrades.build_offers("paper-review-standard", False, [], 1.0)
     h = upgrades.offers_email_html(o, 'style="color:#000"')
-    assert "utm_campaign=ready-upgrade" in h and "/tools/paper-review/journal-check/" in h and "$2.00" in h
+    assert "utm_campaign=ready-upgrade" in h and "/tools/paper-review/journal-check/" in h and "$10.00" in h
     assert upgrades.offers_email_html({}, "") == ""
 
 
@@ -98,10 +105,10 @@ def test_compliance_markdown_on_real_specs():
     assert md.startswith("# Journal check:")
 
 
-def test_journal_check_is_a_two_dollar_product(client):  # noqa: F811
+def test_journal_check_is_a_ten_dollar_product(client):  # noqa: F811
     _, backend_app = client
     cfg = backend_app.PAID_PRODUCTS["journal-check"]
-    assert cfg["amount"] == 200 and cfg["category"] == "journal-check" and cfg["qty"] == 1
+    assert cfg["amount"] == 1000 and cfg["legacy_amounts"] == [200] and cfg["category"] == "journal-check" and cfg["qty"] == 1
     assert backend_app.PURCHASE_UPLOAD_PATHS["journal-check"].endswith("/journal-check/upload/")
 
 
@@ -169,7 +176,7 @@ def test_register_token_records_single_review_spend(client, monkeypatch):  # noq
     assert len(recs) == 1 and len(recs[0]["purchases"]) == 2
     entry = backend_app.paper_tokens_dict["cs_x2"]
     offers = backend_app._upgrade_offers_for(entry, False)
-    assert "annual" in offers and "journal_addon" in offers
+    assert set(offers) == {"journal_addon"}  # spend is still recorded; the $79 plan comparison is closed
 
 
 def test_ready_email_carries_offers():

@@ -364,9 +364,10 @@ test("a malformed address is rejected before any lookup", async () => {
 
 // ---------------------------------------------------------------------------------------------- checkout
 
-async function annualCheckout(priceEnv) {
+async function annualCheckout(priceEnv, open = "1") {
   const saved = { ...env };
   env.STRIPE_PRICE_PAPER_REVIEW_ANNUAL = priceEnv;
+  env.PAPER_REVIEW_ANNUAL_OPEN = open; // new sales stopped 2026-11-13; the switch reopens them
   let body = null;
   globalThis.fetch = async (url, opts) => {
     if (new URL(String(url)).hostname === "api.stripe.com") {
@@ -401,4 +402,10 @@ test("annual checkout falls back to an inline $79 yearly price when no Price is 
   assert.equal(body.get("line_items[0][price_data][unit_amount]"), "7900");
   assert.equal(body.get("line_items[0][price_data][recurring][interval]"), "year");
   assert.equal(body.get("line_items[0][price]"), null);
+});
+
+test("annual checkout is closed to new buyers unless PAPER_REVIEW_ANNUAL_OPEN=1 (lab plans replace it)", async () => {
+  const { res, body } = await annualCheckout("price_x", "0");
+  assert.equal(res.status, 400);
+  assert.equal(body, null, "no Stripe session is made");
 });
