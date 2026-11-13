@@ -3,7 +3,7 @@
 
   python3 scripts/yt-api-upload.py --channel pixelhearth --kind ambient FILE --title "..." [--description "..."]
       [--description-file F] [--tags a,b] [--category N] [--privacy public|unlisted|private] [--publish-at ISO]
-      [--thumbnail F] [--not-synthetic] [--dry-run]
+      [--thumbnail F] [--synthetic|--not-synthetic] [--dry-run]
 
 Channels and the kinds each may carry are in scripts/yt-channels.json; tokens are made by scripts/yt-login.py.
 Privacy defaults to unlisted; pass --privacy public only for a video Ben approved. --dry-run runs the kind and
@@ -33,6 +33,7 @@ def main(argv=None, **injected):
     ap.add_argument("--publish-at")
     ap.add_argument("--thumbnail")
     ap.add_argument("--not-synthetic", action="store_true")
+    ap.add_argument("--synthetic", action="store_true", help="declare altered or synthetic content (TTS narration)")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args(argv)
     if a.description is not None and a.description_file:
@@ -44,7 +45,7 @@ def main(argv=None, **injected):
             with open(a.description_file, encoding="utf-8") as f:
                 desc = f.read()
         tags = [t for t in a.tags.split(",") if t.strip()]
-        synthetic = False if a.not_synthetic else None
+        synthetic = False if a.not_synthetic else (True if a.synthetic else None)
         if a.dry_run:
             ch, title = g.dry_run(a.channel, a.kind, **injected)
             body = g.build_body(ch, a.kind, a.title, desc, tags, a.category, a.privacy, a.publish_at, synthetic)

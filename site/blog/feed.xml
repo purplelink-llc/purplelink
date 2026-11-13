@@ -5,8 +5,16 @@
   <link href="https://purplelink.llc/blog/feed.xml" rel="self"/>
   <link href="https://purplelink.llc/blog/"/>
   <id>https://purplelink.llc/blog/</id>
-  <updated>2026-10-28T12:00:00Z</updated>
+  <updated>2026-11-13T12:00:00Z</updated>
   <author><name>Benjamin Ampel</name></author>
+  <entry>
+    <title>ModernTex 3.0: hear your manuscript, and dictate into LaTeX</title>
+    <link href="https://purplelink.llc/blog/moderntex-3-hear-your-manuscript-and-dictate-into-latex/"/>
+    <id>https://purplelink.llc/blog/moderntex-3-hear-your-manuscript-and-dictate-into-latex/</id>
+    <published>2026-11-13T12:00:00Z</published>
+    <updated>2026-11-13T12:00:00Z</updated>
+    <summary>ModernTex 3.0 reads your LaTeX aloud with each sentence highlighted, and takes dictation into your source. Both run on your Mac and nothing is sent off it.</summary>
+  </entry>
   <entry>
     <title>The citations you don't know you're missing</title>
     <link href="https://purplelink.llc/blog/the-citations-you-dont-know-youre-missing/"/>

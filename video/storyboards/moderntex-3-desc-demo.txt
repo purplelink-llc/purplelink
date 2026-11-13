@@ -1,0 +1,13 @@
+ModernTex 3.0 reads your LaTeX aloud, sentence by sentence, and takes dictation into the source. Both run on your Mac, and nothing is sent off it.
+
+0:00 Read aloud from where you click
+0:28 Captions, tables, stop and resume
+0:53 Dictation that is safe for LaTeX
+1:09 Privacy
+
+Blog post: https://purplelink.llc/blog/moderntex-3-hear-your-manuscript-and-dictate-into-latex/?utm_source=youtube&utm_medium=video&utm_campaign=hub-moderntex-3-demo-16x9&utm_content=moderntex-3-demo-16x9-youtube-261112
+ModernTex: https://purplelink.llc/moderntex/
+
+The read-aloud clips use the best voice installed on the Mac; pick any voice in Settings.
+
+#ModernTex #LaTeX #AcademicWriting
