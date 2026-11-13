@@ -127,6 +127,22 @@
         null,
       ],
     },
+    "response-draft": {
+      order: ["extracting", "drafting", "panel", "done"],
+      labels: {
+        queued: "Queued…",
+        extracting: "Reading the manuscripts and the reviewer comments…",
+        drafting: "Drafting a reply to each comment…",
+        panel: "Checking the draft with the Response Review panel…",
+        done: "Done.",
+      },
+      boxes: [
+        ["extracting", "Read", "Manuscripts and comments"],
+        ["drafting", "Draft", "A reply to each comment"],
+        ["panel", "Check", "Response Review panel"],
+        null,
+      ],
+    },
     "revision-review": {
       order: ["extracting", "comparing", "done"],
       labels: {
@@ -237,6 +253,7 @@
   // actionable language; anything unrecognised (including raw exception
   // strings) falls back to a generic message rather than leaking internals.
   var ERROR_MESSAGES = {
+    drafting_failed: "We read your manuscripts and the reviewer comments but could not write the draft.",
     no_reviewer_comments_parsed: "We couldn't find any reviewer comments in the text you pasted. Double-check the format (each reviewer's comments should be numbered or clearly separated) and try again.",
     synthesis_failed: "We extracted your documents but hit an error writing the final report.",
     empty_manuscript: "We couldn't read any text from the manuscript you uploaded. Make sure the PDF isn't a scanned image with no selectable text, then try again.",
@@ -310,13 +327,15 @@
     "journal-check": [["/tools/cover-letter/", "$2", "Cover Letter", "A draft from your abstract and the journal name. It never sees the manuscript."]],
     "cover-letter": [["/tools/paper-review/", "From $14", "Paper Review", "Before you send the letter, a reviewer panel's read of the manuscript itself."]],
     "response-review": [["/tools/paper-review/revision/", "$5", "Revision Review", "Checks the revised manuscript against the findings in your original Paper Review."]],
-    "revision-review": [["/tools/response-review/", "$12", "Response Review", "Checks every reply in your response letter against the reviewer comments."]]
+    "revision-review": [["/tools/response-review/", "$12", "Response Review", "Checks every reply in your response letter against the reviewer comments."]],
+    "response-draft": [["/tools/response-review/", "$12", "Response Review", "After you edit the draft, checks the final letter against the reviewer comments once more."]]
   };
 
   var WORKFLOW_PRODUCTS = {
     "paper-review": "Steps 1 to 3 of 5",
     "revision-review": "Step 4 of 5",
-    "response-review": "Step 5 of 5"
+    "response-review": "Step 5 of 5",
+    "response-draft": "Step 5 of 5"
   };
 
   function renderNextSteps(product) {
@@ -367,7 +386,8 @@
       return;
     }
     forgetSavedStatus();
-    pageTitle.textContent = "Your review is ready";
+    pageTitle.textContent = (payload.product || ACTIVE_PRODUCT) === "response-draft"
+      ? "Your response letter draft is ready" : "Your review is ready";
     // Paper Review also emails the report as a PDF; the other tools do not.
     pageBlurb.innerHTML = (payload.product || ACTIVE_PRODUCT) === "paper-review"
       ? "<strong>A PDF of the report is on its way to your email.</strong> If it has not arrived, download a copy below. " + DELETION_SENTENCE

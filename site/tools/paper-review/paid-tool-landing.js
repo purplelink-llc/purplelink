@@ -13,10 +13,7 @@
     return d.innerHTML;
   }
 
-  var btn = document.getElementById("checkout-btn");
   var statusEl = document.getElementById("checkout-status");
-  if (!btn) return;
-  var product = btn.dataset.product || "paper-review-standard";
   var referralCode = new URLSearchParams(window.location.search).get("ref") || "";
 
   function setStatus(msg, isError) {
@@ -25,31 +22,43 @@
     else statusEl.innerHTML = '<span class="tool-spinner" aria-hidden="true"></span>' + escapeHtml(msg);
   }
 
-  btn.addEventListener("click", function () {
-    btn.disabled = true;
-    // Anything that throws before the request is sent must not leave the buyer
-    // staring at a permanently dead button.
-    try {
-      setStatus("Opening checkout…", false);
-    } catch (e) {
-      /* status is cosmetic; never block the sale on it */
-    }
-    fetch("/.netlify/functions/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ product: product, ref: referralCode }),
-    })
-      .then(function (resp) {
-        if (!resp.ok) return resp.json().then(function (p) { throw p; });
-        return resp.json();
+  // #checkout-btn is the page's main buy button. A page can offer a second
+  // product with any other button marked data-checkout (the Response Review
+  // page sells drafting this way); each button sends its own data-product.
+  function bind(btn) {
+    var product = btn.dataset.product || "paper-review-standard";
+    btn.addEventListener("click", function () {
+      btn.disabled = true;
+      // Anything that throws before the request is sent must not leave the buyer
+      // staring at a permanently dead button.
+      try {
+        setStatus("Opening checkout…", false);
+      } catch (e) {
+        /* status is cosmetic; never block the sale on it */
+      }
+      fetch("/.netlify/functions/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ product: product, ref: referralCode }),
       })
-      .then(function (data) {
-        if (!data || !data.url) throw { detail: "Checkout did not return a redirect URL." };
-        window.location.assign(data.url);
-      })
-      .catch(function (err) {
-        setStatus((err && err.detail) || "Could not start checkout.", true);
-        btn.disabled = false;
-      });
+        .then(function (resp) {
+          if (!resp.ok) return resp.json().then(function (p) { throw p; });
+          return resp.json();
+        })
+        .then(function (data) {
+          if (!data || !data.url) throw { detail: "Checkout did not return a redirect URL." };
+          window.location.assign(data.url);
+        })
+        .catch(function (err) {
+          setStatus((err && err.detail) || "Could not start checkout.", true);
+          btn.disabled = false;
+        });
+    });
+  }
+
+  var main = document.getElementById("checkout-btn");
+  if (main) bind(main);
+  Array.prototype.forEach.call(document.querySelectorAll("button[data-checkout]"), function (b) {
+    if (b !== main) bind(b);
   });
 })();

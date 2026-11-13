@@ -21,7 +21,7 @@ const env = {
   STRIPE_SECRET_KEY: "sk_test_dummy", STRIPE_WEBHOOK_SECRET: "whsec_test", BACKEND_WEBHOOK_SECRET: "backend",
   RESEND_API_KEY: "re_dummy", FOLLOWUP_UNSUBSCRIBE_SECRET: "unsub_secret",
   LENSCRIB_SALES_OPEN: "1",   // pre-launch switch (checkout.mjs openEnv); these tests buy every catalog product
-  PAPER_REVIEW_ANNUAL_OPEN: "1", PUBLICATION_PACK_OPEN: "1", LAB_PLANS_OPEN: "1", RESPONSE_DRAFT_OPEN: "1",
+  PAPER_REVIEW_ANNUAL_OPEN: "1", PUBLICATION_PACK_OPEN: "1", LAB_PLANS_OPEN: "1",
 };
 globalThis.Netlify = { env: { get: (k) => (k.startsWith("STRIPE_PRICE_") ? "price_dummy" : env[k]) } };
 

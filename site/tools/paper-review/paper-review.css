@@ -536,7 +536,9 @@
   font-weight: 600;
   color: var(--purple);
 }
-.wf-step-soon { color: var(--muted); }
+.wf-step-extra { color: var(--muted); }
+.wf-step-extra a { color: var(--purple); font-weight: 600; }
+.pr-draft-offer { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; max-width: 620px; margin: 0.5rem auto 0; padding-top: 0.75rem; border-top: 1px solid var(--line); }
 
 .wf-plan-grid {
   margin-top: 1.5rem;
