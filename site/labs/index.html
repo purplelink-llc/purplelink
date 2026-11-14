@@ -48,7 +48,6 @@
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="/motion.css">
     <link rel="stylesheet" href="/labs/labs.css">
-    <link rel="stylesheet" href="/assets/css/workflow-hero.css">
     <script src="/site.js" defer></script>
     <script src="/motion.js" defer></script>
     <script src="/buddy-chat/loader.js" defer></script>
@@ -89,8 +88,13 @@
           <a href="#labs-data">Data handling</a>
         </nav>
         <figure class="labs-hero-visual">
-          <div class="wf-hero" data-wf-hero>
-            <img class="wf-hero-poster" src="/assets/img/workflow/hero-poster.webp" alt="A manuscript passing five stations: review, coherence, citations, revision, response" width="1200" height="675" fetchpriority="high" decoding="async">
+          <div class="frame-soft hero-media" data-motion="video">
+            <img src="/assets/video/publication-suite/film-poster.webp" alt="A manuscript page with three Paper Review findings beside it: a hyperparameter search asymmetry, a contradicted citation, and a table that disagrees with the claim" width="1280" height="720" fetchpriority="high" decoding="async">
+            <video muted loop playsinline preload="none" poster="/assets/video/publication-suite/film-poster.webp" aria-hidden="true" tabindex="-1" disablepictureinpicture>
+              <source data-src="/assets/video/publication-suite/film.webm" type="video/webm">
+              <source data-src="/assets/video/publication-suite/film.mp4" type="video/mp4">
+            </video>
+            <button type="button" class="motion-toggle" data-motion-toggle hidden>Pause video</button>
           </div>
           <figcaption>Each paper on a plan gets a Paper Review, a Revision Review and a Response Review.</figcaption>
         </figure>
@@ -383,7 +387,6 @@
     </footer>
     <script src="/labs/labs.js" defer></script>
     <script src="/publication-suite/publication-suite.js" defer></script>
-    <script type="module" src="/assets/js/workflow-hero.js"></script>
     <script src="/analytics.js" defer></script>
   </body>
 </html>

@@ -163,8 +163,8 @@
   .ps-pack { grid-template-columns: 1fr; }
 }
 
-/* The live three.js scene (workflow-hero.js; poster until the first frame) sits after the Paper Review figure. */
-/* The scene is a wide five-station strip, so it runs the full width of its section. */
+/* The suite film (assets/video/publication-suite/, played by motion.js data-motion="video"; the poster shows under
+   reduced motion) sits after the Paper Review figure and runs the full width of its section. */
 .ps-hero-visual { margin: 0; }
 .ps-hero-visual figcaption { margin-top: 10px; font-size: 0.88rem; color: var(--muted); }
 
