@@ -329,11 +329,11 @@ def html_review_ready(
         cta = "Open it"
     next_step = _READY_NEXT.get(product, "")
     if followups:
-        # COPY: lab review next steps (lead-in)
-        _items = "".join(
-            f'<a href="{_html.escape(str(f.get("url", "")))}" {_LINK}>{_html.escape(str(f.get("name", "")))}</a>; '
+        _items = " and ".join(
+            f'<a href="{_html.escape(str(f.get("url", "")))}" {_LINK}>{_html.escape(str(f.get("name", "")))}</a>'
             for f in followups if isinstance(f, dict) and f.get("url"))
-        next_step = f"Next steps for this paper: {_items}".rstrip("; ") + "." if _items else ""
+        next_step = (f"Your plan also covers this paper's next steps: {_items}. "
+                     f"Each link works once and is valid for 12 months.") if _items else ""
     next_html = f'\n  <p style="color: #555; font-size: 0.9em;">{next_step}</p>' if next_step else ""
     if offers:
         from latextools import upgrades as _upgrades
@@ -341,7 +341,6 @@ def html_review_ready(
         if _offers_html:
             next_html += "\n  " + _offers_html
     if followups:
-        # COPY: lab review footer (no per-review refund line)
         footer = "Sent by Purplelink LLC."
     else:
         footer = (f"Sent by Purplelink LLC. If a result is low quality, reply to this email\n    "

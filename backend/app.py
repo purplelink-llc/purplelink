@@ -2601,8 +2601,7 @@ def web():
                 async with _httpx.AsyncClient(timeout=10.0) as _ec:
                     _res = await _delivery.send_email(
                         _ec, to=email,
-                        # COPY: pack links email subject
-                        subject="Your Publication Pack: links to start",
+                        subject=lab.PACK_SUBJECT,
                         html=lab.html_pack_links(groups=lab.pack_groups(_annual_store(), session_id)),
                         tags=[{"name": "product", "value": lab.PUBLICATION_PACK}, {"name": "type", "value": "pack_links"}])
                 if (_res or {}).get("status") != "ok":
@@ -3180,6 +3179,16 @@ def web():
             return None, JSONResponse({"error": why}, status_code=404 if why == "invalid" else 410)
         return plan, None
 
+    async def _lab_first_grant(sub: str, snap) -> None:
+        """Issue the grants that are due for a plan that exists. Never raises: the plan is registered either way,
+        and the daily sweep and the plan page issue anything this call could not."""
+        try:
+            snap = snap or await _lab_fetch_subscription(sub)
+            if snap:
+                await _lab_apply_sync({**snap, "subscription_id": sub})
+        except Exception:
+            logger.exception("lab: first grant failed for %s", str(sub)[:20])
+
     @api.post("/lab/register")
     async def lab_register(request: Request):
         bad = _annual_auth(request)
@@ -3197,6 +3206,9 @@ def web():
         email = email.strip()[:200] if isinstance(email, str) else ""
         existing = lab.plan_by_subscription(annual_plans_dict, sub)
         if existing:
+            # A re-sent webhook: issue whatever is still due (an earlier call may have died between the plan
+            # write and the first grant), then answer as before.
+            await _lab_first_grant(sub, None)
             return JSONResponse({"status": "exists", "plan_id": existing["plan_id"], "product": existing["product"]})
         if not lab.amount_ok(cfg, data.get("amount_paid"), data.get("amount_subtotal")):
             return JSONResponse({"error": "amount_mismatch"}, status_code=400)
@@ -3215,6 +3227,8 @@ def web():
         if not res.get("ok"):
             return JSONResponse({"error": res.get("reason", "unknown_product")}, status_code=400)
         plan = res["plan"]
+        # The webhook calls only this route at checkout, so the first month's links are issued and mailed here.
+        await _lab_first_grant(sub, snap)
         return JSONResponse({"status": "registered" if res.get("created") else "exists",
                              "plan_id": plan["plan_id"], "product": plan["product"]})
 
@@ -3292,8 +3306,7 @@ def web():
         link = lab.plan_link(_annual_secret(), plan, _time_module.time())
         await _lab_send(
             plan["email"],
-            # COPY: lab cancel and undo email subjects
-            "Renewal is back on" if not cancel else "Renewal is off",
+            lab.cancel_subject(not cancel),
             lab.html_cancel_confirmation(end_label=lab.date_label(plan["period_end"]), link=link, undone=not cancel),
             "lab_undo" if not cancel else "lab_cancel")
         return JSONResponse(_lab_view_payload(plan, link.split("?t=", 1)[1]))
@@ -3334,8 +3347,7 @@ def web():
             plan = lab.plan_by_email(list(annual_plans_dict.items()), key)
             if plan:
                 lab.rotate_nonce(_annual_store(), plan)
-                # COPY: lab plan link email subject
-                await _lab_send(plan["email"], "Your plan link",
+                await _lab_send(plan["email"], lab.LINK_SUBJECT,
                                 lab.html_link(link=lab.plan_link(_annual_secret(), plan, _time_module.time())), "lab_link")
         return JSONResponse({"ok": True})
 

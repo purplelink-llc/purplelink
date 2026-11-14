@@ -35,6 +35,7 @@ PLAN_TOKEN_MAX = 400
 CARRY_MONTHS = 2                      # a grant is usable for its own month and the next
 FOLLOWUP_TTL = 365 * 86400
 REHAND_AFTER = 30 * 60
+CLAIM_STALE = 10 * 60                 # a claim this old whose work never landed belongs to a dead process
 REMINDER_DAYS = (30, 7)
 SITE = "https://purplelink.llc"
 
@@ -264,6 +265,21 @@ def _grant_entry(plan: dict, tokens: list[str], gid: str, start: int, now: float
     }
 
 
+def _claim(store, key: str, now: float) -> bool:
+    """Take the one-writer claim `key`. A claim is normally taken once and kept. If its holder died between the
+    claim and the write, the work never landed and nobody could retry, so a claim older than CLAIM_STALE can be
+    taken over, once per stale stamp (the takeover has its own claim). Callers re-check that the work is missing."""
+    if store.claims.put(key, now, skip_if_exists=True):
+        return True
+    old = store.claims.get(key)
+    if not isinstance(old, (int, float)) or now - old < CLAIM_STALE:
+        return False
+    if not store.claims.put(f"{key}:retake:{old}", now, skip_if_exists=True):
+        return False
+    store.claims[key] = now
+    return True
+
+
 def register(store, *, subscription_id: str, product: str, email: str, root: str, customer: str, snap: dict,
              gen_token, now: float, canonical_email) -> dict:
     """Create the plan record and its indexes (no tokens yet; `sync` issues the first grant). Idempotent on the
@@ -275,7 +291,7 @@ def register(store, *, subscription_id: str, product: str, email: str, root: str
     if existing:
         return {"ok": True, "reason": "exists", "plan": existing, "created": False}
     claim_key = f"labreg:{subscription_id}"
-    if not store.claims.put(claim_key, now, skip_if_exists=True):
+    if not _claim(store, claim_key, now):
         existing = plan_by_subscription(store.plans, subscription_id)
         if existing:
             return {"ok": True, "reason": "exists", "plan": existing, "created": False}
@@ -400,7 +416,7 @@ def sync(store, snap: dict, *, gen_token, now: float) -> dict:
         return res
     for j, due, gid in due_grants(plan, now):
         claim_key = f"lab:{plan['subscription_id']}:{plan['period_end']}:{j}"
-        if not store.claims.put(claim_key, now, skip_if_exists=True):
+        if not _claim(store, claim_key, now):
             continue
         try:
             plan = get_plan(store.plans, plan["plan_id"]) or plan
@@ -762,52 +778,96 @@ def restore_order(store, session_id: str, dispute_id: str, now: float) -> dict:
 
 # ------------------------------------------------------------------------------------------------------ emails
 
+CONTACT = "ben@purplelink.llc"
+
+
 def _wrap(inner: str) -> str:
-    # COPY: neutral footer for lab emails
-    return (f'<div style="font-family: -apple-system, BlinkMacSystemFont, sans-serif; line-height: 1.55; color: #1a1a1a; '
-            f'max-width: 600px;">{inner}<hr><p style="color: #888; font-size: 0.85em;">Purplelink LLC</p></div>')
+    """Lab emails have their own footer: annual's footer offers cancel-by-reply, which lab plans do not have."""
+    return (f'<div style="{annual._CSS}">{inner}<hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0;">'
+            f'<p style="color: #888; font-size: 0.85em;">Sent by Purplelink LLC. Questions go to {CONTACT}.</p></div>')
+
+
+def _btn(link: str, label: str) -> str:
+    return f'<p><a href="{link}" style="{annual._BTN}">{label}</a></p>'
 
 
 def _rows(tokens: list[str]) -> str:
-    return "".join(f'<li><a href="{start_url(t)}">{t[:8]}</a></li>' for t in tokens)
+    return "".join(f'<li><a href="{start_url(t)}">Start review {i}</a></li>' for i, t in enumerate(tokens, 1))
+
+
+def grant_subject(plan_name: str, first: bool) -> str:
+    return f"Your {plan_name} plan is active" if first else f"This month's {plan_name} reviews"
 
 
 def html_grant(*, plan_name: str, tokens: list[str], valid_until: str, link: str, group: str, first: bool) -> str:
-    # COPY: lab grant email heading
-    head = "Your plan is active" if first else "Your reviews for this month"
-    # COPY: lab grant email body
-    body = (f"{len(tokens)} reviews are ready on {plan_name}. They can be used until {valid_until}. "
-            "Each one comes with a Revision Review and a Response Review for that paper.")
-    # COPY: lab grant email plan link label
-    plan_line = f'<p><a href="{link}">Open your plan page</a></p>'
-    # COPY: lab grant email group line
-    grp = f'<p>Group link: <a href="{group}">{group}</a></p>' if group else ""
-    return _wrap(f"<h2>{head}</h2><p>{body}</p><ol>{_rows(tokens)}</ol>{plan_line}{grp}")
+    n = len(tokens)
+    head = grant_subject(plan_name, first)
+    lead = (f"Your {plan_name} plan has started. Here are the {n} reviews for the first month."
+            if first else f"Here are this month's {n} reviews on your {plan_name} plan.")
+    share = (f'<p>Lab members can start a review from the shared pool with the group link: <a href="{group}">{group}</a>. '
+             f"You can replace that link from the plan page.</p>" if group
+             else "<p>Forward a link to the lab member who needs it.</p>")
+    return _wrap(
+        f'<h2 style="color: #6d28d9;">{head}</h2>'
+        f"<p>{lead} Each link starts one Paper Review, with the journal check and the anonymity check included. "
+        f"A link works once, and the report goes to the address typed on the upload form. "
+        f"These reviews can be used until {valid_until}.</p>"
+        f"<ol>{_rows(tokens)}</ol>{share}"
+        f"<p>Every paper reviewed on the plan also gets one Revision Review and one Response Review. Those two links "
+        f"arrive in the report email and are valid for 12 months.</p>"
+        f"<p>A new batch arrives each month while the plan is active. The plan page shows the reviews left, turns "
+        f"renewal off or on, and opens billing.</p>"
+        + _btn(link, "Open the plan page"))
 
 
 def html_reminder(*, days: int, end_label: str, unused: int, link: str) -> str:
-    # COPY: lab renewal reminder
-    return _wrap(f'<h2>Your plan renews in {days} days</h2><p>Renewal date: {end_label}. Reviews unused: {unused}.</p>'
-                 f'<p><a href="{link}">Open your plan page</a></p>')
+    return _wrap(
+        f'<h2 style="color: #6d28d9;">Your plan renews in {days} days</h2>'
+        f"<p>Your plan renews on {end_label}. Reviews issued so far and not yet used: {unused}.</p>"
+        f"<p>To stop the renewal, turn it off on the plan page before {end_label}. The plan then runs to that date "
+        f"and nothing more is charged.</p>"
+        + _btn(link, "Open the plan page"))
+
+
+def cancel_subject(undone: bool) -> str:
+    return "Your plan will renew" if undone else "Your plan will not renew"
 
 
 def html_cancel_confirmation(*, end_label: str, link: str, undone: bool) -> str:
-    # COPY: lab cancel and undo confirmation
-    line = (f"Renewal is back on. Next renewal: {end_label}." if undone
-            else f"Renewal is off. The plan runs until {end_label}.")
-    return _wrap(f'<h2>{"Renewal on" if undone else "Renewal off"}</h2><p>{line}</p>'
-                 f'<p><a href="{link}">Open your plan page</a></p>')
+    if undone:
+        return _wrap(f'<h2 style="color: #6d28d9;">Renewal is on</h2>'
+                     f"<p>Your plan will renew on {end_label}, as before.</p>" + _btn(link, "Open the plan page"))
+    return _wrap(
+        f'<h2 style="color: #6d28d9;">Renewal is off</h2>'
+        f"<p>Your plan will not renew. It runs until {end_label}, and nothing more is charged. Reviews already "
+        f"issued stay usable until their own dates.</p>"
+        f"<p>You can turn renewal back on from the plan page until {end_label}.</p>"
+        + _btn(link, "Open the plan page"))
+
+
+LINK_SUBJECT = "Your plan link"
 
 
 def html_link(*, link: str) -> str:
-    # COPY: lab plan link email
-    return _wrap(f'<h2>Your plan link</h2><p>This link replaces any earlier one.</p><p><a href="{link}">Open my plan</a></p>')
+    return _wrap(
+        f'<h2 style="color: #6d28d9;">Your plan link</h2>'
+        f"<p>This link opens your plan page. The page shows the reviews left, turns renewal off or on, and opens "
+        f"billing. The link works for 60 days and replaces any earlier plan link.</p>"
+        + _btn(link, "Open my plan"))
+
+
+PACK_SUBJECT = "Your Publication Pack: three links"
 
 
 def html_pack_links(*, groups: list[dict]) -> str:
-    # COPY: publication pack email
     items = "".join(f'<li><a href="{g["url"]}">{g["name"]}</a></li>' for g in groups if g.get("url"))
-    return _wrap(f"<h2>Your Publication Pack</h2><p>Three links. Each works once and does not expire.</p><ol>{items}</ol>")
+    return _wrap(
+        f'<h2 style="color: #6d28d9;">Your Publication Pack</h2>'
+        f"<p>The pack covers one paper with three links. Each link works once and does not expire.</p>"
+        f"<ol>{items}</ol>"
+        f"<p>Start with the Paper Review. The other two links are for the revision. The Revision Review checks the "
+        f"revised paper against the first review. The response letter draft turns the reviewer comments into a "
+        f"first draft of your letter.</p>")
 
 
 # ------------------------------------------------------------------------------------------------ notifications
@@ -824,9 +884,7 @@ async def notify(store, res: dict, *, send_email: Callable[..., Awaitable[dict]]
     for m in res.get("minted", []):
         first = m["key"] == plan.get("root")
         try:
-            # COPY: lab grant subjects
-            subj = "Your plan is active" if first else "Your reviews for this month"
-            r = await send_email(to=plan["email"], subject=subj,
+            r = await send_email(to=plan["email"], subject=grant_subject(name, first),
                                  html=html_grant(plan_name=name, tokens=m["tokens"], valid_until=date_label(m["grant"]["ends"]),
                                                  link=link, group=group_url(plan), first=first),
                                  tag="lab_grant")
@@ -835,9 +893,7 @@ async def notify(store, res: dict, *, send_email: Callable[..., Awaitable[dict]]
             out["errors"] += 1
     if res.get("cancel_flipped"):
         try:
-            # COPY: lab cancel subject
-            subj = "Renewal off"
-            r = await send_email(to=plan["email"], subject=subj,
+            r = await send_email(to=plan["email"], subject=cancel_subject(False),
                                  html=html_cancel_confirmation(end_label=date_label(plan["period_end"]), link=link, undone=False),
                                  tag="lab_cancel")
             out["cancel" if (r or {}).get("status") == "ok" else "errors"] += 1
@@ -888,9 +944,7 @@ async def run_sweep(store, *, now: float, secret: str, gen_token,
         days = max(1, round(days_left)) if want == 7 else 30
         unused = sum(len(_unused(e)) for g in plan.get("grants", []) for e in [_live_entry(store, plan, g, now)] if e)
         try:
-            # COPY: lab reminder subject
-            subj = f"Your plan renews in {days} days"
-            r = await send_email(to=plan["email"], subject=subj,
+            r = await send_email(to=plan["email"], subject=f"Your plan renews in {days} days",
                                  html=html_reminder(days=days, end_label=date_label(plan["period_end"]), unused=unused,
                                                     link=plan_link(secret, plan, now)),
                                  tag="lab_reminder_%d" % want)

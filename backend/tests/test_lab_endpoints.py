@@ -91,7 +91,7 @@ def _token(app, sub=SUB):
 def _ready(env, product="lab-monthly"):
     http, app, sent, stripe = env
     assert _register(http, stripe, product).status_code == 200
-    assert _sync(http).json()["minted"] >= 1
+    assert len(_plan(app)["grants"]) == 1
     return http, app, sent, stripe
 
 
@@ -113,14 +113,14 @@ def test_routes_report_missing_secret_config(env, monkeypatch):
 
 # ---- register / sync ----------------------------------------------------------------------------------------
 
-def test_register_creates_plan_and_sync_mints_first_grant(env):
+def test_register_creates_plan_and_issues_first_grant(env):
+    """The webhook calls only /lab/register at checkout: that one call must issue and mail the first month."""
     http, app, sent, stripe = env
     r = _register(http, stripe)
     assert r.status_code == 200
     body = r.json()
     assert body["status"] == "registered" and body["plan_id"].startswith("lab_") and body["product"] == "lab-monthly"
-    s = _sync(http).json()
-    assert s == {"ok": True, "status": "synced", "minted": 1}
+    assert _sync(http).json() == {"ok": True, "status": "synced", "minted": 0}
     plan = _plan(app)
     assert len(plan["grants"]) == 1
     entry = app.paper_tokens_dict.get("cs_lab1")
@@ -142,7 +142,8 @@ def test_register_twice_is_exists_and_mints_once(env):
 def test_register_register_sync_path_in_one_call_pattern(env):
     http, app, sent, stripe = env
     assert _register(http, stripe, "lab-annual").json()["status"] == "registered"
-    assert _sync(http).json()["minted"] == 1
+    assert _sync(http).json()["minted"] == 0
+    assert len(_plan(app)["grants"]) == 1
     assert _plan(app)["billing_months"] == 12
 
 
@@ -172,6 +173,23 @@ def test_register_accepts_zero_dollar_first_invoice_and_invoice_path_root(env):
     stripe["snap"] = _snap(sub="sub_PO")
     _sync(http, "sub_PO")
     assert _plan(app, "sub_PO")["root"] == "lab-sub_PO"
+
+
+def test_register_survives_a_failed_first_grant_and_a_resend_heals_it(env, monkeypatch):
+    http, app, sent, stripe = env
+    real = app.lab.sync
+
+    def boom(*a, **kw):
+        raise RuntimeError("store down")
+
+    monkeypatch.setattr(app.lab, "sync", boom)
+    assert _register(http, stripe).json()["status"] == "registered"
+    assert _plan(app)["grants"] == [] and not sent
+    monkeypatch.setattr(app.lab, "sync", real)
+    assert _register(http, stripe).json()["status"] == "exists"
+    assert len(_plan(app)["grants"]) == 1 and len(sent) == 1
+    assert _register(http, stripe).json()["status"] == "exists"
+    assert len(_plan(app)["grants"]) == 1 and len(sent) == 1
 
 
 def test_sync_unknown_plan_and_unreadable(env):

@@ -26,8 +26,9 @@ Nothing in the backend reads them. The backend accepts registrations whenever th
 All are POST with JSON and the `x-webhook-secret` header (500 `misconfigured`, 401 `unauthorized`).
 
 - `/lab/register` `{subscription_id, product, email, session_id?, amount_paid?, amount_subtotal?, customer?}`. Reads the
-  subscription from Stripe, requires a paid latest invoice (a $0 invoice counts as paid), creates the plan, and mints
-  nothing. 200 `registered` or `exists`; 400 `unknown_product`, `missing_subscription_id`, `amount_mismatch`; 409 `unpaid`
+  subscription from Stripe, requires a paid latest invoice (a $0 invoice counts as paid), creates the plan, then
+  runs the same sync as `/lab/sync` to issue the first grant (also on `exists`, so a re-sent webhook heals a first grant
+  that failed; a sync failure never fails the register response). 200 `registered` or `exists`; 400 `unknown_product`, `missing_subscription_id`, `amount_mismatch`; 409 `unpaid`
   or `in_progress` (another call holds the claim, retry); 502 `stripe_unreadable`. The checkout path sends `session_id`,
   which becomes the root key. The invoice or purchase-order path sends no amounts and uses the root `lab-<subscription_id>`.
 - `/lab/sync` `{subscription_id}`. Re-reads Stripe, applies status, cancel mark and period, and issues every due grant.
@@ -83,7 +84,9 @@ product from the next grant. Grants already issued stay as they are. A group lin
 
 1. Call `/lab/sync` for the subscription. If it returns `minted: 0`, check the Stripe invoice is paid and the subscription
    is active.
-2. A claim is released when minting raises, so a repeat sync retries. Check the Modal logs for "lab:".
+2. A claim is released when minting raises, so a repeat sync retries. Check the Modal logs for "lab:". A claim left
+   by a process that died (no release) is taken over by the next sync or register once it is 10 minutes old
+   (`lab.CLAIM_STALE`); one caller wins the takeover, marked by a `<claim>:retake:<old stamp>` row.
 3. A grant email that did not send does not undo the grant. The customer can reach the tokens from the plan page, and
    `/lab/link` mails a new link.
 4. Never delete `lab:` claim rows by hand unless the matching grant is missing from the plan's `grants` list.

@@ -105,6 +105,47 @@ def test_register_claim_blocks_a_concurrent_second_creator():
     assert lab.plan_by_subscription(store.plans, "sub_Z") is None
 
 
+def test_register_takes_over_a_claim_left_by_a_dead_process_once():
+    store = new_store()
+    store.claims.put("labreg:sub_Z", NOW, skip_if_exists=True)       # claimed, then the process died: no plan
+    kw = dict(subscription_id="sub_Z", product="lab-monthly", email="a@b.c", root="r", customer="",
+              snap=snap(sub="sub_Z"), gen_token=counter("t"), canonical_email=canon)
+    assert lab.register(store, now=NOW + lab.CLAIM_STALE - 1, **kw)["reason"] == "in_progress"
+    later = NOW + lab.CLAIM_STALE + 1
+    r = lab.register(store, now=later, **kw)
+    assert r["ok"] is True and r["created"] is True
+    assert store.claims.get("labreg:sub_Z") == later
+    assert lab.register(store, now=later + 5, **kw)["reason"] == "exists"
+    assert sum(1 for k, _ in store.plans.items() if str(k).startswith("lab_")) == 1
+
+
+def test_a_stale_claim_is_taken_over_by_one_caller_only():
+    store = new_store()
+    store.claims.put("k", NOW, skip_if_exists=True)
+    later = NOW + lab.CLAIM_STALE + 1
+    store.claims.put(f"k:retake:{NOW}", later, skip_if_exists=True)  # another caller already took this stamp over
+    assert lab._claim(store, "k", later) is False
+    store2 = new_store()
+    store2.claims.put("k", NOW, skip_if_exists=True)
+    assert lab._claim(store2, "k", later) is True
+    assert lab._claim(store2, "k", later + 1) is False               # fresh again, not stale
+
+
+def test_sync_issues_a_grant_whose_claim_was_left_by_a_dead_process():
+    store = new_store()
+    plan, _ = make_plan(store)
+    renew = snap(ps=plan["period_end"])
+    key = f"lab:sub_L1:{renew['period_end']}:0"
+    t0 = renew["period_start"] + 60
+    store.claims.put(key, t0, skip_if_exists=True)                   # claimed, then died before the grant was written
+    res = lab.sync(store, renew, gen_token=counter("n"), now=t0 + 30)
+    assert res["minted"] == [] and len(res["plan"]["grants"]) == 1
+    res = lab.sync(store, renew, gen_token=counter("n"), now=t0 + lab.CLAIM_STALE + 1)
+    assert len(res["minted"]) == 1 and len(res["plan"]["grants"]) == 2
+    res = lab.sync(store, renew, gen_token=counter("m"), now=t0 + 3 * lab.CLAIM_STALE)
+    assert res["minted"] == [] and len(res["plan"]["grants"]) == 2
+
+
 def test_sync_twice_mints_once_and_a_failed_mint_can_retry(monkeypatch):
     store = new_store()
     plan, res = make_plan(store)
