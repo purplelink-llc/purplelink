@@ -258,7 +258,7 @@ export default async function handler(request, context) {
     if (action === "cancel" || action === "undo" || action === "rotate" || action === "portal") {
       const token = String(body.t ?? "")
       if (!validToken(token)) return expiredLink("invalid")
-      if (await overDailyLimit("lab-plan-ip", clientIp(request), PER_IP_DAILY * 5)) return tooMany()
+      if (await overDailyLimit("lab-plan-act-ip", clientIp(request), PER_IP_DAILY * 5)) return tooMany()
 
       if (action === "portal") return portalRedirect(token, secret)
 

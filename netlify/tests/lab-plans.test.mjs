@@ -333,6 +333,25 @@ test("a dispute on a one-time order revokes it with the dispute id, and a won on
   assert.deepEqual(modalCalls().map((c) => [c.path, c.body]), [["/paper-review/restore-order", { session_id: "cs_order1", dispute_id: "dp_1" }]]);
 });
 
+test("a partial refund of a one-time order, and a lost dispute on one, call no order route", async () => {
+  orderCharge();
+  await webhook(signed(refunded({ invoice: null, amount_refunded: 100, refunded: false })));
+  await webhook(signed(dispute("charge.dispute.closed", { status: "lost" })));
+  assert.equal(modalCalls().length, 0);
+});
+
+test("a failed lab revoke on a dispute is retried; an unreadable lab subscription on a renewal is alerted", async () => {
+  labCharge();
+  modalReply["/lab/revoke"] = { status: 500, body: {} };
+  assert.equal((await webhook(signed(dispute("charge.dispute.created")))).status, 502);
+  calls.length = 0;
+  stripeData = {};
+  const res = await webhook(signed(invoice("subscription_cycle")));
+  assert.equal(res.status, 502);
+  assert.equal(alerts().length, 1);
+  assert.equal(modalCalls().length, 0);
+});
+
 test("a failed order call never blocks the refund bookkeeping or changes the answer, and alerts the operator", async () => {
   orderCharge();
   modalReply["/paper-review/revoke-order"] = { status: 500, body: {} };
@@ -661,6 +680,33 @@ test("an IP is limited to ten link requests a day", async () => {
   assert.equal(codes[9], 200);
   assert.equal(codes[10], 429);
   assert.ok([...store.keys()].some((k) => k.startsWith("rate-limits/rl:lab-plan-ip:")));
+});
+
+test("plan actions have their own daily limit (50), apart from link requests", async () => {
+  modalReply["/lab/cancel"] = { status: 200, body: view({ state: "cancelling", token: "lab_tok2" }) };
+  const codes = [];
+  for (let i = 0; i < 51; i++) {
+    const req = new Request("https://purplelink.llc/labs/plan/", { method: "POST",
+      headers: { "x-nf-client-connection-ip": "203.0.113.77", "content-type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ action: "cancel", t: "lab_tok1" }).toString() });
+    codes.push((await plan(req)).status);
+  }
+  assert.equal(codes[49], 200);
+  assert.equal(codes[50], 429);
+  const link = new Request("https://purplelink.llc/labs/plan/", { method: "POST",
+    headers: { "x-nf-client-connection-ip": "203.0.113.77", "content-type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({ action: "link", email: "fresh@example.com" }).toString() });
+  assert.equal((await plan(link)).status, 200, "a lead who used many actions can still ask for a link");
+});
+
+test("a token with reserved characters round-trips through the portal return_url", async () => {
+  const tok = "lab_a+b/c=d&e#f%g";
+  modalReply["/lab/plan"] = { status: 200, body: view() };
+  const res = await plan(planReq("POST", { form: { action: "portal", t: tok } }));
+  assert.equal(res.status, 303);
+  const post = calls.find((c) => c.url === "https://api.stripe.com/v1/billing_portal/sessions");
+  const ret = new URLSearchParams(post.opts.body).get("return_url");
+  assert.equal(new URL(ret).searchParams.get("t"), tok);
 });
 
 test("a malformed address is rejected before any lookup", async () => {
