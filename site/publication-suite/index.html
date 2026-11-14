@@ -61,6 +61,7 @@
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="/motion.css">
     <link rel="stylesheet" href="/labs/labs.css">
+    <link rel="stylesheet" href="/assets/css/workflow-hero.css">
     <link rel="stylesheet" href="/publication-suite/publication-suite.css">
     <script src="/site.js" defer></script>
     <script src="/motion.js" defer></script>
@@ -84,6 +85,7 @@
 
     <main id="main-content">
       <section class="catalog-hero ps-hero">
+        <div class="ps-hero-copy">
         <img class="ps-hero-icon" src="/assets/publication-suite-icon.svg" alt="" width="96" height="96">
         <p class="eyebrow">Publication suite</p>
         <h1>Reviews for one paper, from submission to response letter</h1>
@@ -92,6 +94,13 @@
           <a class="btn btn-primary" href="#which" data-track="suite_cta" data-track-meta="hero-which">Which review do I need?</a>
         </div>
         <p class="ps-hero-note">Each manuscript goes to Anthropic's Claude API for the review and is not used for training. <a href="#data">What happens to your manuscript</a></p>
+        </div>
+        <figure class="ps-hero-visual">
+          <div class="wf-hero" data-wf-hero>
+            <img class="wf-hero-poster" src="/assets/img/workflow/hero-poster.webp" alt="A manuscript passing five stations: review, coherence, citations, revision, response" width="1200" height="675" fetchpriority="high" decoding="async">
+          </div>
+          <figcaption>One manuscript, from the first draft to the response letter.</figcaption>
+        </figure>
       </section>
 
       <section class="catalog-section" id="reviews" aria-labelledby="ps-reviews-h">
@@ -101,6 +110,7 @@
         </div>
         <ol class="ps-steps">
           <li class="ps-step">
+            <img class="ps-step-still" src="/assets/img/workflow/station-review.webp" alt="" width="1200" height="675" loading="lazy" decoding="async" data-ps-themed>
             <p class="ps-step-when">Before you submit</p>
             <h3>Paper Review</h3>
             <p class="ps-step-price">$14, $24 <span>or</span> $39</p>
@@ -113,6 +123,7 @@
             <a class="btn btn-primary" href="/tools/paper-review/#choose-tier" data-track="suite_cta" data-track-meta="step-paper-review">Start a Paper Review</a>
           </li>
           <li class="ps-step">
+            <img class="ps-step-still" src="/assets/img/workflow/station-revision.webp" alt="" width="1200" height="675" loading="lazy" decoding="async" data-ps-themed>
             <p class="ps-step-when">After the reviews come back</p>
             <h3>Revision Review</h3>
             <p class="ps-step-price">$5</p>
@@ -120,6 +131,7 @@
             <a class="btn btn-ghost" href="/tools/paper-review/revision/" data-track="suite_cta" data-track-meta="step-revision">Check a revision</a>
           </li>
           <li class="ps-step">
+            <img class="ps-step-still" src="/assets/img/workflow/station-response.webp" alt="" width="1200" height="675" loading="lazy" decoding="async" data-ps-themed>
             <p class="ps-step-when">Before you resubmit</p>
             <h3>Response Review</h3>
             <p class="ps-step-price">$12 <span>or</span> $24</p>
@@ -131,6 +143,76 @@
             <a class="btn btn-ghost" href="/tools/response-review/" data-track="suite_cta" data-track-meta="step-response">Check or draft a letter</a>
           </li>
         </ol>
+      </section>
+
+
+      <section class="catalog-section" id="finds" aria-labelledby="ps-finds-h">
+        <div class="catalog-section-head">
+          <h2 id="ps-finds-h">What each review finds</h2>
+          <p>Every finding points at the passage it is about. The Paper Review and Response Review excerpts come from the sample reports on their pages.</p>
+        </div>
+        <div class="ps-finds">
+          <article class="ps-find" aria-labelledby="ps-find-pr">
+            <header class="ps-find-head">
+              <h3 id="ps-find-pr">Paper Review</h3>
+              <p>From a report on a machine-learning paper</p>
+            </header>
+            <div class="ps-sheet">
+              <p class="ps-sheet-label">Section 3.2, Methods</p>
+              <p class="ps-sheet-text">&hellip; <mark>We tuned learning rate and batch size on the validation set; baselines used reported defaults.</mark> We then trained each model for 50 epochs &hellip;</p>
+              <div class="ps-note">
+                <p class="ps-note-tag"><span class="ps-chip ps-chip-a">A</span> Critical blind spot</p>
+                <p><strong>Hyperparameter search asymmetry favors the proposed method.</strong> Match the search budget for each baseline and report the protocol in the methods.</p>
+              </div>
+              <div class="ps-note">
+                <p class="ps-note-tag"><span class="ps-chip ps-chip-a">A</span> Citation contradicted</p>
+                <p>The claim "Method X reduces error by 40%" cites [14], whose abstract reports a 4% reduction.</p>
+              </div>
+              <div class="ps-note">
+                <p class="ps-note-tag"><span class="ps-chip ps-chip-b">B</span> Data and claim disagree</p>
+                <p>"Beats all baselines by a wide margin," but Table 2 shows a tie with Baseline C within standard errors on 4 of 7 datasets.</p>
+              </div>
+            </div>
+          </article>
+          <article class="ps-find" aria-labelledby="ps-find-rv">
+            <header class="ps-find-head">
+              <h3 id="ps-find-rv">Revision Review</h3>
+              <p>An example in the report's format, for the same paper after revision</p>
+            </header>
+            <div class="ps-sheet">
+              <p class="ps-sheet-label">Address tracker</p>
+              <ul class="ps-track">
+                <li><span class="ps-status ps-status-ok">Addressed</span> <span>Search protocol. Section 3.2 now gives each baseline the same tuning budget.</span></li>
+                <li><span class="ps-status ps-status-part">Partly</span> <span>The results now report 4%, as [14] does, but the abstract still says 40%.</span></li>
+                <li><span class="ps-status ps-status-no">Not addressed</span> <span>Reference [17] still has the wrong title and DOI.</span></li>
+              </ul>
+              <div class="ps-note">
+                <p class="ps-note-tag"><span class="ps-chip ps-chip-b">B</span> New issue</p>
+                <p>The new ablation in Table 4 reports means without standard errors.</p>
+              </div>
+            </div>
+          </article>
+          <article class="ps-find" aria-labelledby="ps-find-rr">
+            <header class="ps-find-head">
+              <h3 id="ps-find-rr">Response Review</h3>
+              <p>From the sample report</p>
+            </header>
+            <div class="ps-sheet">
+              <p class="ps-sheet-label">Per-comment tracker</p>
+              <ul class="ps-track">
+                <li><span class="ps-status ps-status-ok">Addressed</span> <span>R1.2, sample size. Power analysis added to Section 3.2.</span></li>
+                <li><span class="ps-status ps-status-part">Partly</span> <span>R1.4, Figure 3 labels. Enlarged, but the legend still overlaps the plot.</span></li>
+                <li><span class="ps-status ps-status-no">Hand-waved</span> <span>R2.1, Chen et al. "We are aware of this work," with no citation or comparison.</span></li>
+                <li><span class="ps-status ps-status-no">Missing</span> <span>R1.5, exclusion criteria. No reply in the letter.</span></li>
+              </ul>
+              <div class="ps-note">
+                <p class="ps-note-tag"><span class="ps-chip ps-chip-b">B</span> Tone</p>
+                <p>"As any reader familiar with the field would understand" reads as dismissive. Suggested: "We agree this comparison is worth addressing directly."</p>
+              </div>
+            </div>
+          </article>
+        </div>
+        <p class="ps-finds-more">Full samples: <a href="/tools/paper-review/sample/">Paper Review report</a>, <a href="/tools/response-review/">Response Review report</a> (on its page).</p>
       </section>
 
       <section class="catalog-section catalog-section-tint" id="which" aria-labelledby="ps-which-h">
@@ -311,6 +393,8 @@
       </div>
     </footer>
     <script src="/labs/labs.js" defer></script>
+    <script src="/publication-suite/publication-suite.js" defer></script>
+    <script type="module" src="/assets/js/workflow-hero.js"></script>
     <script src="/analytics.js" defer></script>
   </body>
 </html>

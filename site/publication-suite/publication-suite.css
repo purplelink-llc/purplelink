@@ -156,3 +156,115 @@
   .ps-which > div { grid-template-columns: 1fr; }
   .ps-pack { grid-template-columns: 1fr; }
 }
+
+/* Hero: copy, then the live three.js scene (workflow-hero.js; poster until the first frame). */
+/* The scene is a wide five-station strip, so it runs the full width under the copy. */
+.ps-hero-visual { margin: clamp(32px, 5vw, 56px) 0 0; }
+.ps-hero-visual figcaption { margin-top: 10px; font-size: 0.88rem; color: var(--muted); }
+
+/* Station renders at the top of each review card. */
+.ps-step-still {
+  display: block;
+  width: calc(100% + 2 * clamp(22px, 3vw, 28px));
+  max-width: none;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  margin: calc(-1 * clamp(22px, 3vw, 28px)) calc(-1 * clamp(22px, 3vw, 28px)) 10px;
+  border-radius: 15px 15px 0 0;
+  border-bottom: 1px solid var(--line);
+}
+.ps-step { overflow: hidden; }
+
+/* What each review finds: report excerpts drawn as annotated sheets. */
+.ps-finds {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 20px;
+  align-items: start;
+}
+.ps-find { display: flex; flex-direction: column; gap: 12px; }
+.ps-find-head h3 {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.ps-find-head p { font-size: 0.88rem; color: var(--muted); }
+.ps-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  box-shadow: 0 1px 0 color-mix(in oklch, var(--ink) 6%, transparent), 0 14px 30px -18px color-mix(in oklch, var(--purple) 40%, transparent);
+}
+.ps-sheet-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.ps-sheet-text {
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: var(--ink);
+}
+.ps-sheet-text mark {
+  background: color-mix(in oklch, var(--purple) 26%, transparent);
+  color: var(--ink);
+  border-radius: 3px;
+  padding: 0 2px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.ps-note {
+  padding: 12px 14px;
+  border: 1px solid color-mix(in oklch, var(--purple) 35%, var(--line));
+  border-radius: 10px;
+  background: color-mix(in oklch, var(--purple) 6%, var(--panel));
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+.ps-note strong { color: var(--ink); }
+.ps-note-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.ps-chip {
+  display: inline-grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--bg);
+  background: var(--purple);
+}
+.ps-chip-b { background: var(--muted); }
+.ps-track { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; font-size: 0.92rem; color: var(--muted); }
+.ps-track li { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.ps-track li:last-child { border-bottom: 0; padding-bottom: 0; }
+.ps-status {
+  justify-self: start;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  border: 1px solid var(--line);
+  color: var(--ink);
+}
+.ps-status-ok { border-color: color-mix(in oklch, oklch(0.72 0.14 150) 60%, var(--line)); background: color-mix(in oklch, oklch(0.72 0.14 150) 14%, transparent); }
+.ps-status-part { border-color: color-mix(in oklch, oklch(0.8 0.13 85) 60%, var(--line)); background: color-mix(in oklch, oklch(0.8 0.13 85) 14%, transparent); }
+.ps-status-no { border-color: color-mix(in oklch, oklch(0.65 0.18 25) 60%, var(--line)); background: color-mix(in oklch, oklch(0.65 0.18 25) 14%, transparent); }
+.ps-finds-more { margin-top: 18px; font-size: 0.93rem; color: var(--muted); }
+.ps-finds-more a { color: var(--purple); font-weight: 600; }
+
