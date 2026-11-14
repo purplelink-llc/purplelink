@@ -13,7 +13,7 @@
 set -u
 
 INPUTS=(site netlify netlify.toml package.json package-lock.json scripts/netlify_ignore.sh
-  scripts/apply_layout.py scripts/fingerprint_assets.py scripts/gen_search_index.py scripts/gen_blog_feed.py
+  scripts/apply_layout.py scripts/partials scripts/fingerprint_assets.py scripts/gen_search_index.py scripts/gen_blog_feed.py
   scripts/gen_llms_full.py scripts/check_og_images.py scripts/check_content.py scripts/check_games.py scripts/games-data)
 
 inputs_changed() {
