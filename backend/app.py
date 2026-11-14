@@ -13,7 +13,7 @@ import modal
 logger = logging.getLogger(__name__)
 
 import stripe_account as _stripe_account
-from latextools import annual
+from latextools import annual, lab
 from latextools import core
 
 # Buddy's facts block (latextools/buddy_facts.py) is build output, not in git: write it from site/llms.txt whenever
@@ -453,6 +453,20 @@ PAID_PRODUCTS: dict[str, dict] = {
     # to match the existing one-time-per-use pattern instead of introducing
     # a second business model on day one.
     "resume-review":            {"category": "resume-review", "qty": 1, "amount": 500},
+    # Lab plans (latextools/lab.py): subscriptions that grant reviews monthly. Registered by /lab/register, never by
+    # register-token (which refuses them). Standard-tier reviews with anonymity and journal checks bundled.
+    "lab-monthly":              {"category": "paper-review", "tier": "standard", "qty": 20, "amount": 19900,
+                                 "bundled_anonymity": True, "bundled_journal": True},
+    "lab-annual":               {"category": "paper-review", "tier": "standard", "qty": 20, "amount": 199000,
+                                 "bundled_anonymity": True, "bundled_journal": True},
+    "lab-plus-monthly":         {"category": "paper-review", "tier": "standard", "qty": 40, "amount": 34900,
+                                 "bundled_anonymity": True, "bundled_journal": True},
+    "lab-plus-annual":          {"category": "paper-review", "tier": "standard", "qty": 40, "amount": 349000,
+                                 "bundled_anonymity": True, "bundled_journal": True},
+    # Publication Pack ($59, one time): a Deep review, a Revision Review and a response letter draft, minted as
+    # three entries by register-token (lab.mint_pack).
+    "publication-pack":         {"category": "paper-review", "tier": "deep", "qty": 1, "amount": 5900,
+                                 "bundled_anonymity": True, "bundled_journal": True},
 }
 
 ALLOWED_ORIGINS = [
@@ -587,6 +601,11 @@ def _reissue_token_on_failure(token: str) -> str | None:
         attempts = dict(entry.get("attempts") or {})
         attempts[new_token] = int(attempts.get(token, 1)) + 1
         entry["attempts"] = attempts
+        if entry.get("lab_plan"):
+            # A lab batch's replacement token traces back to the original, so its follow-up links match.
+            rf = dict(entry.get("reissued_from") or {})
+            rf[new_token] = rf.get(token, token)
+            entry["reissued_from"] = rf
         paper_tokens_dict[session_id] = entry
         paper_token_index_dict[new_token] = session_id
         return new_token
@@ -758,12 +777,16 @@ def paper_review_pipeline(
     deliver_email: str = "",
     source_note: str = "",
     upgrade_offers: dict | None = None,
+    followups: list | None = None,
 ) -> None:
     """Run the full Paper Review pipeline (any tier) and persist to dict.
 
     `upgrade_offers` comes from upgrades.build_offers in the submit handler: the $2 journal check after a review
     that ran without a journal, and the annual plan comparison for a repeat buyer. Shown under a finished report
     on the status page and in the ready email; never on an error.
+
+    `followups` is set only for Lab plan batches: [{kind, name, url}] links to the Revision Review and Response
+    Review that come with the review, shown in the ready email and on the status page.
 
     `source_note` is a line the web layer sets when the review ran on a PDF it
     converted from a Word file; it is placed at the top of the report."""
@@ -831,6 +854,7 @@ def paper_review_pipeline(
                     "product": "paper-review",
                     "status": job_status,
                     **({"upgrade_offers": upgrade_offers} if upgrade_offers and job_status == "done" else {}),
+                    **({"followups": followups} if followups and job_status == "done" else {}),
                     **({"ledger_key": ledger_key} if ledger_key else {}),
                     **({"replacement_token": replacement_token} if job_status == "error" else {}),
                 }
@@ -867,6 +891,7 @@ def paper_review_pipeline(
                                                   // max(1, PAID_PRODUCTS.get(product_key, {}).get("qty", 1))),
                                     attachment=_attachment_kind,
                                     offers=upgrade_offers or None,
+                                    followups=followups or None,
                                 ),
                                 attachments=_attachments or None,
                                 tags=[{"name": "product", "value": "paper-review"}],
@@ -2562,6 +2587,31 @@ def web():
     def _gen_token() -> str:
         return _secrets_module.token_urlsafe(32)
 
+    async def _register_publication_pack(session_id: str, email, amount_paid):
+        """The $59 pack: a Deep review, a Revision Review and a response letter draft (three entries, none expire).
+        Emails the three start links. Idempotency is the caller's earlier lookup on the session id."""
+        email = email[:200] if isinstance(email, str) else ""
+        minted = lab.mint_pack(_annual_store(), session_id=session_id, email=email,
+                               amount_paid=int(amount_paid) if isinstance(amount_paid, int) else 0,
+                               gen_token=_gen_token, now=_time_module.time())
+        if email:
+            try:
+                from latextools import delivery as _delivery
+                import httpx as _httpx
+                async with _httpx.AsyncClient(timeout=10.0) as _ec:
+                    _res = await _delivery.send_email(
+                        _ec, to=email,
+                        # COPY: pack links email subject
+                        subject="Your Publication Pack: links to start",
+                        html=lab.html_pack_links(groups=lab.pack_groups(_annual_store(), session_id)),
+                        tags=[{"name": "product", "value": lab.PUBLICATION_PACK}, {"name": "type", "value": "pack_links"}])
+                if (_res or {}).get("status") != "ok":
+                    logger.warning("pack links email not sent for %s: %s", session_id[:16], _res)
+            except Exception:
+                logger.exception("pack links email failed for %s", session_id[:16])
+        return JSONResponse({"tokens": [v["token"] for v in minted.values()], "product": lab.PUBLICATION_PACK,
+                             "qty": 1, "status": "registered"})
+
     async def _register_annual_plan(payload: dict, session_id: str, product_cfg: dict, amount_paid, referral_code: str):
         """First purchase of the annual plan: the plan record, 12 tokens, and a plan email. No lifecycle seeding
         (the plan has its own reminders) and no .edu referral credit (annual pays the 6-review reward instead)."""
@@ -2662,6 +2712,9 @@ def web():
                 {"error": "unknown_product", "detail": product_key},
                 status_code=400,
             )
+        if product_key in lab.LAB_PRODUCTS:
+            # Lab plans are subscriptions with monthly grants; they register through /lab/register only.
+            return JSONResponse({"error": "use_lab_register", "detail": product_key}, status_code=400)
 
         # Defense-in-depth: the webhook is HMAC-authenticated, but a bug in
         # the Netlify Stripe webhook (e.g. a price_id -> product_key mapping
@@ -2695,6 +2748,9 @@ def web():
 
         if product_key == annual.ANNUAL_PRODUCT:
             return await _register_annual_plan(payload, session_id, product_cfg, amount_paid, referral_code)
+
+        if product_key == lab.PUBLICATION_PACK:
+            return await _register_publication_pack(session_id, email, amount_paid)
 
         qty = int(product_cfg.get("qty", 1))
         if qty < 1 or qty > MAX_PACK_QTY:
@@ -3083,6 +3139,273 @@ def web():
                 await _annual_send(plan["email"], "Your plan link",
                                    annual.html_plan_link(link=annual.plan_link(_annual_secret(), plan)), "annual_link")
         return JSONResponse({"ok": True})
+
+    # ---- Lab plan endpoints (latextools/lab.py). Same callers and auth as the annual ones above. Plan ids start
+    # "lab_", so these routes and the annual routes never see each other's plans. -------------------------------
+
+    def _lab_view_payload(plan: dict, token: str = "") -> dict:
+        v = lab.plan_view(_annual_store(), plan, _time_module.time())
+        if token:
+            v["token"] = token
+        return v
+
+    async def _lab_apply_sync(snap: dict) -> dict:
+        """lab.sync, then the emails it earned. A mail failure never undoes the grant."""
+        res = lab.sync(_annual_store(), snap, gen_token=_annual_gen_token, now=_time_module.time())
+        if res.get("minted") or res.get("cancel_flipped"):
+            try:
+                await lab.notify(_annual_store(), res, secret=_annual_secret(), now=_time_module.time(),
+                                 send_email=lambda **kw: _lab_send(kw["to"], kw["subject"], kw["html"], kw["tag"]))
+            except Exception:
+                logger.exception("lab: grant email failed for %s", str(snap.get("subscription_id"))[:20])
+        return res
+
+    async def _lab_refresh(plan: dict) -> dict:
+        """Read Stripe now and bring the plan in line (a missed webhook, a portal change). Falls back to the stored
+        plan when Stripe cannot be read."""
+        if plan.get("revoked") or plan.get("ended"):
+            return plan
+        try:
+            snap = await _lab_fetch_subscription(plan["subscription_id"])
+            if snap:
+                res = await _lab_apply_sync(snap)
+                return res.get("plan") or plan
+        except Exception:
+            logger.exception("lab: refresh failed for plan %s", plan.get("plan_id"))
+        return annual_plans_dict.get(plan["plan_id"]) or plan
+
+    def _lab_plan_from_token(token):
+        plan, why = lab.plan_for_token(annual_plans_dict, _annual_secret(), token, _time_module.time())
+        if not plan:
+            return None, JSONResponse({"error": why}, status_code=404 if why == "invalid" else 410)
+        return plan, None
+
+    @api.post("/lab/register")
+    async def lab_register(request: Request):
+        bad = _annual_auth(request)
+        if bad:
+            return bad
+        data = await _annual_json(request) or {}
+        sub = data.get("subscription_id")
+        product = data.get("product")
+        email = data.get("email")
+        if not isinstance(sub, str) or not sub.strip() or len(sub) > 100:
+            return JSONResponse({"error": "missing_subscription_id"}, status_code=400)
+        cfg = PAID_PRODUCTS.get(product) if product in lab.LAB_PRODUCTS else None
+        if not cfg:
+            return JSONResponse({"error": "unknown_product"}, status_code=400)
+        email = email.strip()[:200] if isinstance(email, str) else ""
+        existing = lab.plan_by_subscription(annual_plans_dict, sub)
+        if existing:
+            return JSONResponse({"status": "exists", "plan_id": existing["plan_id"], "product": existing["product"]})
+        if not lab.amount_ok(cfg, data.get("amount_paid"), data.get("amount_subtotal")):
+            return JSONResponse({"error": "amount_mismatch"}, status_code=400)
+        snap = await _lab_fetch_subscription(sub)
+        if not snap:
+            return JSONResponse({"error": "stripe_unreadable"}, status_code=502)
+        if snap.get("latest_invoice_paid") is not True:
+            return JSONResponse({"error": "unpaid"}, status_code=409)
+        sid = data.get("session_id")
+        root = sid if isinstance(sid, str) and sid and len(sid) <= 200 else "lab-" + sub
+        res = lab.register(_annual_store(), subscription_id=sub, product=product, email=email, root=root,
+                           customer=str(data.get("customer") or "")[:100], snap=snap, gen_token=_annual_gen_token,
+                           now=_time_module.time(), canonical_email=_buddy_canonical_email)
+        if res.get("reason") == "in_progress":
+            return JSONResponse({"error": "in_progress"}, status_code=409)
+        if not res.get("ok"):
+            return JSONResponse({"error": res.get("reason", "unknown_product")}, status_code=400)
+        plan = res["plan"]
+        return JSONResponse({"status": "registered" if res.get("created") else "exists",
+                             "plan_id": plan["plan_id"], "product": plan["product"]})
+
+    @api.post("/lab/sync")
+    async def lab_sync(request: Request):
+        bad = _annual_auth(request)
+        if bad:
+            return bad
+        data = await _annual_json(request) or {}
+        sub = data.get("subscription_id")
+        if not isinstance(sub, str) or not sub:
+            return JSONResponse({"error": "missing_subscription_id"}, status_code=400)
+        snap = await _lab_fetch_subscription(sub)
+        if not snap:
+            return JSONResponse({"error": "stripe_unreadable"}, status_code=502)
+        # The fetched snapshot is the subscription asked for; never let a mismatched read touch another plan.
+        snap = {**snap, "subscription_id": sub}
+        res = await _lab_apply_sync(snap)
+        if res.get("reason") == "unknown_plan":
+            return JSONResponse({"ok": True, "status": "unknown_plan", "minted": 0})
+        return JSONResponse({"ok": True, "status": "synced", "minted": len(res.get("minted") or [])})
+
+    @api.post("/lab/revoke")
+    async def lab_revoke(request: Request):
+        bad = _annual_auth(request)
+        if bad:
+            return bad
+        data = await _annual_json(request) or {}
+        sub, reason = data.get("subscription_id"), data.get("reason")
+        if not isinstance(sub, str) or not sub or reason not in ("refund", "dispute"):
+            return JSONResponse({"error": "bad_request"}, status_code=400)
+        dispute = data.get("dispute_id") if isinstance(data.get("dispute_id"), str) else ""
+        res = lab.revoke(_annual_store(), sub, reason, _time_module.time(), dispute)
+        return JSONResponse({"ok": res["ok"], "reason": res["reason"]})
+
+    @api.post("/lab/restore")
+    async def lab_restore(request: Request):
+        bad = _annual_auth(request)
+        if bad:
+            return bad
+        data = await _annual_json(request) or {}
+        sub = data.get("subscription_id")
+        dispute = data.get("dispute_id") if isinstance(data.get("dispute_id"), str) else ""
+        if not isinstance(sub, str) or not sub:
+            return JSONResponse({"error": "bad_request"}, status_code=400)
+        res = lab.restore(_annual_store(), sub, dispute, _time_module.time())
+        return JSONResponse({"ok": res["ok"], "reason": res["reason"], "restored": bool(res.get("restored"))})
+
+    @api.post("/lab/plan")
+    async def lab_plan_view(request: Request):
+        bad = _annual_auth(request)
+        if bad:
+            return bad
+        data = await _annual_json(request) or {}
+        plan, err = _lab_plan_from_token(data.get("token", ""))
+        if err:
+            return err
+        plan = await _lab_refresh(plan)
+        return JSONResponse(_lab_view_payload(plan))
+
+    async def _lab_change(request: Request, cancel: bool):
+        bad = _annual_auth(request)
+        if bad:
+            return bad
+        data = await _annual_json(request) or {}
+        plan, err = _lab_plan_from_token(data.get("token", ""))
+        if err:
+            return err
+        if plan.get("revoked") or plan.get("ended") or plan.get("period_end", 0) < _time_module.time():
+            return JSONResponse({"error": "plan_over"}, status_code=409)
+        if not await _lab_set_cancel(plan["subscription_id"], cancel):
+            return JSONResponse({"error": "stripe_failed"}, status_code=502)
+        plan["cancel_at_period_end"] = cancel
+        lab.rotate_nonce(_annual_store(), plan)       # the link just used stops working; the new one is in the email
+        link = lab.plan_link(_annual_secret(), plan, _time_module.time())
+        await _lab_send(
+            plan["email"],
+            # COPY: lab cancel and undo email subjects
+            "Renewal is back on" if not cancel else "Renewal is off",
+            lab.html_cancel_confirmation(end_label=lab.date_label(plan["period_end"]), link=link, undone=not cancel),
+            "lab_undo" if not cancel else "lab_cancel")
+        return JSONResponse(_lab_view_payload(plan, link.split("?t=", 1)[1]))
+
+    @api.post("/lab/cancel")
+    async def lab_cancel(request: Request):
+        return await _lab_change(request, True)
+
+    @api.post("/lab/undo")
+    async def lab_undo(request: Request):
+        return await _lab_change(request, False)
+
+    @api.post("/lab/rotate-group-link")
+    async def lab_rotate_group_link(request: Request):
+        bad = _annual_auth(request)
+        if bad:
+            return bad
+        data = await _annual_json(request) or {}
+        token = data.get("token", "")
+        plan, err = _lab_plan_from_token(token)
+        if err:
+            return err
+        if plan.get("tier") != "lab-plus":
+            return JSONResponse({"error": "not_plus"}, status_code=409)
+        plan = lab.rotate_group(_annual_store(), plan)
+        return JSONResponse(_lab_view_payload(plan, token))
+
+    @api.post("/lab/link")
+    async def lab_link(request: Request):
+        """Always the same answer, so it cannot be used to learn who has a plan."""
+        bad = _annual_auth(request)
+        if bad:
+            return bad
+        data = await _annual_json(request) or {}
+        email = data.get("email", "")
+        if isinstance(email, str) and "@" in email and len(email) <= 200:
+            key = _buddy_canonical_email(email) or _email_key(email)
+            plan = lab.plan_by_email(list(annual_plans_dict.items()), key)
+            if plan:
+                lab.rotate_nonce(_annual_store(), plan)
+                # COPY: lab plan link email subject
+                await _lab_send(plan["email"], "Your plan link",
+                                lab.html_link(link=lab.plan_link(_annual_secret(), plan, _time_module.time())), "lab_link")
+        return JSONResponse({"ok": True})
+
+    import re as _lab_re
+    _LAB_GROUP_RE = _lab_re.compile(r"^lg_[A-Za-z0-9_-]{16,64}$")
+
+    def _lab_group_plan(data: dict):
+        key = data.get("k")
+        if not isinstance(key, str) or not _LAB_GROUP_RE.match(key):
+            return None
+        return lab.plan_by_group(annual_plans_dict, key)
+
+    @api.post("/lab/group-view")
+    async def lab_group_view(request: Request):
+        bad = _annual_auth(request)
+        if bad:
+            return bad
+        plan = _lab_group_plan(await _annual_json(request) or {})
+        if not plan:
+            return JSONResponse({"error": "invalid"}, status_code=404)
+        plan = await _lab_refresh(plan)
+        now = _time_module.time()
+        nxt = lab.next_grant(plan, now)
+        return JSONResponse({"ok": True, "plan_name": lab.LAB_PRODUCTS.get(plan.get("product"), {}).get("name", "Lab"),
+                             "available": lab.available(_annual_store(), plan, paper_token_claims_dict, now),
+                             "state": lab.plan_state(plan, now), "next_grant": lab.date_label(nxt) if nxt else ""})
+
+    @api.post("/lab/member-claim")
+    async def lab_member_claim(request: Request):
+        bad = _annual_auth(request)
+        if bad:
+            return bad
+        plan = _lab_group_plan(await _annual_json(request) or {})
+        if not plan:
+            return JSONResponse({"error": "invalid"}, status_code=404)
+        now = _time_module.time()
+        if lab.plan_state(plan, now) not in ("active", "cancelling"):
+            return JSONResponse({"error": "plan_over"}, status_code=410)
+        tok = lab.member_claim(_annual_store(), plan, now)
+        if not tok:
+            nxt = lab.next_grant(plan, now)
+            return JSONResponse({"error": "none_left", "next_grant": lab.date_label(nxt) if nxt else ""}, status_code=409)
+        return JSONResponse({"start_url": lab.start_url(tok)})
+
+    @api.post("/paper-review/revoke-order")
+    async def paper_review_revoke_order(request: Request):
+        """A refund or dispute on a one-time order (single review, pack, Publication Pack)."""
+        bad = _annual_auth(request)
+        if bad:
+            return bad
+        data = await _annual_json(request) or {}
+        sid, reason = data.get("session_id"), data.get("reason")
+        if not isinstance(sid, str) or not sid or len(sid) > 200 or reason not in ("refund", "dispute"):
+            return JSONResponse({"error": "bad_request"}, status_code=400)
+        dispute = data.get("dispute_id") if isinstance(data.get("dispute_id"), str) else ""
+        res = lab.revoke_order(_annual_store(), sid, reason, _time_module.time(), dispute)
+        return JSONResponse({"ok": res["ok"], "reason": res["reason"]})
+
+    @api.post("/paper-review/restore-order")
+    async def paper_review_restore_order(request: Request):
+        bad = _annual_auth(request)
+        if bad:
+            return bad
+        data = await _annual_json(request) or {}
+        sid = data.get("session_id")
+        dispute = data.get("dispute_id") if isinstance(data.get("dispute_id"), str) else ""
+        if not isinstance(sid, str) or not sid or len(sid) > 200:
+            return JSONResponse({"error": "bad_request"}, status_code=400)
+        res = lab.restore_order(_annual_store(), sid, dispute, _time_module.time())
+        return JSONResponse({"ok": res["ok"], "reason": res["reason"], "restored": bool(res.get("restored"))})
 
     def _lifecycle_unsubscribe_token(email: str) -> str:
         """Namespaced so lifecycle-unsubscribe tokens can't be replayed
@@ -3529,7 +3852,7 @@ def web():
 
         if not entry or not isinstance(entry, dict):
             return JSONResponse({"error": "pending"}, status_code=404)
-        if entry.get("plan_id") and not token_lookup:
+        if entry.get("plan_id") and str(entry["plan_id"]).startswith("pl_") and not token_lookup:
             session_id, entry = await _annual_current_entry(session_id, entry)
         _term_refusal = annual.term_refusal(_annual_store(), entry, _time_module.time())
         if _term_refusal:
@@ -3547,6 +3870,14 @@ def web():
         tokens: list[str] = entry.get("tokens") or []
         consumed = set(entry.get("consumed_tokens") or [])
         unused = [t for t in tokens if t not in consumed]
+        _want_groups = bool((payload or {}).get("want_groups")) and bool(entry.get("pack_siblings")) and not token_lookup
+        if _want_groups:
+            # Publication Pack success page: the three start links (also when the root's own token is used).
+            return JSONResponse({
+                "groups": lab.pack_groups(_annual_store(), session_id, entry),
+                "product": entry.get("product_key", lab.PUBLICATION_PACK),
+                "status": "ok",
+            })
         if not unused:
             resp = _already_used_409(tokens[0] if len(tokens) == 1 else "", error="all_used")
             return resp
@@ -3558,10 +3889,25 @@ def web():
         product_key = entry.get("product_key", "paper-review-standard")
         product_cfg = entry.get("product_cfg") or PAID_PRODUCTS.get(product_key, {})
 
+        _lab_fields = {}
+        _lab_tokens = tokens
+        _lab_unused = unused
+        _lab_first = unused[0]
+        if entry.get("lab_plan"):
+            _lab_fields = {
+                "lab_plan": True,
+                "plan_name": lab.LAB_PRODUCTS.get(product_key, {}).get("name", "Lab"),
+                "valid_until": lab.date_label(entry.get("term_ends_at") or 0),
+            }
+            if token_lookup:
+                # Looked up by one token: that token only, never the rest of the batch.
+                _lab_tokens, _lab_unused, _lab_first = [token_lookup], [token_lookup], token_lookup
+
         return JSONResponse({
-            "token": unused[0],
-            "tokens": tokens,           # full list (for volume packs)
-            "unused_tokens": unused,
+            **_lab_fields,
+            "token": _lab_first,
+            "tokens": _lab_tokens,      # full list (for volume packs)
+            "unused_tokens": _lab_unused,
             "product": product_key,
             "category": product_cfg.get("category", "paper-review"),
             "tier": product_cfg.get("tier", "standard"),
@@ -3819,6 +4165,16 @@ def web():
         _deliver_to = _usable_email(email.strip() if isinstance(email, str) else "") \
             or ("" if _is_pack else _usable_email(entry.get("email")))
 
+        # Lab plan batches: the follow-up links (revision review, response draft) are fixed by the batch's original
+        # token, so they are known before the spawn and go into the report email. Only lab entries pass this kwarg.
+        _lab_spawn_kw = {}
+        if entry.get("lab_plan"):
+            try:
+                _fu_links = lab.followup_links(lab.followup_keys(lab.followup_root(entry, token)))
+                if _fu_links:
+                    _lab_spawn_kw["followups"] = _fu_links
+            except Exception:
+                logger.exception("lab follow-up links failed for token=%s", token[:12])
         try:
             await paper_review_pipeline.spawn.aio(
                 token, data, domain,
@@ -3828,6 +4184,7 @@ def web():
                 deliver_email=_deliver_to,
                 source_note=source_note,
                 upgrade_offers=_upgrade_offers_for(entry, bool(chosen_journal)),
+                **_lab_spawn_kw,
             )
         except Exception:
             logger.exception("paper_review_pipeline.spawn failed for token=%s", token[:12])
@@ -3845,6 +4202,15 @@ def web():
             )
 
         _consume_token(token, session_id, entry)
+
+        if entry.get("lab_plan"):
+            # Create the follow-up entries the report email links to. Never fails the submission.
+            try:
+                _lab_plan_rec = annual_plans_dict.get(entry.get("plan_id"))
+                if isinstance(_lab_plan_rec, dict):
+                    lab.mint_followups(_annual_store(), _lab_plan_rec, entry, token, _gen_token, _time_module.time())
+            except Exception:
+                logger.exception("lab follow-up mint failed for token=%s", token[:12])
 
         # Optional: "when do you expect a decision?" on the upload page. One
         # email then, about the tools for answering reviewers. Never fails
@@ -3966,7 +4332,7 @@ def web():
             # By this point the token has already been consumed to produce
             # this very result, so returning the session_id it belongs to
             # reveals nothing the token holder doesn't already control.
-            session_id_for_invoice, _ = _lookup_token(token)
+            session_id_for_invoice, _status_entry = _lookup_token(token)
 
             payload = {
                 "status": "done",
@@ -3984,7 +4350,10 @@ def web():
                 "anonymity_result": entry.get("anonymity_result"),
                 "deterministic_findings": entry.get("deterministic_findings"),
                 "upgrade_offers": entry.get("upgrade_offers"),
-                "session_id": session_id_for_invoice,
+                "followups": entry.get("followups"),
+                # A lab batch's session id is its plan's root key: the plan's tokens are bearer credentials for the
+                # whole batch, so the status page never receives it (it has no invoice to fetch either).
+                "session_id": None if (isinstance(_status_entry, dict) and _status_entry.get("lab_plan")) else session_id_for_invoice,
                 "_note": "This result will be deleted from server storage shortly. Save it now.",
             }
             return JSONResponse({k: v for k, v in payload.items() if v is not None or k in ("annotated_pdf_b64",)})
@@ -5349,7 +5718,10 @@ def _keep_pack_alive(session_id: str, entry: dict, now: float) -> None:
     created_at = entry.get("created_at", now) or now
     term_end = entry.get("term_ends_at") or 0
     plan_over = bool(term_end) and now - term_end > PACK_SPENT_RETENTION_DAYS * 86400   # a plan year that ended
-    if tokens and (plan_over or (consumed.issuperset(tokens) and now - created_at > PACK_SPENT_RETENTION_DAYS * 86400)):
+    # A Publication Pack root is not deleted while one of its sibling entries (revision, draft) still exists: the
+    # root holds the list of siblings that the success page and the order revoke use.
+    _pack_waits = bool(entry.get("pack_siblings")) and not plan_over and lab.pack_has_live_sibling(_annual_store(), entry)
+    if not _pack_waits and tokens and (plan_over or (consumed.issuperset(tokens) and now - created_at > PACK_SPENT_RETENTION_DAYS * 86400)):
         for tok in tokens:
             try:
                 del paper_token_index_dict[tok]
@@ -5502,6 +5874,60 @@ async def _annual_sweep_async() -> dict:
 def annual_plan_sweep() -> dict:
     import asyncio
     return asyncio.run(_annual_sweep_async())
+
+
+# ---------------------------------------------------------------------------
+# Lab plans (latextools/lab.py): same shape as the annual helpers above, kept separate so tests patch them apart.
+# ---------------------------------------------------------------------------
+
+async def _lab_fetch_subscription(subscription_id: str):
+    """The live subscription from Stripe as lab.snapshot_from_stripe() output, or None when it cannot be read."""
+    if not _stripe_account.lookup_keys() or not isinstance(subscription_id, str) or not subscription_id.startswith("sub_"):
+        return None
+    import httpx
+    try:
+        async with httpx.AsyncClient(timeout=15.0) as c:
+            r, _key = await _stripe_account.fetch_any(
+                c, "GET", f"https://api.stripe.com/v1/subscriptions/{subscription_id}",
+                params={"expand[]": "latest_invoice"})
+        if r.status_code != 200:
+            return None
+        return lab.snapshot_from_stripe(r.json())
+    except Exception:
+        logger.exception("lab: Stripe subscription read failed")
+        return None
+
+
+async def _lab_set_cancel(subscription_id: str, cancel: bool) -> bool:
+    """Set cancel_at_period_end on a lab subscription. True when Stripe accepted it."""
+    return await _annual_set_cancel(subscription_id, cancel)
+
+
+async def _lab_send(to: str, subject: str, html: str, tag: str) -> dict:
+    from latextools import delivery as _delivery
+    import httpx
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as c:
+            return await _delivery.send_email(c, to=to, subject=subject, html=html,
+                                              tags=[{"name": "product", "value": "lab-plan"},
+                                                    {"name": "type", "value": tag}])
+    except Exception:
+        logger.exception("lab: email send failed")
+        return {"status": "error"}
+
+
+async def _lab_sweep_async() -> dict:
+    return await lab.run_sweep(
+        _annual_store(), now=time.time(), secret=_annual_secret(), gen_token=_annual_gen_token,
+        fetch_subscription=_lab_fetch_subscription,
+        send_email=lambda **kw: _lab_send(kw["to"], kw["subject"], kw["html"], kw["tag"]))
+
+
+# Plain function (not a scheduled one): invoked by lifecycle_email_sweep, after the annual and referral sweeps, in
+# its own try so a lab problem never stops them (Modal's 5-scheduled-function cap).
+def lab_plan_sweep() -> dict:
+    import asyncio
+    return asyncio.run(_lab_sweep_async())
 
 
 # ---------------------------------------------------------------------------
@@ -5958,6 +6384,11 @@ def lifecycle_email_sweep() -> dict:
         logger.info("referral_reward_sweep: %s", referral_summary)
     except Exception:
         logger.exception("referral_reward_sweep failed")
+    try:
+        lab_summary = lab_plan_sweep()
+        logger.info("lab_plan_sweep: %s", lab_summary)
+    except Exception:
+        logger.exception("lab_plan_sweep failed")
     try:
         purged_tokens = sweep_expired_paper_tokens()
         purged_jobs = sweep_stale_paper_jobs()
