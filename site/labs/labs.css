@@ -121,3 +121,11 @@
 .success-group { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.9rem 1rem; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
 .success-group-name { font-weight: 600; color: var(--ink); }
 .success-group-used { color: var(--muted); font-size: 0.9rem; }
+/* Checkout buttons for plans and the Publication Pack */
+.labs-buy { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; align-items: center; }
+.labs-buy-status { flex-basis: 100%; margin: 0; min-height: 1.2em; font-size: 0.88rem; color: var(--muted); }
+.labs-buy-status.error { color: color-mix(in oklch, oklch(58% 0.2 25) 75%, var(--ink)); }
+.labs-buy .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+/* On the Paper Review plan cards, the buy row sits at the bottom like the pack cards' buttons */
+.wf-plan .labs-buy { margin-top: auto; }
+.wf-plan .labs-buy + .wf-plan-state { margin-top: 10px; }
