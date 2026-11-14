@@ -25,7 +25,8 @@
  * Webhook endpoint to register in the Stripe dashboard:
  *   https://purplelink.llc/.netlify/functions/stripe-webhook
  *   subscribed to events: checkout.session.completed, customer.subscription.deleted,
- *   charge.refunded, charge.dispute.created, charge.dispute.closed, checkout.session.expired
+ *   charge.refunded, charge.dispute.created, charge.dispute.closed, checkout.session.expired,
+ *   checkout.session.async_payment_succeeded (delayed payment methods; inert until the endpoint subscribes to it)
  *   (the last one for checkout recovery, netlify/lib/checkout-recovery.mjs),
  *   invoice.paid and customer.subscription.updated (the Paper Review annual plan, below)
  *
@@ -69,7 +70,7 @@ import { getStore } from "@netlify/blobs";
 import { issueLicense, licensedSlugsFor, LICENSED_PRODUCTS } from "../lib/license.mjs";
 import { ADDON_SLUGS, addonPartsOf, bundlePartsOf, entitledParts, isBundleProduct, partsSentence } from "../lib/bundles.mjs";
 import { SESSION_EXPAND, withAddons } from "../lib/addons.mjs";
-import { recordRevocation, clearDispute, paymentIntentOf } from "../lib/refunds.mjs";
+import { recordRevocation, clearDispute, paymentIntentOf, revocationFor } from "../lib/refunds.mjs";
 import { handleExpired, markBought, STORE as RECOVERY_STORE } from "../lib/checkout-recovery.mjs";
 import { sendRedditPurchase } from "../lib/reddit-capi.mjs";
 import { issueCode, markUsed, crossSellOffer, expiryText, STORE as BUYER_CODE_STORE } from "../lib/buyer-codes.mjs";
@@ -281,17 +282,31 @@ function verifyStripeSignature(rawBody, header, secret) {
 
 // ---- Paper Review annual plan helpers ----------------------------------------------------------------------
 
-/** GET a Stripe object (read only). Returns the parsed JSON, or null when it cannot be read. */
-async function stripeGet(path) {
+/**
+ * GET a Stripe object (read only). Returns {data, unreadable}: data is the parsed JSON or null. unreadable is true when
+ * Stripe could not answer (network error, 5xx, 429, 401/403, bad JSON); a 404 is an answer ("no such object").
+ */
+async function stripeRead(path) {
   const key = currentSecretKey();
-  if (!key) return null;
+  if (!key) return { data: null, unreadable: true };
   try {
     const r = await fetch(`https://api.stripe.com${path}`, { headers: { Authorization: `Bearer ${key}` } });
-    if (!r.ok) return null;
-    return await r.json();
+    if (r.status === 404) return { data: null, unreadable: false };
+    if (!r.ok) return { data: null, unreadable: true };
+    return { data: await r.json(), unreadable: false };
   } catch (_) {
-    return null;
+    return { data: null, unreadable: true };
   }
+}
+
+/** GET a Stripe object (read only). Returns the parsed JSON, or null when it cannot be read. */
+async function stripeGet(path) {
+  return (await stripeRead(path)).data;
+}
+
+/** True when Modal answered 2xx but said it did nothing ({"ok": false, ...}, e.g. unknown_plan or unknown_order). */
+function modalRefused(res) {
+  try { return JSON.parse(res.text)?.ok === false; } catch (_) { return false; }
 }
 
 /** POST JSON to a Modal path with the shared secret. Returns {ok, status, body} and never throws. */
@@ -323,30 +338,35 @@ function periodEndOf(sub) {
   return Number.isInteger(v) ? v : null;
 }
 
-/** Charge -> invoice -> subscription id, or "" when the charge is not on a subscription invoice. */
+/**
+ * Charge -> invoice -> subscription id. {subId: ""} when the charge is not on a subscription invoice; unreadable is true
+ * when Stripe could not answer one of the reads, so the caller cannot tell.
+ */
 async function subscriptionOfCharge(charge) {
   let invoiceId = idOf(charge?.invoice);
   if (!invoiceId) {
     const pi = paymentIntentOf(charge);
-    if (!pi) return "";
-    const found = await stripeGet(`/v1/invoice_payments?payment[type]=payment_intent&payment[payment_intent]=${encodeURIComponent(pi)}`);
-    invoiceId = idOf(found?.data?.[0]?.invoice);
-    if (!invoiceId) return "";
+    if (!pi) return { subId: "", unreadable: false };
+    const found = await stripeRead(`/v1/invoice_payments?payment[type]=payment_intent&payment[payment_intent]=${encodeURIComponent(pi)}`);
+    if (found.unreadable) return { subId: "", unreadable: true };
+    invoiceId = idOf(found.data?.data?.[0]?.invoice);
+    if (!invoiceId) return { subId: "", unreadable: false };
   }
-  const inv = await stripeGet(`/v1/invoices/${encodeURIComponent(invoiceId)}`);
-  return subscriptionOfInvoice(inv);
+  const inv = await stripeRead(`/v1/invoices/${encodeURIComponent(invoiceId)}`);
+  return { subId: subscriptionOfInvoice(inv.data), unreadable: inv.unreadable };
 }
 
 /**
  * The subscription a charge was paid for and its product (metadata.product), or {subId: "", product: ""} when the charge
- * is not on a subscription invoice (or Stripe cannot be read).
+ * is not on a subscription invoice. unreadable is true when a Stripe read failed: the caller answers 502 so Stripe
+ * retries, instead of treating a lab or annual plan as "not a plan" and leaving it live after a refund.
  */
 async function planOfCharge(charge) {
-  if (!charge || !currentSecretKey()) return { subId: "", product: "" };
-  const subId = await subscriptionOfCharge(charge);
-  if (!subId) return { subId: "", product: "" };
-  const sub = await stripeGet(`/v1/subscriptions/${encodeURIComponent(subId)}`);
-  return { subId, product: sub?.metadata?.product || "" };
+  if (!charge || !currentSecretKey()) return { subId: "", product: "", unreadable: false };
+  const { subId, unreadable } = await subscriptionOfCharge(charge);
+  if (!subId) return { subId: "", product: "", unreadable };
+  const sub = await stripeRead(`/v1/subscriptions/${encodeURIComponent(subId)}`);
+  return { subId, product: sub.data?.metadata?.product || "", unreadable: sub.unreadable };
 }
 
 const isPlanProduct = (product) => product === ANNUAL_PRODUCT || LAB_PRODUCTS.has(product);
@@ -362,13 +382,15 @@ async function revokePlanForCharge(plan, reason, backendSecret, disputeId = "") 
   const body = { subscription_id: subId, reason };
   if (disputeId) body.dispute_id = disputeId;
   const res = await postModal(lab ? "/lab/revoke" : "/paper-review/annual-revoke", body, backendSecret);
-  if (!res.ok) {
+  // unknown_plan: the refund or dispute arrived before the plan was registered. Retried until the register lands.
+  const ok = res.ok && !modalRefused(res);
+  if (!ok) {
     await alertOperator(
       `${lab ? "Lab" : "Annual"} plan revoke failed after a refund or dispute`,
       `subscription_id=${subId}\nreason=${reason}\nmodal_status=${res.status}\ndetail=${res.text.slice(0, 300)}\n\nStripe will retry this webhook.`
     );
   }
-  return { ok: res.ok, status: res.status, subscription_id: subId };
+  return { ok, status: res.status, subscription_id: subId };
 }
 
 /**
@@ -409,6 +431,12 @@ async function orderRevokeOrRestore(pi, kind, reason, backendSecret, disputeId =
     const body = kind === "restore" ? { session_id: session.id, dispute_id: disputeId || "" } : { session_id: session.id, reason };
     if (kind !== "restore" && disputeId) body.dispute_id = disputeId;
     const res = await postModal(kind === "restore" ? "/paper-review/restore-order" : "/paper-review/revoke-order", body, backendSecret);
+    if (res.ok && kind !== "restore" && modalRefused(res)) {
+      // Modal has no entry yet (the refund beat the register). The refund record written by the caller makes the
+      // later checkout.session.completed skip the register; this alert says so.
+      await alertOperator(`Order revoke found an unknown order after a ${reason}`,
+        `session_id=${session.id}\nproduct=${session.metadata.product}\ndetail=${res.text.slice(0, 300)}\n\nThe refund record was written, so a later register of this order is refused. Check that no review was delivered.`);
+    }
     if (!res.ok) {
       console.warn("stripe-webhook: order call failed", kind, res.status);
       await alertOperator(`Order ${kind} failed after a ${reason}`,
@@ -1080,8 +1108,22 @@ async function handleStripeEvent(request, context) {
     const full = charge.refunded === true || (charge.amount > 0 && charge.amount_refunded >= charge.amount);
     if (!full) return jsonResponse(200, { status: "partial_refund_ignored", type: event.type });
     const plan = await planOfCharge(charge);
+    if (plan.unreadable) {
+      // Not knowing whether this was a plan is not "not a plan": record the refund (download doors and order
+      // registers read it), alert, and let Stripe retry.
+      if (pi) await recordRevocation(pi, { reason: "refund", chargeId: charge.id || null, eventId: event.id || null });
+      await alertOperator("Could not read Stripe during a full refund",
+        `charge=${charge.id || ""}\npayment_intent=${pi || ""}\n\nStripe will retry this webhook. If it keeps failing, check whether this was a lab or annual plan and revoke it by hand.`);
+      // A one-time order is still revoked now: it is found through its Checkout session, not the plan lookup that
+      // failed, so a lasting read error (a 403 on invoice_payments) cannot leave a refunded order live.
+      await orderRevokeOrRestore(pi, "revoke", "refund", backendSecret);
+      return jsonResponse(502, { error: "stripe_unreadable" });
+    }
     const planRefund = await revokePlanForCharge(plan, "refund", backendSecret);
-    if (planRefund && !planRefund.ok) return jsonResponse(502, { error: "modal_revoke_failed" });
+    if (planRefund && !planRefund.ok) {
+      if (pi) await recordRevocation(pi, { reason: "refund", chargeId: charge.id || null, eventId: event.id || null });
+      return jsonResponse(502, { error: "modal_revoke_failed" });
+    }
     if (!plan.subId) await orderRevokeOrRestore(pi, "revoke", "refund", backendSecret);
     if (!pi) return jsonResponse(200, { status: "ignored_no_payment_intent", type: event.type });
     await recordRevocation(pi, { reason: "refund", chargeId: charge.id || null, eventId: event.id || null });
@@ -1091,15 +1133,29 @@ async function handleStripeEvent(request, context) {
     const dispute = event.data?.object || {};
     const pi = paymentIntentOf(dispute);
     if (event.type === "charge.dispute.created" && dispute.charge && currentSecretKey()) {
-      const chargeObj = await stripeGet(`/v1/charges/${encodeURIComponent(idOf(dispute.charge))}`);
+      const chargeRead = await stripeRead(`/v1/charges/${encodeURIComponent(idOf(dispute.charge))}`);
+      const chargeObj = chargeRead.data;
       const plan = await planOfCharge(chargeObj);
+      if (chargeRead.unreadable || plan.unreadable) {
+        if (pi) await recordRevocation(pi, { reason: "dispute", chargeId: idOf(dispute.charge) || null, disputeId: dispute.id || null, eventId: event.id || null });
+        await alertOperator("Could not read Stripe during a dispute",
+          `dispute=${dispute.id || ""}\ncharge=${idOf(dispute.charge)}\n\nStripe will retry this webhook. If it keeps failing, check whether this was a lab or annual plan and revoke it by hand.`);
+        await orderRevokeOrRestore((chargeObj && paymentIntentOf(chargeObj)) || pi, "revoke", "dispute", backendSecret, dispute.id || "");
+        return jsonResponse(502, { error: "stripe_unreadable" });
+      }
       const planDispute = await revokePlanForCharge(plan, "dispute", backendSecret, dispute.id || "");
       if (planDispute && !planDispute.ok) return jsonResponse(502, { error: "modal_revoke_failed" });
       if (!plan.subId) await orderRevokeOrRestore(paymentIntentOf(chargeObj) || pi, "revoke", "dispute", backendSecret, dispute.id || "");
     }
     if (event.type === "charge.dispute.closed" && dispute.status === "won" && dispute.charge && currentSecretKey()) {
-      const chargeObj = await stripeGet(`/v1/charges/${encodeURIComponent(idOf(dispute.charge))}`);
+      const chargeRead = await stripeRead(`/v1/charges/${encodeURIComponent(idOf(dispute.charge))}`);
+      const chargeObj = chargeRead.data;
       const plan = await planOfCharge(chargeObj);
+      if (chargeRead.unreadable || plan.unreadable) {
+        await alertOperator("Could not read Stripe for a won dispute",
+          `dispute=${dispute.id || ""}\ncharge=${idOf(dispute.charge)}\n\nStripe will retry this webhook. If it keeps failing, restore the plan or order by hand.`);
+        return jsonResponse(502, { error: "stripe_unreadable" });
+      }
       const planWon = await restorePlanForCharge(plan, dispute.id || "", backendSecret);
       if (planWon && !planWon.ok) return jsonResponse(502, { error: "modal_restore_failed" });
       if (!plan.subId) await orderRevokeOrRestore(paymentIntentOf(chargeObj) || pi, "restore", "won dispute", backendSecret, dispute.id || "");
@@ -1139,8 +1195,11 @@ async function handleStripeEvent(request, context) {
     return jsonResponse(status === "send_failed" ? 502 : 200, { status: `recovery_${status}`, type: event.type });
   }
 
-  // We only care about a completed Checkout session beyond this point.
-  if (event.type !== "checkout.session.completed") {
+  // We only care about a completed Checkout session beyond this point. A delayed payment method (bank debit) completes
+  // the session unpaid ("not_paid" below) and is delivered by checkout.session.async_payment_succeeded, which carries the
+  // same session, now paid.
+  const asyncPaid = event.type === "checkout.session.async_payment_succeeded";
+  if (event.type !== "checkout.session.completed" && !asyncPaid) {
     // 200-OK every other event type so Stripe doesn't retry indefinitely.
     return jsonResponse(200, { status: "ignored", type: event.type });
   }
@@ -1152,6 +1211,10 @@ async function handleStripeEvent(request, context) {
   // Checked before payment_status: a checkout that starts a free trial completes
   // with payment_status "no_payment_required", and it is still ours.
   const sessionProduct = (session.metadata && session.metadata.product) || "";
+  // Vitae Plus and live sheets email on the completed event (status "complete" even when unpaid); never email twice.
+  if (asyncPaid && (sessionProduct.startsWith(VITAE_PLUS_PREFIX) || LIVE_PRODUCTS.has(sessionProduct))) {
+    return jsonResponse(200, { status: "async_payment_acknowledged", product: sessionProduct });
+  }
   if (sessionProduct.startsWith(VITAE_PLUS_PREFIX)) {
     console.log("stripe-webhook: vitae plus checkout completed", sessionProduct, session.payment_status);
     const to = (session.customer_details && session.customer_details.email) || session.customer_email || "";
@@ -1330,6 +1393,13 @@ async function handleStripeEvent(request, context) {
   // this point (checked above) — digest and Blobs-delivered products already
   // returned earlier, so what's left is a genuine Paper Review price key.
   const product = rawProduct;
+  // A full refund that reached us before this order was registered (Modal answered unknown_order then): never mint
+  // review tokens for it. Only refunds count; a dispute may still be won, and its order registers as usual.
+  if (ORDER_PRODUCTS.has(product) && (await revocationFor(session))?.reason === "refund") {
+    await alertOperator("A refunded order's checkout arrived after the refund; not registered",
+      `session_id=${sessionId}\nproduct=${product}\nemail=${email}\n\nNo review tokens were minted. Nothing to do unless the refund was a mistake.`);
+    return jsonResponse(200, { status: "refunded_before_register", session_id: sessionId });
+  }
   // A buyer who later lets another checkout expire must not get a "you did not finish" email.
   try { await markBought(getStore(RECOVERY_STORE), product, email); } catch (_) { /* best effort */ }
   // See checkout.mjs — passed through unchanged so the backend can credit

@@ -229,6 +229,40 @@ def test_revoke_refund_is_not_restorable(env):
     assert back["restored"] is False and _plan(app)["revoked"] is True
 
 
+def test_refund_revoke_stops_the_stripe_subscription(env):
+    http, app, sent, stripe = _ready(env)
+    stripe["cancel_calls"].clear()
+    r = http.post("/lab/revoke", json={"subscription_id": SUB, "reason": "refund"}, headers=H)
+    assert r.status_code == 200 and r.json()["ok"] is True
+    assert stripe["cancel_calls"] == [(SUB, True)]
+
+
+def test_refund_revoke_that_stripe_refuses_is_retried(env):
+    http, app, sent, stripe = _ready(env)
+    stripe["cancel_ok"] = False
+    stripe["snap"] = _snap(status="active")
+    r = http.post("/lab/revoke", json={"subscription_id": SUB, "reason": "refund"}, headers=H)
+    assert r.status_code == 502 and r.json()["error"] == "stripe_cancel_failed"
+    assert _plan(app)["revoked"] is True          # access is still cut; only the billing stop is retried
+
+
+def test_refund_revoke_of_an_already_canceled_subscription_succeeds(env):
+    http, app, sent, stripe = _ready(env)
+    stripe["cancel_ok"] = False                   # Stripe refuses an update to a canceled subscription
+    stripe["snap"] = _snap(status="canceled")
+    r = http.post("/lab/revoke", json={"subscription_id": SUB, "reason": "refund"}, headers=H)
+    assert r.status_code == 200 and r.json()["ok"] is True
+
+
+def test_dispute_and_unknown_plan_revokes_leave_the_subscription_alone(env):
+    http, app, sent, stripe = _ready(env)
+    stripe["cancel_calls"].clear()
+    http.post("/lab/revoke", json={"subscription_id": SUB, "reason": "dispute", "dispute_id": "dp_1"}, headers=H)
+    r = http.post("/lab/revoke", json={"subscription_id": "sub_NONE", "reason": "refund"}, headers=H)
+    assert r.json()["ok"] is False
+    assert stripe["cancel_calls"] == []
+
+
 def test_revoked_plan_entries_are_refused_by_term_refusal(env):
     from latextools import annual
     http, app, sent, stripe = _ready(env)
