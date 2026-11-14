@@ -264,6 +264,7 @@ function labCharge() {
   stripeData["/v1/charges/ch_1"] = { id: "ch_1", invoice: "in_1", payment_intent: "pi_1" };
   stripeData["/v1/invoices/in_1"] = { id: "in_1", subscription: "sub_lab" };
   stripeData["/v1/subscriptions/sub_lab"] = labSub();
+  stripeData["/v1/checkout/sessions?payment_intent=pi_1&limit=1"] = { data: [] };
 }
 function orderCharge(product = "paper-review-deep") {
   stripeData["/v1/charges/ch_1"] = { id: "ch_1", payment_intent: "pi_1" };
@@ -449,6 +450,21 @@ test("a dispute whose charge cannot be read is retried and recorded; a won one i
   assert.equal(modalCalls().length, 0);
 });
 
+test("an order refund or dispute still revokes the order when the plan lookup keeps failing", async () => {
+  orderCharge();
+  stripeStatus["/v1/invoice_payments"] = 403;
+  const res = await webhook(signed(refunded({ invoice: null })));
+  assert.equal(res.status, 502);
+  assert.equal((await res.json()).error, "stripe_unreadable");
+  assert.deepEqual(modalCalls().map((c) => [c.path, c.body]),
+    [["/paper-review/revoke-order", { session_id: "cs_order1", reason: "refund" }]]);
+  calls = [];
+  const created = await webhook(signed(dispute("charge.dispute.created")));
+  assert.equal(created.status, 502);
+  assert.deepEqual(modalCalls().map((c) => c.path), ["/paper-review/revoke-order"]);
+  assert.equal(modalCalls()[0].body.dispute_id, "dp_1");
+});
+
 test("a charge Stripe has never heard of (404) is not a plan, and the refund is recorded as before", async () => {
   stripeData["/v1/charges/ch_1"] = { id: "ch_1", payment_intent: "pi_1" };
   stripeData["/v1/checkout/sessions?payment_intent=pi_1&limit=1"] = { data: [{ id: "cs_x", metadata: { product: "legroom" } }] };
@@ -523,6 +539,10 @@ test("a delayed-payment success sends no second Vitae Plus or live-sheet email",
   const v = await webhook(signed(ev("vitae-plus-monthly")));
   assert.equal(v.status, 200);
   assert.equal(alerts().length, 0, "no email to Resend");
+  const l = await webhook(signed(ev("live-scholar")));
+  assert.equal(l.status, 200);
+  assert.equal((await l.json()).status, "async_payment_acknowledged");
+  assert.equal(alerts().length, 0, "no live-sheet email to Resend");
   assert.equal(modalCalls().length, 0);
 });
 

@@ -1114,6 +1114,9 @@ async function handleStripeEvent(request, context) {
       if (pi) await recordRevocation(pi, { reason: "refund", chargeId: charge.id || null, eventId: event.id || null });
       await alertOperator("Could not read Stripe during a full refund",
         `charge=${charge.id || ""}\npayment_intent=${pi || ""}\n\nStripe will retry this webhook. If it keeps failing, check whether this was a lab or annual plan and revoke it by hand.`);
+      // A one-time order is still revoked now: it is found through its Checkout session, not the plan lookup that
+      // failed, so a lasting read error (a 403 on invoice_payments) cannot leave a refunded order live.
+      await orderRevokeOrRestore(pi, "revoke", "refund", backendSecret);
       return jsonResponse(502, { error: "stripe_unreadable" });
     }
     const planRefund = await revokePlanForCharge(plan, "refund", backendSecret);
@@ -1137,6 +1140,7 @@ async function handleStripeEvent(request, context) {
         if (pi) await recordRevocation(pi, { reason: "dispute", chargeId: idOf(dispute.charge) || null, disputeId: dispute.id || null, eventId: event.id || null });
         await alertOperator("Could not read Stripe during a dispute",
           `dispute=${dispute.id || ""}\ncharge=${idOf(dispute.charge)}\n\nStripe will retry this webhook. If it keeps failing, check whether this was a lab or annual plan and revoke it by hand.`);
+        await orderRevokeOrRestore((chargeObj && paymentIntentOf(chargeObj)) || pi, "revoke", "dispute", backendSecret, dispute.id || "");
         return jsonResponse(502, { error: "stripe_unreadable" });
       }
       const planDispute = await revokePlanForCharge(plan, "dispute", backendSecret, dispute.id || "");
