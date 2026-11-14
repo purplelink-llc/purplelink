@@ -3,6 +3,10 @@
 
 .ps-hero h1 { max-width: 22ch; }
 .ps-hero .catalog-actions { margin-top: 28px; }
+.ps-hero-note { margin-top: 16px; max-width: 60ch; font-size: 0.93rem; color: var(--muted); }
+.ps-hero-note a { color: var(--purple); font-weight: 600; }
+/* Keep running text near 70 characters a line on wide screens. */
+.catalog-section-head p, .labs-list, .labs-soon { max-width: 68ch; }
 .ps-hero-icon {
   display: block;
   width: clamp(72px, 9vw, 96px);
@@ -18,10 +22,8 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: 16px;
-  counter-reset: ps-step;
 }
 .ps-step {
-  counter-increment: ps-step;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -31,13 +33,10 @@
   background: var(--panel);
 }
 .ps-step-when {
-  font-size: 0.82rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
   color: var(--purple);
 }
-.ps-step-when::before { content: counter(ps-step) ". "; }
 .ps-step h3 {
   font-family: var(--font-display);
   font-size: 1.55rem;
@@ -149,7 +148,7 @@
 .ps-pack-sum tbody tr { border-top: 1px solid var(--line); }
 .ps-pack-sum tfoot tr { border-top: 1px solid var(--line); }
 .ps-pack-sum tfoot tr:first-child { border-top-width: 2px; }
-.ps-pack-sum tfoot tr:first-child td { text-decoration: line-through; color: var(--muted); }
+.ps-pack-sum tfoot tr:first-child td { color: var(--muted); }
 .ps-pack-total th, .ps-pack-total td { font-weight: 700; color: var(--ink); }
 
 @media (max-width: 760px) {
