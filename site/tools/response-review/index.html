@@ -23,6 +23,7 @@
     <script src="/site.js" defer></script>
     <script src="/motion.js" defer></script>
     <link rel="stylesheet" href="/tools/paper-review/paper-review.css">
+    <link rel="stylesheet" href="/tools/response-review/response-review.css">
       <script type="application/ld+json">
     {
   "@context": "https://schema.org",
@@ -75,24 +76,68 @@
     </nav></header>
     <main id="main-content">
       <a class="back-link" href="/tools/">← All tools</a>
-      <div class="tools-hero">
+      <div class="tools-hero rr-hero">
         <p class="tools-kicker">$12 one-time · results in minutes</p>
         <h1>Response to Reviewers</h1>
         <p>This tool red-teams your reply letter (an adversarial read that looks for weak points) before you send it. A three-persona AI panel (Skeptical Reviewer, Tone Editor and Editor-in-Chief) reads your reviewer comments, your draft response and the revised manuscript. The output has four parts: per-comment verdicts, tone concerns, missing responses and a final accept-or-revise estimate.</p>
       </div>
-      <div class="pr-checkout-row">
-        <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn" data-product="response-review">Start review — $12</button>
-        <ol class="pr-steps" aria-label="How it works">
-          <li><strong>Pay</strong> through Stripe</li>
-          <li><strong>Upload</strong> the revised PDF and paste the reviewer comments and your draft letter; the link is also emailed</li>
-          <li><strong>Read the result</strong> on the page, or ask to be emailed when it is ready</li>
-        </ol>
-        <p class="pr-checkout-meta">Secure checkout via Stripe.</p>
-        <p class="pr-checkout-meta wf-crosslink">Step 5 of 5 in the <a href="/tools/paper-review/#workflow">publication workflow</a>. Before this: <a href="/tools/paper-review/revision/">Revision Review, $5</a>, which checks the revised manuscript against the first review.</p>
-        <div class="pr-draft-offer" id="draft">
-          <p class="pr-checkout-meta"><strong>No letter yet?</strong> We draft a reply to every comment from the reviewer comments and your manuscripts, check each stated change against the revised PDF, then run this review on the draft. You edit it before sending.</p>
-          <button type="button" class="btn btn-secondary" id="checkout-draft-btn" data-checkout data-product="response-draft">Draft and check a letter, $24</button>
+      <div class="rr-stage">
+        <div class="rr-chooser" id="choose">
+          <h2 class="rr-chooser-title">Which do you need?</h2>
+          <article class="rr-card" aria-labelledby="rr-check-title">
+            <h3 id="rr-check-title">Check my letter</h3>
+            <p class="rr-card-price">$12</p>
+            <dl class="rr-card-facts">
+              <dt>You upload</dt>
+              <dd>The revised PDF, the reviewer comments and your draft reply letter.</dd>
+              <dt>You get</dt>
+              <dd>A verdict on every comment, tone concerns, missing responses and an action checklist.</dd>
+            </dl>
+            <button type="button" class="btn btn-primary pr-checkout-btn" id="checkout-btn" data-product="response-review">Start review, $12</button>
+          </article>
+          <article class="rr-card" id="draft" aria-labelledby="rr-draft-title">
+            <h3 id="rr-draft-title">Draft and check a letter</h3>
+            <p class="rr-card-price">$24</p>
+            <dl class="rr-card-facts">
+              <dt>You upload</dt>
+              <dd>The reviewer comments, your original manuscript and the revised PDF. No letter needed.</dd>
+              <dt>You get</dt>
+              <dd>A reply to every comment, each stated change checked against the revised PDF, then the same review on that draft. You edit it before sending.</dd>
+            </dl>
+            <button type="button" class="btn btn-primary" id="checkout-draft-btn" data-checkout data-product="response-draft">Draft and check a letter, $24</button>
+          </article>
+          <p class="pr-checkout-meta rr-secure">Secure checkout via Stripe.</p>
         </div>
+        <figure class="rr-figure">
+          <div class="rt-hero" data-rt-hero>
+            <img class="rt-hero-poster" src="/tools/response-review/img/tracker-poster.webp" width="1200" height="1002" fetchpriority="high" decoding="async" alt="Two paper sheets side by side. The left one lists reviewer comments R1.2, R1.4 and R2.1. The right one holds your replies. Purple threads join each comment to its reply, ending in the verdicts Addressed, Partially addressed and Hand-waved.">
+          </div>
+          <figcaption class="rr-caption">Every comment is paired with your reply and given a verdict.</figcaption>
+        </figure>
+      </div>
+      <div class="pr-checkout-row rr-after">
+        <section class="rr-flow" aria-labelledby="rr-flow-title">
+          <h2 id="rr-flow-title">How each one works</h2>
+          <div class="rr-flow-grid">
+            <div>
+              <h3>The $12 check</h3>
+              <ol class="pr-steps" aria-label="How the $12 check works">
+                <li><strong>Pay</strong> through Stripe</li>
+                <li><strong>Upload</strong> the revised PDF and paste the reviewer comments and your draft letter; the link is also emailed</li>
+                <li><strong>Read the result</strong> on the page, or ask to be emailed when it is ready</li>
+              </ol>
+            </div>
+            <div>
+              <h3>The $24 draft</h3>
+              <ol class="pr-steps" aria-label="How the $24 draft works">
+                <li><strong>Pay</strong> through Stripe</li>
+                <li><strong>Upload</strong> the original manuscript, the revised PDF and the reviewer comments</li>
+                <li><strong>Read and edit</strong> the draft letter and its review on the status page</li>
+              </ol>
+            </div>
+          </div>
+        </section>
+        <p class="pr-checkout-meta wf-crosslink">Step 5 of 5 in the <a href="/tools/paper-review/#workflow">publication workflow</a>. Before this: <a href="/tools/paper-review/revision/">Revision Review, $5</a>, which checks the revised manuscript against the first review.</p>
         <p class="pr-trust-line"><strong>Deleted soon after delivery.</strong> The report is deleted from our servers within about a day after you first open it, or within 48 hours if you never do. If it reads as low-quality, we refund the $12.</p>
         <p class="pr-trust-line">Do not upload a manuscript, proposal or application you are reviewing for someone else, or anything shared with you in confidence.</p>
       </div>
@@ -177,6 +222,7 @@
           <li><a href="/guides/reviewer-says-novelty-is-limited/">How to Respond When a Reviewer Says &quot;Novelty Is Limited&quot;</a></li>
         </ul></nav>
       <script src="/tools/tools.js"></script>
+      <script type="module" src="/assets/js/response-tracker-hero.js"></script>
       <script src="/tools/paper-review/paid-tool-landing.js" defer></script>
     </main>
     <footer class="footer">
