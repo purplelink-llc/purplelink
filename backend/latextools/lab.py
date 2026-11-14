@@ -815,8 +815,9 @@ def html_grant(*, plan_name: str, tokens: list[str], valid_until: str, link: str
         f"<ol>{_rows(tokens)}</ol>{share}"
         f"<p>Every paper reviewed on the plan also gets one Revision Review and one Response Review. Those two links "
         f"arrive in the report email and are valid for 12 months.</p>"
-        f"<p>A new batch arrives each month while the plan is active. The plan page shows the reviews left, turns "
-        f"renewal off or on, and opens billing.</p>"
+        f"<p>A new batch arrives each month while the plan is active. The plan page shows the reviews left and opens "
+        f"billing. To cancel, turn renewal off on the plan page. The plan then runs to the end of the paid period, "
+        f"and reviews already issued stay usable until their dates.</p>"
         + _btn(link, "Open the plan page"))
 
 
@@ -856,16 +857,16 @@ def html_link(*, link: str) -> str:
         + _btn(link, "Open my plan"))
 
 
-PACK_SUBJECT = "Your Publication Pack: three links"
+PACK_SUBJECT = "Your Publication Pack links"
 
 
 def html_pack_links(*, groups: list[dict]) -> str:
     items = "".join(f'<li><a href="{g["url"]}">{g["name"]}</a></li>' for g in groups if g.get("url"))
     return _wrap(
         f'<h2 style="color: #6d28d9;">Your Publication Pack</h2>'
-        f"<p>The pack covers one paper with three links. Each link works once and does not expire.</p>"
+        f"<p>The pack covers one paper. Each link below works once and does not expire.</p>"
         f"<ol>{items}</ol>"
-        f"<p>Start with the Paper Review. The other two links are for the revision. The Revision Review checks the "
+        f"<p>Start with the Paper Review. The Revision Review checks the "
         f"revised paper against the first review. The response letter draft turns the reviewer comments into a "
         f"first draft of your letter.</p>")
 
