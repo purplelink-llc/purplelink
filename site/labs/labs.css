@@ -130,7 +130,7 @@
 .wf-plan .labs-buy { margin-top: auto; }
 .wf-plan .labs-buy + .wf-plan-state { margin-top: 10px; }
 
-/* Hero scene (assets/js/workflow-hero.js; the poster stays until the first frame) and the station renders under
+/* Hero film (assets/video/publication-suite/, played by motion.js; the poster shows under reduced motion) and the station renders under
    "What every plan includes". New labs-* names only: the Publication suite hub loads this file too. */
 .labs-hero-visual { margin: clamp(32px, 5vw, 56px) 0 0; }
 .labs-hero-visual figcaption { margin-top: 10px; font-size: 0.88rem; color: var(--muted); }
