@@ -51,6 +51,7 @@ SKIP_PATHS = {
 NAV = [
     ("Products", "/products/", ("products/", "moderntex/", "outbound-veil/", "suite/", "pricing/", "legroom/", "keyfeel/", "tapefolio/", "lenscrib/", "nee/", "lenses/", "panely/", "summonly/", "batterymeter/", "buddy/", "vitae/", "globepin/", "circled-hoops/",
                                 "haea/", "binnacle/", "kits/", "sheets/", "scholar-utility-belt/", "labs/", "recover/")),
+    ("Publication suite", "/publication-suite/", ("publication-suite/",)),
     ("Tools", "/tools/", ("tools/", "format/")),
     ("Guides", "/guides/", ("guides/", "templates/", "latex-errors/")),
     ("About", "/about/", ("about/", "press/", "photography/", "support/", "security/", "privacy/", "terms/", "feedback/")),
@@ -69,6 +70,7 @@ FOOTER_COLUMNS = [
         ("Née", "/nee/"),
         ("Lenses", "/lenses/"),
         ("BatteryMeter", "/batterymeter/"),
+        ("Publication suite", "/publication-suite/"),
         ("Paper Review", "/tools/paper-review/"),
         ("Scholar Utility Belt", "/scholar-utility-belt/"),
         ("Mac Suite", "/suite/"),

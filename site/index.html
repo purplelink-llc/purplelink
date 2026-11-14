@@ -156,6 +156,7 @@
       </a>
       <nav aria-label="Primary navigation">
         <a href="/products/">Products</a>
+        <a href="/publication-suite/">Publication suite</a>
         <a href="/tools/">Tools</a>
         <a href="/guides/">Guides</a>
         <a href="/about/">About</a>
@@ -178,8 +179,9 @@
 
         <p class="stage-lede">One person in Atlanta making apps and tools. Each page says plainly what happens to your data.</p>
 
-        <ul class="stage-icons" aria-label="Jump to an app">
+        <ul class="stage-icons" aria-label="Jump to a product">
             <li><a href="#show-moderntex" data-track="home_cta" data-track-meta="hero-icon-moderntex"><img src="/assets/home/logo-xs-moderntex.webp" alt="ModernTex" width="112" height="120" decoding="async" fetchpriority="low"></a></li>
+            <li><a href="#suite" data-track="home_cta" data-track-meta="hero-icon-publication-suite"><img class="stage-icon-tile" src="/assets/publication-suite-icon.svg" alt="Publication suite" width="112" height="112" decoding="async" fetchpriority="low"></a></li>
             <li><a href="#show-outbound-veil" data-track="home_cta" data-track-meta="hero-icon-outbound-veil"><img src="/assets/home/logo-xs-outbound-veil.webp" alt="Outbound Veil" width="112" height="120" decoding="async" fetchpriority="low"></a></li>
             <li><a href="#show-legroom" data-track="home_cta" data-track-meta="hero-icon-legroom"><img src="/assets/home/logo-xs-legroom.webp" alt="Legroom" width="112" height="120" decoding="async" fetchpriority="low"></a></li>
             <li><a href="#show-keyfeel" data-track="home_cta" data-track-meta="hero-icon-keyfeel"><img src="/assets/home/logo-xs-keyfeel.webp" alt="Keyfeel" width="112" height="120" decoding="async" fetchpriority="low"></a></li>
@@ -196,6 +198,51 @@
         <div class="stage-actions">
           <a class="btn btn-primary" href="#apps" data-track="home_cta" data-track-meta="hero-see-apps">See the apps</a>
           <a class="btn btn-ghost" href="#all-apps" data-track="home_cta" data-track-meta="hero-all-apps">All apps and prices</a>
+        </div>
+      </section>
+
+      <!-- ── Publication suite: the paid reviews for one paper ──────── -->
+      <section id="suite" class="suite-band" aria-labelledby="suite-h">
+        <div class="suite-band-head">
+          <img class="suite-band-icon" src="/assets/publication-suite-icon.svg" alt="" width="96" height="96" loading="lazy" decoding="async">
+          <div>
+            <p class="suite-band-kicker">For researchers</p>
+            <h2 id="suite-h">The Publication suite</h2>
+            <p class="suite-band-lede">Three AI reviews for one paper, from first submission to the response letter. You pay once for each, and you do not need an account.</p>
+          </div>
+        </div>
+        <ol class="suite-band-steps">
+          <li>
+            <a href="/tools/paper-review/" data-track="home_cta" data-track-meta="suite-paper-review">
+              <span class="suite-step-when">Before you submit</span>
+              <strong class="suite-step-name">Paper Review</strong>
+              <span class="suite-step-desc">Seven AI reviewers read the manuscript and check every reference.</span>
+              <span class="suite-step-price">$14, $24 or $39</span>
+            </a>
+          </li>
+          <li>
+            <a href="/tools/paper-review/revision/" data-track="home_cta" data-track-meta="suite-revision">
+              <span class="suite-step-when">After the reviews</span>
+              <strong class="suite-step-name">Revision Review</strong>
+              <span class="suite-step-desc">Checks the revised paper against each finding in the first report.</span>
+              <span class="suite-step-price">$5</span>
+            </a>
+          </li>
+          <li>
+            <a href="/tools/response-review/" data-track="home_cta" data-track-meta="suite-response">
+              <span class="suite-step-when">Before you resubmit</span>
+              <strong class="suite-step-name">Response Review</strong>
+              <span class="suite-step-desc">Checks your response letter against the comments, or drafts it.</span>
+              <span class="suite-step-price">$12 or $24</span>
+            </a>
+          </li>
+        </ol>
+        <ul class="suite-band-more">
+          <li><a href="/publication-suite/#pack" data-track="home_cta" data-track-meta="suite-pack"><strong>Publication Pack, $59.</strong> A Deep Review, a Revision Review and a response letter draft for one paper, $9 less than separately.</a></li>
+          <li><a href="/publication-suite/#labs" data-track="home_cta" data-track-meta="suite-labs"><strong>Lab plans, from $199 a month.</strong> 20 or 40 reviews a month for a research group.</a></li>
+        </ul>
+        <div class="suite-band-actions">
+          <a class="btn btn-primary" href="/publication-suite/" data-track="home_cta" data-track-meta="suite-hub">See the Publication suite</a>
         </div>
       </section>
 
@@ -472,6 +519,46 @@
           </ul>
         </div>
         <div class="dock-group">
+          <h2 class="dock-heading dock-heading-icon" id="dock-suite-h"><img src="/assets/publication-suite-icon.svg" alt="" width="28" height="28" loading="lazy" decoding="async"><a href="/publication-suite/">Publication suite</a></h2>
+          <ul class="dock dock-text" aria-labelledby="dock-suite-h">
+          <li>
+            <a class="dock-app dock-suite" href="/tools/paper-review/" data-track="home_cta" data-track-meta="dock-paper-review">
+              <strong class="dock-name">Paper Review</strong>
+              <span class="dock-desc">Seven AI reviewers read your manuscript before a journal does.</span>
+              <span class="dock-price">$14, $24 or $39 a paper</span>
+            </a>
+          </li>
+          <li>
+            <a class="dock-app dock-suite" href="/tools/paper-review/revision/" data-track="home_cta" data-track-meta="dock-revision-review">
+              <strong class="dock-name">Revision Review</strong>
+              <span class="dock-desc">Checks the revision against your first Paper Review.</span>
+              <span class="dock-price">$5</span>
+            </a>
+          </li>
+          <li>
+            <a class="dock-app dock-suite" href="/tools/response-review/" data-track="home_cta" data-track-meta="dock-response-review">
+              <strong class="dock-name">Response Review</strong>
+              <span class="dock-desc">Checks or drafts your response to reviewers.</span>
+              <span class="dock-price">$12, or $24 with a draft</span>
+            </a>
+          </li>
+          <li>
+            <a class="dock-app dock-suite" href="/publication-suite/#pack" data-track="home_cta" data-track-meta="dock-publication-pack">
+              <strong class="dock-name">Publication Pack</strong>
+              <span class="dock-desc">All three for one paper, with the Deep Review.</span>
+              <span class="dock-price">$59 once</span>
+            </a>
+          </li>
+          <li>
+            <a class="dock-app dock-suite" href="/publication-suite/#labs" data-track="home_cta" data-track-meta="dock-lab-plans">
+              <strong class="dock-name">Lab plans</strong>
+              <span class="dock-desc">20 or 40 reviews a month for a research group.</span>
+              <span class="dock-price">From $199 a month</span>
+            </a>
+          </li>
+          </ul>
+        </div>
+        <div class="dock-group">
           <h2 class="dock-heading" id="dock-ios-h">iPhone and iPad</h2>
           <ul class="dock" aria-label="Purplelink iPhone and iPad apps">
           <li>
@@ -522,13 +609,12 @@
         <h2 id="studio-links-h">The rest of the studio</h2>
         <div class="studio-cols">
           <div class="studio-col">
-            <h3><a href="/tools/paper-review/">Paper Review</a></h3>
-            <p>Seven AI reviewers read your manuscript before a journal does. From $14.</p>
+            <h3><a href="/publication-suite/">Publication suite</a></h3>
+            <p>Paper Review, Revision Review and Response Review for one paper. From $5.</p>
             <ul>
               <li><a href="/tools/cover-letter/">Cover letter</a></li>
               <li><a href="/tools/anonymity-check/">Anonymity check</a></li>
               <li><a href="/tools/citation-gap/">Citation gap scan</a></li>
-              <li><a href="/tools/response-review/">Response review</a></li>
               <li><a href="/tools/resume-review/">Resume review</a></li>
             </ul>
           </div>
@@ -812,6 +898,7 @@
             <li><a href="/nee/">Née</a></li>
             <li><a href="/lenses/">Lenses</a></li>
             <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/publication-suite/">Publication suite</a></li>
             <li><a href="/tools/paper-review/">Paper Review</a></li>
             <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
             <li><a href="/suite/">Mac Suite</a></li>

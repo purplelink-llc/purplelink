@@ -1158,6 +1158,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://purplelink.llc/publication-suite/</loc>
+    <lastmod>2026-11-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://purplelink.llc/labs/</loc>
     <lastmod>2026-11-02</lastmod>
     <changefreq>monthly</changefreq>
