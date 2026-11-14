@@ -13,6 +13,7 @@
     <script src="/site.js" defer></script>
     <script src="/motion.js" defer></script>
     <link rel="stylesheet" href="/tools/paper-review/paper-review.css">
+    <link rel="stylesheet" href="/tools/response-review/response-review.css">
 </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to content</a>
@@ -24,26 +25,37 @@
     </nav></header>
     <main id="main-content">
       <a class="back-link" href="/tools/response-review/">← Response to Reviewers</a>
-      <div class="tools-hero">
-        <p class="eyebrow">Step 2 of 2 · Upload</p>
+      <div class="tools-hero rr-up-hero">
         <h1>Upload your manuscripts and the reviewer comments</h1>
         <p>We draft a reply to every reviewer comment, check each stated change against your manuscripts, then run the Response Review panel on the draft. The result is a first draft for you to edit, not a letter to send as it is.</p>
       </div>
-      <div class="tool-app pr-upload-wrap">
-        <p class="pr-redeem-status" id="redeem-status">Verifying your payment…</p>
+      <ol class="rr-progress" aria-label="Your order">
+        <li class="is-done"><span class="rr-progress-mark" aria-hidden="true"></span><span class="rr-progress-text"><strong>Paid</strong><span class="rr-progress-note">Payment received</span></span></li>
+        <li aria-current="step"><span class="rr-progress-mark" aria-hidden="true"></span><span class="rr-progress-text"><strong>Upload</strong><span class="rr-progress-note">You are here</span></span></li>
+        <li><span class="rr-progress-mark" aria-hidden="true"></span><span class="rr-progress-text"><strong>Draft arrives</strong><span class="rr-progress-note">On the status page, and by email if you add one</span></span></li>
+      </ol>
+      <div class="rr-up-grid">
+      <div class="tool-app pr-upload-wrap rr-upload">
+        <p class="pr-redeem-status" id="redeem-status" role="status">Verifying your payment…</p>
+        <div class="rr-payment-help">
+          <p><strong>If your payment did not go through to this page.</strong> Check the email titled "link to start" that we sent to the address you paid with. It opens this page on any device. Your payment is recorded if you have a Stripe receipt. If the link says it was already used, the draft is probably under way: open the status link from that same email. Still stuck? Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> with your receipt.</p>
+        </div>
         <div id="upload-form" hidden>
+          <div class="rr-form-inner">
           <div class="pr-field-group">
             <p class="pr-field-label" id="file-input-label">Original manuscript <span class="pr-field-hint">(required, the version the reviewers read)</span></p>
-            <div class="dropzone" id="file-input-zone" aria-labelledby="file-input-label">
+            <div class="dropzone rr-drop" id="file-input-zone" aria-labelledby="file-input-label">
               <input type="file" id="file-input" accept=".pdf">
+              <span class="rr-drop-icon" aria-hidden="true"></span>
               <p>Drag the <strong>original</strong> manuscript PDF here, or choose one. Up to 20 MB.</p>
               <p id="file-input-name" class="tool-privacy"></p>
             </div>
           </div>
           <div class="pr-field-group">
             <p class="pr-field-label" id="revised-input-label">Revised manuscript <span class="pr-field-hint">(optional, strongly recommended)</span></p>
-            <div class="dropzone" id="revised-input-zone" aria-labelledby="revised-input-label" aria-describedby="revised-input-help">
+            <div class="dropzone rr-drop" id="revised-input-zone" aria-labelledby="revised-input-label" aria-describedby="revised-input-help">
               <input type="file" id="revised-input" accept=".pdf">
+              <span class="rr-drop-icon" aria-hidden="true"></span>
               <p>Drag the <strong>revised</strong> manuscript PDF here, or choose one. Up to 20 MB.</p>
               <p id="revised-input-name" class="tool-privacy"></p>
             </div>
@@ -61,13 +73,41 @@
             <label for="email-input" class="pr-field-label">Email me when ready <span class="pr-field-hint">(optional)</span></label>
             <input type="email" id="email-input" class="pr-input" placeholder="you@example.edu" autocomplete="email">
           </div>
+          <section class="rr-ready" aria-labelledby="rr-ready-title">
+            <h2 id="rr-ready-title" class="rr-ready-title">Ready to send?</h2>
+            <ul class="rr-ready-list" id="rr-ready-list">
+              <li data-ready-for="file-input" data-required="1"><span class="rr-ready-mark" aria-hidden="true"></span><span class="rr-ready-label">Original manuscript</span><span class="rr-ready-state">Needed</span></li>
+              <li data-ready-for="reviewer-input" data-required="1"><span class="rr-ready-mark" aria-hidden="true"></span><span class="rr-ready-label">Reviewer comments</span><span class="rr-ready-state">Needed</span></li>
+              <li data-ready-for="revised-input"><span class="rr-ready-mark" aria-hidden="true"></span><span class="rr-ready-label">Revised manuscript</span><span class="rr-ready-state">Optional, left out</span></li>
+              <li data-ready-for="notes-input"><span class="rr-ready-mark" aria-hidden="true"></span><span class="rr-ready-label">Your notes</span><span class="rr-ready-state">Optional, left out</span></li>
+            </ul>
+            <p class="visually-hidden" id="rr-ready-live" role="status" aria-live="polite"></p>
+          </section>
           <div class="tool-options u-mt-075"><button type="button" class="btn btn-primary" id="submit-btn" disabled>Draft my response letter</button></div>
           <p class="tool-status" id="status" aria-live="polite"></p>
+          <p class="rr-after-submit">After you submit, you land on a status page. Save that link: it is the way back to your draft. If you added an email, we send the same link there.</p>
+          </div>
         </div>
+      </div>
+      <aside class="rr-poster" aria-labelledby="rr-poster-title">
+        <h2 id="rr-poster-title" class="rr-poster-title">What you will get</h2>
+        <img class="rr-poster-art rr-poster-art-dark" src="/tools/response-review/img/tracker-poster-letter.webp" width="675" height="375" loading="lazy" decoding="async" alt="Your response letter as a paper sheet. A purple thread runs from a reviewer comment to the first reply, which is marked Addressed.">
+        <img class="rr-poster-art rr-poster-art-light" src="/tools/response-review/img/tracker-poster-letter-light.webp" width="675" height="375" loading="lazy" decoding="async" alt="Your response letter as a paper sheet. A purple thread runs from a reviewer comment to the first reply, which is marked Addressed.">
+        <div class="rr-poster-sheet">
+          <p class="rr-poster-head">Draft reply letter, with a review of it</p>
+          <ul class="rr-poster-rows">
+            <li><span class="rr-poster-id">R1.2</span><span class="rr-poster-text">We added a power analysis to Section 3.2.</span><span class="rr-chip rr-chip-addressed">Addressed</span></li>
+            <li><span class="rr-poster-id">R1.4</span><span class="rr-poster-text">We enlarged the labels in Figure 3.</span><span class="rr-chip rr-chip-partial">Partially addressed</span></li>
+            <li><span class="rr-poster-id">R2.1</span><span class="rr-poster-text">[Add the Chen et al. comparison here.]</span><span class="rr-chip rr-chip-flag">Placeholder to fill</span></li>
+          </ul>
+        </div>
+        <p class="rr-poster-note">A sample. Yours uses your own comments. You edit the draft before anything goes to an editor.</p>
+      </aside>
       </div>
       <script src="/tools/tools.js"></script>
       <script src="/tools/paper-review/paid-tool-upload.js" defer></script>
       <script src="/tools/response-review/draft/upload.js" defer></script>
+      <script src="/tools/response-review/draft/readiness.js" defer></script>
     </main>
     <footer class="footer">
       <div class="footer-grid">
