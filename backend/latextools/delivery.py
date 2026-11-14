@@ -298,10 +298,13 @@ _READY_DELETION = (
 def html_review_ready(
     *, status_url: str, manuscript_title: str = "", amount_cents: int = 1400,
     product: str = "paper-review", attachment: str = "", offers: Optional[dict] = None,
+    followups: Optional[list] = None,
 ) -> str:
     """*attachment* is the kind returned by build_report_attachment(). Left
     empty (the adjacent tools, which attach nothing), the email keeps the
-    "save a copy" wording."""
+    "save a copy" wording. *followups* is only passed for a Lab plan review: [{kind, name, url}] links for the
+    next steps. When given, it replaces the default next-steps paragraph and the refund line (a plan review is
+    not refunded per review)."""
     if attachment in ("pdf", "md"):
         retention = f"The report is attached. {_READY_DELETION}"
     elif attachment == "too_large":
@@ -325,12 +328,23 @@ def html_review_ready(
         lead = "It has finished and is waiting for you."
         cta = "Open it"
     next_step = _READY_NEXT.get(product, "")
+    if followups:
+        _items = " and ".join(
+            f'<a href="{_html.escape(str(f.get("url", "")))}" {_LINK}>{_html.escape(str(f.get("name", "")))}</a>'
+            for f in followups if isinstance(f, dict) and f.get("url"))
+        next_step = (f"Your plan also covers this paper's next steps: {_items}. "
+                     f"Each link works once and is valid for 12 months.") if _items else ""
     next_html = f'\n  <p style="color: #555; font-size: 0.9em;">{next_step}</p>' if next_step else ""
     if offers:
         from latextools import upgrades as _upgrades
         _offers_html = _upgrades.offers_email_html(offers, _LINK)
         if _offers_html:
             next_html += "\n  " + _offers_html
+    if followups:
+        footer = "Sent by Purplelink LLC."
+    else:
+        footer = (f"Sent by Purplelink LLC. If a result is low quality, reply to this email\n    "
+                  f"within 14 days and we'll refund the {refund_amount}.")
     return f"""
 <div style="{_EMAIL_BASE_CSS}">
   <h2 style="color: #6d28d9;">Your {name} is ready</h2>
@@ -348,8 +362,7 @@ def html_review_ready(
   </p>{next_html}
   <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 24px 0;">
   <p style="color: #888; font-size: 0.85em;">
-    Sent by Purplelink LLC. If a result is low quality, reply to this email
-    within 14 days and we'll refund the {refund_amount}.
+    {footer}
   </p>
 </div>
 """
