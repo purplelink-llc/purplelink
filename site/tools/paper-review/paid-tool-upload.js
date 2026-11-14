@@ -144,7 +144,8 @@ window.setupPaidToolUpload = function (cfg) {
   var REDEEM_ERROR_MESSAGES = {
     already_used: "This link has already been used to submit. Check your email for the status link, or email ben@purplelink.llc if you need help.",
     all_used: "All tokens for this payment have already been redeemed. Check your email for the status link, or email ben@purplelink.llc if you need help.",
-    expired: "This payment link has expired. Email ben@purplelink.llc with your Stripe receipt.",
+    expired: "This link has expired. Email ben@purplelink.llc with your receipt.",
+    revoked: "This order was refunded or disputed, so its links no longer work. Email ben@purplelink.llc if that looks wrong.",
     missing_session_id: "We couldn't find a payment in this link. If you paid, open the email titled \"link to start\" that we sent to the address you paid with; it opens this page on any device. Still stuck? Email ben@purplelink.llc with your Stripe receipt, with no need to pay again.",
   };
 
