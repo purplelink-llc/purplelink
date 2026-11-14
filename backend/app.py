@@ -3262,6 +3262,13 @@ def web():
             return JSONResponse({"error": "bad_request"}, status_code=400)
         dispute = data.get("dispute_id") if isinstance(data.get("dispute_id"), str) else ""
         res = lab.revoke(_annual_store(), sub, reason, _time_module.time(), dispute)
+        # A full refund also stops the billing, or the next renewal charges a plan that no longer issues reviews.
+        # A refusal is answered 502 so the webhook alerts and Stripe retries; a subscription that is already canceled
+        # (refunded and canceled together in the Dashboard) counts as stopped.
+        if res["ok"] and reason == "refund" and not await _lab_set_cancel(sub, True):
+            snap = await _lab_fetch_subscription(sub)
+            if not snap or snap.get("status") != "canceled":
+                return JSONResponse({"error": "stripe_cancel_failed"}, status_code=502)
         return JSONResponse({"ok": res["ok"], "reason": res["reason"]})
 
     @api.post("/lab/restore")

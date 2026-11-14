@@ -35,6 +35,7 @@ const { page } = await import("../lib/fn-page.mjs");
 const MODAL_HOST = new URL("https://ben-ampel--purplelink-latextools-web.modal.run").hostname;
 let calls;
 let stripeData;   // "path?query" or "path" -> object served for GET api.stripe.com
+let stripeStatus; // path -> HTTP status forced for GET api.stripe.com (a failed read)
 let modalReply;   // path -> {status, body} or an Error to throw
 let portalUrl;    // what a stripe billing portal session POST answers
 
@@ -43,6 +44,7 @@ beforeEach(() => {
   listCalls = 0;
   calls = [];
   stripeData = {};
+  stripeStatus = {};
   modalReply = {};
   portalUrl = "https://billing.stripe.com/p/session/test_1";
   globalThis.fetch = async (url, opts = {}) => {
@@ -54,6 +56,8 @@ beforeEach(() => {
         if (portalUrl === null) return new Response("{}", { status: 400 });
         return new Response(JSON.stringify({ url: portalUrl }), { status: 200 });
       }
+      const forced = stripeStatus[parsed.pathname];
+      if (forced) return new Response("{}", { status: forced });
       const data = stripeData[parsed.pathname + parsed.search] ?? stripeData[parsed.pathname];
       return data ? new Response(JSON.stringify(data), { status: 200 }) : new Response("{}", { status: 404 });
     }
@@ -370,11 +374,87 @@ test("an order call that cannot reach Modal does not change a dispute answer", a
   assert.equal((await res.json()).status, "dispute_recorded");
 });
 
-test("an order Modal does not know (unknown_order) is a normal answer", async () => {
+test("a refund of an order Modal does not know (unknown_order) alerts, and the order is never registered later", async () => {
   orderCharge();
   modalReply["/paper-review/revoke-order"] = { status: 200, body: { ok: false, reason: "unknown_order" } };
   const res = await webhook(signed(refunded({ invoice: null })));
   assert.equal(res.status, 200);
+  assert.equal((await res.json()).status, "refund_recorded");
+  assert.equal(alerts().length, 1);
+  assert.match(alerts()[0].subject, /unknown/i);
+  calls.length = 0;
+  const late = await webhook(signed(completed({ id: "cs_order1", subscription: null, payment_intent: "pi_1", amount_total: 3900, amount_subtotal: 3900 },
+    { product: "paper-review-deep" })));
+  assert.equal(late.status, 200);
+  assert.equal((await late.json()).status, "refunded_before_register");
+  assert.equal(modalCalls().length, 0, "no register-token, no referral");
+  assert.equal(alerts().length, 1);
+});
+
+test("a dispute record does not stop an order from registering; a won-dispute restore of an unknown order does not alert", async () => {
+  orderCharge();
+  modalReply["/paper-review/revoke-order"] = { status: 200, body: { ok: false, reason: "unknown_order" } };
+  modalReply["/paper-review/restore-order"] = { status: 200, body: { ok: false, reason: "unknown_order" } };
+  await webhook(signed(dispute("charge.dispute.created")));
+  calls.length = 0;
+  await webhook(signed(dispute("charge.dispute.closed", { status: "won" })));
+  assert.equal(alerts().length, 0);
+  calls.length = 0;
+  await webhook(signed(dispute("charge.dispute.created")));
+  calls.length = 0;
+  const res = await webhook(signed(completed({ id: "cs_order1", subscription: null, payment_intent: "pi_1", amount_total: 3900, amount_subtotal: 3900 },
+    { product: "paper-review-deep" })));
+  assert.equal(res.status, 200);
+  assert.ok(modalCalls().some((c) => c.path === "/paper-review/register-token"));
+});
+
+test("a lab revoke Modal answers unknown_plan (refund before register) is alerted and retried", async () => {
+  labCharge();
+  modalReply["/lab/revoke"] = { status: 200, body: { ok: false, reason: "unknown_plan" } };
+  const res = await webhook(signed(refunded()));
+  assert.equal(res.status, 502);
+  assert.equal(alerts().length, 1);
+  assert.ok([...store.keys()].includes("refunds/pi:pi_1"), "the refund record is written before the retry");
+});
+
+test("a lab refund whose invoice cannot be read is retried and alerted, with the refund recorded", async () => {
+  labCharge();
+  stripeStatus["/v1/invoices/in_1"] = 500;
+  const res = await webhook(signed(refunded()));
+  assert.equal(res.status, 502);
+  assert.equal((await res.json()).error, "stripe_unreadable");
+  assert.equal(alerts().length, 1);
+  assert.equal(modalCalls().length, 0);
+  assert.ok([...store.keys()].includes("refunds/pi:pi_1"));
+});
+
+test("a refund whose subscription or invoice-payment lookup cannot be read is retried", async () => {
+  labCharge();
+  stripeStatus["/v1/subscriptions/sub_lab"] = 429;
+  assert.equal((await webhook(signed(refunded()))).status, 502);
+  stripeStatus = { "/v1/invoice_payments": 503 };
+  assert.equal((await webhook(signed(refunded({ invoice: null })))).status, 502);
+  assert.equal(modalCalls().length, 0);
+});
+
+test("a dispute whose charge cannot be read is retried and recorded; a won one is retried", async () => {
+  labCharge();
+  stripeStatus["/v1/charges/ch_1"] = 500;
+  const created = await webhook(signed(dispute("charge.dispute.created")));
+  assert.equal(created.status, 502);
+  assert.ok([...store.keys()].includes("refunds/pi:pi_1"));
+  const won = await webhook(signed(dispute("charge.dispute.closed", { status: "won" })));
+  assert.equal(won.status, 502);
+  assert.equal(alerts().length, 2);
+  assert.equal(modalCalls().length, 0);
+});
+
+test("a charge Stripe has never heard of (404) is not a plan, and the refund is recorded as before", async () => {
+  stripeData["/v1/charges/ch_1"] = { id: "ch_1", payment_intent: "pi_1" };
+  stripeData["/v1/checkout/sessions?payment_intent=pi_1&limit=1"] = { data: [{ id: "cs_x", metadata: { product: "legroom" } }] };
+  const res = await webhook(signed(refunded({ invoice: null })));
+  assert.equal(res.status, 200);
+  assert.equal((await res.json()).status, "refund_recorded");
   assert.equal(alerts().length, 0);
 });
 
@@ -425,6 +505,25 @@ test("a one-time Paper Review order still registers its token", async () => {
   assert.equal(res.status, 200);
   assert.ok(modalCalls().some((c) => c.path === "/paper-review/register-token"));
   assert.ok(!modalCalls().some((c) => c.path.startsWith("/lab/")));
+});
+
+test("a delayed payment that succeeds later registers the order; the earlier unpaid completion did not", async () => {
+  const sess = { subscription: null, amount_total: 1400, amount_subtotal: 1400 };
+  const first = await webhook(signed(completed({ ...sess, payment_status: "unpaid" }, { product: "paper-review-standard" })));
+  assert.equal((await first.json()).status, "not_paid");
+  assert.equal(modalCalls().length, 0);
+  const later = { ...completed({ ...sess }, { product: "paper-review-standard" }), id: "evt_async", type: "checkout.session.async_payment_succeeded" };
+  const res = await webhook(signed(later));
+  assert.equal(res.status, 200);
+  assert.ok(modalCalls().some((c) => c.path === "/paper-review/register-token"));
+});
+
+test("a delayed-payment success sends no second Vitae Plus or live-sheet email", async () => {
+  const ev = (product) => ({ ...completed({ subscription: null }, { product }), id: `evt_${product}`, type: "checkout.session.async_payment_succeeded" });
+  const v = await webhook(signed(ev("vitae-plus-monthly")));
+  assert.equal(v.status, 200);
+  assert.equal(alerts().length, 0, "no email to Resend");
+  assert.equal(modalCalls().length, 0);
 });
 
 test("Vitae Plus and digest subscription events behave as before", async () => {

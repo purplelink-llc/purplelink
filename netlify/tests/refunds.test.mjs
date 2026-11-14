@@ -57,6 +57,9 @@ beforeEach(() => {
     if (u.startsWith("https://api.stripe.com/v1/checkout/sessions")) {
       return new Response(JSON.stringify({ data: sessions, has_more: false }), { status: 200 });
     }
+    // Plan lookups: these charges are not on a subscription invoice, and Stripe says so (a failed read would be retried).
+    if (u.startsWith("https://api.stripe.com/v1/invoice_payments")) return new Response(JSON.stringify({ data: [] }), { status: 200 });
+    if (u.startsWith("https://api.stripe.com/v1/charges/")) return new Response("{}", { status: 404 });
     throw new Error(`Unexpected fetch to ${u}`);
   };
 });
