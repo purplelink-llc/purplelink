@@ -129,3 +129,33 @@
 /* On the Paper Review plan cards, the buy row sits at the bottom like the pack cards' buttons */
 .wf-plan .labs-buy { margin-top: auto; }
 .wf-plan .labs-buy + .wf-plan-state { margin-top: 10px; }
+
+/* Hero scene (assets/js/workflow-hero.js; the poster stays until the first frame) and the station renders under
+   "What every plan includes". New labs-* names only: the Publication suite hub loads this file too. */
+.labs-hero-visual { margin: clamp(32px, 5vw, 56px) 0 0; }
+.labs-hero-visual figcaption { margin-top: 10px; font-size: 0.88rem; color: var(--muted); }
+.labs-stations {
+  list-style: none;
+  margin: 0 0 22px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 16px;
+  max-width: 900px;
+}
+.labs-station {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+}
+.labs-station-still {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-bottom: 1px solid var(--line);
+}
+.labs-station p { padding: 14px 16px 16px; font-size: 0.93rem; color: var(--muted); }
+.labs-station strong { display: block; margin-bottom: 2px; color: var(--ink); }

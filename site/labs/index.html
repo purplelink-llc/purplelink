@@ -48,6 +48,7 @@
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="/motion.css">
     <link rel="stylesheet" href="/labs/labs.css">
+    <link rel="stylesheet" href="/assets/css/workflow-hero.css">
     <script src="/site.js" defer></script>
     <script src="/motion.js" defer></script>
     <script src="/buddy-chat/loader.js" defer></script>
@@ -87,6 +88,12 @@
           <a href="#labs-abroad">Outside the US</a>
           <a href="#labs-data">Data handling</a>
         </nav>
+        <figure class="labs-hero-visual">
+          <div class="wf-hero" data-wf-hero>
+            <img class="wf-hero-poster" src="/assets/img/workflow/hero-poster.webp" alt="A manuscript passing five stations: review, coherence, citations, revision, response" width="1200" height="675" fetchpriority="high" decoding="async">
+          </div>
+          <figcaption>Each paper on a plan gets a Paper Review, a Revision Review and a Response Review.</figcaption>
+        </figure>
       </section>
 
       <section class="catalog-section" id="review-plans" aria-labelledby="labs-plans">
@@ -121,6 +128,20 @@
         <p class="labs-soon" role="note">Plans renew each month or each year until you cancel, and you can cancel at any time from the plan page. To pay by invoice or purchase order, email <a href="mailto:ben@purplelink.llc?subject=Lab%20plan">ben@purplelink.llc</a>. The full plan terms are on the <a href="/terms/#lab-plans">terms page</a>.</p>
 
         <h3 class="labs-sub">What every plan includes</h3>
+        <ol class="labs-stations">
+          <li class="labs-station">
+            <img class="labs-station-still" src="/assets/img/workflow/station-review.webp" alt="" width="1200" height="675" loading="lazy" decoding="async" data-ps-themed>
+            <p><strong>Paper Review</strong> Reads the manuscript before submission. 20 or 40 each month.</p>
+          </li>
+          <li class="labs-station">
+            <img class="labs-station-still" src="/assets/img/workflow/station-revision.webp" alt="" width="1200" height="675" loading="lazy" decoding="async" data-ps-themed>
+            <p><strong>Revision Review</strong> Checks the revised manuscript against the first report. One for each paper reviewed.</p>
+          </li>
+          <li class="labs-station">
+            <img class="labs-station-still" src="/assets/img/workflow/station-response.webp" alt="" width="1200" height="675" loading="lazy" decoding="async" data-ps-themed>
+            <p><strong>Response Review</strong> Reads the response letter against the reviewers' comments. One for each paper reviewed.</p>
+          </li>
+        </ol>
         <ul class="labs-list">
           <li>Each review includes the journal fit check and the anonymity check, and so does each review in a pack.</li>
           <li>Reviews arrive in monthly batches, on yearly billing too. You can use each month's reviews until the end of the following month. After that they expire.</li>
@@ -361,6 +382,8 @@
       </div>
     </footer>
     <script src="/labs/labs.js" defer></script>
+    <script src="/publication-suite/publication-suite.js" defer></script>
+    <script type="module" src="/assets/js/workflow-hero.js"></script>
     <script src="/analytics.js" defer></script>
   </body>
 </html>
