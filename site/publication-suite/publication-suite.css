@@ -69,6 +69,7 @@
   font-size: 0.93rem;
 }
 .ps-tiers strong { color: var(--ink); }
+.ps-tiers a { color: var(--purple); font-weight: 600; }
 .ps-tiers li::marker { color: var(--purple); }
 /* Push each button to the card's foot so the three line up; the spacer keeps a gap above it. */
 .ps-step .btn { margin-top: auto; align-self: flex-start; }
