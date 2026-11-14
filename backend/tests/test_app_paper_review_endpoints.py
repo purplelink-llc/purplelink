@@ -630,16 +630,58 @@ def test_redeem_session_missing_both_session_id_and_token(client):
 
 
 def test_redeem_session_is_rate_limited(client):
-    """Regression test: /paper-review/redeem-session must be throttled
-    per-IP like the other endpoints (_enforce_rate_limit), so a script
-    can't hammer it guessing/brute-forcing session_id values indefinitely."""
+    """Regression test: lookups that find no order are throttled per IP, so a
+    script can't hammer the endpoint guessing session_id values."""
     http, backend_app = client
 
-    for _ in range(backend_app.core.DAILY_LIMIT):
+    for _ in range(backend_app.REDEEM_MISSES_PER_HOUR):
         r = http.post("/paper-review/redeem-session", json={"session_id": "does-not-exist"})
         assert r.status_code == 404  # still under the cap; normal "pending" response
 
     r = http.post("/paper-review/redeem-session", json={"session_id": "does-not-exist"})
+    assert r.status_code == 429
+    body = r.json()
+    assert body["error"] == "rate_limited"
+    assert 1 <= body["retry_after"] <= 3600
+    assert r.headers["Retry-After"] == str(body["retry_after"])
+
+
+def test_redeem_session_paid_lookups_survive_exhausted_miss_limit(client):
+    """A lab behind one campus NAT: after the shared IP has used up its miss
+    limit (other buyers' retries, a bot), a buyer with a real paid session
+    still gets their links. Paid lookups never count toward the miss limit."""
+    http, backend_app = client
+    token = _register(backend_app, session_id="s-nat-buyer")
+
+    for _ in range(backend_app.REDEEM_MISSES_PER_HOUR):
+        http.post("/paper-review/redeem-session", json={"session_id": "does-not-exist"})
+    assert http.post("/paper-review/redeem-session", json={"session_id": "does-not-exist"}).status_code == 429
+
+    for _ in range(backend_app.core.DAILY_LIMIT + 5):  # more than the old flat 25/day
+        r = http.post("/paper-review/redeem-session", json={"session_id": "s-nat-buyer"})
+        assert r.status_code == 200
+        assert r.json()["token"] == token
+
+
+def test_redeem_session_daily_miss_limit(client, monkeypatch):
+    http, backend_app = client
+    monkeypatch.setattr(backend_app, "REDEEM_MISSES_PER_DAY", 3)
+    for _ in range(3):
+        assert http.post("/paper-review/redeem-session", json={}).status_code == 400
+    r = http.post("/paper-review/redeem-session", json={})
+    assert r.status_code == 429
+    assert r.json()["error"] == "rate_limited"
+    assert 1 <= r.json()["retry_after"] <= 86400
+
+
+def test_redeem_session_hourly_ceiling_covers_paid_lookups(client, monkeypatch):
+    """The high hourly ceiling still bounds an IP that repeats valid lookups."""
+    http, backend_app = client
+    monkeypatch.setattr(backend_app, "REDEEM_LOOKUPS_PER_HOUR", 4)
+    _register(backend_app, session_id="s-ceiling")
+    for _ in range(4):
+        assert http.post("/paper-review/redeem-session", json={"session_id": "s-ceiling"}).status_code == 200
+    r = http.post("/paper-review/redeem-session", json={"session_id": "s-ceiling"})
     assert r.status_code == 429
     assert r.json()["error"] == "rate_limited"
 

@@ -27,7 +27,7 @@ class FakeNode {
 }
 
 /** Runs the script with one canned redeem-session response and waits for the page to settle. */
-async function run(response, { status = 200, search = "?session_id=cs_test_1" } = {}) {
+async function run(response, { status = 200, search = "?session_id=cs_test_1", headers } = {}) {
   const ids = {
     "redeem-status": new FakeNode("p", "Loading your tokens…"),
     "tokens-pane": Object.assign(new FakeNode("div"), { hidden: true }),
@@ -56,7 +56,7 @@ async function run(response, { status = 200, search = "?session_id=cs_test_1" } 
     setTimeout: () => 0,
     fetch: async (url, init) => {
       calls.push({ url, body: JSON.parse(init.body) });
-      return { status, ok: status >= 200 && status < 300, json: async () => response };
+      return { status, ok: status >= 200 && status < 300, headers, json: async () => { if (response === null) throw new SyntaxError("not json"); return response; } };
     },
   };
   vm.runInNewContext(SRC, ctx);
@@ -127,6 +127,24 @@ test("a refunded order and an expired one each get their own message", async () 
   assert.equal(revoked.ids["tokens-pane"].hidden, true);
   const expired = await run({ error: "expired" }, { status: 410 });
   assert.match(expired.ids["redeem-status"].textContent, /This link has expired/);
+});
+
+test("a 429 says how long to wait instead of \"Could not load tokens.\"", async () => {
+  const soon = await run({ error: "rate_limited", retry_after: 600 }, { status: 429 });
+  const msg = soon.ids["redeem-status"].textContent;
+  assert.match(msg, /Too many link checks from your network\. Reload this page in about 10 minutes\./);
+  assert.match(msg, /do not need to pay again/);
+  assert.doesNotMatch(msg, /Could not load tokens/);
+  assert.equal(soon.ids["redeem-status"].classList.contains("error"), true);
+  const one = await run({ error: "rate_limited", retry_after: 30 }, { status: 429 });
+  assert.match(one.ids["redeem-status"].textContent, /about 1 minute\./);
+  const tomorrow = await run({ error: "rate_limited", retry_after: 40000 }, { status: 429 });
+  assert.match(tomorrow.ids["redeem-status"].textContent, /Reload this page tomorrow, or email ben@purplelink\.llc/);
+  // A 429 from a proxy in front of the API: no JSON body, only a Retry-After header.
+  const proxy = await run(null, { status: 429, headers: { get: (h) => (h === "Retry-After" ? "120" : null) } });
+  assert.match(proxy.ids["redeem-status"].textContent, /about 2 minutes\./);
+  const bare = await run(null, { status: 429 });
+  assert.match(bare.ids["redeem-status"].textContent, /Reload this page in a few minutes\./);
 });
 
 test("the page links only stylesheets that exist and carries the nodes the script fills", () => {

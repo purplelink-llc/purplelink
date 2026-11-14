@@ -85,6 +85,22 @@
     showTokens(tokens, data.unused_tokens);
   }
 
+  // 429 from /paper-review/redeem-session: say how long to wait, in plain words.
+  function rateLimitMessage(retryAfter) {
+    var safe = " If you paid, your order is safe and you do not need to pay again.";
+    var s = parseInt(retryAfter, 10);
+    if (!(s > 0)) return "Too many link checks from your network. Reload this page in a few minutes." + safe;
+    if (s > 3600) return "Too many link checks from your network today. Reload this page tomorrow, or email ben@purplelink.llc with your Stripe receipt." + safe;
+    var m = Math.max(1, Math.ceil(s / 60));
+    return "Too many link checks from your network. Reload this page in about " + m + (m === 1 ? " minute." : " minutes.") + safe;
+  }
+
+  function rateLimitError(resp) {
+    return resp.json().catch(function () { return {}; }).then(function (p) {
+      throw { error: "rate_limited", detail: rateLimitMessage((p && p.retry_after) || (resp.headers && resp.headers.get ? resp.headers.get("Retry-After") : null)) };
+    });
+  }
+
   var LINK_ERROR_MESSAGES = {
     expired: "This link has expired. Email ben@purplelink.llc with your receipt.",
     revoked: "This order was refunded or disputed, so its links no longer work. Email ben@purplelink.llc if that looks wrong.",
@@ -106,6 +122,7 @@
           }
           throw { detail: "Payment confirmation didn't arrive. Email ben@purplelink.llc with your Stripe receipt." };
         }
+        if (resp.status === 429) return rateLimitError(resp);
         if (!resp.ok) return resp.json().then(function (p) { throw p; });
         return resp.json();
       })
