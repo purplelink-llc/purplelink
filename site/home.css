@@ -436,3 +436,109 @@
 
 /* Skip layout and paint for scenes far from the viewport. */
 .show { content-visibility: auto; contain-intrinsic-size: auto 760px; }
+
+/* ── Publication suite band (after the hero) ───────────────────────────── */
+
+.suite-band {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: clamp(40px, 6vw, 72px) clamp(20px, 6vw, 80px);
+}
+.suite-band-head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: clamp(16px, 3vw, 28px);
+  align-items: center;
+  margin-bottom: clamp(24px, 4vw, 40px);
+}
+.suite-band-icon { display: block; width: clamp(64px, 8vw, 96px); height: auto; }
+.suite-band-kicker {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--purple);
+}
+.suite-band h2 {
+  margin-top: 4px;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+.suite-band-lede { margin-top: 10px; max-width: 52ch; color: var(--muted); }
+
+.suite-band-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 12px;
+}
+.suite-band-steps a {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  height: 100%;
+  padding: 18px 20px 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+.suite-band-steps a:hover,
+.suite-band-steps a:focus-visible {
+  border-color: color-mix(in oklch, var(--purple) 55%, var(--bg));
+  background: color-mix(in oklch, var(--purple) 8%, var(--bg));
+}
+.suite-band-steps a:focus-visible,
+.suite-band-more a:focus-visible { outline: 2px solid var(--purple); outline-offset: 3px; }
+.suite-step-when { font-size: 0.8rem; font-weight: 700; color: var(--purple); }
+.suite-step-name { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; line-height: 1.2; }
+.suite-step-desc { font-size: 0.93rem; line-height: 1.45; color: var(--muted); }
+.suite-step-price { margin-top: auto; padding-top: 6px; font-weight: 700; color: var(--ink); }
+
+.suite-band-more {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 12px;
+}
+.suite-band-more a {
+  display: block;
+  height: 100%;
+  padding: 14px 20px;
+  border: 1px solid color-mix(in oklch, var(--purple) 40%, var(--bg));
+  border-radius: 14px;
+  background: color-mix(in oklch, var(--purple) 6%, var(--bg));
+  color: var(--muted);
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: border-color 0.2s;
+}
+.suite-band-more a:hover { border-color: var(--purple); }
+.suite-band-more strong { color: var(--ink); }
+.suite-band-actions { margin-top: clamp(20px, 3vw, 28px); }
+
+/* The suite in the hero icon row: an SVG tile inset to match the rendered app logos. */
+.stage-icons img.stage-icon-tile { padding: 3px; box-sizing: border-box; }
+
+/* The suite's group in "All apps and prices": text tiles, the icon sits on the heading. */
+.dock-heading-icon { display: flex; align-items: center; gap: 10px; }
+.dock-heading-icon img { width: 28px; height: 28px; }
+.dock-heading-icon a { color: inherit; text-decoration: none; }
+.dock-heading-icon a:hover { text-decoration: underline; text-decoration-color: var(--purple); text-underline-offset: 4px; }
+.dock-text .dock-app { border-color: var(--line); }
+@media (prefers-reduced-motion: reduce) {
+  .suite-band-steps a, .suite-band-more a { transition: none; }
+}
+
+@media (max-width: 520px) {
+  .suite-band-head { grid-template-columns: 1fr; }
+}

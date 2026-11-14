@@ -1,0 +1,270 @@
+/* Publication suite hub (/publication-suite/). Builds on the catalog-* rules in styles.css and the labs-* rules in
+   labs/labs.css; tokens only, so dark and light both follow. */
+
+.ps-hero h1 { max-width: 22ch; }
+.ps-hero .catalog-actions { margin-top: 28px; }
+.ps-hero-note { margin-top: 16px; max-width: 60ch; font-size: 0.93rem; color: var(--muted); }
+.ps-hero-note a { color: var(--purple); font-weight: 600; }
+/* Keep running text near 70 characters a line on wide screens. */
+.catalog-section-head p, .labs-list, .labs-soon { max-width: 68ch; }
+.ps-hero-icon {
+  display: block;
+  width: clamp(72px, 9vw, 96px);
+  height: auto;
+  margin-bottom: 18px;
+}
+
+/* The three reviews, in the order a paper meets them. */
+.ps-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 16px;
+}
+.ps-step {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: clamp(22px, 3vw, 28px);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+}
+.ps-step-when {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--purple);
+}
+.ps-step h3 {
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.ps-step-price {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--ink);
+}
+.ps-step-price span {
+  font-family: var(--font-body, inherit);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+.ps-step > p:not([class]) { color: var(--muted); }
+.ps-tiers {
+  margin: 4px 0 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.93rem;
+}
+.ps-tiers strong { color: var(--ink); }
+.ps-tiers a { color: var(--purple); font-weight: 600; }
+.ps-tiers li::marker { color: var(--purple); }
+/* Push each button to the card's foot so the three line up; the spacer keeps a gap above it. */
+.ps-step .btn { margin-top: auto; align-self: flex-start; }
+.ps-step > :nth-last-child(2) { margin-bottom: 12px; }
+
+/* Which one to buy: situation, then answer. */
+.ps-which {
+  display: grid;
+  gap: 0;
+  max-width: 860px;
+  margin: 0;
+}
+.ps-which > div {
+  display: grid;
+  grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+  gap: 8px 28px;
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+}
+.ps-which > div:last-child { border-bottom: 1px solid var(--line); }
+.ps-which dt { font-weight: 700; color: var(--ink); }
+.ps-which dd { margin: 0; color: var(--muted); }
+.ps-which a { color: var(--purple); font-weight: 600; }
+
+/* The bundle. */
+.ps-pack {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 48px);
+  align-items: center;
+  max-width: 1000px;
+  padding: clamp(24px, 4vw, 40px);
+  border: 1px solid color-mix(in oklch, var(--purple) 45%, var(--bg));
+  border-radius: 20px;
+  background: color-mix(in oklch, var(--purple) 7%, var(--bg));
+}
+.ps-pack-copy { display: flex; flex-direction: column; gap: 10px; }
+.ps-pack-copy > p:not([class]) { color: var(--muted); max-width: 52ch; }
+.ps-pack h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+.ps-pack-price {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--ink);
+}
+.ps-pack-price span {
+  font-family: var(--font-body, inherit);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+.ps-pack .labs-buy { margin-top: 8px; }
+
+.ps-pack-sum {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+.ps-pack-sum caption {
+  caption-side: top;
+  text-align: left;
+  padding-bottom: 8px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.ps-pack-sum th { text-align: left; font-weight: 500; color: var(--muted); padding: 8px 12px 8px 0; }
+.ps-pack-sum td { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); padding: 8px 0; }
+.ps-pack-sum tbody tr { border-top: 1px solid var(--line); }
+.ps-pack-sum tfoot tr { border-top: 1px solid var(--line); }
+.ps-pack-sum tfoot tr:first-child { border-top-width: 2px; }
+.ps-pack-sum tfoot tr:first-child td { color: var(--muted); }
+.ps-pack-total th, .ps-pack-total td { font-weight: 700; color: var(--ink); }
+
+@media (max-width: 760px) {
+  .ps-which > div { grid-template-columns: 1fr; }
+  .ps-pack { grid-template-columns: 1fr; }
+}
+
+/* Hero: copy, then the live three.js scene (workflow-hero.js; poster until the first frame). */
+/* The scene is a wide five-station strip, so it runs the full width under the copy. */
+.ps-hero-visual { margin: clamp(32px, 5vw, 56px) 0 0; }
+.ps-hero-visual figcaption { margin-top: 10px; font-size: 0.88rem; color: var(--muted); }
+
+/* Station renders at the top of each review card. */
+.ps-step-still {
+  display: block;
+  width: calc(100% + 2 * clamp(22px, 3vw, 28px));
+  max-width: none;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  margin: calc(-1 * clamp(22px, 3vw, 28px)) calc(-1 * clamp(22px, 3vw, 28px)) 10px;
+  border-radius: 15px 15px 0 0;
+  border-bottom: 1px solid var(--line);
+}
+.ps-step { overflow: hidden; }
+
+/* What each review finds: report excerpts drawn as annotated sheets. */
+.ps-finds {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 20px;
+  align-items: start;
+}
+.ps-find { display: flex; flex-direction: column; gap: 12px; }
+.ps-find-head h3 {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.ps-find-head p { font-size: 0.88rem; color: var(--muted); }
+.ps-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  box-shadow: 0 1px 0 color-mix(in oklch, var(--ink) 6%, transparent), 0 14px 30px -18px color-mix(in oklch, var(--purple) 40%, transparent);
+}
+.ps-sheet-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+.ps-sheet-text {
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: var(--ink);
+}
+.ps-sheet-text mark {
+  background: color-mix(in oklch, var(--purple) 26%, transparent);
+  color: var(--ink);
+  border-radius: 3px;
+  padding: 0 2px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.ps-note {
+  padding: 12px 14px;
+  border: 1px solid color-mix(in oklch, var(--purple) 35%, var(--line));
+  border-radius: 10px;
+  background: color-mix(in oklch, var(--purple) 6%, var(--panel));
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+.ps-note strong { color: var(--ink); }
+.ps-note-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.ps-chip {
+  display: inline-grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--bg);
+  background: var(--purple);
+}
+.ps-chip-b { background: var(--muted); }
+.ps-track { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; font-size: 0.92rem; color: var(--muted); }
+.ps-track li { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.ps-track li:last-child { border-bottom: 0; padding-bottom: 0; }
+.ps-status {
+  justify-self: start;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  border: 1px solid var(--line);
+  color: var(--ink);
+}
+.ps-status-ok { border-color: color-mix(in oklch, oklch(0.72 0.14 150) 60%, var(--line)); background: color-mix(in oklch, oklch(0.72 0.14 150) 14%, transparent); }
+.ps-status-part { border-color: color-mix(in oklch, oklch(0.8 0.13 85) 60%, var(--line)); background: color-mix(in oklch, oklch(0.8 0.13 85) 14%, transparent); }
+.ps-status-no { border-color: color-mix(in oklch, oklch(0.65 0.18 25) 60%, var(--line)); background: color-mix(in oklch, oklch(0.65 0.18 25) 14%, transparent); }
+.ps-finds-more { margin-top: 18px; font-size: 0.93rem; color: var(--muted); }
+.ps-finds-more a { color: var(--purple); font-weight: 600; }
+

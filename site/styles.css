@@ -253,6 +253,7 @@ select { max-width: 100%; }
   font-weight: 500;
   color: color-mix(in oklch, var(--ink) 74%, var(--bg));
   text-decoration: none;
+  white-space: nowrap;
   transition: color 0.15s;
 }
 

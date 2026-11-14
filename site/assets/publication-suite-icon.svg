@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-labelledby="t">
+  <title id="t">Publication suite</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8a3fd1"/>
+      <stop offset="1" stop-color="#4b1680"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.18"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <!-- Rounded tile, the same corner radius as the macOS app icons in the dock. -->
+  <rect x="8" y="8" width="240" height="240" rx="54" fill="url(#bg)"/>
+  <rect x="8" y="8" width="240" height="240" rx="54" fill="url(#sheen)"/>
+  <!-- The manuscript behind: the earlier draft. -->
+  <path d="M84 60h62l30 30v96a10 10 0 0 1-10 10H84a10 10 0 0 1-10-10V70a10 10 0 0 1 10-10z" fill="#f1e6fb" opacity="0.38" transform="translate(-12 -10)"/>
+  <!-- The manuscript in front, with a folded corner. -->
+  <path d="M96 66h58l34 34v104a12 12 0 0 1-12 12H96a12 12 0 0 1-12-12V78a12 12 0 0 1 12-12z" fill="#fbf7ee"/>
+  <path d="M154 66v24a10 10 0 0 0 10 10h24" fill="none" stroke="#d9c6ee" stroke-width="8" stroke-linejoin="round"/>
+  <!-- Lines of text. -->
+  <g stroke="#b99ad8" stroke-width="9" stroke-linecap="round">
+    <path d="M104 116h48"/>
+    <path d="M104 138h64"/>
+  </g>
+  <!-- The check: reviewed and ready to send. -->
+  <circle cx="172" cy="184" r="34" fill="#6a24b0" stroke="#fbf7ee" stroke-width="8"/>
+  <path d="M156 185l11 11 21-23" fill="none" stroke="#fbf7ee" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
