@@ -1,0 +1,123 @@
+{
+ "id": "howto-google-scholar-g-index-not-shown",
+ "app": "scholar-utility-belt",
+ "title": "No g-index on your Google Scholar profile on Mac (work it out in Terminal)",
+ "short_title": "Google Scholar shows no g-index. Work yours out in one command",
+ "url": "purplelink.llc/scholar-utility-belt",
+ "page": "https://purplelink.llc/scholar-utility-belt/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://otago.libguides.com/research_publishing_impact/author_metrics",
+  "https://jefflibraries.libguides.com/JournalEvaluation/AuthorImpact/AuthorMetrics",
+  "https://scholar.google.com/intl/en/scholar/citations.html"
+ ],
+ "verify": {
+  "runs": [
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf '%s\\n' 60 34 22 15 11 8 5 3 2 1 0 0 0 0 0 0 > cites.txt && sort -rn cites.txt | awk '{s+=$NF; if (int(s/(NR*NR))) g=NR} END {print \"g-index:\", g}'",
+    "output": "g-index: 12"
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf '%s\\n' 60 34 22 15 11 8 5 3 2 1 0 0 0 0 0 0 > cites.txt && sort -rn cites.txt | awk '$NF >= NR {h=NR} END {print \"h-index:\", h}'",
+    "output": "h-index: 6"
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf '%s\\n' 5 3 22 60 0 15 1 0 34 2 0 11 0 8 0 0 > cites.txt && sort -rn cites.txt | awk '{s+=$NF; if (int(s/(NR*NR))) g=NR} END {print \"g-index:\", g}'",
+    "output": "g-index: 12"
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf '%s\\n' 60 34 22 15 11 8 5 3 2 1 0 0 0 0 0 0 > cites.txt && grep -c . cites.txt",
+    "output": "16"
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf '%s\\n' 60 34 22 15 11 8 5 3 2 1 0 0 0 0 0 0 > cites.txt && sort -rn cites.txt > sorted.txt && awk '{s+=$NF; if (int(s/(NR*NR))) g=NR} END {print \"g-index:\", g}' sorted.txt",
+    "output": "g-index: 12"
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf '%s\\n' 60 34 22 15 11 8 5 3 2 1 0 0 0 0 0 0 > cites.txt && sort -rn cites.txt > sorted.txt && awk '$NF >= NR {h=NR} END {print \"h-index:\", h}' sorted.txt",
+    "output": "h-index: 6"
+   }
+  ],
+  "docs": [
+   "https://scholar.google.com/intl/en/scholar/citations.html",
+   "https://otago.libguides.com/research_publishing_impact/author_metrics"
+  ],
+  "notes": "Run 2026-11-14 on the Mac mini under /bin/zsh with /usr/bin/sort and /usr/bin/awk. cites.txt holds the Cited by numbers of a sample 16-paper profile (60 34 22 15 11 8 5 3 2 1 and six zeros), one per line. Google Scholar's Citations help page states a profile computes three metrics, h-index, i10-index and total citations, in All and Recent versions; the g-index is not one of them. The library guides cited send researchers to Publish or Perish for it. The g-index (Egghe 2006) is the largest g such that the top g papers have at least g squared citations together: here the top 12 have 161 citations, at least 144, and the top 13 have 161, under 169, so g is 12. The awk line reads $NF, the only field on each line (written that way rather than the first-field form so no dollar-digit string is on screen), sorts the counts high to low, keeps a running sum and records each rank whose sum reaches its square; the sum minus the square can only fall once it fails, so the last rank recorded is the largest. The third run feeds the same numbers unsorted and prints the same result, so the order you paste them in does not matter. The check counts the lines with grep -c . (16, one per paper, to compare with the number of papers on the profile) and works out the h-index (largest rank whose paper has at least that many citations), 6, to compare with the profile's h-index. Both are needed: papers ranked below h never change the h-index but do change the g-index (dropping the six zero lines leaves h at 6 but gives g 10), so the line count catches left-out uncited papers and the h-index catches a mistyped or missing well-cited one. The steps scene says to include papers with zero citations. This version stops at the number of papers listed, as Scholar profiles count only listed papers. The Scholar Utility Belt page states it adds the g-index, m-index and other author metrics to Scholar profiles, and that author summary metrics (h-index, g-index and similar) are free; the app scene claims only that. The video shows the same calculation in two steps, sort -rn cites.txt > sorted.txt and then awk on sorted.txt; the last two runs record that form with the same results (the earlier runs show the one-line pipe form and that input order does not matter). sorted.txt is a new file in the user's own folder; nothing is deleted. The g-index test is written int(s/(NR*NR)), which is nonzero exactly when the running sum reaches the square of the rank (the sum and rank are never negative), rather than with a greater-or-equal sign, because the YouTube description strips angle brackets and would turn that into an assignment; a 4 4 4 4 list (sum equal to the square at rank 4) gives 4, and the list without the zero lines gives 10."
+ },
+ "scenes": [
+  {
+   "type": "hook",
+   "short": true,
+   "kicker": "Google Scholar profile",
+   "title": "Where is my g-index?",
+   "sub": "Citations, h-index and i10-index only.",
+   "narration": "Your Google Scholar profile shows citations, an h-index and an i10-index. If a form asks for your g-index, it is not there. Here is how to work it out in Terminal on a Mac."
+  },
+  {
+   "type": "cause",
+   "text": "Scholar computes three metrics: citations, h-index and i10-index. The g-index is not one of them.",
+   "narration": "Google Scholar only computes those three. The g-index gives more credit to highly cited papers. It is the largest number g where your top g papers have at least g squared citations between them."
+  },
+  {
+   "type": "steps",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ sort -rn cites.txt > sorted.txt",
+    "$ awk '{s+=$NF; if (int(s/(NR*NR))) g=NR} END {print \"g-index:\", g}' sorted.txt",
+    "g-index: 12"
+   ],
+   "ui": "Copy every paper's Cited by number into cites.txt, one per line. Uncited papers count as 0.",
+   "narration": "Copy every paper's cited by number into a text file, one per line, zeros included. Sort them from high to low. Then this line keeps a running total and prints your g-index. Twelve."
+  },
+  {
+   "type": "check",
+   "short": true,
+   "label": "Terminal",
+   "ok": "Same count, same h-index",
+   "lines": [
+    "$ grep -c . cites.txt",
+    "16",
+    "$ awk '$NF >= NR {h=NR} END {print \"h-index:\", h}' sorted.txt",
+    "h-index: 6"
+   ],
+   "narration": "Now check the file. It has sixteen lines, one for each paper on the profile, uncited papers included. The h-index from the same file is six. If both numbers match your profile, you copied it correctly."
+  },
+  {
+   "type": "app",
+   "name": "Scholar Utility Belt",
+   "line": "Adds the g-index, m-index and other author metrics to Google Scholar profiles.",
+   "url": "purplelink.llc/scholar-utility-belt",
+   "img": "site/assets/scholar-utility-belt-profile.webp",
+   "icon": "site/assets/scholar-utility-belt-icon.webp",
+   "narration": "If you use Google Scholar in Chrome, Scholar Utility Belt adds the g-index, m-index and other author metrics to Scholar profiles. Those author metrics are part of its free core."
+  }
+ ],
+ "thumbs": {
+  "A": {
+   "kind": "diff",
+   "hook": "No g-index in Scholar",
+   "before": "h-index: 6",
+   "after": "g-index: 12"
+  },
+  "B": {
+   "kind": "focus",
+   "hook": "Where is my\ng-index?",
+   "lines": [
+    "$ sort -rn cites.txt > sorted.txt",
+    "g-index: 12"
+   ],
+   "hl": "g-index: 12"
+  },
+  "C": {
+   "kind": "product",
+   "name": "Scholar Utility Belt",
+   "line": "g-index on every Scholar profile",
+   "img": "site/assets/scholar-utility-belt-profile.webp",
+   "icon": "site/assets/scholar-utility-belt-icon.webp",
+   "zoom": 1.3,
+   "pos": "30% 30%"
+  }
+ }
+}
