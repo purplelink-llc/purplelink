@@ -369,6 +369,17 @@ PREVIEW_HOURLY_LIMIT = 5            # per IP per UTC hour
 PREVIEW_DAILY_LIMIT = 20            # per IP per UTC day
 PREVIEW_GLOBAL_DAILY_LIMIT = 300    # all callers per UTC day
 PREVIEW_TIMEOUT_SECONDS = 60
+
+# /paper-review/redeem-session limits, per hashed IP. A lookup that finds a
+# paid order (a session_id or token we issued) only counts toward the high
+# hourly ceiling, so a lab of buyers behind one campus NAT never runs out.
+# Lookups that find nothing (404 pending, 400 malformed) carry the tighter
+# limits: session ids and tokens are unguessable, so these only bound load.
+# The miss limits leave room for the success page's own retries while a
+# webhook is in flight (up to 15 per buyer).
+REDEEM_LOOKUPS_PER_HOUR = 300       # every lookup, found or not
+REDEEM_MISSES_PER_HOUR = 60         # lookups that found no order
+REDEEM_MISSES_PER_DAY = 200
 PREVIEW_DOCX_SECONDS = 40           # budget for converting a Word upload before the check
 PREVIEW_MAX_CONCURRENT = 2          # per web container, so paid routes keep CPU
 
@@ -3853,12 +3864,42 @@ def web():
         payment-gated credential (see /paper-review/submit, which accepts
         it directly), so trusting it here for lookup only is no weaker.
         """
-        if not _enforce_rate_limit(request, "paper-review-redeem-session"):
-            return JSONResponse({"error": "rate_limited"}, status_code=429)
+        _now = datetime.datetime.utcnow()
+        _ip = _client_ip(request)
+        _hour = _now.strftime("%Y-%m-%dT%H")
+        _day = _now.strftime("%Y-%m-%d")
+        _to_next_hour = 3600 - (_now.minute * 60 + _now.second)
+        _to_next_day = 86400 - (_now.hour * 3600 + _now.minute * 60 + _now.second)
+
+        def _rate_limited(retry_after: int) -> JSONResponse:
+            retry_after = max(1, int(retry_after))
+            return JSONResponse(
+                {"error": "rate_limited", "retry_after": retry_after},
+                status_code=429,
+                headers={"Retry-After": str(retry_after)},
+            )
+
+        def _miss(body: dict, status: int) -> JSONResponse:
+            # Found no order: count it against the miss limits first.
+            hit = core.check_limits_and_increment(rate_dict, [
+                (core.rate_limit_key(_ip, _hour, bucket="redeem-miss-hour"), REDEEM_MISSES_PER_HOUR),
+                (core.rate_limit_key(_ip, _day, bucket="redeem-miss-day"), REDEEM_MISSES_PER_DAY),
+            ])
+            if hit is not None:
+                return _rate_limited(_to_next_hour if hit == 0 else _to_next_day)
+            return JSONResponse(body, status_code=status)
+
+        _ok, _ = core.check_and_increment(
+            rate_dict,
+            core.rate_limit_key(_ip, _hour, bucket="redeem-lookup-hour"),
+            REDEEM_LOOKUPS_PER_HOUR,
+        )
+        if not _ok:
+            return _rate_limited(_to_next_hour)
         try:
             payload = await request.json()
         except Exception:
-            return JSONResponse({"error": "invalid_json"}, status_code=400)
+            return _miss({"error": "invalid_json"}, 400)
         session_id = (payload or {}).get("session_id", "")
         token_lookup = (payload or {}).get("token", "")
 
@@ -3867,10 +3908,10 @@ def web():
         elif token_lookup and isinstance(token_lookup, str) and len(token_lookup) <= 200:
             session_id, entry = _lookup_token(token_lookup)
         else:
-            return JSONResponse({"error": "missing_session_id"}, status_code=400)
+            return _miss({"error": "missing_session_id"}, 400)
 
         if not entry or not isinstance(entry, dict):
-            return JSONResponse({"error": "pending"}, status_code=404)
+            return _miss({"error": "pending"}, 404)
         if entry.get("plan_id") and str(entry["plan_id"]).startswith("pl_") and not token_lookup:
             session_id, entry = await _annual_current_entry(session_id, entry)
         _term_refusal = annual.term_refusal(_annual_store(), entry, _time_module.time())

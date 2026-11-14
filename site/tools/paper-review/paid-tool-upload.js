@@ -141,6 +141,22 @@ window.setupPaidToolUpload = function (cfg) {
     if (submitBtn) submitBtn.disabled = !ok;
   }
 
+  // 429 from /paper-review/redeem-session: say how long to wait, in plain words.
+  function rateLimitMessage(retryAfter) {
+    var safe = " If you paid, your order is safe and you do not need to pay again.";
+    var s = parseInt(retryAfter, 10);
+    if (!(s > 0)) return "Too many link checks from your network. Reload this page in a few minutes." + safe;
+    if (s > 3600) return "Too many link checks from your network today. Reload this page tomorrow, or email ben@purplelink.llc with your Stripe receipt." + safe;
+    var m = Math.max(1, Math.ceil(s / 60));
+    return "Too many link checks from your network. Reload this page in about " + m + (m === 1 ? " minute." : " minutes.") + safe;
+  }
+
+  function rateLimitError(resp) {
+    return resp.json().catch(function () { return {}; }).then(function (p) {
+      throw { error: "rate_limited", detail: rateLimitMessage((p && p.retry_after) || (resp.headers && resp.headers.get ? resp.headers.get("Retry-After") : null)) };
+    });
+  }
+
   var REDEEM_ERROR_MESSAGES = {
     already_used: "This link has already been used to submit. Check your email for the status link, or email ben@purplelink.llc if you need help.",
     all_used: "All tokens for this payment have already been redeemed. Check your email for the status link, or email ben@purplelink.llc if you need help.",
@@ -165,6 +181,7 @@ window.setupPaidToolUpload = function (cfg) {
           }
           throw { detail: "Payment confirmation didn't arrive. Email ben@purplelink.llc with your Stripe receipt." };
         }
+        if (resp.status === 429) return rateLimitError(resp);
         if (!resp.ok) return resp.json().then(function (p) { throw p; });
         return resp.json();
       })
