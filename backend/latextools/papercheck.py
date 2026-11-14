@@ -208,6 +208,13 @@ class UsageTracker:
                 seen.append(r["model"])
         return seen
 
+    def cost_by_model(self) -> dict[str, float]:
+        """USD per model, so a ledger row shows which model drove a job's cost."""
+        out: dict[str, float] = {}
+        for r in self.records:
+            out[r["model"]] = out.get(r["model"], 0.0) + r["cost_usd"]
+        return {m: round(c, 4) for m, c in out.items()}
+
     def to_dict(self) -> dict:
         return {
             "calls": len(self.records),
