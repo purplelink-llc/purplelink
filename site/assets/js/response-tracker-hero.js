@@ -332,7 +332,12 @@ async function createStage(el, { still = false } = {}) {
 }
 
 // ---------- gating + controller ----------
+let webglOK = null;
 function hasWebGL() {
+  if (webglOK === null) webglOK = probeWebGL();
+  return webglOK;
+}
+function probeWebGL() {
   try {
     const c = document.createElement('canvas');
     const gl = c.getContext('webgl2') || c.getContext('webgl');
