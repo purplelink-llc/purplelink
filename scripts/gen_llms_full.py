@@ -33,6 +33,7 @@ PAGES = [
     "lenses/",
     "vitae/",
     "vitae/plus/",
+    "publication-suite/",
     "tools/paper-review/",
     "tools/paper-review/sample/",
     "tools/paper-review/packs/",
