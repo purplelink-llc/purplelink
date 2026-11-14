@@ -17,6 +17,9 @@ SUBSECRET = "sub-secret"
 SUB = "sub_LAB1"
 H = {"x-webhook-secret": SECRET}
 DAY = 86400
+# One period start for the whole module. A start taken from the clock on each call can differ by a second between two
+# calls in one test, and a different period is a new month's batch.
+PS0 = int(time.time()) - 60
 
 
 def _q(k):
@@ -59,7 +62,7 @@ def env(monkeypatch):
 
 
 def _snap(product="lab-monthly", sub=SUB, status="active", cancel=False, paid=True, ps=None):
-    ps = ps or int(time.time()) - 60
+    ps = ps or PS0
     months = lab.LAB_PRODUCTS[product]["billing_months"]
     return {"subscription_id": sub, "customer": "cus_L", "status": status, "cancel_at_period_end": cancel,
             "period_start": ps, "period_end": lab.add_months(ps, months), "latest_invoice_id": "in_L",
