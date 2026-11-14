@@ -1,7 +1,13 @@
 /* Publication suite hub (/publication-suite/). Builds on the catalog-* rules in styles.css and the labs-* rules in
    labs/labs.css; tokens only, so dark and light both follow. */
 
-.ps-hero h1 { max-width: 22ch; }
+.ps-hero { padding-top: clamp(40px, 6vw, 80px); padding-bottom: clamp(16px, 2vw, 24px); }
+.ps-hero h1 { max-width: 22ch; font-size: clamp(2.4rem, 5vw, 4.25rem); }
+/* The Paper Review figure follows the hero directly, so it starts in the first screen on a laptop. */
+.ps-hero + .prc { margin-top: 0; padding-top: clamp(24px, 3vw, 40px); }
+/* The hero lede already introduces the page; here the two paths carry the comparison on their own. */
+.ps-hero + .prc .prc-lede { display: none; }
+.ps-hero + .prc > h2 { margin-bottom: 1.25rem; }
 .ps-hero .catalog-actions { margin-top: 28px; }
 .ps-hero-note { margin-top: 16px; max-width: 60ch; font-size: 0.93rem; color: var(--muted); }
 .ps-hero-note a { color: var(--purple); font-weight: 600; }
@@ -9,7 +15,7 @@
 .catalog-section-head p, .labs-list, .labs-soon { max-width: 68ch; }
 .ps-hero-icon {
   display: block;
-  width: clamp(72px, 9vw, 96px);
+  width: clamp(56px, 6vw, 72px);
   height: auto;
   margin-bottom: 18px;
 }
@@ -157,9 +163,9 @@
   .ps-pack { grid-template-columns: 1fr; }
 }
 
-/* Hero: copy, then the live three.js scene (workflow-hero.js; poster until the first frame). */
-/* The scene is a wide five-station strip, so it runs the full width under the copy. */
-.ps-hero-visual { margin: clamp(32px, 5vw, 56px) 0 0; }
+/* The live three.js scene (workflow-hero.js; poster until the first frame) sits after the Paper Review figure. */
+/* The scene is a wide five-station strip, so it runs the full width of its section. */
+.ps-hero-visual { margin: 0; }
 .ps-hero-visual figcaption { margin-top: 10px; font-size: 0.88rem; color: var(--muted); }
 
 /* Station renders at the top of each review card. */
