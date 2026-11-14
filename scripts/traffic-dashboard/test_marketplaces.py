@@ -101,6 +101,31 @@ class Parsers(unittest.TestCase):
         self.assertFalse(rm.rendered("payhip", "", 0))
         self.assertFalse(rm.rendered("payhip", "Loading", 0))
 
+    def test_unresponsive_read_is_retried_once(self):
+        calls, waits = [], []
+
+        def flaky():
+            calls.append(1)
+            if len(calls) == 1:
+                raise rm.Unresponsive("ConnectionResetError")
+            return ("ok", [], "")
+        self.assertEqual(rm.read_with_retry(flaky, answers=lambda: True, sleep=waits.append), ("ok", [], ""))
+        self.assertEqual((len(calls), waits), (2, [rm.RETRY_WAIT]))
+
+        def dead():
+            raise rm.Unresponsive("WebSocketConnectionClosedException")
+        # a browser that is still not answering is not read again; the failure is recorded as before
+        with self.assertRaises(rm.Unresponsive):
+            rm.read_with_retry(dead, answers=lambda: False, sleep=lambda s: None)
+        calls.clear()
+
+        def always():
+            calls.append(1)
+            raise rm.Unresponsive("x")
+        with self.assertRaises(rm.Unresponsive):
+            rm.read_with_retry(always, answers=lambda: True, sleep=lambda s: None)
+        self.assertEqual(len(calls), 2)
+
     def test_merge_never_erases(self):
         data = rm.merge_read({}, "payhip", "ok", rm.parse_table(*PAYHIP_TABLE, "payhip"), "T1")
         self.assertEqual(len(data["orders"]), 2)

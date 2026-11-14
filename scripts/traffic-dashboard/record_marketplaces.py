@@ -285,6 +285,36 @@ class Unresponsive(Exception):
     pass
 
 
+# One failed read used to stand until the next day's 05:10 read: on 2026-11-13 a 12:00 ET read found the automation
+# Chrome not answering (Etsy WebSocketConnectionClosedException, Payhip ConnectionResetError), and the dashboard listed
+# both sites as failing for 17 hours although the 05:10 read the next morning was fine. A hang or a restart of that
+# Chrome usually clears within seconds, so a site that does not respond is read once more after a short wait, and only
+# when the browser's debugging port answers again.
+RETRY_WAIT = 20.0
+CDP_VERSION_URL = "http://localhost:9340/json/version"
+
+
+def browser_answers(timeout: float = 5.0) -> bool:
+    """True when the automation Chrome's debugging port answers."""
+    import urllib.request
+    try:
+        with urllib.request.urlopen(CDP_VERSION_URL, timeout=timeout) as r:
+            return r.status == 200
+    except Exception:  # noqa: BLE001 - refused, reset, timed out: all mean "not answering"
+        return False
+
+
+def read_with_retry(read, wait: float = RETRY_WAIT, answers=browser_answers, sleep=time.sleep):
+    """Run read(); on Unresponsive wait, and when the browser answers again try once more."""
+    try:
+        return read()
+    except Unresponsive:
+        sleep(wait)
+        if not answers():
+            raise
+        return read()
+
+
 def open_page(url: str, settle: float = 5.0):
     """Open url in a new tab of the automation Chrome. Raises Unresponsive when
     the page never answers (the renderer occasionally hangs)."""
@@ -412,11 +442,11 @@ def main() -> int:
             continue
         try:
             if m == "etsy":
-                status, orders, where = read_etsy(data.get("orders") or {})
+                status, orders, where = read_with_retry(lambda: read_etsy(data.get("orders") or {}))
             elif m == "payhip":
-                status, orders, where = read_table_site("payhip", PAYHIP_PAGES)
+                status, orders, where = read_with_retry(lambda: read_table_site("payhip", PAYHIP_PAGES))
             else:
-                status, orders, where = read_table_site("gumroad", GUMROAD_PAGES)
+                status, orders, where = read_with_retry(lambda: read_table_site("gumroad", GUMROAD_PAGES))
         except Unresponsive as exc:
             status, orders, where = f"browser did not respond ({exc})", [], ""
         except Exception as exc:  # noqa: BLE001 - one site must not stop the others
