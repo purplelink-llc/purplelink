@@ -63,8 +63,8 @@ function readPalette() {
   const purpleDim = parseCssColor(v('--purple-dim'), purple);
   const muted = parseCssColor(v('--muted'), [0.3, 0.28, 0.33]);
   const warm = [1, 0.9, 0.76];
-  // Paper is the page's lightest tone nudged warm. Dark theme: a dimmed lit sheet. Light theme: near white.
-  const paper = light ? mix(mix(bg, [1, 1, 1], 0.7), warm, 0.2) : mix(mix(ink, warm, 0.45), bg, 0.1);
+  // Paper is the page's lightest tone nudged warm. Dark theme: a sheet under a desk lamp. Light theme: near white.
+  const paper = light ? mix(mix(bg, [1, 1, 1], 0.7), warm, 0.2) : mix(mix(ink, warm, 0.4), [1, 1, 1], 0.3);
   const text = light ? ink : bg; // text on paper is always the dark end of the ramp
   const sub = mix(text, paper, light ? 0.42 : 0.38); // secondary text on paper, still above 4.5:1
   return { bg, ink, purple, purpleDim, muted, paper, text, sub, light };
@@ -91,7 +91,7 @@ function drawSheet(title, kind, P) {
   const x = c.getContext('2d');
   const g = x.createLinearGradient(0, 0, 0, TH);
   g.addColorStop(0, hex(mix(P.paper, [1, 1, 1], P.light ? 0.15 : 0.06)));
-  g.addColorStop(1, hex(mix(P.paper, P.bg, P.light ? 0.06 : 0.16)));
+  g.addColorStop(1, hex(mix(P.paper, P.bg, P.light ? 0.06 : 0.09)));
   x.fillStyle = g; x.fillRect(0, 0, TW, TH);
   x.strokeStyle = rgba(mix(P.bg, P.ink, 0.4), P.light ? 0.35 : 0.2); x.lineWidth = 3; x.strokeRect(1.5, 1.5, TW - 3, TH - 3);
 
@@ -181,7 +181,7 @@ function buildScene(THREE, renderer) {
   const unitGeo = track(new THREE.PlaneGeometry(1, 1));
   const dotGeo = track(new THREE.CircleGeometry(0.014, 16));
 
-  const glow = new THREE.Mesh(unitGeo, mat(null)); glow.position.set(-0.14, 0, -0.8); glow.scale.set(5.4, 4.4, 1); glow.renderOrder = 0;
+  const glow = new THREE.Mesh(unitGeo, mat(null)); glow.position.set(-0.13, 0, -0.8); glow.scale.set(5.4, 4.4, 1); glow.renderOrder = 0;
   scene.add(glow);
 
   const sheets = ['A', 'B'].map((k, i) => {
@@ -190,7 +190,7 @@ function buildScene(THREE, renderer) {
     const paper = new THREE.Mesh(planeGeo, mat(null)); paper.renderOrder = 2;
     g.add(shadow, paper);
     scene.add(g);
-    return { g, shadow, paper, home: i === 0 ? { x: -0.9, y: 0.05, z: 0.06, ry: 0.28, rz: -0.018 } : { x: 0.62, y: -0.05, z: -0.04, ry: -0.2, rz: 0.014 } };
+    return { g, shadow, paper, home: i === 0 ? { x: -0.8, y: 0.04, z: 0.06, ry: 0.24, rz: -0.016 } : { x: 0.54, y: -0.04, z: -0.04, ry: -0.17, rz: 0.012 } };
   });
   sheets[0].g.rotation.x = sheets[1].g.rotation.x = 0.05;
 
@@ -212,10 +212,10 @@ function buildScene(THREE, renderer) {
       sheets.forEach((s) => s.g.updateMatrixWorld(true));
       const a = sheets[0].g.localToWorld(local(1, anchorsA[i]));
       const b = sheets[1].g.localToWorld(local(0, anchorsB[i]));
-      const c1 = a.clone().add(new THREE.Vector3(0.2, 0.1 - i * 0.02, 0.26 + i * 0.04));
-      const c2 = b.clone().add(new THREE.Vector3(-0.2, 0.06, 0.2 + i * 0.03));
+      const c1 = a.clone().add(new THREE.Vector3(0.14, 0.08 - i * 0.02, 0.24 + i * 0.04));
+      const c2 = b.clone().add(new THREE.Vector3(-0.14, 0.05, 0.19 + i * 0.03));
       const curve = new THREE.CubicBezierCurve3(a, c1, c2, b);
-      const geo = new THREE.TubeGeometry(curve, 48, 0.0042, 5, false);
+      const geo = new THREE.TubeGeometry(curve, 48, 0.005, 5, false);
       const mesh = new THREE.Mesh(geo, threadMat); mesh.renderOrder = 5; mesh.frustumCulled = false;
       const dotA = new THREE.Mesh(dotGeo, dotMat); dotA.position.copy(a); dotA.renderOrder = 6;
       const dotB = new THREE.Mesh(dotGeo, dotMat); dotB.position.copy(b); dotB.renderOrder = 6;
@@ -272,14 +272,17 @@ function buildScene(THREE, renderer) {
       chips[i].material.opacity = c;
       chips[i].scale.setScalar(0.92 + 0.08 * c);
     });
-    // camera: fit width and height, small pointer parallax
+    // camera: fit width and height, small pointer parallax. A panel that is not wider than tall (phones)
+    // gets a close-up of the response letter, with the threads coming in from the comment sheet.
     const asp = cam.aspect;
-    const fitW = 2.8, fitH = 2.0;
+    const close = asp < 1.05;
+    const cx = close ? 0.36 : -0.13;
+    const fitW = close ? 1.66 : 2.62, fitH = close ? 1.58 : 1.7;
     const tn = Math.tan((camera.fov * Math.PI) / 360);
     const D = Math.max((fitW / 2) / (tn * asp), (fitH / 2) / tn);
     camera.aspect = asp;
-    camera.position.set(-0.14 + cam.px * 0.09, 0.3 + cam.py * -0.05, D);
-    camera.lookAt(-0.14, 0.03, 0);
+    camera.position.set(cx + cam.px * 0.09, 0.3 + cam.py * -0.05, D);
+    camera.lookAt(cx, 0.06, 0);
     camera.updateProjectionMatrix();
   }
 
@@ -347,12 +350,14 @@ function eligible(mqls) {
 }
 
 function swapPoster(el) {
-  const img = el.querySelector('.rt-hero-poster');
-  if (!img) return;
   const light = document.documentElement.getAttribute('data-theme') === 'light';
-  const src = img.getAttribute('src') || '';
-  const want = light ? src.replace(/(-light)?\.webp$/, '-light.webp') : src.replace(/-light\.webp$/, '.webp');
-  if (want !== src) img.setAttribute('src', want);
+  const themed = (u) => (light ? u.replace(/(-light)?\.webp$/, '-light.webp') : u.replace(/-light\.webp$/, '.webp'));
+  el.querySelectorAll('.rt-hero-poster, source').forEach((n) => {
+    const attr = n.tagName === 'SOURCE' ? 'srcset' : 'src';
+    const cur = n.getAttribute(attr) || '';
+    const want = themed(cur);
+    if (want !== cur) n.setAttribute(attr, want);
+  });
 }
 
 function controller(el) {
