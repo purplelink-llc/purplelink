@@ -1,0 +1,123 @@
+/* For research labs (/labs/). Builds on the catalog-* and chooser rules in styles.css; tokens only, so dark and light both follow. */
+
+.labs-hero h1 { max-width: 20ch; }
+.labs-hero .catalog-actions { margin-top: 28px; }
+
+.labs-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 36px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  max-width: 900px;
+}
+.labs-jump a {
+  padding: 6px 14px;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.labs-jump a:hover { border-color: var(--purple); color: var(--purple); }
+
+.labs-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  max-width: 900px;
+}
+.labs-plan {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: clamp(22px, 3vw, 32px);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+}
+.labs-plan:last-child {
+  border-color: color-mix(in oklch, var(--purple) 45%, var(--bg));
+  background: color-mix(in oklch, var(--purple) 7%, var(--bg));
+}
+.labs-plan h3 {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.labs-plan-price {
+  margin-top: 6px;
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--ink);
+}
+.labs-plan-price span {
+  font-family: var(--font-body, inherit);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+.labs-plan-alt { color: var(--muted); font-weight: 600; margin-bottom: 10px; }
+.labs-plan p:last-child { color: var(--muted); max-width: 44ch; }
+.labs-plan p:last-child strong { color: var(--ink); }
+
+.labs-soon {
+  max-width: 900px;
+  margin: 20px 0 0;
+  padding: 14px 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: color-mix(in oklch, var(--purple) 8%, var(--bg));
+  color: var(--ink);
+}
+.labs-soon a, .labs-single a, .labs-list a, .labs-card-state a { color: var(--purple); font-weight: 600; }
+
+.labs-sub {
+  margin: clamp(36px, 5vw, 56px) 0 14px;
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.labs-list { max-width: 760px; padding-left: 1.2rem; display: grid; gap: 10px; color: var(--muted); }
+.labs-list li::marker { color: var(--purple); }
+
+.labs-compare { max-width: 1000px; font-size: 0.93rem; }
+.labs-compare caption { caption-side: bottom; }
+.labs-compare tbody th { width: 20%; }
+
+.labs-static-card:hover { border-color: var(--line); box-shadow: none; }
+.labs-card-state { font-size: 0.88rem; font-weight: 600; color: var(--ink); margin-top: 6px; }
+
+.catalog-section .catalog-actions { margin-top: 0; }
+
+@media (max-width: 900px) {
+  .labs-plan-grid { grid-template-columns: 1fr; }
+}
+
+/* Phone width: each table row becomes a short block with its own labels. */
+@media (max-width: 720px) {
+  .labs-compare thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .labs-compare, .labs-compare tbody, .labs-compare tr, .labs-compare th, .labs-compare td { display: block; width: 100%; }
+  .labs-compare tbody tr { padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .labs-compare tbody tr:hover { background: transparent; }
+  .labs-compare tbody th { width: 100%; padding: 0 0 6px; border: 0; font-size: 1rem; }
+  .labs-compare td { padding: 3px 0; border: 0; display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 10px; }
+  .labs-compare td::before { content: attr(data-label); font-weight: 700; color: var(--ink); }
+}
+
+/* Shared success page (packs, lab plans, Publication Pack) */
+.success-token { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.8rem; word-break: break-all; }
+.success-groups { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: 0.75rem; }
+.success-group { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.9rem 1rem; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+.success-group-name { font-weight: 600; color: var(--ink); }
+.success-group-used { color: var(--muted); font-size: 0.9rem; }
