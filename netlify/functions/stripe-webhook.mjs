@@ -39,6 +39,23 @@
  * Only subscriptions whose metadata.product is paper-review-annual are forwarded; any other is ignored.
  * Modal also re-reads Stripe itself (reminder loop, plan page), so a missed event is caught later.
  * Needs STRIPE_SECRET_KEY here to read the subscription.
+ *
+ * Lab plans (lab-monthly, lab-annual, lab-plus-monthly, lab-plus-annual; a research group gets 20 or 40 Paper Review
+ * credits each month) are subscriptions that Modal owns (/lab/register, /lab/sync, /lab/revoke, /lab/restore). Modal
+ * reads the subscription from Stripe itself, so the events below only tell it when to look:
+ *   checkout.session.completed  /lab/register {session_id, subscription_id, product, email, amounts, customer}. A failure
+ *                               alerts the operator and answers 502 so Stripe retries. No buyer code, no referral.
+ *   customer.subscription.updated / .deleted  /lab/sync (never reaches the Vitae Plus or digest "subscribers" logic)
+ *   invoice.paid  product from the invoice's subscription metadata snapshot, else the subscription. subscription_cycle and
+ *                 subscription_update -> /lab/sync. subscription_create -> ignored when a Checkout session exists (the
+ *                 completed-session event registers it); with none (a Dashboard invoice or purchase-order plan) ->
+ *                 /lab/register with no session id and no amounts.
+ *   full refund or dispute on one of its invoices  /lab/revoke (charge -> invoice -> subscription); a dispute closed as
+ *                 won -> /lab/restore. Same failure handling as the annual plan: 502 so Stripe retries.
+ * One-time review orders (the PURPLELINK review products, publication-pack): a full refund or dispute on a charge that is
+ * not for a subscription looks up its Checkout session (payment_intent) and, for those products, tells Modal
+ * (/paper-review/revoke-order, and /paper-review/restore-order on a won dispute). A failure there is logged and alerted
+ * but never blocks the refund bookkeeping (netlify/lib/refunds.mjs) or changes the answer the event gets.
  */
 
 import { issueKeyfeelLicense } from "../lib/keyfeel-license.mjs";
@@ -106,6 +123,15 @@ const MODAL_LIFECYCLE_URL =
 const LIFECYCLE_PRODUCTS = new Set(["moderntex"]);
 const MODAL_BASE = "https://ben-ampel--purplelink-latextools-web.modal.run";
 const ANNUAL_PRODUCT = "paper-review-annual";
+// Lab plans: subscriptions owned by Modal (backend lab routes). Checkout stamps metadata.product on the session and on
+// the subscription (subscription_data[metadata][product]).
+export const LAB_PRODUCTS = new Set(["lab-monthly", "lab-annual", "lab-plus-monthly", "lab-plus-annual"]);
+// One-time products whose Modal order a refund or dispute must revoke (Modal answers unknown_order for one it never stored).
+const ORDER_PRODUCTS = new Set([
+  "paper-review-standard", "paper-review-journal", "paper-review-deep", "paper-review-pack-5", "paper-review-pack-20",
+  "cover-letter", "anonymity-check", "journal-check", "citation-gap", "revision-review", "response-review",
+  "response-draft", "publication-pack", "resume-review",
+]);
 const RESEND_API_URL = "https://api.resend.com/emails";
 // Resend verifies domains exactly: send from `purplelink.llc`, never a
 // subdomain. RESEND_API_KEY is the "purplelink-netlify" key (sending access,
@@ -312,26 +338,33 @@ async function subscriptionOfCharge(charge) {
 }
 
 /**
- * A full refund or a dispute on a charge. If it belongs to a Paper Review annual subscription, tell Modal to
- * revoke the plan. Returns null when it is not an annual charge, else {ok, status}.
+ * The subscription a charge was paid for and its product (metadata.product), or {subId: "", product: ""} when the charge
+ * is not on a subscription invoice (or Stripe cannot be read).
  */
-async function annualSubscriptionOfCharge(charge) {
-  if (!charge || !currentSecretKey()) return "";
+async function planOfCharge(charge) {
+  if (!charge || !currentSecretKey()) return { subId: "", product: "" };
   const subId = await subscriptionOfCharge(charge);
-  if (!subId) return "";
+  if (!subId) return { subId: "", product: "" };
   const sub = await stripeGet(`/v1/subscriptions/${encodeURIComponent(subId)}`);
-  return sub && sub.metadata?.product === ANNUAL_PRODUCT ? subId : "";
+  return { subId, product: sub?.metadata?.product || "" };
 }
 
-async function revokeAnnualForCharge(charge, reason, backendSecret, disputeId = "") {
-  const subId = await annualSubscriptionOfCharge(charge);
-  if (!subId) return null;
+const isPlanProduct = (product) => product === ANNUAL_PRODUCT || LAB_PRODUCTS.has(product);
+
+/**
+ * A full refund or a dispute on a charge. If it belongs to a Paper Review annual or a lab subscription, tell Modal to
+ * revoke the plan. Returns null when it is not such a charge, else {ok, status, subscription_id}.
+ */
+async function revokePlanForCharge(plan, reason, backendSecret, disputeId = "") {
+  if (!isPlanProduct(plan.product)) return null;
+  const subId = plan.subId;
+  const lab = LAB_PRODUCTS.has(plan.product);
   const body = { subscription_id: subId, reason };
   if (disputeId) body.dispute_id = disputeId;
-  const res = await postModal("/paper-review/annual-revoke", body, backendSecret);
+  const res = await postModal(lab ? "/lab/revoke" : "/paper-review/annual-revoke", body, backendSecret);
   if (!res.ok) {
     await alertOperator(
-      "Annual plan revoke failed after a refund or dispute",
+      `${lab ? "Lab" : "Annual"} plan revoke failed after a refund or dispute`,
       `subscription_id=${subId}\nreason=${reason}\nmodal_status=${res.status}\ndetail=${res.text.slice(0, 300)}\n\nStripe will retry this webhook.`
     );
   }
@@ -339,20 +372,51 @@ async function revokeAnnualForCharge(charge, reason, backendSecret, disputeId = 
 }
 
 /**
- * A dispute on an annual invoice was closed as won: tell Modal to give the plan back. Modal restores only a plan
- * that disputes alone revoked (never one a refund revoked). Returns null when it is not an annual charge.
+ * A dispute on a plan invoice was closed as won: tell Modal to give the plan back. Modal restores only a plan
+ * that disputes alone revoked (never one a refund revoked). Returns null when it is not a plan charge.
  */
-async function restoreAnnualForCharge(charge, disputeId, backendSecret) {
-  const subId = await annualSubscriptionOfCharge(charge);
-  if (!subId) return null;
-  const res = await postModal("/paper-review/annual-restore", { subscription_id: subId, dispute_id: disputeId || "" }, backendSecret);
+async function restorePlanForCharge(plan, disputeId, backendSecret) {
+  if (!isPlanProduct(plan.product)) return null;
+  const subId = plan.subId;
+  const lab = LAB_PRODUCTS.has(plan.product);
+  const res = await postModal(lab ? "/lab/restore" : "/paper-review/annual-restore", { subscription_id: subId, dispute_id: disputeId || "" }, backendSecret);
   if (!res.ok) {
     await alertOperator(
-      "Annual plan restore failed after a won dispute",
+      `${lab ? "Lab" : "Annual"} plan restore failed after a won dispute`,
       `subscription_id=${subId}\ndispute_id=${disputeId}\nmodal_status=${res.status}\ndetail=${res.text.slice(0, 300)}\n\nStripe will retry this webhook.`
     );
   }
   return { ok: res.ok, status: res.status, subscription_id: subId };
+}
+
+/**
+ * A full refund or dispute on a charge that is not for a subscription: find its Checkout session and, when it was a
+ * one-time review product, tell Modal to revoke (or, for a won dispute, restore) that order. Never throws and never
+ * blocks the caller: a failure is logged and the operator alerted, and the event is answered as before.
+ */
+async function orderRevokeOrRestore(pi, kind, reason, backendSecret, disputeId = "") {
+  if (!pi || !currentSecretKey()) return;
+  try {
+    const found = await stripeGet(`/v1/checkout/sessions?payment_intent=${encodeURIComponent(pi)}&limit=1`);
+    if (!found) {
+      console.warn("stripe-webhook: order lookup failed", pi);
+      await alertOperator("Could not look up the order behind a refund or dispute",
+        `payment_intent=${pi}\nreason=${reason}\n\nIf this was a Paper Review order, revoke it by hand.`);
+      return;
+    }
+    const session = found.data?.[0];
+    if (!session?.id || !ORDER_PRODUCTS.has(session.metadata?.product || "")) return;
+    const body = kind === "restore" ? { session_id: session.id, dispute_id: disputeId || "" } : { session_id: session.id, reason };
+    if (kind !== "restore" && disputeId) body.dispute_id = disputeId;
+    const res = await postModal(kind === "restore" ? "/paper-review/restore-order" : "/paper-review/revoke-order", body, backendSecret);
+    if (!res.ok) {
+      console.warn("stripe-webhook: order call failed", kind, res.status);
+      await alertOperator(`Order ${kind} failed after a ${reason}`,
+        `session_id=${session.id}\nproduct=${session.metadata.product}\nmodal_status=${res.status}\ndetail=${res.text.slice(0, 300)}\n\nThe refund record was still written. Revoke or restore this order by hand.`);
+    }
+  } catch (err) {
+    console.warn("stripe-webhook: order call error", String(err));
+  }
 }
 
 /**
@@ -869,6 +933,23 @@ async function handleStripeEvent(request, context) {
     return jsonResponse(400, { error: "invalid_json" });
   }
 
+  // Lab plans: any change to the subscription (a portal cancel, a status change, the end) is only a nudge. Modal reads
+  // the subscription from Stripe itself and applies it. Before the annual and Vitae Plus / digest handling below, so a lab
+  // subscription never reaches the digest "subscribers" store logic.
+  if ((event.type === "customer.subscription.updated" || event.type === "customer.subscription.deleted") &&
+      LAB_PRODUCTS.has(event.data?.object?.metadata?.product || "")) {
+    const sub = event.data.object;
+    const res = await postModal("/lab/sync", { subscription_id: sub.id }, backendSecret);
+    if (!res.ok) {
+      await alertOperator(
+        "Lab plan status not synced",
+        `subscription_id=${sub.id}\nevent=${event.type}\nmodal_status=${res.status}\ndetail=${res.text.slice(0, 300)}\n\nStripe will retry this webhook.`
+      );
+      return jsonResponse(502, { error: "modal_sync_failed", modal_status: res.status });
+    }
+    return jsonResponse(200, { status: "lab_synced", type: event.type, subscription_id: sub.id });
+  }
+
   // Paper Review annual plan: a portal cancel, an undo, a status change or the end of the subscription.
   // Modal only records it; it never grants anything from a status. A foreign product is ignored.
   if (event.type === "customer.subscription.updated" ||
@@ -894,22 +975,61 @@ async function handleStripeEvent(request, context) {
     return jsonResponse(200, { status: "annual_status_recorded", type: event.type, subscription_id: sub.id });
   }
 
-  // A renewal payment. billing_reason subscription_create is the first payment, which checkout.session.completed
-  // already registered, so only subscription_cycle renews.
+  // A subscription invoice. Annual plan: only subscription_cycle renews (the first payment was registered by
+  // checkout.session.completed). Lab plans: a cycle or an update nudges Modal to sync (it issues any monthly batch that
+  // is due); the first invoice registers a plan that has no Checkout session (an invoice or purchase-order plan made in
+  // the Dashboard).
   if (event.type === "invoice.paid") {
     const inv = event.data?.object || {};
-    if (inv.billing_reason !== "subscription_cycle") {
-      return jsonResponse(200, { status: "ignored", type: event.type, billing_reason: inv.billing_reason || null });
+    const reason = inv.billing_reason;
+    if (reason !== "subscription_cycle" && reason !== "subscription_update" && reason !== "subscription_create") {
+      return jsonResponse(200, { status: "ignored", type: event.type, billing_reason: reason || null });
     }
     const subId = subscriptionOfInvoice(inv);
     if (!subId) return jsonResponse(200, { status: "ignored_no_subscription", type: event.type });
-    const sub = await stripeGet(`/v1/subscriptions/${encodeURIComponent(subId)}`);
-    if (!sub) {
-      await alertOperator("Annual renewal could not read the subscription",
-        `subscription_id=${subId}\ninvoice=${inv.id || ""}\n\nStripe will retry this webhook.`);
-      return jsonResponse(502, { error: "stripe_unreadable" });
+    // The product, from the metadata snapshot on the invoice when it has one, else from the subscription.
+    let product = inv.parent?.subscription_details?.metadata?.product || inv.subscription_details?.metadata?.product || "";
+    if (!product) {
+      const sub = await stripeGet(`/v1/subscriptions/${encodeURIComponent(subId)}`);
+      if (!sub) {
+        if (reason === "subscription_create") return jsonResponse(200, { status: "ignored", type: event.type, billing_reason: reason });
+        await alertOperator("Plan renewal could not read the subscription",
+          `subscription_id=${subId}\ninvoice=${inv.id || ""}\n\nStripe will retry this webhook.`);
+        return jsonResponse(502, { error: "stripe_unreadable" });
+      }
+      product = sub.metadata?.product || "";
     }
-    if (sub.metadata?.product !== ANNUAL_PRODUCT) {
+    if (LAB_PRODUCTS.has(product)) {
+      if (reason === "subscription_create") {
+        const found = await stripeGet(`/v1/checkout/sessions?subscription=${encodeURIComponent(subId)}&limit=1`);
+        if (!found) {
+          await alertOperator("Lab plan first invoice could not look up its Checkout session",
+            `subscription_id=${subId}\ninvoice=${inv.id || ""}\n\nStripe will retry this webhook.`);
+          return jsonResponse(502, { error: "stripe_unreadable" });
+        }
+        if (found.data?.length) return jsonResponse(200, { status: "ignored_checkout_plan", subscription_id: subId });
+        const res = await postModal("/lab/register", {
+          subscription_id: subId, product, email: inv.customer_email || "", customer: idOf(inv.customer),
+        }, backendSecret);
+        if (!res.ok) {
+          await alertOperator("Lab plan registration failed (invoice plan)",
+            `subscription_id=${subId}\ninvoice=${inv.id || ""}\nmodal_status=${res.status}\ndetail=${res.text.slice(0, 300)}\n\nStripe will retry this webhook.`);
+          return jsonResponse(502, { error: "modal_register_failed", modal_status: res.status });
+        }
+        return jsonResponse(200, { status: "lab_registered", subscription_id: subId });
+      }
+      const res = await postModal("/lab/sync", { subscription_id: subId }, backendSecret);
+      if (!res.ok) {
+        await alertOperator("Lab plan sync failed",
+          `subscription_id=${subId}\ninvoice=${inv.id || ""}\nmodal_status=${res.status}\ndetail=${res.text.slice(0, 300)}\n\nStripe will retry this webhook.`);
+        return jsonResponse(502, { error: "modal_sync_failed", modal_status: res.status });
+      }
+      return jsonResponse(200, { status: "lab_synced", subscription_id: subId });
+    }
+    if (reason !== "subscription_cycle") {
+      return jsonResponse(200, { status: "ignored", type: event.type, billing_reason: reason });
+    }
+    if (product !== ANNUAL_PRODUCT) {
       return jsonResponse(200, { status: "ignored_foreign_product", type: event.type });
     }
     const res = await postModal("/paper-review/annual-renew", { subscription_id: subId }, backendSecret);
@@ -959,8 +1079,10 @@ async function handleStripeEvent(request, context) {
     const pi = paymentIntentOf(charge);
     const full = charge.refunded === true || (charge.amount > 0 && charge.amount_refunded >= charge.amount);
     if (!full) return jsonResponse(200, { status: "partial_refund_ignored", type: event.type });
-    const annualRefund = await revokeAnnualForCharge(charge, "refund", backendSecret);
-    if (annualRefund && !annualRefund.ok) return jsonResponse(502, { error: "modal_revoke_failed" });
+    const plan = await planOfCharge(charge);
+    const planRefund = await revokePlanForCharge(plan, "refund", backendSecret);
+    if (planRefund && !planRefund.ok) return jsonResponse(502, { error: "modal_revoke_failed" });
+    if (!plan.subId) await orderRevokeOrRestore(pi, "revoke", "refund", backendSecret);
     if (!pi) return jsonResponse(200, { status: "ignored_no_payment_intent", type: event.type });
     await recordRevocation(pi, { reason: "refund", chargeId: charge.id || null, eventId: event.id || null });
     return jsonResponse(200, { status: "refund_recorded", payment_intent: pi });
@@ -970,13 +1092,17 @@ async function handleStripeEvent(request, context) {
     const pi = paymentIntentOf(dispute);
     if (event.type === "charge.dispute.created" && dispute.charge && currentSecretKey()) {
       const chargeObj = await stripeGet(`/v1/charges/${encodeURIComponent(idOf(dispute.charge))}`);
-      const annualDispute = await revokeAnnualForCharge(chargeObj, "dispute", backendSecret, dispute.id || "");
-      if (annualDispute && !annualDispute.ok) return jsonResponse(502, { error: "modal_revoke_failed" });
+      const plan = await planOfCharge(chargeObj);
+      const planDispute = await revokePlanForCharge(plan, "dispute", backendSecret, dispute.id || "");
+      if (planDispute && !planDispute.ok) return jsonResponse(502, { error: "modal_revoke_failed" });
+      if (!plan.subId) await orderRevokeOrRestore(paymentIntentOf(chargeObj) || pi, "revoke", "dispute", backendSecret, dispute.id || "");
     }
     if (event.type === "charge.dispute.closed" && dispute.status === "won" && dispute.charge && currentSecretKey()) {
       const chargeObj = await stripeGet(`/v1/charges/${encodeURIComponent(idOf(dispute.charge))}`);
-      const annualWon = await restoreAnnualForCharge(chargeObj, dispute.id || "", backendSecret);
-      if (annualWon && !annualWon.ok) return jsonResponse(502, { error: "modal_restore_failed" });
+      const plan = await planOfCharge(chargeObj);
+      const planWon = await restorePlanForCharge(plan, dispute.id || "", backendSecret);
+      if (planWon && !planWon.ok) return jsonResponse(502, { error: "modal_restore_failed" });
+      if (!plan.subId) await orderRevokeOrRestore(paymentIntentOf(chargeObj) || pi, "restore", "won dispute", backendSecret, dispute.id || "");
     }
     if (!pi) return jsonResponse(200, { status: "ignored_no_payment_intent", type: event.type });
     if (event.type === "charge.dispute.created") {
@@ -1073,6 +1199,29 @@ async function handleStripeEvent(request, context) {
   // asks it to mint a redemption token for a product it has never heard of; it
   // fails, we return 502, and Stripe retries for ~3 days while alerting the
   // operator each time. Ignore anything that is not ours.
+
+  // Lab plan: a subscription Modal owns. Register it; Modal reads the subscription from Stripe and issues the first batch.
+  // No buyer code and no referral for a plan. A failure is retried (502) so a paid group is never left without its plan.
+  if (LAB_PRODUCTS.has(rawProduct)) {
+    const labSubId = idOf(session.subscription);
+    if (!labSubId) {
+      await alertOperator("Lab plan checkout has no subscription",
+        `session_id=${sessionId}\nproduct=${rawProduct}\nemail=${email}\n\nStripe will retry this webhook.`);
+      return jsonResponse(502, { error: "missing_subscription" });
+    }
+    const res = await postModal("/lab/register", {
+      session_id: sessionId, subscription_id: labSubId, product: rawProduct, email,
+      amount_paid: amountPaid, amount_subtotal: amountSubtotal, customer: idOf(session.customer),
+    }, backendSecret);
+    if (!res.ok) {
+      await alertOperator("Modal lab register failed for a paid session",
+        `session_id=${sessionId}\nsubscription_id=${labSubId}\nproduct=${rawProduct}\nemail=${email}\nmodal_status=${res.status}\ndetail=${res.text.slice(0, 300)}\n\nStripe will retry this webhook. If it keeps failing, this group's plan must be registered by hand.`);
+      return jsonResponse(502, { error: "modal_register_failed", modal_status: res.status });
+    }
+    // A buyer who later lets another checkout expire must not get a "you did not finish" email.
+    try { await markBought(getStore(RECOVERY_STORE), rawProduct, email); } catch (_) { /* best effort */ }
+    return jsonResponse(200, { status: "registered", session_id: sessionId });
+  }
   if (BLOB_DELIVERED_PRODUCTS.has(rawProduct)) {
     // A second app added at checkout is on the paid line items only: re-read the session with them expanded. If that
     // read fails, Stripe is asked to retry (502) rather than delivering one app of two to a buyer who paid for both.

@@ -7,7 +7,20 @@ export function escapeHtml(v) {
   return String(v).replace(/[&<>"'`]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;", "`": "&#96;" }[c]))
 }
 
-export function page(title, heading, bodyHtml, status = 200) {
+/**
+ * Extra same-origin stylesheets for a page: `options.styles` is a list of paths like "/labs/plan.css". Anything that is
+ * not a plain site path (an absolute URL, a protocol-relative one, a quote or angle bracket) is dropped, so the CSP
+ * (style-src 'self') is never asked for another origin.
+ */
+function extraStyles(styles) {
+  if (!Array.isArray(styles)) return ""
+  return styles
+    .filter((h) => typeof h === "string" && /^\/[A-Za-z0-9._\/-]*\.css$/.test(h) && !h.startsWith("//"))
+    .map((h) => `\n    <link rel="stylesheet" href="${h}">`)
+    .join("")
+}
+
+export function page(title, heading, bodyHtml, status = 200, options = {}) {
   return new Response(`<!doctype html>
 <html lang="en">
   <head>
@@ -18,7 +31,7 @@ export function page(title, heading, bodyHtml, status = 200) {
     <meta name="theme-color" content="#19141d">
     <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/styles.css">${extraStyles(options?.styles)}
     <script src="/site.js" defer></script>
   </head>
   <body>
