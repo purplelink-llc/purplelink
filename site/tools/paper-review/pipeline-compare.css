@@ -1,259 +1,179 @@
-/* "Why not a chat prompt?" comparison figure on the Paper Review pages.
-   Left: one chat prompt, deliberately quiet. Right: what the pipeline literally runs
-   (backend/latextools/papercheck.py run_review_pipeline). Tokens only, no hex; dark is the default theme. */
+/* "A chat prompt" against "Paper Review": the shared figure on the Paper Review pages and /publication-suite/.
+   Markup lives once in scripts/partials/report-pipeline.html; apply_layout.py stamps it into every page.
+   The shape carries the argument: a short, sparse dashed track against a dense four-stage one.
+   Stages follow backend/latextools/papercheck.py run_review_pipeline. Tokens only; dark is the default theme. */
 
 .prc {
-  max-width: 1040px;
+  container: prc / inline-size;
+  max-width: 1080px;
   margin: 3rem auto 2rem;
   padding: 0 1rem;
 }
-.prc > h2 { font-family: var(--font-display); text-align: center; margin-bottom: 0.5rem; }
-.prc-lede {
-  max-width: 62ch;
+.prc > h2 {
+  font-family: var(--font-display);
+  text-align: center;
+  text-wrap: balance;
+  margin-bottom: 0.6rem;
+}
+.prc .prc-lede {
+  max-width: 64ch;
   margin: 0 auto 1.75rem;
   text-align: center;
   color: var(--muted);
-  line-height: 1.55;
+  text-wrap: pretty;
 }
 
-.prc-grid {
+.prc-paths { display: grid; gap: 12px; }
+.prc li { margin-bottom: 0; }
+
+/* One row per path: a name on the left, the track on the right. */
+.prc-path {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 2.15fr);
-  gap: 1.25rem;
-  align-items: stretch;
+  grid-template-columns: minmax(0, 10.5rem) minmax(0, 1fr);
+  gap: 12px 24px;
+  align-items: start;
+  padding: 20px 22px;
+  border-radius: 16px;
+}
+.prc .prc-path-h { display: flex; flex-direction: column; gap: 2px; padding-top: 4px; }
+.prc-path-h strong { font-family: var(--font-display); font-size: 1.2rem; letter-spacing: -0.01em; color: var(--ink); }
+.prc-path-h span { font-size: 0.88rem; color: var(--muted); }
+
+.prc-path-chat { border: 1px dashed var(--line); }
+.prc-path-pipe {
+  border: 1px solid color-mix(in oklch, var(--purple) 45%, var(--bg));
+  background: color-mix(in oklch, var(--purple) 7%, var(--bg));
 }
 
-.prc-col {
-  border-radius: 20px;
-  padding: 1.4rem 1.4rem 1.5rem;
-}
-.prc-col-h {
-  font-family: var(--font-display);
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin: 0;
-  color: var(--ink);
-}
-.prc-col-sub {
-  margin: 0.15rem 0 1.1rem;
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-
-/* ---- Left: one chat prompt ---------------------------------------------- */
-.prc-chat {
-  border: 1.5px dashed var(--field-line);
-  background: color-mix(in oklch, var(--muted) 5%, var(--bg));
-}
-.prc-chat .prc-col-h { color: var(--muted); }
-
-.prc-mini {
+/* Shared track geometry: markers sit on a rail drawn behind them. */
+.prc .prc-track,
+.prc .prc-stages {
+  position: relative;
   list-style: none;
-  margin: 0 0 1.25rem;
+  margin: 0;
   padding: 0;
+}
+.prc .prc-track::before,
+.prc .prc-stages::before {
+  content: "";
+  position: absolute;
+  top: 13px;
+  left: 14px;
+  right: 14px;
+  height: 0;
+}
+
+/* Chat: three hollow dots on a dashed rail, then nothing. */
+.prc .prc-track { display: inline-flex; gap: 0; }
+.prc-track::before { border-top: 2px dashed var(--line); }
+.prc-node {
+  position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
-}
-.prc-mini li {
-  width: 100%;
-  text-align: center;
-  font-size: 0.9rem;
-  padding: 0.55rem 0.75rem;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  color: var(--muted);
-  background: var(--panel);
-}
-.prc-mini li + li { margin-top: 1.4rem; position: relative; }
-.prc-mini li + li::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: calc(-1.4rem - 1px);
-  width: 1.5px;
-  height: 1.4rem;
-  background: var(--field-line);
-}
-
-.prc-gaps {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  font-size: 0.88rem;
-  line-height: 1.45;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 6.5rem;
+  font-size: 0.92rem;
   color: var(--muted);
 }
-.prc-gaps li {
-  position: relative;
-  padding-left: 1.4rem;
-  margin: 0.55rem 0;
-}
-.prc-gaps li::before {
+.prc-node::before {
   content: "";
-  position: absolute;
-  left: 0.15rem;
-  top: 0.62em;
-  width: 0.7rem;
-  height: 1.5px;
-  background: var(--field-line);
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--line);
+  border-radius: 50%;
+  background: var(--bg);
 }
 
-/* ---- Right: the pipeline ------------------------------------------------- */
-.prc-pipe {
-  position: relative;
-  border: 1.5px solid color-mix(in oklch, var(--purple) 45%, var(--line));
-  background:
-    linear-gradient(color-mix(in oklch, var(--purple) 7%, transparent) 1px, transparent 1px) 0 0 / 22px 22px,
-    linear-gradient(90deg, color-mix(in oklch, var(--purple) 7%, transparent) 1px, transparent 1px) 0 0 / 22px 22px,
-    color-mix(in oklch, var(--purple) 4%, var(--panel));
-  box-shadow: var(--elev-2), 0 0 0 6px color-mix(in oklch, var(--purple) 8%, transparent);
-}
-.prc-pipe .prc-col-h { color: var(--purple); }
-
-.prc-stages {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  position: relative;
-}
-/* The rail that ties the stages together. */
-.prc-stages::before {
-  content: "";
-  position: absolute;
-  left: 0.95rem;
-  top: 1rem;
-  bottom: 1rem;
-  width: 2px;
-  background: linear-gradient(var(--purple), color-mix(in oklch, var(--purple) 35%, transparent));
-}
-.prc-stage {
-  position: relative;
-  padding-left: 2.75rem;
-  margin: 0 0 1.1rem;
-}
-.prc-stage:last-child { margin-bottom: 0; }
-.prc-num {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 999px;
+/* Paper Review: four filled stages on a solid rail; stage 2 takes most of the width. */
+.prc .prc-stages {
   display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 3.4fr) minmax(0, 0.9fr) minmax(0, 0.9fr);
+  gap: 20px;
+}
+.prc-stages::before { border-top: 2px solid color-mix(in oklch, var(--purple) 60%, var(--bg)); }
+.prc-stage { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; }
+.prc-num {
+  display: inline-grid;
   place-items: center;
-  font-weight: 700;
+  width: 28px;
+  height: 28px;
+  margin-bottom: 6px;
+  border-radius: 50%;
   font-size: 0.85rem;
+  font-weight: 800;
   color: var(--bg);
   background: var(--purple);
-  box-shadow: 0 0 0 4px color-mix(in oklch, var(--purple) 18%, transparent);
 }
-.prc-stage-h {
-  display: block;
-  font-weight: 700;
-  color: var(--ink);
-  line-height: 2rem;
+.prc-stage-h { font-weight: 700; color: var(--ink); }
+.prc-stage-sub { font-size: 0.86rem; line-height: 1.4; color: var(--muted); }
+
+/* Stage 2: four check groups side by side, chips only. */
+.prc .prc-groups {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 18px;
+  width: 100%;
 }
-.prc-stage p {
-  margin: 0.1rem 0 0;
-  font-size: 0.9rem;
+.prc-group { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.prc-group-h { font-size: 0.86rem; font-weight: 700; color: var(--ink); }
+.prc .prc-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 5px; }
+.prc .prc-chips li {
+  padding: 2px 9px;
+  border: 1px solid color-mix(in oklch, var(--purple) 35%, var(--line));
+  border-radius: 999px;
+  background: var(--bg);
+  font-size: 0.8rem;
   line-height: 1.5;
-  color: var(--muted);
-}
-
-.prc-lanes {
-  list-style: none;
-  margin: 0.6rem 0 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.7rem;
-}
-.prc-lane {
-  border: 1px solid color-mix(in oklch, var(--purple) 30%, var(--line));
-  border-radius: 14px;
-  padding: 0.85rem 0.9rem 0.9rem;
-  background: var(--panel);
-  box-shadow: var(--elev-1);
-}
-.prc-lane-h {
-  display: block;
-  font-weight: 700;
-  font-size: 0.92rem;
   color: var(--ink);
-  margin-bottom: 0.35rem;
-}
-.prc-lane-tag {
-  display: inline-block;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--purple);
-  margin-bottom: 0.35rem;
-}
-.prc-lane ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  font-size: 0.84rem;
-  line-height: 1.45;
-  color: var(--muted);
-}
-.prc-lane ul li {
-  position: relative;
-  padding-left: 0.95rem;
-  margin: 0.3rem 0;
-}
-.prc-lane ul li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.55em;
-  width: 0.4rem;
-  height: 0.4rem;
-  border-radius: 999px;
-  background: var(--purple-dim);
+  white-space: nowrap;
 }
 
-.prc-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  margin: 0 0 0.45rem;
-  padding: 0;
-  list-style: none;
-}
-.prc-chips li {
-  font-size: 0.74rem;
+/* The detail, kept on the page for readers and search. */
+.prc-more { margin-top: 14px; border-top: 1px solid var(--line); }
+.prc-more summary {
+  cursor: pointer;
+  padding: 14px 0;
   font-weight: 600;
-  padding: 0.18rem 0.6rem;
-  border-radius: 999px;
-  color: var(--ink);
-  background: color-mix(in oklch, var(--purple) 14%, var(--panel));
-  border: 1px solid color-mix(in oklch, var(--purple) 35%, transparent);
+  color: var(--purple);
 }
-.prc-lane .prc-chips li { padding: 0.18rem 0.6rem; margin: 0; }
-.prc-lane .prc-chips li::before { content: none; }
-
-.prc-roles {
+.prc-more summary:focus-visible { outline: 2px solid var(--purple); outline-offset: 3px; border-radius: 4px; }
+.prc-more-body {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: 0.6rem;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 28px;
+  padding-bottom: 8px;
 }
+.prc-more-h { font-family: var(--font-display); font-size: 1.1rem; margin-bottom: 8px; color: var(--ink); }
+.prc .prc-more ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 8px; font-size: 0.93rem; color: var(--muted); max-width: 70ch; }
+.prc-more strong { color: var(--ink); }
+.prc-more li::marker { color: var(--purple); }
 
-.prc-foot {
-  max-width: 70ch;
-  margin: 1.1rem auto 0;
+.prc .prc-foot {
+  max-width: 64ch;
+  margin: 1rem auto 0;
   text-align: center;
-  font-size: 0.82rem;
+  font-size: 0.86rem;
   color: var(--muted);
 }
+.prc .prc-sample { margin-top: 0.75rem; text-align: center; }
+.prc-sample a { color: var(--purple); font-weight: 600; }
 
-@media (max-width: 760px) {
-  .prc-grid { grid-template-columns: minmax(0, 1fr); }
-  .prc-pipe { order: -1; }
+/* Narrow columns (the 860px sample page, tablets, phones): names sit above the tracks, Paper Review turns to a
+   vertical rail, and chat stays one short row. Container queries, so the figure follows its column. */
+@container prc (max-width: 900px) {
+  .prc-path { grid-template-columns: 1fr; padding: 18px 16px; }
+  .prc .prc-path-h { flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; padding-top: 0; }
+  .prc .prc-stages { grid-template-columns: 1fr; gap: 18px; }
+  .prc .prc-stages::before { top: 14px; bottom: 14px; left: 13px; right: auto; height: auto; border-top: 0; border-left: 2px solid color-mix(in oklch, var(--purple) 60%, var(--bg)); }
+  .prc-stage { padding-left: 42px; min-height: 28px; }
+  .prc-num { position: absolute; left: 0; top: -3px; margin: 0; }
+  .prc-more-body { grid-template-columns: 1fr; gap: 18px; }
 }
-@media (max-width: 520px) {
-  .prc-lanes { grid-template-columns: minmax(0, 1fr); }
+@container prc (max-width: 520px) {
+  .prc-node { min-width: 5.75rem; font-size: 0.88rem; }
+  .prc .prc-groups { grid-template-columns: 1fr; gap: 12px; }
 }

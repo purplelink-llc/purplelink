@@ -194,93 +194,89 @@
 
       <section class="prc" aria-labelledby="prc-h">
         <h2 id="prc-h">Why not paste it into a chatbot?</h2>
-        <p class="prc-lede">A chat assistant reads your PDF once and answers in one pass. Paper Review looks every reference up in three scholarly databases, recomputes your statistics without a language model, and has seven separate reviewers read the paper before one pass reconciles what they found.</p>
-        <div class="prc-grid">
-          <div class="prc-col prc-chat">
-            <h3 class="prc-col-h">One chat prompt</h3>
-            <p class="prc-col-sub">One model, one pass</p>
-            <ol class="prc-mini" aria-label="What a chat prompt does">
-              <li>Your PDF</li>
-              <li>One model</li>
-              <li>One answer</li>
+        <!-- partial:report-pipeline -->
+        <p class="prc-lede">A chat assistant reads your PDF once and answers in one pass. Paper Review checks every reference against CrossRef, recomputes your statistics without a language model, reads the first 30 pages as images, and has seven separate reviewers read the paper before one pass reconciles what they found.</p>
+        <div class="prc-paths">
+          <div class="prc-path prc-path-chat">
+            <p class="prc-path-h"><strong>A chat prompt</strong> <span>One model, one pass</span></p>
+            <ol class="prc-track" aria-label="What a chat prompt does">
+              <li class="prc-node">Your PDF</li>
+              <li class="prc-node">One model</li>
+              <li class="prc-node">One answer</li>
             </ol>
-            <ul class="prc-gaps" aria-label="What it does not do">
-              <li>References are not looked up one by one, so a wrong or invented one can pass.</li>
-              <li>Retractions are caught only if the model happens to know them.</li>
-              <li>p-values and means are not recomputed.</li>
-              <li>One point of view, written in one go.</li>
-              <li>No marked-up PDF.</li>
-              <li>Whether the manuscript is kept or used for training depends on your account settings.</li>
-            </ul>
           </div>
-          <div class="prc-col prc-pipe">
-            <h3 class="prc-col-h">Paper Review</h3>
-            <p class="prc-col-sub">Four stages, many checks, run for every paper</p>
-            <ol class="prc-stages">
+          <div class="prc-path prc-path-pipe">
+            <p class="prc-path-h"><strong>Paper Review</strong> <span>Four stages, run for every paper</span></p>
+            <ol class="prc-stages" aria-label="What Paper Review does">
               <li class="prc-stage">
                 <span class="prc-num" aria-hidden="true">1</span>
-                <span class="prc-stage-h">Read the paper apart</span>
-                <p>The PDF is split into text, figures, tables and the reference list.</p>
+                <span class="prc-stage-h">Read apart</span>
+                <span class="prc-stage-sub">Text, figures, tables and the reference list</span>
               </li>
-              <li class="prc-stage">
+              <li class="prc-stage prc-stage-check">
                 <span class="prc-num" aria-hidden="true">2</span>
-                <span class="prc-stage-h">Check it, in parallel</span>
-                <ul class="prc-lanes" data-motion="stagger">
-                  <li class="prc-lane">
-                    <span class="prc-lane-tag">Lookups</span>
-                    <span class="prc-lane-h">Every reference</span>
-                    <ul class="prc-chips" aria-label="Databases queried">
-                      <li>CrossRef</li><li>OpenAlex</li><li>Semantic Scholar</li>
-                    </ul>
-                    <ul>
-                      <li>Each reference matched to a real record</li>
-                      <li>Retractions, withdrawals and expressions of concern flagged</li>
-                      <li>Key claims checked against the cited source's abstract</li>
-                    </ul>
+                <span class="prc-stage-h">Check, in parallel</span>
+                <ul class="prc-groups" data-motion="stagger">
+                  <li class="prc-group">
+                    <span class="prc-group-h">References</span>
+                    <ul class="prc-chips"><li>CrossRef</li><li>OpenAlex</li><li>Semantic Scholar</li><li>Retractions</li></ul>
                   </li>
-                  <li class="prc-lane">
-                    <span class="prc-lane-tag">Rule-based, no AI</span>
-                    <span class="prc-lane-h">Numbers and structure</span>
-                    <ul>
-                      <li>p-values recomputed from t, F, chi-square, r and z (statcheck)</li>
-                      <li>Reported means tested for consistency (GRIM)</li>
-                      <li>In-text citations matched to the reference list</li>
-                      <li>Figure and table numbering checked</li>
-                    </ul>
+                  <li class="prc-group">
+                    <span class="prc-group-h">Rules, no AI</span>
+                    <ul class="prc-chips"><li>statcheck</li><li>GRIM</li><li>Citations</li><li>Numbering</li></ul>
                   </li>
-                  <li class="prc-lane">
-                    <span class="prc-lane-tag">Vision</span>
-                    <span class="prc-lane-h">Every page and figure</span>
-                    <ul>
-                      <li>Pages rendered and read as images</li>
-                      <li>Figures compared with what the text claims</li>
-                      <li>Missing error bars, broken axes, color-only encoding</li>
-                    </ul>
+                  <li class="prc-group">
+                    <span class="prc-group-h">Vision</span>
+                    <ul class="prc-chips"><li>First 30 pages</li><li>Figures</li><li>Axes</li></ul>
                   </li>
-                  <li class="prc-lane">
-                    <span class="prc-lane-tag">Panel</span>
-                    <span class="prc-lane-h">Seven reviewers, separately</span>
-                    <ul class="prc-roles">
-                      <li>Methodology</li><li>Statistics</li><li>Data integrity</li><li>Editor</li>
-                      <li>Equations</li><li>Literature</li><li>Numerical realism</li>
-                    </ul>
+                  <li class="prc-group">
+                    <span class="prc-group-h">Seven reviewers</span>
+                    <ul class="prc-chips"><li>Methods</li><li>Statistics</li><li>Data</li><li>Editor</li><li>Equations</li><li>Literature</li><li>Numbers</li></ul>
                   </li>
                 </ul>
               </li>
               <li class="prc-stage">
                 <span class="prc-num" aria-hidden="true">3</span>
                 <span class="prc-stage-h">Reconcile</span>
-                <p>Findings are merged, and issues raised by more than one reviewer rank first. A coherence check compares the abstract, hypotheses and results with each other.</p>
+                <span class="prc-stage-sub">Shared findings first, then a coherence check</span>
               </li>
               <li class="prc-stage">
                 <span class="prc-num" aria-hidden="true">4</span>
                 <span class="prc-stage-h">Deliver</span>
-                <p>A report with a fix-first checklist and an annotated PDF, by email. Your files are deleted within about a day.</p>
+                <span class="prc-stage-sub">Report, fix-first checklist, annotated PDF</span>
               </li>
             </ol>
           </div>
         </div>
+        <details class="prc-more">
+          <summary>What each check does, and what one chat prompt leaves out</summary>
+          <div class="prc-more-body">
+            <div>
+              <h3 class="prc-more-h">Paper Review</h3>
+              <ul>
+                <li><strong>References.</strong> Each reference is matched to a CrossRef record, and retractions, withdrawals and expressions of concern are flagged. Up to 40 key claims are checked against the cited source's abstract, fetched from OpenAlex, Semantic Scholar or CrossRef.</li>
+                <li><strong>Rules, no AI.</strong> p-values are recomputed from t, F, chi-square, r and z (statcheck), and reported means are tested for consistency (GRIM). In-text citations are matched to the reference list, and figure and table numbering is checked.</li>
+                <li><strong>Vision.</strong> The first 30 pages are rendered and read as images. Figures are compared with what the text claims, including missing error bars, broken axes and color-only encoding.</li>
+                <li><strong>Seven reviewers.</strong> Methodology, statistics, data integrity, the editor's view, equations, literature and numerical realism each read the paper separately.</li>
+                <li><strong>Reconcile.</strong> Findings are merged, and issues raised by more than one reviewer rank first. A coherence check compares the abstract, hypotheses and results with each other.</li>
+                <li><strong>Deliver.</strong> A report with a fix-first checklist and an annotated PDF arrives by email. The manuscript is deleted within about a day of your first opening the result, or within 48 hours if you never do.</li>
+              </ul>
+            </div>
+            <div>
+              <h3 class="prc-more-h">A chat prompt</h3>
+              <ul>
+                <li>References are not looked up one by one, so a wrong or invented one can pass.</li>
+                <li>Retractions are caught only if the model happens to know them.</li>
+                <li>p-values and means are not recomputed.</li>
+                <li>One point of view, written in one go.</li>
+                <li>No marked-up PDF.</li>
+                <li>Whether the manuscript is kept or used for training depends on your account settings.</li>
+              </ul>
+            </div>
+          </div>
+        </details>
         <p class="prc-foot">The reviewers and the final pass use Claude Opus through Anthropic's API, which does not train on your manuscript.</p>
+        <!-- /partial:report-pipeline -->
       </section>
 
       <section class="catalog-section" aria-labelledby="conf-chat">

@@ -356,7 +356,28 @@ def with_chat(rel: str, html: str) -> str:
     return CHAT_JS_RE.sub("", html) if has else html
 
 
+# Shared markup blocks (scripts/partials/<name>.html). A page carries a block between
+# "<!-- partial:<name> -->" and "<!-- /partial:<name> -->" lines; this stamps the canonical copy in at the
+# marker's indent, so every page shows the same markup and test_layout_in_sync catches a hand edit.
+PARTIALS = ROOT / "scripts" / "partials"
+PARTIAL_RE = re.compile(r"([ \t]*)<!-- partial:([a-z0-9-]+) -->\n.*?<!-- /partial:\2 -->", re.S)
+
+
+def partial_html(name: str, indent: str) -> str:
+    body = (PARTIALS / f"{name}.html").read_text(encoding="utf-8").rstrip("\n")
+    lines = "\n".join(indent + l if l.strip() else "" for l in body.split("\n"))
+    return f"{indent}<!-- partial:{name} -->\n{lines}\n{indent}<!-- /partial:{name} -->"
+
+
+def with_partials(html: str) -> str:
+    if "<!-- partial:" not in html:
+        return html
+    return PARTIAL_RE.sub(lambda m: partial_html(m.group(2), m.group(1)), html)
+
+
 def render(rel: str, html: str) -> str:
+    html = with_partials(html)
+
     def nav_sub(m: re.Match) -> str:
         inline = "\n" not in m.group(2)
         line_start = html.rfind("\n", 0, m.start()) + 1
