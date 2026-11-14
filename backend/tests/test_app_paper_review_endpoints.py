@@ -1737,6 +1737,8 @@ def test_paper_review_pipeline_job_entry_carries_the_ledger_key(monkeypatch):
     entry = backend_app.paper_jobs_dict.get("tok-key")
     rec = backend_app.usage_ledger_dict[entry["ledger_key"]]
     assert rec["sold_as"] == "paper-review-pack-5" and rec["attempt"] == 1 and rec["purchase"]
+    # Logged as standard, but it earns the pack's per-review price; no model call ran, so no per-model cost.
+    assert rec["unit_price_usd"] == 19.8 and rec["cost_by_model"] == {}
 
 
 def test_adjacent_tool_pipeline_email_failure_preserves_done_result(monkeypatch):

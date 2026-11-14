@@ -537,18 +537,24 @@ def _write_usage_ledger(token: str, product_key: str, status: str, usage) -> str
     import time as _time
 
     entry = PAID_PRODUCTS.get(product_key, {})
+    link = _order_link(token)
+    # What this one job earns at list price: the product actually bought (a pack token logs as standard) divided by
+    # its quantity, so a pack-5 review counts $19.80, not $14. Comps and discounts are in the funnel's order join.
+    sold = PAID_PRODUCTS.get(link.get("sold_as") or "", entry)
     record = {
         "ts": _time.time(),
         "product_key": product_key,
         "status": status,
         "price_charged_usd": entry.get("amount", 0) / 100.0,
+        "unit_price_usd": round(sold.get("amount", 0) / 100.0 / max(int(sold.get("qty", 1) or 1), 1), 2),
         "input_tokens": usage.total_input_tokens,
         "cache_read_tokens": usage.total_cache_read_tokens,
         "cache_creation_tokens": usage.total_cache_creation_tokens,
         "output_tokens": usage.total_output_tokens,
         "cost_usd": round(usage.total_cost_usd, 4),
+        "cost_by_model": usage.cost_by_model() if hasattr(usage, "cost_by_model") else {},
         "models": usage.models_used(),
-        **_order_link(token),
+        **link,
     }
     key = f"{token[:16]}_{record['ts']}"
     try:
