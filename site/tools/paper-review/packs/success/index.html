@@ -24,9 +24,13 @@
       <div class="tool-app pr-upload-wrap">
         <p class="pr-redeem-status" id="redeem-status">Loading your tokens…</p>
         <div id="tokens-pane" hidden>
-          <p>Each token is good for one Standard Paper Review. Click <strong>Use this token</strong> to start a review without re-purchasing.</p>
+          <p id="tokens-intro">Each token is good for one Standard Paper Review. Click <strong>Use this token</strong> to start a review without re-purchasing.</p>
           <table class="bib-table" id="tokens-table"></table>
-          <p class="pr-field-help pr-field-help-spaced">Lost the email? Forward your Stripe receipt to <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> and we'll resend the list.</p>
+          <p class="pr-field-help pr-field-help-spaced" id="tokens-footnote">Lost the email? Forward your Stripe receipt to <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> and we'll resend the list.</p>
+        </div>
+        <div id="groups-pane" hidden>
+          <ul class="success-groups" id="groups-list"></ul>
+          <p class="pr-field-help pr-field-help-spaced">Lost the email? Forward your receipt to <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> and the three links will be sent again.</p>
         </div>
         <p class="tool-status" id="status" aria-live="polite"></p>
       </div>

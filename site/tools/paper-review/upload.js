@@ -177,6 +177,11 @@
     });
   }
 
+  var LINK_ERROR_MESSAGES = {
+    expired: "This link has expired. Email ben@purplelink.llc with your receipt.",
+    revoked: "This order was refunded or disputed, so its links no longer work. Email ben@purplelink.llc if that looks wrong.",
+  };
+
   function redeem(requestBody, startedAt, attempt) {
     startedAt = startedAt || Date.now();
     attempt = attempt || 1;
@@ -234,7 +239,8 @@
       })
       .catch(function (err) {
         var href = err && err.status_url;
-        setRedeemStatus((err && err.detail) || "Could not redeem your payment.", true, href, "Open the status page");
+        var redeemCode = err && err.error;
+        setRedeemStatus((err && err.detail) || (redeemCode && LINK_ERROR_MESSAGES[redeemCode]) || "Could not redeem your payment.", true, href, "Open the status page");
       });
   }
 
@@ -322,7 +328,7 @@
             if (resp.status === 409) {
               err.status_url = safeStatusUrl(parsed && parsed.status_url) || statusPageUrl(token);
             } else if (resp.status === 410) {
-              err.detail = "This link has expired. Email ben@purplelink.llc with your Stripe receipt and we will send you a new one. There is no need to pay again.";
+              err.detail = (parsed && LINK_ERROR_MESSAGES[parsed.error]) || LINK_ERROR_MESSAGES.expired;
             } else if (resp.status === 429) {
               err.detail = "Too many attempts in a short time. Wait a minute, then submit again.";
             } else if (parsed && parsed.detail) {
