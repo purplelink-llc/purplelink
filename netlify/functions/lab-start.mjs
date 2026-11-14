@@ -22,7 +22,7 @@ const KEY_PATTERN = /^lg_[A-Za-z0-9_-]{16,64}$/
 export const PER_IP_DAILY = 30
 const STYLES = { styles: ["/labs/plan.css"] }
 const TITLE = "Start a review"
-const NEXT_STEPS = `<p class="lab-note">The button uses one review from your group's plan and opens the upload page. Have your manuscript ready first. On the next page, upload it (PDF or Word .docx) and pick the domain profile that best matches it. The review starts when you click Submit and typically takes 4 to 8 minutes. The report is emailed to you as a PDF.</p>`
+const NEXT_STEPS = `<p class="lab-note">The button uses one review from your group's plan and opens the upload page. Have the manuscript ready first. On the next page, upload it (PDF or Word .docx) and pick the domain profile that best matches it. The review starts on Submit and typically takes 4 to 8 minutes. The report is emailed as a PDF.</p>`
 
 async function modal(path, body, secret) {
   try {
@@ -46,14 +46,14 @@ const invalidKey = () =>
   shell("Link not valid", "This link is not valid", "<p>Ask your group lead for the current link.</p>", 404)
 
 const planEnded = () =>
-  shell("Plan ended", "This plan has ended", "<p>Ask your group lead if the plan will be renewed.</p>", 410)
+  shell("Plan not active", "This plan is not active", "<p>Ask your group lead about the plan.</p>", 410)
 
 const problem = () =>
-  shell("Try again", "That did not go through", "<p>We could not reach the review system. Nothing was used. Try again in a minute. If it keeps failing, ask your group lead to write to ben@purplelink.llc.</p>", 502)
+  shell("Try again", "That did not go through", "<p>The review system did not answer. No review was used. Try again in a minute. If it keeps failing, ask your group lead to write to ben@purplelink.llc.</p>", 502)
 
 function noneLeft(nextGrant) {
   const when = typeof nextGrant === "string" && nextGrant ? ` The next batch arrives on ${escapeHtml(nextGrant)}.` : ""
-  return shell("None available", "No reviews available right now", `<p class="post-lede">All of this month's reviews for your group have been used.${when}</p><p>Ask your group lead if you need one sooner.</p>`, 409)
+  return shell("None available", "No reviews available right now", `<p class="post-lede">This month's reviews for your group are all used.${when}</p><p>Ask your group lead if you need one sooner.</p>`, 409)
 }
 
 function startPage(v, key) {
@@ -79,7 +79,7 @@ export default async function handler(request, context) {
     const key = String(body.k ?? "")
     if (!KEY_PATTERN.test(key)) return invalidKey()
     if (await overDailyLimit("lab-start-ip", clientIp(request), PER_IP_DAILY)) {
-      return shell("Try again tomorrow", "Try again tomorrow", "<p>That is more requests than we can take today. Ask your group lead for help.</p>", 429)
+      return shell("Try again tomorrow", "Try again tomorrow", "<p>The daily limit for this page is reached. Ask your group lead for help.</p>", 429)
     }
     const res = await modal("/lab/member-claim", { k: key }, secret)
     if (res.status === 200) {

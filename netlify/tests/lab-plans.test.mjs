@@ -496,7 +496,7 @@ test("opening the plan link shows the plan and changes nothing", async () => {
   assert.match(html, /old link stops working/);
   assert.match(html, /name="action" value="cancel"/);
   assert.match(html, /Billing, card and invoices/);
-  assert.match(html, /every reviewed paper includes one Revision Review and one Response Review/i);
+  assert.match(html, /every reviewed paper also gets one Revision Review and one Response Review/i);
   assert.match(html, /href="\/labs\/plan\.css"/);
   assert.doesNotMatch(html, /cus_SECRET123/, "the customer id is never rendered");
   assert.doesNotMatch(html, /\sstyle=/i);
@@ -517,7 +517,7 @@ test("batches are listed newest first with their reviews, start links, copyable 
   assert.match(html, />Used<\/span>/);
   assert.match(html, /<a href="https:\/\/purplelink\.llc\/tools\/paper-review\/revision\/upload\/\?session_id=cs_r">Revision Review<\/a>/);
   assert.match(html, /<li>Response Review, used<\/li>/);
-  assert.match(html, /These expired on 13 December 2026/);
+  assert.match(html, /They expired on 13 December 2026/);
   assert.doesNotMatch(html, /direct_token=old/, "an expired batch offers no start link");
 });
 
@@ -549,7 +549,7 @@ test("each state has its own sentence", async () => {
     assert.match(await (await plan(planReq("GET", { query: "?t=lab_tok1" }))).text(), re, state);
   };
   await says("cancelling", /will not renew\. It ends on 13 December 2026/);
-  await says("problem", /last payment did not go through\. Your plan is paid through 13 December 2026/);
+  await says("problem", /last payment failed\. Your plan is paid through 13 December 2026/);
   await says("revoked", /refunded or disputed/);
   await says("ended", /This plan ended on 13 December 2026/);
   modalReply["/lab/plan"] = { status: 200, body: view({ state: "cancelling" }) };
@@ -584,7 +584,7 @@ test("cancel is a POST and relays the link, then shows the new state with the re
   const res = await plan(planReq("POST", { form: { action: "cancel", t: "lab_tok1" } }));
   assert.equal(res.status, 200);
   const html = await res.text();
-  assert.match(html, /Your plan will not renew\. We emailed a confirmation/);
+  assert.match(html, /Your plan will not renew\. A confirmation email is on its way/);
   assert.match(html, /name="t" value="lab_tok2"/);
   assert.match(html, /name="action" value="undo"/);
   assert.deepEqual(modalCalls().map((c) => [c.path, c.body]), [["/lab/cancel", { token: "lab_tok1" }]]);
@@ -606,7 +606,7 @@ test("cancel error mapping: 404, 410, 409 plan_over, 502", async () => {
   modalReply["/lab/cancel"] = { status: 409, body: { error: "plan_over" } };
   const over = await post();
   assert.equal(over.status, 409);
-  assert.match(await over.text(), /nothing left to change/i);
+  assert.match(await over.text(), /nothing is left to change/i);
   modalReply["/lab/cancel"] = { status: 502, body: { error: "stripe_failed" } };
   const bad = await post();
   assert.equal(bad.status, 502);
@@ -711,7 +711,7 @@ test("a token with reserved characters round-trips through the portal return_url
 
 test("a malformed address is rejected before any lookup", async () => {
   const res = await plan(planReq("POST", { form: { action: "link", email: "not-an-email" } }));
-  assert.match(await res.text(), /does not look like an email/);
+  assert.match(await res.text(), /is not an email address/);
   assert.equal(modalCalls().length, 0);
 });
 
@@ -778,7 +778,7 @@ test("group view: 404 is not valid, a finished plan has ended, a Modal failure i
     modalReply["/lab/group-view"] = { status: 200, body: group({ state }) };
     const res = await start(startReq("GET", { query: `?k=${KEY}` }));
     assert.equal(res.status, 410, state);
-    assert.match(await res.text(), /This plan has ended/);
+    assert.match(await res.text(), /This plan is not active/);
   }
   modalReply["/lab/group-view"] = { status: 200, body: group({ state: "cancelling" }) };
   assert.equal((await start(startReq("GET", { query: `?k=${KEY}` }))).status, 200);
@@ -820,7 +820,7 @@ test("claim error mapping: none_left, invalid, ended, failure", async () => {
   modalReply["/lab/member-claim"] = { status: 404, body: { error: "invalid" } };
   assert.match(await (await post()).text(), /This link is not valid[\s\S]*Ask your group lead for the current link\./);
   modalReply["/lab/member-claim"] = { status: 410, body: { error: "plan_over" } };
-  assert.match(await (await post()).text(), /This plan has ended/);
+  assert.match(await (await post()).text(), /This plan is not active/);
   modalReply["/lab/member-claim"] = { status: 500, body: {} };
   assert.equal((await post()).status, 502);
 });
