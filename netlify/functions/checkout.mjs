@@ -171,8 +171,9 @@ async function checkoutRateLimited(clientIp) {
   return false;
 }
 
-// product key -> {env var name for price_id, success path}
-const PRODUCT_CATALOG = {
+// product key -> {env var name for price_id, success path}. `cancelPath` names the page a canceled checkout returns to
+// when it is not the success path minus its last segment (that page may not exist, or the product is sold elsewhere).
+export const PRODUCT_CATALOG = {
   // Repriced 2026-11-13 (publication workflow). New _V2 Price names so the env Price and this inline amount, and
   // the page copy, change in the same build. Lab packs mint Journal-tier credits (backend PAID_PRODUCTS).
   "paper-review-standard":   { envKey: "STRIPE_PRICE_PAPER_REVIEW_STANDARD_V2", amount: 1400, name: "Paper Review: Standard", successPath: "/tools/paper-review/upload/" },
@@ -188,10 +189,10 @@ const PRODUCT_CATALOG = {
   "publication-pack":        { envKey: "STRIPE_PRICE_PUBLICATION_PACK", amount: 5900, name: "Publication Pack: Deep review, Revision Review, response letter draft and check", openEnv: "PUBLICATION_PACK_OPEN", successPath: "/tools/paper-review/packs/success/" },
   // Lab plans: monthly review credits (20 or 40), revision and response checks under fair use. Closed until the
   // backend plan records and renewals ship (LAB_PLANS_OPEN=1 opens all four).
-  "lab-monthly":             { envKey: "STRIPE_PRICE_LAB_MONTHLY",       amount: 19900,  name: "Paper Review Lab: 20 reviews a month", interval: "month", mode: "subscription", openEnv: "LAB_PLANS_OPEN", successPath: "/tools/paper-review/packs/success/" },
-  "lab-annual":              { envKey: "STRIPE_PRICE_LAB_ANNUAL",        amount: 199000, name: "Paper Review Lab, yearly: 20 reviews a month", interval: "year", mode: "subscription", openEnv: "LAB_PLANS_OPEN", successPath: "/tools/paper-review/packs/success/" },
-  "lab-plus-monthly":        { envKey: "STRIPE_PRICE_LAB_PLUS_MONTHLY",  amount: 34900,  name: "Paper Review Lab Plus: 40 reviews a month and group seats", interval: "month", mode: "subscription", openEnv: "LAB_PLANS_OPEN", successPath: "/tools/paper-review/packs/success/" },
-  "lab-plus-annual":         { envKey: "STRIPE_PRICE_LAB_PLUS_ANNUAL",   amount: 349000, name: "Paper Review Lab Plus, yearly: 40 reviews a month and group seats", interval: "year", mode: "subscription", openEnv: "LAB_PLANS_OPEN", successPath: "/tools/paper-review/packs/success/" },
+  "lab-monthly":             { envKey: "STRIPE_PRICE_LAB_MONTHLY",       amount: 19900,  name: "Paper Review Lab: 20 reviews a month", interval: "month", mode: "subscription", openEnv: "LAB_PLANS_OPEN", successPath: "/tools/paper-review/packs/success/", cancelPath: "/labs/" },
+  "lab-annual":              { envKey: "STRIPE_PRICE_LAB_ANNUAL",        amount: 199000, name: "Paper Review Lab, yearly: 20 reviews a month", interval: "year", mode: "subscription", openEnv: "LAB_PLANS_OPEN", successPath: "/tools/paper-review/packs/success/", cancelPath: "/labs/" },
+  "lab-plus-monthly":        { envKey: "STRIPE_PRICE_LAB_PLUS_MONTHLY",  amount: 34900,  name: "Paper Review Lab Plus: 40 reviews a month and group seats", interval: "month", mode: "subscription", openEnv: "LAB_PLANS_OPEN", successPath: "/tools/paper-review/packs/success/", cancelPath: "/labs/" },
+  "lab-plus-annual":         { envKey: "STRIPE_PRICE_LAB_PLUS_ANNUAL",   amount: 349000, name: "Paper Review Lab Plus, yearly: 40 reviews a month and group seats", interval: "year", mode: "subscription", openEnv: "LAB_PLANS_OPEN", successPath: "/tools/paper-review/packs/success/", cancelPath: "/labs/" },
   "cover-letter":            { envKey: "STRIPE_PRICE_COVER_LETTER",            successPath: "/tools/cover-letter/compose/" },
   "anonymity-check":         { envKey: "STRIPE_PRICE_ANONYMITY_CHECK",         successPath: "/tools/anonymity-check/upload/" },
   // $10 journal checklist offered after a Standard review (backend/latextools/upgrades.py). Inline price, no env Price.
@@ -200,7 +201,7 @@ const PRODUCT_CATALOG = {
   "revision-review":         { envKey: "STRIPE_PRICE_REVISION_REVIEW_V2", amount: 500, name: "Revision Review", successPath: "/tools/paper-review/revision/upload/" },
   "response-review":         { envKey: "STRIPE_PRICE_RESPONSE_REVIEW_V2", amount: 1200, name: "Response Review: response letter check", successPath: "/tools/response-review/upload/" },
   // Response letter drafting: on sale together with its upload page, /tools/response-review/draft/upload/.
-  "response-draft":          { envKey: "STRIPE_PRICE_RESPONSE_DRAFT", amount: 2400, name: "Response Review: response letter draft and check", successPath: "/tools/response-review/draft/upload/" },
+  "response-draft":          { envKey: "STRIPE_PRICE_RESPONSE_DRAFT", amount: 2400, name: "Response Review: response letter draft and check", successPath: "/tools/response-review/draft/upload/", cancelPath: "/tools/response-review/" },
   "resume-review":           { envKey: "STRIPE_PRICE_RESUME_REVIEW",           successPath: "/tools/resume-review/upload/" },
   // Digital "kits" (downloadable products). Delivery is a token-gated PDF from
   // the kits-delivery Blobs store; see download.mjs. Success page lists the links.
@@ -369,6 +370,11 @@ function cleanTouch(t) {
     if (out[k] === "") delete out[k];
   }
   return JSON.stringify(out);
+}
+
+/** The page a canceled checkout returns to: the entry's cancelPath, else its success path minus the paid segment. */
+export function cancelPathFor(entry) {
+  return entry.cancelPath || entry.successPath.replace(/\/(upload|compose|packs\/success|success|subscribed|setup)\/$/, "/");
 }
 
 export default async function handler(request) {
@@ -562,7 +568,8 @@ export default async function handler(request) {
     // so a canceled — unpaid — digest checkout landed on the "You're
     // subscribed" page.
     // ?checkout=canceled lets the page say plainly that nothing was charged.
-    cancel_url: `${origin}${entry.successPath.replace(/\/(upload|compose|packs\/success|success|subscribed|setup)\/$/, "/")}?checkout=canceled`,
+    // An entry's own cancelPath wins (response-draft has no /draft/ page: its cancel was a 404 until 2026-11-14).
+    cancel_url: `${origin}${cancelPathFor(entry)}?checkout=canceled`,
     "metadata[product]": product,
   };
   // customer_creation is only valid in "payment" mode -- Stripe always
