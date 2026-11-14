@@ -706,5 +706,36 @@
    "ok": true,
    "utm_content": "howto-doi-not-found-mistyped-doi-references-reel"
   }
+ },
+ {
+  "slug": "howto-google-scholar-g-index-not-shown",
+  "app": "scholar-utility-belt",
+  "date": "2026-11-14",
+  "title": "No g-index on your Google Scholar profile on Mac (work it out in Terminal)",
+  "long_id": "WtEZl-R3kI0",
+  "short_id": "-p4-4E203QY",
+  "link_arm": "A",
+  "link_utm_content": "howto-google-scholar-g-index-not-shown",
+  "short_utm_content": "howto-google-scholar-g-index-not-shown-short",
+  "sources": [
+   "https://otago.libguides.com/research_publishing_impact/author_metrics",
+   "https://jefflibraries.libguides.com/JournalEvaluation/AuthorImpact/AuthorMetrics",
+   "https://scholar.google.com/intl/en/scholar/citations.html"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "WtEZl-R3kI0",
+    "caption_id": "AUieDaaZZ6HsIfs8GzLmU1BWg0hxPkg49lphtRap03TxQAwxFWBqfFtQ"
+   },
+   "short": {
+    "video_id": "-p4-4E203QY",
+    "caption_id": "AUieDaZz75jNR1F0IkIkX9AqTzzDAwpX91-7_lcWOTULGmacDgfVe7nr"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-google-scholar-g-index-not-shown-reel"
+  },
+  "ab_test": "not started: Studio showed no Test & Compare after two tries; thumbnail A set as the plain thumbnail"
  }
 ]
