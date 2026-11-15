@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
-    <title>LaTeX Error: Environment x undefined: causes and fix | Purplelink</title>
-    <meta name="description" content="What &quot;LaTeX Error: Environment x undefined&quot; means, a real log excerpt, the five usual causes (amsmath not loaded, no \newtheorem, a misspelled name) and the fix for each.">
+    <title>LaTeX Error: Environment theorem, proof or align undefined | Purplelink</title>
+    <meta name="description" content="&quot;LaTeX Error: Environment theorem undefined&quot;, and the same error for proof, align, proposition or keywords: the package or \newtheorem line each one needs, with a real log excerpt.">
     <link rel="canonical" href="https://purplelink.llc/latex-errors/environment-undefined/">
     <meta property="og:title" content="LaTeX Error: Environment x undefined: causes and fix">
-    <meta property="og:description" content="What &quot;LaTeX Error: Environment x undefined&quot; means, a real log excerpt, the five usual causes (amsmath not loaded, no \newtheorem, a misspelled name) and the fix for each.">
+    <meta property="og:description" content="&quot;LaTeX Error: Environment theorem undefined&quot;, and the same error for proof, align, proposition or keywords: the package or \newtheorem line each one needs, with a real log excerpt.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://purplelink.llc/latex-errors/environment-undefined/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/latex-errors.png">
@@ -16,7 +16,7 @@
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="LaTeX Error: Environment x undefined: causes and fix">
-    <meta name="twitter:description" content="What &quot;LaTeX Error: Environment x undefined&quot; means, a real log excerpt, the five usual causes (amsmath not loaded, no \newtheorem, a misspelled name) and the fix for each.">
+    <meta name="twitter:description" content="&quot;LaTeX Error: Environment theorem undefined&quot;, and the same error for proof, align, proposition or keywords: the package or \newtheorem line each one needs, with a real log excerpt.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/latex-errors.png">
     <meta name="twitter:image:alt" content="LaTeX Error: Environment x undefined: causes and fix">
     <script type="application/ld+json">
@@ -26,7 +26,7 @@
     {
       "@type": "TechArticle",
       "headline": "LaTeX Error: Environment x undefined: causes and fix",
-      "description": "What \"LaTeX Error: Environment x undefined\" means, a real log excerpt, the five usual causes (amsmath not loaded, no \\newtheorem, a misspelled name) and the fix for each.",
+      "description": "\"LaTeX Error: Environment theorem undefined\", and the same error for proof, align, proposition or keywords: the package or \\newtheorem line each one needs, with a real log excerpt.",
       "url": "https://purplelink.llc/latex-errors/environment-undefined/",
       "mainEntityOfPage": "https://purplelink.llc/latex-errors/environment-undefined/",
       "inLanguage": "en",
@@ -140,6 +140,14 @@
       <article class="post-body">
         <h2>What it means</h2>
         <p>A <code>\begin{...}</code> names an environment that LaTeX does not know. Either the package or class that defines it is not loaded, the name is misspelled, or it is an environment you are expected to declare yourself, as with <code>theorem</code> and <code>lemma</code>. LaTeX ignores the <code>\begin</code>. If the build continues, the matching <code>\end</code> then raises a second error, <code>\begin{document} ended by \end{theorem}</code>.</p>
+
+        <p>The fix depends on the environment the message names:</p>
+        <ul>
+          <li><code>theorem</code>, <code>lemma</code>, <code>proposition</code>, <code>corollary</code>, <code>definition</code>: declare each one in the preamble, for example <code>\newtheorem{proposition}{Proposition}</code>.</li>
+          <li><code>proof</code>: add <code>\usepackage{amsthm}</code>.</li>
+          <li><code>align</code>, <code>align*</code>, <code>equation*</code>, <code>gather</code>, <code>multline</code>: add <code>\usepackage{amsmath}</code>.</li>
+          <li><code>keywords</code>: the <code>article</code> class has no such environment. Use the form your template defines (<code>\begin{keyword}</code> in <code>elsarticle</code>, <code>\begin{IEEEkeywords}</code> in <code>IEEEtran</code>), or write <code>\textbf{Keywords:}</code> followed by the list.</li>
+        </ul>
 
         <figure class="post-figure">
           <div class="yt-embed" data-motion="youtube" data-youtube-id="RJ7MIxjx1_o" data-youtube-title="Environment undefined: declaring the missing environment">
