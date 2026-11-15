@@ -40,7 +40,7 @@ _SECTION_VARIANTS: dict[str, list[str]] = {
 }
 
 
-# Built-in journal specs. v1 includes 25 widely-targeted journals across
+# Built-in journal specs: 27 widely-targeted journals across
 # the four supported domains. Each spec is conservative; verify against
 # the journal's current author guide before claiming "compliant".
 JOURNAL_SPECS: dict[str, dict] = {
@@ -355,6 +355,72 @@ JOURNAL_SPECS: dict[str, dict] = {
         "sources": "https://aom.org/research/journals/journal",
     },
 
+    # ------------------- Information Systems -------------------------------
+    # Filed under psychology_social so they appear in that dropdown and in
+    # General; there is no separate IS domain in the upload form. Neither
+    # journal's guide names required sections, and IS headings vary by genre
+    # (design science, qualitative, econometric): on samples of published
+    # papers even "Introduction" was missing from about a third of MISQ
+    # articles. So these packs carry no section rules.
+    "misq": {
+        "name": "MIS Quarterly (MISQ)",
+        "domain": "psychology_social",
+        # The manuscript guidelines set no abstract or length cap for
+        # research articles; page limits vary by article type, so none is
+        # encoded here.
+        "abstract_max_words": None,
+        "manuscript_max_words": None,
+        "manuscript_max_pages": None,
+        "required_sections": [],
+        "recommended_sections": [],
+        "reference_style_hint": (
+            "MISQ author-year: (Jones et al. 1995; Smith 1996) in text; "
+            "every author listed in the reference list, no \"et al.\""
+        ),
+        "figures_in_text": True,
+        "anonymous_submission": True,
+        "notes": (
+            "Word file, 12-point Times Roman, double spaced throughout "
+            "including abstract and appendices. Page 1: title, abstract and "
+            "5 to 10 keywords; page 2 starts the paper. Figures and tables "
+            "embedded in the text near their first mention, in Arial. "
+            "Authors' names stay off the manuscript for review. No abstract "
+            "or length cap is encoded: check the current guidelines for the "
+            "limit that applies to your article type."
+        ),
+        "sources": (
+            "https://misq.umn.edu/manuscript-guidelines (read via the "
+            "Internet Archive copy of 2022-03-11; the live page blocks "
+            "automated access)"
+        ),
+    },
+    "cais": {
+        "name": "Communications of the Association for Information Systems (CAIS)",
+        "domain": "psychology_social",
+        "abstract_max_words": 200,
+        # Typical papers run 8,000 to 12,000 words; over 15,000 words or 22
+        # single-spaced pages needs a justification in the cover letter.
+        # That is a soft threshold, not a cap, so it lives in notes.
+        "manuscript_max_words": None,
+        "manuscript_max_pages": None,
+        "required_sections": [],
+        "recommended_sections": [],
+        "reference_style_hint": "APA 7 (author-year), every reference recoverable",
+        "figures_in_text": True,
+        "anonymous_submission": False,
+        "notes": (
+            "Single-blind review. Word file using the CAIS author template. "
+            "Abstract is one paragraph of no more than 200 words. Typical "
+            "papers run 8,000 to 12,000 words; over 15,000 words needs a "
+            "justification in the cover letter. If generative AI was used, "
+            "add a Declaration of AI section after the Acknowledgments."
+        ),
+        "sources": (
+            "https://aisel.aisnet.org/cais/format.html; CAIS author template "
+            "(June 2024) linked from that page"
+        ),
+    },
+
     # ------------------- Chemistry / Materials ----------------------------
     "jacs": {
         "name": "Journal of the American Chemical Society (JACS)",
@@ -473,10 +539,13 @@ def _word_count(s: str) -> int:
 def _has_section(body: str, variants: list[str]) -> bool:
     """Detect whether the manuscript body contains any of the section
     name variants as a header. Heuristic: look for the variant at the
-    start of a line, optionally numbered (e.g. "3. Methods")."""
+    start of a line, optionally numbered in arabic or roman numerals
+    (e.g. "3. Methods", "4.1 Results", "II. INTRODUCTION")."""
     low = body.lower()
     for v in variants:
-        pattern = rf"(?:^|\n)\s*(?:\d+\.?\s+)?{re.escape(v)}\b"
+        pattern = (
+            rf"(?:^|\n)\s*(?:(?:\d+(?:\.\d+)*|[ivxl]+)\.?\s+)?{re.escape(v)}\b"
+        )
         if re.search(pattern, low, re.MULTILINE):
             return True
     return False
