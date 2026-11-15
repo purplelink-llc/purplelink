@@ -1,0 +1,118 @@
+{
+ "id": "howto-perhaps-a-missing-item-text-before-first-item",
+ "app": "moderntex",
+ "title": "Something's wrong--perhaps a missing \\item on Mac (move the text out of the list)",
+ "short_title": "LaTeX says perhaps a missing \\item? Check the line above it",
+ "url": "purplelink.llc/moderntex",
+ "page": "https://purplelink.llc/moderntex/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://forum.posit.co/t/error-latex-failed-to-compile-cv-example-tex/179811",
+  "https://www.texfaq.org/FAQ-errmissitem"
+ ],
+ "verify": {
+  "runs": [
+   {
+    "cmd": "cd \"$(mktemp -d)\" && print -rl -- '\\documentclass{article}' '\\begin{document}' '\\begin{itemize}' 'Things to pack:' '\\item Passport' '\\item Charger' '\\end{itemize}' '\\end{document}' > main.tex && pdflatex -interaction=nonstopmode main.tex > out.txt; grep -m1 '^! LaTeX' out.txt; grep -m1 '^l\\.[0-9]' out.txt; sed -n '3,4p' main.tex; grep -c '^!' out.txt",
+    "output": "! LaTeX Error: Something's wrong--perhaps a missing \\item.\nl.5 \\item P\n\\begin{itemize}\nThings to pack:\n1"
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && print -rl -- '\\documentclass{article}' '\\begin{document}' 'Things to pack:' '\\begin{itemize}' '\\item Passport' '\\item Charger' '\\end{itemize}' '\\end{document}' > main.tex && pdflatex -interaction=nonstopmode main.tex > out.txt; sed -n '3,4p' main.tex; grep -c '^!' out.txt",
+    "output": "Things to pack:\n\\begin{itemize}\n0"
+   }
+  ],
+  "docs": [
+   "https://www.texfaq.org/FAQ-errmissitem",
+   "https://www.overleaf.com/learn/latex/Errors/LaTeX_Error:_Something%27s_wrong--perhaps_a_missing_%5Citem"
+  ],
+  "notes": "Each run writes a small article in a fresh temporary folder and builds it once with pdfLaTeX from TeX Live 2026 in nonstop mode. With a line of plain text between \\begin{itemize} and the first \\item, the log holds one error, Something's wrong--perhaps a missing \\item, reported at line 5 (the first \\item), not at line 4 where the stray text is. With that line moved above \\begin{itemize}, the same list builds and the log holds no error lines. The TeX FAQ and the Overleaf error page both give text in a list with no \\item in front of it as the plain cause of this message."
+ },
+ "scenes": [
+  {
+   "type": "hook",
+   "short": true,
+   "kicker": "LaTeX on a Mac",
+   "title": "Perhaps a missing \\item",
+   "sub": "Your list has items. Look one line up.",
+   "narration": "LaTeX says perhaps a missing item, but your list has items. Look one line above the one it names."
+  },
+  {
+   "type": "symptom",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ pdflatex main.tex",
+    "! LaTeX Error: Something's wrong--perhaps a missing \\item.",
+    "l.5 \\item P",
+    "$ sed -n '3,4p' main.tex",
+    "\\begin{itemize}",
+    "Things to pack:"
+   ],
+   "narration": "Here is the error. LaTeX reports it at line five, the first item. But line four, just after begin itemize, is a line of plain text."
+  },
+  {
+   "type": "cause",
+   "text": "Inside a list, every piece of text has to belong to an \\item. LaTeX only notices the stray text when it reaches the next \\item, so it reports that line instead.",
+   "narration": "Inside a list, every piece of text has to belong to an item. A heading or a sentence placed after begin itemize belongs to none. LaTeX only notices when it reaches the next item, so the line number it gives is the item after the stray text."
+  },
+  {
+   "type": "steps",
+   "short": true,
+   "label": "main.tex",
+   "lines": [
+    "Find the text between \\begin{itemize} and the first \\item",
+    "Move the text above \\begin{itemize}",
+    "$ pdflatex main.tex"
+   ],
+   "narration": "Find the text that sits between begin itemize and the first item. Move it above begin itemize, or put backslash item in front of it if it should be an entry. Then build again."
+  },
+  {
+   "type": "check",
+   "short": true,
+   "label": "Terminal",
+   "ok": "No errors in the log",
+   "lines": [
+    "$ sed -n '3,4p' main.tex",
+    "Things to pack:",
+    "\\begin{itemize}",
+    "$ grep -c '^!' out.txt",
+    "0"
+   ],
+   "narration": "With the text above the list, the same document builds, and the log has no error lines."
+  },
+  {
+   "type": "app",
+   "name": "ModernTex",
+   "line": "Translates LaTeX build errors into plain explanations with a suggested fix, and marks them in the editor.",
+   "url": "purplelink.llc/moderntex",
+   "img": "site/assets/moderntex-screens/21-error-fix.webp",
+   "icon": "site/assets/moderntex-icon.png",
+   "narration": "If you write LaTeX on a Mac, ModernTex translates build errors into plain explanations with a suggested fix, and marks them in the editor."
+  }
+ ],
+ "thumbs": {
+  "A": {
+   "kind": "diff",
+   "hook": "Missing \\item?",
+   "before": "perhaps a missing \\item.",
+   "after": "Move the text above \\begin{itemize}"
+  },
+  "B": {
+   "kind": "focus",
+   "hook": "Missing\n\\item?",
+   "lines": [
+    "LaTeX Error: Something's wrong",
+    "perhaps a missing \\item."
+   ],
+   "hl": "missing \\item."
+  },
+  "C": {
+   "kind": "product",
+   "name": "ModernTex",
+   "line": "Missing \\item? Explained",
+   "img": "site/assets/moderntex-screens/21-error-fix.webp",
+   "icon": "site/assets/moderntex-icon.png"
+  }
+ }
+}
