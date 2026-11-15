@@ -55,6 +55,10 @@
           <div class="pr-stage" data-stage="panel" id="stg-panel"><span class="pr-stage-label">Seven reviewers</span><span class="pr-stage-tag">Each reads, then they debate</span></div>
           <div class="pr-stage" data-stage="rectifying" id="stg-rect"><span class="pr-stage-label">Write the report</span><span class="pr-stage-tag">Final report</span></div>
         </div>
+        <div class="pr-scene" id="pr-scene" hidden>
+          <div class="pr-scene-stage" id="pr-scene-stage" aria-hidden="true"></div>
+          <button type="button" class="pr-scene-toggle">Hide animation</button>
+        </div>
         <aside class="pr-wait" aria-labelledby="pr-wait-h">
           <h2 id="pr-wait-h">While it runs</h2>
           <p>Each opens in a new tab. Leave this one open to see your result.</p>
@@ -70,6 +74,7 @@
 
       <script src="/tools/tools.js"></script>
       <script src="/tools/paper-review/status.js" defer></script>
+      <script type="module" src="/tools/paper-review/waiting-scene.js"></script>
     </main>
 
     <footer class="footer">
