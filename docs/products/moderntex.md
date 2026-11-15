@@ -114,3 +114,5 @@ keys and a single copy's key is unchanged. Nothing is stored. The success page i
 with Copy all and a CSV download. No activation count exists, as for a single copy (keys verify offline). The picker is on `/moderntex/#departments`
 (`site/moderntex/seats.js` carries the same table; `netlify/tests/moderntex-seats.test.mjs` fails if the two differ).
 To test live: create a 100%-off promotion code in Stripe, buy 5 seats with it, and check the email, the success page and `/recover/`.
+
+- Opt-in beta channel (`--beta`): see `docs/products/sparkle-beta-channel.md`. First release after 3.2.0 carries the setting.
