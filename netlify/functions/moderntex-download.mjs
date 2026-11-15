@@ -33,6 +33,7 @@
  */
 import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
+import { latestReleasedDmg } from "../lib/release-pick.mjs";
 import { bundleHasPart } from "../lib/bundles.mjs";
 import { SESSION_EXPAND, withAddons } from "../lib/addons.mjs";
 import { revocationFor, REVOKED_DETAIL } from "../lib/refunds.mjs";
@@ -98,16 +99,9 @@ async function loadSession(sessionId) {
   return { session };
 }
 
-/** The newest DMG in the store, by semantic version in the filename. */
+/** The newest released DMG in the store; beta-channel versions are left out (netlify/lib/release-pick.mjs). */
 async function latestDmgName(store, pattern = DMG_NAME) {
-  const { blobs } = await store.list();
-  const names = blobs.map((b) => b.key).filter((k) => pattern.test(k));
-  names.sort((a, b) => {
-    const va = a.match(/\d+/g).map(Number), vb = b.match(/\d+/g).map(Number);
-    for (let i = 0; i < 3; i++) if (va[i] !== vb[i]) return vb[i] - va[i];
-    return 0;
-  });
-  return names[0] || null;
+  return latestReleasedDmg(store, pattern);
 }
 
 /** From 1.4.0 there is one DMG (a 7-day trial, then a license key), so the trial door serves the newest
