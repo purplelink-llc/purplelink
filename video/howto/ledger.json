@@ -737,5 +737,34 @@
    "utm_content": "howto-google-scholar-g-index-not-shown-reel"
   },
   "ab_test": "not started: Studio showed no Test & Compare after two tries; thumbnail A set as the plain thumbnail"
+ },
+ {
+  "slug": "howto-perhaps-a-missing-item-text-before-first-item",
+  "app": "moderntex",
+  "date": "2026-11-15",
+  "title": "Something's wrong--perhaps a missing \\item on Mac (move the text out of the list)",
+  "long_id": "ZSorg6i4-f8",
+  "short_id": "FVmRV2af46g",
+  "link_arm": "B",
+  "link_utm_content": "howto-perhaps-a-missing-item-text-before-first-item",
+  "short_utm_content": "howto-perhaps-a-missing-item-text-before-first-item-short",
+  "sources": [
+   "https://forum.posit.co/t/error-latex-failed-to-compile-cv-example-tex/179811",
+   "https://www.texfaq.org/FAQ-errmissitem"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "ZSorg6i4-f8",
+    "caption_id": "AUieDabMZa7c2YUd9z2jBjy5PtpExvQDRhuZQVfMJNEaDu66V4RWKjYN"
+   },
+   "short": {
+    "video_id": "FVmRV2af46g",
+    "caption_id": "AUieDaYC6BAWv5ppdh_2WDbAG3eYs67w8rQDiVGmIIwGrs7r2gUdO4Lz"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-perhaps-a-missing-item-text-before-first-item-reel"
+  }
  }
 ]

@@ -263,5 +263,16 @@
   "started": "2026-11-13",
   "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
   "checked": "2026-11-13"
+ },
+ {
+  "video": "ZSorg6i4-f8",
+  "variants": {
+   "A": "video/out/howto/perhaps-a-missing-item-text-before-first-item/perhaps-a-missing-item-text-before-first-item-thumb-A.jpg",
+   "B": "video/out/howto/perhaps-a-missing-item-text-before-first-item/perhaps-a-missing-item-text-before-first-item-thumb-B.jpg",
+   "C": "video/out/howto/perhaps-a-missing-item-text-before-first-item/perhaps-a-missing-item-text-before-first-item-thumb-C.jpg"
+  },
+  "started": "2026-11-15",
+  "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
+  "checked": "2026-11-15"
  }
 ]
