@@ -133,7 +133,21 @@
       <article class="post-body">
         <p><strong>Disclosure:</strong> Purplelink makes ModernTex, a Mac LaTeX editor, and it is mentioned near the end. The fixes below come from <a href="https://docs.overleaf.com/troubleshooting-and-support/fixing-and-preventing-compile-timeouts" rel="noopener">Overleaf's own documentation on compile timeouts</a>, and the limits from its <a href="https://docs.overleaf.com/getting-started/free-and-premium-plans/plan-limits" rel="noopener">plan limits page</a>. Overleaf's <a href="https://www.overleaf.com/blog/changes-to-free-compile-timeout" rel="noopener">announcement of the change</a> says the 10-second limit applied to all free users from September 8, 2025, after a gradual rollout. I read all three pages on October 13, 2026. Limits can change, so check them if a number matters to you.</p>
 
-        <h2>First, check that it is a timeout and not an error</h2>
+        <nav class="page-toc" aria-labelledby="toc-heading">
+          <h2 id="toc-heading">On this page</h2>
+          <ol>
+            <li><a href="#timeout-or-error">First, check that it is a timeout and not an error</a></li>
+            <li><a href="#fixes">Fixes to try, in order</a></li>
+            <li><a href="#time-it">If it still times out: time it somewhere without a limit</a></li>
+            <li><a href="#stay">When staying on Overleaf is fine</a></li>
+            <li><a href="#timed-compile">One timed local compile</a></li>
+            <li><a href="#offline">An offline workflow, short version</a></li>
+            <li><a href="#options">Your options when you hit the limit</a></li>
+            <li><a href="#mac">If you are on a Mac</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="timeout-or-error">First, check that it is a timeout and not an error</h2>
         <p>On the free plan the message usually says the project exceeded the compile timeout limit, or that it needs more compile time and you should upgrade. A "Timed out" message does not always mean the project is too big. A fatal error can leave LaTeX waiting for input or looping until the clock runs out, and then Overleaf reports a timeout instead of the error.</p>
         <p>Open the Recompile menu and turn on <strong>Stop on first error</strong>. If the compile now fails quickly with a message, you have an error to fix, not a time limit to beat. Overleaf's documentation lists these as common causes of timeouts that are really errors:</p>
         <ul>
@@ -146,7 +160,7 @@
           <li>Babel shorthands. Overleaf suggests avoiding them or loading babel with <code>shorthands=off</code>.</li>
         </ul>
 
-        <h2>Fixes to try, in order</h2>
+        <h2 id="fixes">Fixes to try, in order</h2>
         <ol>
           <li><strong>Stop on first error.</strong> As above. It costs nothing and rules out a hidden error.</li>
           <li><strong>Compile in Fast [draft] mode.</strong> Draft mode skips rendering images. If the project builds in draft mode and times out otherwise, images are the cost. Save diagrams and plots as PDF, use JPEG only for photographs, and avoid EPS and SVG files.</li>
@@ -155,7 +169,7 @@
         </ol>
         <p>Work down the list and recompile after each step. Changing four things at once tells you nothing about which one mattered.</p>
 
-        <h2>If it still times out: time it somewhere without a limit</h2>
+        <h2 id="time-it">If it still times out: time it somewhere without a limit</h2>
         <p>A local build tells you whether the project is slow or broken. Download the project from the Overleaf menu (Download, then Source), unzip it, and install a TeX distribution: <a href="https://www.tug.org/mactex/" rel="noopener">MacTeX</a> on a Mac, or TinyTeX if you want something smaller. In the project folder, run the compiler Overleaf was using:</p>
         <pre><code>time latexmk -pdf -interaction=nonstopmode main.tex</code></pre>
         <p>Use <code>-xelatex</code> or <code>-lualatex</code> in place of <code>-pdf</code> if the project's compiler setting is XeLaTeX or LuaLaTeX. Replace <code>main.tex</code> with the project's main file. The first build on a new install is slower than later ones, because fonts and package files are generated once, so time the second run.</p>
@@ -166,7 +180,7 @@
           <li><strong>It never finishes.</strong> Stop it with Ctrl-C and open <code>main.log</code>. A loop, a missing file prompt or a package conflict shows near the end of the log. No time limit would have rescued this one, so a paid plan would not either.</li>
         </ul>
 
-        <h2>When staying on Overleaf is fine</h2>
+        <h2 id="stay">When staying on Overleaf is fine</h2>
         <p>A timeout is not a reason to leave by itself. Staying makes sense in these cases:</p>
         <ul>
           <li><strong>The fixes above work.</strong> Most projects get under the limit once the hidden errors and slow figures are dealt with, and then nothing else changes.</li>
@@ -175,12 +189,12 @@
           <li><strong>You do not want to maintain a TeX install.</strong> A local setup needs disk space and an update about once a year.</li>
         </ul>
 
-        <h2>One timed local compile</h2>
+        <h2 id="timed-compile">One timed local compile</h2>
         <p>To give the local build a concrete number, I generated a test document and compiled it once. It is synthetic, not an Overleaf project: 30 sections of generated filler text, 30 numbered equations and 30 small TikZ drawings, which came to 68 pages. I did not compile it on Overleaf, so this does not show how Overleaf would handle it, and it says nothing about your project.</p>
         <pre><code>time latexmk -pdf -interaction=nonstopmode test.tex</code></pre>
         <p>I ran it once on October 13, 2026, on a Mac with an Apple M4 chip running macOS 27.2, with pdfTeX 3.141592653-2.6-1.40.29 (TeX Live 2026) and Latexmk 4.88. The result was 2.9 seconds of wall time from a clean folder. I did not average runs or separate a first build from a later one. A real thesis with large images, a bibliography and many packages will take longer. To know how much, time your own project as described above, or see the <a href="/guides/latex-compile-time-benchmark-mac/">repeatable benchmark of four document types and three engines</a> for measured cold and rebuild times.</p>
 
-        <h2>An offline workflow, short version</h2>
+        <h2 id="offline">An offline workflow, short version</h2>
         <ol>
           <li>Download the source from the Overleaf menu and unzip it into a folder you keep.</li>
           <li>Install a TeX distribution. The <a href="/guides/install-latex-on-mac/">install guide for MacTeX, BasicTeX and TinyTeX</a> lists the installer sizes (MacTeX 6.4 GB, BasicTeX 134 MB, as TUG listed them in March 2026). It also covers adding missing packages with <code>tlmgr</code>.</li>
@@ -188,7 +202,7 @@
           <li>If co-authors stay on Overleaf, sync through Git (a premium Overleaf feature) or upload changed files by hand, as the <a href="/guides/overleaf-alternative-mac/#hybrid">hybrid workflow section</a> describes.</li>
         </ol>
 
-        <h2>Your options when you hit the limit</h2>
+        <h2 id="options">Your options when you hit the limit</h2>
         <ul>
           <li><strong>Fix the project.</strong> Free, and often enough. The checklist above is the whole list.</li>
           <li><strong>Move to a premium plan.</strong> Overleaf lists 240 seconds on premium plans, though its own documentation says very large projects may need a local compile even then. Many universities provide premium through a site licence, so check whether yours does before paying.</li>
@@ -196,7 +210,7 @@
           <li><strong>Do both.</strong> Keep the shared draft on Overleaf for co-authors and build the heavy version on your own machine. The guide to <a href="/guides/overleaf-alternative-mac/">Overleaf alternatives for Mac</a> covers moving a project over and syncing with Git.</li>
         </ul>
 
-        <h2>If you are on a Mac</h2>
+        <h2 id="mac">If you are on a Mac</h2>
         <p>ModernTex is a native Mac editor that compiles on your own machine, so there is no compile limit. It explains LaTeX errors in plain language instead of leaving you with the raw log. It is a single-user app, so two people cannot type in the same document. Keep Overleaf for that. ModernTex costs $19.99 once with all updates included, after a free 7-day trial with no account. It needs macOS 14 or later plus MacTeX or TinyTeX (it offers a one-click TinyTeX install). The free editors in the <a href="/guides/best-mac-latex-editors/">comparison of Mac LaTeX editors</a> do the same job for no cost if you prefer them.</p>
 
       </article>

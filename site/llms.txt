@@ -420,6 +420,8 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - Response to reviewers template: https://purplelink.llc/tools/response-letter-template/ - paste the reviewer comments and get a response letter with every comment numbered and quoted (Markdown, LaTeX or plain text); runs in the browser.
 - Submission Checklist: https://purplelink.llc/tools/submission-checklist/ - twelve pre-submission checks for a manuscript, each linked to the tool that does it; progress saved in the browser.
 - LaTeX templates by venue: https://purplelink.llc/templates/ - IEEEtran (conference), ACM acmart, NeurIPS, Elsevier elsarticle and APA 7 (apa7): compilable skeletons with a downloadable starter (main.tex and references.bib), key class options and submission pitfalls.
+- ACM paper template (acmart): https://purplelink.llc/templates/acm-acmart/ - a minimal acmart template that compiles as written, what the sigconf, acmsmall, review and anonymous options do, and the pitfalls that hold up ACM submissions.
+- APA 7th edition template (apa7): https://purplelink.llc/templates/apa7/ - a minimal apa7 skeleton that compiles as written, what the man, jou, doc and stu modes do, biblatex-apa with Biber, and common APA manuscript pitfalls.
 - LaTeX error messages: https://purplelink.llc/latex-errors/ - fifteen common LaTeX errors and warnings, each with a real pdfLaTeX log excerpt, the causes in order of likelihood with before and after examples, and how to find the line.
 - LaTeX error, Undefined control sequence: https://purplelink.llc/latex-errors/undefined-control-sequence/ - TeX met a command name it has no definition for. Usually the name is misspelled or the package that defines it is not loaded.
 - LaTeX error, Missing $ inserted: https://purplelink.llc/latex-errors/missing-dollar-inserted/ - TeX found something that only works in math mode while it was setting ordinary text, so it switched to math mode on its own.
@@ -455,6 +457,10 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - Nature reference format: https://purplelink.llc/format/references-for-nature/ - numbered superscripts in order of citation, et al. after five authors, about 50 references. Rules, three examples, checker. Checked 2026-10-01.
 - Science reference format: https://purplelink.llc/format/references-for-science/ - numbered in order of citation, italic numbers in parentheses, full author lists with no et al. Rules, examples, checker. Checked 2026-10-01.
 - PNAS reference format: https://purplelink.llc/format/references-for-pnas/ - numbered in order of appearance, et al. after five authors, pnas-new.bst in the Overleaf template. Rules, examples, checker. Checked 2026-10-01.
+- ACM CSUR reference format: https://purplelink.llc/format/references-for-acm-csur/ - acmart with the manuscript option, ACM-Reference-Format.bst, numbered citations. Setup lines and a BibTeX converter.
+- MISQ reference format: https://purplelink.llc/format/references-for-misq/ - a Word manuscript, author-year citations such as (Angelou 1969) with no comma, volume and issue as (23:3). EndNote converter.
+- USENIX Security reference format: https://purplelink.llc/format/references-for-usenix-security/ - the official USENIX LaTeX or Word template with numbered citations, and a BibTeX converter.
+- NDSS reference format: https://purplelink.llc/format/references-for-ndss/ - the NDSS IEEEtran template (two-column, 10pt Times), IEEEtran.bst, numbered citations. Setup lines and a BibTeX converter.
 - Tools hub: https://purplelink.llc/tools/
 
 ## Guides (free how-to articles)
@@ -525,9 +531,15 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - Show changes between two LaTeX versions: https://purplelink.llc/guides/latex-track-changes/ — track changes in LaTeX with latexdiff.
 - Count words in a LaTeX document: https://purplelink.llc/guides/latex-word-count/ — accurate word counts for .tex files.
 - Get BibTeX from a DOI or arXiv ID: https://purplelink.llc/guides/doi-to-bibtex/ — fetch a clean BibTeX entry from an identifier.
+- Overleaf compile timeout: https://purplelink.llc/guides/overleaf-compile-timeout/ — the free plan stops a compile at 10 seconds. How to tell a timeout from an error, fixes to try in order, and when a local compile is simpler.
+- Convert a Word manuscript to LaTeX: https://purplelink.llc/guides/word-to-latex/ — a LaTeX starting point from a .docx with the free converter, and what to clean up before compiling.
+- Submit LaTeX source to a journal as a ZIP: https://purplelink.llc/guides/submit-latex-source-to-journal-zip/ — one flat folder, the .bbl file, fixed figure paths and a checklist for Elsevier, Springer Nature and arXiv.
+- How to snap and tile windows on a Mac: https://purplelink.llc/guides/snap-windows-on-mac/ — drag to an edge, the green button and Window menu, Fn-Control shortcuts, turning macOS tiling off, and when Rectangle, Magnet, BetterSnapTool or Panely is worth it.
+- Best Alfred alternatives for Mac: https://purplelink.llc/guides/best-alfred-alternatives-for-mac/ — Alfred, Raycast, LaunchBar, Spotlight, Quicksilver, Keyboard Maestro and Summonly compared by job and price, with a disclosure about Purplelink's own Summonly.
 
 ## Blog (articles & updates)
 - Blog index: https://purplelink.llc/blog/
+- What OpenAlex returns when you ask for an abstract: https://purplelink.llc/blog/what-openalex-returns-when-you-ask-for-an-abstract/ - OpenAlex stores abstracts as inverted indexes rather than strings; how to rebuild the text and where the reconstruction has limits.
 - ModernTex 3.0: hear your manuscript, and dictate into LaTeX: https://purplelink.llc/blog/moderntex-3-hear-your-manuscript-and-dictate-into-latex/ - ModernTex 3.0 reads your LaTeX aloud with each sentence highlighted, and takes dictation into your source. Both run on your Mac and nothing is sent off it.
 - Starting Purplelink: https://purplelink.llc/blog/starting-purplelink/ - Why I formed a software LLC, what I'm building with it, and the philosophy behind making software that's...
 - Why we built haea on-device: https://purplelink.llc/blog/why-haea-is-on-device/ - Why haea keeps all your health data on your iPhone - and why that decision shapes everything about how the...

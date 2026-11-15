@@ -117,6 +117,21 @@
       <article class="post-body">
         <p>Disclosure: I make ModernTex, a Mac LaTeX editor, and it gets one short mention near the end. This page is about VS Code. I ran the Terminal commands below on a Mac and say what each one printed. I did not install LaTeX Workshop or open VS Code for this page, so the steps inside VS Code come from the extension's own wiki and are marked that way.</p>
 
+        <nav class="page-toc" aria-labelledby="toc-heading">
+          <h2 id="toc-heading">On this page</h2>
+          <ol>
+            <li><a href="#distribution">Install a TeX distribution first</a></li>
+            <li><a href="#extension">Install the LaTeX Workshop extension</a></li>
+            <li><a href="#restart">Quit VS Code with Command-Q and open it again</a></li>
+            <li><a href="#check">Check latexmk from Terminal</a></li>
+            <li><a href="#settings">Give the build its own PATH in settings.json</a></li>
+            <li><a href="#build">First build and SyncTeX</a></li>
+            <li><a href="#errors">Errors and what they mean</a></li>
+            <li><a href="#moderntex">If you would rather not configure an editor</a></li>
+            <li><a href="#checked">What I ran and what I did not</a></li>
+          </ol>
+        </nav>
+
         <h2 id="distribution">1. Install a TeX distribution first</h2>
         <p>The extension does not include LaTeX. Its install page says the only requirement is a compatible distribution on your PATH (the list of folders a program searches for commands), and it lists TeX Live, TinyTeX and MiKTeX. On a Mac that usually means MacTeX, BasicTeX or TinyTeX. <a href="/guides/install-latex-on-mac/">How to install LaTeX on a Mac</a> covers the choice and the steps.</p>
         <p>Where the programs end up matters later. MacTeX keeps a link at <code>/Library/TeX/texbin</code> that points to them, and TinyTeX puts them in a folder under <code>~/Library/TinyTeX/bin</code>. On the Mac I used, which has TinyTeX, that folder is <code>~/Library/TinyTeX/bin/universal-darwin</code>.</p>
@@ -231,6 +246,7 @@
           <li><a href="/guides/install-latex-on-mac/">How to install LaTeX on a Mac</a></li>
           <li><a href="/guides/best-mac-latex-editors/">Best LaTeX editors for Mac</a></li>
           <li><a href="/guides/synctex-on-mac/">SyncTeX on Mac</a></li>
+          <li><a href="/guides/zotero-latex-mac/">Zotero with LaTeX on a Mac</a></li>
           <li><a href="/guides/move-overleaf-project-to-mac-with-git/">Move an Overleaf project to a Mac with Git</a></li>
           <li><a href="/guides/latex/">LaTeX guides hub</a></li>
         </ul>
