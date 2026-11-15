@@ -282,3 +282,53 @@ def test_text_above_the_references_heading_on_the_same_page_stays_in_the_body():
     assert "Introduction" in s.body and "Abstract" in s.body
     assert "Learning to cite" not in s.body            # the references themselves are not body
     assert s.n_references_total == 3
+
+
+# A CAIS/APA author-year list as pdfplumber hands it over: no numbers, entries wrapped onto continuation lines, a
+# page footer carrying the paper's own DOI, and the author bios after the last entry.
+_CAIS_REFS = """Anckar, B., & D'Incau, D. (2002). Value creation in mobile commerce: Findings from a consumer survey.
+Journal of Information Technology Theory and Application, 4(1), 43-64.
+Bansal, H. S., Taylor, S. F., & James, Y. S. (2005). "Migrating" to new service providers: Toward a unifying
+framework of consumers' switching behaviors. Journal of the Academy of Marketing Science, 33(1),
+96-115.
+Volume 42 10.17705/1CAIS.04224 Paper 24
+Communications of the Association for Information Systems 401
+CNet. (2015). YouTube app no longer supports older TVs. Retrieved from
+http://www.cnet.com/news/youtube-app/
+Lee, A. S., (1995). Reviewing a manuscript for publication. Journal of Operations Management, 13, 87-92.
+Investopedia. (n.d.). Tragedy of the commons. Retrieved from https://www.investopedia.com/terms/t/x.asp
+Bhattacherjee, A., and Park, S. C. 2014. Why end-users move to the cloud. European Journal of Information
+Systems, 23(3), 357-372.
+About the Authors
+Jane Doe is Professor of Information Systems at a university. Her work appeared in MIS Quarterly (2019).
+"""
+
+
+def test_split_references_author_year_list_splits_per_entry():
+    refs = papercheck._split_references(_CAIS_REFS)
+    assert len(refs) == 6
+    assert refs[0].startswith("Anckar") and refs[0].endswith("43-64.")
+    assert refs[1].endswith("96-115.")  # the wrapped volume line stays with its entry
+    assert refs[3].startswith("Lee, A. S., (1995)")  # comma before the year
+    assert refs[4].startswith("Investopedia. (n.d.)")
+    assert refs[5].startswith("Bhattacherjee") and refs[5].endswith("357-372.")  # MISQ style, year without parens
+
+
+def test_split_references_author_year_drops_page_footer_and_bios():
+    refs = papercheck._split_references(_CAIS_REFS)
+    joined = " ".join(refs)
+    assert "1CAIS.04224" not in joined  # the footer DOI must not be read as a reference's DOI
+    assert "About the Authors" not in joined and "Jane Doe" not in joined
+    parsed = [papercheck._parse_reference(r) for r in refs]
+    assert not any(p.doi for p in parsed)
+    assert str(parsed[0].year) == "2002" and str(parsed[5].year) == "2014"
+
+
+def test_split_references_numbered_list_wins_over_author_year_shaped_lines():
+    numbered = "\n".join(
+        f"[{i}] Smith, J., & Doe, A. ({2000 + i}). A paper title number {i}.\n"
+        f"Proc. IEEE Conf. ({2000 + i}). Pages {i}-{i + 9}."
+        for i in range(1, 6)
+    )
+    refs = papercheck._split_references(numbered)
+    assert len(refs) == 5
