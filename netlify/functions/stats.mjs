@@ -77,6 +77,8 @@ export function toolChannel(v) {
   const m = /^tool-([a-z0-9][a-z0-9-]{0,39})$/i.exec(String(v || ""));
   return m ? `tool:${m[1].toLowerCase()}` : "";
 }
+// Free-app download clicks (event "download", meta "<app>" or "<group>:<file>") are counted per app, apart from trials.
+export const freeApp = (m) => String(m || "download").split(":")[0].slice(0, 40) || "download";
 export const foldSource = (v) => toolChannel(v) || foldChannel(v);
 
 // Sites other than purplelink.llc that beacon to this collector. Their records are never mixed into the default numbers.
@@ -337,22 +339,24 @@ export default async function handler(request) {
       // so the dashboard can restrict them to product pages.
       if (rec.ft && !String(rec.meta || "").startsWith("__")) {
         const ft = foldSource(rec.ft);
-        const fc = s.funnelByChannel[ft] || (s.funnelByChannel[ft] = { pageviews: 0, pageviewsByPath: {}, sendToMac: {}, trial: {}, trialSuspect: {}, checkout: {}, os: {} });
+        const fc = s.funnelByChannel[ft] || (s.funnelByChannel[ft] = { pageviews: 0, pageviewsByPath: {}, sendToMac: {}, trial: {}, trialSuspect: {}, freeDownload: {}, checkout: {}, os: {} });
         // Operating-system family of the channel's pageviews (records before 2026-10-31 have none and are not counted).
         if (rec.type === "pageview") { fc.pageviews++; bump(fc.pageviewsByPath, rec.path); if (rec.os) bump(fc.os, rec.os); }
         else if (rec.type === "checkout_click") bump(fc.checkout, rec.meta || "unknown");
         else if (rec.type === "send_to_mac") bump(fc.sendToMac, rec.meta || "unknown");
         else if (/_?trial_download$/.test(rec.type)) bump(rec.suspect ? fc.trialSuspect : fc.trial, rec.meta || rec.type);
         else if (rec.type === "guide_mtx_trial") bump(fc.trial, "guide_mtx_trial");
+        else if (rec.type === "download") bump(fc.freeDownload, freeApp(rec.meta));
         // The same counts by the first-touch link tag (utm_content), so one placement can be read on its own.
         if (rec.fc) {
           const fk = String(rec.fc).slice(0, 60);
-          const fx = s.funnelByContent[fk] || (s.funnelByContent[fk] = { channel: ft, pageviews: 0, pageviewsByPath: {}, sendToMac: {}, trial: {}, trialSuspect: {}, checkout: {}, os: {} });
+          const fx = s.funnelByContent[fk] || (s.funnelByContent[fk] = { channel: ft, pageviews: 0, pageviewsByPath: {}, sendToMac: {}, trial: {}, trialSuspect: {}, freeDownload: {}, checkout: {}, os: {} });
           if (rec.type === "pageview") { fx.pageviews++; bump(fx.pageviewsByPath, rec.path); if (rec.os) bump(fx.os, rec.os); }
           else if (rec.type === "checkout_click") bump(fx.checkout, rec.meta || "unknown");
           else if (rec.type === "send_to_mac") bump(fx.sendToMac, rec.meta || "unknown");
           else if (/_?trial_download$/.test(rec.type)) bump(rec.suspect ? fx.trialSuspect : fx.trial, rec.meta || rec.type);
           else if (rec.type === "guide_mtx_trial") bump(fx.trial, "guide_mtx_trial");
+          else if (rec.type === "download") bump(fx.freeDownload, freeApp(rec.meta));
         }
       }
 
@@ -492,12 +496,12 @@ export default async function handler(request) {
     ...(hostFilter ? {} : { journeysByDay: Object.fromEntries(Object.entries(s.journeysByDay).sort()) }),
     funnelByChannel: Object.fromEntries(Object.entries(s.funnelByChannel).map(([ch, v]) => [ch, {
       pageviews: v.pageviews, pageviewsByPath: Object.fromEntries(topN(v.pageviewsByPath, 40).map((x) => [x.key, x.count])),
-      sendToMac: v.sendToMac, trial: v.trial, trialSuspect: v.trialSuspect, checkout: v.checkout, os: v.os,
+      sendToMac: v.sendToMac, trial: v.trial, trialSuspect: v.trialSuspect, freeDownload: v.freeDownload, checkout: v.checkout, os: v.os,
     }])),
     funnelByContent: Object.fromEntries(Object.entries(s.funnelByContent).map(([k, v]) => [k, {
       channel: v.channel, pageviews: v.pageviews,
       pageviewsByPath: Object.fromEntries(topN(v.pageviewsByPath, 20).map((x) => [x.key, x.count])),
-      sendToMac: v.sendToMac, trial: v.trial, trialSuspect: v.trialSuspect, checkout: v.checkout, os: v.os,
+      sendToMac: v.sendToMac, trial: v.trial, trialSuspect: v.trialSuspect, freeDownload: v.freeDownload, checkout: v.checkout, os: v.os,
     }])),
   });
 }
