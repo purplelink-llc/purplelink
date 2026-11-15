@@ -148,6 +148,30 @@ test("the public download streams the newest DMG without asking Stripe anything"
   assert.equal(stripeCalls, 0);
 });
 
+test("a beta-channel version is never the buyer's or the public download's newest DMG, and still serves to the channel", async () => {
+  stores.set("keyfeel-files/Keyfeel-1.11.0.dmg", "x");
+  stores.set("keyfeel-files/appcast.xml", `<rss><channel>
+<item><enclosure url="https://purplelink.llc/.netlify/functions/keyfeel-download?update=Keyfeel-1.11.0.dmg" length="9"/><sparkle:channel>beta</sparkle:channel></item>
+<item><enclosure url="https://purplelink.llc/.netlify/functions/keyfeel-download?update=Keyfeel-1.10.0.dmg" length="9"/></item>
+</channel></rss>`);
+  const buyer = await (await call(`session_id=${SESSION}`)).json();
+  assert.equal(buyer.files[0].key, "Keyfeel-1.10.0.dmg");
+  for (const q of ["download=1", "trial=1"]) {
+    const res = await call(q);
+    assert.match(res.headers.get("content-disposition"), /filename="Keyfeel-1\.10\.0\.dmg"/, q);
+  }
+  const feed = await (await call("feed=1", { "x-keyfeel-channel": TOKEN })).text();
+  assert.match(feed, /<sparkle:channel>beta<\/sparkle:channel>/, "the feed keeps the channel tag");
+  assert.equal((await call("update=Keyfeel-1.11.0.dmg", { "x-keyfeel-channel": TOKEN })).status, 200);
+});
+
+test("with no readable appcast the newest DMG is picked as before", async () => {
+  stores.set("keyfeel-files/Keyfeel-1.11.0.dmg", "x");
+  stores.delete("keyfeel-files/appcast.xml");
+  const res = await call("trial=1");
+  assert.match(res.headers.get("content-disposition"), /filename="Keyfeel-1\.11\.0\.dmg"/);
+});
+
 test("the public download is 404 when nothing is staged", async () => {
   for (const k of [...stores.keys()]) if (/\.dmg$/.test(k)) stores.delete(k);
   const res = await call("download=1");

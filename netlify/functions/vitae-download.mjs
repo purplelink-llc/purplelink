@@ -38,6 +38,7 @@
  */
 import { createHash, randomUUID } from "node:crypto";
 import { getStore } from "@netlify/blobs";
+import { latestReleasedDmg } from "../lib/release-pick.mjs";
 import { clientIp } from "../lib/ratelimit.mjs";
 import { BOT_UA, clientClass, isOwnIp, visitorId } from "../lib/visitor.mjs";
 
@@ -65,16 +66,9 @@ async function bump(stats, key) {
   await stats.set(key, String(n + 1));
 }
 
+/** The newest released DMG in the store; beta-channel versions are left out (netlify/lib/release-pick.mjs). */
 async function latestDmgName(store) {
-  const { blobs } = await store.list();
-  const names = blobs.map((b) => b.key).filter((k) => DMG_NAME.test(k));
-  const ver = (n) => n.match(/\d+/g).map(Number);
-  names.sort((a, b) => {
-    const va = ver(a), vb = ver(b);
-    for (let i = 0; i < 3; i++) if ((va[i] || 0) !== (vb[i] || 0)) return (vb[i] || 0) - (va[i] || 0);
-    return 0;
-  });
-  return names[0] || null;
+  return latestReleasedDmg(store, DMG_NAME);
 }
 
 async function streamBlob(store, key) {
