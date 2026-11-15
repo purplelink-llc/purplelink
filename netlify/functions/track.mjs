@@ -45,6 +45,13 @@ export function isSuspectTrial(rec) {
   return typeof rec.dwell_ms === "number" && rec.dwell_ms < SUSPECT_DWELL_MS && rec.interacted === false;
 }
 
+// A trial click from a visitor whose OS is known (it is recorded with a first touch; "other" is not known) and is not a Mac, that was not
+// already the "<app>-not-mac" pointer click: the apps are Mac-only, so this is not a usable trial. Kept and counted apart.
+const NON_MAC_OS = new Set(["windows", "linux", "chromeos", "ios", "android"]);
+export function isNonMacTrial(rec) {
+  return NON_MAC_OS.has(rec.os) && !String(rec.meta || "").endsWith("-not-mac");
+}
+
 function clip(v, n) {
   return String(v == null ? "" : v).slice(0, n);
 }
@@ -140,6 +147,7 @@ export default async function handler(request, context) {
     rec.interacted = b.interacted;
     if (isSuspectTrial(rec)) rec.suspect = true;
   }
+  if (/_?trial_download$/.test(type) && isNonMacTrial(rec)) rec.suspect = true;
 
   // Per-IP daily cap, same shared "rate-limits" store pattern as the other functions. The key holds a hash of the IP,
   // never the IP. Over the cap the event is dropped quietly; a limiter error never blocks the beacon.

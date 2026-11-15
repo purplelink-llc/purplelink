@@ -295,6 +295,24 @@ def test_suspect_trials_are_counted_apart():
     assert hub.suspect_of({"trials": 3}) == 0                 # a database built before the column existed
 
 
+def test_free_downloads_are_a_column_of_their_own():
+    # stats.mjs counts free-app download clicks per channel in "freeDownload", keyed by app; they never join trials.
+    import datetime as dt
+    today = dt.date(2026, 11, 15)
+    assets = {"widget": {"kind": "product", "url": "https://purplelink.llc/widget/"}}
+    start = (today - dt.timedelta(days=44)).isoformat()
+    pls = [{"id": f"p{i}", "channel": "youtube", "status": "live", "date": start, "url": "", "landing_url": "", "utm": ""}
+           for i in range(8)]
+    links = {f"p{i}": ["widget"] for i in range(8)}
+    fun = {"asOf": "x", "windows": {"45": {"youtube": {"pageviewsByPath": {"/widget/": 150}, "trial": {"widget": 6},
+                                                       "freeDownload": {"widget": 9, "other": 3}}}}}
+    row = hub.channel_stats(pls, links, assets, fun, [], today)[0]
+    assert row[4] == 6 and row[12] == 9                       # trials unchanged, free downloads 9
+    old = {"asOf": "x", "windows": {"45": {"youtube": {"pageviewsByPath": {"/widget/": 150}, "trial": {"widget": 6}}}}}
+    assert hub.channel_stats(pls, links, assets, old, [], today)[0][12] == 0
+    assert hub.free_of({"trials": 3}) == 0                    # a database built before the column existed
+
+
 def test_listing_checks():
     assert hub.listing_check({"error": "403"}, {"version": "1.2.0"}) == "manual"
     assert hub.listing_check({"versions": [], "prices": []}, {"version": "1.2.0"}) == "manual"
