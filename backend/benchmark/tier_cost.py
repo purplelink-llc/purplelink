@@ -3,6 +3,8 @@
 """What does one order of each Paper Review product cost in model calls?
 COSTS REAL MONEY: about $10-20 per paper (all six products run on it). Run one paper first and read the total.
     cd backend && python3 -m modal run benchmark/tier_cost.py --pdf /path/paper.pdf --out /path/result.json
+Compare a model or effort without touching the live app: --model claude-fable-5-2 --persona-model claude-fable-5-2
+--effort high (applied inside the benchmark container only). Each product's report is saved under "reports".
 
 Runs the production code paths on Modal with the production secrets (anthropic-secret, and coherence-flags so
 COHERENCE_IN_REVIEW matches the live pipeline), each product under its own UsageTracker with the same per-order
@@ -80,16 +82,27 @@ def _usage_dict(u, seconds: float, status) -> dict:
 
 
 @stub.function(image=IMAGE, secrets=SECRETS, timeout=3600, cpu=2.0, memory=4096)
-def run_chain(pdf: bytes, journal_key: str = "neurips", only: str = "") -> dict:
+def run_chain(pdf: bytes, journal_key: str = "neurips", only: str = "", model: str = "", persona_model: str = "",
+              effort: str = "") -> dict:
     import asyncio
     import time
 
     import httpx
 
+    # Model and effort are read when latextools is imported, so overrides go into the environment first. They
+    # change this container only, never the live app.
+    for var, val in (("ANTHROPIC_MODEL", model), ("PERSONA_MODEL", persona_model), ("REVIEW_EFFORT", effort),
+                     ("COHERENCE_EFFORT", effort)):
+        if val:
+            os.environ[var] = val
+
     from latextools import coherence, journals, papercheck, paperreview_extras, response_draft, response_review
 
     want = set(filter(None, only.split(","))) or set(PRICES)
-    out: dict = {"coherence_in_review": coherence.in_review_enabled(), "products": {}}
+    out: dict = {"coherence_in_review": coherence.in_review_enabled(), "products": {}, "reports": {},
+                 "config": {"model": papercheck.DEFAULT_MODEL, "persona_model": papercheck.PERSONA_MODEL,
+                            "fallback_model": papercheck.FALLBACK_MODEL, "effort": papercheck.DEFAULT_EFFORT,
+                            "coherence_check_model": coherence.CHECK_MODEL, "coherence_effort": coherence.EFFORT}}
 
     async def paper(tier: str, jkey: str | None, ceiling: float):
         with papercheck.UsageTracker(max_cost_usd=ceiling) as u:
@@ -109,6 +122,7 @@ def run_chain(pdf: bytes, journal_key: str = "neurips", only: str = "") -> dict:
             if name in want or (name == "standard" and want & {"revision", "draft", "response"}):
                 md, use = await paper(tier, jkey, PRICES[name])
                 out["products"][name] = use
+                out["reports"][name] = md
                 if name == "standard":
                     std_md = md
         if "revision" in want and std_md:
@@ -126,6 +140,7 @@ def run_chain(pdf: bytes, journal_key: str = "neurips", only: str = "") -> dict:
                 t0 = time.time()
                 final = await response_draft.run_response_draft(pdf, comments, "")
             letter = final.get("result_md") or ""
+            out["reports"]["draft"] = letter
             out["products"]["draft"] = _usage_dict(u, time.time() - t0, final.get("status"))
         if "response" in want and letter:
             with papercheck.UsageTracker(max_cost_usd=PRICES["response"]) as u:
@@ -139,14 +154,15 @@ def run_chain(pdf: bytes, journal_key: str = "neurips", only: str = "") -> dict:
 
 
 @stub.local_entrypoint()
-def main(pdf: str, out: str, journal: str = "neurips", only: str = ""):
+def main(pdf: str, out: str, journal: str = "neurips", only: str = "", model: str = "", persona_model: str = "",
+         effort: str = ""):
     from pypdf import PdfReader
 
     r = PdfReader(pdf)
     meta = {"pdf": os.path.basename(pdf), "pages": len(r.pages),
             "chars": sum(len(p.extract_text() or "") for p in r.pages)}
-    res = run_chain.remote(open(pdf, "rb").read(), journal, only)
+    res = run_chain.remote(open(pdf, "rb").read(), journal, only, model, persona_model, effort)
     res = {**meta, **res}
     with open(out, "w") as f:
         json.dump(res, f, indent=2)
-    print(json.dumps(res, indent=2))
+    print(json.dumps({k: v for k, v in res.items() if k != "reports"}, indent=2))

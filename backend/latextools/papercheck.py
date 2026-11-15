@@ -63,6 +63,7 @@ FALLBACK_MODEL = os.environ.get("ANTHROPIC_FALLBACK_MODEL", "claude-opus-5-5")
 # "cache_read" is the price of a prompt-cache read; a write costs 1.25x the base input rate (5-minute TTL).
 # A model without a "cache_read" entry is assumed to read at 0.1x its input rate.
 MODEL_PRICING_PER_MTOK: dict[str, dict[str, float]] = {
+    "claude-fable-5-2": {"input": 8.0, "output": 40.0, "cache_read": 0.20},
     "claude-fable-5-1": {"input": 10.0, "output": 50.0, "cache_read": 0.25},
     "claude-fable-5": {"input": 10.0, "output": 50.0},
     "claude-opus-5-5": {"input": 4.0, "output": 20.0, "cache_read": 0.20},
