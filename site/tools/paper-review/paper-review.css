@@ -227,7 +227,7 @@
    or pointer events; the toggle below it is the only control. */
 .pr-scene { display: flex; flex-direction: column; align-items: flex-end; gap: 0.35rem; margin-top: 1.25rem; }
 .pr-scene[hidden], .pr-scene-stage[hidden] { display: none; }
-.pr-scene-stage { position: relative; width: 100%; height: clamp(150px, 24vw, 200px); pointer-events: none; }
+.pr-scene-stage { position: relative; width: 100%; height: clamp(120px, 24vw, 200px); pointer-events: none; }
 .pr-scene-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; }
 .pr-scene[data-state="live"] .pr-scene-canvas,
 .pr-scene[data-state="paused"] .pr-scene-canvas { opacity: 1; }
@@ -235,6 +235,7 @@
   .pr-scene-canvas { transition: opacity 0.6s ease; }
 }
 .pr-scene-toggle { font: inherit; font-size: 0.78rem; color: var(--muted); background: none; border: 1px solid var(--line); border-radius: 100px; padding: 0.25rem 0.75rem; cursor: pointer; }
+@media (pointer: coarse) { .pr-scene-toggle { min-height: 44px; padding: 0.5rem 1rem; } }
 .pr-scene-toggle:hover { color: var(--ink); border-color: color-mix(in oklch, var(--purple) 45%, var(--line)); }
 
 .pr-result-wrap { background: color-mix(in oklch, var(--bg) 92%, var(--purple) 8%); border: 1px solid var(--line); border-radius: 8px; padding: 1.2rem 1.4rem; margin: 1.5rem 0; }
