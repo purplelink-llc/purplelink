@@ -461,6 +461,10 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - MISQ reference format: https://purplelink.llc/format/references-for-misq/ - a Word manuscript, author-year citations such as (Angelou 1969) with no comma, volume and issue as (23:3). EndNote converter.
 - USENIX Security reference format: https://purplelink.llc/format/references-for-usenix-security/ - the official USENIX LaTeX or Word template with numbered citations, and a BibTeX converter.
 - NDSS reference format: https://purplelink.llc/format/references-for-ndss/ - the NDSS IEEEtran template (two-column, 10pt Times), IEEEtran.bst, numbered citations. Setup lines and a BibTeX converter.
+- IEEE S&P reference format: https://purplelink.llc/format/references-for-ieee-sp/ - IEEEtran with the conference and compsoc options, IEEEtran.bst, numbered citations. Setup lines and a BibTeX converter.
+- ACM CCS reference format: https://purplelink.llc/format/references-for-acm-ccs/ - the acmart template, ACM-Reference-Format.bst and numbered citations. Setup lines, common pitfalls and a BibTeX converter.
+- IEEE TDSC reference format: https://purplelink.llc/format/references-for-ieee-tdsc/ - the IEEE Computer Society journal template, numbered citations in square brackets in order of appearance.
+- ISR reference format: https://purplelink.llc/format/references-for-isr/ - INFORMS LaTeX files or Word, author-year citations such as (Norman 1977), an alphabetical list. BibTeX and EndNote routes.
 - Tools hub: https://purplelink.llc/tools/
 
 ## Guides (free how-to articles)
