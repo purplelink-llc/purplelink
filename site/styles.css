@@ -5386,10 +5386,6 @@ main:has(> .post-hero) { overflow-x: clip; }
 }
 /* Older guides have no signature after the block. */
 .list-signup--post:last-child { margin-bottom: 48px; }
-.list-signup--tool {
-  width: min(772px, calc(100% - 48px));
-  margin: 8px auto 32px;
-}
 .list-signup--page { margin: 28px 0; }
 .list-signup .list-signup-head {
   margin: 0 0 6px;
@@ -5463,7 +5459,6 @@ main:has(> .post-hero) { overflow-x: clip; }
 .list-signup a { color: var(--purple); text-decoration: underline; }
 @media (max-width: 520px) {
   .list-signup-form .btn { flex: 1 1 100%; }
-  .list-signup--tool { width: calc(100% - 32px); }
 }
 @media print { .list-signup { display: none; } }
 .checklist-get { margin: 20px 0 0; }
