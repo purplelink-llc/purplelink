@@ -34,7 +34,7 @@
         "@id": "https://purplelink.llc/#organization"
       },
       "datePublished": "2026-09-26",
-      "dateModified": "2026-11-13",
+      "dateModified": "2026-11-14",
       "image": "https://purplelink.llc/assets/og/cards/guides-ai-paper-review-tools-compared.jpg",
       "mainEntityOfPage": "https://purplelink.llc/guides/ai-paper-review-tools-compared/"
     },
@@ -96,6 +96,11 @@
           "@type": "ListItem",
           "position": 11,
           "name": "SciScore"
+        },
+        {
+          "@type": "ListItem",
+          "position": 12,
+          "name": "Google Deep Review"
         }
       ]
     },
@@ -155,7 +160,15 @@
       "name": "Is there a free AI paper reviewer?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Several have a free route. Manusights gives a free Readiness Scan that shows one of its top risks. Reviewer3 gives one full review without a card; in my test it found real errors in about 10 minutes. Explore Science gives one full review after you verify an account. q.e.d Science says it is free for researchers with an institutional email. Stanford's PaperReview.ai is free but reads only the first 15 pages. Paper Review has no free full review; its free step checks how many of your references CrossRef can confirm."
+        "text": "Several have a free route. Manusights gives a free Readiness Scan that shows one of its top risks. Reviewer3 gives one full review without a card; in my test it found real errors in about 10 minutes. Explore Science gives one full review after you verify an account. q.e.d Science says it is free for researchers with an institutional email. Stanford's PaperReview.ai is free but reads only the first 15 pages. Google Deep Review gives two free reviews a week. Paper Review has no free full review; its free step checks how many of your references CrossRef can confirm."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does Paper Review compare with Google Deep Review?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "I ran both on one published qualitative IS paper in CAIS and had a blind AI judge score the two reports. Paper Review Deep scored 8.5 of 10 overall and Deep Review 6.5. Both were accurate and neither invented a citation. Paper Review led with the paper's central sampling flaw, caught an arithmetic slip in the participants' age breakdown and ended with a ranked fix list, in 6 minutes. Deep Review was free, took about 30 minutes, was stronger on interview procedure and checked every reference, but buried its main points under dozens of copy-edit notes. Deep Review is built for machine learning and theory papers; Paper Review is built around journal submission, with journal checks, revision review and response letters. One paper is a small test."
       }
     },
     {
@@ -222,8 +235,8 @@
       <div class="post-hero">
         <p class="post-date">Comparison, tested</p>
         <h1 class="post-title">The best AI paper reviewers in 2026, tested on one real manuscript</h1>
-        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-09-26">September 26, 2026</time> · Updated <time datetime="2026-11-13">November 13, 2026</time></p>
-        <p class="post-lede">I ran a public eLife manuscript through AI reviewers and scored each review against the 12 points eLife's human reviewers raised. A plain Claude chat did about as well as our own $39 Deep Review, and our tool made one confident mistake. This guide covers that result, which tool fits which job, and what each one costs.</p>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-09-26">September 26, 2026</time> · Updated <time datetime="2026-11-14">November 14, 2026</time></p>
+        <p class="post-lede">I ran a public eLife manuscript through AI reviewers and scored each review against the 12 points eLife's human reviewers raised. A plain Claude chat did about as well as our own $39 Deep Review, and our tool made one confident mistake. A second test, added in November, puts Paper Review against Google's free Deep Review on a published Information Systems paper. This guide covers that result, which tool fits which job, and what each one costs.</p>
       </div>
 
       <article class="post-body">
@@ -236,6 +249,7 @@
             <li><a href="#how-we-tested">How I tested</a></li>
             <li><a href="#hands-on">What each review found</a></li>
             <li><a href="#screenshots">What the report looked like</a></li>
+            <li><a href="#deep-review-test">Second test: Google Deep Review on an IS paper</a></li>
             <li><a href="#cost">What each tool costs</a></li>
             <li><a href="#tools">The tools, one at a time</a></li>
             <li><a href="#decision-matrix">Decision matrix</a></li>
@@ -378,6 +392,29 @@
           <figcaption>Coherence check. The 49 versus 42 participant count is correct and matches one of the eLife reviewers' points.</figcaption>
         </figure>
 
+        <h2 id="deep-review-test">Second test: Google Deep Review on an IS paper</h2>
+        <p>Google Research released Deep Review in October 2026. It is free for two reviews a week, so it is now the obvious thing to try before paying for anything, including our tool. It grew out of a tool Google piloted at machine learning and theory conferences, and it shows: its pitch is proofs and technical documents. Most of my own work is in Information Systems, so I wanted to see how it handles a social-science paper.</p>
+        <p>The test paper is <a href="https://doi.org/10.17705/1CAIS.04214" rel="noopener">"Why Do Users Switch Mobile Applications?"</a> by Salo and Makkonen, a 23-page qualitative study published in Communications of the Association for Information Systems in 2018. On November 14, 2026 I ran it through Paper Review's Deep tier with no journal check and through Deep Review's free tier. I then gave both reports to one AI judge (Claude Sonnet) with the labels shuffled, so it did not know which report was ours, and checked the claims it relied on against the PDF. Paper Review runs on Claude too, so a Claude judge may share its taste. Treat the scores as one reader's view.</p>
+        <div class="u-scroll-x">
+          <table class="u-table-wide">
+            <thead><tr><th>Scored out of 10</th><th>Paper Review, Deep</th><th>Google Deep Review, free tier</th></tr></thead>
+            <tbody>
+              <tr><td>Accuracy</td><td>9</td><td>9</td></tr>
+              <tr><td>Critique of the method</td><td>8</td><td>8.5</td></tr>
+              <tr><td>Actionability</td><td>9</td><td>7</td></tr>
+              <tr><td>Signal versus noise</td><td>8.5</td><td>5</td></tr>
+              <tr><td>Overall</td><td>8.5</td><td>6.5</td></tr>
+              <tr><td>Length of report</td><td>About 5,500 words</td><td>About 9,700 words</td></tr>
+              <tr><td>Time to result</td><td>6 minutes</td><td>About 30 minutes</td></tr>
+              <tr><td>Price</td><td>$39 list</td><td>Free (two a week)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><strong>What Paper Review did better.</strong> It opened with the paper's central problem: the authors only studied people who had already switched apps, so the data cannot show that trialing is a necessary step before switching, which is what the paper claims. It caught an arithmetic slip in the participants' age breakdown that Deep Review did not mention. It ended with a short fix list in priority order, which is what you need the week before a resubmission.</p>
+        <p><strong>What Deep Review did better.</strong> It was sharper on how the interviews were run: prompts that may have led participants in two of the three phases, collecting answers by email and whether that could reach saturation, and a single coder with no second coder to check agreement. It also confirmed all 52 references. Paper Review's reference check failed on this PDF because it could not split the CAIS reference list into entries. I fixed that the same day, and author-year reference lists in the CAIS, MISQ and APA styles now split correctly.</p>
+        <p><strong>Where Deep Review fell short.</strong> Its report was almost twice as long, and most of the extra length is copy editing: dozens of notes on wording and punctuation sit at the same level as the method problems, so the points that matter are easy to miss. Neither tool invented a citation or misread the paper in a way that mattered.</p>
+        <p>The difference in price is real, and for a quick read of a theory or machine learning paper the free tool is a fine place to start. Where they differ is what comes after the first read. Deep Review gives you one report. Paper Review is built around getting a paper through a journal: a journal check, a <a href="/tools/paper-review/#workflow">Revision Review</a> that checks which findings you fixed, and a Response Review that checks your letter against the reviewers' comments. One paper and one judge is thin evidence, and I will add papers as I run them.</p>
+
         <h2 id="cost">What each tool costs</h2>
         <p>From each vendor's own pricing page, read November 13, 2026. "Not shown" means the page I read gave no price.</p>
         <div class="u-scroll-x">
@@ -391,6 +428,7 @@
               <tr><td><a href="https://explorescience.ai/pricing" rel="noopener">Explore Science</a> (was Paper-Wizard)</td><td>One full review after you verify an account</td><td>$50 one paper</td><td>$100 a month ($50 for students), $200 a month Pro</td></tr>
               <tr><td><a href="https://www.qedscience.com/" rel="noopener">q.e.d Science</a></td><td>"Free for researchers", limits not stated</td><td>Not shown</td><td>Enterprise only</td></tr>
               <tr><td><a href="https://www.trinka.ai/" rel="noopener">Trinka</a></td><td>Basic, 5,000 words a month</td><td>Not shown for Premium</td><td>$300 a year Confidential Data plan</td></tr>
+              <tr><td><a href="https://research.google/deepreview" rel="noopener">Google Deep Review</a></td><td>Two full reviews a week</td><td>Your own Gemini API key, billed at Google's API rates</td><td>No subscription; read November 14, 2026</td></tr>
               <tr><td><a href="https://paperreview.ai/" rel="noopener">Stanford PaperReview.ai</a></td><td>Free</td><td>None</td><td>First 15 pages, 10 MB, results by email</td></tr>
               <tr><td>ChatGPT or Claude</td><td>Free plans, with upload limits</td><td>An existing subscription</td><td>No per-paper price</td></tr>
             </tbody>
@@ -407,6 +445,9 @@
 
         <h3>Manusights</h3>
         <p>The closest direct competitor to Paper Review. The free Readiness Scan took about two minutes and returned a score of 68 out of 100 and one of its three top risks: that the paper's early-then-late brain-response claim rests on a single modest effect. That is a fair point and overlaps two of eLife's. It repeated the one-tailed p-value without noticing. The full review ($39) and a dossier with simulated reviewers ($99) were not bought. Its pages say uploads are not used for training and offer a 60-day money-back guarantee on the Full Review. <strong>Best for</strong> a free first look at your biggest risk, and journal-fit help if you pay.</p>
+
+        <h3>Google Deep Review</h3>
+        <p>Launched by Google Research on October 14, 2026. Several agents each take a section of the paper, with more effort on dense parts such as proofs, and a final pass checks the findings against Google Search before you see them. The report gives overall feedback, then major concerns, minor corrections and suggestions, each tied to a passage. It takes 10 to 30 minutes; mine took about 30. You get two free reviews a week, then it runs on your own Gemini API key. Google says uploads are not used for training and are kept for one year. On the CAIS paper above it was accurate and strong on interview procedure, but its main points were buried under copy edits. It has no journal-specific checks, no anonymity check and nothing for the revision or the response letter. <strong>Best for</strong> a free, thorough first read of a machine learning, theory or technical paper.</p>
 
         <h3>Stanford PaperReview.ai (compared from public pages, not scored)</h3>
         <p>A free reviewer from a Stanford research group. It takes a PDF up to 10 MB, reads only the first 15 pages, and emails the review. It is tuned toward fields that post on arXiv, and the pages I read did not state a data policy. <strong>Best for</strong> a free second opinion on a short, computational paper.</p>
@@ -441,6 +482,8 @@
             <thead><tr><th>If you want</th><th>Start with</th><th>Why</th></tr></thead>
             <tbody>
               <tr><td>A free first read</td><td>Reviewer3's free review, a careful Claude or ChatGPT prompt, or the Manusights free scan</td><td>In this test Reviewer3 caught many numerical contradictions and the chat matched a paid review on coverage</td></tr>
+              <tr><td>A free read of a machine learning or theory paper</td><td>Google Deep Review</td><td>Two free reviews a week, built for proofs and technical papers</td></tr>
+              <tr><td>An IS or social-science paper headed to a journal</td><td><a href="/tools/paper-review/">Paper Review</a> Deep or Journal tier</td><td>In the CAIS test it led with the main flaw and gave a ranked fix list; the revision and response steps follow</td></tr>
               <tr><td>Recomputed statistics and an annotated PDF</td><td><a href="/tools/paper-review/">Paper Review</a>, $14 to $39</td><td>It caught the one-tailed test the others missed</td></tr>
               <tr><td>One paper from review to response letter</td><td><a href="/tools/paper-review/#workflow">Paper Review workflow</a></td><td>Review, revision check and response check on the same manuscript</td></tr>
               <tr><td>Code in the paper rerun</td><td>Reviewer3</td><td>States it can run submitted code (not tested here)</td></tr>
@@ -451,14 +494,15 @@
           </table>
         </div>
         <p>Whichever you pick, read every finding against your own paper. In this test Paper Review made a confident mistake, the Manusights scan repeated an error from the paper, and the chat missed things the others caught. For how to fit AI tools around human readers, see <a href="/guides/get-feedback-on-a-paper-before-submitting/">how to get feedback on a paper before submitting</a>.</p>
-        <p><small>Test paper: Tang, Tan, Gao, Lin, Gan, Ding and Gao, "Betrayal is worse than loss during cooperation", bioRxiv, 2026, doi:10.64898/2026.03.04.709582, CC BY 4.0. Reviewer points summarised from the public eLife reviews of reviewed preprint 111043.</small></p>
+        <p><small>Test paper: Tang, Tan, Gao, Lin, Gan, Ding and Gao, "Betrayal is worse than loss during cooperation", bioRxiv, 2026, doi:10.64898/2026.03.04.709582, CC BY 4.0. Reviewer points summarised from the public eLife reviews of reviewed preprint 111043. Second test paper: Salo, M., and Makkonen, M., "Why Do Users Switch Mobile Applications? Trialing Behavior as a Predecessor of Switching Behavior", Communications of the Association for Information Systems, 42, 2018, doi:10.17705/1CAIS.04214.</small></p>
       </article>
 
       <section class="tool-faq" id="faq">
         <h2>Frequently asked questions</h2>
         <details><summary>What is the best AI paper reviewer?</summary><div class="faq-body">It depends on the job. In my test on one eLife manuscript, Purplelink Paper Review's Deep tier and a careful plain prompt to Claude each raised all 12 of the human reviewers' points at least in part, and each found real errors the other missed. Paper Review recomputes reported statistics and gives a fixed report with an annotated PDF; the chat read tables more closely. Reviewer3's free review caught many of the same numerical errors but missed the reviewers' points on task design. Reviewer3 also suits papers with code to rerun, Paperpal Preflight suits journal formatting, and SciScore suits life-science methods. None replaces a human reader who knows your field.</div></details>
         <details><summary>Can I just paste my paper into ChatGPT or Claude for a review?</summary><div class="faq-body">Yes, and in my test it worked well: one plain prompt to Claude raised every eLife reviewer point at least in part and caught table errors our own tool missed. It cannot recompute statistics or look up references without tools, a second run can come back different, and it can state an error confidently. Check the product's training settings before you paste unpublished work.</div></details>
-        <details><summary>Is there a free AI paper reviewer?</summary><div class="faq-body">Several have a free route. Manusights gives a free Readiness Scan that shows one of its top risks. Reviewer3 gives one full review without a card; in my test it found real errors in about 10 minutes. Explore Science gives one full review after you verify an account. q.e.d Science says it is free for researchers with an institutional email. Stanford's PaperReview.ai is free but reads only the first 15 pages. Paper Review has no free full review; its free step checks how many of your references CrossRef can confirm.</div></details>
+        <details><summary>Is there a free AI paper reviewer?</summary><div class="faq-body">Several have a free route. Manusights gives a free Readiness Scan that shows one of its top risks. Reviewer3 gives one full review without a card; in my test it found real errors in about 10 minutes. Explore Science gives one full review after you verify an account. q.e.d Science says it is free for researchers with an institutional email. Stanford's PaperReview.ai is free but reads only the first 15 pages. Google Deep Review gives two free reviews a week. Paper Review has no free full review; its free step checks how many of your references CrossRef can confirm.</div></details>
+        <details><summary>How does Paper Review compare with Google Deep Review?</summary><div class="faq-body">I ran both on one published qualitative IS paper in CAIS and had a blind AI judge score the two reports. Paper Review Deep scored 8.5 of 10 overall and Deep Review 6.5. Both were accurate and neither invented a citation. Paper Review led with the paper's central sampling flaw, caught an arithmetic slip in the participants' age breakdown and ended with a ranked fix list, in 6 minutes. Deep Review was free, took about 30 minutes, was stronger on interview procedure and checked every reference, but buried its main points under dozens of copy-edit notes. Deep Review is built for machine learning and theory papers; Paper Review is built around journal submission, with journal checks, revision review and response letters. One paper is a small test.</div></details>
         <details><summary>How much does an AI manuscript review cost?</summary><div class="faq-body">From the vendors' own pages on November 13, 2026: Purplelink Paper Review is $14 Standard, $24 with a journal check and $39 Deep, with a $5 Revision Review and a $12 Response Review ($24 with a drafted letter). Manusights is $39 for a full review. Reviewer3 Pro is $29 a month. Thesify is €14.95 for one review. Explore Science is $50 a paper. Prices change, so check before you pay.</div></details>
         <details><summary>Did Paper Review make mistakes in the test?</summary><div class="faq-body">Yes. It called a mislabelled odds-ratio column a high-confidence contradiction, read only 4 of the paper's references, and its automated check missed the paper's data and code statement. It also caught errors no other review found, including a one-tailed p-value reported as two-tailed. Read every finding against your paper, whichever tool you use.</div></details>
         <details><summary>What happens to my manuscript if I use Purplelink Paper Review?</summary><div class="faq-body">It is sent to Anthropic's Claude API for analysis. Anthropic retains inputs for up to 30 days and does not train on them. Purplelink deletes the manuscript and the review from its own servers within about a day after you first open the result, or within 48 hours if you never do. Save the report before closing the tab.</div></details>
