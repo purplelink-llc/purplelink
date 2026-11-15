@@ -1031,13 +1031,10 @@
     // Most posts are <article class="post-body">; older guides use a div in <main>.
     const main = document.querySelector("main");
     const article = document.querySelector("article.post-body") || (main && main.querySelector(".post-body"));
-    const app = main && main.querySelector(".tool-app");
+    // Tool pages no longer carry it: the researcher-list experiment closed 2026-11-15 (1 sign-up in 6 weeks).
     if (article && /^\/(guides|blog)\/./.test(path)) {
       anchor = article;
       variant = "list-signup--post";
-    } else if (app) {
-      anchor = document.querySelector(".tool-link") || app;
-      variant = "list-signup--tool";
     }
     if (!anchor) return;
 
