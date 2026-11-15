@@ -546,6 +546,21 @@ def _bibliography_heading_split(line: str) -> Optional[int]:
     return None
 
 
+_AUTHOR_YEAR_LINE = re.compile(
+    r"(?m)^[ \t]*(?=[A-Z])"            # line opens with a capital (an author or org)
+    r"[^\n()\[\]]{1,240}?\.,?"         # author block, ending in a period ("D." / "CNet." / "S.,")
+    r"[ \t]*(?:\((?:1[89]|20)\d{2}[a-z]?\)|\((?:n\.d\.|in press)\)|(?:1[89]|20)\d{2}[a-z]?\.)"
+)
+# Journal page furniture that lands inside a references blob at page breaks. The CAIS footer carries the paper's
+# own DOI, which would otherwise be read as the DOI of whichever reference it follows.
+_REF_PAGE_FURNITURE = re.compile(
+    r"(?im)^[ \t]*(?:volume \d+[ \t]+10\.\d{4,9}/\S+[ \t]+paper \d+"
+    r"|communications of the association for information systems[ \t]+\d+)[ \t]*$"
+)
+# Back matter that follows the reference list in the same blob (CAIS, AIS journals, many others).
+_REF_BACK_MATTER = re.compile(r"(?im)^[ \t]*(?:about the authors?|appendix\b|copyright ©)")
+
+
 def _split_references(refs_blob: str) -> list[str]:
     """Best-effort split of a flat references blob into individual entries.
 
@@ -569,6 +584,30 @@ def _split_references(refs_blob: str) -> list[str]:
         for i, m in enumerate(bibtex_starts):
             end = bibtex_starts[i + 1].start() if i + 1 < len(bibtex_starts) else len(txt)
             entry = txt[m.start():end].strip()
+            if entry:
+                entries.append(entry)
+        return entries
+    # Pattern 1b: author-year lists (APA, AIS/CAIS, MISQ). Entries carry no
+    # number and wrap onto hanging-indent lines that pdfplumber flattens, so a
+    # line only starts a new entry when it opens with an author block that ends
+    # in the year: "Bansal, H. S., & James, Y. S. (2005)." or
+    # "CNet. (2015)." or MISQ's "Bansal, H. S., and James, Y. S. 2005.".
+    # Continuation lines ("Journal of ..., 33(1), 96-115.") never match: a
+    # volume(issue) is not a four-digit year after a period.
+    ay_txt = _REF_PAGE_FURNITURE.sub("", txt)
+    ay_starts = [m.start() for m in _AUTHOR_YEAR_LINE.finditer(ay_txt)]
+    # A numbered list keeps priority: its wrapped lines can look author-year shaped ("Proc. IEEE Conf. (2019)"),
+    # while a stray "20." page-number line in an author-year list gives only a few numbered markers.
+    n_numbered = len(re.findall(r"(?m)^\s*(?:\[\d{1,3}\]|\d{1,3}\.)\s+\S", txt))
+    if len(ay_starts) >= 3 and n_numbered * 2 < len(ay_starts):
+        back = _REF_BACK_MATTER.search(ay_txt, ay_starts[-1])
+        stop = back.start() if back else len(ay_txt)
+        entries = []
+        # Text before the first author line is a running header or the tail of
+        # the heading line, not a reference, so it is skipped.
+        for i, start in enumerate(ay_starts):
+            end = ay_starts[i + 1] if i + 1 < len(ay_starts) else stop
+            entry = re.sub(r"\s*\n\s*", " ", ay_txt[start:end].strip())
             if entry:
                 entries.append(entry)
         return entries
