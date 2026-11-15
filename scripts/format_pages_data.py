@@ -66,7 +66,7 @@ VENUES = [
         "abbr": "ACM CCS",
         "field": "Computer security",
         "manuscript_formats": "LaTeX only",
-        "template": "acmart, sigconf proceedings template — \\documentclass[manuscript]{acmart}",
+        "template": "acmart in the two-column sigconf format: \\documentclass[sigconf]{acmart}. The CCS 2026 call allows 12 pages, not counting the bibliography and appendices.",
         "default_to": "bibtex",
         "citation_style": "Numbered citations by default (ACM-Reference-Format bibliography style).",
         "format_note": "ACM's authoring documentation states plainly: use BibTeX to prepare your references for acmart submissions. Manually typed \\bibitem entries aren't accepted.",
