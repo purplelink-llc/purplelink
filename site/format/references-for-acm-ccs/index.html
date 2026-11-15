@@ -46,7 +46,7 @@
           "name": "What LaTeX template does ACM CCS use?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "acmart, sigconf proceedings template: \\documentclass[manuscript]{acmart}"
+            "text": "acmart in the two-column sigconf format: \\documentclass[sigconf]{acmart}. The CCS 2026 call allows 12 pages, not counting the bibliography and appendices."
           }
         },
         {
@@ -175,7 +175,7 @@
         <h2>What ACM CCS expects</h2>
         <ul>
           <li><strong>Manuscript format:</strong> LaTeX only</li>
-          <li><strong>Template:</strong> acmart, sigconf proceedings template: \documentclass[manuscript]{acmart}</li>
+          <li><strong>Template:</strong> acmart in the two-column sigconf format: \documentclass[sigconf]{acmart}. The CCS 2026 call allows 12 pages, not counting the bibliography and appendices.</li>
           <li><strong>Citation style:</strong> Numbered citations by default (ACM-Reference-Format bibliography style).</li>
         </ul>
         <p>ACM&#x27;s authoring documentation says to use BibTeX to prepare your references for acmart submissions. Manually typed \bibitem entries aren&#x27;t accepted.</p>
@@ -199,7 +199,7 @@
       <section class="tool-faq">
         <h2>Frequently asked</h2>
         <div class="faq-list">
-          <details><summary>What LaTeX template does ACM CCS use?</summary><p>acmart, sigconf proceedings template: \documentclass[manuscript]{acmart}</p></details>
+          <details><summary>What LaTeX template does ACM CCS use?</summary><p>acmart in the two-column sigconf format: \documentclass[sigconf]{acmart}. The CCS 2026 call allows 12 pages, not counting the bibliography and appendices.</p></details>
           <details><summary>What citation style does ACM CCS use?</summary><p>Numbered citations by default (ACM-Reference-Format bibliography style).</p></details>
           <details><summary>What bibliography style should I use for ACM CCS?</summary><p>ACM-Reference-Format. ACM-Reference-Format.bst ships inside the acmart package itself.</p></details>
         </div>
@@ -207,7 +207,7 @@
 
       <section class="tool-faq">
         <h2>Where this comes from</h2>
-        <p class="faq-body">Sourced from <a href="https://homes.cs.washington.edu/~spencer/taps/article-latex.html" rel="noopener">https://homes.cs.washington.edu/~spencer/taps/article-latex.html</a>. BibTeX requirement and default numbered style are ACM-wide policy for the acmart/sigconf template that CCS uses, per ACM&#x27;s TAPS authoring guide.</p>
+        <p class="faq-body">Sourced from <a href="https://homes.cs.washington.edu/~spencer/taps/article-latex.html" rel="noopener">https://homes.cs.washington.edu/~spencer/taps/article-latex.html</a>. BibTeX requirement and default numbered style are ACM-wide policy for the acmart/sigconf template that CCS uses, per ACM&#x27;s TAPS authoring guide. The sigconf format and the page limit are from the <a href="https://www.sigsac.org/ccs/CCS2026/call-for/call-for-papers.html" rel="noopener">CCS 2026 call for papers</a>, read on November 14, 2026.</p>
       </section>
 
       <!-- moderntex-cta -->
@@ -228,6 +228,11 @@
           <li><a href="/tools/reference-converter/">Full reference converter</a></li>
           <li><a href="/tools/bib-builder/">Build a BibTeX entry</a></li>
           <li><a href="/format/">All venues</a></li>
+          <li><a href="/format/references-for-usenix-security/">USENIX Security reference format</a></li>
+          <li><a href="/format/references-for-ndss/">NDSS reference format</a></li>
+          <li><a href="/format/references-for-ieee-sp/">IEEE S&amp;P reference format</a></li>
+          <li><a href="/format/references-for-ieee-tdsc/">IEEE TDSC reference format</a></li>
+          <li><a href="/format/references-for-acm-csur/">ACM CSUR reference format</a></li>
         </ul>
       </nav>
 
