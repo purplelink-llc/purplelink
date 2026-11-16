@@ -33,35 +33,365 @@
     <script src="/motion.js" defer></script>
     <script src="/photography/shop.js" defer></script>
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "BreadcrumbList",
-          "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
-            { "@type": "ListItem", "position": 2, "name": "Photography", "item": "https://purplelink.llc/photography/" },
-            { "@type": "ListItem", "position": 3, "name": "Calendars", "item": "https://purplelink.llc/photography/calendars/" }
-          ]
-        },
-        {
-          "@type": "Product",
-          "name": "2027 wall calendar, printable PDF",
-          "description": "A thirteen-page printable wall calendar for 2027 from Benjamin Ampel's travel photographs: a cover and twelve months, delivered as PDF in US Letter and A4, for personal printing.",
-          "brand": { "@type": "Organization", "name": "Purplelink LLC" },
-          "offers": [
-            { "@type": "Offer", "name": "Iceland", "price": "7.00", "priceCurrency": "USD", "url": "https://purplelink.llc/photography/calendars/", "availability": "https://schema.org/InStock" },
-            { "@type": "Offer", "name": "Japan", "price": "7.00", "priceCurrency": "USD", "url": "https://purplelink.llc/photography/calendars/", "availability": "https://schema.org/InStock" },
-            { "@type": "Offer", "name": "Switzerland", "price": "7.00", "priceCurrency": "USD", "url": "https://purplelink.llc/photography/calendars/", "availability": "https://schema.org/InStock" },
-            { "@type": "Offer", "name": "European cities", "price": "7.00", "priceCurrency": "USD", "url": "https://purplelink.llc/photography/calendars/", "availability": "https://schema.org/InStock" },
-            { "@type": "Offer", "name": "Arizona desert", "price": "7.00", "priceCurrency": "USD", "url": "https://purplelink.llc/photography/calendars/", "availability": "https://schema.org/InStock" },
-            { "@type": "Offer", "name": "Hawaii", "price": "7.00", "priceCurrency": "USD", "url": "https://purplelink.llc/photography/calendars/", "availability": "https://schema.org/InStock" },
-            { "@type": "Offer", "name": "Best of", "price": "7.00", "priceCurrency": "USD", "url": "https://purplelink.llc/photography/calendars/", "availability": "https://schema.org/InStock" },
-            { "@type": "Offer", "name": "All seven calendars", "price": "19.00", "priceCurrency": "USD", "url": "https://purplelink.llc/photography/calendars/", "availability": "https://schema.org/InStock" }
-          ]
-        }
-      ]
-    }
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://purplelink.llc/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Photography",
+                "item": "https://purplelink.llc/photography/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Calendars",
+                "item": "https://purplelink.llc/photography/calendars/"
+              }
+            ]
+          },
+          {
+            "@type": "Product",
+            "name": "2027 wall calendar, printable PDF",
+            "description": "A thirteen-page printable wall calendar for 2027 from Benjamin Ampel's travel photographs: a cover and twelve months, delivered as PDF in US Letter and A4, for personal printing.",
+            "brand": {
+              "@type": "Organization",
+              "name": "Purplelink LLC"
+            },
+            "offers": [
+              {
+                "@type": "Offer",
+                "name": "Iceland",
+                "price": "7.00",
+                "priceCurrency": "USD",
+                "url": "https://purplelink.llc/photography/calendars/",
+                "availability": "https://schema.org/InStock",
+                "shippingDetails": {
+                  "@type": "OfferShippingDetails",
+                  "shippingRate": {
+                    "@type": "MonetaryAmount",
+                    "value": "0",
+                    "currency": "USD"
+                  },
+                  "shippingDestination": {
+                    "@type": "DefinedRegion",
+                    "addressCountry": "US"
+                  },
+                  "deliveryTime": {
+                    "@type": "ShippingDeliveryTime",
+                    "handlingTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    },
+                    "transitTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    }
+                  }
+                },
+                "hasMerchantReturnPolicy": {
+                  "@type": "MerchantReturnPolicy",
+                  "applicableCountry": "US",
+                  "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+                }
+              },
+              {
+                "@type": "Offer",
+                "name": "Japan",
+                "price": "7.00",
+                "priceCurrency": "USD",
+                "url": "https://purplelink.llc/photography/calendars/",
+                "availability": "https://schema.org/InStock",
+                "shippingDetails": {
+                  "@type": "OfferShippingDetails",
+                  "shippingRate": {
+                    "@type": "MonetaryAmount",
+                    "value": "0",
+                    "currency": "USD"
+                  },
+                  "shippingDestination": {
+                    "@type": "DefinedRegion",
+                    "addressCountry": "US"
+                  },
+                  "deliveryTime": {
+                    "@type": "ShippingDeliveryTime",
+                    "handlingTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    },
+                    "transitTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    }
+                  }
+                },
+                "hasMerchantReturnPolicy": {
+                  "@type": "MerchantReturnPolicy",
+                  "applicableCountry": "US",
+                  "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+                }
+              },
+              {
+                "@type": "Offer",
+                "name": "Switzerland",
+                "price": "7.00",
+                "priceCurrency": "USD",
+                "url": "https://purplelink.llc/photography/calendars/",
+                "availability": "https://schema.org/InStock",
+                "shippingDetails": {
+                  "@type": "OfferShippingDetails",
+                  "shippingRate": {
+                    "@type": "MonetaryAmount",
+                    "value": "0",
+                    "currency": "USD"
+                  },
+                  "shippingDestination": {
+                    "@type": "DefinedRegion",
+                    "addressCountry": "US"
+                  },
+                  "deliveryTime": {
+                    "@type": "ShippingDeliveryTime",
+                    "handlingTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    },
+                    "transitTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    }
+                  }
+                },
+                "hasMerchantReturnPolicy": {
+                  "@type": "MerchantReturnPolicy",
+                  "applicableCountry": "US",
+                  "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+                }
+              },
+              {
+                "@type": "Offer",
+                "name": "European cities",
+                "price": "7.00",
+                "priceCurrency": "USD",
+                "url": "https://purplelink.llc/photography/calendars/",
+                "availability": "https://schema.org/InStock",
+                "shippingDetails": {
+                  "@type": "OfferShippingDetails",
+                  "shippingRate": {
+                    "@type": "MonetaryAmount",
+                    "value": "0",
+                    "currency": "USD"
+                  },
+                  "shippingDestination": {
+                    "@type": "DefinedRegion",
+                    "addressCountry": "US"
+                  },
+                  "deliveryTime": {
+                    "@type": "ShippingDeliveryTime",
+                    "handlingTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    },
+                    "transitTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    }
+                  }
+                },
+                "hasMerchantReturnPolicy": {
+                  "@type": "MerchantReturnPolicy",
+                  "applicableCountry": "US",
+                  "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+                }
+              },
+              {
+                "@type": "Offer",
+                "name": "Arizona desert",
+                "price": "7.00",
+                "priceCurrency": "USD",
+                "url": "https://purplelink.llc/photography/calendars/",
+                "availability": "https://schema.org/InStock",
+                "shippingDetails": {
+                  "@type": "OfferShippingDetails",
+                  "shippingRate": {
+                    "@type": "MonetaryAmount",
+                    "value": "0",
+                    "currency": "USD"
+                  },
+                  "shippingDestination": {
+                    "@type": "DefinedRegion",
+                    "addressCountry": "US"
+                  },
+                  "deliveryTime": {
+                    "@type": "ShippingDeliveryTime",
+                    "handlingTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    },
+                    "transitTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    }
+                  }
+                },
+                "hasMerchantReturnPolicy": {
+                  "@type": "MerchantReturnPolicy",
+                  "applicableCountry": "US",
+                  "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+                }
+              },
+              {
+                "@type": "Offer",
+                "name": "Hawaii",
+                "price": "7.00",
+                "priceCurrency": "USD",
+                "url": "https://purplelink.llc/photography/calendars/",
+                "availability": "https://schema.org/InStock",
+                "shippingDetails": {
+                  "@type": "OfferShippingDetails",
+                  "shippingRate": {
+                    "@type": "MonetaryAmount",
+                    "value": "0",
+                    "currency": "USD"
+                  },
+                  "shippingDestination": {
+                    "@type": "DefinedRegion",
+                    "addressCountry": "US"
+                  },
+                  "deliveryTime": {
+                    "@type": "ShippingDeliveryTime",
+                    "handlingTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    },
+                    "transitTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    }
+                  }
+                },
+                "hasMerchantReturnPolicy": {
+                  "@type": "MerchantReturnPolicy",
+                  "applicableCountry": "US",
+                  "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+                }
+              },
+              {
+                "@type": "Offer",
+                "name": "Best of",
+                "price": "7.00",
+                "priceCurrency": "USD",
+                "url": "https://purplelink.llc/photography/calendars/",
+                "availability": "https://schema.org/InStock",
+                "shippingDetails": {
+                  "@type": "OfferShippingDetails",
+                  "shippingRate": {
+                    "@type": "MonetaryAmount",
+                    "value": "0",
+                    "currency": "USD"
+                  },
+                  "shippingDestination": {
+                    "@type": "DefinedRegion",
+                    "addressCountry": "US"
+                  },
+                  "deliveryTime": {
+                    "@type": "ShippingDeliveryTime",
+                    "handlingTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    },
+                    "transitTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    }
+                  }
+                },
+                "hasMerchantReturnPolicy": {
+                  "@type": "MerchantReturnPolicy",
+                  "applicableCountry": "US",
+                  "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+                }
+              },
+              {
+                "@type": "Offer",
+                "name": "All seven calendars",
+                "price": "19.00",
+                "priceCurrency": "USD",
+                "url": "https://purplelink.llc/photography/calendars/",
+                "availability": "https://schema.org/InStock",
+                "shippingDetails": {
+                  "@type": "OfferShippingDetails",
+                  "shippingRate": {
+                    "@type": "MonetaryAmount",
+                    "value": "0",
+                    "currency": "USD"
+                  },
+                  "shippingDestination": {
+                    "@type": "DefinedRegion",
+                    "addressCountry": "US"
+                  },
+                  "deliveryTime": {
+                    "@type": "ShippingDeliveryTime",
+                    "handlingTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    },
+                    "transitTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    }
+                  }
+                },
+                "hasMerchantReturnPolicy": {
+                  "@type": "MerchantReturnPolicy",
+                  "applicableCountry": "US",
+                  "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+                }
+              }
+            ]
+          }
+        ]
+      }
     </script>
     <script src="/buddy-chat/loader.js" defer></script>
   </head>
