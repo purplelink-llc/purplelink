@@ -11,6 +11,15 @@ SCRIPT="$REPO/backend/scripts/social.py"
 PYTHON="/Library/Frameworks/Python.framework/Versions/3.12/bin/python3"
 LOG="$HOME/Library/Logs/purplelink-social.log"
 export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:/Library/Frameworks/Python.framework/Versions/3.12/bin:$PATH"
+# Playwright browsers: use our own copy in ~/.purplelink/ms-playwright when it holds Chromium. Cache cleanups empty the
+# shared ~/Library/Caches/ms-playwright (2026-11-15 10:22: LinkedIn and Bluesky failed with "Executable doesn't exist";
+# TikTokPipeline hit the same on 11-09/10). Refill it with
+#   PLAYWRIGHT_BROWSERS_PATH=~/.purplelink/ms-playwright python3 -m playwright install chromium
+# An explicit PLAYWRIGHT_BROWSERS_PATH still wins; with no copy, Playwright's default cache is used as before.
+PWB="$HOME/.purplelink/ms-playwright"
+if [ -z "${PLAYWRIGHT_BROWSERS_PATH:-}" ] && compgen -G "$PWB/chromium_headless_shell-*" >/dev/null; then
+  export PLAYWRIGHT_BROWSERS_PATH="$PWB"
+fi
 
 log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] wrapper: $*" >> "$LOG"; }
 
