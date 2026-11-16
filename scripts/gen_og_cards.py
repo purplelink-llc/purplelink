@@ -69,14 +69,18 @@ def title_of(t, section):
 def plan(only=None, refresh=False):
     jobs = []
     for section in SECTIONS:
-        for p in sorted((SITE / section).glob("*/index.html")):
-            slug = p.parent.name
+        pages = sorted((SITE / section).glob("*/index.html"))
+        # A section's own index page (e.g. /guides/) is rendered only when asked for by name: --only guides/index
+        if only == f"{section}/index" and (SITE / section / "index.html").exists():
+            pages = [SITE / section / "index.html"]
+        for p in pages:
+            slug = p.parent.name if p.parent != SITE / section else "index"
             if slug == "digest" or (only and f"{section}/{slug}" != only):
                 continue
             t = p.read_text(encoding="utf-8", errors="ignore")
             cur = (meta(t, "og:image") or "").rsplit("/", 1)[-1]
             card = f"{section.replace('/', '-')}-{slug}.jpg"
-            if cur not in GENERIC and not (refresh and cur == card):
+            if slug != "index" and cur not in GENERIC and not (refresh and cur == card):
                 continue
             title = title_of(t, section)
             sub, bg = "", "research"
@@ -90,6 +94,8 @@ def plan(only=None, refresh=False):
                 bg = "apps" if slug in ("heic-to-jpg", "webp-to-png", "png-to-icns", "png-to-ico", "avif-to-jpg", "jpg-to-pdf", "csv-to-xlsx", "pdf-to-jpg", "svg-to-png", "png-to-jpg", "xlsx-to-csv", "json-to-csv", "tiff-to-jpg", "csv-to-json", "icns-to-png", "ico-to-png", "xlsx-to-json", "vtt-to-srt", "srt-to-vtt", "xlsx-to-latex", "pdf-to-text", "image-to-base64", "photo-to-logo") else "research"
             else:
                 bg = BLOG_BG.get(slug, "research")
+            if slug == "index":
+                bg = "latex"
             jobs.append({"page": p, "section": section, "slug": slug, "title": title, "sub": sub, "bg": bg,
                          "out": OUT / card, "url": f"{BASE}/assets/og/cards/{card}"})
     return jobs
@@ -121,7 +127,7 @@ def serve():
 
 
 def render(srv, job):
-    q = urllib.parse.urlencode({"t": job["title"], "k": KICKER[job["section"]], "s": job["sub"], "bg": job["bg"], "f": FOOT[job["section"]]})
+    q = urllib.parse.urlencode({"t": job["title"], "k": "Guides" if job["slug"] == "index" else KICKER[job["section"]], "s": job["sub"], "bg": job["bg"], "f": FOOT[job["section"]]})
     url = f"http://127.0.0.1:{srv.server_address[1]}/scripts/og-card.html?{q}"
     png = job["out"].with_suffix(".png")
     subprocess.run([CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars", "--window-size=1200,630",
