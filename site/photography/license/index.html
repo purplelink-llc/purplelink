@@ -33,30 +33,165 @@
     <script src="/motion.js" defer></script>
     <script src="/photography/shop.js" defer></script>
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "BreadcrumbList",
-          "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
-            { "@type": "ListItem", "position": 2, "name": "Photography", "item": "https://purplelink.llc/photography/" },
-            { "@type": "ListItem", "position": 3, "name": "License", "item": "https://purplelink.llc/photography/license/" }
-          ]
-        },
-        {
-          "@type": "Product",
-          "name": "Photograph license",
-          "description": "A non-exclusive license to one travel photograph by Benjamin Ampel, delivered as a clean full-resolution file with a written license.",
-          "brand": { "@type": "Organization", "name": "Purplelink LLC" },
-          "offers": [
-            { "@type": "Offer", "name": "Web and social", "price": "29.00", "priceCurrency": "USD", "url": "https://purplelink.llc/photography/license/", "availability": "https://schema.org/InStock" },
-            { "@type": "Offer", "name": "Commercial", "price": "79.00", "priceCurrency": "USD", "url": "https://purplelink.llc/photography/license/", "availability": "https://schema.org/InStock" },
-            { "@type": "Offer", "name": "Extended", "price": "199.00", "priceCurrency": "USD", "url": "https://purplelink.llc/photography/license/", "availability": "https://schema.org/InStock" }
-          ]
-        }
-      ]
-    }
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://purplelink.llc/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Photography",
+                "item": "https://purplelink.llc/photography/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "License",
+                "item": "https://purplelink.llc/photography/license/"
+              }
+            ]
+          },
+          {
+            "@type": "Product",
+            "name": "Photograph license",
+            "description": "A non-exclusive license to one travel photograph by Benjamin Ampel, delivered as a clean full-resolution file with a written license.",
+            "brand": {
+              "@type": "Organization",
+              "name": "Purplelink LLC"
+            },
+            "offers": [
+              {
+                "@type": "Offer",
+                "name": "Web and social",
+                "price": "29.00",
+                "priceCurrency": "USD",
+                "url": "https://purplelink.llc/photography/license/",
+                "availability": "https://schema.org/InStock",
+                "shippingDetails": {
+                  "@type": "OfferShippingDetails",
+                  "shippingRate": {
+                    "@type": "MonetaryAmount",
+                    "value": "0",
+                    "currency": "USD"
+                  },
+                  "shippingDestination": {
+                    "@type": "DefinedRegion",
+                    "addressCountry": "US"
+                  },
+                  "deliveryTime": {
+                    "@type": "ShippingDeliveryTime",
+                    "handlingTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    },
+                    "transitTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    }
+                  }
+                },
+                "hasMerchantReturnPolicy": {
+                  "@type": "MerchantReturnPolicy",
+                  "applicableCountry": "US",
+                  "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+                }
+              },
+              {
+                "@type": "Offer",
+                "name": "Commercial",
+                "price": "79.00",
+                "priceCurrency": "USD",
+                "url": "https://purplelink.llc/photography/license/",
+                "availability": "https://schema.org/InStock",
+                "shippingDetails": {
+                  "@type": "OfferShippingDetails",
+                  "shippingRate": {
+                    "@type": "MonetaryAmount",
+                    "value": "0",
+                    "currency": "USD"
+                  },
+                  "shippingDestination": {
+                    "@type": "DefinedRegion",
+                    "addressCountry": "US"
+                  },
+                  "deliveryTime": {
+                    "@type": "ShippingDeliveryTime",
+                    "handlingTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    },
+                    "transitTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    }
+                  }
+                },
+                "hasMerchantReturnPolicy": {
+                  "@type": "MerchantReturnPolicy",
+                  "applicableCountry": "US",
+                  "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+                }
+              },
+              {
+                "@type": "Offer",
+                "name": "Extended",
+                "price": "199.00",
+                "priceCurrency": "USD",
+                "url": "https://purplelink.llc/photography/license/",
+                "availability": "https://schema.org/InStock",
+                "shippingDetails": {
+                  "@type": "OfferShippingDetails",
+                  "shippingRate": {
+                    "@type": "MonetaryAmount",
+                    "value": "0",
+                    "currency": "USD"
+                  },
+                  "shippingDestination": {
+                    "@type": "DefinedRegion",
+                    "addressCountry": "US"
+                  },
+                  "deliveryTime": {
+                    "@type": "ShippingDeliveryTime",
+                    "handlingTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    },
+                    "transitTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    }
+                  }
+                },
+                "hasMerchantReturnPolicy": {
+                  "@type": "MerchantReturnPolicy",
+                  "applicableCountry": "US",
+                  "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+                }
+              }
+            ]
+          }
+        ]
+      }
     </script>
     <script src="/buddy-chat/loader.js" defer></script>
   </head>

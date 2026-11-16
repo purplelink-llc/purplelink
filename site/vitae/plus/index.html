@@ -31,83 +31,198 @@
     <script src="/motion.js" defer></script>
     <script src="/vitae/plus/plans.js" defer></script>
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "Product",
-          "name": "Vitae Plus",
-          "url": "https://purplelink.llc/vitae/plus/",
-          "image": "https://purplelink.llc/assets/og/vitae.png",
-          "description": "An optional subscription for the free Vitae macOS app. It adds reports (NIH biosketch and Current and Pending drafts, an AACSB summary, a progress report, a personal website), Word export with custom templates and CV variants, the revision workspace, Shareables with visual cards, the collaboration map and research timeline, the extra For You nudges, batch DOI lookup and daily ORCID sync, Reminders and calendar sync, iCloud sync between your Macs, and themes, Dock icons, celebrations and milestones. Everything Vitae did before Plus, and all core record-keeping, stays free.",
-          "brand": { "@id": "https://purplelink.llc/#organization" },
-          "isAccessoryOrSparePartFor": {
-            "@type": "SoftwareApplication",
-            "name": "Vitae",
-            "operatingSystem": "macOS 15+",
-            "applicationCategory": "ProductivityApplication",
-            "url": "https://purplelink.llc/vitae/"
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Product",
+            "name": "Vitae Plus",
+            "url": "https://purplelink.llc/vitae/plus/",
+            "image": "https://purplelink.llc/assets/og/vitae.png",
+            "description": "An optional subscription for the free Vitae macOS app. It adds reports (NIH biosketch and Current and Pending drafts, an AACSB summary, a progress report, a personal website), Word export with custom templates and CV variants, the revision workspace, Shareables with visual cards, the collaboration map and research timeline, the extra For You nudges, batch DOI lookup and daily ORCID sync, Reminders and calendar sync, iCloud sync between your Macs, and themes, Dock icons, celebrations and milestones. Everything Vitae did before Plus, and all core record-keeping, stays free.",
+            "brand": {
+              "@id": "https://purplelink.llc/#organization"
+            },
+            "isAccessoryOrSparePartFor": {
+              "@type": "SoftwareApplication",
+              "name": "Vitae",
+              "operatingSystem": "macOS 15+",
+              "applicationCategory": "ProductivityApplication",
+              "url": "https://purplelink.llc/vitae/"
+            },
+            "offers": [
+              {
+                "@type": "Offer",
+                "name": "Vitae Plus, monthly",
+                "price": "2.99",
+                "priceCurrency": "USD",
+                "priceSpecification": {
+                  "@type": "UnitPriceSpecification",
+                  "price": "2.99",
+                  "priceCurrency": "USD",
+                  "billingDuration": "P1M",
+                  "unitCode": "MON"
+                },
+                "availability": "https://schema.org/InStock",
+                "url": "https://purplelink.llc/vitae/plus/",
+                "category": "Subscription",
+                "seller": {
+                  "@id": "https://purplelink.llc/#organization"
+                },
+                "shippingDetails": {
+                  "@type": "OfferShippingDetails",
+                  "shippingRate": {
+                    "@type": "MonetaryAmount",
+                    "value": "0",
+                    "currency": "USD"
+                  },
+                  "shippingDestination": {
+                    "@type": "DefinedRegion",
+                    "addressCountry": "US"
+                  },
+                  "deliveryTime": {
+                    "@type": "ShippingDeliveryTime",
+                    "handlingTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    },
+                    "transitTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    }
+                  }
+                },
+                "hasMerchantReturnPolicy": {
+                  "@type": "MerchantReturnPolicy",
+                  "applicableCountry": "US",
+                  "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                  "merchantReturnDays": 14,
+                  "returnFees": "https://schema.org/FreeReturn",
+                  "refundType": "https://schema.org/FullRefund"
+                }
+              },
+              {
+                "@type": "Offer",
+                "name": "Vitae Plus, annual",
+                "price": "23.99",
+                "priceCurrency": "USD",
+                "priceSpecification": {
+                  "@type": "UnitPriceSpecification",
+                  "price": "23.99",
+                  "priceCurrency": "USD",
+                  "billingDuration": "P1Y",
+                  "unitCode": "ANN"
+                },
+                "availability": "https://schema.org/InStock",
+                "url": "https://purplelink.llc/vitae/plus/",
+                "category": "Subscription",
+                "seller": {
+                  "@id": "https://purplelink.llc/#organization"
+                },
+                "shippingDetails": {
+                  "@type": "OfferShippingDetails",
+                  "shippingRate": {
+                    "@type": "MonetaryAmount",
+                    "value": "0",
+                    "currency": "USD"
+                  },
+                  "shippingDestination": {
+                    "@type": "DefinedRegion",
+                    "addressCountry": "US"
+                  },
+                  "deliveryTime": {
+                    "@type": "ShippingDeliveryTime",
+                    "handlingTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    },
+                    "transitTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    }
+                  }
+                },
+                "hasMerchantReturnPolicy": {
+                  "@type": "MerchantReturnPolicy",
+                  "applicableCountry": "US",
+                  "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                  "merchantReturnDays": 14,
+                  "returnFees": "https://schema.org/FreeReturn",
+                  "refundType": "https://schema.org/FullRefund"
+                }
+              }
+            ]
           },
-          "offers": [
-            {
-              "@type": "Offer",
-              "name": "Vitae Plus, monthly",
-              "price": "2.99",
-              "priceCurrency": "USD",
-              "priceSpecification": { "@type": "UnitPriceSpecification", "price": "2.99", "priceCurrency": "USD", "billingDuration": "P1M", "unitCode": "MON" },
-              "availability": "https://schema.org/InStock",
-              "url": "https://purplelink.llc/vitae/plus/",
-              "category": "Subscription",
-              "seller": { "@id": "https://purplelink.llc/#organization" }
-            },
-            {
-              "@type": "Offer",
-              "name": "Vitae Plus, annual",
-              "price": "23.99",
-              "priceCurrency": "USD",
-              "priceSpecification": { "@type": "UnitPriceSpecification", "price": "23.99", "priceCurrency": "USD", "billingDuration": "P1Y", "unitCode": "ANN" },
-              "availability": "https://schema.org/InStock",
-              "url": "https://purplelink.llc/vitae/plus/",
-              "category": "Subscription",
-              "seller": { "@id": "https://purplelink.llc/#organization" }
-            }
-          ]
-        },
-        {
-          "@type": "FAQPage",
-          "mainEntity": [
-            {
-              "@type": "Question",
-              "name": "Do I need Vitae Plus to use Vitae?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No. Vitae is free, with all core record-keeping and no limits. Nothing that was free before Plus becomes paid. Plus adds newer tools built on top of your record." }
-            },
-            {
-              "@type": "Question",
-              "name": "What happens if I cancel?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Plus keeps working through the period you have paid for, then the Plus tools stop. Your records and every free feature are untouched." }
-            },
-            {
-              "@type": "Question",
-              "name": "Does Vitae contact a server to check the subscription?",
-              "acceptedAnswer": { "@type": "Answer", "text": "About once a month. Your subscription is checked by a short key the app refreshes about once a month. The refresh sends only an anonymous key ID. Between refreshes the key is verified on your Mac." }
-            },
-            {
-              "@type": "Question",
-              "name": "How do I cancel?",
-              "acceptedAnswer": { "@type": "Answer", "text": "In Vitae, open Settings, then Vitae Plus, then Manage Subscription. We email you a link to Stripe's billing page, where you can cancel. Or email ben@purplelink.llc." }
-            }
-          ]
-        },
-        {
-          "@type": "BreadcrumbList",
-          "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
-            { "@type": "ListItem", "position": 2, "name": "Vitae", "item": "https://purplelink.llc/vitae/" },
-            { "@type": "ListItem", "position": 3, "name": "Vitae Plus", "item": "https://purplelink.llc/vitae/plus/" }
-          ]
-        }
-      ]
-    }
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Do I need Vitae Plus to use Vitae?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. Vitae is free, with all core record-keeping and no limits. Nothing that was free before Plus becomes paid. Plus adds newer tools built on top of your record."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What happens if I cancel?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Plus keeps working through the period you have paid for, then the Plus tools stop. Your records and every free feature are untouched."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Does Vitae contact a server to check the subscription?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "About once a month. Your subscription is checked by a short key the app refreshes about once a month. The refresh sends only an anonymous key ID. Between refreshes the key is verified on your Mac."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How do I cancel?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "In Vitae, open Settings, then Vitae Plus, then Manage Subscription. We email you a link to Stripe's billing page, where you can cancel. Or email ben@purplelink.llc."
+                }
+              }
+            ]
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://purplelink.llc/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Vitae",
+                "item": "https://purplelink.llc/vitae/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Vitae Plus",
+                "item": "https://purplelink.llc/vitae/plus/"
+              }
+            ]
+          }
+        ]
+      }
     </script>
     <script src="/buddy-chat/loader.js" defer></script>
 </head>

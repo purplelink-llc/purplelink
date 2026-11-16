@@ -20,120 +20,421 @@
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/paper-review.png">
     <meta name="twitter:image:alt" content="Paper Review: AI manuscript review and feedback before you submit">
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "WebApplication",
-          "name": "Paper Review",
-          "url": "https://purplelink.llc/tools/paper-review/",
-          "applicationCategory": "EducationalApplication",
-          "operatingSystem": "Any (web-based)",
-          "browserRequirements": "Requires JavaScript",
-          "image": "https://purplelink.llc/assets/og/paper-review.png",
-          "description": "A paid AI red-team review of an academic manuscript. Combines a figure-integrity vision scan, a live CrossRef citation cross-check, a seven-persona adversarial reviewer panel (Methodology Critic, Statistical Skeptic, Data Integrity Officer, Editor-in-Chief, Equation Analyst, Literature Auditor, Numerical Realist), and a targeted rectification checklist. Output is a Markdown report with the issues a journal reviewer would flag and the concrete fixes.",
-          "offers": [
-            { "@type": "Offer", "name": "Standard", "price": "14.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/tools/paper-review/" },
-            { "@type": "Offer", "name": "Standard with Journal Pack", "price": "24.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/tools/paper-review/" },
-            { "@type": "Offer", "name": "Deep Review", "price": "39.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/tools/paper-review/" },
-            { "@type": "Offer", "name": "Revision Review", "price": "5.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/tools/paper-review/revision/" },
-            { "@type": "Offer", "name": "Response Review", "price": "12.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/tools/response-review/" },
-            { "@type": "Offer", "name": "Lab pack of 5 Journal reviews", "price": "99.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/tools/paper-review/packs/" },
-            { "@type": "Offer", "name": "Lab pack of 20 Journal reviews", "price": "349.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/tools/paper-review/packs/" },
-            { "@type": "Offer", "name": "Publication Pack", "price": "59.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/tools/paper-review/#plans" },
-            { "@type": "Offer", "name": "Lab plan, monthly", "price": "199.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/tools/paper-review/#plans" },
-            { "@type": "Offer", "name": "Lab plan, yearly", "price": "1990.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/tools/paper-review/#plans" },
-            { "@type": "Offer", "name": "Lab Plus plan, monthly", "price": "349.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/tools/paper-review/#plans" },
-            { "@type": "Offer", "name": "Lab Plus plan, yearly", "price": "3490.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/tools/paper-review/#plans" }
-          ],
-          "featureList": [
-            "Seven-persona adversarial reviewer panel",
-            "Figure-integrity and presentation scan via Claude Vision",
-            "Live citation existence cross-check against CrossRef",
-            "Deep citation support audit: fetches cited abstracts and verifies claim support",
-            "Domain-tuned attack vectors (ML, biomed, psych, chem, general)",
-            "Critical blind spots and data-to-claim contradictions",
-            "Rectification checklist with A/B/C priority",
-            "True novelty assessment",
-            "Markdown report, usually ready in 4 to 8 minutes",
-            "Report emailed to you as a PDF; the manuscript and the online copy are deleted within about a day after you first open the result, or within 48 hours if you never do"
-          ],
-          "provider": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/" }
-        },
-        {
-          "@type": "FAQPage",
-          "mainEntity": [
-            {
-              "@type": "Question",
-              "name": "What does the review include?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Four layers run in sequence: (1) a vision scan of your figures and tables for integrity and presentation issues, (2) a citation support audit: an existence cross-check against CrossRef plus an abstract-level check of whether the most load-bearing cited sources actually support the claims, (3) a seven-persona adversarial debate (Methodology Critic, Statistical Skeptic, Data Integrity Officer, Editor-in-Chief, Equation Analyst, Literature Auditor, Numerical Realist) with cross-persona consensus filtering, (4) a synthesis pass producing critical blind spots, data-to-claim contradictions, a prioritised rectification checklist, and a true-novelty estimate." }
-            },
-            {
-              "@type": "Question",
-              "name": "Which journals does the Journal Pack check?",
-              "acceptedAnswer": { "@type": "Answer", "text": "The Journal Pack checks a manuscript against the submission rules of 27 venues. Machine learning: NeurIPS, ICML, ICLR, AAAI, TMLR and JMLR. General science: Nature, Science, Cell and PLOS ONE. Medicine: Nature Medicine, JAMA, NEJM, The Lancet and The BMJ. Psychology and management: Psychological Science, Journal of Personality and Social Psychology, Cognition and Academy of Management Journal. Information systems: MIS Quarterly and Communications of the Association for Information Systems (CAIS). Chemistry and materials: JACS, Angewandte Chemie, Nature Materials, Nature Chemistry, ACS Nano and Advanced Materials. It checks word and abstract limits, required sections and reference-style hints. If your venue is not listed, the Standard tier covers everything else; email ben@purplelink.llc to ask for it to be added." }
-            },
-            {
-              "@type": "Question",
-              "name": "How much does Paper Review cost?",
-              "acceptedAnswer": { "@type": "Answer", "text": "One review costs $14 (Standard), $24 (Standard with the Journal Pack) or $39 (Deep Review). Each is a one-time payment with no subscription. After a revise-and-resubmit, Revision Review checks your fixes for $5, and Response Review checks your response letter for $12 or drafts and checks it for $24. The Publication Pack bundles a Deep Review, a Revision Review and a response letter draft for $59, which is $9 less than buying them one at a time." }
-            },
-            {
-              "@type": "Question",
-              "name": "How long does it take?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Typically 4-8 minutes for a 20-page manuscript. After you pay and upload, you'll be redirected to a status page that polls until the review is ready. You don't need to keep the tab in the foreground." }
-            },
-            {
-              "@type": "Question",
-              "name": "What about my privacy? Is the manuscript stored?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Your manuscript is sent to Anthropic's Claude API for analysis. Anthropic retains inputs for up to 30 days for abuse monitoring, and does not use them for model training. The report is emailed to you as a PDF when the review finishes. The manuscript and the online copy are deleted within about a day after you first open the result, or within 48 hours if you never open it." }
-            },
-            {
-              "@type": "Question",
-              "name": "What domains does it cover?",
-              "acceptedAnswer": { "@type": "Answer", "text": "You pick one of five domain profiles at upload: Machine Learning, Biomedicine, Psychology and Social Science, Chemistry and Materials, or General. Each profile tells the reviewers which failure modes matter most in that field." }
-            },
-            {
-              "@type": "Question",
-              "name": "Am I allowed to use an AI review on my own manuscript?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Yes, under the policies of the major publishers and venues we have checked. Elsevier, Springer Nature, Wiley, Taylor & Francis, IEEE, ACM, ICMJE and NeurIPS let authors use AI tools while preparing a manuscript; the rule against uploading manuscripts to AI is for reviewers, who hold someone else's work. Paper Review writes nothing into your paper, so most disclosure rules, which cover AI-generated text, do not obviously apply; if your venue's policy is strict, a one-line note is enough." }
-            },
-            {
-              "@type": "Question",
-              "name": "Is this a replacement for peer review?",
-              "acceptedAnswer": { "@type": "Answer", "text": "No. Treat it as a first-pass red team before you submit. It catches the obvious problems a real reviewer will flag. The review is advisory only. You remain responsible for every decision about your manuscript." }
-            },
-            {
-              "@type": "Question",
-              "name": "What if the review misses something or makes a mistake?",
-              "acceptedAnswer": { "@type": "Answer", "text": "AI reviewers can be wrong. The output flags concerns with hedged language and quotes the manuscript when challenging a claim, so you can verify every finding against your text. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded. One refund per manuscript." }
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebApplication",
+            "name": "Paper Review",
+            "url": "https://purplelink.llc/tools/paper-review/",
+            "applicationCategory": "EducationalApplication",
+            "operatingSystem": "Any (web-based)",
+            "browserRequirements": "Requires JavaScript",
+            "image": "https://purplelink.llc/assets/og/paper-review.png",
+            "description": "A paid AI red-team review of an academic manuscript. Combines a figure-integrity vision scan, a live CrossRef citation cross-check, a seven-persona adversarial reviewer panel (Methodology Critic, Statistical Skeptic, Data Integrity Officer, Editor-in-Chief, Equation Analyst, Literature Auditor, Numerical Realist), and a targeted rectification checklist. Output is a Markdown report with the issues a journal reviewer would flag and the concrete fixes.",
+            "offers": [
+              {
+                "@type": "Offer",
+                "name": "Standard",
+                "price": "14.00",
+                "priceCurrency": "USD",
+                "availability": "https://schema.org/InStock",
+                "url": "https://purplelink.llc/tools/paper-review/"
+              },
+              {
+                "@type": "Offer",
+                "name": "Standard with Journal Pack",
+                "price": "24.00",
+                "priceCurrency": "USD",
+                "availability": "https://schema.org/InStock",
+                "url": "https://purplelink.llc/tools/paper-review/"
+              },
+              {
+                "@type": "Offer",
+                "name": "Deep Review",
+                "price": "39.00",
+                "priceCurrency": "USD",
+                "availability": "https://schema.org/InStock",
+                "url": "https://purplelink.llc/tools/paper-review/"
+              },
+              {
+                "@type": "Offer",
+                "name": "Revision Review",
+                "price": "5.00",
+                "priceCurrency": "USD",
+                "availability": "https://schema.org/InStock",
+                "url": "https://purplelink.llc/tools/paper-review/revision/"
+              },
+              {
+                "@type": "Offer",
+                "name": "Response Review",
+                "price": "12.00",
+                "priceCurrency": "USD",
+                "availability": "https://schema.org/InStock",
+                "url": "https://purplelink.llc/tools/response-review/"
+              },
+              {
+                "@type": "Offer",
+                "name": "Lab pack of 5 Journal reviews",
+                "price": "99.00",
+                "priceCurrency": "USD",
+                "availability": "https://schema.org/InStock",
+                "url": "https://purplelink.llc/tools/paper-review/packs/"
+              },
+              {
+                "@type": "Offer",
+                "name": "Lab pack of 20 Journal reviews",
+                "price": "349.00",
+                "priceCurrency": "USD",
+                "availability": "https://schema.org/InStock",
+                "url": "https://purplelink.llc/tools/paper-review/packs/"
+              },
+              {
+                "@type": "Offer",
+                "name": "Publication Pack",
+                "price": "59.00",
+                "priceCurrency": "USD",
+                "availability": "https://schema.org/InStock",
+                "url": "https://purplelink.llc/tools/paper-review/#plans"
+              },
+              {
+                "@type": "Offer",
+                "name": "Lab plan, monthly",
+                "price": "199.00",
+                "priceCurrency": "USD",
+                "availability": "https://schema.org/InStock",
+                "url": "https://purplelink.llc/tools/paper-review/#plans"
+              },
+              {
+                "@type": "Offer",
+                "name": "Lab plan, yearly",
+                "price": "1990.00",
+                "priceCurrency": "USD",
+                "availability": "https://schema.org/InStock",
+                "url": "https://purplelink.llc/tools/paper-review/#plans"
+              },
+              {
+                "@type": "Offer",
+                "name": "Lab Plus plan, monthly",
+                "price": "349.00",
+                "priceCurrency": "USD",
+                "availability": "https://schema.org/InStock",
+                "url": "https://purplelink.llc/tools/paper-review/#plans"
+              },
+              {
+                "@type": "Offer",
+                "name": "Lab Plus plan, yearly",
+                "price": "3490.00",
+                "priceCurrency": "USD",
+                "availability": "https://schema.org/InStock",
+                "url": "https://purplelink.llc/tools/paper-review/#plans"
+              }
+            ],
+            "featureList": [
+              "Seven-persona adversarial reviewer panel",
+              "Figure-integrity and presentation scan via Claude Vision",
+              "Live citation existence cross-check against CrossRef",
+              "Deep citation support audit: fetches cited abstracts and verifies claim support",
+              "Domain-tuned attack vectors (ML, biomed, psych, chem, general)",
+              "Critical blind spots and data-to-claim contradictions",
+              "Rectification checklist with A/B/C priority",
+              "True novelty assessment",
+              "Markdown report, usually ready in 4 to 8 minutes",
+              "Report emailed to you as a PDF; the manuscript and the online copy are deleted within about a day after you first open the result, or within 48 hours if you never do"
+            ],
+            "provider": {
+              "@type": "Organization",
+              "name": "Purplelink LLC",
+              "url": "https://purplelink.llc/"
             }
-          ]
-        },
-        {
-          "@type": "Product",
-          "name": "Paper Review",
-          "description": "AI manuscript review before journal submission: seven AI reviewers, a CrossRef check of every reference and a figure scan, delivered as a written report.",
-          "url": "https://purplelink.llc/tools/paper-review/",
-          "image": "https://purplelink.llc/assets/og/paper-review.png",
-          "brand": { "@type": "Brand", "name": "Purplelink" },
-          "offers": [
-            { "@type": "Offer", "name": "Standard", "price": "14.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/tools/paper-review/" },
-            { "@type": "Offer", "name": "Standard with Journal Pack", "price": "24.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/tools/paper-review/" },
-            { "@type": "Offer", "name": "Deep Review", "price": "39.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/tools/paper-review/" },
-            { "@type": "Offer", "name": "Publication Pack", "price": "59.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://purplelink.llc/tools/paper-review/#plans" }
-          ]
-        },
-        {
-          "@type": "BreadcrumbList",
-          "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
-            { "@type": "ListItem", "position": 2, "name": "Tools", "item": "https://purplelink.llc/tools/" },
-            { "@type": "ListItem", "position": 3, "name": "Paper Review", "item": "https://purplelink.llc/tools/paper-review/" }
-          ]
-        }
-      ]
-    }
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "What does the review include?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Four layers run in sequence: (1) a vision scan of your figures and tables for integrity and presentation issues, (2) a citation support audit: an existence cross-check against CrossRef plus an abstract-level check of whether the most load-bearing cited sources actually support the claims, (3) a seven-persona adversarial debate (Methodology Critic, Statistical Skeptic, Data Integrity Officer, Editor-in-Chief, Equation Analyst, Literature Auditor, Numerical Realist) with cross-persona consensus filtering, (4) a synthesis pass producing critical blind spots, data-to-claim contradictions, a prioritised rectification checklist, and a true-novelty estimate."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Which journals does the Journal Pack check?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "The Journal Pack checks a manuscript against the submission rules of 27 venues. Machine learning: NeurIPS, ICML, ICLR, AAAI, TMLR and JMLR. General science: Nature, Science, Cell and PLOS ONE. Medicine: Nature Medicine, JAMA, NEJM, The Lancet and The BMJ. Psychology and management: Psychological Science, Journal of Personality and Social Psychology, Cognition and Academy of Management Journal. Information systems: MIS Quarterly and Communications of the Association for Information Systems (CAIS). Chemistry and materials: JACS, Angewandte Chemie, Nature Materials, Nature Chemistry, ACS Nano and Advanced Materials. It checks word and abstract limits, required sections and reference-style hints. If your venue is not listed, the Standard tier covers everything else; email ben@purplelink.llc to ask for it to be added."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How much does Paper Review cost?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "One review costs $14 (Standard), $24 (Standard with the Journal Pack) or $39 (Deep Review). Each is a one-time payment with no subscription. After a revise-and-resubmit, Revision Review checks your fixes for $5, and Response Review checks your response letter for $12 or drafts and checks it for $24. The Publication Pack bundles a Deep Review, a Revision Review and a response letter draft for $59, which is $9 less than buying them one at a time."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How long does it take?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Typically 4-8 minutes for a 20-page manuscript. After you pay and upload, you'll be redirected to a status page that polls until the review is ready. You don't need to keep the tab in the foreground."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What about my privacy? Is the manuscript stored?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Your manuscript is sent to Anthropic's Claude API for analysis. Anthropic retains inputs for up to 30 days for abuse monitoring, and does not use them for model training. The report is emailed to you as a PDF when the review finishes. The manuscript and the online copy are deleted within about a day after you first open the result, or within 48 hours if you never open it."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What domains does it cover?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "You pick one of five domain profiles at upload: Machine Learning, Biomedicine, Psychology and Social Science, Chemistry and Materials, or General. Each profile tells the reviewers which failure modes matter most in that field."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Am I allowed to use an AI review on my own manuscript?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes, under the policies of the major publishers and venues we have checked. Elsevier, Springer Nature, Wiley, Taylor & Francis, IEEE, ACM, ICMJE and NeurIPS let authors use AI tools while preparing a manuscript; the rule against uploading manuscripts to AI is for reviewers, who hold someone else's work. Paper Review writes nothing into your paper, so most disclosure rules, which cover AI-generated text, do not obviously apply; if your venue's policy is strict, a one-line note is enough."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is this a replacement for peer review?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. Treat it as a first-pass red team before you submit. It catches the obvious problems a real reviewer will flag. The review is advisory only. You remain responsible for every decision about your manuscript."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What if the review misses something or makes a mistake?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "AI reviewers can be wrong. The output flags concerns with hedged language and quotes the manuscript when challenging a claim, so you can verify every finding against your text. Not useful? Email ben@purplelink.llc within 14 days of purchase and it is refunded. One refund per manuscript."
+                }
+              }
+            ]
+          },
+          {
+            "@type": "Product",
+            "name": "Paper Review",
+            "description": "AI manuscript review before journal submission: seven AI reviewers, a CrossRef check of every reference and a figure scan, delivered as a written report.",
+            "url": "https://purplelink.llc/tools/paper-review/",
+            "image": "https://purplelink.llc/assets/og/paper-review.png",
+            "brand": {
+              "@type": "Brand",
+              "name": "Purplelink"
+            },
+            "offers": [
+              {
+                "@type": "Offer",
+                "name": "Standard",
+                "price": "14.00",
+                "priceCurrency": "USD",
+                "availability": "https://schema.org/InStock",
+                "url": "https://purplelink.llc/tools/paper-review/",
+                "shippingDetails": {
+                  "@type": "OfferShippingDetails",
+                  "shippingRate": {
+                    "@type": "MonetaryAmount",
+                    "value": "0",
+                    "currency": "USD"
+                  },
+                  "shippingDestination": {
+                    "@type": "DefinedRegion",
+                    "addressCountry": "US"
+                  },
+                  "deliveryTime": {
+                    "@type": "ShippingDeliveryTime",
+                    "handlingTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    },
+                    "transitTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    }
+                  }
+                },
+                "hasMerchantReturnPolicy": {
+                  "@type": "MerchantReturnPolicy",
+                  "applicableCountry": "US",
+                  "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                  "merchantReturnDays": 14,
+                  "returnFees": "https://schema.org/FreeReturn",
+                  "refundType": "https://schema.org/FullRefund"
+                }
+              },
+              {
+                "@type": "Offer",
+                "name": "Standard with Journal Pack",
+                "price": "24.00",
+                "priceCurrency": "USD",
+                "availability": "https://schema.org/InStock",
+                "url": "https://purplelink.llc/tools/paper-review/",
+                "shippingDetails": {
+                  "@type": "OfferShippingDetails",
+                  "shippingRate": {
+                    "@type": "MonetaryAmount",
+                    "value": "0",
+                    "currency": "USD"
+                  },
+                  "shippingDestination": {
+                    "@type": "DefinedRegion",
+                    "addressCountry": "US"
+                  },
+                  "deliveryTime": {
+                    "@type": "ShippingDeliveryTime",
+                    "handlingTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    },
+                    "transitTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    }
+                  }
+                },
+                "hasMerchantReturnPolicy": {
+                  "@type": "MerchantReturnPolicy",
+                  "applicableCountry": "US",
+                  "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                  "merchantReturnDays": 14,
+                  "returnFees": "https://schema.org/FreeReturn",
+                  "refundType": "https://schema.org/FullRefund"
+                }
+              },
+              {
+                "@type": "Offer",
+                "name": "Deep Review",
+                "price": "39.00",
+                "priceCurrency": "USD",
+                "availability": "https://schema.org/InStock",
+                "url": "https://purplelink.llc/tools/paper-review/",
+                "shippingDetails": {
+                  "@type": "OfferShippingDetails",
+                  "shippingRate": {
+                    "@type": "MonetaryAmount",
+                    "value": "0",
+                    "currency": "USD"
+                  },
+                  "shippingDestination": {
+                    "@type": "DefinedRegion",
+                    "addressCountry": "US"
+                  },
+                  "deliveryTime": {
+                    "@type": "ShippingDeliveryTime",
+                    "handlingTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    },
+                    "transitTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    }
+                  }
+                },
+                "hasMerchantReturnPolicy": {
+                  "@type": "MerchantReturnPolicy",
+                  "applicableCountry": "US",
+                  "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                  "merchantReturnDays": 14,
+                  "returnFees": "https://schema.org/FreeReturn",
+                  "refundType": "https://schema.org/FullRefund"
+                }
+              },
+              {
+                "@type": "Offer",
+                "name": "Publication Pack",
+                "price": "59.00",
+                "priceCurrency": "USD",
+                "availability": "https://schema.org/InStock",
+                "url": "https://purplelink.llc/tools/paper-review/#plans",
+                "shippingDetails": {
+                  "@type": "OfferShippingDetails",
+                  "shippingRate": {
+                    "@type": "MonetaryAmount",
+                    "value": "0",
+                    "currency": "USD"
+                  },
+                  "shippingDestination": {
+                    "@type": "DefinedRegion",
+                    "addressCountry": "US"
+                  },
+                  "deliveryTime": {
+                    "@type": "ShippingDeliveryTime",
+                    "handlingTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    },
+                    "transitTime": {
+                      "@type": "QuantitativeValue",
+                      "minValue": 0,
+                      "maxValue": 0,
+                      "unitCode": "d"
+                    }
+                  }
+                },
+                "hasMerchantReturnPolicy": {
+                  "@type": "MerchantReturnPolicy",
+                  "applicableCountry": "US",
+                  "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                  "merchantReturnDays": 14,
+                  "returnFees": "https://schema.org/FreeReturn",
+                  "refundType": "https://schema.org/FullRefund"
+                }
+              }
+            ]
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://purplelink.llc/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Tools",
+                "item": "https://purplelink.llc/tools/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "Paper Review",
+                "item": "https://purplelink.llc/tools/paper-review/"
+              }
+            ]
+          }
+        ]
+      }
     </script>
     <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
     <meta name="theme-color" content="#19141d">
