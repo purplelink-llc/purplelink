@@ -766,5 +766,34 @@
    "ok": true,
    "utm_content": "howto-perhaps-a-missing-item-text-before-first-item-reel"
   }
+ },
+ {
+  "slug": "howto-messages-attachments-taking-up-space",
+  "app": "legroom",
+  "date": "2026-11-16",
+  "title": "Messages taking up space on Mac (delete large attachments, or shorten Keep messages)",
+  "long_id": "if_p2BZHP6c",
+  "short_id": "GSsGjO2jpFw",
+  "link_arm": "A",
+  "link_utm_content": "howto-messages-attachments-taking-up-space",
+  "short_utm_content": "howto-messages-attachments-taking-up-space-short",
+  "sources": [
+   "https://discussions.apple.com/thread/253623827",
+   "https://discussions.apple.com/thread/251612366"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "if_p2BZHP6c",
+    "caption_id": "AUieDaa2xPoaF19siBAN0pMrBDFaA21-rrJb-3ArXTLfqfFFm1VdpeEH"
+   },
+   "short": {
+    "video_id": "GSsGjO2jpFw",
+    "caption_id": "AUieDaYbCW6-eAyn5eTER5sIYtu8SSfgZhmjKxtoOWwNIvEnx0yCK3wK"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-messages-attachments-taking-up-space-reel"
+  }
  }
 ]
