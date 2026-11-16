@@ -45,7 +45,7 @@ The rules are below. The full background (dates, IDs, file paths, why each rule 
 
 ## Products
 
-- Stripe checkout is live and selling (all 13 `PRODUCT_CATALOG` keys). Any old note saying checkout is disabled is
+- Stripe checkout is live and selling (every `PRODUCT_CATALOG` key in `netlify/functions/checkout.mjs`; 58 on 2026-11-16). Any old note saying checkout is disabled is
   stale; ignore it.
 - Paper Review delivery depends on the Stripe webhook. A `stripe-webhook.mjs` operator alert email means a
   paid-but-undelivered customer: treat it as an incident. See `docs/paper-review-runbook.md`.
