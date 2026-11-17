@@ -795,5 +795,34 @@
    "ok": true,
    "utm_content": "howto-messages-attachments-taking-up-space-reel"
   }
+ },
+ {
+  "slug": "howto-aws-access-key-in-paste-to-chatgpt",
+  "app": "outbound-veil",
+  "date": "2026-11-17",
+  "title": "AWS access key in a config you paste into ChatGPT on Mac (find and hide it with grep and sed)",
+  "long_id": "rKCGLG2nweo",
+  "short_id": "ovlkkyHWop0",
+  "link_arm": "B",
+  "link_utm_content": "howto-aws-access-key-in-paste-to-chatgpt",
+  "short_utm_content": "howto-aws-access-key-in-paste-to-chatgpt-short",
+  "sources": [
+   "https://dev.to/bloodandcode/i-almost-leaked-an-api-key-into-chatgpt-so-i-built-a-chrome-extension-1mhm",
+   "https://dev.to/alokt/i-accidentally-pasted-a-password-or-api-key-what-to-do-next-24n8"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "rKCGLG2nweo",
+    "caption_id": "AUieDaa9nsacVGB03n7xgJmqN9zb5zDDZT3BmhEl7011hNnTwPfsUVd9"
+   },
+   "short": {
+    "video_id": "ovlkkyHWop0",
+    "caption_id": "AUieDaZ0ee2-NBMiezdw16diNsHeLIQNoNPeFxpYFzSwFp8AP5xmMdqr"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-aws-access-key-in-paste-to-chatgpt-reel"
+  }
  }
 ]

@@ -1,0 +1,132 @@
+{
+ "id": "howto-aws-access-key-in-paste-to-chatgpt",
+ "app": "outbound-veil",
+ "title": "AWS access key in a config you paste into ChatGPT on Mac (find and hide it with grep and sed)",
+ "short_title": "Check a config for AWS keys before you paste it",
+ "url": "purplelink.llc/outbound-veil",
+ "page": "https://purplelink.llc/outbound-veil/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://dev.to/bloodandcode/i-almost-leaked-an-api-key-into-chatgpt-so-i-built-a-chrome-extension-1mhm",
+  "https://dev.to/alokt/i-accidentally-pasted-a-password-or-api-key-what-to-do-next-24n8"
+ ],
+ "verify": {
+  "runs": [
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf 'region = us-east-1\\naws_access_key_id = AKIAIOSFODNN7EXAMPLE\\naws_secret_access_key = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY\\noutput = json\\n' > config.txt && cat config.txt",
+    "output": "region = us-east-1\naws_access_key_id = AKIAIOSFODNN7EXAMPLE\naws_secret_access_key = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY\noutput = json"
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf 'region = us-east-1\\naws_access_key_id = AKIAIOSFODNN7EXAMPLE\\naws_secret_access_key = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY\\noutput = json\\n' > config.txt && grep -nE 'AKIA[0-9A-Z]{16}|[A-Za-z0-9/+]{40}' config.txt",
+    "output": "2:aws_access_key_id = AKIAIOSFODNN7EXAMPLE\n3:aws_secret_access_key = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf 'region = us-east-1\\naws_access_key_id = AKIAIOSFODNN7EXAMPLE\\naws_secret_access_key = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY\\noutput = json\\n' > config.txt && sed -E 's/AKIA[0-9A-Z]{16}/[AWS_KEY]/g; s/[A-Za-z0-9/+]{40}/[SECRET]/g' config.txt > clean.txt && cat clean.txt && grep -cE 'AKIA[0-9A-Z]{16}|[A-Za-z0-9/+]{40}' clean.txt",
+    "output": "region = us-east-1\naws_access_key_id = [AWS_KEY]\naws_secret_access_key = [SECRET]\noutput = json\n0"
+   }
+  ],
+  "docs": [
+   "https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html",
+   "https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html",
+   "https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html",
+   "https://man.freebsd.org/cgi/man.cgi?query=grep",
+   "https://man.freebsd.org/cgi/man.cgi?query=sed",
+   "https://docs.aws.amazon.com/IAM/latest/UserGuide/id-credentials-access-keys-update.html"
+  ],
+  "notes": "macOS /usr/bin/grep and sed, run 2026-11-17 in a fresh mktemp folder with an invented config file; nothing outside that folder was touched. AKIAIOSFODNN7EXAMPLE and wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY are the example keys AWS prints in its own CLI documentation, not real credentials. The pattern matches by shape: long-term access key IDs (AKIA plus 16 characters) and any run of 40 base64 characters (the secret key's shape), so it also catches AWS_SECRET_ACCESS_KEY=... in .env files (tested). It misses temporary ASIA key IDs and session tokens' other forms, and can hide other 40-character strings such as git commit IDs; the narration says both. Replace-the-key advice follows the AWS IAM update access keys page (create a new key, then deactivate and delete the old one); the dev.to alokt source advises rotating any key pasted into an AI chat and notes the text may stay in vendor systems."
+ },
+ "scenes": [
+  {
+   "type": "hook",
+   "short": true,
+   "kicker": "Keys and passwords",
+   "title": "Is there an AWS key in that paste?",
+   "sub": "Check a config before you paste it into a chat.",
+   "narration": "Before you paste a config file or an error log into ChatGPT to ask for help, check it for access keys. On a Mac, Terminal can find them and hide them."
+  },
+  {
+   "type": "symptom",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ cat config.txt",
+    "region = us-east-1",
+    "aws_access_key_id = AKIAIOSFODNN7EXAMPLE",
+    "aws_secret_access_key = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+    "output = json"
+   ],
+   "narration": "Here is a short config file, with the example keys from Amazon's own documentation. Both are easy to paste along with the settings."
+  },
+  {
+   "type": "cause",
+   "text": "An access key ID starts with AKIA and has 16 more letters and digits. The secret key is 40 characters long.",
+   "narration": "An AWS access key I D starts with A K I A and sixteen more characters. The secret key is forty characters long."
+  },
+  {
+   "type": "steps",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ grep -nE 'AKIA[0-9A-Z]{16}|[A-Za-z0-9/+]{40}' config.txt",
+    "2:aws_access_key_id = AKIAIOSFODNN7EXAMPLE",
+    "3:aws_secret_access_key = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+    "$ sed -E 's/AKIA[0-9A-Z]{16}/[AWS_KEY]/g; s/[A-Za-z0-9/+]{40}/[SECRET]/g' config.txt > clean.txt"
+   ],
+   "ui": "Matches by shape: AKIA key IDs and 40-character secrets.",
+   "narration": "Run grep with this pattern. It matches the shape of the keys, so it prints both lines. Then sed writes a clean copy with placeholders. It can hide other forty character strings too, and it misses temporary keys."
+  },
+  {
+   "type": "check",
+   "short": true,
+   "label": "Terminal",
+   "ok": "No keys left in the copy",
+   "lines": [
+    "$ cat clean.txt",
+    "region = us-east-1",
+    "aws_access_key_id = [AWS_KEY]",
+    "aws_secret_access_key = [SECRET]",
+    "output = json",
+    "$ grep -cE 'AKIA[0-9A-Z]{16}|[A-Za-z0-9/+]{40}' clean.txt",
+    "0"
+   ],
+   "narration": "The clean copy hides both keys, and the pattern finds nothing in it. If a real key already went into a chat, make a new key, then deactivate and delete the old one."
+  },
+  {
+   "type": "app",
+   "name": "Outbound Veil",
+   "line": "Checks the text field you are typing in for API keys, tokens and passwords, on your Mac.",
+   "url": "purplelink.llc/outbound-veil",
+   "img": "site/assets/outbound-veil-screens/redacted.webp",
+   "icon": "site/assets/outbound-veil-icon.webp",
+   "narration": "Outbound Veil checks the text field you are typing in, on your Mac, for API keys, tokens and personal information, including in the ChatGPT prompt box in Chrome. Redact all swaps each finding for a placeholder. It will miss some things, so read before you send."
+  }
+ ],
+ "thumbs": {
+  "A": {
+   "kind": "diff",
+   "hook": "AWS key in your paste?",
+   "before": "aws_access_key_id = AKIAIOSFODNN7EXAMPLE",
+   "after": "aws_access_key_id = [AWS_KEY]",
+   "afterLabel": "Fix"
+  },
+  "B": {
+   "kind": "focus",
+   "hook": "AWS keys in\nyour paste?",
+   "lines": [
+    "$ grep -nE 'AKIA[0-9A-Z]{16}|[A-Za-z0-9/+]{40}' config.txt",
+    "3:aws_secret_access_key = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+   ],
+   "hl": "$ grep -nE 'AKIA[0-9A-Z]{16}|[A-Za-z0-9/+]{40}' config.txt"
+  },
+  "C": {
+   "kind": "product",
+   "name": "Outbound Veil",
+   "line": "Hide keys before you send",
+   "img": "site/assets/outbound-veil-screens/redacted.webp",
+   "icon": "site/assets/outbound-veil-icon.webp",
+   "zoom": 1.2,
+   "pos": "0% 40%"
+  }
+ }
+}
