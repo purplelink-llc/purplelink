@@ -285,5 +285,16 @@
   "started": "2026-11-16",
   "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
   "checked": "2026-11-16"
+ },
+ {
+  "video": "rKCGLG2nweo",
+  "variants": {
+   "A": "video/out/howto/aws-access-key-in-paste-to-chatgpt/aws-access-key-in-paste-to-chatgpt-thumb-A.jpg",
+   "B": "video/out/howto/aws-access-key-in-paste-to-chatgpt/aws-access-key-in-paste-to-chatgpt-thumb-B.jpg",
+   "C": "video/out/howto/aws-access-key-in-paste-to-chatgpt/aws-access-key-in-paste-to-chatgpt-thumb-C.jpg"
+  },
+  "started": "2026-11-17",
+  "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
+  "checked": "2026-11-17"
  }
 ]
