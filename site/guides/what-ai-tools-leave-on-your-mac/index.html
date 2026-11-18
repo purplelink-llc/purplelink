@@ -34,7 +34,7 @@
         "@id": "https://purplelink.llc/#organization"
       },
       "datePublished": "2026-10-11",
-      "dateModified": "2026-10-11",
+      "dateModified": "2026-11-16",
       "image": "https://purplelink.llc/assets/og/legroom.png",
       "mainEntityOfPage": "https://purplelink.llc/guides/what-ai-tools-leave-on-your-mac/"
     },
@@ -102,7 +102,7 @@
       "name": "Do local models take much space?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "They can. On this Mac Ollama and Hugging Face were empty, so I measured nothing. A single model download is commonly several gigabytes, and ollama list and huggingface-cli scan-cache show exactly what yours hold."
+        "text": "They can. On this Mac Ollama and Hugging Face were empty, so I measured nothing. A single model download is commonly several gigabytes, and ollama list and huggingface-cli scan-cache show what yours hold. For Ollama, du -sh ~/.ollama/models also counts copies the list leaves out."
       }
     }
   ]
@@ -137,7 +137,7 @@
       <div class="post-hero">
         <p class="post-date">Guide</p>
         <h1 class="post-title">What AI tools leave on your Mac, and what is safe to delete</h1>
-        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-11">October 11, 2026</time></p>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-11">October 11, 2026</time> · Updated <time datetime="2026-11-16">November 16, 2026</time></p>
         <p class="post-lede">AI coding tools, local models and the package managers behind them keep files that nothing ever cleans up. On the Mac I use every day they added up to about 10.5 GB, half of the 21 GB the disk has free. Here is where each one lives, how to measure it, and what is safe to remove.</p>
       </div>
 
@@ -171,14 +171,14 @@
         <p><strong>Not on this Mac, so not measured:</strong> Cursor, Windsurf, LM Studio and the ChatGPT desktop app. Each keeps its data under <code>~/Library/Application Support</code> or in its own models folder, and each shows its size in Finder. Check them before assuming they are small.</p>
 
         <h2>Local models</h2>
-        <p>Ollama keeps models in <code>~/.ollama/models</code>, and <code>ollama list</code> shows each one with its size; remove one with <code>ollama rm</code> and its name. Hugging Face tools cache downloads under <code>~/.cache/huggingface</code>, and <code>huggingface-cli scan-cache</code> lists what is there, with <code>huggingface-cli delete-cache</code> to remove revisions. Mine held 0 bytes, so I have no measurement to offer, and a single model is commonly several gigabytes.</p>
+        <p>Ollama keeps models in <code>~/.ollama/models</code>, and <code>ollama list</code> shows each one with its size; remove one with <code>ollama rm</code> and its name. If you loaded older models with Ollama 0.40.0 or 0.40.1, it may also keep the previous copy of each one after converting it, so a downgrade still works. Those copies take space but do not appear in <code>ollama list</code>. To see the full amount, compare the sizes in <code>ollama list</code> with <code>du -sh ~/.ollama/models</code> in Terminal. Ollama says a future release will remove the old copies. Hugging Face tools cache downloads under <code>~/.cache/huggingface</code>, and <code>huggingface-cli scan-cache</code> lists what is there, with <code>huggingface-cli delete-cache</code> to remove revisions. Mine held 0 bytes, so I have no measurement to offer, and a single model is commonly several gigabytes.</p>
 
         <h2>The package managers behind them</h2>
         <p>Python and JavaScript tools install through <code>uv</code>, <code>pip</code> and <code>npm</code>, and each keeps every package it ever downloaded. Here that was 1.36 GB for uv, 1.41 GB for npm and 0.21 GB for pip. Homebrew adds 0.29 GB of old downloads. All four are caches: clearing them costs you a re-download the next time you install something, and nothing else.</p>
         <p>Docker and Xcode are the two largest items outside the AI tools themselves. Docker's data (1.72 GB here) should be cleaned with <code>docker system prune</code> rather than by deleting the folder. Xcode's DerivedData (2.05 GB) is the biggest single folder on the list and is the safest: it is build output.</p>
 
         <h2>What Legroom does here, and what it does not</h2>
-        <p>Legroom's Space Map shows where the space on your disk is, and a cleaning rule can point at any folder you choose, with a preview of what it would remove and your approval before anything goes to the Trash or is deleted. It recommends known caches such as Xcode DerivedData, Homebrew downloads and the npm cache. Today it has no built-in rules for Claude Code logs, Ollama or Hugging Face folders, so for those you would add a folder rule yourself. It is $9.99 once after a 7-day trial; the full details are on <a href="/legroom/">its page</a>.</p>
+        <p>Legroom's Space Map shows where the space on your disk is, and a cleaning rule can point at any folder you choose, with a preview of what it would remove and your approval before anything goes to the Trash or is deleted. It recommends known caches such as Xcode DerivedData, Homebrew downloads and the npm cache. Its Developer leftovers window lists local AI models from Ollama, Hugging Face and LM Studio, and moves only the ones you tick to the Trash. It measures Ollama's models folder as a whole, so its figure can be larger than the total in <code>ollama list</code>. It has no cleaning rule for Claude Code logs; for those you would add a folder rule yourself. It is $9.99 once after a 7-day trial; the full details are on <a href="/legroom/">its page</a>.</p>
         <p>You do not need it for any of this. Every command above is free, and the Terminal line measures what you have.</p>
 
         <h2>Frequently asked</h2>
@@ -189,7 +189,7 @@
         <h3>Will deleting Xcode&#x27;s DerivedData break my projects?</h3>
         <p>No. DerivedData holds build products and indexes that Xcode regenerates, so the next build is slower and nothing is lost. Quit Xcode first.</p>
         <h3>Do local models take much space?</h3>
-        <p>They can. On this Mac Ollama and Hugging Face were empty, so I measured nothing. A single model download is commonly several gigabytes, and ollama list and huggingface-cli scan-cache show exactly what yours hold.</p>
+        <p>They can. On this Mac Ollama and Hugging Face were empty, so I measured nothing. A single model download is commonly several gigabytes, and ollama list and huggingface-cli scan-cache show what yours hold. For Ollama, du -sh ~/.ollama/models also counts copies the list leaves out.</p>
 
         <h2>Related guides</h2>
         <ul>
