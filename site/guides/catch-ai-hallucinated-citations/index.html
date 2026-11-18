@@ -209,6 +209,14 @@
         <p>AI hallucinates citations because it predicts plausible text instead of retrieving real records, so the fakes look flawless. The only certain check is the source. Does a real paper exist whose title, authors, year, and venue match your citation? Automated validators make that check fast enough to run on every reference, and manual verification of the flagged ones makes it certain. Do both, and do not cite what you cannot open.</p>
         <p>Before you submit, <a href="/tools/paper-review/">Paper Review</a> (from $14) runs this check on every reference in the manuscript against CrossRef. For the claims that matter most, it reads the cited paper's abstract to see whether it supports the sentence citing it.</p>
       </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>Do AI models really invent citations?</summary><div class="faq-body">Yes. A language model produces text by predicting plausible sequences of words, not by looking up a database of papers. So it can generate a reference that is formatted perfectly and reads convincingly but does not correspond to any real publication. Since 2023, studies and journal correction notices have repeatedly documented fabricated references in AI-assisted drafts across many fields.</div></details>
+        <details><summary>How do I check whether a DOI is real?</summary><div class="faq-body">Paste the DOI after https://doi.org/ and open it. A real DOI resolves to the publisher's page for that exact article. If it 404s, redirects to a homepage, or lands on a different paper than your citation claims, the reference is suspect. A DOI that is well-formed is not proof it exists: only resolution against the registry confirms it.</div></details>
+        <details><summary>The authors are real people, so is the citation safe?</summary><div class="faq-body">No. The most convincing hallucinations pair real, well-known authors with a title they never wrote, or attribute a real paper to the wrong year, journal, or volume. Verify the whole record, not just the names: title, authors, year, and venue all have to match one real publication.</div></details>
+        <details><summary>What is the fastest way to check a whole .bib file?</summary><div class="faq-body">Run it through an automated validator that resolves each entry against scholarly databases such as Crossref, Semantic Scholar, or OpenAlex, then manually verify only the entries it flags. The tool does the tedious lookup at scale; you apply judgment to the handful that look wrong. Never publish on the validator's say-so alone.</div></details>
+      </section>
     </main>
 
     <footer class="footer">

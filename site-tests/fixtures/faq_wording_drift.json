@@ -1,0 +1,41 @@
+{
+  "globepin/index.html": [
+    "How do I log a flight in GlobePin?",
+    "What makes GlobePin different from other travel trackers?"
+  ],
+  "keyfeel/index.html": [
+    "What does Keyfeel need to run?",
+    "Does Keyfeel read what I type?"
+  ],
+  "legroom/index.html": [
+    "What does Legroom need to run?"
+  ],
+  "moderntex/index.html": [
+    "What macOS version does ModernTex require?"
+  ],
+  "outbound-veil/index.html": [
+    "What does Outbound Veil need to run?"
+  ],
+  "tapefolio/index.html": [
+    "What does Tapefolio need to run?"
+  ],
+  "tools/bib-builder/index.html": [
+    "Where does the BibTeX data come from?"
+  ],
+  "tools/bib-validator/index.html": [
+    "What does the annotated .bib download contain?",
+    "What is the corrected .bib download?"
+  ],
+  "tools/equation-renderer/index.html": [
+    "What LaTeX packages are available?",
+    "What is the difference between display and inline mode?"
+  ],
+  "tools/latex-to-pdf/index.html": [
+    "Can I upload a multi-file LaTeX project?",
+    "Which LaTeX engines are supported?"
+  ],
+  "tools/latex-to-word/index.html": [
+    "Will my citations become processed references in Word?",
+    "What does the anonymize option do?"
+  ]
+}
