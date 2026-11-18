@@ -6,6 +6,6 @@
 .eq-preview { margin-top: 1.25rem; text-align: center; background: #fff; border-radius: 8px; padding: 1.5rem 1rem; border: 1px solid var(--line); }
 .eq-preview img { max-width: 100%; height: auto; display: block; margin: 0 auto; }
 .eq-examples { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
-.eq-example { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 0.25rem 0.6rem; font-family: monospace; font-size: 0.78rem; color: var(--muted); cursor: pointer; white-space: nowrap; }
+.eq-example { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 0.25rem 0.6rem; font-family: monospace; font-size: 0.78rem; color: var(--muted); cursor: pointer; max-width: 100%; text-align: left; overflow-wrap: anywhere; }
 .eq-example:hover { border-color: var(--purple); color: var(--purple); }
     

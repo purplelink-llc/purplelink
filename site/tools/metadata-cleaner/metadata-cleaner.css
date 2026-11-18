@@ -7,7 +7,8 @@
 .mc-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
 .mc-tab { padding: 8px 18px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--muted); font: inherit; font-size: 0.95rem; cursor: pointer; min-height: 44px; transition: background-color 0.2s, border-color 0.2s, color 0.2s; }
 .mc-tab:hover { border-color: var(--purple); color: var(--ink); }
-.mc-tab[aria-selected="true"] { background: var(--purple); border-color: var(--purple); color: oklch(18% 0.06 310); font-weight: 600; }
+.mc-tab[aria-selected="true"] { background: var(--purple); border-color: var(--purple); color: oklch(99% 0.003 310); font-weight: 600; }
+:where(:root:not([data-theme="light"])) .mc-tab[aria-selected="true"] { color: oklch(18% 0.06 310); }
 .mc-tab:focus-visible, .mc-drop:focus-within { outline: 2px solid var(--purple); outline-offset: 2px; }
 .mc-panel { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
 .mc-panel[hidden], .mc-bar[hidden], .mc-bar .btn[hidden], #mc-rd-work[hidden], .mc-rd-drop[hidden] { display: none; }

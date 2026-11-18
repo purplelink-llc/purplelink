@@ -60,6 +60,7 @@
   cursor: pointer;
 }
 .lic-filter button[aria-pressed="true"] { background: var(--purple); color: #fff; border-color: var(--purple); }
+:where(:root:not([data-theme="light"])) .lic-filter button[aria-pressed="true"] { color: oklch(18% 0.06 310); }
 .lic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 12px; }
 .lic-cell { border-radius: 10px; overflow: hidden; background: var(--purple-xlight); display: block; position: relative; }
 .lic-cell img { display: block; width: 100%; height: auto; }
