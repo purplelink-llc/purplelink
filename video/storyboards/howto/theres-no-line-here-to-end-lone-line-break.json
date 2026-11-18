@@ -1,0 +1,115 @@
+{
+ "id": "howto-theres-no-line-here-to-end-lone-line-break",
+ "app": "moderntex",
+ "title": "There's no line here to end on Mac (replace the lone \\\\ with \\vspace)",
+ "short_title": "LaTeX says There's no line here to end? Use \\vspace",
+ "url": "purplelink.llc/moderntex",
+ "page": "https://purplelink.llc/moderntex/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://list.orgmode.org/87zinlsf6z.fsf@ucl.ac.uk/T/",
+  "https://texfaq.org/FAQ-noline"
+ ],
+ "verify": {
+  "runs": [
+   {
+    "cmd": "cd \"$(mktemp -d)\" && print -rl -- '\\documentclass{article}' '\\begin{document}' 'First paragraph.' '' '\\\\' 'Second paragraph.' '\\end{document}' > main.tex && pdflatex -interaction=nonstopmode main.tex > out.txt; grep -m1 '^! LaTeX' out.txt; grep -n '^\\\\\\\\$' main.tex",
+    "output": "! LaTeX Error: There's no line here to end.\n5:\\\\"
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && print -rl -- '\\documentclass{article}' '\\begin{document}' 'First paragraph.' '' '\\vspace{\\baselineskip}' 'Second paragraph.' '\\end{document}' > main.tex && pdflatex -interaction=nonstopmode main.tex > out.txt; grep -c '^\\\\\\\\$' main.tex; grep -c '^!' out.txt; grep 'Output written' out.txt",
+    "output": "0\n0\nOutput written on main.pdf (1 page, 14406 bytes)."
+   }
+  ],
+  "docs": [
+   "https://texfaq.org/FAQ-noline",
+   "https://www.overleaf.com/learn/latex/Errors/LaTeX_Error:_There's_no_line_here_to_end"
+  ],
+  "notes": "Each run writes a small article in a fresh temporary folder and builds it once with pdfLaTeX from TeX Live 2026. With a double backslash alone on the line after a blank line, the build stops with There's no line here to end, because the blank line has already ended the paragraph and there is no line for the break to end. With that line replaced by \\vspace{\\baselineskip}, the same document builds with no errors. The TeX FAQ gives the same cause: \\\\ is a line break and LaTeX complains when it is not building a paragraph."
+ },
+ "scenes": [
+  {
+   "type": "hook",
+   "short": true,
+   "kicker": "LaTeX on a Mac",
+   "title": "There's no line here to end",
+   "sub": "A line break with nothing in front of it.",
+   "narration": "If LaTeX stops with there's no line here to end, look for a double backslash sitting on a line of its own."
+  },
+  {
+   "type": "symptom",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ pdflatex main.tex",
+    "! LaTeX Error: There's no line here to end.",
+    "$ grep -n '^\\\\\\\\$' main.tex",
+    "5:\\\\"
+   ],
+   "narration": "Here is the error. Line five of the file is just a double backslash, placed after a blank line to add some space between two paragraphs."
+  },
+  {
+   "type": "cause",
+   "text": "A blank line already ends the paragraph. A double backslash only ends a line inside a paragraph, so after a blank line there is no line left for it to end.",
+   "narration": "A blank line ends the paragraph. A double backslash is a line break, and it only works inside a paragraph. Placed after a blank line, there is no line for it to end, so LaTeX stops."
+  },
+  {
+   "type": "steps",
+   "short": true,
+   "label": "main.tex",
+   "lines": [
+    "Delete the \\\\ that sits on a line by itself",
+    "Put \\vspace{\\baselineskip} there for the space",
+    "$ pdflatex main.tex"
+   ],
+   "narration": "Delete the double backslash that sits on its own line. If you wanted the extra space, put v space with baseline skip there instead. Then build again."
+  },
+  {
+   "type": "check",
+   "short": true,
+   "label": "Terminal",
+   "ok": "Built without errors",
+   "lines": [
+    "$ grep -c '^\\\\\\\\$' main.tex",
+    "0",
+    "$ pdflatex main.tex",
+    "Output written on main.pdf (1 page, 14406 bytes)."
+   ],
+   "narration": "With no lone double backslash left in the file, the same document builds with no errors."
+  },
+  {
+   "type": "app",
+   "name": "ModernTex",
+   "line": "Translates LaTeX build errors into plain explanations with a suggested fix, and marks them in the editor.",
+   "url": "purplelink.llc/moderntex",
+   "img": "site/assets/moderntex-screens/21-error-fix.webp",
+   "icon": "site/assets/moderntex-icon.png",
+   "narration": "If you write LaTeX on a Mac, ModernTex translates build errors into plain explanations with a suggested fix, and marks them in the editor."
+  }
+ ],
+ "thumbs": {
+  "A": {
+   "kind": "diff",
+   "hook": "Lone line break",
+   "before": "There's no line here to end.",
+   "after": "Output written on main.pdf"
+  },
+  "B": {
+   "kind": "focus",
+   "hook": "No line\nto end?",
+   "lines": [
+    "LaTeX Error: There's no",
+    "line here to end."
+   ],
+   "hl": "no line here to end."
+  },
+  "C": {
+   "kind": "product",
+   "name": "ModernTex",
+   "line": "No line to end? Explained",
+   "img": "site/assets/moderntex-screens/21-error-fix.webp",
+   "icon": "site/assets/moderntex-icon.png"
+  }
+ }
+}

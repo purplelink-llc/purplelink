@@ -824,5 +824,34 @@
    "ok": true,
    "utm_content": "howto-aws-access-key-in-paste-to-chatgpt-reel"
   }
+ },
+ {
+  "slug": "howto-theres-no-line-here-to-end-lone-line-break",
+  "app": "moderntex",
+  "date": "2026-11-18",
+  "title": "There's no line here to end on Mac (replace the lone \\\\ with \\vspace)",
+  "long_id": "JxkB1MDpJHQ",
+  "short_id": "r7-MfxyQhzY",
+  "link_arm": "A",
+  "link_utm_content": "howto-theres-no-line-here-to-end-lone-line-break",
+  "short_utm_content": "howto-theres-no-line-here-to-end-lone-line-break-short",
+  "sources": [
+   "https://list.orgmode.org/87zinlsf6z.fsf@ucl.ac.uk/T/",
+   "https://texfaq.org/FAQ-noline"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "JxkB1MDpJHQ",
+    "caption_id": "AUieDaZDFKq9DFNtmDowCYrE3nUIbvik_0fhtI8gS3rajTOCEGUkyVoF"
+   },
+   "short": {
+    "video_id": "r7-MfxyQhzY",
+    "caption_id": "AUieDaZ4ivAKIXTSm867neBXHag2yXlZg1N_-BPbEzGwta-hBsUHnr5v"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-theres-no-line-here-to-end-lone-line-break-reel"
+  }
  }
 ]
