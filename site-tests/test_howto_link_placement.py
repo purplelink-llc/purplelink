@@ -36,6 +36,13 @@ def test_arm_by_date():
     assert H.link_arm(dt.date(2026, 10, 19)) == "A"  # before the start date, nothing changes
 
 
+def test_arm_a_after_the_test_ended():
+    assert H.link_arm(dt.date(2026, 11, 17)) == "B"  # still inside the test
+    assert H.link_arm(dt.date(2026, 11, 18)) == "A"  # last day, even
+    for day in (dt.date(2026, 11, 19), dt.date(2026, 11, 21), dt.date(2026, 12, 1), dt.date(2027, 1, 31)):
+        assert H.link_arm(day) == "A"  # odd days after the end no longer switch to B
+
+
 def test_utm():
     q = parse_qs(urlparse(H.tagged(SB["page"], "video", SB["id"])).query)
     assert q == {"utm_source": ["youtube"], "utm_medium": ["video"], "utm_campaign": ["howto-link-test"],

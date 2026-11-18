@@ -22,6 +22,7 @@ CHANGELOG = Path.home() / ".purplelink" / "insights" / "changelog" / "log_change
 
 
 LINK_TEST_START = dt.date(2026, 10, 20)  # switchback test howto-link-placement, 28 days, review 2026-11-17
+LINK_TEST_END = dt.date(2026, 11, 18)  # last switchback day; decided 2026-11-18: keep arm A
 
 
 def eastern_today() -> dt.date:
@@ -34,8 +35,8 @@ def link_arm(day: dt.date) -> str:
     """Switchback by day-of-month: odd days are arm B (tracked link as the description's first line),
     even days are arm A (link stays after the app paragraph). Pinned comments are not possible: uploads go
     through the Studio browser (yt-upload.py) and there is no Purplelink API token, so arm B means
-    "first line only"."""
-    if day < LINK_TEST_START:
+    "first line only". The test ran from LINK_TEST_START to LINK_TEST_END; outside it every day is arm A."""
+    if day < LINK_TEST_START or day > LINK_TEST_END:
         return "A"
     return "B" if day.day % 2 == 1 else "A"
 
