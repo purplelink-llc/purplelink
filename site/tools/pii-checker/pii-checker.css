@@ -35,7 +35,7 @@
 .pc-group-name { font-weight: 600; }
 .pc-group-count { font-variant-numeric: tabular-nums; font-weight: 600; text-align: right; }
 .pc-group-ph { grid-column: 1 / -1; color: var(--muted); font-size: 0.86rem; overflow-wrap: anywhere; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-.pc-limits { color: var(--muted); font-size: 0.92rem; padding-left: 12px; border-left: 3px solid var(--purple); }
+.pc-limits { color: var(--muted); font-size: 0.92rem; padding: 10px 14px; border: 1px solid var(--line); border-radius: 10px; }
 .pc-preview-wrap { display: grid; gap: 6px; }
 .pc-preview-label { font-weight: 600; font-size: 0.92rem; }
 .pc-preview {
