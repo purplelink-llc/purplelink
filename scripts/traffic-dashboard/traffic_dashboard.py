@@ -4265,6 +4265,22 @@ def looks_like_scanner(v: dict) -> bool:
             and not sum((v.get("checkout") or {}).values()))
 
 
+def guide_card_block(week: dict, days: int, as_of: str) -> dict | None:
+    """Exact guide app-card clicks for the guide-trial-card experiment, from the stats fetch the funnel already makes.
+
+    The site counts pageviews whose own utm_source is "guide-card" (guideCardClicksByPath, keyed by landing page) and every
+    /guides/ pageview (guidePageviewsByPath). The first-touch funnel cannot see these: a reader who came from Google keeps
+    Google as first touch. Returns None when the deployed function does not send the fields yet (they arrive with the
+    next site build), so history keeps its last block. Stored as history["guideCard"]; clicks per 1,000 guide views is
+    sum(clicksByPath) / sum(guideViewsByPath) * 1000.
+    """
+    clicks = week.get("guideCardClicksByPath")
+    views = week.get("guidePageviewsByPath")
+    if not isinstance(clicks, dict) or not isinstance(views, dict):
+        return None
+    return {"asOf": as_of, "days": days, "clicksByPath": clicks, "guideViewsByPath": views}
+
+
 def print_ad_funnel(history: dict) -> None:
     """Channels through the funnel, from the site's own first-touch labels. Google Ads for ModernTex was turned
     off on 2026-10-19 and is no longer read or compared here. Nothing is printed until the site has recorded
@@ -7106,6 +7122,9 @@ def main() -> int:
                         if week.get("funnelByChannel") is not None:
                             history["adFunnel"] = {"asOf": dt.date.today().isoformat(), "days": AD_FUNNEL_DAYS,
                                                    "channels": week["funnelByChannel"]}
+                        gc = guide_card_block(week, AD_FUNNEL_DAYS, dt.date.today().isoformat())
+                        if gc is not None:
+                            history["guideCard"] = gc
                     except Exception as exc:
                         print(f"  ! {site['label']}: channel funnel fetch failed ({str(exc)[:60]})", file=sys.stderr)
                     vt = cfg.get(VITAE_STATS_TOKEN_ENV)

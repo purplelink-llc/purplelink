@@ -266,6 +266,7 @@ export default async function handler(request) {
     checkoutByProduct: {}, checkoutByPath: {},
     otherEvents: {}, otherEventDetail: {},
     guideTrialByPlacement: {}, guidePageByPlacement: {},
+    guideCardClicksByPath: {}, guidePageviewsByPath: {},
     byDay: {},
     funnelByChannel: {},
     funnelByContent: {},
@@ -385,6 +386,14 @@ export default async function handler(request) {
         bump(s.byPath, rec.path);
         if (rec.refHost) bump(s.byReferrer, foldChannel(rec.refHost));
         if (rec.utm) bump(s.byUtm, foldSource(rec.utm));
+        // Exact guide app-card clicks (experiment guide-trial-card, 2026-11-18). A card link lands on the target page with
+        // utm_source=guide-card, and the pageview beacon carries that as rec.utm, so this counts the click even when the
+        // reader's first touch was Google (the funnel keeps first touch). Self-test pageviews (meta "__") are skipped.
+        // guidePageviewsByPath is the per-guide denominator: byPath is truncated to the top 200 for the whole site.
+        if (!String(rec.meta || "").startsWith("__") && typeof rec.path === "string") {
+          if (rec.utm === "guide-card") bump(s.guideCardClicksByPath, rec.path);
+          if (rec.path.startsWith("/guides/")) bump(s.guidePageviewsByPath, rec.path);
+        }
       } else if (rec.type === "tool_use") {
         s.totals.toolRuns++; s.byDay[day].toolRuns++;
         bump(s.toolRuns, toolName(rec));
@@ -490,6 +499,9 @@ export default async function handler(request) {
     // ModernTex cards in the guides, by placement (see the guide_mtx_* branch above).
     guideTrialByPlacement: topN(s.guideTrialByPlacement, 40),
     guidePageByPlacement: topN(s.guidePageByPlacement, 40),
+    // Exact per-path counts, capped at 400 paths (see the pageview branch above).
+    guideCardClicksByPath: Object.fromEntries(topN(s.guideCardClicksByPath, 400).map((x) => [x.key, x.count])),
+    guidePageviewsByPath: Object.fromEntries(topN(s.guidePageviewsByPath, 400).map((x) => [x.key, x.count])),
     otherEvents: topN(s.otherEvents, 50),
     otherEventDetail: topN(s.otherEventDetail, 60),
     byDay: Object.fromEntries(Object.entries(s.byDay).sort()),
