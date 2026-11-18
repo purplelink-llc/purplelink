@@ -91,6 +91,12 @@ class StructuredDataQuality(unittest.TestCase):
         stale = {p: qs for p, qs in stale.items() if qs}
         self.assertEqual(stale, {}, "Fixed. Now delete these entries from site-tests/fixtures/faq_wording_drift.json.")
 
+    def test_wide_share_image_uses_the_large_twitter_card(self):
+        """A page with a 1200 px wide og:image must not ask for the small square card (blog posts did until pass 2b)."""
+        bad = [p for p, h in pages()
+               if 'og:image:width" content="1200"' in h and 'twitter:card" content="summary"' in h]
+        self.assertEqual(bad, [], 'Set twitter:card to "summary_large_image" on these pages.')
+
 
 if __name__ == "__main__":
     import sys
