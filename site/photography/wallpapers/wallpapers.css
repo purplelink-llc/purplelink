@@ -11,7 +11,8 @@
 .wp-card h3 { margin: 0; font-size: 1.1rem; }
 .wp-card .hub-fact { margin: 0; }
 .wp-links { display: flex; flex-wrap: wrap; gap: 8px; margin: auto 0 0; padding-top: 6px; }
-.wp-size { color: var(--muted); font-weight: 400; margin-left: 4px; }
+/* Fixed, not var(--muted): the size sits on .btn-light, which stays white in dark mode. */
+.wp-size { color: oklch(46% 0.04 300); font-weight: 400; margin-left: 4px; }
 
 .wp-news { max-width: 46rem; padding-top: clamp(24px, 4vw, 48px); }
 .wp-news h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.5rem; margin: 0 0 10px; }

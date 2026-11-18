@@ -38,6 +38,7 @@
       .bl-bar[hidden] { display: none; }
       .bl-bar .btn { min-height: 44px; padding: .55rem .95rem; }
       .bl-bar .btn[aria-pressed="true"] { background: var(--purple, #8a5cf6); color: #fff; border-color: transparent; }
+      :where(:root:not([data-theme="light"])) .bl-bar .btn[aria-pressed="true"] { color: oklch(18% 0.06 310); }
       .bl-modes .btn { flex: 1 1 0; }
       .bl-status { min-height: 1.2em; margin: .4rem 0 0; font-size: .9rem; opacity: .8; }
     </style>

@@ -42,7 +42,8 @@
   font: inherit; font-weight: 600; padding: 10px 20px; border-radius: 999px; border: 1px solid var(--purple);
   background: transparent; color: var(--purple); cursor: pointer; justify-self: start;
 }
-.tf-reqbtn { background: var(--purple); color: oklch(18% 0.06 310); }
+.tf-reqbtn { background: var(--purple); color: oklch(99% 0.003 310); }
+:where(:root:not([data-theme="light"])) .tf-reqbtn { color: oklch(18% 0.06 310); }
 .tf-download:hover { background: var(--purple-xlight); }
 .tf-download[hidden], .tf-results[hidden] { display: none; }
 .tf-request { padding: 32px clamp(24px, 6vw, 80px) 0; max-width: calc(760px + clamp(48px, 12vw, 160px)); }
