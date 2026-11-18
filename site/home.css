@@ -57,13 +57,6 @@
   pointer-events: none;
 }
 
-.stage-lede {
-  max-width: 46ch;
-  font-size: clamp(1.05rem, 1.6vw, 1.3rem);
-  line-height: 1.55;
-  color: var(--muted);
-}
-
 /* ── Launchpad ─────────────────────────────────────────────────────────── */
 
 .dock-group { display: grid; gap: clamp(6px, 1vw, 12px); }
@@ -234,7 +227,6 @@
   /* Everything below the title is visible at once and settles within half a second: a visitor who knows
      what they want should not wait for an intro. The dock stagger ends by 0.5s, and there is no idle float
      (auto-moving content longer than 5s needs a pause control under WCAG 2.2.2). */
-  .stage-lede { animation: stage-settle 0.6s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) 0.2s backwards; }
   .stage-suite { animation: stage-settle 0.6s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) 0.3s backwards; }
 
   .dock > li { animation: dock-land 0.6s var(--motion-ease, cubic-bezier(0.16, 1, 0.3, 1)) backwards; }
