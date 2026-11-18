@@ -26,6 +26,7 @@ Usage: python3 scripts/add_faq_schema.py
 import json
 import os
 import re
+from html import unescape
 
 SITE = os.path.join(os.path.dirname(__file__), "..", "site")
 
@@ -44,7 +45,9 @@ DETAILS_RE = re.compile(
 
 
 def strip_tags(s):
-    return re.sub(r"<[^>]+>", "", s).strip()
+    # JSON-LD is not HTML: an entity left in here (&amp;, &#39;) is shown literally by
+    # search engines, so turn entities back into characters after removing the tags.
+    return unescape(re.sub(r"<[^>]+>", "", s)).strip()
 
 
 def canonical_url(path):
