@@ -252,7 +252,7 @@
 .pr-result-md pre { background: oklch(14% 0.02 310); color: oklch(88% 0.01 310); border: 1px solid color-mix(in oklch, var(--ink) 20%, transparent); border-radius: 4px; padding: 0.6rem 0.85rem; font-size: 0.8rem; overflow-x: auto; }
 .pr-result-md code { background: color-mix(in oklch, var(--ink) 8%, transparent); padding: 0.05em 0.35em; border-radius: 3px; font-size: 0.88em; }
 .pr-result-md pre code { background: none; }
-.pr-result-md blockquote { border-left: 3px solid color-mix(in oklch, var(--purple) 55%, transparent); padding-left: 1rem; margin: 0.6rem 0; color: var(--muted); }
+.pr-result-md blockquote { border-left: 1px solid color-mix(in oklch, var(--purple) 55%, transparent); padding-left: 1rem; margin: 0.6rem 0; color: var(--muted); }
 .pr-result-md strong { color: var(--ink); }
 
 .pr-result-actions { display: flex; gap: 0.75rem; margin-top: 1.2rem; flex-wrap: wrap; }
@@ -279,17 +279,17 @@
 .pr-det-badge-auto { font-family: inherit; font-size: 0.66rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--purple); background: color-mix(in oklch, var(--purple) 14%, var(--bg)); border: 1px solid color-mix(in oklch, var(--purple) 40%, transparent); border-radius: 999px; padding: 0.15rem 0.55rem; }
 .pr-det-sub { font-size: 0.84rem; color: var(--muted); margin: 0; line-height: 1.5; }
 .pr-det-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
-.pr-det-item { border: 1px solid var(--line); border-left-width: 3px; border-radius: 0 6px 6px 0; background: var(--panel); padding: 0.6rem 0.85rem; }
+.pr-det-item { border: 1px solid var(--line); border-radius: 6px; background: var(--panel); padding: 0.6rem 0.85rem; }
 .pr-det-row { display: flex; align-items: baseline; gap: 0.55rem; flex-wrap: wrap; }
-.pr-det-sev { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; padding: 0.12rem 0.45rem; border-radius: 4px; flex-shrink: 0; }
+.pr-det-sev { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; padding: 0.12rem 0.45rem; border-radius: 4px; flex-shrink: 0; }
 .pr-det-kind { font-size: 0.72rem; color: var(--muted); flex-shrink: 0; }
 .pr-det-summary { font-size: 0.92rem; color: var(--ink); font-weight: 500; }
 .pr-det-detail { font-size: 0.82rem; color: var(--muted); line-height: 1.5; margin-top: 0.3rem; }
-.pr-det-error { border-left-color: oklch(60% 0.2 25); }
+.pr-det-error { border-color: color-mix(in oklch, oklch(60% 0.2 25) 45%, var(--line)); }
 .pr-det-error .pr-det-sev { color: color-mix(in oklch, oklch(58% 0.2 25) 75%, var(--ink)); background: color-mix(in oklch, oklch(62% 0.2 25) 16%, var(--bg)); }
-.pr-det-warning { border-left-color: oklch(70% 0.14 75); }
+.pr-det-warning { border-color: color-mix(in oklch, oklch(70% 0.14 75) 45%, var(--line)); }
 .pr-det-warning .pr-det-sev { color: color-mix(in oklch, oklch(55% 0.13 75) 80%, var(--ink)); background: color-mix(in oklch, oklch(70% 0.14 75) 16%, var(--bg)); }
-.pr-det-info { border-left-color: oklch(62% 0.16 250); }
+.pr-det-info { border-color: color-mix(in oklch, oklch(62% 0.16 250) 45%, var(--line)); }
 .pr-det-info .pr-det-sev { color: color-mix(in oklch, oklch(58% 0.16 250) 78%, var(--ink)); background: color-mix(in oklch, oklch(62% 0.16 250) 16%, var(--bg)); }
 
 /* ----- Print / "Save as PDF" (status page result) -----
@@ -422,7 +422,7 @@
   border-radius: 100px;
   background: color-mix(in oklch, var(--purple) 16%, var(--bg));
   color: var(--purple);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 600;
   line-height: 1.5;
   vertical-align: middle;

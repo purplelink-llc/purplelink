@@ -42,9 +42,9 @@
 .bib-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
 .bib-table th { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 1px solid var(--line); color: var(--muted); font-weight: 600; white-space: nowrap; }
 .bib-table td { padding: 0.35rem 0.6rem; border-bottom: 1px solid var(--line); vertical-align: top; }
-.bib-table tr.row-ok   td:first-child { border-left: 3px solid var(--ok); }
-.bib-table tr.row-warn td:first-child { border-left: 3px solid var(--warn); }
-.bib-table tr.row-err  td:first-child { border-left: 3px solid var(--danger); }
+/* Rows that need attention get a faint tint; the status column carries the text. */
+.bib-table tr.row-warn td { background: color-mix(in oklch, var(--warn) 7%, transparent); }
+.bib-table tr.row-err  td { background: color-mix(in oklch, var(--danger) 8%, transparent); }
 .bib-table tr.row-data { cursor: pointer; }
 .bib-table tr.row-data:hover td { background: var(--purple-xlight); }
 .bib-table tr.row-detail td { padding: 0; border-left: none !important; background: var(--panel); }
@@ -75,7 +75,7 @@
 /* Download row */
 .bib-downloads { display: flex; gap: 0.6rem; margin-top: 1rem; flex-wrap: wrap; }
 .bib-total { font-size: 0.85rem; color: var(--muted); }
-.bib-next { margin: 1rem 0 0; padding: 0.75rem 1rem; border-left: 3px solid var(--purple); background: var(--purple-xlight); color: var(--ink); font-size: 0.93rem; }
+.bib-next { margin: 1rem 0 0; padding: 0.75rem 1rem; border: 1px solid color-mix(in oklch, var(--purple) 30%, var(--line)); border-radius: 10px; background: var(--purple-xlight); color: var(--ink); font-size: 0.93rem; }
 
 @media (prefers-reduced-motion: reduce) { .bib-row-expander span { transition: none; } }
 

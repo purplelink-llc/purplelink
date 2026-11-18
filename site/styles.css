@@ -3437,7 +3437,7 @@ dd {
   border-radius: 6px;
   background: var(--purple-light);
   color: var(--ink);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 700;
 }
 
@@ -5122,7 +5122,7 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
   color: oklch(99% 0.003 310);
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 0.72rem;
+  font-size: 0.75rem;
 }
  :where(:root:not([data-theme="light"])) .about-value-tile { color: oklch(18% 0.06 310); } 
 .photo-strip {

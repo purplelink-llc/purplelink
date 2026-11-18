@@ -7,8 +7,8 @@
 .bb-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
 .bb-table th { text-align: left; padding: 0.4rem 0.6rem; border-bottom: 1px solid var(--line); color: var(--muted); font-weight: 600; }
 .bb-table td { padding: 0.35rem 0.6rem; border-bottom: 1px solid var(--line); vertical-align: top; }
-.bb-table tr.row-ok   td:first-child { border-left: 3px solid oklch(80% 0.18 152); }
-.bb-table tr.row-err  td:first-child { border-left: 3px solid oklch(71% 0.17 25); }
+/* A failed row gets a faint tint; the Result column carries the mark and its text. */
+.bb-table tr.row-err td { background: color-mix(in oklch, var(--danger) 8%, transparent); }
 .bb-ok  { color: oklch(80% 0.18 152); }
 .bb-err { color: oklch(71% 0.17 25); }
 .bb-muted { color: var(--muted); font-size: 0.8rem; }
