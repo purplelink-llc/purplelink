@@ -142,6 +142,34 @@ def page_text(rel: str) -> tuple[str, str]:
     return html.unescape(p.title.strip()), text
 
 
+def page_index() -> str:
+    """One line per page in the sitemap (title, URL, meta description), so every public page is named in this file.
+    llms.txt stays short because the whole of it is Buddy's facts block (backend/latextools/buddy_build.py)."""
+    sm = SITE / "sitemap.xml"
+    if not sm.is_file():
+        return ""
+    lines = []
+    for url in re.findall(r"<loc>([^<]+)</loc>", sm.read_text(encoding="utf-8")):
+        if not url.startswith(BASE + "/") or not url.endswith("/"):
+            continue
+        f = SITE / url[len(BASE) + 1:] / "index.html"
+        if not f.is_file():
+            continue
+        raw = f.read_text(encoding="utf-8")
+        if re.search(r'<meta\s+name="robots"\s+content="[^"]*noindex', raw):
+            continue
+        t = re.search(r"<title>(.*?)</title>", raw, re.S)
+        d = re.search(r'<meta\s+name="description"\s+content="([^"]*)"', raw)
+        title = html.unescape(re.sub(r"\s+", " ", t.group(1)).strip()) if t else url
+        title = re.sub(r"\s*\|\s*Purplelink.*$", "", title)
+        desc = html.unescape(d.group(1).strip()) if d else ""
+        lines.append(f"- {title}: {url}" + (f" ({desc})" if desc else ""))
+    if not lines:
+        return ""
+    return (f"\n\n---\n\n# Every page on purplelink.llc ({len(lines)})\n\n"
+            "Title, address and the page's own summary, from the sitemap.\n\n" + "\n".join(lines) + "\n")
+
+
 def main() -> None:
     parts = [
         "# Purplelink LLC: full text of the main pages\n",
@@ -162,6 +190,7 @@ def main() -> None:
             continue
         title, text = page_text(rel)
         parts.append(f"\n\n---\n\nSource: {BASE}/{rel}\nTitle: {title}\n\n{text}\n")
+    parts.append(page_index())
     # Temp file and rename, as in gen_search_index.py: parallel test files regenerate this and must not see half of it.
     tmp = OUT.with_name(f".{OUT.name}.{os.getpid()}.tmp")
     tmp.write_text("".join(parts), encoding="utf-8")

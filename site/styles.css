@@ -1354,6 +1354,8 @@ dd {
   border-radius: clamp(20px, 2.5vw, 27px);
   object-fit: cover;
   flex-shrink: 0;
+  /* Sit beside the name, not at the middle of a tall copy column (prices and fine print push the middle far below the h1). */
+  align-self: start;
 }
 
 .app-hero-copy { max-width: 760px; }
@@ -2743,7 +2745,12 @@ dd {
 @keyframes tool-spin { to { transform: rotate(360deg); } }
 .tool-faq { max-width: 820px; margin: 32px auto; padding: 0 24px; }
 .tool-faq details { border-bottom: 1px solid var(--line); padding: 14px 0; }
-.tool-faq summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+.tool-faq summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; justify-content: space-between; gap: 12px; list-style: none; }
+/* display:flex removes the browser's disclosure triangle, so the row needs its own open/close cue (same "+" as .faq-item). */
+.tool-faq summary::-webkit-details-marker { display: none; }
+.tool-faq summary::after { content: '+'; font-size: 1.2rem; font-weight: 400; color: var(--muted); flex-shrink: 0; transition: transform 0.2s ease; }
+.tool-faq details[open] > summary::after { transform: rotate(45deg); }
+@media (prefers-reduced-motion: reduce) { .tool-faq summary::after { transition: none; } }
 .tool-faq .faq-body { color: var(--muted); padding-top: 8px; }
 .tool-faq h2 { font-family: var(--font-display); margin-bottom: 8px; }
 .tool-howto { max-width: 820px; margin: 24px auto; padding: 0 24px; }
