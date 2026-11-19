@@ -1621,6 +1621,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://purplelink.llc/templates/springer-nature-sn-jnl/</loc>
+    <lastmod>2026-11-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://purplelink.llc/templates/neurips/</loc>
     <lastmod>2026-11-02</lastmod>
     <changefreq>monthly</changefreq>

@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Springer Nature LaTeX Template (sn-jnl): Options, Pitfalls</title>
+    <meta name="description" content="A minimal sn-jnl skeleton, the class options that set the reference style, and why a Springer Nature build that works locally fails on upload.">
+    <link rel="canonical" href="https://purplelink.llc/templates/springer-nature-sn-jnl/">
+    <meta property="og:title" content="Springer Nature LaTeX template (sn-jnl)">
+    <meta property="og:description" content="A minimal sn-jnl skeleton for Springer Nature journals, the reference-style class options, and the upload pitfalls.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/templates/springer-nature-sn-jnl/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/templates.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Springer Nature LaTeX template (sn-jnl)">
+    <meta name="twitter:description" content="A minimal sn-jnl skeleton for Springer Nature journals, the reference-style class options, and the upload pitfalls.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/templates.png">
+    <meta name="twitter:image:alt" content="Springer Nature LaTeX template (sn-jnl)">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "TechArticle",
+          "headline": "Springer Nature journal template (sn-jnl)",
+          "description": "A minimal sn-jnl skeleton for Springer Nature journals, the reference-style class options, and the upload pitfalls.",
+          "url": "https://purplelink.llc/templates/springer-nature-sn-jnl/",
+          "mainEntityOfPage": "https://purplelink.llc/templates/springer-nature-sn-jnl/",
+          "inLanguage": "en",
+          "author": {
+            "@id": "https://purplelink.llc/about/#person"
+          },
+          "publisher": {
+            "@id": "https://purplelink.llc/#organization"
+          },
+          "datePublished": "2026-11-19",
+          "dateModified": "2026-11-19",
+          "image": "https://purplelink.llc/assets/og/templates.png"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://purplelink.llc/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Templates",
+              "item": "https://purplelink.llc/templates/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Springer Nature (sn-jnl)",
+              "item": "https://purplelink.llc/templates/springer-nature-sn-jnl/"
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/motion.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+    <script src="/site.js" defer></script>
+    <script src="/motion.js" defer></script>
+    <script src="/buddy-chat/loader.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/publication-suite/">Publication suite</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/templates/">← All templates</a>
+      <div class="post-hero">
+        <p class="post-date">LaTeX template</p>
+        <h1 class="post-title">Springer Nature journal template (sn-jnl)</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-11-19">November 19, 2026</time></p>
+        <p class="post-lede">Springer Nature uses one general LaTeX template, <code>sn-jnl</code>, for its journals. This page has a skeleton, the class options that set the reference style, and the reasons a submission that builds on your Mac fails on Springer's system.</p>
+      </div>
+
+      <article class="post-body">
+        <p>Springer Nature publishes a general LaTeX template for its journals. Its class is <code>sn-jnl</code>, and the current package is the <a href="https://www.springernature.com/gp/authors/campaigns/latex-author-support" rel="noopener">December 2024 version</a>. The same template is on <a href="https://www.overleaf.com/latex/templates/springer-nature-latex-template/gsvvftmrppwq" rel="noopener">Overleaf</a>. CTAN does not list an <code>sn-jnl</code> package, so a standard TeX Live install does not include the class. Download it from Springer Nature or Overleaf and keep it in your project folder.</p>
+        <p>The template is not a full guide for authors. Check the journal's own instructions for length, structure and reference rules.</p>
+
+        <h2>Minimal skeleton</h2>
+        <p>The structure follows the sample file in Springer Nature's package. Save your references as <code>references.bib</code> in the same folder as <code>main.tex</code>, <code>sn-jnl.cls</code> and the <code>.bst</code> file for your reference style. Build with pdfLaTeX, then BibTeX, then pdfLaTeX twice.</p>
+        <p class="starter-dl"><a class="btn btn-primary" href="/templates/springer-nature-sn-jnl/springer-nature-sn-jnl-starter.zip" download data-track="template_download" data-track-meta="springer-nature-sn-jnl">Download the starter (.zip)</a> <span>main.tex, references.bib and a README. It does not include sn-jnl.cls or the .bst files: get them from Springer Nature or the Overleaf template. Writing on a Mac? Open the folder in <a href="/moderntex/">ModernTex</a>.</span></p>
+        <pre><code>\documentclass[pdflatex,sn-mathphys-num]{sn-jnl}
+
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{booktabs}
+
+\begin{document}
+
+\title[Article Title]{Article Title}
+
+\author*[1]{\fnm{First} \sur{Author}}\email{first@example.edu}
+\author[2]{\fnm{Second} \sur{Author}}\email{second@example.edu}
+
+\affil*[1]{\orgdiv{Department}, \orgname{University},
+  \orgaddress{\street{Street}, \city{City}, \postcode{00000},
+  \state{State}, \country{Country}}}
+\affil[2]{\orgdiv{Department}, \orgname{Company},
+  \orgaddress{\street{Street}, \city{City}, \postcode{00000},
+  \state{State}, \country{Country}}}
+
+\abstract{One paragraph that states the problem, the method
+and the result.}
+
+\keywords{first keyword, second keyword, third keyword}
+
+\maketitle
+
+\section{Introduction}\label{sec1}
+Text with a citation \cite{example}.
+
+\section{Conclusion}\label{sec2}
+Summary.
+
+\bibliography{references}
+
+\end{document}</code></pre>
+        <p>There is no <code>\bibliographystyle</code> line. The reference-style option in <code>\documentclass</code> picks the style.</p>
+
+        <h2>Class options for the reference style</h2>
+        <p>You choose the reference style with a class option, and each option has a matching <code>.bst</code> file in Springer Nature's package. These names come from the sample file <code>sn-article.tex</code> and the file list in the December 2024 template package, read on 2026-11-19. The package also includes a user manual with the full details. Use one style option per document.</p>
+        <ul>
+          <li><code>sn-basic</code>: the basic Springer Nature reference style.</li>
+          <li><code>sn-mathphys-num</code> and <code>sn-mathphys-ay</code>: math and physical sciences, numbered or author-year.</li>
+          <li><code>sn-aps</code>: American Physical Society.</li>
+          <li><code>sn-vancouver-num</code> and <code>sn-vancouver-ay</code>: Vancouver, numbered or author-year.</li>
+          <li><code>sn-apa</code>: APA. Its style file is <code>sn-apacite.bst</code>.</li>
+          <li><code>sn-chicago</code>: Chicago-based, for the humanities.</li>
+          <li><code>sn-nature</code>: for submissions to Nature Portfolio journals. See <a href="/format/references-for-nature/">Nature reference format</a>.</li>
+        </ul>
+        <p>Other class options in the sample file: <code>pdflatex</code>, <code>referee</code> for double line spacing, and <code>lineno</code> for line numbers in the margin. The sample file says <code>sn-basic</code> and <code>sn-chicago</code> can switch between name-date and numbered citations. The user manual explains how.</p>
+
+        <h2>Why a build that works on your Mac fails on upload</h2>
+        <ul>
+          <li><strong>Springer Nature builds with pdfLaTeX.</strong> Snapp, its article processing platform, compiles with pdfLaTeX and takes a .zip. Keep the <code>pdflatex</code> option in <code>\documentclass</code>. Use <code>\usepackage{graphicx}</code> without the <code>dvips</code> option.</li>
+          <li><strong>The TeX Live version is older than yours.</strong> Snapp uses TeX Live 2021. Editorial Manager uses TeX Live 2018, and eJP uses TeX Live 2017. A package that only exists in a newer release will fail there.</li>
+          <li><strong>One flat folder.</strong> Springer Nature says figures can go missing when files sit in subfolders. Put every file in one directory and write <code>\includegraphics{fig1.pdf}</code>, not a path. Springer Nature's package keeps its <code>.bst</code> files in a <code>bst</code> folder. Move the one you use next to <code>main.tex</code>.</li>
+          <li><strong>The class and style files travel with the project.</strong> The class is not part of a standard TeX Live install. Put <code>sn-jnl.cls</code> and the <code>.bst</code> file in the folder you upload. In Editorial Manager a <code>.bst</code> file must go up with the bibliography. In eJP, upload the <code>.bib</code> and <code>.bst</code> as Related Manuscript Files.</li>
+          <li><strong>Paste the .bbl into the .tex.</strong> For Editorial Manager and eJP, Springer Nature calls this the most reliable method. Build once, open <code>main.bbl</code>, copy its contents into <code>main.tex</code> in place of the <code>\bibliography</code> line, and delete that line. Upload a <code>.bbl</code> file separately only if the main file imports it.</li>
+          <li><strong>Citations print as ??.</strong> Springer Nature says this usually means the bibliography file is missing or corrupted. Check that the <code>.bib</code>, <code>.bst</code> or <code>.bbl</code> is uploaded and declared.</li>
+          <li><strong>One .tex file.</strong> The sample file asks you not to use <code>\input</code> to include other .tex files.</li>
+          <li><strong>Custom fonts and accents.</strong> Springer Nature does not support custom fonts. Write diacritics as TeX code, for example <code>\"a</code>.</li>
+        </ul>
+        <p>For the zip itself, see <a href="/guides/submit-latex-source-to-journal-zip/">how to package LaTeX source for a journal</a>.</p>
+
+        <h2>Sources</h2>
+        <ul>
+          <li><a href="https://www.springernature.com/gp/authors/campaigns/latex-author-support" rel="noopener">Springer Nature LaTeX author support</a>, read 2026-11-19: template version, pdfLaTeX and TeX Live versions, flat folder, .bbl, .bst upload.</li>
+          <li><a href="https://www.overleaf.com/latex/templates/springer-nature-latex-template/gsvvftmrppwq" rel="noopener">Springer Nature LaTeX template on Overleaf</a>, linked from that page. Class option names are from <code>sn-article.tex</code> in the December 2024 package.</li>
+          <li><a href="https://ctan.org/search?phrase=sn-jnl" rel="noopener">CTAN search for sn-jnl</a>, read 2026-11-19: no matching package.</li>
+        </ul>
+
+        <h2>Check before you submit</h2>
+        <ul>
+          <li><a href="/tools/latex-to-pdf/">Compile LaTeX to PDF online</a> (free). Upload the .tex file or a .zip of the project and get the PDF back, compiled with pdfLaTeX or XeLaTeX. It is useful for a clean build on a machine that is not yours. Include <code>sn-jnl.cls</code> and the <code>.bst</code> file in the zip.</li>
+          <li><a href="/tools/bib-validator/">BibTeX validator</a> (free): flags missing required fields, duplicate keys, dead DOIs and entries that do not match a real paper. It runs in the browser.</li>
+          <li><a href="/tools/anonymity-check/">Anonymity Check</a> ($2): scans the manuscript for author names, institutions, grant numbers, self-citation patterns and author-owned URLs before a double-blind submission.</li>
+          <li><a href="/tools/paper-review/">Paper Review</a> (from $14): seven AI reviewers read the manuscript for methods, statistics and the editor's view, and every reference is checked against CrossRef.</li>
+          <li><a href="/tools/word-counter/">Word counter</a> (free): word counts per section, with and without references, for abstract and length limits.</li>
+        </ul>
+
+        <h2>Writing it on a Mac</h2>
+        <p>ModernTex compiles this skeleton with your own TeX Live. We make ModernTex. It is a native LaTeX editor for the Mac with a 7-day free trial, then $19.99 once. <a href="/moderntex/">See ModernTex</a>.</p>
+      </article>
+
+      <section class="deadline-remind" aria-labelledby="deadline-h">
+        <form class="deadline-form" data-deadline-signup novalidate>
+          <h2 id="deadline-h">A reminder a week before the deadline</h2>
+          <p class="deadline-lede">One email, seven days ahead, with the <a href="/tools/submission-checklist/">submission checklist</a> and the checks that fit in a week. Then nothing more.</p>
+          <div class="deadline-fields">
+            <div class="deadline-field">
+              <label for="dl-date">Deadline</label>
+              <input type="date" id="dl-date" name="deadline" required>
+            </div>
+            <div class="deadline-field">
+              <label for="dl-venue">Venue <span class="deadline-opt">(optional)</span></label>
+              <input type="text" id="dl-venue" name="venue" maxlength="80" autocomplete="off" placeholder="e.g. NeurIPS">
+            </div>
+            <div class="deadline-field deadline-field-email">
+              <label for="dl-email">Email</label>
+              <input type="email" id="dl-email" name="email" autocomplete="email" placeholder="you@university.edu" required>
+            </div>
+            <input type="text" name="website" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <button type="submit" class="btn btn-primary">Remind me</button>
+          </div>
+          <p class="deadline-status" data-deadline-status aria-live="polite">The address is kept until that email goes out, then deleted 30 days later. <a href="/privacy/">Privacy</a>.</p>
+        </form>
+      </section>
+
+      <nav class="tool-related" aria-label="Related templates and guides">
+        <h2>Related</h2>
+        <ul>
+          <li><a href="/guides/fix-bibtex-errors/">Fix common BibTeX errors</a></li>
+          <li><a href="/guides/check-manuscript-word-limit/">Check a manuscript's word limit</a></li>
+          <li><a href="/guides/camera-ready-checklist/">Camera-ready manuscript checklist</a></li>
+          <li><a href="/format/">Reference formats by venue</a></li>
+          <li><a href="/templates/">All LaTeX templates by venue</a></li>
+          <li><a href="/format/references-for-nature/">Nature reference format</a></li>
+          <li><a href="/templates/elsevier-elsarticle/">Elsevier journal template (elsarticle)</a></li>
+          <li><a href="/guides/best-mac-latex-editors/">Best LaTeX editors for Mac, compared</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/nee/">Née</a></li>
+            <li><a href="/lenses/">Lenses</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/publication-suite/">Publication suite</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/suite/">Mac Suite</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+  <script src="/analytics.js" defer></script>
+</body>
+</html>
