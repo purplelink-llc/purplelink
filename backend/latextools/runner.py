@@ -9,6 +9,7 @@ import logging
 import os
 import signal
 import subprocess
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -27,14 +28,44 @@ class CompileResult:
     timed_out: bool = False
 
 
+_BUILD_FILES = ("pdf", "log", "aux", "fdb_latexmk", "fls", "out", "toc", "bbl", "blg", "xdv", "synctex.gz")
+_MIN_RETRY_SECONDS = 10
+
+
 def run_compile(
-    workdir: Path, tex_source: str | None, engine: str, timeout: int
+    workdir: Path, tex_source: str | None, engine: str, timeout: int,
+    figure_placeholders: bool = False,
 ) -> CompileResult:
     """Compile workdir/main.tex with latexmk.
 
     If *tex_source* is given it is written to main.tex first; pass None when
     the file already exists in *workdir* (e.g. extracted from a project ZIP).
+
+    With *figure_placeholders* (single .tex uploads only: there is no folder the figures could be in), a run that
+    stops only on missing figures is compiled once more with each figure drawn as a labelled box. If that second
+    run does not give a clean PDF, the first run's errors are returned unchanged.
     """
+    started = time.monotonic()
+    first = _compile_once(workdir, tex_source, engine, timeout)
+    if first.ok or first.timed_out or not figure_placeholders or not core.only_missing_images(first.log):
+        return first
+    tex = (Path(workdir) / "main.tex").read_text(encoding="utf-8", errors="replace")
+    patched = core.inject_figure_placeholders(tex)
+    remaining = int(timeout - (time.monotonic() - started))
+    if patched is None or remaining < _MIN_RETRY_SECONDS:
+        return first
+    for ext in _BUILD_FILES:
+        (Path(workdir) / f"main.{ext}").unlink(missing_ok=True)
+    second = _compile_once(workdir, patched, engine, remaining)
+    if second.ok:
+        logger.info("compile ok with %d figure placeholder(s)", len(core.missing_files(first.log)))
+        return second
+    return first
+
+
+def _compile_once(
+    workdir: Path, tex_source: str | None, engine: str, timeout: int
+) -> CompileResult:
     cmd = core.build_latexmk_command(engine, "main")  # validates engine; raises on bad
     if tex_source is not None:
         tex_path = Path(workdir) / "main.tex"
@@ -71,6 +102,7 @@ def run_diff(
     engine: str,
     timeout: int,
     add_legend: bool,
+    figure_placeholders: bool = False,
 ) -> CompileResult:
     """Run latexdiff(old,new) -> main.tex, then compile it.
 
@@ -110,7 +142,7 @@ def run_diff(
     diff_tex = diff_out
     if add_legend:
         diff_tex = core.inject_diff_legend(diff_tex)
-    return run_compile(workdir, diff_tex, engine, timeout - diff_timeout)
+    return run_compile(workdir, diff_tex, engine, timeout - diff_timeout, figure_placeholders)
 
 
 @dataclass

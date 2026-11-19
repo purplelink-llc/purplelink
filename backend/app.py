@@ -1646,7 +1646,7 @@ def web():
                 if zip_bytes is not None:
                     core.extract_project_zip(zip_bytes, workdir)
                     return runner.run_compile(workdir, None, engine, timeout=120)
-                return runner.run_compile(workdir, tex, engine, timeout=60)
+                return runner.run_compile(workdir, tex, engine, timeout=60, figure_placeholders=True)
 
         try:
             res = await run_in_threadpool(_do)
@@ -1700,6 +1700,8 @@ def web():
                 return runner.run_diff(
                     workdir, effective_old, effective_new, engine, timeout=120,
                     add_legend=(legend == "true"),
+                    # Figures can only be present when the new version came as a .zip.
+                    figure_placeholders=new_zip is None,
                 )
 
         try:
