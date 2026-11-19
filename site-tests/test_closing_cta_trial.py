@@ -57,6 +57,12 @@ class ClosingCtaTrial(unittest.TestCase):
                 self.assertNotIn(meta, seen, (p, seen.get(meta)))
                 seen[meta] = p
 
+    def test_trial_door_scope_and_event(self):
+        # Non-Mac rewrite: closing band only, counted as a product-page click so guideTrialClicks stays trial-only.
+        s = (SITE / "mtx-trial-door.js").read_text(encoding="utf-8")
+        self.assertIn('[data-track-meta$=":end"]', s)
+        self.assertIn('a.setAttribute("data-track", "guide_mtx_click")', s)
+
 
 if __name__ == "__main__":
     unittest.main()
