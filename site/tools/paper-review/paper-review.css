@@ -220,7 +220,7 @@
 .pr-stage.active { color: var(--purple); border-color: color-mix(in oklch, var(--purple) 55%, transparent); background: color-mix(in oklch, var(--purple) 10%, var(--bg)); }
 .pr-stage.done { color: color-mix(in oklch, oklch(58% 0.16 150) 75%, var(--ink)); border-color: color-mix(in oklch, oklch(58% 0.16 150) 45%, transparent); background: color-mix(in oklch, oklch(58% 0.16 150) 12%, var(--bg)); }
 .pr-stage-label { font-weight: 600; }
-.pr-stage-tag { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; }
+.pr-stage-tag { display: block; font-size: 0.75rem; color: var(--muted); margin-top: 0.15rem; }
 
 /* Optional waiting scene (waiting-scene.js). Starts hidden; the script reveals it
    only when WebGL works and motion is allowed. Decorative, so it never takes focus
@@ -276,13 +276,13 @@
 .pr-det-panel { border: 1px solid color-mix(in oklch, var(--purple) 35%, transparent); border-radius: 8px; background: color-mix(in oklch, var(--purple) 7%, var(--bg)); padding: 1rem 1.2rem; margin: 0 0 1.4rem; }
 .pr-det-head { margin-bottom: 0.85rem; }
 .pr-det-title { font-family: var(--font-display); font-size: 1.15rem; margin: 0 0 0.3rem; color: var(--purple); display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
-.pr-det-badge-auto { font-family: inherit; font-size: 0.66rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--purple); background: color-mix(in oklch, var(--purple) 14%, var(--bg)); border: 1px solid color-mix(in oklch, var(--purple) 40%, transparent); border-radius: 999px; padding: 0.15rem 0.55rem; }
+.pr-det-badge-auto { font-family: inherit; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--purple); background: color-mix(in oklch, var(--purple) 14%, var(--bg)); border: 1px solid color-mix(in oklch, var(--purple) 40%, transparent); border-radius: 999px; padding: 0.15rem 0.55rem; }
 .pr-det-sub { font-size: 0.84rem; color: var(--muted); margin: 0; line-height: 1.5; }
 .pr-det-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
 .pr-det-item { border: 1px solid var(--line); border-radius: 6px; background: var(--panel); padding: 0.6rem 0.85rem; }
 .pr-det-row { display: flex; align-items: baseline; gap: 0.55rem; flex-wrap: wrap; }
 .pr-det-sev { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; padding: 0.12rem 0.45rem; border-radius: 4px; flex-shrink: 0; }
-.pr-det-kind { font-size: 0.72rem; color: var(--muted); flex-shrink: 0; }
+.pr-det-kind { font-size: 0.75rem; color: var(--muted); flex-shrink: 0; }
 .pr-det-summary { font-size: 0.92rem; color: var(--ink); font-weight: 500; }
 .pr-det-detail { font-size: 0.82rem; color: var(--muted); line-height: 1.5; margin-top: 0.3rem; }
 .pr-det-error { border-color: color-mix(in oklch, oklch(60% 0.2 25) 45%, var(--line)); }
