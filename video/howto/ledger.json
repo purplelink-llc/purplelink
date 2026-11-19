@@ -853,5 +853,35 @@
    "ok": true,
    "utm_content": "howto-theres-no-line-here-to-end-lone-line-break-reel"
   }
+ },
+ {
+  "slug": "howto-title-bar-double-click-not-filling-screen",
+  "app": "panely",
+  "date": "2026-11-19",
+  "title": "Double-click on title bar won't fill the screen on Mac (set the double-click action to Fill)",
+  "long_id": "sQPZl_t96E8",
+  "short_id": "nJi2-7liY70",
+  "link_arm": "A",
+  "link_utm_content": "howto-title-bar-double-click-not-filling-screen",
+  "short_utm_content": "howto-title-bar-double-click-not-filling-screen-short",
+  "sources": [
+   "https://discussions.apple.com/thread/256010865",
+   "https://talk.macpowerusers.com/t/fifteen-years-using-mac-and-finally-double-clicking-a-windows-title-bar-maximises-it/38375",
+   "https://bugzilla.mozilla.org/show_bug.cgi?id=1928041"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "sQPZl_t96E8",
+    "caption_id": "AUieDabHRjHT9WDdNWw5quaNpozB2W2dlHteNul66yNwQ4BW0AweOkv_"
+   },
+   "short": {
+    "video_id": "nJi2-7liY70",
+    "caption_id": "AUieDaYVLRxbJJg4V5BxXY23lH9KltUXVZc8WGU2qQg8g8Oy0sbiE5OC"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-title-bar-double-click-not-filling-screen-reel"
+  }
  }
 ]

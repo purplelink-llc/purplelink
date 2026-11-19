@@ -1,0 +1,45 @@
+{
+ "id": "howto-title-bar-double-click-not-filling-screen",
+ "app": "panely",
+ "title": "Double-click on title bar won't fill the screen on Mac (set the double-click action to Fill)",
+ "short_title": "Double-clicking a Mac title bar doesn't fill the screen? Change Zoom to Fill",
+ "url": "purplelink.llc/panely",
+ "page": "https://purplelink.llc/panely/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://discussions.apple.com/thread/256010865",
+  "https://talk.macpowerusers.com/t/fifteen-years-using-mac-and-finally-double-clicking-a-windows-title-bar-maximises-it/38375",
+  "https://bugzilla.mozilla.org/show_bug.cgi?id=1928041"
+ ],
+ "verify": {
+  "runs": [],
+  "docs": [
+   "https://support.apple.com/guide/mac-help/change-desktop-dock-settings-mchlp1119/mac",
+   "https://support.apple.com/guide/mac-help/mchl9674d0b0/mac"
+  ],
+  "notes": "GUI-only fix, no Terminal output on screen. Apple's Mac User Guide 'Change Desktop & Dock settings on Mac' (macOS 27 version, read 2026-11-19) lists, under Windows, 'Window title bar double-click action' with the choices Fill (expand a window to fill the space between the menu bar and the Dock), Zoom, Minimize and No Action. Apple's 'Mac window tiling icons & keyboard shortcuts' page (read the same day) lists Fill, Fn-Control-F: expand the active window to fill the desktop, and Return to Previous Size, Fn-Control-R. The preference keys (AppleActionOnDoubleClick) are unset on Ben's Mac mini (macOS 27.0.1, defaults read reports the key does not exist) and are not documented by Apple, so the video has no Terminal check. The Zoom behaviour (the app picks the size) is described in the Mac Power Users thread; the Apple Community and Mozilla bug threads show apps that ignore Fill. Panely claims are from its page: maximize, full height, full width and almost maximize actions; a shortcut, the menu bar or a drag to the top edge to maximize."
+ },
+ "scenes": [
+  {"type": "hook", "short": true, "kicker": "Windows on a Mac", "title": "Double-click won't fill the screen", "sub": "The window only grows a little.",
+   "narration": "You double-click a window's title bar to make it fill the screen, and it only grows a little, or not at all. Here is the setting behind it."},
+  {"type": "cause", "text": "The double-click action is set to Zoom, and with Zoom each app picks the size.",
+   "narration": "Double-clicking the title bar runs one action, and on many Macs that action is Zoom. With Zoom, each app decides how big the window gets, and many stop at the size of what they show. Fill is a separate choice that uses all the space between the menu bar and the Dock."},
+  {"type": "steps", "short": true, "label": "System Settings",
+   "lines": ["Open System Settings", "Click Desktop & Dock", "Find Window title bar double-click action", "Change Zoom to Fill"],
+   "ui": "Fill expands the window to the space between the menu bar and the Dock.",
+   "narration": "Open System Settings and click Desktop and Dock. In the Windows section, find Window title bar double-click action, and change it from Zoom to Fill. Now a double-click fills the space between the menu bar and the Dock."},
+  {"type": "steps", "short": true, "label": "If an app ignores it",
+   "lines": ["Click the window", "Press Fn-Control-F to fill", "Press Fn-Control-R to go back"],
+   "ui": "Fill and Return to Previous Size, from Apple's tiling shortcuts.",
+   "narration": "Some apps draw their own title bar and ignore the double-click. For those, click the window and press Function, Control, F to fill it. Function, Control, R puts it back to the size it had before."},
+  {"type": "app", "name": "Panely", "line": "Maximizes a window with a shortcut, from the menu bar, or when you drag it to the top edge.",
+   "url": "purplelink.llc/panely", "img": "site/panely/img/drag-to-corner.webp", "icon": "site/assets/panely-icon.webp",
+   "narration": "Panely is a menu bar app that maximizes a window with a shortcut, from the menu bar, or when you drag it to the top edge of the screen. It also has full height, full width and almost maximize, and snaps windows to halves, thirds and quarters."}
+ ],
+ "thumbs": {
+  "A": {"kind": "diff", "hook": "Title bar won't fill?", "before": "Zoom", "after": "Fill"},
+  "B": {"kind": "focus", "hook": "Double-click\nwon't fill?", "lines": ["Window title bar", "double-click action"], "hl": "double-click action"},
+  "C": {"kind": "product", "name": "Panely", "line": "Maximize with a shortcut", "img": "site/panely/img/drag-to-corner.webp", "icon": "site/assets/panely-icon.webp", "zoom": 1.2, "pos": "50% 50%"}
+ }
+}
