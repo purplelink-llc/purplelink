@@ -72,7 +72,8 @@
 }
 .hub-title { color: var(--ink); text-wrap: pretty; }
 .hub-actions { display: flex; gap: 10px; flex-shrink: 0; font-weight: 600; }
-.hub-actions a { color: var(--purple); text-decoration: none; }
+/* 24px tall at least, so each link is a comfortable tap target on a phone. */
+.hub-actions a { color: var(--purple); text-decoration: none; display: inline-flex; align-items: center; min-height: 24px; }
 .hub-actions a:hover, .hub-actions a:focus-visible { text-decoration: underline; }
 
 .hub-shops {

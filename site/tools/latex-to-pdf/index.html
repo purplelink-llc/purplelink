@@ -53,7 +53,7 @@
             {
               "@type": "Question",
               "name": "Can I upload a multi-file LaTeX project?",
-              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Zip your project with main.tex at the root (the same layout Overleaf exports), include any figures, .bib, .cls, or .sty files, and upload the .zip. The tool extracts and compiles it automatically." }
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Zip your project with main.tex at the root (figures, .bib, .cls, .sty, etc. can be in subdirectories) and upload the .zip. The tool extracts everything and compiles with latexmk, including biber/bibtex passes." }
             },
             {
               "@type": "Question",
@@ -144,8 +144,8 @@
         <p>This is a free online LaTeX compiler. It runs <code>latexmk</code> with your chosen engine and handles the multi-pass build (including BibTeX/Biber) automatically. Upload a single <code>.tex</code> or a full project <code>.zip</code>.</p>
         <p>Compiling on your own Mac instead? See how to <a href="/guides/install-latex-on-mac/">install LaTeX on a Mac (MacTeX, BasicTeX or TinyTeX)</a> and the <a href="/guides/best-mac-latex-editors/">LaTeX editors for Mac we tested</a>.</p>
         <details><summary>Are my files stored?</summary><div class="faq-body">No. Your files are written to a temporary folder on our server only while the PDF is built, then deleted. File contents are not logged.</div></details>
-        <details><summary>Can I upload a project with figures and a .bib file?</summary><div class="faq-body">Yes. Zip your project with main.tex at the root (figures, .bib, .cls, .sty, etc. can be in subdirectories) and upload the .zip. The tool extracts everything and compiles with latexmk, including biber/bibtex passes.</div></details>
-        <details><summary>Which engines are supported?</summary><div class="faq-body">pdfLaTeX and XeLaTeX. LuaLaTeX is not supported for security reasons.</div></details>
+        <details><summary>Can I upload a multi-file LaTeX project?</summary><div class="faq-body">Yes. Zip your project with main.tex at the root (figures, .bib, .cls, .sty, etc. can be in subdirectories) and upload the .zip. The tool extracts everything and compiles with latexmk, including biber/bibtex passes.</div></details>
+        <details><summary>Which LaTeX engines are supported?</summary><div class="faq-body">pdfLaTeX and XeLaTeX. LuaLaTeX is not supported for security reasons.</div></details>
       </section>
 
       <!-- tool-offer -->

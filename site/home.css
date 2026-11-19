@@ -524,7 +524,7 @@
 /* The suite's group in "All apps and prices": text tiles, the icon sits on the heading. */
 .dock-heading-icon { display: flex; align-items: center; gap: 10px; }
 .dock-heading-icon img { width: 28px; height: 28px; }
-.dock-heading-icon a { color: inherit; text-decoration: none; }
+.dock-heading-icon a { color: inherit; text-decoration: none; display: inline-flex; align-items: center; min-height: 24px; }
 .dock-heading-icon a:hover { text-decoration: underline; text-decoration-color: var(--purple); text-underline-offset: 4px; }
 .dock-text .dock-app { border-color: var(--line); }
 @media (prefers-reduced-motion: reduce) {
