@@ -3539,6 +3539,16 @@ dd {
   color: var(--muted);
 }
 
+.tools-hero > p.page-updated {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
+
+.page-updated time {
+  font-variant-numeric: tabular-nums;
+}
+
 .tool-howto h2,
 .tool-prose h2,
 .tool-faq h2 {
