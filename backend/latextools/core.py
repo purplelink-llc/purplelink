@@ -500,6 +500,42 @@ def build_latexdiff_command(old_name: str, new_name: str) -> list[str]:
     ]
 
 
+_IMAGE_EXT = re.compile(r"\.(pdf|png|jpe?g|eps)$", re.IGNORECASE)
+_BEGIN_DOCUMENT = re.compile(r"^(?P<pre>[^%\n]*?)\\begin\{document\}", re.MULTILINE)
+_FIGURE_PLACEHOLDER = (
+    r"\AtBeginDocument{\DeclareDocumentCommand{\includegraphics}{s d<> O{} m}{\fbox{\parbox{0.6\linewidth}"
+    r"{\centering\small Figure not uploaded: \texttt{\detokenize{#4}}. Upload the project as a .zip to include it.}}}}"
+)
+
+
+def missing_files(log_text: str) -> list[str]:
+    """Names of the files TeX reported as not found, in log order, without repeats."""
+    return list(dict.fromkeys(_MISSING_FILE.findall(log_text)))
+
+
+def only_missing_images(log_text: str) -> bool:
+    r"""True when TeX stopped on missing files and every one of them is a figure.
+
+    A figure is a name with an image extension, or no extension at all (graphicx reports \includegraphics{fig1}
+    as `fig1'; a missing \input or package always carries .tex, .sty or .cls).
+    """
+    names = missing_files(log_text)
+    return bool(names) and all(_IMAGE_EXT.search(n) or "." not in n.rsplit("/", 1)[-1] for n in names)
+
+
+def inject_figure_placeholders(tex: str) -> str | None:
+    r"""Make every \includegraphics print a labelled box instead of reading a file.
+
+    Used when a single .tex is uploaded without its figures (2026-11-19: such a file failed the whole run on the
+    first figure). Returns None when there is no uncommented \begin{document} to insert before.
+    """
+    m = _BEGIN_DOCUMENT.search(tex)
+    if not m:
+        return None
+    at = m.start() + len(m.group("pre"))
+    return tex[:at] + _FIGURE_PLACEHOLDER + "\n" + tex[at:]
+
+
 def inject_diff_legend(diff_tex: str) -> str:
     r"""Insert a 'how to read this diff' box immediately after \maketitle.
 
