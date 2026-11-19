@@ -502,9 +502,15 @@ def build_latexdiff_command(old_name: str, new_name: str) -> list[str]:
 
 _IMAGE_EXT = re.compile(r"\.(pdf|png|jpe?g|eps)$", re.IGNORECASE)
 _BEGIN_DOCUMENT = re.compile(r"^(?P<pre>[^%\n]*?)\\begin\{document\}", re.MULTILINE)
+_FIGURE_BOX = (
+    r"{\fbox{\parbox{0.6\linewidth}"
+    r"{\centering\small Figure not uploaded: \texttt{\detokenize{#4}}. Upload the project as a .zip to include it.}}}"
+)
+# latexdiff saves the original command as \DIFOincludegraphics in the preamble (\LetLtxMacro) and draws every added or
+# deleted figure through that copy, so the copy gets the same box (checked on the live TeX Live, 2026-11-19).
 _FIGURE_PLACEHOLDER = (
-    r"\AtBeginDocument{\DeclareDocumentCommand{\includegraphics}{s d<> O{} m}{\fbox{\parbox{0.6\linewidth}"
-    r"{\centering\small Figure not uploaded: \texttt{\detokenize{#4}}. Upload the project as a .zip to include it.}}}}"
+    r"\AtBeginDocument{\DeclareDocumentCommand{\includegraphics}{s d<> O{} m}" + _FIGURE_BOX
+    + r"\DeclareDocumentCommand{\DIFOincludegraphics}{s d<> O{} m}" + _FIGURE_BOX + "}"
 )
 
 

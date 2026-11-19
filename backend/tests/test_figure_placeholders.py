@@ -31,6 +31,12 @@ def test_inject_before_the_real_begin_document():
     assert out.count("\\begin{document}") == 2  # the comment and the real one, nothing added
 
 
+def test_placeholder_covers_latexdiff_figure_copy():
+    out = core.inject_figure_placeholders(DOC)
+    assert "\\DeclareDocumentCommand{\\DIFOincludegraphics}{s d<> O{} m}" in out
+    assert out.count("Figure not uploaded") == 2
+
+
 def test_inject_needs_begin_document():
     assert core.inject_figure_placeholders("% \\begin{document}\nno body") is None
 
