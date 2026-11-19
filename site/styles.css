@@ -359,7 +359,7 @@ select { max-width: 100%; }
 
 .section-num {
   display: none;   /* numbered 01–05 section markers removed: AI editorial-scaffold tell */
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   color: var(--purple);
@@ -511,7 +511,7 @@ select { max-width: 100%; }
   /* Deliberately darker than --purple-dim so this small-text pill meets WCAG
      AA 4.5:1 on the --purple-light background. Dark-mode override below. */
   color: oklch(35% 0.20 310);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.05em;
 }
@@ -581,7 +581,7 @@ select { max-width: 100%; }
 }
 
 .project-num {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   color: var(--purple);
@@ -711,7 +711,7 @@ select { max-width: 100%; }
 }
 
 .oss-kicker {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -747,7 +747,7 @@ select { max-width: 100%; }
   border: 1.5px solid oklch(99% 0.003 310 / 0.3);
   gap: 8px;
   color: oklch(99% 0.003 310);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -788,7 +788,7 @@ select { max-width: 100%; }
 }
 
 dt {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -1975,7 +1975,7 @@ dd {
 }
 
 .digest-item-source {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.07em;
@@ -2125,7 +2125,7 @@ dd {
   display: inline-block;
   padding: 3px 10px;
   border-radius: 100px;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -2446,7 +2446,7 @@ dd {
 }
 
 .store-badge-coming {
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   opacity: 0.7;
   letter-spacing: 0.01em;
 }
@@ -3346,7 +3346,7 @@ dd {
   }
 
   .hero-visual-kicker {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -3555,7 +3555,7 @@ dd {
 .tool-related .rel-kind {
   flex: none; padding: 2px 8px; border-radius: 100px;
   background: var(--purple-xlight); color: var(--purple);
-  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
 }
 @media (prefers-reduced-motion: reduce) { .tool-related li > a { transition: none; } }
 
@@ -3923,7 +3923,7 @@ main h2 { font-family: var(--font-display); letter-spacing: -0.02em; }
   border-radius: 100px;
   background: var(--purple);
   color: oklch(99% 0.003 310);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.04em;
 }
@@ -3992,7 +3992,7 @@ main input:focus-visible {
 .venue-list .venue-field {
   display: inline-block;
   margin-top: 6px;
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -4260,7 +4260,7 @@ html { scroll-padding-top: 96px; }
   .compare-stack tr { margin: 0 0 12px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
   .compare-stack th[scope="row"] { padding: 0 0 6px; border: 0; font-size: 1.02rem; }
   .compare-stack td { padding: 6px 0; border: 0; border-top: 1px solid var(--line); }
-  .compare-stack td::before { content: attr(data-label); display: block; margin-bottom: 2px; color: var(--muted); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+  .compare-stack td::before { content: attr(data-label); display: block; margin-bottom: 2px; color: var(--muted); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
 }
 
 /* ModernTex: optional trial emails, shown after a trial download click */
@@ -4375,7 +4375,7 @@ html { scroll-padding-top: 96px; }
 .u-mt-06 { margin-top: 0.6rem; }
 .compile-log { margin-top: 0.75rem; }
 .compile-log summary { cursor: pointer; font-size: 0.85rem; color: var(--muted); }
-.compile-log pre { font-size: 0.72rem; white-space: pre-wrap; overflow-x: auto; max-height: 22rem; overflow-y: auto; background: oklch(14% 0.02 310); color: oklch(88% 0.01 310); padding: 0.75rem; border-radius: 6px; margin-top: 0.4rem; }
+.compile-log pre { font-size: 0.75rem; white-space: pre-wrap; overflow-x: auto; max-height: 22rem; overflow-y: auto; background: oklch(14% 0.02 310); color: oklch(88% 0.01 310); padding: 0.75rem; border-radius: 6px; margin-top: 0.4rem; }
 .report-more { display: inline-block; margin-top: 14px; color: var(--purple); font-weight: 600; font-size: 0.9rem; text-decoration: none; }
 .report-more:hover { text-decoration: underline; }
 .kit-hero p:not(.eyebrow) + p { margin-top: 12px; }
@@ -4516,7 +4516,7 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
 .search-hit:hover, .search-hit:focus-visible { background: var(--purple-xlight); }
 .search-hit:focus-visible { outline: 2px solid var(--purple); outline-offset: 0; }
 .search-hit strong { font-size: 1.05rem; }
-.search-tag { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--purple); }
+.search-tag { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--purple); }
 .search-desc { color: var(--muted); font-size: 0.92rem; }
 .search-browse { margin-top: 28px; color: var(--muted); font-size: 0.92rem; }
 @media (max-width: 600px) {
@@ -4654,7 +4654,7 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
   border-radius: 100px;
   background: var(--panel);
   color: var(--muted);
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: 0.01em;
   white-space: nowrap;
@@ -4840,7 +4840,7 @@ textarea.ttg-input.rl-comments { min-height: 14rem; }
   border-radius: 100px;
   border: 1px solid oklch(86% 0.04 310);
   background: oklch(96% 0.02 310);
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.02em;
   color: oklch(30% 0.1 310);

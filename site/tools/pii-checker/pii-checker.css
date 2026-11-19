@@ -43,7 +43,7 @@
   padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink);
 }
 .pc-mark { background: color-mix(in oklch, var(--purple) 24%, var(--bg)); color: var(--ink); border-bottom: 2px solid var(--purple); border-radius: 3px; padding: 0 2px; }
-.pc-mark::after { content: attr(data-label); margin-left: 5px; padding: 0 4px; font-size: 0.68rem; font-weight: 700; line-height: 1; color: var(--ink); border: 1px solid var(--purple); border-radius: 3px; white-space: nowrap; vertical-align: 0.1em; }
+.pc-mark::after { content: attr(data-label); margin-left: 5px; padding: 0 4px; font-size: 0.75rem; font-weight: 700; line-height: 1; color: var(--ink); border: 1px solid var(--purple); border-radius: 3px; white-space: nowrap; vertical-align: 0.1em; }
 .pc-note { color: var(--muted); font-size: 0.9rem; }
 .pc-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 

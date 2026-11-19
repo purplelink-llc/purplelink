@@ -33,7 +33,7 @@
 .cr-card p { margin: 0 0 6px; }
 .cr-card ul { margin: 6px 0 0; padding-left: 1.2em; color: var(--muted); font-size: 0.95rem; }
 .cr-card li { margin-bottom: 4px; overflow-wrap: anywhere; }
-.cr-tag { font-family: var(--font-body); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); }
+.cr-tag { font-family: var(--font-body); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); }
 .cr-pass .cr-tag { background: var(--purple-light); color: var(--ink); }
 .cr-review { border-color: var(--purple); }
 .cr-review .cr-tag { background: var(--purple); color: oklch(18% 0.06 310); border-color: var(--purple); }
