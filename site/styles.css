@@ -2403,6 +2403,10 @@ dd {
   color: oklch(99% 0.003 310 / 0.62);
   text-decoration: none;
   transition: color 0.15s;
+  /* 24px tall at least, so each link is a comfortable tap target on a phone. */
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
 }
 
 .footer-links a:hover {
