@@ -4131,7 +4131,8 @@ main input:focus-visible {
 /* Feature comparison tables use full sentences as row headers, so they wrap (the short spec labels above stay on one line). */
 .specs-table.compare-stack tbody th { white-space: normal; width: 56%; }
 
-@media (max-width: 640px) {
+/* Up to tablet width a long row header wraps, so the table never runs wider than the page. */
+@media (max-width: 900px) {
   .specs-table th { white-space: normal; width: 40%; }
 }
 
@@ -5332,6 +5333,8 @@ main:has(> .post-hero) { overflow-x: clip; }
 .post-footer { padding-inline: max(clamp(24px, 6vw, 80px), (100% - 860px) / 2); }
 /* A post that opens with a heading: the body's own top padding is the gap, not that plus the heading's margin. */
 .post-body > h2:first-child { margin-top: 0; }
+/* The reading-width cap is for prose lists; the step track on the sample report is a diagram and keeps its own width. */
+.post-body .prc-track { max-width: none; }
 @media (min-width: 1200px) {
   .post-body .compare-table {
     margin-inline: calc((100% - min(1240px, 100vw - 160px)) / 2);
