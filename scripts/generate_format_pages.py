@@ -231,18 +231,16 @@ def venue_page(v):
       </section>
 
       <!-- moderntex-cta -->
-      <section class="waitlist-section">
-        <p class="eyebrow">From the team behind these tools</p>
+      <section class="waitlist-section mt-cta">
+        <p class="eyebrow">From the maker of these tools</p>
         <h2>Writing LaTeX on a Mac?</h2>
-        <p>We're building ModernTex - a native macOS LaTeX studio. Join the waitlist for one email at launch.</p>
-        <form class="waitlist-form" name="waitlist-moderntex" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
-          <input type="hidden" name="form-name" value="waitlist-moderntex">
-          <input type="hidden" name="source" value="format:{v['slug']}">
-          <p hidden><input name="bot-field"></p>
-          <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email address">
-          <button type="submit">Notify me at launch</button>
-        </form>
-        <p class="waitlist-fine-print">We'll only use your email to notify you at launch. <a href="/privacy/">Privacy Policy</a> · <a href="/moderntex/">Learn more about ModernTex →</a></p>
+        <p>ModernTex is a native macOS LaTeX studio. It has multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.</p>
+        <div class="waitlist-actions">
+          <a class="btn btn-primary" href="/.netlify/functions/moderntex-download?src=guide&amp;trial=1" data-track="guide_mtx_trial" data-track-meta="format:{v['slug']}:end">Try ModernTex free for 7 days</a>
+          <a class="btn btn-ghost" href="/moderntex/" data-track="guide_mtx_click" data-track-meta="format:{v['slug']}:end-page">See what it does</a>
+        </div>
+        <p class="waitlist-fine-print">Requires macOS 14 or later. No account, and the trial is the full app.</p>
+        <script src="/mtx-trial-door.js" defer></script>
       </section>
 
       <nav class="tool-related" aria-label="Related tools">

@@ -27,7 +27,10 @@ class LatexErrorsCta(unittest.TestCase):
             html = p.read_text(encoding="utf-8")
             band = html[html.index(C.MARKER):html.index('<nav class="tool-related"')]
             hrefs = re.findall(r'href="([^"]+)"', band)
-            self.assertEqual(hrefs, ["/moderntex/?from=latex-errors"] * 2, p)
+            self.assertEqual(hrefs, [C.TRIAL, "/moderntex/?from=latex-errors"], p)
+            meta = C.meta_for(p, ROOT)
+            self.assertIn(f'data-track="guide_mtx_trial" data-track-meta="{meta}:end"', band, p)
+            self.assertIn(f'data-track="guide_mtx_click" data-track-meta="{meta}:end-page"', band, p)
 
     def test_insert_is_idempotent_and_refuses_a_missing_anchor(self):
         html = '<main>\n      <nav class="tool-related" aria-label="x"></nav>\n</main>'
