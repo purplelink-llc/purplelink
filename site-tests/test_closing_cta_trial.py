@@ -38,7 +38,8 @@ class ClosingCtaTrial(unittest.TestCase):
             # never the bare trial door: that would count as trial_download in the experiment metrics
             self.assertNotIn("moderntex-download?trial=1", band, p)
             if ':end">' in band:  # the closing bands from 2026-11-18 send non-Mac visitors to /moderntex/
-                self.assertIn('<script src="/mtx-trial-door.js" defer></script>', p.read_text(encoding="utf-8"), p)
+                # the build may fingerprint the src with ?v=
+                self.assertRegex(p.read_text(encoding="utf-8"), r'<script src="/mtx-trial-door\.js(\?v=[^"]*)?" defer></script>', p)
         self.assertGreaterEqual(n, 53)
 
     def test_trial_door_not_mac_matches_send_to_mac(self):
