@@ -1437,6 +1437,7 @@ dd {
 .features-grid > * { box-shadow: 0 0 0 1px var(--line); }
 /* A last card that would sit alone on its row spans the row instead of leaving empty cells (Legroom has five). */
 .features-grid > .feature-item--wide { grid-column: 1 / -1; }
+.features-grid > .feature-item--wide p { max-width: 72ch; }
 
 .feature-item {
   background: var(--bg);
