@@ -514,6 +514,7 @@
 }
 
 /* ─── YouTube embed: poster and link first, player once near the screen ── */
+/* The play link sits in the middle of the poster: every poster carries its caption along the bottom edge. */
 .yt-embed {
   position: relative;
   max-width: 1120px;
@@ -538,8 +539,12 @@
 .yt-embed .yt-play {
   position: absolute;
   left: 50%;
-  bottom: 24px;
-  translate: -50% 0;
+  top: 50%;
+  translate: -50% -50%;
+  /* Positioned at 50%, the link would shrink to half the poster and wrap to three lines on a phone. */
+  width: max-content;
+  max-width: calc(100% - 24px);
+  text-align: center;
   padding: 10px 18px;
   border-radius: 999px;
   background: var(--panel);
