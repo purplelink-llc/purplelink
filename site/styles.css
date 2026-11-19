@@ -4127,6 +4127,8 @@ main input:focus-visible {
 .specs-more a, .compare-table caption a { padding-block: 4px; }
 .specs-table caption a { color: var(--purple); }
 .specs-table thead th { width: auto; }
+/* Feature comparison tables use full sentences as row headers, so they wrap (the short spec labels above stay on one line). */
+.specs-table.compare-stack tbody th { white-space: normal; width: 56%; }
 
 @media (max-width: 640px) {
   .specs-table th { white-space: normal; width: 40%; }
