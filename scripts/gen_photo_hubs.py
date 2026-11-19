@@ -344,6 +344,15 @@ def more_paras(entry):
     return "".join(f'        <p class="hub-intro">{esc(t)}</p>\n' for t in entry.get("more", []))
 
 
+def about_section(entry):
+    """A country's longer notes, placed after the photographs so the first screen shows pictures, not only text."""
+    paras = more_paras(entry)
+    if not paras:
+        return ""
+    return ('      <section class="hub-about" aria-labelledby="hub-about">\n        <h2 id="hub-about">About these photographs</h2>\n'
+            + paras + '      </section>\n')
+
+
 def write(path, text, check, changed):
     if path.exists() and path.read_text(encoding="utf-8") == text:
         return
@@ -409,8 +418,9 @@ def main():
                   a.check, changed)
             if p.get("index"):
                 sitemap.append((purl, imgs))
+            lazy = ' loading="lazy"' if len(place_cards) >= 2 else ""
             place_cards.append(f'          <a class="hub-card" href="/photography/{cs}/{p["slug"]}/" data-reveal>\n'
-                               f'            <img src="{esc(imgs[0]["thumb"])}" alt="" width="{imgs[0]["tw"]}" height="{imgs[0]["th"]}" loading="lazy" decoding="async">\n'
+                               f'            <img src="{esc(imgs[0]["thumb"])}" alt="" width="{imgs[0]["tw"]}" height="{imgs[0]["th"]}"{lazy} decoding="async">\n'
                                f'            <span class="hub-card-body"><span class="hub-card-name">{esc(p["name"])}</span>'
                                f'<span class="hub-card-count">{len(imgs)} photographs</span></span>\n          </a>\n')
         extra = [x for x in (prep(r) for r in assigned[cs]["_extra"]) if x]
@@ -419,12 +429,13 @@ def main():
         if not all_imgs:
             continue
         body = (f'      <nav class="hub-crumbs" aria-label="Breadcrumb"><a href="/photography/">Photography</a> <span aria-hidden="true">/</span> <span aria-current="page">{esc(c["name"])}</span></nav>\n'
-                f'      <section class="hub-head">\n        <h1>{esc(c["name"])}</h1>\n        <p class="hub-intro">{esc(c["intro"])}</p>\n' + more_paras(c) + '      </section>\n')
+                f'      <section class="hub-head">\n        <h1>{esc(c["name"])}</h1>\n        <p class="hub-intro">{esc(c["intro"])}</p>\n      </section>\n')
         if place_cards:
             body += '      <section class="hub-places" aria-label="Places">\n        <div class="hub-cards">\n' + "".join(place_cards) + '        </div>\n      </section>\n'
         if extra:
             body += (f'      <section class="hub-photos" aria-labelledby="hub-more">\n        <h2 id="hub-more">Elsewhere in {esc(c["name"])}</h2>\n'
                      + grid(extra, etsy) + '      </section>\n')
+        body += about_section(c)
         body += '      <section class="hub-photos">\n' + shop_strip() + '      </section>\n'
         n = len(all_imgs)
         title = f"{c['name']} photographs"
