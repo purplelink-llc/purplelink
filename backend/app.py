@@ -49,6 +49,9 @@ image = (
         "texlive-publishers",
         "texlive-science",
         "texlive-pictures",
+        # bbm and dsfont (the \mathbbm{1} and \mathds{1} indicator functions common in ML and statistics papers) and
+        # other font packages. A diff upload failed three times on 2026-11-18 with "File not found: bbm.sty".
+        "texlive-fonts-extra",
         "latexmk",
         "latexdiff",
         "biber",
