@@ -1837,7 +1837,8 @@ dd {
   font-size: clamp(1rem, 1.5vw, 1.08rem);
   line-height: 1.8;
   color: oklch(25% 0.05 310);
-  max-width: 66ch;
+  /* em, not ch: the font's "0" is wide, so 66ch ran to about 95 characters a line. 38em is about 75. */
+  max-width: 38em;
   margin-bottom: 1.4em;
 }
   :where(:root:not([data-theme="light"])) .post-body p,
@@ -4130,7 +4131,8 @@ main input:focus-visible {
 /* Feature comparison tables use full sentences as row headers, so they wrap (the short spec labels above stay on one line). */
 .specs-table.compare-stack tbody th { white-space: normal; width: 56%; }
 
-@media (max-width: 640px) {
+/* Up to tablet width a long row header wraps, so the table never runs wider than the page. */
+@media (max-width: 900px) {
   .specs-table th { white-space: normal; width: 40%; }
 }
 
@@ -4334,7 +4336,8 @@ html { scroll-padding-top: 96px; }
 .sample-prio-a { background: var(--purple); color: var(--bg); }
 .sample-note { margin: 10px 0 0; color: var(--muted); font-size: 0.93rem; }
 .sample-note strong { color: var(--ink); }
-.table-scroll { overflow-x: auto; }
+/* Positioned, so screen-reader-only labels inside a wide table scroll with it and do not widen the page on a phone. */
+.table-scroll { overflow-x: auto; position: relative; }
 .sample-cta { margin-top: 40px; }
 .sample-more { margin: 12px 0 0; }
 .sample-more a { color: var(--purple); font-weight: 600; }
@@ -4343,6 +4346,8 @@ html { scroll-padding-top: 96px; }
    columns on wide screens instead of four-and-two with two empty cells. */
 @media (min-width: 900px) {
   .features-grid:has(> :nth-child(3n):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  /* Four cards and a full-width fifth (Legroom): two by two, so the fourth is not alone on its row. */
+  .features-grid:has(> .feature-item--wide:nth-child(5):last-child) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* Template pages: starter download */
@@ -4361,13 +4366,21 @@ html { scroll-padding-top: 96px; }
 .u-mt-1 { margin-top: 1rem; }
 .u-label-block { font-weight: 600; display: block; margin-bottom: 0.5rem; }
 .u-w-12 { width: 1.2rem; }
-.u-scroll-x { overflow-x: auto; margin: 1.2rem 0; }
+.u-scroll-x { overflow-x: auto; position: relative; margin: 1.2rem 0; }
 .u-minh-14 { min-height: 14rem; }
 .u-mt-05 { margin-top: 0.5rem; }
 .u-mt-035 { margin-top: 0.35rem; }
 .u-mt-0 { margin-top: 0; }
 .u-faint { font-weight: 400; color: var(--muted); }
 .u-table-wide { border-collapse: collapse; font-size: 0.92rem; min-width: 660px; }
+.u-table-wide { width: 100%; line-height: 1.5; }
+.u-table-wide th,
+.u-table-wide td { padding: 10px 14px 10px 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.u-table-wide th:last-child,
+.u-table-wide td:last-child { padding-right: 0; }
+.u-table-wide thead th { vertical-align: bottom; border-bottom-width: 2px; font-weight: 700; color: var(--ink); }
+.u-table-wide tbody td:first-child { font-weight: 600; color: var(--ink); }
+.u-matrix thead th { text-align: center; }
 .u-matrix { min-width: 880px; }
 .u-matrix tbody th { text-align: left; font-weight: 600; padding: 4px 12px; min-width: 12rem; }
 .u-matrix tbody td { text-align: center; }
@@ -5316,6 +5329,12 @@ main:has(> .post-hero) { overflow-x: clip; }
   width: min(860px, calc(100% - 2 * clamp(24px, 6vw, 80px)));
   margin: 48px auto 0;
 }
+/* "Back to blog" under a post starts at the column's left edge too; the rule above it still runs full width. */
+.post-footer { padding-inline: max(clamp(24px, 6vw, 80px), (100% - 860px) / 2); }
+/* A post that opens with a heading: the body's own top padding is the gap, not that plus the heading's margin. */
+.post-body > h2:first-child { margin-top: 0; }
+/* The reading-width cap is for prose lists; the step track on the sample report is a diagram and keeps its own width. */
+.post-body .prc-track { max-width: none; }
 @media (min-width: 1200px) {
   .post-body .compare-table {
     margin-inline: calc((100% - min(1240px, 100vw - 160px)) / 2);
