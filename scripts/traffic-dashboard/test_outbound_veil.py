@@ -93,3 +93,9 @@ def test_panely_and_summonly_are_tracked_like_the_other_apps():
         pv = td.profit_view({"ledger": {"cs_x": _row(slug, 999, 940)}}, {}, 7)
         assert any(r["line"] == line and r["orders"] == 1 for r in pv["rows"])
 
+
+
+def test_lenses_trial_downloads_are_shown_in_the_dashboard():
+    purplelink = next(s for s in td.SITES if s["key"] == "purplelink")
+    assert ("lensesTrialDownloads", "Lenses trial downloads") in purplelink["secondaries"]
+    assert td.SITE_DOWNLOAD_METRICS["lenses"] == "lensesTrialDownloads"

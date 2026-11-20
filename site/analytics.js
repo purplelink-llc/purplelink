@@ -162,7 +162,7 @@
   window.plAttribution = function () {
     return { ft: channel(), fc: contentTag(), rdt: rdtClick || "" };
   };
-  var FUNNEL = /^(checkout_click|download|send_to_mac|trial_download|ov_trial_download|lg_trial_download|kf_trial_download|tf_trial_download|pn_trial_download|sm_trial_download|nee_trial_download|guide_mtx_trial|ball_lab_play|ball_lab_share|ball_lab_games|ball_lab_follow)$/;
+  var FUNNEL = /^(checkout_click|download|send_to_mac|trial_download|ov_trial_download|lg_trial_download|kf_trial_download|tf_trial_download|pn_trial_download|sm_trial_download|nee_trial_download|lenses_trial_download|guide_mtx_trial|ball_lab_play|ball_lab_share|ball_lab_games|ball_lab_follow)$/;
 
   function send(payload) {
     try {
@@ -369,6 +369,9 @@
       }
       if (a && a.getAttribute("href").indexOf("nee-download?trial=1") !== -1) {
         window.plTrack("nee_trial_download", "nee" + nm);
+      }
+      if (a && a.getAttribute("href").indexOf("lenses-download?trial=1") !== -1) {
+        window.plTrack("lenses_trial_download", "lenses" + nm);
       }
       countAffiliate(ev);
       // Anything else marked data-track="<event>" (optional data-track-meta):

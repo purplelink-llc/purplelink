@@ -145,6 +145,7 @@ SITES = [
                         ("tfTrialDownloads", "Tapefolio trial downloads"),
                         ("lcbTrialDownloads", "Lenscrib trial downloads"),
                         ("neeTrialDownloads", "Née trial downloads"),
+                        ("lensesTrialDownloads", "Lenses trial downloads"),
                         ("pnTrialDownloads", "Panely trial downloads"),
                         ("smTrialDownloads", "Summonly trial downloads"),
                         ("vitaeDownloads", "Vitae downloads"),
@@ -687,7 +688,7 @@ def macupdate_summary(entry: dict | None, today: dt.date | None = None) -> dict 
 
 # Our own download counters per app (beacon trial clicks per day), for the all-sources view.
 SITE_DOWNLOAD_METRICS = {"moderntex": "trialDownloads", "outbound-veil": "ovTrialDownloads", "legroom": "lgTrialDownloads",
-                         "keyfeel": "kfTrialDownloads", "tapefolio": "tfTrialDownloads", "lenscrib": "lcbTrialDownloads", "nee": "neeTrialDownloads", "panely": "pnTrialDownloads",
+                         "keyfeel": "kfTrialDownloads", "tapefolio": "tfTrialDownloads", "lenscrib": "lcbTrialDownloads", "nee": "neeTrialDownloads", "lenses": "lensesTrialDownloads", "panely": "pnTrialDownloads",
                          "summonly": "smTrialDownloads", "vitae": "vitaeDownloads"}
 APP_LABELS = {"moderntex": "ModernTex", "outbound-veil": "Outbound Veil", "legroom": "Legroom", "keyfeel": "Keyfeel",
               "tapefolio": "Tapefolio", "lenscrib": "Lenscrib", "lenses": "Lenses", "nee": "Née", "panely": "Panely", "summonly": "Summonly", "vitae": "Vitae"}

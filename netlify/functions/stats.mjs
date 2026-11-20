@@ -261,7 +261,7 @@ export default async function handler(request) {
   const store = getStore("analytics");
   const now = Date.now();
   const s = {
-    totals: { pageviews: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0, lcbTrialDownloads: 0, neeTrialDownloads: 0, pnTrialDownloads: 0, smTrialDownloads: 0, guideTrialClicks: 0, guidePageClicks: 0, sendToMac: 0, trialNotMac: 0, events: 0 },
+    totals: { pageviews: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0, lcbTrialDownloads: 0, neeTrialDownloads: 0, lensesTrialDownloads: 0, pnTrialDownloads: 0, smTrialDownloads: 0, guideTrialClicks: 0, guidePageClicks: 0, sendToMac: 0, trialNotMac: 0, events: 0 },
     byPath: {}, byReferrer: {}, byUtm: {}, byHost: {}, toolRuns: {},
     checkoutByProduct: {}, checkoutByPath: {},
     otherEvents: {}, otherEventDetail: {},
@@ -303,7 +303,7 @@ export default async function handler(request) {
   for (const { day, blobs } of listings) {
     if (!blobs) continue;            // preserves the old behaviour: skip the day entirely
     if (!s.byDay[day]) {
-      s.byDay[day] = { pageviews: 0, uniques: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0, lcbTrialDownloads: 0, neeTrialDownloads: 0, pnTrialDownloads: 0, smTrialDownloads: 0, guideTrialClicks: 0, guidePageClicks: 0, sendToMac: 0, trialNotMac: 0, appPageviews: 0, appConversions: 0 };
+      s.byDay[day] = { pageviews: 0, uniques: 0, toolRuns: 0, checkoutClicks: 0, trialDownloads: 0, ovTrialDownloads: 0, lgTrialDownloads: 0, kfTrialDownloads: 0, tfTrialDownloads: 0, lcbTrialDownloads: 0, neeTrialDownloads: 0, lensesTrialDownloads: 0, pnTrialDownloads: 0, smTrialDownloads: 0, guideTrialClicks: 0, guidePageClicks: 0, sendToMac: 0, trialNotMac: 0, appPageviews: 0, appConversions: 0 };
       if (hostFilter) for (const f of Object.values(HOST_EVENT_FIELDS)) s.byDay[day][f] = 0;
     }
     if (!uniquesPerDay[day]) uniquesPerDay[day] = new Set();
@@ -424,6 +424,9 @@ export default async function handler(request) {
       } else if (rec.type === "nee_trial_download") {
         // Née trial DMG downloads. Its own event type, for the same reason.
         s.totals.neeTrialDownloads++; s.byDay[day].neeTrialDownloads++;
+      } else if (rec.type === "lenses_trial_download") {
+        // Lenses trial DMG downloads. Its own event type, for the same reason.
+        s.totals.lensesTrialDownloads++; s.byDay[day].lensesTrialDownloads++;
       } else if (rec.type === "pn_trial_download") {
         // Panely trial DMG downloads. Its own event type, for the same reason.
         s.totals.pnTrialDownloads++; s.byDay[day].pnTrialDownloads++;
