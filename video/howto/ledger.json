@@ -883,5 +883,35 @@
    "ok": true,
    "utm_content": "howto-title-bar-double-click-not-filling-screen-reel"
   }
+ },
+ {
+  "slug": "howto-finder-search-this-mac-not-current-folder",
+  "app": "summonly",
+  "date": "2026-11-20",
+  "title": "Finder search not limited to the current folder on Mac (change When performing a search)",
+  "long_id": "j6qgIkrtBtY",
+  "short_id": "0w5hW39CYrg",
+  "link_arm": "A",
+  "link_utm_content": "howto-finder-search-this-mac-not-current-folder",
+  "short_utm_content": "howto-finder-search-this-mac-not-current-folder-short",
+  "sources": [
+   "https://discussions.apple.com/thread/253688405",
+   "https://discussions.apple.com/thread/252066864",
+   "https://forums.macrumors.com/threads/finder-always-comes-up-searching-this-mac.2283252/"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "j6qgIkrtBtY",
+    "caption_id": "AUieDaYRDURAwE8y6YJ4O5Pf-mGV8s7pH3pdmodaLQPsVnteaSxeR7Ss"
+   },
+   "short": {
+    "video_id": "0w5hW39CYrg",
+    "caption_id": "AUieDaZ0J8RYEl_Gg4aOnOzZKEhfbat_asRaz7iVXDRcfcgvH8jKORpO"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-finder-search-this-mac-not-current-folder-reel"
+  }
  }
 ]
