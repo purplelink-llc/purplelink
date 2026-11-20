@@ -1,0 +1,90 @@
+{
+ "id": "howto-finder-search-this-mac-not-current-folder",
+ "app": "summonly",
+ "title": "Finder search not limited to the current folder on Mac (change When performing a search)",
+ "short_title": "Finder search keeps searching This Mac? Make it search the current folder",
+ "url": "purplelink.llc/summonly",
+ "page": "https://purplelink.llc/summonly/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://discussions.apple.com/thread/253688405",
+  "https://discussions.apple.com/thread/252066864",
+  "https://forums.macrumors.com/threads/finder-always-comes-up-searching-this-mac.2283252/"
+ ],
+ "verify": {
+  "runs": [
+   {
+    "cmd": "plutil -p /System/Library/CoreServices/Finder.app/Contents/Resources/en.lproj/Localizable.strings | grep -E '\"(Search This Mac|Search the Current Folder|Use the Previous Search Scope|When performing a search:)\" =>'",
+    "output": "  \"Search the Current Folder\" => \"Search the Current Folder\"\n  \"Search This Mac\" => \"Search This Mac\"\n  \"Use the Previous Search Scope\" => \"Use the Previous Search Scope\"\n  \"When performing a search:\" => \"When performing a search:\""
+   }
+  ],
+  "docs": [
+   "https://support.apple.com/guide/mac-help/change-finder-settings-on-mac-mchlp2803/mac"
+  ],
+  "notes": "Apple's Mac User Guide 'Change Finder settings on Mac' (macOS 27 version, read 2026-11-20) says to click Finder in the Dock, then choose Finder > Settings, and its Advanced section lists 'When performing a search': choose what the Finder window search field searches by default, your entire Mac, the folder that's open, or the scope you used for your last search. The exact menu labels on screen (When performing a search:, Search This Mac, Search the Current Folder, Use the Previous Search Scope) were confirmed read-only in Finder's own en.lproj/Localizable.strings on Ben's Mac mini (macOS 27.0.1); that run is in verify.runs and is not shown on screen. Apple Community 253688405: the poster's search starts with the whole Mac; the reply 'Search the Current Folder' fixed it. 252066864 and MacRumors 2283252 are the same symptom. Claims those threads make that Apple does not document (Open dialogs ignore the setting, clicking the folder name per search) are left out. The preference key is unset on this Mac (read-only defaults read) and undocumented, so it is not in the video. Summonly claims are from its page: Option-Space opens it, it keeps a small index of the folders you choose, the in:Documents filter, and filters by kind, size and date. Nothing on this Mac was changed."
+ },
+ "scenes": [
+  {
+   "type": "hook",
+   "short": true,
+   "kicker": "Finder on a Mac",
+   "title": "Finder search ignores the folder you are in",
+   "sub": "It searches This Mac every time.",
+   "narration": "You open a folder in Finder and type in the search field, and Finder searches your whole Mac instead of that folder. Here is the setting that decides it."
+  },
+  {
+   "type": "cause",
+   "text": "Finder's search scope is a setting. When it says This Mac, every search starts with the whole Mac.",
+   "narration": "Finder has a setting for where a search starts. When it is set to This Mac, every search in a Finder window looks through the whole Mac, even when you have a folder open."
+  },
+  {
+   "type": "steps",
+   "short": true,
+   "label": "Finder Settings",
+   "lines": [
+    "Click Finder in the Dock",
+    "Choose Finder > Settings, then Advanced",
+    "Find When performing a search",
+    "Change Search This Mac to Search the Current Folder"
+   ],
+   "ui": "Use the Previous Search Scope keeps whichever scope you used last.",
+   "narration": "Click Finder in the Dock, then choose Finder, Settings, and click Advanced. Find When performing a search, and change Search This Mac to Search the Current Folder. Now a search starts in the folder you have open. The third choice, Use the Previous Search Scope, keeps whichever scope you used last time."
+  },
+  {
+   "type": "app",
+   "name": "Summonly",
+   "line": "To search one folder, type in:Documents and a word.",
+   "url": "purplelink.llc/summonly",
+   "img": "site/summonly/img/panel.webp",
+   "icon": "site/assets/summonly-icon.webp",
+   "narration": "Summonly is a Mac search box you open with Option Space. It keeps a small index of the folders you choose, and a filter such as in Documents limits a search to one folder. It also filters by kind, size and date. There is a free seven day trial."
+  }
+ ],
+ "thumbs": {
+  "A": {
+   "kind": "diff",
+   "hook": "Not this folder?",
+   "before": "Search This Mac",
+   "after": "Search the Current Folder"
+  },
+  "B": {
+   "kind": "focus",
+   "hook": "Finder searches\nyour whole Mac?",
+   "lines": [
+    "When performing a search",
+    "Search the Current Folder"
+   ],
+   "hl": "Search the Current Folder"
+  },
+  "C": {
+   "kind": "product",
+   "name": "Summonly",
+   "line": "Search one folder with in:",
+   "img": "site/summonly/img/panel.webp",
+   "icon": "site/assets/summonly-icon.webp",
+   "zoom": 1.2,
+   "pos": "50% 40%"
+  }
+ }
+}

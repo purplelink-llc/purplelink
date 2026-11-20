@@ -318,5 +318,16 @@
   "started": "2026-11-19",
   "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
   "checked": "2026-11-19"
+ },
+ {
+  "video": "j6qgIkrtBtY",
+  "variants": {
+   "A": "video/out/howto/finder-search-this-mac-not-current-folder/finder-search-this-mac-not-current-folder-thumb-A.jpg",
+   "B": "video/out/howto/finder-search-this-mac-not-current-folder/finder-search-this-mac-not-current-folder-thumb-B.jpg",
+   "C": "video/out/howto/finder-search-this-mac-not-current-folder/finder-search-this-mac-not-current-folder-thumb-C.jpg"
+  },
+  "started": "2026-11-20",
+  "status": "Thumbnail\nSet a thumbnail that stands out and draws viewers' attention. Learn more\nRunning\u2026\nGet suggestions",
+  "checked": "2026-11-20"
  }
 ]
