@@ -8,7 +8,7 @@
     <meta name="description" content="Offline Overleaf alternatives for Mac in 2026: TeXShop, TeXstudio, Texifier, VS Code and ModernTex, plus when to stay on Overleaf and how to move.">
     <link rel="canonical" href="https://purplelink.llc/guides/overleaf-alternative-mac/">
     <meta property="og:title" content="Overleaf alternative Mac 2026: offline editors">
-    <meta property="og:description" content="When Overleaf is still the right tool, what you gain by writing LaTeX locally on a Mac, seven options compared, and how to move a project over.">
+    <meta property="og:description" content="When Overleaf is still the right tool, what you gain by writing LaTeX locally on a Mac, eight options compared, and how to move a project over.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://purplelink.llc/guides/overleaf-alternative-mac/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/overleaf-alternative-mac.png">
@@ -16,7 +16,7 @@
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Overleaf alternative Mac 2026: offline editors">
-    <meta name="twitter:description" content="When Overleaf is still the right tool, what you gain by writing LaTeX locally on a Mac, seven options compared, and how to move a project over.">
+    <meta name="twitter:description" content="When Overleaf is still the right tool, what you gain by writing LaTeX locally on a Mac, eight options compared, and how to move a project over.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/overleaf-alternative-mac.png">
     <meta name="twitter:image:alt" content="Overleaf alternatives for Mac, comparison guide">
     <script type="application/ld+json">
@@ -30,7 +30,7 @@
           "author": { "@id": "https://purplelink.llc/about/#person" },
           "publisher": { "@id": "https://purplelink.llc/#organization" },
           "datePublished": "2026-09-24",
-          "dateModified": "2026-10-31",
+          "dateModified": "2026-11-19",
           "image": "https://purplelink.llc/assets/og/overleaf-alternative-mac.png",
           "mainEntityOfPage": "https://purplelink.llc/guides/overleaf-alternative-mac/"
         },
@@ -134,7 +134,7 @@
       <div class="post-hero">
         <p class="post-date">Comparison</p>
         <h1 class="post-title">Overleaf alternative Mac 2026: offline editors</h1>
-        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-09-24">September 24, 2026</time>, updated <time datetime="2026-10-13">October 13, 2026</time></p>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-09-24">September 24, 2026</time>, updated <time datetime="2026-11-19">November 19, 2026</time></p>
         <p class="post-lede">The best Overleaf alternative on a Mac is a local TeX distribution (MacTeX or TinyTeX) plus a native editor. Choose TeXShop if you want free and standard, and Texifier or ModernTex if you want a modern paid Mac app. Keep Overleaf for any draft that co-authors edit at the same time.</p>
       </div>
 
@@ -178,7 +178,7 @@
         <p>Every local option needs a TeX distribution installed separately, except where the table says otherwise. "Synced PDF preview" means clicking in the source jumps to the matching spot in the PDF and back. Most editors do this through SyncTeX (a TeX feature that links source lines to PDF positions). "BibTeX completion" means the editor suggests citation keys from your <code>.bib</code> file as you type <code>\cite{</code>.</p>
 
         <table class="compare-table compare-stack">
-          <caption>Overleaf and six Mac alternatives, as of September 2026</caption>
+          <caption>Overleaf and seven Mac alternatives, as of November 2026</caption>
           <thead>
             <tr>
               <th scope="col">Editor</th>
@@ -253,6 +253,16 @@
               <td data-label="Notes">Very capable, for people who already use these editors.</td>
             </tr>
             <tr>
+              <th scope="row"><a href="https://github.com/leo1oel/lattice" rel="noopener">Lattice</a></th>
+              <td data-label="Runs">macOS 14 or later (Apple silicon or Intel); experimental Linux and Windows builds</td>
+              <td data-label="Price">Free, open source (Apache-2.0)</td>
+              <td data-label="Offline">Yes</td>
+              <td data-label="Real-time collaboration">Through its two-way Overleaf sync, with comments and tracked changes</td>
+              <td data-label="Synced PDF preview">Yes, SyncTeX both ways</td>
+              <td data-label="BibTeX completion">Citation keys show their reference on hover</td>
+              <td data-label="Notes">Needs MacTeX or TeX Live. Built with Tauri, version 0.18.0, young and not tested by me.</td>
+            </tr>
+            <tr>
               <th scope="row">ModernTex</th>
               <td data-label="Runs">macOS 14 or later</td>
               <td data-label="Price">$19.99 once, after a free 7-day trial</td>
@@ -279,6 +289,9 @@
 
         <h3>Underleaf</h3>
         <p><a href="https://github.com/jpughesanford/underleaf" rel="noopener">Underleaf</a> is a free Mac app, with source code on GitHub, that its developer <a href="https://jpughesanford.github.io/posts/2026/05/introducing-underleaf-an-offline-editor-for-overleaf-with-git-integration./" rel="noopener">introduced in May 2026</a>. You point it at a folder of Overleaf projects cloned with Git. It shows each project as synced, ahead, behind or in conflict, and its editor looks like Overleaf's, with a source control panel for commits, pushes, pulls and merge conflicts. That makes it a companion to Overleaf for writing offline, not a replacement. It relies on Overleaf's Git access, a premium feature, and on a local TeX Live. The developer's post says the app was built with an AI model, is not signed (macOS warns about an unidentified developer the first time), and is not actively maintained. The last release on GitHub is 0.2.0, May 2026, and the repository states no license. Read October 31, 2026. I have not tested it. <strong>Consider it if</strong> you keep using Overleaf with co-authors and want to edit the same projects on a plane.</p>
+
+        <h3>Lattice</h3>
+        <p><a href="https://github.com/leo1oel/lattice" rel="noopener">Lattice</a> is a free, open-source LaTeX workspace for macOS 14 or later, with experimental Linux and Windows builds. It runs on your own MacTeX or TeX Live and syncs both ways with Overleaf, including comments and tracked changes, so co-authors can stay on Overleaf and nobody else needs Lattice. It also has a panel for coding agents that you sign in to yourself. It is built with Tauri rather than native Mac frameworks, and it is young: the repository was created in July 2026 and the latest release is version 0.18.0 (November 19, 2026). Facts read from its GitHub page and README on November 19, 2026. I have not tested it. <strong>Consider it if</strong> you need to keep collaborating on Overleaf but want to write in a local app.</p>
 
         <h3>VS Code with LaTeX Workshop</h3>
         <p>If you already write code in VS Code, the LaTeX Workshop extension gives you a capable LaTeX setup with build recipes, an embedded PDF viewer with SyncTeX, citation completion and Git in the sidebar. Microsoft's Live Share extension lets a co-author join a live editing session. That is the closest a desktop editor gets to Overleaf. However, it is a session you host, not a shared document that is always there. <strong>Choose it if</strong> VS Code is already open all day.</p>
