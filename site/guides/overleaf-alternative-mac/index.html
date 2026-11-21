@@ -8,7 +8,7 @@
     <meta name="description" content="Offline Overleaf alternatives for Mac in 2026: TeXShop, TeXstudio, Texifier, VS Code and ModernTex, plus when to stay on Overleaf and how to move.">
     <link rel="canonical" href="https://purplelink.llc/guides/overleaf-alternative-mac/">
     <meta property="og:title" content="Overleaf alternative Mac 2026: offline editors">
-    <meta property="og:description" content="When Overleaf is still the right tool, what you gain by writing LaTeX locally on a Mac, eight options compared, and how to move a project over.">
+    <meta property="og:description" content="When Overleaf is still the right tool, what you gain by writing LaTeX locally on a Mac, nine options compared, and how to move a project over.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://purplelink.llc/guides/overleaf-alternative-mac/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/overleaf-alternative-mac.png">
@@ -16,7 +16,7 @@
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Overleaf alternative Mac 2026: offline editors">
-    <meta name="twitter:description" content="When Overleaf is still the right tool, what you gain by writing LaTeX locally on a Mac, eight options compared, and how to move a project over.">
+    <meta name="twitter:description" content="When Overleaf is still the right tool, what you gain by writing LaTeX locally on a Mac, nine options compared, and how to move a project over.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/overleaf-alternative-mac.png">
     <meta name="twitter:image:alt" content="Overleaf alternatives for Mac, comparison guide">
     <script type="application/ld+json">
@@ -30,7 +30,7 @@
           "author": { "@id": "https://purplelink.llc/about/#person" },
           "publisher": { "@id": "https://purplelink.llc/#organization" },
           "datePublished": "2026-09-24",
-          "dateModified": "2026-11-19",
+          "dateModified": "2026-11-21",
           "image": "https://purplelink.llc/assets/og/overleaf-alternative-mac.png",
           "mainEntityOfPage": "https://purplelink.llc/guides/overleaf-alternative-mac/"
         },
@@ -134,7 +134,7 @@
       <div class="post-hero">
         <p class="post-date">Comparison</p>
         <h1 class="post-title">Overleaf alternative Mac 2026: offline editors</h1>
-        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-09-24">September 24, 2026</time>, updated <time datetime="2026-11-19">November 19, 2026</time></p>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-09-24">September 24, 2026</time>, updated <time datetime="2026-11-21">November 21, 2026</time></p>
         <p class="post-lede">The best Overleaf alternative on a Mac is a local TeX distribution (MacTeX or TinyTeX) plus a native editor. Choose TeXShop if you want free and standard, and Texifier or ModernTex if you want a modern paid Mac app. Keep Overleaf for any draft that co-authors edit at the same time.</p>
       </div>
 
@@ -178,7 +178,7 @@
         <p>Every local option needs a TeX distribution installed separately, except where the table says otherwise. "Synced PDF preview" means clicking in the source jumps to the matching spot in the PDF and back. Most editors do this through SyncTeX (a TeX feature that links source lines to PDF positions). "BibTeX completion" means the editor suggests citation keys from your <code>.bib</code> file as you type <code>\cite{</code>.</p>
 
         <table class="compare-table compare-stack">
-          <caption>Overleaf and seven Mac alternatives, as of November 2026</caption>
+          <caption>Overleaf and eight Mac alternatives, as of November 2026 (TeX64 read November 21, 2026)</caption>
           <thead>
             <tr>
               <th scope="col">Editor</th>
@@ -263,6 +263,16 @@
               <td data-label="Notes">Needs MacTeX or TeX Live. Built with Tauri, version 0.18.0, young and not tested by me.</td>
             </tr>
             <tr>
+              <th scope="row"><a href="https://tex64.com/" rel="noopener">TeX64</a></th>
+              <td data-label="Runs">macOS (Apple silicon and Intel), Windows</td>
+              <td data-label="Price">Free download; AI assistant free for 100,000 tokens a month, then $12 or $25 a month</td>
+              <td data-label="Offline">Yes, except the AI assistant</td>
+              <td data-label="Real-time collaboration">Not listed on its site</td>
+              <td data-label="Synced PDF preview">Not checked</td>
+              <td data-label="BibTeX completion">Not checked</td>
+              <td data-label="Notes">Needs a TeX distribution and offers a managed install. Equation OCR works offline.</td>
+            </tr>
+            <tr>
               <th scope="row">ModernTex</th>
               <td data-label="Runs">macOS 14 or later</td>
               <td data-label="Price">$19.99 once, after a free 7-day trial</td>
@@ -283,6 +293,9 @@
 
         <h3>Texifier (formerly Texpad)</h3>
         <p>Texifier is the established paid native Mac editor, with an iOS app for writing on an iPad. It can typeset as you type and does not require a separate MacTeX install. That makes it the smoothest move for someone leaving Overleaf who does not want to manage a distribution. It is a one-time purchase, not a subscription. Check the developer's site for the current price. <strong>Choose it if</strong> you want a polished Mac app and an iPad companion.</p>
+
+        <h3>TeX64</h3>
+        <p><a href="https://tex64.com/" rel="noopener">TeX64</a> is a free LaTeX editor for macOS (Apple silicon and Intel) and Windows. Its site says editing, PDF builds and equation OCR (turning a picture of an equation into LaTeX) work offline. Builds need a TeX distribution: it uses one you already have or installs a managed one without administrator access. Its AI assistant, Axiom, needs a Google sign-in and an internet connection. The free tier is 100,000 tokens a month, Basic is $12 a month for 800,000, and Pro is $25 a month for 3,000,000. Read November 21, 2026. I have not tested it. <strong>Consider it if</strong> you want a free offline editor on both a Mac and a Windows PC, with an AI assistant on hand.</p>
 
         <h3>LatteX</h3>
         <p>LatteX is a newer editor for macOS and Windows with typesetting built in, so there is no TeX distribution to install. The pages refresh as you pause, and each document is a .tex file on disk. It costs $29.99 once for one device after a 7-day trial, according to <a href="https://getapps.cafe/app/lattex" rel="noopener">its developer's page</a> (read October 17, 2026). The same page says it loads no LaTeX packages or custom class files and does not support <code>\newcommand</code> or TikZ. That rules it out for most Overleaf projects built on a journal template. <strong>Choose it if</strong> you write short papers, homework or letters and never want to install TeX. I have not tested it.</p>

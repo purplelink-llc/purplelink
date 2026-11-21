@@ -31,7 +31,7 @@
           "publisher": { "@type": "Organization", "name": "Purplelink LLC", "url": "https://purplelink.llc/", "logo": { "@type": "ImageObject", "url": "https://purplelink.llc/assets/purplelink-logo.png" } },
           "mainEntityOfPage": "https://purplelink.llc/guides/latexdiff-online/",
           "datePublished": "2026-10-13",
-          "dateModified": "2026-10-13",
+          "dateModified": "2026-11-21",
           "image": "https://purplelink.llc/assets/og/tools-launch.png"
         },
         {
@@ -78,7 +78,7 @@
       <div class="post-hero">
         <p class="post-date">Guide</p>
         <h1 class="post-title">latexdiff online for a multi-file project</h1>
-        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-13">October 13, 2026</time></p>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-13">October 13, 2026</time>, updated <time datetime="2026-11-21">November 21, 2026</time></p>
         <p class="post-lede">A revision usually asks for a marked-up PDF, and a real manuscript is rarely one file. This guide covers the commands for a project with <code>\input</code> and <code>\include</code>, the options that fix the usual failures, and what our online tool does with a project.</p>
       </div>
 
@@ -154,6 +154,59 @@ latexdiff old-flat.tex new-flat.tex &gt; diff.tex</code></pre>
           <li>The page says files sit in a temporary folder on our server only while the PDF is built, then are deleted.</li>
         </ul>
         <p>The tool page does not list any latexdiff options, so you cannot pass <code>--math-markup</code> or <code>--append-textcmd</code> to it, and it does not say how it handles a bibliography. If your project needs those, run latexdiff locally with the commands above. <a href="/guides/install-latex-on-mac/">Install LaTeX on a Mac</a> if you do not have a TeX distribution yet.</p>
+
+        <h2>Other ways to run latexdiff online</h2>
+        <p>Three other services come up when you search for latexdiff online, and a local install is the fourth option. The figures below come from each maker's own page, read on November 21, 2026. I have not tested the other services.</p>
+        <table class="compare-table compare-stack">
+          <caption>latexdiff online and its alternatives, as of November 21, 2026</caption>
+          <thead>
+            <tr>
+              <th scope="col">Tool</th>
+              <th scope="col">Where it runs</th>
+              <th scope="col">Size limit</th>
+              <th scope="col">Several files</th>
+              <th scope="col">Cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row"><a href="/tools/latex-diff/">Our LaTeX diff tool</a></th>
+              <td data-label="Where it runs">Our server; files deleted after the PDF is built</td>
+              <td data-label="Size limit">5 MB <code>.tex</code>, 10 MB <code>.zip</code></td>
+              <td data-label="Several files">Yes, a <code>.zip</code> with <code>main.tex</code></td>
+              <td data-label="Cost">Free</td>
+            </tr>
+            <tr>
+              <th scope="row"><a href="https://thelatexlab.com/latexdiff-online/" rel="noopener">TheLaTeXLab</a></th>
+              <td data-label="Where it runs">Their server, running latexdiff from CTAN</td>
+              <td data-label="Size limit">500 KB per file, 4 MB project, 5 MB <code>.zip</code></td>
+              <td data-label="Several files">Yes, two project zips</td>
+              <td data-label="Cost">Free</td>
+            </tr>
+            <tr>
+              <th scope="row"><a href="https://github.com/am009/git-latexdiff-web" rel="noopener">git-latexdiff-web</a></th>
+              <td data-label="Where it runs">latexdiff.cn, or your own server with Docker</td>
+              <td data-label="Size limit">Not stated</td>
+              <td data-label="Several files">Yes, <code>\input</code></td>
+              <td data-label="Cost">MIT licence; no price stated for the hosted site</td>
+            </tr>
+            <tr>
+              <th scope="row"><a href="https://www.overleaf.com/user/subscription/plans" rel="noopener">Overleaf</a></th>
+              <td data-label="Where it runs">Online editor</td>
+              <td data-label="Size limit">Not applicable</td>
+              <td data-label="Several files">Yes</td>
+              <td data-label="Cost">Track changes from Student, $8.25 a month billed yearly; Free keeps 24 hours of history</td>
+            </tr>
+            <tr>
+              <th scope="row">latexdiff on your Mac</th>
+              <td data-label="Where it runs">Your Mac, with TeX Live or MacTeX</td>
+              <td data-label="Size limit">None</td>
+              <td data-label="Several files">Yes, <code>--flatten</code></td>
+              <td data-label="Cost">Free</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>Three points stand out. First, TheLaTeXLab caps each file at 500 KB, so a long thesis chapter may need splitting there, while our tool takes up to 5 MB per file. Second, git-latexdiff-web is the one to choose if your files must not leave your own machines, because you can run it yourself in Docker. Third, Overleaf's plans page lists track changes and full history as paid features. It does not describe a latexdiff export, so check Overleaf's documentation before relying on it for a marked-up PDF. None of the online services lists the latexdiff options covered above, so a project that needs them is best run locally.</p>
 
         <h2>After the PDF</h2>
         <p>Check your journal's submission instructions for whether it wants a marked-up PDF. <a href="/blog/producing-a-diff-pdf-for-journal-resubmission/">Producing a diff PDF for journal resubmission</a> covers producing one. To compile the project itself in a browser, see <a href="/guides/compile-latex-project-to-pdf-online/">compile a LaTeX project online</a>, and <a href="/guides/check-response-letter-before-resubmitting/">check your response letter before resubmitting</a> before it goes out.</p>
