@@ -34,7 +34,7 @@
         "@id": "https://purplelink.llc/#organization"
       },
       "datePublished": "2026-11-05",
-      "dateModified": "2026-11-05",
+      "dateModified": "2026-11-20",
       "image": "https://purplelink.llc/assets/og/lenses.png",
       "mainEntityOfPage": "https://purplelink.llc/guides/ar-glasses-mac-setup/"
     },
@@ -145,7 +145,7 @@
       <div class="post-hero">
         <p class="post-date">How-to</p>
         <h1 class="post-title">Setting up your new VR/AR glasses with a Mac</h1>
-        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-11-05">November 5, 2026</time></p>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-11-05">November 5, 2026</time> · Updated <time datetime="2026-11-20">November 20, 2026</time></p>
         <p class="post-lede">Eight steps for display-type VR and AR glasses, such as RayNeo, XREAL and VITURE, that plug into a Mac over USB-C. Each one says what to do by hand in macOS, or says plainly that macOS cannot do it.</p>
       </div>
 
@@ -180,6 +180,14 @@
         <p>Steps 2, 3, 5 and 7 are settings you can change once and forget, but you have to change them back when you unplug, and the edge margin and the night tint cannot be done at all in System Settings.</p>
         <p><a href="/lenses/">Lenses</a> is a menu-bar app I made for this, with a free 7-day trial and then a $4.99 license key. When the glasses connect it applies the profile you chose: a sharp HiDPI mode, 120 Hz where offered, an edge margin, a night tint, Dark Mode and a bigger pointer. When you unplug them it puts the Mac back. It collects nothing; the only network request it makes is the update check.</p>
         <p>I tested it on RayNeo Air. It recognises XREAL and VITURE glasses by display name, which I have not tested, and any other glasses can be marked with Use this display as my glasses in its menu. It needs macOS 14 or later and an Apple silicon Mac, with a 14-day refund. Everything above works without it.</p>
+        <h2 id="maker-apps">The glasses makers' own apps, and BetterDisplay</h2>
+        <p>Most glasses work on a Mac with no app at all, because macOS sees them as a second display. The makers also publish Mac apps that do more, mostly virtual screens (extra desktop windows that stay fixed in space as you turn your head).</p>
+        <ul>
+          <li><strong>VITURE SpaceWalker for Mac.</strong> Current versions need macOS Ventura 13.0 or later. VITURE stopped supporting Intel Macs from version 1.6.0 and still offers 1.5.0 for them. SpaceWalker asks for Screen Recording permission the first time, so it can draw the virtual screens. VITURE says to use a USB-C port that supports DisplayPort Alt Mode (on a Mac, a port with the Thunderbolt symbol). Source: <a href="https://www.viture.com/academy/spacewalker/desktop" rel="noopener">VITURE SpaceWalker desktop guide</a>.</li>
+          <li><strong>XREAL AURA.</strong> Plug it straight into a Mac with a USB-C cable that carries DisplayPort video, and it works as an external display. The charging cable in the box is power only and will not show a picture. AURA uses the same on-glasses menu as the XREAL One series for size, brightness and color. Source: <a href="https://tutorials.xreal.com/docs/aura/using-aura/use-external-display" rel="noopener">XREAL AURA external display tutorial</a>.</li>
+          <li><strong>BetterDisplay.</strong> This is a general display utility, not a glasses app. It adds flexible HiDPI scaling and virtual screens. If the size you want in step 2 is missing from the list, it is the usual fix. Some of its features need a paid Pro license. Source: <a href="https://github.com/waydabber/BetterDisplay" rel="noopener">BetterDisplay on GitHub</a>.</li>
+        </ul>
+        <p>Lenses does not make virtual screens. It sets the sharp size, the edge margin, Dark Mode, the night tint and the bigger pointer for whatever display your glasses show up as, so you can run it next to the makers' apps. I make Lenses and have tested it on RayNeo Air only. On AURA or any other pair, choose Use this display as my glasses from its menu.</p>
         <h2 id="faq">Frequently asked</h2>
         <h3>Why are the edges of my AR glasses blurry?</h3>
         <p>The blur comes from the lens, not from your eyes or from macOS. These glasses are sharp in the middle of the view and soft toward the edges, so any picture that runs to the edge of the screen has a soft rim.</p>
