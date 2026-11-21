@@ -68,14 +68,15 @@ def _rate_check(ip: str) -> bool:
     return allowed
 
 
-@app.function(image=tex_image, timeout=90, cpu=1.0, memory=1024, max_containers=3)
+@app.function(image=tex_image, timeout=90, cpu=1.0, memory=1024, max_containers=3, scaledown_window=30)
 def compile_tex(source: str, engine: str, bibliography: str | None) -> dict:
     from latextools import compile_job
 
     return compile_job.compile_document(source, engine, bibliography)
 
 
-@app.function(image=web_image, timeout=120, cpu=0.25, memory=256, max_containers=2)
+# Idle cost: a small reservation and a short scaledown window so discovery pings do not hold a container up.
+@app.function(image=web_image, timeout=120, cpu=0.125, memory=256, max_containers=2, scaledown_window=5)
 @modal.concurrent(max_inputs=16)
 @modal.asgi_app()
 def web():

@@ -388,4 +388,8 @@ def create_app(rate_check: Callable[[str], bool] | None = None, public: bool = F
         async def challenge(_request):
             return PlainTextResponse(challenge_token)
         app.router.routes.append(Route("/.well-known/openai-apps-challenge", challenge))
+
+    from latextools.mcp_caller_log import CallerLog
+
+    app.add_middleware(CallerLog)
     return app

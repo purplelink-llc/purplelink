@@ -53,9 +53,12 @@ def _rate_check(ip: str) -> bool:
 @app.function(
     image=image,
     timeout=60,
-    cpu=0.5,
-    memory=512,
+    # Idle cost: Modal bills reserved CPU while a container is up, and registry crawlers keep pinging /mcp.
+    # A small reservation plus a short scaledown window lets the container go away between pings.
+    cpu=0.125,
+    memory=256,
     max_containers=4,
+    scaledown_window=5,
 )
 @modal.concurrent(max_inputs=16)
 @modal.asgi_app()
