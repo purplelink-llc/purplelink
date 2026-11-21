@@ -495,3 +495,25 @@ def test_title_match_years_apart_needs_review_when_no_other_source_confirms():
     r = check(text, handler)[0]
     assert r["status"] == "needs_review" and r["mismatches"][0]["field"] == "year"
     assert any("different year" in n for n in r["notes"])
+
+
+def test_caller_log_names_client_and_method_but_never_arguments(monkeypatch, caplog):
+    from starlette.testclient import TestClient
+    monkeypatch.setattr(cs, "_client_factory", lambda: client_for(make_handler()))
+    secret = "Quantum gradient descent for protein folding in noisy lattices"
+    app = cs.create_app(rate_check=lambda ip: True, public=True)
+    hdr = {"Accept": "application/json, text/event-stream", "Content-Type": "application/json",
+           "User-Agent": "registry-crawler/2.0 " + "x" * 200}
+    init = {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {
+        "protocolVersion": "2025-06-18", "capabilities": {}, "clientInfo": {"name": "probe", "version": "9"}}}
+    tool = {"jsonrpc": "2.0", "id": 2, "method": "tools/call",
+            "params": {"name": "check_references", "arguments": {"references": secret}}}
+    with caplog.at_level(logging.INFO, logger="mcp.caller"), TestClient(app) as c:
+        c.post("/mcp", headers=hdr, content=json.dumps(init))
+        c.post("/mcp", headers=hdr, content=json.dumps(tool))
+        c.get("/health")
+    lines = [r.getMessage() for r in caplog.records if r.name == "mcp.caller"]
+    assert len(lines) == 2
+    assert "method=initialize client=probe/9" in lines[0] and "registry-crawler/2.0" in lines[0]
+    assert "method=tools/call client=-" in lines[1]
+    assert all(secret not in line and "x" * 81 not in line and "testclient" not in line for line in lines)
