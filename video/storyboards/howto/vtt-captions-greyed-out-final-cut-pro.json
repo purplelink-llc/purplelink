@@ -1,0 +1,114 @@
+{
+ "id": "howto-vtt-captions-greyed-out-final-cut-pro",
+ "app": "tapefolio",
+ "title": "VTT captions greyed out in Final Cut Pro on Mac (convert the .vtt file to SRT)",
+ "short_title": "Final Cut won't import your .vtt captions? Make it SRT",
+ "url": "purplelink.llc/tapefolio",
+ "page": "https://purplelink.llc/tapefolio/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://discussions.apple.com/thread/255177024"
+ ],
+ "verify": {
+  "runs": [
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf 'WEBVTT\\n\\n1\\n00:00:00.500 --> 00:00:03.200\\nThanks for talking with me today.\\n\\n2\\n00:00:03.400 --> 00:00:06.100\\nHappy to help with the study.\\n' > interview.vtt && head -4 interview.vtt",
+    "output": "WEBVTT\n\n1\n00:00:00.500 --> 00:00:03.200"
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && printf 'WEBVTT\\n\\n1\\n00:00:00.500 --> 00:00:03.200\\nThanks for talking with me today.\\n\\n2\\n00:00:03.400 --> 00:00:06.100\\nHappy to help with the study.\\n' > interview.vtt && sed -e '1,2d' -e '/-->/s/\\./,/g' interview.vtt > interview.srt && head -3 interview.srt",
+    "output": "1\n00:00:00,500 --> 00:00:03,200\nThanks for talking with me today."
+   }
+  ],
+  "docs": [
+   "https://support.apple.com/guide/final-cut-pro/ver4185ef95a/mac",
+   "https://purplelink.llc/tapefolio/"
+  ],
+  "notes": "Built 2026-11-21 on Ben's Mac in mktemp folders with an invented two-caption WebVTT file. Run 1 shows the WEBVTT header and the dot before the milliseconds. Run 2 drops the header and blank line and changes the dots to commas on the timing lines only, giving SRT. Apple's Final Cut Pro guide (ver4185ef95a) lists the caption files it imports as CEA-608 (.scc), iTT (.itt) and SRT (.srt); WebVTT is not among them. The Apple Community thread (255177024) is a Vimeo .vtt greyed out in the captions import menu. The conversion assumes each cue already has a number, as this file does; the narration says so. Tapefolio claims are from its page: it transcribes recordings on the Mac with word timing and exports SRT and VTT among other formats, and files are not uploaded. The video does not claim Tapefolio converts existing .vtt files."
+ },
+ "scenes": [
+  {
+   "type": "hook",
+   "short": true,
+   "kicker": "Captions in Final Cut Pro",
+   "title": "Your .vtt file is greyed out",
+   "sub": "Final Cut Pro will not import WebVTT captions.",
+   "narration": "You have a caption file from Zoom, Vimeo or a transcription service, and Final Cut Pro will not let you pick it. The file is greyed out. Here is the short fix."
+  },
+  {
+   "type": "symptom",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ head -4 interview.vtt",
+    "WEBVTT",
+    "1",
+    "00:00:00.500 --> 00:00:03.200"
+   ],
+   "narration": "Look at the top of the file. It starts with the word WEBVTT, and the times use a dot before the milliseconds. That is the WebVTT format."
+  },
+  {
+   "type": "cause",
+   "text": "Final Cut Pro imports captions as SCC, iTT or SRT files. WebVTT is not on the list.",
+   "narration": "Final Cut Pro imports captions as SCC, iTT or SRT files, and WebVTT is not on that list. SRT is nearly the same, with no header line and a comma before the milliseconds."
+  },
+  {
+   "type": "steps",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ sed -e '1,2d' -e '/-->/s/\\./,/g' interview.vtt > interview.srt",
+    "Import interview.srt in Final Cut Pro"
+   ],
+   "ui": "Each caption needs a number above its times. Add them if your file has none.",
+   "narration": "One command removes the header and the blank line under it, and changes the dots to commas on the timing lines only. Each caption needs a number above its times, as this file has. Then import the SRT file."
+  },
+  {
+   "type": "check",
+   "short": true,
+   "label": "Terminal",
+   "ok": "Now it is SRT",
+   "lines": [
+    "$ head -3 interview.srt",
+    "1",
+    "00:00:00,500 --> 00:00:03,200",
+    "Thanks for talking with me today."
+   ],
+   "narration": "Check the new file. It starts with the caption number, and the times now use commas. Final Cut Pro can import it."
+  },
+  {
+   "type": "app",
+   "name": "Tapefolio",
+   "line": "Transcribes recordings on your Mac with word timing and exports SRT or VTT, so you pick the format you need.",
+   "url": "purplelink.llc/tapefolio",
+   "img": "site/assets/tapefolio-screens/export-sheet.webp",
+   "icon": "site/assets/tapefolio-icon.webp",
+   "narration": "Tapefolio transcribes your recordings on your Mac with the time of every word, and exports SRT, VTT, Word and more, so you can pick SRT for Final Cut Pro. Your files are not uploaded. There is a seven day free trial."
+  }
+ ],
+ "thumbs": {
+  "A": {
+   "kind": "diff",
+   "hook": "VTT to SRT",
+   "before": "00:00:00.500 --> 00:00:03.200",
+   "after": "00:00:00,500 --> 00:00:03,200"
+  },
+  "B": {
+   "kind": "focus",
+   "hook": "Final Cut won't\ntake your .vtt?",
+   "lines": [
+    "WEBVTT",
+    "00:00:00.500 --> 00:00:03.200"
+   ],
+   "hl": "00:00:00.500 --> 00:00:03.200"
+  },
+  "C": {
+   "kind": "product",
+   "name": "Tapefolio",
+   "line": "Export captions as SRT",
+   "img": "site/assets/tapefolio-screens/export-sheet.webp",
+   "icon": "site/assets/tapefolio-icon.webp"
+  }
+ }
+}
