@@ -1,0 +1,112 @@
+{
+ "id": "howto-whisper-cpp-failed-to-read-audio-m4a",
+ "app": "tapefolio",
+ "title": "whisper.cpp failed to read audio file with .m4a on Mac (convert to WAV with afconvert)",
+ "short_title": "whisper.cpp won't read your .m4a? Convert it to WAV",
+ "url": "purplelink.llc/tapefolio",
+ "page": "https://purplelink.llc/tapefolio/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://github.com/ggml-org/whisper.cpp/issues/4011"
+ ],
+ "verify": {
+  "runs": [
+   {
+    "cmd": "cd \"$(mktemp -d)\" && say -o interview.m4a --data-format=aac \"Thanks for talking with me today.\" && /opt/homebrew/bin/whisper-cli -m ~/whisper-models/ggml-large-v3-turbo.bin -f interview.m4a -np",
+    "output": "read_audio_data: failed to read audio data\nerror: failed to read audio file 'interview.m4a'"
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && say -o interview.m4a --data-format=aac \"Thanks for talking with me today.\" && afconvert -f WAVE -d LEI16@16000 -c 1 interview.m4a interview.wav && afinfo interview.wav | grep \"Data format\" && /opt/homebrew/bin/whisper-cli -m ~/whisper-models/ggml-large-v3-turbo.bin -f interview.wav -np -nt",
+    "output": "Data format:     1 ch,  16000 Hz, Int16\nThanks for talking with me today."
+   }
+  ],
+  "docs": [
+   "https://github.com/ggml-org/whisper.cpp#quick-start",
+   "https://purplelink.llc/tapefolio/"
+  ],
+  "notes": "Built 2026-11-22 on Ben's Mac in mktemp folders with whisper.cpp 1.9.5 from Homebrew and the ggml-large-v3-turbo model. The test recording is one sentence made with the built-in say command as AAC in an .m4a file, the format Voice Memos and most iPhone recordings use. Run 1 shows whisper-cli failing to decode it with its built-in miniaudio decoder. Run 2 converts it with afconvert, which ships with macOS, to 16 kHz mono 16-bit WAV, confirms the format with afinfo, and transcribes it. The whisper.cpp README says whisper-cli runs only with 16-bit WAV files and to convert input first. GitHub issue 4011 is a Homebrew whisper-cli user on macOS 26 hitting the same four lines with an AAC .m4a podcast while MP3 worked. Tapefolio claims are from its page: it transcribes audio and video files on your Mac, such as .m4a, .mp3, .mp4 and .mov, with word timing, and nothing you open is uploaded."
+ },
+ "scenes": [
+  {
+   "type": "hook",
+   "short": true,
+   "kicker": "whisper.cpp on a Mac",
+   "title": "failed to read audio file",
+   "sub": "Your .m4a recording will not transcribe.",
+   "narration": "Whisper dot c p p stops on your iPhone recording with failed to read audio file. Here is why, and a fix that is already on your Mac."
+  },
+  {
+   "type": "symptom",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ whisper-cli -m ggml-large-v3-turbo.bin -f interview.m4a -np",
+    "read_audio_data: failed to read audio data",
+    "error: failed to read audio file 'interview.m4a'"
+   ],
+   "narration": "Here is whisper C L I from Homebrew with a short m4a test recording. Its built in decoder fails, and no transcript is written."
+  },
+  {
+   "type": "cause",
+   "text": "An .m4a file holds AAC audio. The decoder built into whisper-cli does not read it, and the README asks for 16-bit WAV.",
+   "narration": "Voice Memos saves A A C audio inside the m4a file. Whisper's decoder does not read A A C. The project asks for sixteen bit WAV files."
+  },
+  {
+   "type": "steps",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ afconvert -f WAVE -d LEI16@16000 -c 1 interview.m4a interview.wav",
+    "$ whisper-cli -m ggml-large-v3-turbo.bin -f interview.wav -np -nt"
+   ],
+   "narration": "Use A F convert, which comes with mac O S. Ask for a WAVE file, sixteen bit, sixteen kilohertz, one channel. Then run whisper on the WAV."
+  },
+  {
+   "type": "check",
+   "short": true,
+   "label": "Terminal",
+   "ok": "Transcribed",
+   "lines": [
+    "$ afinfo interview.wav | grep 'Data format'",
+    "Data format:     1 ch,  16000 Hz, Int16",
+    "$ whisper-cli -m ggml-large-v3-turbo.bin -f interview.wav -np -nt",
+    "Thanks for talking with me today."
+   ],
+   "narration": "A F info confirms one channel at sixteen thousand hertz. Run whisper again, and this time it reads the file and prints the sentence from the recording."
+  },
+  {
+   "type": "app",
+   "name": "Tapefolio",
+   "line": "Transcribes .m4a, .mp3, .mp4 and .mov files on your Mac, with word timing. Nothing you open is uploaded.",
+   "url": "purplelink.llc/tapefolio",
+   "img": "site/assets/tapefolio-screens/review-main.webp",
+   "icon": "site/assets/tapefolio-icon.webp",
+   "narration": "Tapefolio transcribes m4a, mp3, mp4 and M O V files on your Mac with word timing, so there is no conversion step. Nothing you open is uploaded. Check every transcript against the recording. There is a seven day free trial."
+  }
+ ],
+ "thumbs": {
+  "A": {
+   "kind": "diff",
+   "hook": "M4A fails?",
+   "before": "error: failed to read audio file",
+   "after": "Thanks for talking with me today."
+  },
+  "B": {
+   "kind": "focus",
+   "hook": "whisper.cpp\nwon't read .m4a?",
+   "lines": [
+    "$ whisper-cli -f interview.m4a",
+    "error: failed to read audio file 'interview.m4a'"
+   ],
+   "hl": "error: failed to read audio file 'interview.m4a'"
+  },
+  "C": {
+   "kind": "product",
+   "name": "Tapefolio",
+   "line": "Transcribe .m4a on your Mac",
+   "img": "site/assets/tapefolio-screens/review-main.webp",
+   "icon": "site/assets/tapefolio-icon.webp"
+  }
+ }
+}

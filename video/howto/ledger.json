@@ -913,5 +913,33 @@
    "ok": true,
    "utm_content": "howto-finder-search-this-mac-not-current-folder-reel"
   }
+ },
+ {
+  "slug": "howto-whisper-cpp-failed-to-read-audio-m4a",
+  "app": "tapefolio",
+  "date": "2026-11-22",
+  "title": "whisper.cpp failed to read audio file with .m4a on Mac (convert to WAV with afconvert)",
+  "long_id": "QsF-Jmq-cbw",
+  "short_id": "DJR5MpwxxOQ",
+  "link_arm": "A",
+  "link_utm_content": "howto-whisper-cpp-failed-to-read-audio-m4a",
+  "short_utm_content": "howto-whisper-cpp-failed-to-read-audio-m4a-short",
+  "sources": [
+   "https://github.com/ggml-org/whisper.cpp/issues/4011"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "QsF-Jmq-cbw",
+    "caption_id": "AUieDaaE20IatBRgu6qwtGf1y4PltOPm5cnvuaeQIwCqMrQERR0wvOnD"
+   },
+   "short": {
+    "video_id": "DJR5MpwxxOQ",
+    "caption_id": "AUieDaZ8NbouN1mHh2b3uJdqq1cIHUmn3dQYcyfhuR3PyKhf7KTWD6hX"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-whisper-cpp-failed-to-read-audio-m4a-reel"
+  }
  }
 ]
