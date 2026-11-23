@@ -109,6 +109,14 @@ def test_refuses_when_not_on_company_admin_page(monkeypatch, tmp_path):
     assert "button:Post" not in page.clicks
 
 
+def test_offscreen_is_a_real_window_parked_off_screen(monkeypatch, tmp_path):
+    page = FakePage("Ben Ampel")
+    _, pw = _run(page, monkeypatch, tmp_path, dry_run=True, offscreen=True)
+    kw = pw.chromium.launch_persistent_context.call_args.kwargs
+    assert kw["headless"] is False and "--window-position=-3200,0" in kw["args"]
+    assert kw["viewport"]["height"] == 1800
+
+
 def test_headless_flag_reaches_browser_launch(monkeypatch, tmp_path):
     page = FakePage("Ben Ampel")
     _, pw = _run(page, monkeypatch, tmp_path, dry_run=True, headless=True)
