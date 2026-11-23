@@ -941,5 +941,34 @@
    "ok": true,
    "utm_content": "howto-whisper-cpp-failed-to-read-audio-m4a-reel"
   }
+ },
+ {
+  "slug": "howto-can-be-used-only-in-preamble",
+  "app": "moderntex",
+  "date": "2026-11-23",
+  "title": "Can be used only in preamble on Mac (move \\usepackage out of the \\input file)",
+  "long_id": "ZJTlFblYFB0",
+  "short_id": "A7GmgYBfLUQ",
+  "link_arm": "A",
+  "link_utm_content": "howto-can-be-used-only-in-preamble",
+  "short_utm_content": "howto-can-be-used-only-in-preamble-short",
+  "sources": [
+   "https://github.com/leiwangnpu/nwputhesis/issues/2",
+   "https://github.com/rstudio/bookdown/issues/1510"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "ZJTlFblYFB0",
+    "caption_id": "AUieDabvAp7CnTAsDsfSVA7zLQWY1TTzlMmC3qVc8pBTQbNVcrszsTYa"
+   },
+   "short": {
+    "video_id": "A7GmgYBfLUQ",
+    "caption_id": "AUieDaYiYS0OZfKHsbxOA7FEiir4uVHVD8yUTRC96YatFeSzRg4cfejQ"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-can-be-used-only-in-preamble-reel"
+  }
  }
 ]
