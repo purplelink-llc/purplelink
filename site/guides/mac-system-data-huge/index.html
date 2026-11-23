@@ -30,7 +30,7 @@
           "author": { "@id": "https://purplelink.llc/about/#person" },
           "publisher": { "@id": "https://purplelink.llc/#organization" },
           "datePublished": "2026-10-12",
-          "dateModified": "2026-11-02",
+          "dateModified": "2026-11-23",
           "image": "https://purplelink.llc/assets/og/products.png",
           "mainEntityOfPage": "https://purplelink.llc/guides/mac-system-data-huge/"
         },
@@ -150,7 +150,7 @@
       <div class="post-hero">
         <p class="post-date">Guide</p>
         <h1 class="post-title">Why is System Data so big on my Mac? What fills it and what is safe to remove</h1>
-        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-12">October 12, 2026</time>, updated <time datetime="2026-10-19">October 19, 2026</time></p>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-12">October 12, 2026</time>, updated <time datetime="2026-11-23">November 23, 2026</time></p>
         <p class="post-lede">System Data is a leftover category, not a folder, so there is nothing to delete as a whole. Most of the space comes from a short list of causes. Some are safe to clear, and others belong to macOS. This guide shows how to see which one is yours and what to do about it.</p>
       </div>
 
@@ -196,7 +196,11 @@
         <p>Finder stores device backups at <code>~/Library/Application Support/MobileSync/Backup</code>. <a href="https://support.apple.com/108809" rel="noopener">Apple's page on locating and managing backups</a> says to manage them from the device in Finder. Choose General, then Manage Backups, to delete, archive or reveal a backup. That folder was empty on my Mac because I do not back up devices to it. Do not delete the folder's contents by hand unless you are sure you do not need the backup, because a deleted backup cannot be restored.</p>
 
         <h3>Apple Intelligence models</h3>
-        <p><a href="https://support.apple.com/en-us/121115" rel="noopener">Apple's page on Apple Intelligence requirements</a>, published September 14, 2026, lists up to 14 GB of storage for Apple Intelligence on a Mac with an M3 or later. That Mac also needs at least 12 GB of unified memory (the memory the CPU and GPU share). Other supported devices need up to 8 GB. <a href="https://9to5mac.com/2026/10/05/this-tool-frees-up-apple-intelligence-storage/" rel="noopener">9to5Mac reported on October 5, 2026</a> that Apple Intelligence needed up to 7 GB on macOS 26 and that Apple says up to 14 GB on macOS 27. It also reported that an open-source tool called RemoveMacAI claims to reclaim 12 GB or more. I have not run that tool. The Apple page I read does not describe a way to remove the models while keeping the feature, so I do not recommend removing them by hand.</p>
+        <p><a href="https://support.apple.com/en-us/121115" rel="noopener">Apple's page on Apple Intelligence requirements</a>, which shows a published date of November 5, 2026, lists up to 14 GB of storage on a Mac with an M3 or later. That Mac also needs at least 12 GB of unified memory (the memory the CPU and GPU share). Other supported devices need up to 8 GB. A footnote adds that the space used may temporarily exceed these figures during and shortly after a software update. If your number looks high right after an update, check it again a day later.</p>
+        <p>Reported sizes on macOS 27 are higher on some Macs. <a href="https://www.macrumors.com/2026/09/23/apple-intelligence-30gb-some-macs-macos-27/" rel="noopener">MacRumors reported on September 23, 2026</a> that Apple Intelligence took 20.67 GB on an M4 Pro Mac mini. It cited Ars Technica at 22.42 GB on an M3 MacBook Air with a fresh install of macOS 27.0 beta 7, and at about 14 GB on an M1 MacBook Air. Apple lists up to 8 GB for that last Mac. MacRumors also notes that Apple's page does not say whether its figures match the number in System Settings. These are reports from other people's Macs, not Apple's figures.</p>
+        <p>To see the number on your Mac, open System Settings, General, Storage. Then click the info button (the small i) next to macOS.</p>
+        <p>Sources describe the off switch differently. MacRumors reports that Apple removed the toggle that turned Apple Intelligence off on macOS 27, and that the Mac downloads the model after the update whether you want it or not. <a href="https://apple.gadgethacks.com/how-to/how-to-remove-apple-intelligence-from-mac-on-macos-27/" rel="noopener">Gadget Hacks</a> reports that the single master switch is gone, but that you can still turn off individual features (such as Siri and notification summaries) in System Settings. It adds that doing so does not delete the downloaded models. I have not tested either account on my own Mac.</p>
+        <p><a href="https://9to5mac.com/2026/10/05/this-tool-frees-up-apple-intelligence-storage/" rel="noopener">9to5Mac reported on October 5, 2026</a> that an open-source tool called RemoveMacAI claims to reclaim 12 GB or more. I have not run that tool. The Apple page I read does not describe a way to remove the models while keeping the feature, so I do not recommend removing them by hand.</p>
 
         <h3>The media analysis cache</h3>
         <p>Photos and related features use a background process called <code>mediaanalysisd</code>, which keeps a cache in a container folder. <a href="https://mjtsai.com/blog/?p=48375" rel="noopener">Michael Tsai's blog collects reports</a> of it at 15 GB or more, with some people reporting 50, 80 or 140 GB, and says the cause is unknown. In an <a href="https://discussions.apple.com/thread/256058302" rel="noopener">Apple Community thread</a> from May 2025, one person deleted a 21 GB subfolder and reported freeing about 30 GB. Other replies advised deleting it, and nobody there reported a problem. A popular r/MacOS thread this week reported 137 GB in the same place (<a href="https://www.reddit.com/r/MacOS/comments/1x3hej6/" rel="noopener">thread</a>, read October 12, 2026).</p>
