@@ -538,8 +538,12 @@ class TestBluesky:
 
 # ------------------------------------------------------------------ LinkedIn
 class FakeLiPage:
-    def __init__(self, url="https://www.linkedin.com/company/120183926/admin/page-posts/published/", body="Purplelink LLC page posts"):
-        self.url, self.body = url, body
+    def __init__(self, url="https://www.linkedin.com/company/120183926/admin/page-posts/published/", body="Purplelink LLC page posts",
+                 page_title="Purplelink LLC: Company Page Admin | LinkedIn"):
+        self.url, self.body, self.page_title = url, body, page_title
+
+    def title(self):
+        return self.page_title
 
     def goto(self, url, **kw):
         pass
@@ -574,6 +578,13 @@ class TestLinkedIn:
         with pytest.raises(SessionExpired):
             li(FakeLiPage(url="https://www.linkedin.com/login")).whoami()
 
+    def test_cloudflare_check_is_named_not_reported_as_wrong_account(self):
+        page = FakeLiPage(body="www.linkedin.com Performing security verification This website uses a security service",
+                          page_title="Just a moment...")
+        with pytest.raises(SocialError, match="bot check") as e:
+            li(page).check_identity()
+        assert not isinstance(e.value, Refused)
+
     def test_post_runs_the_company_poster_and_confirms_on_the_page(self, env):
         it = item(env, ["linkedin"], text="Company update. {link}")
         page = FakeLiPage()
@@ -586,7 +597,7 @@ class TestLinkedIn:
 
         r = li(page, runner).post(it)
         assert r.url.startswith("https://www.linkedin.com/company/120183926/")
-        assert "--headless" in calls[0] and "--text-file" in calls[0] and "--dry-run" not in calls[0]
+        assert "--offscreen" in calls[0] and "--headless" not in calls[0] and "--text-file" in calls[0] and "--dry-run" not in calls[0]
 
     def test_exit_4_from_the_poster_is_a_refusal(self, env):
         r = lambda cmd, **kw: subprocess.CompletedProcess(cmd, 4, "", "")

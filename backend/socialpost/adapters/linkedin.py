@@ -30,6 +30,11 @@ FEED_URL = "https://www.linkedin.com/feed/update/{urn}/"
 URLISH = re.compile(r"https?://\S+")
 
 
+def is_bot_check(title: str, body: str) -> bool:
+    """True for Cloudflare's interstitial ("Just a moment...", "Performing security verification")."""
+    return title.strip().startswith("Just a moment") or "Performing security verification" in body
+
+
 def permalink_for(rows: list, text: str) -> str | None:
     """The public URL of the post whose text starts like `text`, from the published page's [urn, visible text] rows
     (each post element carries data-urn="urn:li:activity:<id>"). Links are left out of the match: LinkedIn shortens
@@ -61,9 +66,11 @@ class LinkedIn(Adapter):
             raise SessionExpired("linkedin: no saved session; run: python3 backend/scripts/linkedin_login.py")
         from playwright.sync_api import sync_playwright, Error as PWError
         with sync_playwright() as pw:
+            # A real window parked off-screen: LinkedIn's Cloudflare check blocks headless Chromium (2026-11).
             ctx = pw.chromium.launch_persistent_context(
-                str(prof), headless=True, viewport={"width": 1280, "height": 1800},
-                args=["--disable-blink-features=AutomationControlled"])
+                str(prof), headless=False, viewport={"width": 1280, "height": 1800},
+                args=["--disable-blink-features=AutomationControlled", "--window-position=-3200,0",
+                      "--window-size=1280,900"])
             try:
                 yield ctx.pages[0] if ctx.pages else ctx.new_page()
             except PWError as e:
@@ -79,7 +86,11 @@ class LinkedIn(Adapter):
             url = page.url
             if "login" in url or "signup" in url or "checkpoint" in url:
                 raise SessionExpired("linkedin: session expired; run: python3 backend/scripts/linkedin_login.py")
-            return url, page.inner_text("body", timeout=15_000)
+            body = page.inner_text("body", timeout=15_000)
+            if is_bot_check(page.title(), body):
+                raise SocialError("linkedin: blocked by LinkedIn's Cloudflare bot check (\"Just a moment...\"), "
+                                  "not a sign-in problem")
+            return url, body
 
     def _published_rows(self) -> list:
         """[[urn, visible text]] for each post on the published page. Read only."""
@@ -117,7 +128,7 @@ class LinkedIn(Adapter):
         with tempfile.TemporaryDirectory() as td:
             tf = Path(td) / "post.txt"
             tf.write_text(text, encoding="utf-8")
-            cmd = [sys.executable, str(SCRIPT), "--text-file", str(tf), "--headless"]
+            cmd = [sys.executable, str(SCRIPT), "--text-file", str(tf), "--offscreen"]
             if doc:
                 cmd += ["--document", str(_resolve(doc["path"], item.path.parent)), "--document-title", str(doc["title"])]
             if dry_run:

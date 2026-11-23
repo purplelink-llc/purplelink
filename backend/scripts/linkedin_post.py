@@ -7,7 +7,7 @@ Usage:
   python3 backend/scripts/linkedin_post.py --dry-run    # fill post box but don't click Post
   python3 backend/scripts/linkedin_post.py --text-file post.txt   # post arbitrary text (outreach.py uses this)
   python3 backend/scripts/linkedin_post.py --text-file post.txt --document deck.pdf \\
-      --document-title "Title" [--headless] [--screenshot out.png] [--dry-run]
+      --document-title "Title" [--headless | --offscreen] [--screenshot out.png] [--dry-run]
       # document (carousel) post: the PDF is uploaded through "Add a document"
 
 One-time setup: python3 backend/scripts/linkedin_login.py
@@ -152,17 +152,24 @@ def _attach_document(page, pdf: Path, title: str) -> None:
 
 def post_to_linkedin(post_text: str, dry_run: bool, *, document: Path | None = None,
                      document_title: str = "", headless: bool = False,
-                     screenshot: Path | None = None) -> int:
+                     screenshot: Path | None = None, offscreen: bool = False) -> int:
     if not PROFILE_DIR.exists():
         print("No saved session — run: python3 backend/scripts/linkedin_login.py")
         return 2
 
     with sync_playwright() as pw:
+        # Since 2026-11 LinkedIn puts a Cloudflare bot check in front of headless Chromium (both the headless shell and
+        # the new headless mode), whatever the session. A real window parked off-screen passes and does not take focus,
+        # so unattended runs use --offscreen.
+        unattended = headless or offscreen
+        args = ["--disable-blink-features=AutomationControlled"]
+        if offscreen:
+            args += ["--window-position=-3200,0", "--window-size=1280,900"]
         ctx = pw.chromium.launch_persistent_context(
             str(PROFILE_DIR),
-            headless=headless,
-            viewport={"width": 1280, "height": 1800 if headless else 900},  # tall when headless so the screenshot shows the whole composer
-            args=["--disable-blink-features=AutomationControlled"],
+            headless=headless and not offscreen,
+            viewport={"width": 1280, "height": 1800 if unattended else 900},  # tall when unattended so the screenshot shows the whole composer
+            args=args,
         )
         page = ctx.pages[0] if ctx.pages else ctx.new_page()
         try:
@@ -249,7 +256,7 @@ def post_to_linkedin(post_text: str, dry_run: bool, *, document: Path | None = N
                 print(f"Page URL: {page.url}")
                 print(f"Composer identity: {_composer_identity(page)!r}")
                 print("DRY RUN: post text entered, not clicking Post.")
-                if not headless and sys.stdin.isatty():
+                if not unattended and sys.stdin.isatty():
                     print("Press Enter to close the browser: ", end="", flush=True)
                     input()
                 return 0
@@ -301,7 +308,9 @@ def main() -> None:
     ap.add_argument("--text-file", help="Post this file's contents instead of a digest.")
     ap.add_argument("--document", help="Attach this PDF as a LinkedIn document (carousel). Needs --text-file.")
     ap.add_argument("--document-title", help="Title LinkedIn requires for the document.")
-    ap.add_argument("--headless", action="store_true", help="Run the browser without a window.")
+    ap.add_argument("--headless", action="store_true", help="Run the browser without a window (LinkedIn's bot check "
+                    "blocks this since 2026-11; use --offscreen).")
+    ap.add_argument("--offscreen", action="store_true", help="Real browser window placed off-screen; for unattended runs.")
     ap.add_argument("--screenshot", help="Save a screenshot of the composer (dry run) or the page after Post.")
     args = ap.parse_args()
 
@@ -323,7 +332,8 @@ def main() -> None:
         print()
         sys.exit(post_to_linkedin(post, dry_run=args.dry_run, document=document,
                                   document_title=args.document_title or "",
-                                  headless=args.headless, screenshot=shot))
+                                  headless=args.headless, screenshot=shot,
+                                  offscreen=args.offscreen))
 
     try:
         digest_file = find_digest(args.date)
@@ -339,7 +349,8 @@ def main() -> None:
     print(f"Title:  {title}")
     print()
 
-    sys.exit(post_to_linkedin(post, dry_run=args.dry_run, headless=args.headless, screenshot=shot))
+    sys.exit(post_to_linkedin(post, dry_run=args.dry_run, headless=args.headless, screenshot=shot,
+                                  offscreen=args.offscreen))
 
 
 if __name__ == "__main__":
