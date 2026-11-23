@@ -1,0 +1,115 @@
+{
+ "id": "howto-can-be-used-only-in-preamble",
+ "app": "moderntex",
+ "title": "Can be used only in preamble on Mac (move \\usepackage out of the \\input file)",
+ "short_title": "LaTeX says Can be used only in preamble? Move \\usepackage",
+ "url": "purplelink.llc/moderntex",
+ "page": "https://purplelink.llc/moderntex/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://github.com/leiwangnpu/nwputhesis/issues/2",
+  "https://github.com/rstudio/bookdown/issues/1510"
+ ],
+ "verify": {
+  "runs": [
+   {
+    "cmd": "cd \"$(mktemp -d)\" && print -rl -- '\\documentclass{article}' '\\begin{document}' '\\input{chapter1}' '\\end{document}' > main.tex && print -rl -- '\\usepackage{graphicx}' 'Chapter text.' > chapter1.tex && pdflatex -interaction=nonstopmode main.tex > out.txt; grep -m1 '^! LaTeX' out.txt; grep -n 'usepackage' chapter1.tex",
+    "output": "! LaTeX Error: Can be used only in preamble.\n1:\\usepackage{graphicx}"
+   },
+   {
+    "cmd": "cd \"$(mktemp -d)\" && print -rl -- '\\documentclass{article}' '\\usepackage{graphicx}' '\\begin{document}' '\\input{chapter1}' '\\end{document}' > main.tex && print -rl -- 'Chapter text.' > chapter1.tex && pdflatex -interaction=nonstopmode main.tex > out.txt; grep -c 'usepackage' chapter1.tex; grep -c '^!' out.txt; grep 'Output written' out.txt",
+    "output": "0\n0\nOutput written on main.pdf (1 page, 12904 bytes)."
+   }
+  ],
+  "docs": [
+   "https://www.overleaf.com/learn/latex/Errors/LaTeX_Error:_Can_be_used_only_in_preamble",
+   "https://www.latex-project.org/help/documentation/usrguide.pdf"
+  ],
+  "notes": "Each run writes a small article and a chapter file in a fresh temporary folder and builds it once with pdfLaTeX from TeX Live 2026. When chapter1.tex starts with \\usepackage{graphicx} and main.tex brings it in with \\input after \\begin{document}, the build stops with Can be used only in preamble, because \\input pastes the chapter into the body. With that line moved into main.tex above \\begin{document}, the same document builds with no errors."
+ },
+ "scenes": [
+  {
+   "type": "hook",
+   "short": true,
+   "kicker": "LaTeX on a Mac",
+   "title": "Can be used only in preamble",
+   "sub": "A package loaded inside a chapter file.",
+   "narration": "If LaTeX stops with can be used only in preamble, look for a use package line in one of the files you bring in with input."
+  },
+  {
+   "type": "symptom",
+   "short": true,
+   "label": "Terminal",
+   "lines": [
+    "$ pdflatex main.tex",
+    "! LaTeX Error: Can be used only in preamble.",
+    "$ grep -n 'usepackage' chapter1.tex",
+    "1:\\usepackage{graphicx}"
+   ],
+   "narration": "Here is the error. The main file looks fine, but the first line of the chapter file loads the graphics package."
+  },
+  {
+   "type": "cause",
+   "text": "Packages can only be loaded before \\begin{document}. \\input pastes the chapter file into the body, so a \\usepackage inside it lands after \\begin{document}.",
+   "narration": "Packages can only be loaded in the preamble, before begin document. The input command pastes the chapter file in where it sits, which is inside the body. So the use package line in that file arrives too late, and LaTeX stops."
+  },
+  {
+   "type": "steps",
+   "short": true,
+   "label": "main.tex",
+   "lines": [
+    "Cut \\usepackage{graphicx} out of chapter1.tex",
+    "Paste it into main.tex above \\begin{document}",
+    "$ pdflatex main.tex"
+   ],
+   "narration": "Cut the use package line out of the chapter file. Paste it into the main file, above begin document. Then build again."
+  },
+  {
+   "type": "check",
+   "short": true,
+   "label": "Terminal",
+   "ok": "Built without errors",
+   "lines": [
+    "$ grep -c 'usepackage' chapter1.tex",
+    "0",
+    "$ pdflatex main.tex",
+    "Output written on main.pdf (1 page, 12904 bytes)."
+   ],
+   "narration": "With no package lines left in the chapter file, the same document builds with no errors."
+  },
+  {
+   "type": "app",
+   "name": "ModernTex",
+   "line": "Translates LaTeX build errors into plain explanations with a suggested fix, and marks them in the editor.",
+   "url": "purplelink.llc/moderntex",
+   "img": "site/assets/moderntex-screens/21-error-fix.webp",
+   "icon": "site/assets/moderntex-icon.png",
+   "narration": "If you write LaTeX on a Mac, ModernTex translates build errors into plain explanations with a suggested fix, and marks them in the editor."
+  }
+ ],
+ "thumbs": {
+  "A": {
+   "kind": "diff",
+   "hook": "Package in a chapter",
+   "before": "Can be used only in preamble.",
+   "after": "Output written on main.pdf"
+  },
+  "B": {
+   "kind": "focus",
+   "hook": "Only in\npreamble?",
+   "lines": [
+    "LaTeX Error: Can be used",
+    "only in preamble."
+   ],
+   "hl": "only in preamble."
+  },
+  "C": {
+   "kind": "product",
+   "name": "ModernTex",
+   "line": "Preamble error? Explained",
+   "img": "site/assets/moderntex-screens/21-error-fix.webp",
+   "icon": "site/assets/moderntex-icon.png"
+  }
+ }
+}
