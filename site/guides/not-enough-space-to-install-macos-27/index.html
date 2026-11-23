@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Not enough space to install macOS 27: what to check and what to clear</title>
+    <meta name="description" content="The macOS 27 installer says there is not enough space. Read-only checks for free space, local snapshots and old installers, then what is safe to clear.">
+    <link rel="canonical" href="https://purplelink.llc/guides/not-enough-space-to-install-macos-27/">
+    <meta property="og:title" content="Not enough space to install macOS 27: what to check and what to clear">
+    <meta property="og:description" content="The macOS 27 installer says there is not enough space. Read-only checks for free space, local snapshots and old installers, then what is safe to clear.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/not-enough-space-to-install-macos-27/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/guides-not-enough-space-to-install-macos-27.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Not enough space to install macOS 27: what to check and what to clear">
+    <meta name="twitter:description" content="The macOS 27 installer says there is not enough space. Read-only checks for free space, local snapshots and old installers, then what is safe to clear.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/guides-not-enough-space-to-install-macos-27.jpg">
+    <meta name="twitter:image:alt" content="Not enough space to install macOS 27: what to check and what to clear">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "Not enough space to install macOS 27: what to check and what to clear",
+      "description": "The macOS 27 installer says there is not enough space. Read-only checks for free space, local snapshots and old installers, then what is safe to clear.",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "datePublished": "2026-11-23",
+      "dateModified": "2026-11-23",
+      "image": "https://purplelink.llc/assets/og/purplelink-card.png",
+      "mainEntityOfPage": "https://purplelink.llc/guides/not-enough-space-to-install-macos-27/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://purplelink.llc/guides/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Not enough space to install macOS 27",
+          "item": "https://purplelink.llc/guides/not-enough-space-to-install-macos-27/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#7c3aed">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Does Apple say how much free space the macOS 27 installer needs?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "I found no Apple page that states a number, so this guide gives none. Your Mac's update prompt reports the space it needs, and Storage settings shows what you have. Compare the two before you delete anything."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it safe to delete local Time Machine snapshots to make room?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Usually you do not need to. Apple says Time Machine removes them as they age or when other tasks need the space. Check what you have with tmutil listlocalsnapshots / first, and delete a snapshot only if you know what made it."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will Legroom free the space the installer needs?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It can show where space went and move files you choose to the Trash. It does not run commands, does not clean inside system folders and does not scan as an administrator. Every check in this guide is free without it."
+      }
+    }
+  ]
+}
+    </script>
+    <script src="/theme.js"></script>
+<link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/motion.css">
+    <script src="/site.js" defer></script>
+    <script src="/motion.js" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+    <script src="/buddy-chat/loader.js" defer></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/publication-suite/">Publication suite</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">Guide</p>
+        <h1 class="post-title">Not enough space to install macOS 27: what to check and what to clear</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-11-23">November 23, 2026</time></p>
+        <p class="post-lede">The macOS 27 installer can say there is not enough space even when the download itself looks small. Start with three checks that only read: Storage settings, <code>df -h /</code> and <code>tmutil listlocalsnapshots /</code>. Then clear the items that are safe to remove, and leave the ones that are not.</p>
+      </div>
+
+      <article class="post-body">
+        <p><strong>Disclosure up front:</strong> Purplelink, which publishes this site, makes one app mentioned near the end, <a href="/legroom/">Legroom</a>. On November 23, 2026 I ran <code>df -h /</code> and <code>tmutil listlocalsnapshots /</code> on my own Mac (macOS 27.2.1). I did not download the macOS 27 installer, so I measured no installer size. I also found no Apple page that states how much free space the installer needs, so this guide gives no number. Where I rely on Apple, the page is linked.</p>
+
+        <h2>The short answer</h2>
+        <p>The installer needs room for more than the file you download. It also needs space to unpack and stage the update, and the amount is not published by Apple. Your Mac's update prompt tells you the space it wants, and Storage settings tells you what you have. Compare those two numbers, then free the difference with the steps below.</p>
+        <p>Work through the sections in order. The first two only read, and nothing in them deletes a file.</p>
+
+        <h2 id="why">1. Why the installer asks for more than the download</h2>
+        <p>A major update arrives as a download, and macOS then has to expand it before it can install. Both copies exist on the startup disk for a while, which is why the space asked for is larger than the download. I did not measure this on my Mac, so I cannot tell you by how much.</p>
+        <p>Apple Intelligence (Apple's on-device AI features) adds a second claim on space. <a href="https://support.apple.com/en-us/121115" rel="noopener">Apple's requirements page</a> lists up to 14 GB of storage for it on a Mac with an M3 or later. I did not test whether the installer fetches those models during the update, so treat it as a reason to check, not a fact about your install. The <a href="/guides/mac-system-data-huge/#causes">System Data guide</a> covers the models in its list of causes.</p>
+
+        <h2 id="checks">2. Read-only checks first</h2>
+        <p><strong>Storage settings.</strong> Open System Settings, click General, then click Storage. <a href="https://support.apple.com/en-us/102624" rel="noopener">Apple's page on freeing storage</a> describes this path and a breakdown of what uses the space. The bar shows categories, and System Data is usually the hardest to read.</p>
+        <p><strong>Free space on the startup volume.</strong> Run <code>df -h /</code> in Terminal. It prints one line and changes nothing. On my Mac the Avail column read 24Gi on a 460Gi disk. Your figure is the one to compare with the installer's request.</p>
+        <p><strong>Local snapshots.</strong> Run <code>tmutil listlocalsnapshots /</code>. It lists the Time Machine snapshots (read-only copies of the disk kept on the Mac itself) and changes nothing. On my Mac it printed the header "Snapshots for disk /:" and no snapshots, so I have no snapshot size to show you. If yours lists several, the guide on <a href="/guides/mac-storage-full-after-deleting-files/#local-snapshots">storage that stays full after deleting files</a> explains how they hold space and how to see their size.</p>
+
+        <h2 id="safe">3. What is safe to clear</h2>
+        <p>Clear these in order, and run <code>df -h /</code> after each so you can see what freed space.</p>
+        <ul>
+          <li><strong>The Trash.</strong> Apple's page says space from trashed files is not freed until you empty the Trash. In Finder, choose Finder, Empty Trash.</li>
+          <li><strong>Old installers.</strong> Look in the Applications folder for an app named Install macOS followed by a version, and in Downloads for .dmg and .pkg files you no longer need. Delete only the ones you can download again.</li>
+          <li><strong>Downloads.</strong> Sort the folder by size in Finder and remove the large files you have finished with.</li>
+          <li><strong>iPhone and iPad backups.</strong> A device backup can be large. Delete one only if a newer backup exists on another disk or in iCloud.</li>
+          <li><strong>Xcode simulators.</strong> If you develop for Apple platforms, simulator runtimes (the downloaded copies of iOS and other systems that Xcode runs) can take many gigabytes. The <a href="/guides/clean-up-xcode-simulators-mac/">Xcode simulators guide</a> shows what each folder holds and which command removes it.</li>
+        </ul>
+        <p>If the installer still reports too little space after these, Apple's storage page suggests starting your Mac in safe mode to temporarily free space, and names installing a macOS update as an example. Restart normally afterward.</p>
+
+        <h2 id="not-delete">4. What not to delete</h2>
+        <p>Leave the folders you do not recognize inside your Library folder alone until you know what owns them. A folder that looks like a cache may hold an app's only copy of its data. Do not delete a Time Machine snapshot unless you know what made it, because a snapshot removed in Disk Utility cannot be restored. Do not remove files from the System folder, and do not delete the only copy of a photo, a document or a backup to make room for an update.</p>
+
+        <h2 id="legroom">Where Legroom fits</h2>
+        <p>Legroom is a menu-bar app that shows free space on the startup disk and cleans the folders you choose. It is $9.99 once after a free 7-day trial, and I make it. Two features bear on this problem.</p>
+        <ul>
+          <li><strong>Space Map.</strong> It draws where space goes on the disk as a sunburst chart (rings of folders sized by what they hold). Version 1.14.0, released on November 18, 2026, adds iPhone and iPad backups to the Space Map.</li>
+          <li><strong>Find Files.</strong> It lists large, old and duplicate files. For duplicates it always keeps one copy, and it moves files to the Trash only.</li>
+        </ul>
+        <p>Version 1.14.0 also names the oldest and newest local Time Machine snapshot. Legroom does not run commands, does not clean inside system folders and does not scan as an administrator. Every command above is free, and you do not need an app to run them. Legroom's page has <a href="/legroom/">the details</a>.</p>
+
+        <h2>Frequently asked</h2>
+        <h3>Does Apple say how much free space the macOS 27 installer needs?</h3>
+        <p>I found no Apple page that states a number, so this guide gives none. Your Mac's update prompt reports the space it needs, and Storage settings shows what you have. Compare the two before you delete anything.</p>
+        <h3>Is it safe to delete local Time Machine snapshots to make room?</h3>
+        <p>Usually you do not need to. Apple says Time Machine removes them as they age or when other tasks need the space. Check what you have with <code>tmutil listlocalsnapshots /</code> first, and delete a snapshot only if you know what made it.</p>
+        <h3>Will Legroom free the space the installer needs?</h3>
+        <p>It can show where space went and move files you choose to the Trash. It does not run commands, does not clean inside system folders and does not scan as an administrator. Every check in this guide is free without it.</p>
+
+        <h2>Related guides</h2>
+        <ul>
+          <li><a href="/guides/mac-system-data-huge/">Why is System Data so big on my Mac? What fills it and what is safe to remove</a>: the usual causes, including the Apple Intelligence models.</li>
+          <li><a href="/guides/mac-storage-full-after-deleting-files/">Mac storage still full after deleting files: five reasons and how to check each</a>: why a deletion can free nothing.</li>
+          <li><a href="/guides/clean-up-xcode-simulators-mac/">Xcode and the iOS simulators: where the space goes and how to get it back</a>.</li>
+          <li><a href="/legroom/">Legroom</a>, <a href="/products/">all products</a> and <a href="/guides/">all guides</a>.</li>
+        </ul>
+
+      </article>
+    </main>
+
+
+
+        <footer class="footer">
+          <div class="footer-grid">
+            <div class="footer-about">
+              <a class="footer-brand" href="/">
+                <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+                <span>Purplelink LLC</span>
+              </a>
+              <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+              <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+              <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
+            </div>
+            <nav class="footer-col" aria-label="Products">
+              <p class="footer-head">Products</p>
+              <ul>
+                <li><a href="/moderntex/">ModernTex</a></li>
+                <li><a href="/outbound-veil/">Outbound Veil</a></li>
+                <li><a href="/vitae/">Vitae</a></li>
+                <li><a href="/legroom/">Legroom</a></li>
+                <li><a href="/keyfeel/">Keyfeel</a></li>
+                <li><a href="/tapefolio/">Tapefolio</a></li>
+                <li><a href="/panely/">Panely</a></li>
+                <li><a href="/summonly/">Summonly</a></li>
+                <li><a href="/nee/">Née</a></li>
+                <li><a href="/lenses/">Lenses</a></li>
+                <li><a href="/batterymeter/">BatteryMeter</a></li>
+                <li><a href="/publication-suite/">Publication suite</a></li>
+                <li><a href="/tools/paper-review/">Paper Review</a></li>
+                <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+                <li><a href="/suite/">Mac Suite</a></li>
+                <li><a href="/products/">All products</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Free tools">
+              <p class="footer-head">Free tools</p>
+              <ul>
+                <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+                <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+                <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+                <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+                <li><a href="/tools/word-counter/">Word Counter</a></li>
+                <li><a href="/games/">Daily games</a></li>
+                <li><a href="/tools/">All tools</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Learn">
+              <p class="footer-head">Learn</p>
+              <ul>
+                <li><a href="/guides/">Guides</a></li>
+                <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+                <li><a href="/templates/">LaTeX templates</a></li>
+                <li><a href="/latex-errors/">LaTeX errors</a></li>
+                <li><a href="/format/">Reference formats</a></li>
+                <li><a href="/blog/">Blog</a></li>
+                <li><a href="/changelog/">Changelog</a></li>
+                <li><a href="/search/">Search</a></li>
+              </ul>
+            </nav>
+            <nav class="footer-col" aria-label="Company">
+              <p class="footer-head">Company</p>
+              <ul>
+                <li><a href="/about/">About</a></li>
+                <li><a href="/pricing/">Pricing</a></li>
+                <li><a href="/press/">Press</a></li>
+                <li><a href="/photography/">Photography</a></li>
+                <li><a href="/support/">Support</a></li>
+                <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+                <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+                <li><a href="/privacy/">Privacy</a></li>
+                <li><a href="/terms/">Terms</a></li>
+                <li><a href="/recover/">Find a purchase</a></li>
+                <li><a href="/labs/">For labs</a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="footer-bottom">
+            <span>&copy; 2026 Purplelink LLC</span>
+            <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+            <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+          </div>
+        </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js" defer></script>
+</body>
+</html>
