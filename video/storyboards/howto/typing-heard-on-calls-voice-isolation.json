@@ -1,0 +1,39 @@
+{
+ "id": "howto-typing-heard-on-calls-voice-isolation",
+ "app": "keyfeel",
+ "title": "Keyboard typing heard on calls on Mac (turn on Voice Isolation in Mic Mode)",
+ "short_title": "People hear you typing on calls? Try Voice Isolation on Mac",
+ "url": "purplelink.llc/keyfeel",
+ "page": "https://purplelink.llc/keyfeel/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://forums.macrumors.com/threads/how-loudly-does-the-macbook-16-internal-mic-pick-up-keyboard-noise.2302553/",
+  "https://community.zoom.com/meetings-2/typing-sound-can-be-heard-despite-high-noise-suppression-22898"
+ ],
+ "verify": {
+  "runs": [],
+  "docs": [
+   "https://support.apple.com/guide/mac-help/use-mic-modes-on-your-mac-mchle82b42f0/mac"
+  ],
+  "notes": "GUI-only fix, no Terminal output on screen. Apple's Mac User Guide 'Use Mic Modes on your Mac' (macOS 27 version, read 2026-11-24) says: go to an app that supports Mic Modes, such as FaceTime; click the Video icon in the menu bar, then click Mic Mode; options vary by app; 'To filter out background sounds, select Voice Isolation.' The page names no other apps and no model requirement, so the video claims neither. The MacRumors thread (read 2026-11-24) asks how loudly the MacBook's internal mic picks up typing during Zoom and Teams calls; the Zoom Community thread (read 2026-11-24) is a person whose typing everyone on the call can hear, where a reply mentions a headset. Apple Community threads found in search were dropped: they now redirect to the Apple Support home page, so their content could not be read. Keyfeel's page states automatic silence on the speakers while the microphone or a camera is in use, and an option to play sounds only on headphones or external audio. Nothing on this Mac was changed."
+ },
+ "scenes": [
+  {"type": "hook", "short": true, "kicker": "Calls on a Mac", "title": "They can hear you typing", "sub": "A Mac setting can help.",
+   "narration": "If the people on your video call can hear every key you press on your MacBook, there is a Mac setting that helps keep your typing out of the call."},
+  {"type": "cause", "text": "The built-in microphone sits in the same case as the keyboard, so it hears every key press.",
+   "narration": "On a MacBook, the built-in microphone sits in the same case as the keyboard. So it hears every key press, and the clicks can go to the call along with your voice."},
+  {"type": "steps", "short": true, "label": "During a call",
+   "lines": ["Join a call in an app that supports Mic Modes", "Click the Video icon in the menu bar", "Click Mic Mode", "Select Voice Isolation", "No Mic Mode? Try a headset microphone"],
+   "ui": "Or look for its own noise suppression.",
+   "narration": "Join a call in an app that supports Mic Modes, such as FaceTime. Click the Video icon in the menu bar, click Mic Mode, then select Voice Isolation, which filters out background sounds. Options vary by app. If yours has no Mic Mode, look for its own noise suppression setting, or try a headset microphone."},
+  {"type": "app", "name": "Keyfeel", "line": "Goes quiet on the speakers while the microphone or a camera is in use, and can play only in your headphones.",
+   "url": "purplelink.llc/keyfeel", "img": "site/keyfeel/img/silent-calls.webp", "icon": "site/assets/keyfeel-icon.webp",
+   "narration": "If you use Keyfeel for typing sounds, it goes quiet on the speakers by itself while the microphone or a camera is in use, and it can play only in your headphones. So its clicks stay out of your calls."}
+ ],
+ "thumbs": {
+  "A": {"kind": "diff", "hook": "They hear you typing", "after": "Select Voice Isolation", "afterLabel": "Fix"},
+  "B": {"kind": "focus", "hook": "Typing\non calls?", "lines": ["Click Mic Mode", "Select Voice Isolation"], "hl": "Voice Isolation"},
+  "C": {"kind": "product", "name": "Keyfeel", "line": "Quiet on the speakers during calls", "img": "site/keyfeel/img/silent-calls.webp", "icon": "site/assets/keyfeel-icon.webp", "zoom": 1.2, "pos": "50% 50%"}
+ }
+}

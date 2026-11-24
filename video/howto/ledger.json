@@ -970,5 +970,34 @@
    "ok": true,
    "utm_content": "howto-can-be-used-only-in-preamble-reel"
   }
+ },
+ {
+  "slug": "howto-typing-heard-on-calls-voice-isolation",
+  "app": "keyfeel",
+  "date": "2026-11-24",
+  "title": "Keyboard typing heard on calls on Mac (turn on Voice Isolation in Mic Mode)",
+  "long_id": "H1yl6WAepOY",
+  "short_id": "AcrqAfivjb8",
+  "link_arm": "A",
+  "link_utm_content": "howto-typing-heard-on-calls-voice-isolation",
+  "short_utm_content": "howto-typing-heard-on-calls-voice-isolation-short",
+  "sources": [
+   "https://forums.macrumors.com/threads/how-loudly-does-the-macbook-16-internal-mic-pick-up-keyboard-noise.2302553/",
+   "https://community.zoom.com/meetings-2/typing-sound-can-be-heard-despite-high-noise-suppression-22898"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "H1yl6WAepOY",
+    "caption_id": "AUieDaa3sD9LG3QTetOQUT_t8owfhajs34hTIA1mPRG8N1lrfXVNzna8"
+   },
+   "short": {
+    "video_id": "AcrqAfivjb8",
+    "caption_id": "AUieDaYWNY8QtQpVDF-PSUhCaye4ssYIiCNQY8OuQ-F-atOMUQDc2ERr"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-typing-heard-on-calls-voice-isolation-reel"
+  }
  }
 ]
