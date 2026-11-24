@@ -46,7 +46,9 @@
 /* Black Friday 2026 bar (code BLACKFRIDAY26, experiment black-friday-promo-2026). Decided here, in the blocking
    <head> script, so styles.css can reserve the bar's height before first paint and the page never shifts when it
    fills in. English pages only, never on receipt or account pages, gone for good once dismissed, and it switches
-   itself off at 2026-12-01 00:00 US Eastern (05:00 UTC), the same moment the Stripe code expires. Delete after then. */
+   itself off at 2026-12-01 00:00 US Eastern (05:00 UTC). The Stripe code (25% off single Mac apps, coupon
+   BLACKFRIDAY26_25, scripts/black_friday_promo_code.mjs) keeps working until 03:00 US Eastern as a grace window.
+   Delete after then. */
 (() => {
   'use strict';
   const END = Date.UTC(2026, 11, 1, 5, 0, 0);
@@ -78,7 +80,7 @@
     link.href = '/products/';
     link.textContent = 'any Mac app';
     text.appendChild(link);
-    text.appendChild(document.createTextNode(' is 20% off with code '));
+    text.appendChild(document.createTextNode(' is 25% off with code '));
     const code = document.createElement('strong');
     code.className = 'bf26-code';
     code.textContent = 'BLACKFRIDAY26';

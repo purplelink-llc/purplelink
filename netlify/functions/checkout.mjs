@@ -46,6 +46,7 @@ import { createHash } from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import { managedPaymentsOn, applyManagedPayments } from "../lib/managed-payments.mjs";
 import { pickAddons, setOptionalItems } from "../lib/addons.mjs";
+import { appProductId } from "../lib/app-products.mjs";
 import { recoveryParams, isRecoveryParamError } from "../lib/checkout-recovery.mjs";
 import { checkCode, STORE as BUYER_CODE_STORE } from "../lib/buyer-codes.mjs";
 import { REF_RE, FRIEND_COUPON, FRIEND_PERCENT, friendEligible, checkRef, ensureFriendCoupon } from "../lib/referrals.mjs";
@@ -534,8 +535,14 @@ export default async function handler(request) {
   try {
     addonRows = await pickAddons({ product, entry, managed, discounted: !!(buyerCode || friend), secretKey });
   } catch (_) { addonRows = []; }
+  // A single Mac app with an inline price names its fixed Stripe product (netlify/lib/app-products.mjs), so a
+  // promotion code limited to the Mac apps (BLACKFRIDAY26) can apply. null keeps the inline product exactly as before.
+  let fixedProduct = null;
+  if (inlinePrice && !photo && !entry.bundle && !entry.seats && !entry.interval) {
+    fixedProduct = await appProductId(secretKey, product, unitAmount);
+  }
   const idempotencyKey = createHash("sha256")
-    .update(`v6:${buyerCode ? "xs" + buyerCode.code + ":" : ""}${friend ? "fr:" : ""}${managed ? "mp:" : ""}${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${trialDay}:${appSource}:${redditAd ? "r" + redditClick : ""}:${photo}:${seats}:${bundleParts.join("+")}:${prPreview ? "pv" : ""}${addonRows.length ? ":ao" + addonRows.map((r) => r[0]).join("+") : ""}`)
+    .update(`v6:${buyerCode ? "xs" + buyerCode.code + ":" : ""}${friend ? "fr:" : ""}${managed ? "mp:" : ""}${clientIp}:${product}:${timeBucket}:${attempt}:${referralCode}:${attrFirst}:${attrLast}:${trialDay}:${appSource}:${redditAd ? "r" + redditClick : ""}:${photo}:${seats}:${bundleParts.join("+")}:${prPreview ? "pv" : ""}${fixedProduct ? ":fp" + fixedProduct : ""}${addonRows.length ? ":ao" + addonRows.map((r) => r[0]).join("+") : ""}`)
     .digest("hex");
 
   // Attach the product key as Stripe metadata so the webhook can route
@@ -555,7 +562,9 @@ export default async function handler(request) {
       ? {
           "line_items[0][price_data][currency]": "usd",
           "line_items[0][price_data][unit_amount]": String(entry.seats ? seatUnit : unitAmount),
-          "line_items[0][price_data][product_data][name]": photo ? `${entry.name}: ${photo}` : entry.bundle ? `${entry.name}: ${partsSentence(bundleParts)}` : entry.name,
+          ...(fixedProduct
+            ? { "line_items[0][price_data][product]": fixedProduct }
+            : { "line_items[0][price_data][product_data][name]": photo ? `${entry.name}: ${photo}` : entry.bundle ? `${entry.name}: ${partsSentence(bundleParts)}` : entry.name }),
           ...(entry.interval ? { "line_items[0][price_data][recurring][interval]": entry.interval } : {}),
         }
       : { "line_items[0][price]": priceId }),
