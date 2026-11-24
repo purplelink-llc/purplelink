@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="index, follow">
     <title>Use Mechvibes sound packs on a Mac | Purplelink</title>
-    <meta name="description" content="How to tell a classic Mechvibes pack from a MechvibesDX one, import it into Keyfeel on a Mac, what does not carry over, and which apps can play packs.">
+    <meta name="description" content="How to tell a classic Mechvibes pack from a newer Mechvibes 3 (V2) one, import it into Keyfeel on a Mac, what does not carry over, and which apps can play packs.">
     <link rel="canonical" href="https://purplelink.llc/guides/mechvibes-sound-packs-on-mac/">
     <meta property="og:title" content="Use Mechvibes sound packs on a Mac">
-    <meta property="og:description" content="Classic and MechvibesDX packs differ. Which one Keyfeel imports, how to import it, what does not carry over, and the Mac options compared, with a disclosure that Purplelink makes Keyfeel.">
+    <meta property="og:description" content="Classic and Mechvibes 3 (V2) packs differ. Which one Keyfeel imports, how to import it, what does not carry over, and the Mac options compared, with a disclosure that Purplelink makes Keyfeel.">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://purplelink.llc/guides/mechvibes-sound-packs-on-mac/">
     <meta property="og:image" content="https://purplelink.llc/assets/og/keyfeel.png">
@@ -16,7 +16,7 @@
     <meta property="og:image:height" content="630">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Use Mechvibes sound packs on a Mac">
-    <meta name="twitter:description" content="Classic and MechvibesDX packs differ. Which one Keyfeel imports, how to import it, what does not carry over, and the Mac options compared, with a disclosure that Purplelink makes Keyfeel.">
+    <meta name="twitter:description" content="Classic and Mechvibes 3 (V2) packs differ. Which one Keyfeel imports, how to import it, what does not carry over, and the Mac options compared, with a disclosure that Purplelink makes Keyfeel.">
     <meta name="twitter:image" content="https://purplelink.llc/assets/og/keyfeel.png">
     <meta name="twitter:image:alt" content="Use Mechvibes sound packs on a Mac: guide">
     <script type="application/ld+json">
@@ -26,7 +26,7 @@
     {
       "@type": "BlogPosting",
       "headline": "Use Mechvibes sound packs on a Mac",
-      "description": "How to tell a classic Mechvibes pack from a MechvibesDX one, import it into Keyfeel on a Mac, what does not carry over, and which apps can play packs.",
+      "description": "How to tell a classic Mechvibes pack from a newer Mechvibes 3 (V2) one, import it into Keyfeel on a Mac, what does not carry over, and which apps can play packs.",
       "author": {
         "@id": "https://purplelink.llc/about/#person"
       },
@@ -34,7 +34,7 @@
         "@id": "https://purplelink.llc/#organization"
       },
       "datePublished": "2026-10-08",
-      "dateModified": "2026-10-08",
+      "dateModified": "2026-11-24",
       "image": "https://purplelink.llc/assets/og/keyfeel.png",
       "mainEntityOfPage": "https://purplelink.llc/guides/mechvibes-sound-packs-on-mac/"
     },
@@ -70,7 +70,7 @@
           "@type": "HowToStep",
           "position": 1,
           "name": "Check the pack's format.",
-          "text": "Open the pack's folder, or unzip it, and open its config.json in any text editor. If it contains a defines section, it is a classic pack and Keyfeel can read it. If it contains definitions with key names such as KeyA, it is a MechvibesDX pack and Keyfeel cannot."
+          "text": "Open the pack's folder, or unzip it, and open its config.json in any text editor. If it contains a defines section, it is a classic pack and Keyfeel can read it. If it contains definitions with key names such as KeyA, it is a Mechvibes 3 (V2) pack and Keyfeel cannot."
         },
         {
           "@type": "HowToStep",
@@ -118,10 +118,10 @@
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "Do MechvibesDX packs work in Keyfeel?",
+      "name": "Do Mechvibes 3 (V2) packs work in Keyfeel?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No. MechvibesDX packs use a V2 layout with definitions and key names, and Keyfeel reads only the original layout with defines. Read from the code, not tested in the app: a V2 folder would be treated as a pool of sounds, not a keyboard. Classic packs, including ones MechvibesDX has not converted, do import."
+        "text": "No. Mechvibes 3 (V2) packs use a V2 layout with definitions and key names, and Keyfeel reads only the original layout with defines. Read from the code, not tested in the app: a V2 folder would be treated as a pool of sounds, not a keyboard. Classic packs, including ones Mechvibes 3 has not converted, do import."
       }
     },
     {
@@ -129,7 +129,7 @@
       "name": "Is Mechvibes safe to install?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Its code is open and MIT-licensed, so anyone can read it, and I have not audited it. It needs a permission that lets it see which keys you press, so install it only from the project's own GitHub releases. The MechvibesDX releases list a SHA256SUMS file you can check a download against. On a Mac the builds I read about are not notarized, so macOS will warn you the first time you open one."
+        "text": "Its code is open and MIT-licensed, so anyone can read it, and I have not audited it. It needs a permission that lets it see which keys you press, so install it only from the project's own GitHub releases. The Mechvibes releases list a SHA256SUMS file you can check a download against. Its macOS builds, Apple silicon and Intel, are experimental and not notarized, so macOS will warn you the first time you open one."
       }
     },
     {
@@ -137,7 +137,7 @@
       "name": "Why is Mechvibes silent on my Mac?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Check that the app is switched on under System Settings, Privacy & Security, Input Monitoring, and that the output device and volume are right. MechvibesDX also needs Accessibility, and its permissions can stop working after an update until you remove and re-add the app in both lists. The original app has had no stable release since December 2023, and I did not find a report that ties its silence to a macOS version."
+        "text": "Check that the app is switched on under System Settings, Privacy & Security, Input Monitoring, and that the output device and volume are right. Mechvibes 3 also needs Accessibility, and its permissions can stop working after an update until you remove and re-add the app in both lists. The original Electron app is archived as mechvibes-electron, and I did not find a report that ties its silence to a macOS version."
       }
     },
     {
@@ -145,7 +145,7 @@
       "name": "Does Mechvibes work on macOS 27?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "I did not find a statement of macOS 27 support from Mechvibes or MechvibesDX. Klack's changelog says version 2.2.0 was updated for macOS 27. Keyfeel's stated requirement is macOS 13 or later, and I have not tested it on macOS 27."
+        "text": "The Mechvibes macOS readme says version 3.5.7 was tested on an Apple silicon Mac running macOS 27.3, and that the Intel build has not been tried on a real Mac yet. Klack's changelog says version 2.2.0 was updated for macOS 27. Keyfeel's stated requirement is macOS 13 or later, and I tested version 1.5.3 on macOS 27.2 on October 16, 2026. Key, mouse-click and scroll sounds played."
       }
     },
     {
@@ -161,7 +161,7 @@
       "name": "Is Keyfeel free?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "It is free for 7 days, the full app with no account, then $9.99 once with a license key. I make it. Mechvibes and MechvibesDX are free, and so is Thock."
+        "text": "It is free for 7 days, the full app with no account, then $9.99 once with a license key. I make it. Mechvibes is free, and so is Thock."
       }
     }
   ]
@@ -196,23 +196,23 @@
       <div class="post-hero">
         <p class="post-date">How-to</p>
         <h1 class="post-title">Use Mechvibes sound packs on a Mac</h1>
-        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-08">October 8, 2026</time></p>
-        <p class="post-lede">A Mechvibes sound pack is a folder with a config.json and some audio. Keyfeel, the Mac app I make, imports packs in the original Mechvibes format and does not read the newer MechvibesDX format. This guide shows how to tell which you have, how to import a pack, what does not carry over, and what else can play packs on a Mac.</p>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-08">October 8, 2026</time> · Updated <time datetime="2026-11-24">November 24, 2026</time></p>
+        <p class="post-lede">A Mechvibes sound pack is a folder with a config.json and some audio. Keyfeel, the Mac app I make, imports packs in the original Mechvibes format and does not read the newer Mechvibes 3 (V2) format. This guide shows how to tell which you have, how to import a pack, what does not carry over, and what else can play packs on a Mac.</p>
       </div>
 
       <article class="post-body">
 
-        <p><strong>Disclosure up front:</strong> Purplelink, which publishes this site, makes <a href="/keyfeel/">Keyfeel</a>, a Mac menu-bar app sold as a free 7-day trial and then $9.99 once. I wrote this guide because people who search for Mechvibes on a Mac often end up needing an alternative, and Keyfeel is one. Everything about the other apps comes from their own pages, repositories and release notes, read on October 8, 2026. I did not install them. For Keyfeel's importer I read the app's source code and ran its config parser on sample files. I have not yet imported a set of real packs from the Mechvibes library, so "what carries over" below is read from the code, not seen on screen.</p>
+        <p><strong>Disclosure up front:</strong> Purplelink, which publishes this site, makes <a href="/keyfeel/">Keyfeel</a>, a Mac menu-bar app sold as a free 7-day trial and then $9.99 once. I wrote this guide because people who search for Mechvibes on a Mac often end up needing an alternative, and Keyfeel is one. Everything about the other apps comes from their own pages, repositories and release notes, read on October 8, 2026. The Mechvibes facts were checked again on November 24, 2026 against its GitHub repositories and latest release. I did not install any of the apps. For Keyfeel's importer I read the app's source code and ran its config parser on sample files. I have not yet imported a set of real packs from the Mechvibes library, so "what carries over" below is read from the code, not seen on screen.</p>
 
         <h2>The short answer</h2>
         <ul>
           <li><strong>Classic Mechvibes packs import into Keyfeel.</strong> That is a <code>config.json</code> with a <code>defines</code> section and either one long <code>sound</code> file sliced by time or one audio file per key. Keyfeel takes the pack as a folder, a zip or the <code>config.json</code> itself, and each key keeps the sound the pack gave it.</li>
-          <li><strong>MechvibesDX packs do not.</strong> Their <code>config.json</code> uses <code>definitions</code> and key names, a layout Keyfeel does not parse. From the code, such a folder is treated as a pile of sounds instead, not a keyboard. See <a href="#what-carries-over">what carries over</a>.</li>
-          <li><strong>If you want MechvibesDX packs on a Mac,</strong> use MechvibesDX itself. It reads both formats, is free, and its own notes say the Mac build is not notarized.</li>
+          <li><strong>Mechvibes 3 (V2) packs do not.</strong> Their <code>config.json</code> uses <code>definitions</code> and key names, a layout Keyfeel does not parse. From the code, such a folder is treated as a pile of sounds instead, not a keyboard. See <a href="#what-carries-over">what carries over</a>.</li>
+          <li><strong>If you want V2 packs on a Mac,</strong> use Mechvibes 3 itself (the app that was called MechvibesDX). It reads both formats, is free, and its own notes say the Mac build is not notarized.</li>
         </ul>
 
         <h2>What Mechvibes is</h2>
-        <p>Mechvibes plays a recorded sound when you press a key, so any keyboard sounds like the one in the recording. Its <a href="https://mechvibes.com" rel="noopener">site</a> calls it free and says it is available on Windows, macOS and Linux, with community-made sound packs. It is MIT-licensed, and its <a href="https://github.com/hainguyents13/mechvibes" rel="noopener">repository</a> says it will become legacy once MechvibesDX is stable. <a href="https://github.com/hainguyents13/mechvibes-dx" rel="noopener">MechvibesDX</a> is a rewrite in Rust by the same author, also MIT-licensed, with keyboard and mouse sounds. Its latest release when I read it was 0.8.3, on October 7, 2026.</p>
+        <p>Mechvibes plays a recorded sound when you press a key, so any keyboard sounds like the one in the recording. Its <a href="https://mechvibes.com" rel="noopener">site</a> calls it free and says it is available on Windows, macOS and Linux, with community-made sound packs. It is MIT-licensed, and its <a href="https://github.com/hainguyents13/mechvibes" rel="noopener">repository</a> now describes "the official Mechvibes app", built with Rust, with keyboard and mouse sounds. That is the Mechvibes 3.5 series, which was called MechvibesDX until it was renamed. The original Electron app is archived as <a href="https://github.com/hainguyents13/mechvibes-electron" rel="noopener">mechvibes-electron</a>, described as no longer maintained.</p>
 
         <h2>What a pack contains, and the two formats</h2>
         <p>A pack is a folder with a <code>config.json</code> and audio files, usually shared as a zip. There are two layouts of that file in use, and the difference decides where a pack will work.</p>
@@ -229,7 +229,7 @@
   }
 }</code></pre>
         <p>Here 1 is Escape, 30 is A and 57 is Space. A pack that gives each key its own file has <code>"key_define_type": "multi"</code> and lists a file name instead of a pair of numbers.</p>
-        <p><strong>MechvibesDX, called V2.</strong> Keys are named after the browser's key codes, each with a list of start and end times, and the audio file is named in <code>audio_file</code>. This is the layout in the <a href="https://github.com/hainguyents13/mechvibes-dx/blob/main/docs/soundpack-config-v2.md" rel="noopener">MechvibesDX format document</a>:</p>
+        <p><strong>Mechvibes 3, called V2.</strong> Keys are named after the browser's key codes, each with a list of start and end times, and the audio file is named in <code>audio_file</code>. This is the layout in the <a href="https://github.com/hainguyents13/mechvibes/blob/main/docs/soundpack-config-v2.md" rel="noopener">Mechvibes 3 format document</a>:</p>
 <pre><code>{
   "config_version": "2",
   "name": "Example pack",
@@ -240,16 +240,16 @@
     "KeyA": { "timing": [[0, 50]] }
   }
 }</code></pre>
-        <p>MechvibesDX converts a classic pack to V2 when you import it, keeps a backup of the original <code>config.json</code>, and can also export V2 packs from its editor. So a V2 pack comes from MechvibesDX, and a classic pack comes from the original Mechvibes or from anyone who made one before.</p>
+        <p>Mechvibes 3 converts a classic pack to V2 automatically when the pack loads and keeps a backup of the original <code>config.json</code>. So a V2 pack comes from Mechvibes 3, and a classic pack comes from the original Mechvibes or from anyone who made one before.</p>
         <p>The pack list on mechvibes.com labels packs "config-v1" or "config-v2". I could not find where that site defines those labels. Do not rely on them: open the <code>config.json</code> and look for <code>defines</code> (classic) or <code>definitions</code> (V2).</p>
 
         <h2>Why people look for another way on a Mac</h2>
         <p>Searches such as "Mechvibes Mac not working" have no single cause, and I did not find a report that explains all of them. These are the facts on the Mac side that I could read.</p>
         <ul>
-          <li><strong>The original app has not been updated recently.</strong> The newest release not marked as a pre-release on GitHub is 2.3.4, from December 8, 2023. A 2.3.6 hotfix from January 2025 is marked pre-release. The macOS downloads on mechvibes.com do not say whether they are built for Intel or Apple silicon.</li>
+          <li><strong>The original app has not been updated recently.</strong> Its repository is archived. The newest release not marked as a pre-release on GitHub is 2.3.4, from December 8, 2023. A 2.3.6 hotfix from January 2025 is marked pre-release. The macOS downloads on mechvibes.com do not say whether they are built for Intel or Apple silicon.</li>
           <li><strong>The Homebrew cask is disabled.</strong> Homebrew's data for the Mechvibes 2.3.4 cask shows it disabled on September 1, 2026, with the reason "fails_gatekeeper_check". The cask is an Intel build, and Apple silicon Macs need Rosetta 2 to run it. If <code>brew install --cask mechvibes</code> fails, that is why.</li>
-          <li><strong>MechvibesDX on a Mac is labeled rough by its own author.</strong> The README says macOS support is experimental, the build is ad-hoc signed and not notarized, and it targets Apple silicon only, with Intel builds on request. On first launch you right-click the app and choose Open. The macOS readme in release 0.8.3 still opens with "EXPERIMENTAL, UNTESTED" and says the maintainer has never run the build on a real Mac. However, the release notes drop that wording. Check the current release before you rely on either.</li>
-          <li><strong>It needs two permissions.</strong> MechvibesDX documents Accessibility for key capture while its window is focused and Input Monitoring for when another app is in front. Without Input Monitoring it is silent unless its window has focus. Because the app is ad-hoc signed, its permissions can show as on and stop working after an update. Its fix is to remove and re-add the app in both lists.</li>
+          <li><strong>Mechvibes 3 on a Mac is labeled experimental by its own author.</strong> The macOS readme says the app carries only an ad-hoc signature and is not notarized, so on first launch you right-click the app and choose Open. Since 3.5.0 there are two downloads, one for Apple silicon and one for Intel, and both are experimental and not notarized. The readme reports that 3.5.7 was tested on an Apple silicon Mac with macOS 27.3, and says the Intel build has not been tried on a real Mac yet.</li>
+          <li><strong>It needs two permissions.</strong> Mechvibes 3 documents Accessibility for key capture while its window is focused and Input Monitoring for when another app is in front. Without Input Monitoring it is silent unless its window has focus. Because the app is ad-hoc signed, its permissions can show as on and stop working after an update. Its fix is to remove and re-add the app in both lists.</li>
         </ul>
         <p>If a keyboard sound app is silent on your Mac, check three things before anything else. First, confirm the app is switched on under System Settings, Privacy &amp; Security, Input Monitoring. Second, confirm the output device and volume are the ones you expect. Third, for an app you installed from outside the Mac App Store, open it once with right-click and Open if macOS blocked it. Bluetooth headphones also add delay, often 100 milliseconds or more, which no app can remove.</p>
 
@@ -260,7 +260,7 @@
         <h2 id="import">Import a pack into Keyfeel</h2>
         <p>These steps are for a classic pack.</p>
         <ol>
-          <li><strong>Check the pack's format.</strong> Open the pack's folder, or unzip it, and open its <code>config.json</code> in any text editor. If it contains a <code>defines</code> section, it is a classic pack and Keyfeel can read it. If it contains <code>definitions</code> with key names such as <code>KeyA</code>, it is a MechvibesDX pack and Keyfeel cannot.</li>
+          <li><strong>Check the pack's format.</strong> Open the pack's folder, or unzip it, and open its <code>config.json</code> in any text editor. If it contains a <code>defines</code> section, it is a classic pack and Keyfeel can read it. If it contains <code>definitions</code> with key names such as <code>KeyA</code>, it is a Mechvibes 3 (V2) pack and Keyfeel cannot.</li>
           <li><strong>Open the import dialog.</strong> Click the Keyfeel icon in the menu bar and choose Import sound pack, or open Settings, Sounds, and click Import a sound pack.</li>
           <li><strong>Choose the pack.</strong> Pick the pack's folder, its zip file or its <code>config.json</code>, then click Import. Keyfeel converts the audio once.</li>
           <li><strong>Listen to the preview.</strong> When the import finishes, Keyfeel selects the pack and plays a short phrase of presses in it. If the dialog says it could not import the pack, the message says whether no sounds were found or the audio could not be read.</li>
@@ -285,8 +285,8 @@
               <tr><td class="u-cell">Mouse clicks</td><td class="u-cell">If click sounds are on, they play a random sound from the pack.</td></tr>
               <tr><td class="u-cell">Loudness</td><td class="u-cell">Each sound is evened out to a common peak level, so a pack made deliberately quiet or loud plays at Keyfeel's level. Use the volume controls.</td></tr>
               <tr><td class="u-cell">Pack settings such as recommended volume or random pitch</td><td class="u-cell">Not read.</td></tr>
-              <tr><td class="u-cell">MechvibesDX V2 packs</td><td class="u-cell">Not supported. The file has no <code>defines</code> section, so Keyfeel does not take the key mapping. From the code, a folder with one long recording would be cut to its first 1.2 seconds and used as the sound for every key. I have not run that case in the app.</td></tr>
-              <tr><td class="u-cell">MechvibesDX mouse packs</td><td class="u-cell">Not supported, for the same reason.</td></tr>
+              <tr><td class="u-cell">Mechvibes 3 (V2) packs</td><td class="u-cell">Not supported. The file has no <code>defines</code> section, so Keyfeel does not take the key mapping. From the code, a folder with one long recording would be cut to its first 1.2 seconds and used as the sound for every key. I have not run that case in the app.</td></tr>
+              <tr><td class="u-cell">Mechvibes 3 mouse packs</td><td class="u-cell">Not supported, for the same reason.</td></tr>
             </tbody>
           </table>
         </div>
@@ -300,8 +300,8 @@
               <tr><th class="u-th">App</th><th class="u-th">Price</th><th class="u-th">Mechvibes packs</th><th class="u-th">Mac state, as documented</th></tr>
             </thead>
             <tbody>
-              <tr><td class="u-cell">Mechvibes 2.3.4</td><td class="u-cell">Free, MIT</td><td class="u-cell">Native format</td><td class="u-cell">Homebrew cask is Intel and disabled. Site lists .dmg files without saying which chip</td></tr>
-              <tr><td class="u-cell">MechvibesDX 0.8.3</td><td class="u-cell">Free, MIT</td><td class="u-cell">Reads classic and V2</td><td class="u-cell">Apple silicon .dmg, not notarized, Accessibility and Input Monitoring</td></tr>
+              <tr><td class="u-cell">Mechvibes 2.3.4 (Electron, archived)</td><td class="u-cell">Free, MIT</td><td class="u-cell">Native format</td><td class="u-cell">Homebrew cask is Intel and disabled. Site lists .dmg files without saying which chip</td></tr>
+              <tr><td class="u-cell">Mechvibes 3.5 (was MechvibesDX)</td><td class="u-cell">Free, MIT</td><td class="u-cell">Reads classic and V2</td><td class="u-cell">Apple silicon and Intel .dmg, experimental, not notarized, Accessibility and Input Monitoring</td></tr>
               <tr><td class="u-cell">Keyfeel</td><td class="u-cell">$9.99 once, 7-day trial</td><td class="u-cell">Classic only</td><td class="u-cell">macOS 13 or later, Apple silicon and Intel, notarized, Input Monitoring</td></tr>
               <tr><td class="u-cell">Klack</td><td class="u-cell">$4.99, Mac App Store</td><td class="u-cell">Not stated</td><td class="u-cell">macOS 15 or later per the listing. macOS 27 support in 2.2.0</td></tr>
               <tr><td class="u-cell">Thock</td><td class="u-cell">Free, MIT</td><td class="u-cell">Not stated. Its own JSON profiles</td><td class="u-cell">macOS 13.5 or later</td></tr>
@@ -332,18 +332,18 @@
 
 
         <h2 id="faq">Frequently asked</h2>
-        <h3>Do MechvibesDX packs work in Keyfeel?</h3>
-        <p>No. MechvibesDX packs use a V2 layout with <code>definitions</code> and key names, and Keyfeel reads only the original layout with <code>defines</code>. Read from the code, not tested in the app: a V2 folder would be treated as a pool of sounds, not a keyboard. Classic packs, including ones MechvibesDX has not converted, do import.</p>
+        <h3>Do Mechvibes 3 (V2) packs work in Keyfeel?</h3>
+        <p>No. Mechvibes 3 (V2) packs use a V2 layout with <code>definitions</code> and key names, and Keyfeel reads only the original layout with <code>defines</code>. Read from the code, not tested in the app: a V2 folder would be treated as a pool of sounds, not a keyboard. Classic packs, including ones Mechvibes 3 has not converted, do import.</p>
         <h3>Is Mechvibes safe to install?</h3>
-        <p>Its code is open and MIT-licensed, so anyone can read it, and I have not audited it. It needs a permission that lets it see which keys you press, so install it only from the project's own GitHub releases. The MechvibesDX releases list a SHA256SUMS file you can check a download against. On a Mac the builds I read about are not notarized, so macOS will warn you the first time you open one.</p>
+        <p>Its code is open and MIT-licensed, so anyone can read it, and I have not audited it. It needs a permission that lets it see which keys you press, so install it only from the project's own GitHub releases. The Mechvibes releases list a SHA256SUMS file you can check a download against. Its macOS builds, Apple silicon and Intel, are experimental and not notarized, so macOS will warn you the first time you open one.</p>
         <h3>Why is Mechvibes silent on my Mac?</h3>
-        <p>Check that the app is switched on under System Settings, Privacy &amp; Security, Input Monitoring, and that the output device and volume are right. MechvibesDX also needs Accessibility, and its permissions can stop working after an update until you remove and re-add the app in both lists. The original app has had no stable release since December 2023, and I did not find a report that ties its silence to a macOS version.</p>
+        <p>Check that the app is switched on under System Settings, Privacy &amp; Security, Input Monitoring, and that the output device and volume are right. Mechvibes 3 also needs Accessibility, and its permissions can stop working after an update until you remove and re-add the app in both lists. The original Electron app is archived as mechvibes-electron, and I did not find a report that ties its silence to a macOS version.</p>
         <h3>Does Mechvibes work on macOS 27?</h3>
-        <p>I did not find a statement of macOS 27 support from Mechvibes or MechvibesDX. Klack's changelog says version 2.2.0 was updated for macOS 27. Keyfeel's stated requirement is macOS 13 or later, and I have not tested it on macOS 27.</p>
+        <p>The Mechvibes macOS readme says version 3.5.7 was tested on an Apple silicon Mac running macOS 27.3, and that the Intel build has not been tried on a real Mac yet. Klack's changelog says version 2.2.0 was updated for macOS 27. Keyfeel's stated requirement is macOS 13 or later, and I tested version 1.5.3 on macOS 27.2 on October 16, 2026. Key, mouse-click and scroll sounds played.</p>
         <h3>Can Klack or Thock use Mechvibes packs?</h3>
         <p>I found no statement that either does. Thock describes its own JSON switch profiles, and Klack's pages mention no way to add your own sounds.</p>
         <h3>Is Keyfeel free?</h3>
-        <p>It is free for 7 days, the full app with no account, then $9.99 once with a license key. I make it. Mechvibes and MechvibesDX are free, and so is Thock.</p>
+        <p>It is free for 7 days, the full app with no account, then $9.99 once with a license key. I make it. Mechvibes is free, and so is Thock.</p>
 
         <h2>Related guides</h2>
         <ul>
