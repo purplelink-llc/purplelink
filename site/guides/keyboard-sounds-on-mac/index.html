@@ -34,7 +34,7 @@
         "@id": "https://purplelink.llc/#organization"
       },
       "datePublished": "2026-11-10",
-      "dateModified": "2026-11-10",
+      "dateModified": "2026-11-24",
       "image": "https://purplelink.llc/assets/og/brand.png",
       "mainEntityOfPage": "https://purplelink.llc/guides/keyboard-sounds-on-mac/"
     },
@@ -99,6 +99,14 @@
     },
     {
       "@type": "Question",
+      "name": "Can I add a click sound to my mouse on a Mac?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "I found no built-in setting for it in Apple's documentation, so you need an app. Keyfeel (made by Purplelink), Klack, Kachunk, Mouse Click Sound and GlitchTone all list mouse click sounds. They usually need Input Monitoring, and a Bluetooth mouse can add a slight delay."
+      }
+    },
+    {
+      "@type": "Question",
       "name": "Can I use Mechvibes packs?",
       "acceptedAnswer": {
         "@type": "Answer",
@@ -137,7 +145,7 @@
       <div class="post-hero">
         <p class="post-date">Guide</p>
         <h1 class="post-title">How to get keyboard sounds on a Mac (built in, and with an app)</h1>
-        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-11-10">November 10, 2026</time></p>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-11-10">November 10, 2026</time> · Updated <time datetime="2026-11-24">November 24, 2026</time></p>
         <p class="post-lede">macOS has one built-in key click, and it is tucked inside an accessibility setting that also slows every key down. This guide shows where it is, why most people use an app instead, and what to check before you give one permission to see your keys.</p>
       </div>
 
@@ -177,6 +185,11 @@
         <p>For a side-by-side list of free and paid apps, see <a href="/guides/best-keyboard-sound-apps-for-mac/">Best keyboard sound apps for Mac</a>. It compares them by price, macOS version, permission and what each one does not do.</p>
         <p>Keyfeel is the one I make. It plays recorded switch sounds plus mouse-click and scroll sounds, goes quiet while the microphone or a camera is in use, and is free for 7 days, then $9.99 once.</p>
 
+        <h2 id="mouse">Sounds for mouse clicks and the trackpad</h2>
+        <p>I found no setting in Apple's documentation that adds a sound to a mouse or trackpad click. The Mac User Guide pages for <a href="https://support.apple.com/guide/mac-help/change-mouse-settings-mchlp1138/mac" rel="noopener">mouse and trackpad speed</a> and <a href="https://support.apple.com/guide/mac-help/change-trackpad-settings-mchlp1226/mac" rel="noopener">Trackpad settings</a> list no such option. The one sound setting on the Trackpad page runs the other way: Quiet Click, under Point &amp; Click, turns off the sound your trackpad makes when you click.</p>
+        <p>An app fills the gap the same way a keyboard sound app does. It needs Input Monitoring so macOS will tell it a button was pressed, then plays a sound for the press and often a second one for the release. A Bluetooth mouse can add a little lag between your click and the sound, and Bluetooth headphones add their own delay on top, as described above.</p>
+        <p>Keyfeel, which I make, plays mouse press and release sounds and scroll ticks, and costs $9.99 once after a 7-day trial (the <a href="/keyfeel/">Keyfeel page</a> has the details). Klack, $4.99 on the Mac App Store, added mouse click sounds in version 1.7 and scroll sounds in 2.2, according to its <a href="https://tryklack.com/changelog" rel="noopener">changelog</a>. Kachunk is listed as free and added mouse and trackpad click, release and scroll sounds in 2.0. Mouse Click Sound ($2.99) covers left click, right click and scroll wheel clicks, and its listing says it works with trackpad clicks. GlitchTone ($2.99) adds mouse click and scroll wheel sounds, and its listing says it requires Input Monitoring.</p>
+
         <h2 id="typewriter">If you want a typewriter sound</h2>
         <p>Several apps include one. Keyfeel's Typewriter sound, with a bell on Return, is made by the app rather than recorded from a real machine. For recordings of real typewriters, the comparison guide lists apps that use them, such as Kachunk.</p>
 
@@ -189,6 +202,9 @@
         <p>It usually needs Input Monitoring, the same permission a keylogger would use, so trust matters. A sound app needs to know a key was pressed, not what you typed. To check an app, run <code>codesign -d --entitlements - /Applications/AppName.app</code> in Terminal. A sandboxed app without the <code>com.apple.security.network.client</code> entitlement cannot open a connection. An app outside the sandbox needs no entitlement for that, so a firewall that shows outgoing connections is the way to see whether it connects anywhere.</p>
         <h3>Can I use Mechvibes packs?</h3>
         <p>Yes, in Mechvibes itself and in some other apps that read its pack format. The guide to <a href="/guides/mechvibes-sound-packs-on-mac/">Mechvibes sound packs on a Mac</a> covers which formats work where.</p>
+
+        <h3>Can I add a click sound to my mouse on a Mac?</h3>
+        <p>I found no built-in setting for it in Apple's documentation, so you need an app. Keyfeel (made by Purplelink), Klack, Kachunk, Mouse Click Sound and GlitchTone all list mouse click sounds. They usually need Input Monitoring, and a Bluetooth mouse can add a slight delay.</p>
 
         <h2>Related guides</h2>
         <ul>
