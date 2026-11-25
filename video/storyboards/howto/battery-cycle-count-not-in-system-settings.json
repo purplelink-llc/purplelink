@@ -1,0 +1,100 @@
+{
+ "id": "howto-battery-cycle-count-not-in-system-settings",
+ "app": "batterymeter",
+ "title": "Battery cycle count not in System Settings on Mac (find it in System Information)",
+ "short_title": "Can't find your MacBook battery cycle count? It's in System Information",
+ "url": "purplelink.llc/batterymeter",
+ "page": "https://purplelink.llc/batterymeter/",
+ "voice": "en-GB-SoniaNeural",
+ "rate": "-4%",
+ "sources": [
+  "https://discussions.apple.com/thread/252524930",
+  "https://discussions.apple.com/thread/255285270",
+  "https://discussions.apple.com/thread/254101786"
+ ],
+ "verify": {
+  "runs": [
+   {
+    "cmd": "system_profiler SPPowerDataType | grep -c \"Cycle Count\"",
+    "output": "0"
+   }
+  ],
+  "docs": [
+   "https://support.apple.com/en-us/102888",
+   "https://support.apple.com/guide/mac-help/mh20865/mac"
+  ],
+  "notes": "Read 2026-11-25. Apple's 'Determine battery cycle count for Mac laptops' (support.apple.com/102888): hold Option and choose System Information from the Apple menu, select Power in the sidebar, and find the current cycle count in the Battery Information section; it does not mention System Settings. Its Maximum Cycle Count table lists 1000 for every Apple silicon MacBook Air and MacBook Pro. Apple's Mac User Guide 'Check the condition of your computer's battery' (mh20865, macOS 27 version): System Settings, Battery, Battery Health shows a condition such as Normal or Service recommended, and does not mention cycle count. The Terminal command system_profiler SPPowerDataType | grep \"Cycle Count\" is the top answer (61 votes) on Ask Different 116429 (77,000 views), whose sample output shows Cycle Count under Health Information. The recording machine is a Mac mini (Mac17,16) with no battery: the one recorded run shows grep finds no Cycle Count line there, and it is not shown on screen. The GUI steps and the Terminal line were not run against a battery; no battery output is shown on screen. Ask Different 116429 is not listed in sources because Stack Exchange answers automated link checks with 403. The Apple Community threads 252524930 (a 2018 MacBook Pro owner asking about its cycle count; the top reply links Apple's cycle count article), 255285270 (MacBook Battery Health indicator missing) and 254101786 (no battery life view like the iPhone's) were found by search; Apple Community pages redirect automated fetches, so their text was read only from search summaries. BatteryMeter's page states its menu shows capacity against design and cycle count. Nothing on this Mac was changed."
+ },
+ "scenes": [
+  {
+   "type": "hook",
+   "short": true,
+   "kicker": "Mac battery",
+   "title": "Where is the battery cycle count?",
+   "sub": "Battery settings show a condition, not a count.",
+   "narration": "You want to know how many charge cycles your MacBook battery has used, but the Battery page in System Settings does not show the number."
+  },
+  {
+   "type": "cause",
+   "text": "System Settings shows Battery Health as Normal or Service recommended. The cycle count lives in System Information.",
+   "narration": "In System Settings, Battery Health only shows a condition, Normal or Service recommended. The cycle count itself is in a different app, System Information."
+  },
+  {
+   "type": "steps",
+   "short": true,
+   "label": "System Information",
+   "lines": [
+    "Hold Option, then open the Apple menu",
+    "Choose System Information",
+    "Click Power in the sidebar",
+    "Find Cycle Count under Battery Information"
+   ],
+   "ui": "Apple rates recent MacBooks for 1000 cycles. Its support page lists every model.",
+   "narration": "Hold the Option key and open the Apple menu, then choose System Information. Click Power in the sidebar, and find Cycle Count under Battery Information. Apple rates recent MacBooks for a thousand cycles, and its support page lists every model."
+  },
+  {
+   "type": "steps",
+   "label": "Or in Terminal",
+   "lines": [
+    "$ system_profiler SPPowerDataType | grep \"Cycle Count\""
+   ],
+   "ui": "It prints the same number System Information shows.",
+   "narration": "In Terminal, system profiler with the power data type, piped through grep for Cycle Count, prints the same number in one line."
+  },
+  {
+   "type": "app",
+   "name": "BatteryMeter",
+   "line": "Shows the cycle count and capacity against design in its menu, next to the charge and watts.",
+   "url": "purplelink.llc/batterymeter",
+   "img": "site/batterymeter/img/live-charging-1120.webp",
+   "icon": "site/assets/batterymeter-icon.webp",
+   "narration": "BatteryMeter is a free menu bar app for Apple silicon MacBooks. Its menu shows the cycle count and the capacity against design, next to the charge and the battery power in watts, so the number is one click away."
+  }
+ ],
+ "thumbs": {
+  "A": {
+   "kind": "diff",
+   "hook": "Cycle count?",
+   "after": "Click Power in the sidebar",
+   "afterLabel": "Fix"
+  },
+  "B": {
+   "kind": "focus",
+   "hook": "Battery cycle\ncount on Mac",
+   "lines": [
+    "Option + Apple menu",
+    "System Information, Power"
+   ],
+   "hl": "System Information, Power"
+  },
+  "C": {
+   "kind": "product",
+   "name": "BatteryMeter",
+   "line": "Cycle count one click away",
+   "img": "site/batterymeter/img/live-charging-1120.webp",
+   "icon": "site/assets/batterymeter-icon.webp",
+   "zoom": 1.3,
+   "pos": "100% 100%"
+  }
+ }
+}
