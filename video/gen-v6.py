@@ -79,12 +79,12 @@ def shot(clip, i, pre, post, cards=None, slow=True, blast=False, **kw):
 
 def strike(clip, pre, post, cards=None, **kw):
     d = S(clip, STRIKE_HIT - pre, pre + post, **kw)
-    d["flash"] = FLASH(pre)
-    d["shake"] = SHAKE(pre, 20)
-    d["slow"] = [{"at": round(pre - 0.02, 3), "dur": 0.5, "speed": 0.4}]
+    # The strike's log has no "destroyed" line (only "strikes row 4, column 6"), so no flash, shake or slow-motion:
+    # a boom on the first shell only. The kills show in the HUD rout counter (7 to 2), not in the log.
+    d["hits"] = [{"at": round(pre, 3), "kind": "boom", "gain_db": 0}]
     if cards:
         d["cards"] = cards
-    d["_kill"] = True
+    d["_kill"] = False
     return d
 
 
@@ -210,7 +210,7 @@ def run_loop():
          S("k_hub", 0.1, 1.5, cards=[card("BUILD THE\n*OUTPOST.*", 0.0, 1.5, pos="left", size=78, strong=True)]),
          S("k_hub", 5.45, 0.9),                                                                      # "Radar is built and ready"
          S("k_massive", 4.15, 2.6, crop={"x": 0.42, "y": 0.52, "s": 1.08}, hits=[{"at": 1.05, "kind": "tick", "gain_db": 0}],
-           cards=[card("GROW THE\n*ARMY.*", 0.0, 0.8, pos="top")])]   # ten blue units on the board, then their next exchange (85%)   # "Can act: 10"
+           cards=[card("COMMAND\n*TEN UNITS.*", 0.0, 0.8, pos="top")])]   # ten blue units on the board, then their next exchange (85%)   # "Can act: 10"
     return L
 
 
