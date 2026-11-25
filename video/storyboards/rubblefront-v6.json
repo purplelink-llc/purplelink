@@ -483,28 +483,11 @@
    "glint": {
     "kind": "whip"
    },
-   "flash": [
+   "hits": [
     {
      "at": 1.1,
-     "dur": 0.07,
-     "amp": 0.85,
-     "color": "#fff6e6",
-     "sfx": "hit"
-    }
-   ],
-   "shake": [
-    {
-     "at": 1.1,
-     "amp": 20,
-     "dur": 0.35,
-     "zoom": 0.03
-    }
-   ],
-   "slow": [
-    {
-     "at": 1.08,
-     "dur": 0.5,
-     "speed": 0.4
+     "kind": "boom",
+     "gain_db": 0
     }
    ],
    "cards": [
@@ -647,7 +630,7 @@
    ],
    "cards": [
     {
-     "text": "GROW THE\n*ARMY.*",
+     "text": "COMMAND\n*TEN UNITS.*",
      "at": 0.0,
      "dur": 0.8,
      "pos": "top",
@@ -698,28 +681,11 @@
     "cy": 540,
     "s": 1.0
    },
-   "flash": [
+   "hits": [
     {
      "at": 1.35,
-     "dur": 0.07,
-     "amp": 0.85,
-     "color": "#fff6e6",
-     "sfx": "hit"
-    }
-   ],
-   "shake": [
-    {
-     "at": 1.35,
-     "amp": 20,
-     "dur": 0.35,
-     "zoom": 0.03
-    }
-   ],
-   "slow": [
-    {
-     "at": 1.33,
-     "dur": 0.5,
-     "speed": 0.4
+     "kind": "boom",
+     "gain_db": 0
     }
    ],
    "logo": {
