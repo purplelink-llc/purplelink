@@ -999,5 +999,35 @@
    "ok": true,
    "utm_content": "howto-typing-heard-on-calls-voice-isolation-reel"
   }
+ },
+ {
+  "slug": "howto-battery-cycle-count-not-in-system-settings",
+  "app": "batterymeter",
+  "date": "2026-11-25",
+  "title": "Battery cycle count not in System Settings on Mac (find it in System Information)",
+  "long_id": "6aCjJSYBHqY",
+  "short_id": "H-djIe4jQeM",
+  "link_arm": "A",
+  "link_utm_content": "howto-battery-cycle-count-not-in-system-settings",
+  "short_utm_content": "howto-battery-cycle-count-not-in-system-settings-short",
+  "sources": [
+   "https://discussions.apple.com/thread/252524930",
+   "https://discussions.apple.com/thread/255285270",
+   "https://discussions.apple.com/thread/254101786"
+  ],
+  "captions": {
+   "long": {
+    "video_id": "6aCjJSYBHqY",
+    "caption_id": "AUieDaZIdMS25Twr6U56JJpRHO5j4i61iuIRruP_K_kECT2tPButsmlt"
+   },
+   "short": {
+    "video_id": "H-djIe4jQeM",
+    "caption_id": "AUieDaZ6rsQMD8jVm52WM38jIHYnZthfHv2jCGNwWH1j6BpSJLd4foma"
+   }
+  },
+  "instagram": {
+   "ok": true,
+   "utm_content": "howto-battery-cycle-count-not-in-system-settings-reel"
+  }
  }
 ]
