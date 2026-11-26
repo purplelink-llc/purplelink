@@ -1,0 +1,1067 @@
+{
+ "id": "rubblefront-v7-wishlist",
+ "outputs": {
+  "16x9": "rubblefront-trailer-v7-wishlist-16x9.mp4"
+ },
+ "formats": [
+  "16x9"
+ ],
+ "crf": 16,
+ "sfxDb": -6,
+ "music": [
+  {
+   "file": "battle_low.ogg",
+   "in": 44.0,
+   "t": 0.0,
+   "dur": 3.4099999999999997,
+   "gain_db": -9,
+   "fade_in": 1.0,
+   "fade_out": 0.3
+  },
+  {
+   "file": "battle_mid.ogg",
+   "in": 0.0,
+   "t": 3.01,
+   "dur": 42.0,
+   "gain_db": 0.0,
+   "fade_in": 0.02,
+   "fade_out": 0.02
+  },
+  {
+   "file": "battle_mid_drive.ogg",
+   "in": 0.0,
+   "t": 3.01,
+   "dur": 26.340000000000003,
+   "gain_db": 2.0,
+   "fade_in": 0.02,
+   "fade_out": 0.25
+  },
+  {
+   "file": "battle_high.ogg",
+   "in": 42.0,
+   "t": 45.01,
+   "dur": 100.0,
+   "gain_db": 3.0,
+   "fade_in": 0.02,
+   "fade_out": 3.5
+  },
+  {
+   "file": "battle_high_drive.ogg",
+   "in": 42.0,
+   "t": 45.01,
+   "dur": 100.0,
+   "gain_db": 5.0,
+   "fade_in": 0.02,
+   "fade_out": 3.5
+  }
+ ],
+ "synth": [
+  {
+   "t": 3.01,
+   "kind": "riser",
+   "dur": 2.4,
+   "gain_db": -3
+  },
+  {
+   "t": 44.97,
+   "kind": "riser",
+   "dur": 7.960000000000001,
+   "gain_db": -14
+  },
+  {
+   "t": 55.76,
+   "kind": "riser",
+   "dur": 9.5,
+   "gain_db": -8
+  }
+ ],
+ "scenes": [
+  {
+   "clip": "p_snow",
+   "in": 0.633,
+   "dur": 1.5,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "title": {
+    "text": "Turn-based tactics",
+    "sub": "Roguelike",
+    "at": 0.0,
+    "dur": 1.5,
+    "y": 175
+   },
+   "hits": [
+    {
+     "at": 0.5,
+     "kind": "tick",
+     "gain_db": -6
+    },
+    {
+     "at": 1.0,
+     "kind": "tick",
+     "gain_db": -6
+    }
+   ],
+   "grade": "cine",
+   "vig": 0.5
+  },
+  {
+   "clip": "a_open",
+   "in": 3.017,
+   "dur": 1.8,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "glint": {
+    "kind": "whip"
+   },
+   "grade": "cine",
+   "flash": [
+    {
+     "at": 1.51,
+     "dur": 0.07,
+     "amp": 0.85,
+     "color": "#fff6e6",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 1.51,
+     "amp": 16,
+     "dur": 0.35,
+     "zoom": 0.03
+    }
+   ],
+   "slow": [
+    {
+     "at": 1.49,
+     "dur": 0.42,
+     "speed": 0.4
+    }
+   ]
+  },
+  {
+   "clip": "h_est",
+   "in": 2.067,
+   "dur": 3.2,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "cards": [
+    {
+     "text": "You hold a *forward outpost.*",
+     "at": 0.25,
+     "dur": 2.8,
+     "pos": "story",
+     "sfxDb": -4.5,
+     "sfx": false
+    }
+   ],
+   "grade": "cine",
+   "vig": 0.5
+  },
+  {
+   "clip": "p_desert",
+   "in": 0.733,
+   "dur": 1.9,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "cards": [
+    {
+     "text": "Past the wire, *the front.*",
+     "at": 0.15,
+     "dur": 3.4,
+     "pos": "story",
+     "sfxDb": -4.5,
+     "sfx": false
+    }
+   ],
+   "grade": "cine",
+   "vig": 0.5
+  },
+  {
+   "clip": "p_night",
+   "in": 0.933,
+   "dur": 1.5,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "grade": "lift",
+   "vig": 0.3
+  },
+  {
+   "clip": "p_rain",
+   "in": 0.733,
+   "dur": 1.25,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "grade": "cold",
+   "vig": 0.5
+  },
+  {
+   "clip": "p_fog",
+   "in": 0.933,
+   "dur": 1.15,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "grade": "cold",
+   "vig": 0.5
+  },
+  {
+   "clip": "a_open",
+   "in": 8.5,
+   "dur": 2.75,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "grade": "cine",
+   "flash": [
+    {
+     "at": 1.76,
+     "dur": 0.07,
+     "amp": 0.85,
+     "color": "#fff6e6",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 1.76,
+     "amp": 16,
+     "dur": 0.35,
+     "zoom": 0.03
+    }
+   ],
+   "slow": [
+    {
+     "at": 1.74,
+     "dur": 0.42,
+     "speed": 0.4
+    }
+   ],
+   "cards": [
+    {
+     "text": "BLOW A HOLE IN\nTHEIR *COVER.*",
+     "at": 1.45,
+     "dur": 1.2,
+     "pos": "bottom",
+     "sfxDb": -4.5
+    }
+   ]
+  },
+  {
+   "clip": "t_c",
+   "in": 2.617,
+   "dur": 2.0,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "glint": {
+    "kind": "whip"
+   },
+   "crop": {
+    "x": 0.5,
+    "y": 0.42,
+    "s": 1.12
+   },
+   "hits": [
+    {
+     "at": 1.83,
+     "kind": "tick",
+     "gain_db": 0
+    }
+   ],
+   "cards": [
+    {
+     "text": "EVERY SHOT\nHAS *ODDS.*",
+     "at": 0.0,
+     "dur": 1.95,
+     "pos": "bottom",
+     "sfxDb": -4.5
+    }
+   ]
+  },
+  {
+   "clip": "a_d",
+   "in": 2.667,
+   "dur": 1.85,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "grade": "cine",
+   "hits": [
+    {
+     "at": 1.78,
+     "kind": "tick",
+     "gain_db": 0
+    }
+   ],
+   "cards": [
+    {
+     "text": "ONE HEAVY TANK.\n*FOUR SHOTS.*",
+     "at": 0.0,
+     "dur": 1.8,
+     "pos": "bottom",
+     "sfxDb": -4.5
+    }
+   ]
+  },
+  {
+   "clip": "a_d",
+   "in": 7.45,
+   "dur": 1.3,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "grade": "cine"
+  },
+  {
+   "clip": "a_d",
+   "in": 11.7,
+   "dur": 1.25,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "grade": "cine",
+   "hits": [
+    {
+     "at": 0.98,
+     "kind": "tick",
+     "gain_db": 0
+    }
+   ]
+  },
+  {
+   "clip": "a_d",
+   "in": 15.683,
+   "dur": 2.25,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "grade": "cine",
+   "flash": [
+    {
+     "at": 1.13,
+     "dur": 0.07,
+     "amp": 0.85,
+     "color": "#fff6e6",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 1.13,
+     "amp": 16,
+     "dur": 0.35,
+     "zoom": 0.03
+    }
+   ],
+   "slow": [
+    {
+     "at": 1.11,
+     "dur": 0.42,
+     "speed": 0.4
+    }
+   ]
+  },
+  {
+   "clip": "a_b",
+   "in": 4.3,
+   "dur": 1.6,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "grade": "cine",
+   "glint": {
+    "kind": "whip"
+   },
+   "cards": [
+    {
+     "text": "SET AN\n*AMBUSH.*",
+     "at": 0.1,
+     "dur": 1.45,
+     "pos": "bottom",
+     "sfxDb": -4.5
+    }
+   ]
+  },
+  {
+   "clip": "a_b",
+   "in": 6.45,
+   "dur": 1.55,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "grade": "cine",
+   "flash": [
+    {
+     "at": 0.7,
+     "dur": 0.07,
+     "amp": 0.85,
+     "color": "#fff6e6",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 0.7,
+     "amp": 16,
+     "dur": 0.35,
+     "zoom": 0.03
+    }
+   ],
+   "slow": [
+    {
+     "at": 0.68,
+     "dur": 0.42,
+     "speed": 0.4
+    }
+   ]
+  },
+  {
+   "clip": "s_e",
+   "in": 2.1,
+   "dur": 2.5,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "glint": {
+    "kind": "whip"
+   },
+   "hits": [
+    {
+     "at": 1.1,
+     "kind": "boom",
+     "gain_db": 0
+    }
+   ],
+   "cards": [
+    {
+     "text": "CALL IN\n*ARTILLERY.*",
+     "at": 0.0,
+     "dur": 1.05,
+     "pos": "bottom",
+     "sfxDb": -4.5
+    }
+   ]
+  },
+  {
+   "clip": "m_runmap",
+   "in": 0.6,
+   "dur": 2.0,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "crop": {
+    "x": 0.47,
+    "y": 0.4,
+    "s": 1.22,
+    "to": {
+     "x": 0.5,
+     "y": 0.4,
+     "s": 1.36
+    }
+   },
+   "glint": {
+    "kind": "whip"
+   },
+   "cards": [
+    {
+     "text": "Every run, *a new road* to the front.",
+     "at": 0.1,
+     "dur": 1.85,
+     "pos": "story",
+     "sfxDb": -4.5,
+     "sfx": false
+    }
+   ]
+  },
+  {
+   "clip": "k_spoils",
+   "in": 2.95,
+   "dur": 1.5,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "crop": {
+    "x": 0.5,
+    "y": 0.52,
+    "s": 1.14
+   },
+   "cards": [
+    {
+     "text": "Win, and take *the spoils.*",
+     "at": 0.05,
+     "dur": 1.4,
+     "pos": "story",
+     "sfxDb": -4.5,
+     "sfx": false
+    }
+   ]
+  },
+  {
+   "clip": "m_roster",
+   "in": 0.5,
+   "dur": 1.7,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "crop": {
+    "x": 0.5,
+    "y": 0.36,
+    "s": 1.25,
+    "to": {
+     "x": 0.5,
+     "y": 0.36,
+     "s": 1.34
+    }
+   },
+   "cards": [
+    {
+     "text": "Every soldier has *a name.*",
+     "at": 0.1,
+     "dur": 1.55,
+     "pos": "story",
+     "sfxDb": -4.5,
+     "sfx": false
+    }
+   ]
+  },
+  {
+   "clip": "h_l1",
+   "in": 3.017,
+   "dur": 2.0,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "grade": "cine",
+   "vig": 0.5,
+   "cards": [
+    {
+     "text": "Bring them home, *and build.*",
+     "at": 0.1,
+     "dur": 2.9,
+     "pos": "story",
+     "sfxDb": -4.5,
+     "sfx": false
+    }
+   ]
+  },
+  {
+   "clip": "h_l3",
+   "in": 3.017,
+   "dur": 2.0,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "grade": "cine",
+   "vig": 0.5,
+   "glint": {
+    "kind": "whip"
+   }
+  },
+  {
+   "clip": "k_massive",
+   "in": 4.15,
+   "dur": 2.4,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "crop": {
+    "x": 0.42,
+    "y": 0.52,
+    "s": 1.08
+   },
+   "hits": [
+    {
+     "at": 1.05,
+     "kind": "tick",
+     "gain_db": 0
+    }
+   ],
+   "cards": [
+    {
+     "text": "FIELD\n*AN ARMY.*",
+     "at": 0.0,
+     "dur": 0.9,
+     "pos": "top",
+     "sfxDb": -4.5
+    }
+   ]
+  },
+  {
+   "clip": "s_a",
+   "in": 10.797,
+   "dur": 2.56,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 1.816,
+     "dur": 0.07,
+     "amp": 0.85,
+     "color": "#fff6e6",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 1.816,
+     "amp": 16,
+     "dur": 0.35,
+     "zoom": 0.03
+    }
+   ],
+   "slow": [
+    {
+     "at": 1.796,
+     "dur": 0.42,
+     "speed": 0.4
+    }
+   ]
+  },
+  {
+   "clip": "t_e",
+   "in": 1.85,
+   "dur": 2.75,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "hits": [
+    {
+     "at": 1.35,
+     "kind": "boom",
+     "gain_db": 0
+    }
+   ],
+   "logo": {
+    "at": 1.5,
+    "dur": 1.15
+   }
+  },
+  {
+   "clip": "a_g1",
+   "in": 4.147,
+   "dur": 1.0,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "grade": "cine",
+   "hits": [
+    {
+     "at": 0.3,
+     "kind": "tick",
+     "gain_db": 0
+    }
+   ]
+  },
+  {
+   "clip": "a_night",
+   "in": 8.313,
+   "dur": 0.95,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.3,
+     "dur": 0.07,
+     "amp": 0.85,
+     "color": "#fff6e6",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 0.3,
+     "amp": 16,
+     "dur": 0.35,
+     "zoom": 0.03
+    }
+   ],
+   "slow": [
+    {
+     "at": 0.28,
+     "dur": 0.42,
+     "speed": 0.4
+    }
+   ]
+  },
+  {
+   "clip": "t_c",
+   "in": 8.313,
+   "dur": 0.9,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 0.3,
+     "dur": 0.07,
+     "amp": 0.85,
+     "color": "#fff6e6",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 0.3,
+     "amp": 16,
+     "dur": 0.35,
+     "zoom": 0.03
+    }
+   ],
+   "slow": [
+    {
+     "at": 0.28,
+     "dur": 0.42,
+     "speed": 0.4
+    }
+   ]
+  },
+  {
+   "clip": "a_snow",
+   "in": 4.147,
+   "dur": 0.85,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "grade": "cine",
+   "flash": [
+    {
+     "at": 0.3,
+     "dur": 0.07,
+     "amp": 0.85,
+     "color": "#fff6e6",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 0.3,
+     "amp": 16,
+     "dur": 0.35,
+     "zoom": 0.03
+    }
+   ],
+   "slow": [
+    {
+     "at": 0.28,
+     "dur": 0.42,
+     "speed": 0.4
+    }
+   ]
+  },
+  {
+   "clip": "a_f",
+   "in": 4.147,
+   "dur": 0.8,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "grade": "cold",
+   "hits": [
+    {
+     "at": 0.3,
+     "kind": "tick",
+     "gain_db": 0
+    }
+   ]
+  },
+  {
+   "clip": "a_snow",
+   "in": 12.313,
+   "dur": 0.75,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "grade": "cine",
+   "flash": [
+    {
+     "at": 0.3,
+     "dur": 0.07,
+     "amp": 0.85,
+     "color": "#fff6e6",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 0.3,
+     "amp": 16,
+     "dur": 0.35,
+     "zoom": 0.03
+    }
+   ],
+   "slow": [
+    {
+     "at": 0.28,
+     "dur": 0.42,
+     "speed": 0.4
+    }
+   ]
+  },
+  {
+   "clip": "k_titan",
+   "in": 12.31,
+   "dur": 0.65,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "hits": [
+    {
+     "at": 0.3,
+     "kind": "hit",
+     "gain_db": -3
+    }
+   ]
+  },
+  {
+   "clip": "k_combo",
+   "in": 3.25,
+   "dur": 0.6,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "hits": [
+    {
+     "at": 0.3,
+     "kind": "hit",
+     "gain_db": -3
+    }
+   ]
+  },
+  {
+   "clip": "t_d",
+   "in": 16.0,
+   "dur": 3.0,
+   "v": {
+    "cx": 960,
+    "cy": 540,
+    "s": 1.0
+   },
+   "flash": [
+    {
+     "at": 1.08,
+     "dur": 0.07,
+     "amp": 0.85,
+     "color": "#fff6e6",
+     "sfx": "hit"
+    }
+   ],
+   "shake": [
+    {
+     "at": 1.08,
+     "amp": 16,
+     "dur": 0.35,
+     "zoom": 0.03
+    }
+   ],
+   "slow": [
+    {
+     "at": 1.06,
+     "dur": 0.42,
+     "speed": 0.4
+    }
+   ],
+   "cards": [
+    {
+     "text": "ONE MORE *RUN.*",
+     "at": 1.0,
+     "dur": 1.4,
+     "pos": "mid",
+     "sfxDb": -4.5,
+     "size": 150,
+     "sfx": false
+    }
+   ]
+  },
+  {
+   "type": "end",
+   "dur": 4.6,
+   "lines": [
+    "Spring 2027",
+    "rubblefront.com",
+    "A Purplelink LLC game"
+   ],
+   "hits": [
+    {
+     "at": 0.0,
+     "kind": "boom",
+     "gain_db": 4
+    }
+   ],
+   "wishlist": "Wishlist on Steam"
+  }
+ ],
+ "wishlistText": "Wishlist on Steam",
+ "musicEnv": [
+  {
+   "t": 0,
+   "db": 0
+  },
+  {
+   "t": 37.01,
+   "db": -11
+  },
+  {
+   "t": 44.669999999999995,
+   "db": -3
+  },
+  {
+   "t": 44.71,
+   "db": -14
+  },
+  {
+   "t": 44.989999999999995,
+   "db": -14
+  },
+  {
+   "t": 45.01,
+   "db": 7
+  },
+  {
+   "t": 46.809999999999995,
+   "db": -1
+  },
+  {
+   "t": 46.21,
+   "db": 0
+  },
+  {
+   "t": 47.26,
+   "db": 4.0
+  }
+ ],
+ "bars": [
+  {
+   "t": 0.0,
+   "v": 112
+  },
+  {
+   "t": 1.49,
+   "v": 112
+  },
+  {
+   "t": 1.85,
+   "v": 0
+  },
+  {
+   "t": 3.29,
+   "v": 0
+  },
+  {
+   "t": 3.65,
+   "v": 112
+  },
+  {
+   "t": 12.29,
+   "v": 112
+  },
+  {
+   "t": 12.65,
+   "v": 0
+  },
+  {
+   "t": 29.34,
+   "v": 0
+  },
+  {
+   "t": 29.7,
+   "v": 112
+  },
+  {
+   "t": 31.34,
+   "v": 112
+  },
+  {
+   "t": 31.7,
+   "v": 0
+  },
+  {
+   "t": 34.54,
+   "v": 0
+  },
+  {
+   "t": 34.9,
+   "v": 112
+  },
+  {
+   "t": 38.54,
+   "v": 112
+  },
+  {
+   "t": 38.9,
+   "v": 0
+  }
+ ]
+}
