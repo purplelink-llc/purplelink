@@ -361,7 +361,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 
 ### Cover Letter Generator — $2
 - **URL:** https://purplelink.llc/tools/cover-letter/
-- Draft journal cover letter from abstract + target journal name. Privacy-preserving: never receives full manuscript.
+- First-pass journal cover letter from the author's abstract + target journal name; the author edits and signs it. Privacy-preserving: never receives full manuscript.
 
 ### Anonymity Check — $2
 - **URL:** https://purplelink.llc/tools/anonymity-check/
@@ -375,14 +375,14 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - **URL:** https://purplelink.llc/tools/paper-review/revision/
 - Second-pass review after revisions. Requires the original review's Markdown file. Tracks which checklist items were addressed and flags new issues introduced by the revision.
 
-### Response to Reviewers — $12 (check) or $24 (draft and check)
+### Response to Reviewers — $12 (check) or $24 (reply plan and check)
 - **URL:** https://purplelink.llc/tools/response-review/
 - Three-persona AI panel that red-teams the author's response letter: per-comment verdicts, tone concerns, missing replies, accept/revise prediction.
-- **Draft and check ($24):** from the reviewer comments, the original manuscript and the revised PDF, drafts a reply to every comment, checks each stated change against the revised PDF, then runs the same review on the draft.
+- **Reply plan and check ($24):** from the reviewer comments, the original manuscript and the revised PDF, maps each comment to the change the revision makes and where, with a first-pass reply the author rewrites in their own words, checks each stated change against the revised PDF, then runs the same review on the plan.
 
 ### Publication Pack — $59
 - **URL:** https://purplelink.llc/publication-suite/#pack
-- One Deep Review ($39), one Revision Review ($5) and one response letter draft and check ($24) for the same manuscript, $9 less than buying them one at a time. Three single-use links arrive by email and do not expire.
+- One Deep Review ($39), one Revision Review ($5) and one reply plan and check ($24) for the same manuscript, $9 less than buying them one at a time. Three single-use links arrive by email and do not expire.
 - **Which review to buy:** https://purplelink.llc/publication-suite/#which
 
 ### Resume Review — $5
