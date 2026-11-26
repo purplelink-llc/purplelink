@@ -264,6 +264,7 @@
 "/templates/ieee-conference/",
 "/templates/latex-article-template/",
 "/templates/latex-thesis-template/",
+"/templates/beamer/",
 "/templates/neurips/",
 "/templates/springer-nature-sn-jnl/",
 "/terms/",
