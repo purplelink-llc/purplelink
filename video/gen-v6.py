@@ -267,7 +267,7 @@ def gen_main():
     write("rubblefront-v6", {"16x9": "rubblefront-trailer-v6-16x9.mp4"}, copy.deepcopy(main), "16x9", m, env, syn,
           poster={"file": "rubblefront-poster-v6.png", "at": 3.5})
     wl = copy.deepcopy(main)
-    wl[-1]["wishlist"] = True
+    wl[-1]["wishlist"] = "Wishlist on Steam"
     write("rubblefront-v6-wishlist", {"16x9": "rubblefront-trailer-v6-wishlist-16x9.mp4"}, wl, "16x9", m, env, syn)
 
 
