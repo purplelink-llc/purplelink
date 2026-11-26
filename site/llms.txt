@@ -361,7 +361,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 
 ### Cover Letter Generator — $2
 - **URL:** https://purplelink.llc/tools/cover-letter/
-- Draft journal cover letter from abstract + target journal name. Privacy-preserving: never receives full manuscript.
+- First-pass journal cover letter from the author's abstract + target journal name; the author edits and signs it. Privacy-preserving: never receives full manuscript.
 
 ### Anonymity Check — $2
 - **URL:** https://purplelink.llc/tools/anonymity-check/
