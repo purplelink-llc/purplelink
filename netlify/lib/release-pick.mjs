@@ -6,11 +6,22 @@
 // So versions whose appcast item has a channel are left out. The version is read from each enclosure's file name and
 // excluded across every name pattern (paid and trial DMGs of a beta version both stay out).
 // If the appcast is missing, unreadable or lists no DMG, nothing is excluded: the pick is exactly the old one.
+// A DMG named as a prerelease ("ModernTex-3.5.0-beta.1.dmg", beta 1 of the coming 3.5.0) is never picked, feed or no feed.
 
-/** The version numbers in a DMG file name ("Keyfeel-Trial-1.2.0.dmg" -> [1, 2, 0]), or null. */
+/**
+ * The version numbers in a DMG file name ("Keyfeel-Trial-1.2.0.dmg" -> [1, 2, 0]), or null.
+ * A "-beta.N" suffix adds [-1, N], so 3.5.0-beta.2 < 3.5.0-beta.10 < 3.5.0 under compareVersions.
+ */
 export function dmgVersion(name) {
-  const m = /(\d+(?:\.\d+)*)\.dmg$/.exec(name || "");
-  return m ? m[1].split(".").map(Number) : null;
+  const m = /(\d+(?:\.\d+)*)(?:-beta\.(\d+))?\.dmg$/.exec(name || "");
+  if (!m) return null;
+  const v = m[1].split(".").map(Number);
+  return m[2] === undefined ? v : [...v, -1, Number(m[2])];
+}
+
+/** True for a prerelease version from dmgVersion (one carrying the -beta.N marker). */
+export function isPrerelease(v) {
+  return Array.isArray(v) && v.some((n) => n < 0);
 }
 
 /** Compare two version arrays; missing parts count as 0 ("1.0" == "1.0.0"). */
@@ -44,7 +55,7 @@ export function pickLatestDmg(names, xml) {
   const { betas } = channelVersions(xml);
   const candidates = names
     .map((name) => ({ name, v: dmgVersion(name) }))
-    .filter((c) => c.v && !betas.some((b) => compareVersions(b, c.v) === 0));
+    .filter((c) => c.v && !isPrerelease(c.v) && !betas.some((b) => compareVersions(b, c.v) === 0));
   candidates.sort((a, b) => compareVersions(b.v, a.v));
   return candidates[0]?.name || null;
 }

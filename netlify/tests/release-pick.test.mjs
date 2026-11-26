@@ -4,7 +4,7 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { dmgVersion, compareVersions, channelVersions, pickLatestDmg } from "../lib/release-pick.mjs";
+import { dmgVersion, compareVersions, channelVersions, pickLatestDmg, isPrerelease } from "../lib/release-pick.mjs";
 
 const item = (file, channel) =>
   `<item><title>x</title><enclosure url="https://purplelink.llc/.netlify/functions/app-download?update=${file}" sparkle:edSignature="s" length="1"/>${channel ? `<sparkle:channel>${channel}</sparkle:channel>` : ""}</item>`;
@@ -51,4 +51,21 @@ test("URL-encoded and path-style enclosures are both understood", () => {
     `<item><enclosure url="https://example.invalid/x?update=App%2D1.9.0.dmg"/></item>`,
   );
   assert.equal(pickLatestDmg(["App-1.9.0.dmg", "App-2.0.0.dmg"], xml), "App-1.9.0.dmg");
+});
+
+test("a -beta.N name sorts below its release and numerically among betas", () => {
+  assert.deepEqual(dmgVersion("ModernTex-3.5.0-beta.1.dmg"), [3, 5, 0, -1, 1]);
+  assert.ok(isPrerelease(dmgVersion("ModernTex-3.5.0-beta.1.dmg")));
+  assert.ok(!isPrerelease(dmgVersion("ModernTex-3.5.0.dmg")));
+  assert.ok(compareVersions(dmgVersion("App-3.5.0-beta.1.dmg"), dmgVersion("App-3.5.0.dmg")) < 0);
+  assert.ok(compareVersions(dmgVersion("App-3.5.0-beta.1.dmg"), dmgVersion("App-3.4.7.dmg")) > 0);
+  assert.ok(compareVersions(dmgVersion("App-3.5.0-beta.2.dmg"), dmgVersion("App-3.5.0-beta.10.dmg")) < 0);
+});
+
+test("a -beta.N DMG is never the newest pick, even with no feed", () => {
+  const names = ["App-3.4.7.dmg", "App-3.5.0-beta.1.dmg"];
+  assert.equal(pickLatestDmg(names, null), "App-3.4.7.dmg");
+  assert.equal(pickLatestDmg(names, feed(item("App-3.5.0-beta.1.dmg", "beta"), item("App-3.4.7.dmg"))), "App-3.4.7.dmg");
+  assert.equal(pickLatestDmg([...names, "App-3.5.0.dmg"], null), "App-3.5.0.dmg");
+  assert.equal(channelVersions(feed(item("App-3.5.0-beta.1.dmg", "beta"))).items, 1);
 });

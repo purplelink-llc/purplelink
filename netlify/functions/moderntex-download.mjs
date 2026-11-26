@@ -46,7 +46,8 @@ const STATS_STORE = "moderntex-stats";
 const PRODUCT_KEY = "moderntex";
 const SUITE_KEY = "app-suite";
 const SEATS_KEY = "moderntex-seats";
-const DMG_NAME = /^ModernTex-\d+\.\d+\.\d+\.dmg$/;
+// x.y.z, or x.y.z-beta.N (beta N of the coming x.y.z). Betas are served by name; the newest-DMG pick skips them.
+const DMG_NAME = /^ModernTex-\d+\.\d+\.\d+(?:-beta\.\d+)?\.dmg$/;
 const TRIAL_DMG_NAME = /^ModernTex-Trial-\d+\.\d+\.\d+\.dmg$/;
 const TRIAL_DAILY_LIMIT = 20;
 
@@ -158,7 +159,7 @@ async function serveFeed(store) {
   }
   if (!xml) return json(404, { error: "file_unavailable", detail: "No update feed is staged." });
   const fixed = xml.replace(
-    /url="[^"]*\/(ModernTex-\d+\.\d+\.\d+\.dmg)"/g,
+    /url="[^"]*\/(ModernTex-\d+\.\d+\.\d+(?:-beta\.\d+)?\.dmg)"/g,
     (_m, name) => `url="https://purplelink.llc/.netlify/functions/moderntex-download?update=${name}"`,
   );
   return new Response(fixed, {
