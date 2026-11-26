@@ -1,0 +1,2 @@
+/* /modernpaper/ page. External file so the strict CSP permits it. */
+.modernpaper-hero { grid-template-columns: minmax(0, 1fr); }

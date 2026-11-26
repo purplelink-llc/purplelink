@@ -1,5 +1,5 @@
 /**
- * Purplelink license keys for Outbound Veil, Legroom, Née and Lenses (scheme "PurplelinkLicenseV1").
+ * Purplelink license keys for Outbound Veil, Legroom, Née, Lenses and ModernPaper (scheme "PurplelinkLicenseV1").
  * Keyfeel has its own, older scheme (KFL1, netlify/lib/keyfeel-license.mjs) and ModernTex has MTX1.
  *
  * A key is  <PREFIX>-  +  Crockford-Base32( nonce[4] ‖ Ed25519 signature[64] ),  split into groups of 5.
@@ -29,6 +29,11 @@ export const LICENSED_PRODUCTS = {
   nee: { prefix: "NEE1", label: "Née", appPath: "/nee/" },
   // Lenses (LN1) got a trial and a key with 1.1.0 (2026-11-06). It is in the Suite and bundles like every entry.
   lenses: { prefix: "LN1", label: "Lenses", appPath: "/lenses/" },
+  // ModernPaper (MP1), a PDF reader and editor for academics, $79 one-time. It launches hidden: the page is unlisted and
+  // there is no download yet. ModernPaper joins the Suite and bundles at its public launch (Ben, 2026-11-26); until then
+  // `inSuite: false` keeps an MP1 key off every existing Suite buyer's success page, receipt email and /recover/ page.
+  // See docs/products/nee.md, "Suite gate", and docs/products/modernpaper.md for the one-line flips at launch.
+  modernpaper: { prefix: "MP1", label: "ModernPaper", appPath: "/modernpaper/", inSuite: false },
 };
 
 /** Whether a Mac Suite purchase includes this product. Every entry is in the Suite unless it says `inSuite: false`. */

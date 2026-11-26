@@ -28,6 +28,7 @@ export const MP_TAX_CODES = Object.freeze({
   "lenscrib": "txcd_10202000",
   "lenses": "txcd_10202000",
   "nee": "txcd_10202000",
+  "modernpaper": "txcd_10202000",
   "panely": "txcd_10202000",
   "summonly": "txcd_10202000",
   "app-suite": "txcd_10202000",

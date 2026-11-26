@@ -35,6 +35,7 @@ export const FOLLOWUP_PRODUCTS = {
   lenscrib: "Lenscrib",
   lenses: "Lenses",
   nee: "Née",
+  modernpaper: "ModernPaper",
   panely: "Panely",
   summonly: "Summonly",
   "app-suite": "the Mac Suite",

@@ -33,6 +33,7 @@ export const RECOVERY_PRODUCTS = Object.freeze({
   "lenscrib":                   { name: "Lenscrib", price: "$19.99", cents: 1999, kind: "app" },
   "lenses":                     { name: "Lenses", price: "$4.99", cents: 499, kind: "once" },
   "nee":                        { name: "Née", price: "$14.99", cents: 1499, kind: "app" },
+  "modernpaper":                { name: "ModernPaper", price: "$79.00", cents: 7900, kind: "app" },
   "panely":                     { name: "Panely", price: "$9.99", cents: 999, kind: "app" },
   "summonly":                   { name: "Summonly", price: "$9.99", cents: 999, kind: "app" },
   "app-suite":                  { name: "the Purplelink Mac Suite", price: "$59.99", cents: 5999, kind: "app" },

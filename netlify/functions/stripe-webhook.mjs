@@ -186,6 +186,7 @@ export const BLOB_DELIVERED_PRODUCTS = new Map([
   ["lenscrib",          { name: "Lenscrib for macOS",                successPath: "/lenscrib/success/" }],
   ["lenses",            { name: "Lenses for macOS",                  successPath: "/lenses/success/" }],
   ["nee",          { name: "Née for macOS",                successPath: "/nee/success/" }],
+  ["modernpaper",       { name: "ModernPaper for macOS",          successPath: "/modernpaper/success/" }],
   ["panely",          { name: "Panely for macOS",                successPath: "/panely/success/" }],
   ["summonly",          { name: "Summonly for macOS",                successPath: "/summonly/success/" }],
   // Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Panely + Summonly + Née + Lenses + Vitae Plus for life. /suite/success/
@@ -771,9 +772,18 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     "It needs no Accessibility or Input Monitoring permission. Transcription asks for Speech Recognition permission the first time, and runs on your Mac. Your files are not uploaded.";
   const neeText = isNee ? neeNote + "\n\n" : "";
   const neeHtml = isNee ? `<p>${neeNote}</p>` : "";
+  // ModernPaper cannot be downloaded yet (no signed release). Its page carries the license key and nothing else, so the
+  // email says so plainly and promises one more email when the first release is ready.
+  const isModernPaper = productKey === "modernpaper";
+  const mpNote = "The app is not ready to download yet. I am finishing the first signed release of ModernPaper, and I will email you the download link at this address when it is out. " +
+    "ModernPaper needs a recent version of macOS; I will state the exact minimum with the download. It runs free for 7 days from the first time you open it. After that, reading, searching and read-aloud stay free, " +
+    "and saving annotations, forms, page tools, redaction and the Claude panel need your key: choose Enter License Key and paste it.";
+  const mpText = isModernPaper ? mpNote + "\n\n" : "";
+  const mpHtml = isModernPaper ? `<p>${mpNote}</p>` : "";
   const text =
     `Thanks for buying ${entry.name}.\n\n` +
-    `Your download page:\n${link}\n\n` +
+    (isModernPaper ? `Your license key page:\n${link}\n\n` : `Your download page:\n${link}\n\n`) +
+    mpText +
     startText +
     suiteText +
     bundleText +
@@ -785,8 +795,10 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     panelyText +
     summonlyText +
     licenseTextBlock +
-    `Keep this email: the link keeps working and always hands you the newest version.\n\n` +
-    `Questions or trouble downloading: reply to this email.\n\n` +
+    (isModernPaper
+      ? `Keep this email: the link keeps working and always shows your key.\n\nQuestions: reply to this email.\n\n`
+      : `Keep this email: the link keeps working and always hands you the newest version.\n\n` +
+        `Questions or trouble downloading: reply to this email.\n\n`) +
     `One question, if you have a moment: where did you first hear about ${entry.name}? A one-word reply is plenty.\n\n` +
     reviewTextBlock +
     prOffer.text +
@@ -796,7 +808,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     `Purplelink LLC, Atlanta, Georgia`;
   const html =
     `<p>Thanks for buying ${entry.name}.</p>` +
-    `<p><a href="${link}">Open your download page</a></p>` +
+    (isModernPaper ? `<p><a href="${link}">Open your license key page</a></p>` + mpHtml : `<p><a href="${link}">Open your download page</a></p>`) +
     startHtml +
     suiteHtml +
     bundleHtml +
@@ -808,8 +820,10 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     panelyHtml +
     summonlyHtml +
     licenseHtmlBlock +
-    `<p>Keep this email: the link keeps working and always hands you the newest version.</p>` +
-    `<p>Questions or trouble downloading: reply to this email.</p>` +
+    (isModernPaper
+      ? `<p>Keep this email: the link keeps working and always shows your key.</p><p>Questions: reply to this email.</p>`
+      : `<p>Keep this email: the link keeps working and always hands you the newest version.</p>` +
+        `<p>Questions or trouble downloading: reply to this email.</p>`) +
     `<p>One question, if you have a moment: where did you first hear about ${entry.name}? A one-word reply is plenty.</p>` +
     reviewHtmlBlock +
     prOffer.html +
@@ -825,7 +839,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
         from: ORDER_FROM_ADDRESS,
         reply_to: ORDER_REPLY_TO,
         to: [to],
-        subject: `Your ${entry.name.replace(/^the\s+/i, "")} download`,
+        subject: isModernPaper ? "Your ModernPaper license key" : `Your ${entry.name.replace(/^the\s+/i, "")} download`,
         text,
         html,
       }),

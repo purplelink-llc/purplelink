@@ -222,6 +222,7 @@ const PAGE_PRICE = {
   "outbound-veil": ["site/outbound-veil/index.html", "$29.99"],
   "legroom": ["site/legroom/index.html", "$9.99"],
   "lenses": ["site/lenses/index.html", "$4.99"],
+  "modernpaper": ["site/modernpaper/index.html", "$79"],
   "kit-faceless": ["site/kits/index.html", "$49"],
   "kit-monetization": ["site/kits/index.html", "$29"],
   "kit-clip": ["site/kits/index.html", "$10"],
