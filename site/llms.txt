@@ -481,7 +481,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 
 ## Guides (free how-to articles)
 - Guides index: https://purplelink.llc/guides/
-- LaTeX hub: https://purplelink.llc/guides/latex/ — pillar page covering the full academic LaTeX workflow.
+- LaTeX on Mac hub: https://purplelink.llc/guides/latex/ — setting up LaTeX on a Mac (MacTeX or BasicTeX, editors), plus the full academic LaTeX workflow with a free tool for each step.
 - latexdiff online for a multi-file project: https://purplelink.llc/guides/latexdiff-online/ — when to use latexdiff, how to run it on a single file or a git project with latexpand and latexdiff-vc, common failures, and what the online tool does.
 - Simulate Likert data for power analysis: https://purplelink.llc/guides/simulate-likert-data-for-power-analysis/ — dry-run an analysis script and estimate power with synthetic survey data, with Python code and real outputs, and what simulated data cannot tell you.
 - Setting up your new VR/AR glasses with a Mac: https://purplelink.llc/guides/ar-glasses-mac-setup/ — why the edges blur, a sharp HiDPI mode, 120 Hz, shrinking the picture, Dark Mode, Night Shift and the pointer, by hand in macOS, with where macOS cannot do it. Written for RayNeo, XREAL and VITURE.
