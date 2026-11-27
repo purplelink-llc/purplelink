@@ -3486,7 +3486,7 @@ def extension_stores_block(history: dict) -> str:
 # earnings. It has no per-day series, so each run stores one reading per UTC day in history["itch"]["days"] and the
 # dashboard shows the change against earlier readings. The key needs the profile:games scope: the butler upload key
 # does not have it, so ITCH_API_KEY is a separate key made at itch.io/user/settings/api-keys, kept in traffic.env.
-ITCH_API_KEY_ENV = "ITCH_API_KEY"
+ITCH_SETTING_NAME = "ITCH_API_KEY"
 ITCH_MY_GAMES_URL = "https://itch.io/api/1/key/my-games"
 
 
@@ -3567,7 +3567,7 @@ def itch_block(itch: dict | None, today: dt.date | None = None) -> str:
         note = f"<p class='sales-foot'>Last fetch failed: {html.escape(itch['error'])}</p>"
     if not rows:
         msg = ((itch or {}).get("error") and "No reading yet; the last fetch failed (see below)."
-               or f"Not set up: add {ITCH_API_KEY_ENV} (an itch.io API key with profile:games, from "
+               or f"Not set up: add {ITCH_SETTING_NAME} (an itch.io API key with profile:games, from "
                   "itch.io/user/settings/api-keys) to ~/.config/purplelink/traffic.env.")
         return (f"<section class='sales appstore'><h2>itch.io</h2><p class='sales-foot'>{html.escape(msg)}</p>"
                 f"{note}</section>")
@@ -7444,7 +7444,7 @@ def main() -> int:
             print(f"  ! extension stores unavailable: {str(exc)[:100]}", file=sys.stderr)
 
         # itch.io (RubbleFront): one reading of the running totals per UTC day.
-        itch_token = cfg.get(ITCH_API_KEY_ENV) or os.environ.get(ITCH_API_KEY_ENV)
+        itch_token = cfg.get(ITCH_SETTING_NAME) or os.environ.get(ITCH_SETTING_NAME)
         if itch_token:
             itch_res = fetch_itch_games(itch_token)
             record_itch(history, itch_res, dt.datetime.now(dt.timezone.utc).date())
@@ -7453,7 +7453,7 @@ def main() -> int:
             else:
                 print(f"  ok itch.io: {len(itch_res['games'])} projects")
         else:
-            print(f"  - itch.io: no {ITCH_API_KEY_ENV} in traffic.env")
+            print(f"  - itch.io: no {ITCH_SETTING_NAME} in traffic.env")
 
         stamp = dt.datetime.now(dt.timezone.utc).isoformat()
         month_ago = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=30)).isoformat()
