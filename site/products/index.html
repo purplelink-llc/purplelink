@@ -85,6 +85,7 @@
     <link rel="stylesheet" href="/products/store.css">
     <script src="/site.js" defer></script>
     <script src="/motion.js" defer></script>
+    <script src="/products/shop.js" defer></script>
     <script src="/buddy-chat/loader.js" defer></script>
   </head>
   <body>
@@ -167,7 +168,7 @@
               <li><a href="/tools/paper-review/"><span class="thumb thumb-wide"><img src="/assets/store/paper-review.webp" alt="" width="480" height="252" loading="lazy" decoding="async"></span>Paper Review, from $14</a></li>
               <li><a href="/tools/response-review/"><span class="thumb thumb-wide"><img src="/assets/store/response-review.webp" alt="" width="480" height="252" loading="lazy" decoding="async"></span>Response Review, from $12</a></li>
             </ul>
-            <a class="dept-all" href="#cat-review">See all eight checks</a>
+            <a class="dept-all" href="#cat-review">See all nine checks</a>
           </div>
           <div class="dept">
             <h3>Daily games</h3>
@@ -290,9 +291,12 @@
           </div>
           <h2 id="cat-moderntex">ModernTex</h2>
           <p>A native LaTeX editor for Mac, built around the manuscript rather than the file. Source and PDF stay in sync, citations autocomplete from your .bib, and a submission check runs before you upload. It includes a visual table editor and a TikZ figure editor. The trial is free for seven days, then it is $19.99 once.</p>
-          <div class="catalog-actions">
-            <a class="btn btn-primary" href="/moderntex/">See ModernTex</a>
-            <a class="btn btn-ghost" href="/moderntex/#buy">Download the trial</a>
+          <div class="catalog-actions shop-feature-actions" data-shop-row>
+            <a class="btn btn-primary shop-buy" href="/moderntex/#buy" data-buy="moderntex">Buy, $19.99</a>
+            <button type="button" class="btn btn-ghost shop-add" data-bundle="moderntex" aria-pressed="false">Add to bundle</button>
+            <a class="btn btn-ghost" href="/moderntex/">See ModernTex</a>
+            <a class="shop-link" href="/moderntex/#buy">Download the trial</a>
+            <p class="shop-status" role="status" aria-live="polite"></p>
           </div>
         </div>
         <figure class="catalog-feature-shot">
@@ -306,12 +310,18 @@
           <h2 id="cat-mac">Keep your academic record in one place</h2>
         </div>
         <div class="catalog-grid catalog-grid-2" data-motion="stagger">
-          <a class="catalog-card catalog-card-lead" href="/suite/">
-            <span class="catalog-card-price">$59.99 once</span>
-            <h3>The Mac Suite</h3>
-            <p>ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née, Lenses and Vitae Plus for life in one payment. Bought separately they come to $164 the first year, then $23.99 a year for Plus.</p>
-            <span class="catalog-card-cta">See the Suite →</span>
-          </a>
+          <div class="shop-item shop-item-lead" data-shop-row>
+            <a class="catalog-card catalog-card-lead catalog-card-static" href="/suite/">
+              <span class="catalog-card-price">$59.99 once</span>
+              <h3>The Mac Suite</h3>
+              <p>ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née, Lenses and Vitae Plus for life in one payment. Bought separately they come to $164 the first year, then $23.99 a year for Plus.</p>
+              <span class="catalog-card-cta">See the Suite →</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/suite/#buy" data-buy="app-suite">Buy the Suite, $59.99</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </div>
           <a class="catalog-card" href="/vitae/">
             <div class="peek peek-wide catalog-card-media">
               <figure class="frame-soft">
@@ -324,66 +334,130 @@
             <p>Track journal and conference submissions, grants, projects and collaborators, and generate your CV from that record. Local-first, notarized, macOS 15 or later. Currently a beta, version 1.1.2.</p>
             <span class="catalog-card-cta">Download Vitae →</span>
           </a>
-          <a class="catalog-card" href="/vitae/plus/">
-            <div class="peek peek-wide catalog-card-media">
-              <figure class="frame-soft">
-                <img src="/assets/vitae-screens/cv-800.webp" srcset="/assets/vitae-screens/cv-800.webp 800w, /assets/vitae-screens/cv-1440.webp 1440w" sizes="(max-width: 640px) 92vw, 46vw" alt="Vitae's CV view: a formatted academic CV generated from the tracked record" width="800" height="592" loading="lazy" decoding="async">
-              </figure>
+          <div class="shop-item" data-shop-row>
+            <a class="catalog-card catalog-card-static" href="/vitae/plus/">
+              <div class="peek peek-wide catalog-card-media">
+                <figure class="frame-soft">
+                  <img src="/assets/vitae-screens/cv-800.webp" srcset="/assets/vitae-screens/cv-800.webp 800w, /assets/vitae-screens/cv-1440.webp 1440w" sizes="(max-width: 640px) 92vw, 46vw" alt="Vitae's CV view: a formatted academic CV generated from the tracked record" width="800" height="592" loading="lazy" decoding="async">
+                </figure>
+              </div>
+              <img class="catalog-icon" src="/assets/vitae-icon.webp" alt="" width="56" height="56" loading="lazy">
+              <span class="catalog-card-price">$2.99 a month or $23.99 a year</span>
+              <h3>Vitae Plus</h3>
+              <p>An optional subscription. Adds reports, Word templates, a revision workspace and Shareables on top of the free app, which keeps all core record-keeping free. Seven days free before the first charge, and included for life in the Mac Suite.</p>
+              <span class="catalog-card-cta">See what Plus adds →</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/vitae/plus/#plans" data-buy="vitae-plus-annual">Try 7 days free, then $23.99 a year</a>
+              <a class="btn btn-ghost shop-buy" href="/vitae/plus/#plans" data-buy="vitae-plus-monthly">Monthly, $2.99</a>
+              <button type="button" class="btn btn-ghost shop-add" data-bundle="vitae-plus" aria-pressed="false">Add to bundle</button>
+              <p class="shop-status" role="status" aria-live="polite"></p>
             </div>
-            <img class="catalog-icon" src="/assets/vitae-icon.webp" alt="" width="56" height="56" loading="lazy">
-            <span class="catalog-card-price">$2.99 a month or $23.99 a year</span>
-            <h3>Vitae Plus</h3>
-            <p>An optional subscription. Adds reports, Word templates, a revision workspace and Shareables on top of the free app, which keeps all core record-keeping free. Seven days free before the first charge, and included for life in the Mac Suite.</p>
-            <span class="catalog-card-cta">See what Plus adds →</span>
-          </a>
-          <a class="catalog-card" href="/outbound-veil/">
-            <span class="catalog-card-price">Free 7-day trial, then $29.99</span>
-            <h3>Outbound Veil</h3>
-            <p>A menu-bar app that checks what you type for names, numbers and addresses before you send it. It runs on your Mac and stores nothing. macOS 14 or later.</p>
-            <span class="catalog-card-cta">See Outbound Veil →</span>
-          </a>
-          <a class="catalog-card" href="/legroom/">
-            <span class="catalog-card-price">Free 7-day trial, then $9.99</span>
-            <h3>Legroom</h3>
-            <p>A menu-bar app that shows your free disk space and cleans the folders and developer caches you choose, after you approve a preview. Its measurements stay on your Mac. macOS 14 or later.</p>
-            <span class="catalog-card-cta">See Legroom →</span>
-          </a>
-          <a class="catalog-card" href="/keyfeel/">
-            <span class="catalog-card-price">Free 7-day trial, then $9.99</span>
-            <h3>Keyfeel</h3>
-            <p>A menu-bar app that plays recorded keyboard-switch sounds as you type, with mouse-click sounds, scroll ticks and optional trackpad haptics. It works offline and reads key codes, never the characters you type. macOS 13 or later.</p>
-            <span class="catalog-card-cta">See Keyfeel →</span>
-          </a>
-          <a class="catalog-card" href="/tapefolio/">
-            <span class="catalog-card-price">Free 7-day trial, then $29.99</span>
-            <h3>Tapefolio</h3>
-            <p>A Mac app that transcribes interviews and meetings on your Mac, labels the speakers, helps you replace names and other identifiers case by case, and reads scanned pages and photos into text. Your files are not uploaded. It will mishear words, so you check the text against the audio. macOS 26 or later, Apple silicon.</p>
-            <span class="catalog-card-cta">See Tapefolio →</span>
-          </a>
-          <a class="catalog-card" href="/panely/">
-            <span class="catalog-card-price">Free 7-day trial, then $9.99</span>
-            <h3>Panely</h3>
-            <p>A menu-bar app that snaps windows to halves, thirds and corners with a shortcut or by dragging to a screen edge, and saves layouts for each monitor setup. It works offline and reads window positions and titles, never what is inside a window. macOS 14 or later.</p>
-            <span class="catalog-card-cta">See Panely →</span>
-          </a>
-          <a class="catalog-card" href="/summonly/">
-            <span class="catalog-card-price">Free 7-day trial, then $9.99</span>
-            <h3>Summonly</h3>
-            <p>A menu-bar app that finds files, apps and clipboard history from one box, opened with Option-Space. It keeps a private index of the folders you choose, answers sums and unit conversions, and runs web searches from a keyword. macOS 14 or later.</p>
-            <span class="catalog-card-cta">See Summonly →</span>
-          </a>
-          <a class="catalog-card" href="/nee/">
-            <span class="catalog-card-price">Free 7-day trial, then $14.99</span>
-            <h3>Née</h3>
-            <p>A file converter that opens as a ring at the pointer. Hold Option while dragging files, drop them on one of 51 actions for images, PDFs, video, audio, documents and archives, and the result is saved next to the original. Everything runs on your Mac. macOS 14 or later.</p>
-            <span class="catalog-card-cta">See Née →</span>
-          </a>
-          <a class="catalog-card" href="/lenses/">
-            <span class="catalog-card-price">$4.99 once</span>
-            <h3>Lenses</h3>
-            <p>A menu-bar app for AR glasses plugged into a Mac. It applies a profile when they connect: a sharp display mode, 120 Hz where offered, a black edge margin, a night tint, Dark Mode and a bigger pointer, then restores the Mac when you unplug. Tested on RayNeo Air. Collects nothing. macOS 14 or later, Apple silicon.</p>
-            <span class="catalog-card-cta">See Lenses →</span>
-          </a>
+          </div>
+          <div class="shop-item" data-shop-row>
+            <a class="catalog-card catalog-card-static" href="/outbound-veil/">
+              <span class="catalog-card-price">Free 7-day trial, then $29.99</span>
+              <h3>Outbound Veil</h3>
+              <p>A menu-bar app that checks what you type for names, numbers and addresses before you send it. It runs on your Mac and stores nothing. macOS 14 or later.</p>
+              <span class="catalog-card-cta">See Outbound Veil →</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/outbound-veil/#buy" data-buy="outbound-veil">Buy, $29.99</a>
+              <button type="button" class="btn btn-ghost shop-add" data-bundle="outbound-veil" aria-pressed="false">Add to bundle</button>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="shop-item" data-shop-row>
+            <a class="catalog-card catalog-card-static" href="/legroom/">
+              <span class="catalog-card-price">Free 7-day trial, then $9.99</span>
+              <h3>Legroom</h3>
+              <p>A menu-bar app that shows your free disk space and cleans the folders and developer caches you choose, after you approve a preview. Its measurements stay on your Mac. macOS 14 or later.</p>
+              <span class="catalog-card-cta">See Legroom →</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/legroom/#buy" data-buy="legroom">Buy, $9.99</a>
+              <button type="button" class="btn btn-ghost shop-add" data-bundle="legroom" aria-pressed="false">Add to bundle</button>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="shop-item" data-shop-row>
+            <a class="catalog-card catalog-card-static" href="/keyfeel/">
+              <span class="catalog-card-price">Free 7-day trial, then $9.99</span>
+              <h3>Keyfeel</h3>
+              <p>A menu-bar app that plays recorded keyboard-switch sounds as you type, with mouse-click sounds, scroll ticks and optional trackpad haptics. It works offline and reads key codes, never the characters you type. macOS 13 or later.</p>
+              <span class="catalog-card-cta">See Keyfeel →</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/keyfeel/#buy" data-buy="keyfeel">Buy, $9.99</a>
+              <button type="button" class="btn btn-ghost shop-add" data-bundle="keyfeel" aria-pressed="false">Add to bundle</button>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="shop-item" data-shop-row>
+            <a class="catalog-card catalog-card-static" href="/tapefolio/">
+              <span class="catalog-card-price">Free 7-day trial, then $29.99</span>
+              <h3>Tapefolio</h3>
+              <p>A Mac app that transcribes interviews and meetings on your Mac, labels the speakers, helps you replace names and other identifiers case by case, and reads scanned pages and photos into text. Your files are not uploaded. It will mishear words, so you check the text against the audio. macOS 26 or later, Apple silicon.</p>
+              <span class="catalog-card-cta">See Tapefolio →</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/tapefolio/#buy" data-buy="tapefolio">Buy, $29.99</a>
+              <button type="button" class="btn btn-ghost shop-add" data-bundle="tapefolio" aria-pressed="false">Add to bundle</button>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="shop-item" data-shop-row>
+            <a class="catalog-card catalog-card-static" href="/panely/">
+              <span class="catalog-card-price">Free 7-day trial, then $9.99</span>
+              <h3>Panely</h3>
+              <p>A menu-bar app that snaps windows to halves, thirds and corners with a shortcut or by dragging to a screen edge, and saves layouts for each monitor setup. It works offline and reads window positions and titles, never what is inside a window. macOS 14 or later.</p>
+              <span class="catalog-card-cta">See Panely →</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/panely/#buy" data-buy="panely">Buy, $9.99</a>
+              <button type="button" class="btn btn-ghost shop-add" data-bundle="panely" aria-pressed="false">Add to bundle</button>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="shop-item" data-shop-row>
+            <a class="catalog-card catalog-card-static" href="/summonly/">
+              <span class="catalog-card-price">Free 7-day trial, then $9.99</span>
+              <h3>Summonly</h3>
+              <p>A menu-bar app that finds files, apps and clipboard history from one box, opened with Option-Space. It keeps a private index of the folders you choose, answers sums and unit conversions, and runs web searches from a keyword. macOS 14 or later.</p>
+              <span class="catalog-card-cta">See Summonly →</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/summonly/#buy" data-buy="summonly">Buy, $9.99</a>
+              <button type="button" class="btn btn-ghost shop-add" data-bundle="summonly" aria-pressed="false">Add to bundle</button>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="shop-item" data-shop-row>
+            <a class="catalog-card catalog-card-static" href="/nee/">
+              <span class="catalog-card-price">Free 7-day trial, then $14.99</span>
+              <h3>Née</h3>
+              <p>A file converter that opens as a ring at the pointer. Hold Option while dragging files, drop them on one of 51 actions for images, PDFs, video, audio, documents and archives, and the result is saved next to the original. Everything runs on your Mac. macOS 14 or later.</p>
+              <span class="catalog-card-cta">See Née →</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/nee/#buy" data-buy="nee">Buy, $14.99</a>
+              <button type="button" class="btn btn-ghost shop-add" data-bundle="nee" aria-pressed="false">Add to bundle</button>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="shop-item" data-shop-row>
+            <a class="catalog-card catalog-card-static" href="/lenses/">
+              <span class="catalog-card-price">$4.99 once</span>
+              <h3>Lenses</h3>
+              <p>A menu-bar app for AR glasses plugged into a Mac. It applies a profile when they connect: a sharp display mode, 120 Hz where offered, a black edge margin, a night tint, Dark Mode and a bigger pointer, then restores the Mac when you unplug. Tested on RayNeo Air. Collects nothing. macOS 14 or later, Apple silicon.</p>
+              <span class="catalog-card-cta">See Lenses →</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/lenses/#buy" data-buy="lenses">Buy, $4.99</a>
+              <button type="button" class="btn btn-ghost shop-add" data-bundle="lenses" aria-pressed="false">Add to bundle</button>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </div>
           <a class="catalog-card" href="/batterymeter/">
             <span class="catalog-card-price">Free</span>
             <h3>BatteryMeter</h3>
@@ -405,59 +479,123 @@
           <p>Paper Review, Revision Review and Response Review make up the <a href="/publication-suite/">Publication suite</a>, which also has the $59 Publication Pack and lab plans. Upload, pay once through Stripe, and get the result in minutes on a page that updates itself. The manuscript and the review are deleted within about a day after you first open the result, or within 48 hours if you never open it. Not useful? Email <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> within 14 days of purchase and it is refunded.</p>
         </div>
         <div class="catalog-grid catalog-grid-3" data-motion="stagger">
-          <a class="catalog-card catalog-card-lead" href="/tools/paper-review/">
-            <div class="peek peek-wide catalog-card-media">
-              <figure class="frame-browser" data-url="purplelink.llc/tools/paper-review/sample/">
-                <img src="/assets/tool-shots/paper-review-sample-800.webp" srcset="/assets/tool-shots/paper-review-sample-800.webp 800w, /assets/tool-shots/paper-review-sample.webp 1440w" sizes="(max-width: 960px) 92vw, 30vw" alt="The sample Paper Review report: critical blind spots, each quoting the manuscript and naming the reviewer that raised it" width="800" height="290" loading="lazy" decoding="async">
-              </figure>
+          <div class="shop-item shop-item-lead" data-shop-row>
+            <a class="catalog-card catalog-card-lead catalog-card-static" href="/tools/paper-review/">
+              <div class="peek peek-wide catalog-card-media">
+                <figure class="frame-browser" data-url="purplelink.llc/tools/paper-review/sample/">
+                  <img src="/assets/tool-shots/paper-review-sample-800.webp" srcset="/assets/tool-shots/paper-review-sample-800.webp 800w, /assets/tool-shots/paper-review-sample.webp 1440w" sizes="(max-width: 960px) 92vw, 30vw" alt="The sample Paper Review report: critical blind spots, each quoting the manuscript and naming the reviewer that raised it" width="800" height="290" loading="lazy" decoding="async">
+                </figure>
+              </div>
+              <span class="catalog-card-price">$14 · $24 · $39</span>
+              <h3>Paper Review</h3>
+              <p>Seven AI reviewers read the manuscript the way a panel would: methods, statistics, data integrity, equations, the literature, the numbers and the editor's view. Every reference is checked against CrossRef and the figures are scanned. Markdown report and annotated PDF.</p>
+              <span class="catalog-card-cta">Start a review →</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-ghost shop-buy" href="/tools/paper-review/#plans" data-buy="paper-review-standard">Standard, $14</a>
+              <a class="btn btn-primary shop-buy" href="/tools/paper-review/#plans" data-buy="paper-review-journal">Journal, $24</a>
+              <a class="btn btn-ghost shop-buy" href="/tools/paper-review/#plans" data-buy="paper-review-deep">Deep, $39</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
             </div>
-            <span class="catalog-card-price">$14 · $24 · $39</span>
-            <h3>Paper Review</h3>
-            <p>Seven AI reviewers read the manuscript the way a panel would: methods, statistics, data integrity, equations, the literature, the numbers and the editor's view. Every reference is checked against CrossRef and the figures are scanned. Markdown report and annotated PDF.</p>
-            <span class="catalog-card-cta">Start a review →</span>
-          </a>
-          <a class="catalog-card" href="/tools/response-review/">
-            <span class="catalog-card-price">$12</span>
-            <h3>Response Review</h3>
-            <p>A reviewer panel reads your response letter against the original comments and flags missing or hand-waved replies.</p>
-            <span class="catalog-card-cta">Check my response →</span>
-          </a>
-          <a class="catalog-card" href="/tools/citation-gap/">
-            <span class="catalog-card-price">$3</span>
-            <h3>Citation Gap Analysis</h3>
-            <p>Finds prior work the manuscript should cite and doesn't, with a reason for each.</p>
-            <span class="catalog-card-cta">Find the gaps →</span>
-          </a>
-          <a class="catalog-card" href="/tools/anonymity-check/">
-            <span class="catalog-card-price">$2</span>
-            <h3>Anonymity Check</h3>
-            <p>Flags names, institutions, funders, IRB numbers and self-citations that break double-blind review. Included free with Paper Review.</p>
-            <span class="catalog-card-cta">Scan my manuscript →</span>
-          </a>
-          <a class="catalog-card" href="/tools/cover-letter/">
-            <span class="catalog-card-price">$2</span>
-            <h3>Cover Letter</h3>
-            <p>A first-pass cover letter from your abstract and the target journal, for you to edit and sign. The manuscript itself is never uploaded.</p>
-            <span class="catalog-card-cta">Draft my letter →</span>
-          </a>
-          <a class="catalog-card" href="/tools/paper-review/revision/">
-            <span class="catalog-card-price">$5</span>
-            <h3>Revision Review</h3>
-            <p>Checks whether the revised manuscript actually addressed the findings in your original Paper Review.</p>
-            <span class="catalog-card-cta">Check my revision →</span>
-          </a>
-          <a class="catalog-card" href="/tools/paper-review/packs/">
-            <span class="catalog-card-price">5 for $99 · 20 for $349</span>
-            <h3>Volume packs</h3>
-            <p>Journal Paper Review tokens for labs and repeat submissions, emailed at purchase. They never expire.</p>
-            <span class="catalog-card-cta">See pack pricing →</span>
-          </a>
-          <a class="catalog-card" href="/tools/resume-review/">
-            <span class="catalog-card-price">$5</span>
-            <h3>Resume Review</h3>
-            <p>An ATS screener, a hiring manager and a recruiter read your resume before you apply for a research job.</p>
-            <span class="catalog-card-cta">Review my resume →</span>
-          </a>
+          </div>
+          <div class="shop-item" data-shop-row>
+            <a class="catalog-card catalog-card-static" href="/tools/response-review/">
+              <span class="catalog-card-price">$12</span>
+              <h3>Response Review</h3>
+              <p>A reviewer panel reads your response letter against the original comments and flags missing or hand-waved replies.</p>
+              <span class="catalog-card-cta">Check my response →</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/tools/response-review/" data-buy="response-review">Check, $12</a>
+              <a class="btn btn-ghost shop-buy" href="/tools/response-review/" data-buy="response-draft">Reply plan, $24</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="shop-item" data-shop-row>
+            <a class="catalog-card catalog-card-static" href="/tools/citation-gap/">
+              <span class="catalog-card-price">$3</span>
+              <h3>Citation Gap Analysis</h3>
+              <p>Finds prior work the manuscript should cite and doesn't, with a reason for each.</p>
+              <span class="catalog-card-cta">Find the gaps →</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/tools/citation-gap/" data-buy="citation-gap">Buy, $3</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="shop-item" data-shop-row>
+            <a class="catalog-card catalog-card-static" href="/tools/anonymity-check/">
+              <span class="catalog-card-price">$2</span>
+              <h3>Anonymity Check</h3>
+              <p>Flags names, institutions, funders, IRB numbers and self-citations that break double-blind review. Included free with Paper Review.</p>
+              <span class="catalog-card-cta">Scan my manuscript →</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/tools/anonymity-check/" data-buy="anonymity-check">Buy, $2</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="shop-item" data-shop-row>
+            <a class="catalog-card catalog-card-static" href="/tools/cover-letter/">
+              <span class="catalog-card-price">$2</span>
+              <h3>Cover Letter</h3>
+              <p>A first-pass cover letter from your abstract and the target journal, for you to edit and sign. The manuscript itself is never uploaded.</p>
+              <span class="catalog-card-cta">Draft my letter →</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/tools/cover-letter/" data-buy="cover-letter">Buy, $2</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="shop-item" data-shop-row>
+            <a class="catalog-card catalog-card-static" href="/tools/paper-review/revision/">
+              <span class="catalog-card-price">$5</span>
+              <h3>Revision Review</h3>
+              <p>Checks whether the revised manuscript actually addressed the findings in your original Paper Review.</p>
+              <span class="catalog-card-cta">Check my revision →</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/tools/paper-review/revision/" data-buy="revision-review">Buy, $5</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="shop-item" data-shop-row>
+            <a class="catalog-card catalog-card-static" href="/tools/paper-review/packs/">
+              <span class="catalog-card-price">5 for $99 · 20 for $349</span>
+              <h3>Volume packs</h3>
+              <p>Journal Paper Review tokens for labs and repeat submissions, emailed at purchase. They never expire.</p>
+              <span class="catalog-card-cta">See pack pricing →</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/tools/paper-review/packs/" data-buy="paper-review-pack-5">5 for $99</a>
+              <a class="btn btn-ghost shop-buy" href="/tools/paper-review/packs/" data-buy="paper-review-pack-20">20 for $349</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="shop-item" data-shop-row>
+            <a class="catalog-card catalog-card-static" href="/tools/paper-review/journal-check/">
+              <span class="catalog-card-price">$10</span>
+              <h3>Journal Check</h3>
+              <p>Checks a manuscript against one journal's stated rules: abstract and word limits, page count, required sections and reference style.</p>
+              <span class="catalog-card-cta">Check against a journal →</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/tools/paper-review/journal-check/" data-buy="journal-check">Buy, $10</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </div>
+          <div class="shop-item" data-shop-row>
+            <a class="catalog-card catalog-card-static" href="/tools/resume-review/">
+              <span class="catalog-card-price">$5</span>
+              <h3>Resume Review</h3>
+              <p>An ATS screener, a hiring manager and a recruiter read your resume before you apply for a research job.</p>
+              <span class="catalog-card-cta">Review my resume →</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/tools/resume-review/" data-buy="resume-review">Buy, $5</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </div>
         </div>
 
       </section>
@@ -550,23 +688,150 @@
           <h2 id="cat-kits">Kits</h2>
           <p>Production-tested automation systems, each with a setup guide: a content pipeline, a static-site monetization stack and a clip pipeline. One-time purchase, from $10.</p>
         </div>
-        <div class="cover-row" data-motion="stagger">
-          <a href="/kits/faceless-content-pipeline/"><img src="/kits/assets/faceless-cover.png" alt="Cover of the Faceless Content Pipeline guide" width="1240" height="1754" loading="lazy" decoding="async"></a>
-          <a href="/kits/monetization-stack/"><img src="/kits/assets/monetization-cover.png" alt="Cover of the Monetization Stack guide" width="1240" height="1754" loading="lazy" decoding="async"></a>
-          <a href="/kits/clip-pipeline/"><img src="/kits/assets/clip-cover.png" alt="Cover of the Clip Pipeline guide" width="1241" height="1754" loading="lazy" decoding="async"></a>
-        </div>
+        <ul class="shop-shelf" data-motion="stagger">
+          <li class="shop-shelf-item" data-shop-row>
+            <a class="shop-shelf-link" href="/kits/faceless-content-pipeline/">
+              <span class="shop-shelf-img"><img src="/kits/assets/faceless-cover.png" alt="Cover of the Faceless Content Pipeline guide" width="1240" height="1754" loading="lazy" decoding="async"></span>
+              <strong>Faceless Content Pipeline</strong>
+              <span class="shop-shelf-price">$49 once</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/kits/faceless-content-pipeline/" data-buy="kit-faceless">Buy, $49</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </li>
+          <li class="shop-shelf-item" data-shop-row>
+            <a class="shop-shelf-link" href="/kits/monetization-stack/">
+              <span class="shop-shelf-img"><img src="/kits/assets/monetization-cover.png" alt="Cover of the Monetization Stack guide" width="1240" height="1754" loading="lazy" decoding="async"></span>
+              <strong>Monetization Stack</strong>
+              <span class="shop-shelf-price">$29 once</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/kits/monetization-stack/" data-buy="kit-monetization">Buy, $29</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </li>
+          <li class="shop-shelf-item" data-shop-row>
+            <a class="shop-shelf-link" href="/kits/clip-pipeline/">
+              <span class="shop-shelf-img"><img src="/kits/assets/clip-cover.png" alt="Cover of the Clip Pipeline guide" width="1241" height="1754" loading="lazy" decoding="async"></span>
+              <strong>Clip Pipeline</strong>
+              <span class="shop-shelf-price">$10 once</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/kits/clip-pipeline/" data-buy="kit-clip">Buy, $10</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </li>
+          <li class="shop-shelf-item" data-shop-row>
+            <a class="shop-shelf-link" href="/kits/#bundle-h">
+              <span class="shop-shelf-img"><img src="/kits/assets/faceless-cover.png" alt="" width="1240" height="1754" loading="lazy" decoding="async"></span>
+              <strong>All three kits</strong>
+              <span class="shop-shelf-price">$59, save $29</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/kits/#bundle-h" data-buy="kit-bundle">Buy all three, $59</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </li>
+        </ul>
         <a class="btn btn-ghost" href="/kits/">See the kits</a>
       </section>
 
       <section class="catalog-section catalog-section-media" aria-labelledby="cat-sheets">
         <div class="catalog-section-head">
           <h2 id="cat-sheets">Spreadsheets</h2>
-          <p>Excel and Google Sheets files for the work around research: a submission and R&amp;R tracker, a tenure dossier tracker, an academic job market tracker, a grant pipeline and effort tracker, a systematic review screening matrix, an NSF/NIH grant budget builder, and two live sheets that fill themselves with your citations or funding calls. From $14.</p>
+          <p>Excel and Google Sheets files for the work around research: a submission and R&amp;R tracker, a tenure dossier tracker, an academic job market tracker, a grant pipeline and effort tracker, a systematic review screening matrix, an NSF/NIH grant budget builder, and two live sheets that fill themselves with your citations or funding calls. From $9.</p>
         </div>
-        <div class="cover-row cover-row-wide" data-motion="stagger">
-          <a href="/sheets/submission-tracker/"><img src="/sheets/assets/submission-tracker-800.webp" alt="The Journal Submission and R&amp;R Tracker dashboard" width="800" height="533" loading="lazy" decoding="async"></a>
-          <a href="/sheets/tenure-tracker/"><img src="/sheets/assets/tenure-tracker-800.webp" alt="The Tenure and Promotion Dossier Tracker dashboard" width="800" height="533" loading="lazy" decoding="async"></a>
-        </div>
+        <ul class="shop-shelf shop-shelf-wide" data-motion="stagger">
+          <li class="shop-shelf-item" data-shop-row>
+            <a class="shop-shelf-link" href="/sheets/submission-tracker/">
+              <span class="shop-shelf-img"><img src="/sheets/assets/submission-tracker-800.webp" alt="The Journal Submission and R&amp;R Tracker dashboard" width="800" height="533" loading="lazy" decoding="async"></span>
+              <strong>Submission and R&amp;R tracker</strong>
+              <span class="shop-shelf-price">$12</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/sheets/submission-tracker/" data-buy="sheet-submission">Buy, $12</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </li>
+          <li class="shop-shelf-item" data-shop-row>
+            <a class="shop-shelf-link" href="/sheets/tenure-tracker/">
+              <span class="shop-shelf-img"><img src="/sheets/assets/tenure-tracker-800.webp" alt="The Tenure and Promotion Dossier Tracker dashboard" width="800" height="533" loading="lazy" decoding="async"></span>
+              <strong>Tenure dossier tracker</strong>
+              <span class="shop-shelf-price">$12</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/sheets/tenure-tracker/" data-buy="sheet-tenure">Buy, $12</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </li>
+          <li class="shop-shelf-item" data-shop-row>
+            <a class="shop-shelf-link" href="/sheets/job-market-tracker/">
+              <span class="shop-shelf-img"><img src="/sheets/assets/job-market-tracker-800.webp" alt="The Academic Job Market Tracker dashboard" width="800" height="533" loading="lazy" decoding="async"></span>
+              <strong>Job market tracker</strong>
+              <span class="shop-shelf-price">$9</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/sheets/job-market-tracker/" data-buy="sheet-jobmarket">Buy, $9</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </li>
+          <li class="shop-shelf-item" data-shop-row>
+            <a class="shop-shelf-link" href="/sheets/grant-pipeline-tracker/">
+              <span class="shop-shelf-img"><img src="/sheets/assets/grant-pipeline-tracker-800.webp" alt="The Grant Pipeline and Effort Tracker dashboard" width="800" height="533" loading="lazy" decoding="async"></span>
+              <strong>Grant pipeline tracker</strong>
+              <span class="shop-shelf-price">$12</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/sheets/grant-pipeline-tracker/" data-buy="sheet-grantpipeline">Buy, $12</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </li>
+          <li class="shop-shelf-item" data-shop-row>
+            <a class="shop-shelf-link" href="/sheets/review-screening-matrix/">
+              <span class="shop-shelf-img"><img src="/sheets/assets/review-screening-matrix-800.webp" alt="The Systematic Review Screening Matrix" width="800" height="533" loading="lazy" decoding="async"></span>
+              <strong>Review screening matrix</strong>
+              <span class="shop-shelf-price">$14</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/sheets/review-screening-matrix/" data-buy="sheet-reviewmatrix">Buy, $14</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </li>
+          <li class="shop-shelf-item" data-shop-row>
+            <a class="shop-shelf-link" href="/sheets/#bundle-h">
+              <span class="shop-shelf-img"><img src="/sheets/assets/grant-budget-builder-800.webp" alt="The NSF and NIH Grant Budget Builder, sold only in the bundle" width="800" height="533" loading="lazy" decoding="async"></span>
+              <strong>All six, with the grant budget builder</strong>
+              <span class="shop-shelf-price">$39</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/sheets/#bundle-h" data-buy="sheet-bundle">Buy all six, $39</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </li>
+          <li class="shop-shelf-item" data-shop-row>
+            <a class="shop-shelf-link" href="/sheets/live/citation-dashboard/">
+              <span class="shop-shelf-img"><img src="/sheets/assets/citation-dashboard-800.webp" alt="The live citation dashboard sheet" width="800" height="533" loading="lazy" decoding="async"></span>
+              <strong>Live citation dashboard</strong>
+              <span class="shop-shelf-price">7 days free, then $39 a year</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/sheets/live/citation-dashboard/" data-buy="live-scholar">Try 7 days free</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </li>
+          <li class="shop-shelf-item" data-shop-row>
+            <a class="shop-shelf-link" href="/sheets/live/funding-feed/">
+              <span class="shop-shelf-img"><img src="/sheets/assets/funding-feed-800.webp" alt="The live funding feed sheet" width="800" height="533" loading="lazy" decoding="async"></span>
+              <strong>Live funding feed</strong>
+              <span class="shop-shelf-price">7 days free, then $59 a year</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/sheets/live/funding-feed/" data-buy="live-funding">Try 7 days free</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </li>
+        </ul>
         <a class="btn btn-ghost" href="/sheets/">See the spreadsheets</a>
       </section>
 
@@ -617,6 +882,93 @@
             </span>
           </a>
         </div>
+        <div class="shop-shelf-head">
+          <h3>2027 photo calendars</h3>
+          <p>Printable wall calendars, one photograph a month. $7 each, or all seven for $19.</p>
+          <div class="shop-actions" data-shop-row>
+            <a class="btn btn-primary shop-buy" href="/photography/calendars/" data-buy="photo-calendar-bundle">All seven, $19</a>
+            <p class="shop-status" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+        <ul class="shop-shelf" data-motion="stagger">
+          <li class="shop-shelf-item" data-shop-row>
+            <a class="shop-shelf-link" href="/photography/calendars/">
+              <span class="shop-shelf-img"><img src="/assets/photography/calendars/iceland-cover.jpg" alt="Cover of the 2027 Iceland calendar" width="800" height="618" loading="lazy" decoding="async"></span>
+              <strong>Iceland</strong>
+              <span class="shop-shelf-price">$7</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/photography/calendars/" data-buy="photo-calendar-iceland">Buy, $7</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </li>
+          <li class="shop-shelf-item" data-shop-row>
+            <a class="shop-shelf-link" href="/photography/calendars/">
+              <span class="shop-shelf-img"><img src="/assets/photography/calendars/japan-cover.jpg" alt="Cover of the 2027 Japan calendar" width="800" height="618" loading="lazy" decoding="async"></span>
+              <strong>Japan</strong>
+              <span class="shop-shelf-price">$7</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/photography/calendars/" data-buy="photo-calendar-japan">Buy, $7</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </li>
+          <li class="shop-shelf-item" data-shop-row>
+            <a class="shop-shelf-link" href="/photography/calendars/">
+              <span class="shop-shelf-img"><img src="/assets/photography/calendars/switzerland-cover.jpg" alt="Cover of the 2027 Switzerland calendar" width="800" height="618" loading="lazy" decoding="async"></span>
+              <strong>Switzerland</strong>
+              <span class="shop-shelf-price">$7</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/photography/calendars/" data-buy="photo-calendar-switzerland">Buy, $7</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </li>
+          <li class="shop-shelf-item" data-shop-row>
+            <a class="shop-shelf-link" href="/photography/calendars/">
+              <span class="shop-shelf-img"><img src="/assets/photography/calendars/european-cities-cover.jpg" alt="Cover of the 2027 European cities calendar" width="800" height="618" loading="lazy" decoding="async"></span>
+              <strong>European cities</strong>
+              <span class="shop-shelf-price">$7</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/photography/calendars/" data-buy="photo-calendar-european-cities">Buy, $7</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </li>
+          <li class="shop-shelf-item" data-shop-row>
+            <a class="shop-shelf-link" href="/photography/calendars/">
+              <span class="shop-shelf-img"><img src="/assets/photography/calendars/arizona-desert-cover.jpg" alt="Cover of the 2027 Arizona desert calendar" width="800" height="618" loading="lazy" decoding="async"></span>
+              <strong>Arizona desert</strong>
+              <span class="shop-shelf-price">$7</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/photography/calendars/" data-buy="photo-calendar-arizona-desert">Buy, $7</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </li>
+          <li class="shop-shelf-item" data-shop-row>
+            <a class="shop-shelf-link" href="/photography/calendars/">
+              <span class="shop-shelf-img"><img src="/assets/photography/calendars/hawaii-cover.jpg" alt="Cover of the 2027 Hawaii calendar" width="800" height="618" loading="lazy" decoding="async"></span>
+              <strong>Hawaii</strong>
+              <span class="shop-shelf-price">$7</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/photography/calendars/" data-buy="photo-calendar-hawaii">Buy, $7</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </li>
+          <li class="shop-shelf-item" data-shop-row>
+            <a class="shop-shelf-link" href="/photography/calendars/">
+              <span class="shop-shelf-img"><img src="/assets/photography/calendars/best-of-cover.jpg" alt="Cover of the 2027 Best of calendar" width="800" height="618" loading="lazy" decoding="async"></span>
+              <strong>Best of</strong>
+              <span class="shop-shelf-price">$7</span>
+            </a>
+            <div class="shop-actions">
+              <a class="btn btn-primary shop-buy" href="/photography/calendars/" data-buy="photo-calendar-best-of">Buy, $7</a>
+              <p class="shop-status" role="status" aria-live="polite"></p>
+            </div>
+          </li>
+        </ul>
         <ul class="store-rows">
           <li><a class="channel" href="https://www.istockphoto.com/portfolio/BenjaminAmpel" rel="noopener noreferrer" target="_blank"><strong>iStock</strong><span>Stock licenses for editorial and commercial use.</span><em>Portfolio</em></a></li>
           <li><a class="channel" href="https://www.dreamstime.com/benampel_info" rel="noopener noreferrer" target="_blank"><strong>Dreamstime</strong><span>Stock licenses, including extended rights.</span><em>Portfolio</em></a></li>
@@ -643,6 +995,21 @@
           <li><a class="channel" href="https://bsky.app/profile/purplelink.llc" rel="noopener noreferrer" target="_blank"><strong>Bluesky</strong><span>Release notes and company news.</span><em>@purplelink.llc</em></a></li>
         </ul>
       </section>
+
+      <aside class="shop-tray" id="shop-tray" aria-labelledby="shop-tray-title" aria-hidden="true" inert>
+        <div class="shop-tray-inner">
+          <div class="shop-tray-head">
+            <h2 id="shop-tray-title">Your bundle <span class="shop-tray-count">0 apps</span></h2>
+            <ul class="shop-tray-chips" aria-label="Apps in your bundle"></ul>
+          </div>
+          <p class="shop-tray-summary" aria-live="polite"></p>
+          <div class="shop-tray-actions">
+            <button type="button" class="btn btn-primary shop-tray-buy" disabled>Choose your apps</button>
+            <button type="button" class="btn btn-ghost shop-tray-clear">Clear</button>
+          </div>
+          <p class="shop-tray-status" role="status" aria-live="polite"></p>
+        </div>
+      </aside>
 
     </main>
 
