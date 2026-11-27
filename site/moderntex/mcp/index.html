@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>ModernTex Check: a free MCP server that checks LaTeX projects | Purplelink LLC</title>
+    <meta name="description" content="A free, read-only MCP server for macOS. It gives Claude Code and other AI assistants four LaTeX checks: build errors, references, manuscript rules and BibTeX files.">
+    <link rel="canonical" href="https://purplelink.llc/moderntex/mcp/">
+    <meta property="og:title" content="ModernTex Check: a free MCP server that checks LaTeX projects">
+    <meta property="og:description" content="Four read-only LaTeX checks for Claude Code and other MCP clients: build errors, references, manuscript rules and BibTeX files. Nothing is written or compiled.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://purplelink.llc/moderntex/mcp/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/moderntex.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ModernTex Check: a free MCP server that checks LaTeX projects">
+    <meta name="twitter:description" content="Four read-only LaTeX checks for Claude Code and other MCP clients: build errors, references, manuscript rules and BibTeX files. Nothing is written or compiled.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/moderntex.png">
+    <meta name="twitter:image:alt" content="ModernTex Check, a free MCP server for LaTeX projects">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "ModernTex Check",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "macOS 14 or later",
+      "description": "A read-only Model Context Protocol server that checks LaTeX projects: build-log errors, undefined references and citations, manuscript rules and BibTeX files. It never writes a file, never compiles and needs no TeX installation.",
+      "url": "https://purplelink.llc/moderntex/mcp/",
+      "license": "https://opensource.org/license/mit",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "ModernTex",
+          "item": "https://purplelink.llc/moderntex/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "ModernTex Check (MCP server)",
+          "item": "https://purplelink.llc/moderntex/mcp/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Does ModernTex Check change my files?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. All four tools only read. check_bib lists the clean-ups it would make to a .bib file and leaves the file as it was."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need MacTeX or TinyTeX installed?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. The server never compiles. If a TeX tree is installed, check_manuscript reads its package index to tell a missing package from a misspelled one. Without one, it compares package names against a built-in list."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it send my files anywhere?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The server makes no network requests. It answers the assistant over standard input and output on your Mac. The assistant then sends the tool result to its model, as it does with any tool."
+      }
+    }
+  ]
+}
+</script>
+    <script src="/theme.js"></script>
+<link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/motion.css">
+    <script src="/site.js" defer></script>
+    <script src="/motion.js" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+    <script src="/buddy-chat/loader.js" defer></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/" aria-current="page">Products</a>
+        <a href="/publication-suite/">Publication suite</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/moderntex/">← ModernTex</a>
+      <div class="post-hero">
+        <p class="post-date">Free MCP server</p>
+        <h1 class="post-title">ModernTex Check: a free MCP server that checks LaTeX projects</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-11-27">November 27, 2026</time></p>
+        <p class="post-lede">ModernTex Check gives an AI assistant four ways to check a LaTeX project on your Mac. It reads your files and reports what it finds. It never writes a file, never compiles, and does not need a TeX installation.</p>
+      </div>
+
+      <article class="post-body">
+        <p>The Model Context Protocol (MCP, an open standard for connecting AI assistants to tools) lets a client such as Claude Code call a program on your computer and read its answer. ModernTex Check is one of those programs. It is free and MIT-licensed, and it runs on macOS 14 or later on Apple silicon and Intel Macs.</p>
+
+        <h2 id="tools">The four tools</h2>
+        <ul>
+          <li><strong><code>explain_error</code>:</strong> reads a build log, or one pasted error message, and gives the file, line, matching log line and fix steps for each error and warning.</li>
+          <li><strong><code>check_references</code>:</strong> finds <code>\ref</code> and <code>\cite</code> keys with no matching <code>\label</code>, <code>\bibitem</code> or <code>.bib</code> entry. It follows <code>\input</code> and <code>\include</code> and suggests the key you probably meant.</li>
+          <li><strong><code>check_manuscript</code>:</strong> runs rule-based checks on structure, reported numbers, availability statements, repeated words and misspelled package names.</li>
+          <li><strong><code>check_bib</code>:</strong> reports duplicate keys, likely duplicate entries, missing required fields and implausible years, plus the clean-ups that would normalize the file. Your <code>.bib</code> is left as it was.</li>
+        </ul>
+        <p>Every check is deterministic (no model runs inside the server), so the same file always gives the same answer. The assistant decides when to call a tool and how to use the result.</p>
+
+        <h2 id="install">Install</h2>
+        <p>[Download link: added once the release is public.]</p>
+        <p>The download holds one universal binary, signed with a Developer ID and notarized by Apple. Put it in a folder you keep, such as <code>~/bin</code>, and add it to your client.</p>
+        <p>For Claude Code, run this in Terminal:</p>
+        <pre><code>claude mcp add moderntex-check -- "$HOME/bin/moderntex-check"</code></pre>
+        <p>For Claude Desktop, Cursor or any client that reads an <code>mcpServers</code> block, add this to its configuration file and restart the client:</p>
+        <pre><code>{
+  "mcpServers": {
+    "moderntex-check": { "command": "/Users/you/bin/moderntex-check" }
+  }
+}</code></pre>
+        <p>Replace <code>/Users/you</code> with your home folder. Then ask the assistant something specific, for example "Check the references in /Users/you/paper/main.tex" or "Explain the errors in /Users/you/paper/main.log."</p>
+
+        <h2 id="limits">Limits</h2>
+        <p>Paths passed to the tools must be absolute. Files over 10 MB are refused. An <code>\input</code> or <code>\include</code> that points outside the root file's folder is not followed, so a project cannot pull in files from elsewhere on the Mac. <code>explain_error</code> gives better answers from the whole log (<code>log_path</code>) than from one pasted line, because the log carries the file and line of each error.</p>
+
+        <h2 id="moderntex">Where the checks come from</h2>
+        <p>These are the same checks that <a href="/moderntex/">ModernTex</a>, my LaTeX editor for Mac, runs as you write. The server shares its code with the editor, so a fix to one is a fix to both. When a fix needs the editor (installing a missing package, for example), the tool result says so in one line. I make both, so weigh that when you read the results.</p>
+
+        <h2 id="last-checked">Last checked</h2>
+        <p>November 27, 2026. I tested version 1.0.0 with Claude Code on macOS 26 that day. If a check gives a wrong answer, send the file or log to <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> and I will fix it.</p>
+      </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>Does ModernTex Check change my files?</summary><div class="faq-body">No. All four tools only read. check_bib lists the clean-ups it would make to a .bib file and leaves the file as it was.</div></details>
+        <details><summary>Do I need MacTeX or TinyTeX installed?</summary><div class="faq-body">No. The server never compiles. If a TeX tree is installed, check_manuscript reads its package index to tell a missing package from a misspelled one. Without one, it compares package names against a built-in list.</div></details>
+        <details><summary>Does it send my files anywhere?</summary><div class="faq-body">The server makes no network requests. It answers the assistant over standard input and output on your Mac. The assistant then sends the tool result to its model, as it does with any tool.</div></details>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools and guides">
+        <h2>Related tools and guides</h2>
+        <ul>
+          <li><a href="/moderntex/">ModernTex, a LaTeX editor for Mac</a></li>
+          <li><a href="/latex-errors/">LaTeX errors explained</a></li>
+          <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/nee/">Née</a></li>
+            <li><a href="/lenses/">Lenses</a></li>
+            <li><a href="/modernpaper/">ModernPaper</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/publication-suite/">Publication suite</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/suite/">Mac Suite</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js" defer></script>
+</body>
+</html>
