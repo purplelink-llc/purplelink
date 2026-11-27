@@ -153,6 +153,7 @@
         <h2 id="install">Install</h2>
         <p>[Download link: added once the release is public.]</p>
         <p>The download holds one universal binary, signed with a Developer ID and notarized by Apple. Put it in a folder you keep, such as <code>~/bin</code>, and add it to your client.</p>
+        <p>Run it once in Terminal before you add it (<code>~/bin/moderntex-check --version</code>) and choose Open if macOS asks. macOS asks this the first time any downloaded program runs, and an assistant cannot answer that prompt for you.</p>
         <p>For Claude Code, run this in Terminal:</p>
         <pre><code>claude mcp add moderntex-check -- "$HOME/bin/moderntex-check"</code></pre>
         <p>For Claude Desktop, Cursor or any client that reads an <code>mcpServers</code> block, add this to its configuration file and restart the client:</p>
