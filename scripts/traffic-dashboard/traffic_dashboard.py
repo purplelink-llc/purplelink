@@ -3490,10 +3490,10 @@ ITCH_API_KEY_ENV = "ITCH_API_KEY"
 ITCH_MY_GAMES_URL = "https://itch.io/api/1/key/my-games"
 
 
-def fetch_itch_games(key: str) -> dict:
+def fetch_itch_games(token: str) -> dict:
     """{"games": [...]} with one row per project, or {"error": text}. Never raises."""
     req = urllib.request.Request(ITCH_MY_GAMES_URL, headers={
-        "Authorization": f"Bearer {key}", "User-Agent": "purplelink-traffic-dashboard"})
+        "Authorization": f"Bearer {token}", "User-Agent": "purplelink-traffic-dashboard"})
     try:
         with urllib.request.urlopen(req, timeout=TIMEOUT, context=_ssl_context()) as resp:
             payload = json.loads(resp.read().decode("utf-8"))
@@ -7444,9 +7444,9 @@ def main() -> int:
             print(f"  ! extension stores unavailable: {str(exc)[:100]}", file=sys.stderr)
 
         # itch.io (RubbleFront): one reading of the running totals per UTC day.
-        itch_key = cfg.get(ITCH_API_KEY_ENV) or os.environ.get(ITCH_API_KEY_ENV)
-        if itch_key:
-            itch_res = fetch_itch_games(itch_key)
+        itch_token = cfg.get(ITCH_API_KEY_ENV) or os.environ.get(ITCH_API_KEY_ENV)
+        if itch_token:
+            itch_res = fetch_itch_games(itch_token)
             record_itch(history, itch_res, dt.datetime.now(dt.timezone.utc).date())
             if itch_res.get("error"):
                 print(f"  ! itch.io unavailable: {itch_res['error']}", file=sys.stderr)
