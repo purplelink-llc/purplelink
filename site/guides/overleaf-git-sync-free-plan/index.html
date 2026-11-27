@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Overleaf Git and GitHub sync on the free plan</title>
+    <meta name="description" content="Git, GitHub and Dropbox sync are paid Overleaf features. How to move a project in and out on the free plan, keep your own Git history, and when the paid route is worth it.">
+    <link rel="canonical" href="https://purplelink.llc/guides/overleaf-git-sync-free-plan/">
+    <meta property="og:title" content="Overleaf Git and GitHub sync on the free plan">
+    <meta property="og:description" content="What the free plan leaves out, the download and upload route that works on every plan, Git history kept on your own machine, and the paid route.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/guides/overleaf-git-sync-free-plan/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/cards/guides-overleaf-git-sync-free-plan.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Overleaf Git and GitHub sync on the free plan">
+    <meta name="twitter:description" content="What the free plan leaves out, the download and upload route that works on every plan, Git history kept on your own machine, and the paid route.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/cards/guides-overleaf-git-sync-free-plan.jpg">
+    <meta name="twitter:image:alt" content="Overleaf Git sync, free plan, guide">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "Overleaf Git and GitHub sync on the free plan",
+      "description": "Git, GitHub and Dropbox sync are paid Overleaf features. How to move a project in and out on the free plan, keep your own Git history, and when the paid route is worth it.",
+      "author": {
+        "@id": "https://purplelink.llc/about/#person"
+      },
+      "publisher": {
+        "@id": "https://purplelink.llc/#organization"
+      },
+      "datePublished": "2026-11-27",
+      "dateModified": "2026-11-27",
+      "image": "https://purplelink.llc/assets/og/cards/guides-overleaf-git-sync-free-plan.jpg",
+      "mainEntityOfPage": "https://purplelink.llc/guides/overleaf-git-sync-free-plan/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://purplelink.llc/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Guides",
+          "item": "https://purplelink.llc/guides/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Overleaf Git sync, free plan",
+          "item": "https://purplelink.llc/guides/overleaf-git-sync-free-plan/"
+        }
+      ]
+    }
+  ]
+}
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is Overleaf Git integration free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Overleaf's Git integration page says Git integration is a premium feature, and GitHub and Dropbox sync are premium features too. This was checked on November 27, 2026."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I get an Overleaf project onto my computer without Git?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Open the File menu and choose Download as source (.zip). This works on every plan and downloads the current version of the project."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I send local changes back to Overleaf on the free plan?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Use the Upload button at the top of the file list. Overleaf's documentation does not say how it handles a file with the same name, so open the file afterwards and check that your change is there."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use Git with Overleaf without paying?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Not with Overleaf's Git server. You can still run Git on your own copy: download the project, run git init in the folder, and commit after each session. Push it to GitHub or GitLab for a backup."
+      }
+    }
+  ]
+}
+</script>
+    <script src="/theme.js"></script>
+<link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/motion.css">
+    <script src="/site.js" defer></script>
+    <script src="/motion.js" defer></script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+    <script src="/buddy-chat/loader.js" defer></script>
+</head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-mark.svg" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/publication-suite/">Publication suite</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/guides/">← All guides</a>
+      <div class="post-hero">
+        <p class="post-date">How-to</p>
+        <h1 class="post-title">Overleaf Git, GitHub and Dropbox sync on the free plan</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-11-27">November 27, 2026</time></p>
+        <p class="post-lede">Git integration, GitHub sync and Dropbox sync are all paid Overleaf features. On the free plan the way in and out is a download and an upload. That is slower than sync, but it works on every plan, and you can still keep full Git history on your own machine.</p>
+      </div>
+
+      <article class="post-body">
+        <nav class="page-toc" aria-labelledby="toc-heading">
+          <h2 id="toc-heading">On this page</h2>
+          <ol>
+            <li><a href="#paid">What the free plan leaves out</a></li>
+            <li><a href="#free-route">The free route: download, edit, upload</a></li>
+            <li><a href="#own-git">Keep Git history yourself</a></li>
+            <li><a href="#paid-route">When the paid route is worth it</a></li>
+            <li><a href="#local">A local editor on the free route</a></li>
+            <li><a href="#last-checked">Last checked</a></li>
+          </ol>
+        </nav>
+
+        <p><strong>Disclosure:</strong> I make ModernTex, a Mac LaTeX editor, and it comes up near the end. The rules below come from Overleaf's pages on <a href="https://docs.overleaf.com/integrations-and-add-ons/git-integration-and-github-synchronization/git-integration" rel="noopener">Git integration</a>, <a href="https://docs.overleaf.com/integrations-and-add-ons/git-integration-and-github-synchronization/github-synchronization" rel="noopener">GitHub synchronization</a>, <a href="https://docs.overleaf.com/integrations-and-add-ons/dropbox" rel="noopener">Dropbox</a> and <a href="https://docs.overleaf.com/managing-projects-and-files/adding-files-to-a-project/uploading-files-to-a-project" rel="noopener">uploading files</a>, read on November 27, 2026.</p>
+
+        <h2 id="paid">What the free plan leaves out</h2>
+        <p>Each integration page says the same thing. "Git integration is a premium feature." "GitHub synchronization is a premium feature." "Dropbox synchronization is a premium feature." I found no free sync route in Overleaf's documentation.</p>
+
+        <h2 id="free-route">The free route: download, edit, upload</h2>
+        <ol>
+          <li><strong>Download.</strong> In the project, open the File menu and choose Download as source (.zip). Overleaf says this is the current version of the project. Unzip it into a folder you keep.</li>
+          <li><strong>Edit locally.</strong> Work on the files in any editor and build with a local TeX install. The <a href="/guides/install-latex-on-mac/">MacTeX vs BasicTeX</a> guide covers the install on a Mac.</li>
+          <li><strong>Upload what changed.</strong> In Overleaf, use the Upload button at the top of the file list. Overleaf's documentation does not say how it treats a file with the same name as one already in the project, so open the file after the upload and check that your change is there.</li>
+          <li><strong>Agree on who holds the pen.</strong> Nothing merges your edits with a co-author's. If both of you change <code>methods.tex</code> on the same day, one set of edits is lost. Take turns by file or by day.</li>
+        </ol>
+        <p>To start a new Overleaf project from a local folder, zip it and use the upload project option. The zip can hold up to 180 files, 50 MB and 7 MB of editable material. The <a href="/guides/overleaf-file-size-limits/">Overleaf file limits</a> guide covers what to do when a project is bigger.</p>
+
+        <h2 id="own-git">Keep Git history yourself</h2>
+        <p>Overleaf charges for its Git server, not for Git. In the unzipped folder, run <code>git init</code> once, then <code>git add -A</code> and <code>git commit</code> after each download or work session. Push the repository to GitHub or GitLab if you want a copy off your machine. You get full history and a backup for free, and Overleaf stays the place where co-authors read and edit.</p>
+
+        <h2 id="paid-route">When the paid route is worth it</h2>
+        <p>Pay for it when you move changes between Overleaf and your machine every day, or when a co-author edits in Overleaf while you edit locally. Clone and push replace the download and upload steps, and Git merges edits to different parts of the same file. The guide to <a href="/guides/move-overleaf-project-to-mac-with-git/">moving an Overleaf project to a Mac with Git</a> has the steps. GitHub sync stops working if the project's editable files pass 7 MB, per Overleaf's GitHub page. Overleaf's <a href="https://www.overleaf.com/plans" rel="noopener">plans page</a> listed these prices in US dollars on November 27, 2026: Student $98 a year or $13 a month, Standard $199 a year or $25 a month, and Pro $399 a year or $45 a month, each with a 7-day trial. Some universities pay for Overleaf through a site licence, so ask your library before you pay.</p>
+
+        <h2 id="local">A local editor on the free route</h2>
+        <p>Any editor works on the downloaded folder, and the <a href="/guides/best-mac-latex-editors/">LaTeX editor for Mac</a> comparison covers the free ones. ModernTex is my option. Its Overleaf sync uses Overleaf's Git address, so it needs the paid plan like any other Git client. On the free plan it opens the unzipped folder, builds it with MacTeX or TinyTeX, and its Get Changes and Send Changes commands work with your own GitHub or GitLab repository. It costs $19.99 once after a free 7-day trial and needs macOS 14 or later. It is a single-user app, so keep Overleaf for any draft several people type in at once.</p>
+
+        <h2 id="last-checked">Last checked</h2>
+        <p>November 27, 2026. If Overleaf has opened any of these features to the free plan, write to <a href="mailto:ben@purplelink.llc">ben@purplelink.llc</a> and I will fix it.</p>
+      </article>
+
+      <section class="tool-faq">
+        <h2>Frequently asked questions</h2>
+        <details><summary>Is Overleaf Git integration free?</summary><div class="faq-body">No. Overleaf&#x27;s Git integration page says Git integration is a premium feature, and GitHub and Dropbox sync are premium features too. This was checked on November 27, 2026.</div></details>
+        <details><summary>How do I get an Overleaf project onto my computer without Git?</summary><div class="faq-body">Open the File menu and choose Download as source (.zip). This works on every plan and downloads the current version of the project.</div></details>
+        <details><summary>How do I send local changes back to Overleaf on the free plan?</summary><div class="faq-body">Use the Upload button at the top of the file list. Overleaf&#x27;s documentation does not say how it handles a file with the same name, so open the file afterwards and check that your change is there.</div></details>
+        <details><summary>Can I use Git with Overleaf without paying?</summary><div class="faq-body">Not with Overleaf&#x27;s Git server. You can still run Git on your own copy: download the project, run git init in the folder, and commit after each session. Push it to GitHub or GitLab for a backup.</div></details>
+      </section>
+
+      <!-- moderntex-cta -->
+      <section class="waitlist-section mt-cta">
+        <p class="eyebrow">From the maker of these tools</p>
+        <h2>Writing LaTeX on a Mac?</h2>
+        <p>ModernTex is a native macOS LaTeX studio. It has multi-file manuscript navigation, a PDF preview that stays in sync, BibTeX completion that searches by author or title, and compile errors in plain language. $19.99 once, all updates included, forever.</p>
+        <div class="waitlist-actions">
+          <a class="btn btn-primary" href="/.netlify/functions/moderntex-download?src=guide&amp;trial=1" data-track="guide_mtx_trial" data-track-meta="guides:overleaf-git-sync-free-plan:end">Try ModernTex free for 7 days</a>
+          <a class="btn btn-ghost" href="/moderntex/" data-track="guide_mtx_click" data-track-meta="guides:overleaf-git-sync-free-plan:end-page">See what it does</a>
+        </div>
+        <p class="waitlist-fine-print">Requires macOS 14 or later. No account, and the trial is the full app.</p>
+        <script src="/mtx-trial-door.js" defer></script>
+      </section>
+
+      <nav class="tool-related" aria-label="Related tools and guides">
+        <h2>Related tools and guides</h2>
+        <ul>
+          <li><a href="/guides/move-overleaf-project-to-mac-with-git/">Move an Overleaf project to a local Mac editor with Git</a></li>
+          <li><a href="/guides/overleaf-alternative-mac/">Overleaf alternatives for Mac</a></li>
+          <li><a href="/guides/overleaf-version-history-free-plan/">Overleaf version history on the free plan</a></li>
+          <li><a href="/guides/overleaf-file-size-limits/">Overleaf file and project size limits</a></li>
+          <li><a href="/guides/best-mac-latex-editors/">LaTeX editor for Mac: the options compared</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/nee/">Née</a></li>
+            <li><a href="/lenses/">Lenses</a></li>
+            <li><a href="/modernpaper/">ModernPaper</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/publication-suite/">Publication suite</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/suite/">Mac Suite</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+      <script src="/analytics.js" defer></script>
+</body>
+</html>

@@ -940,7 +940,7 @@
   </url>
   <url>
     <loc>https://purplelink.llc/guides/move-prism-project-to-mac/</loc>
-    <lastmod>2026-11-02</lastmod>
+    <lastmod>2026-11-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
@@ -965,6 +965,30 @@
   <url>
     <loc>https://purplelink.llc/guides/overleaf-compile-timeout/</loc>
     <lastmod>2026-11-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://purplelink.llc/guides/overleaf-file-size-limits/</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://purplelink.llc/guides/overleaf-version-history-free-plan/</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://purplelink.llc/guides/overleaf-git-sync-free-plan/</loc>
+    <lastmod>2026-11-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://purplelink.llc/guides/overleaf-collaborator-limit/</loc>
+    <lastmod>2026-11-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
