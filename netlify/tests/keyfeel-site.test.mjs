@@ -201,7 +201,7 @@ test("the sitemap, llms.txt, the search index, the products and pricing pages an
   assert.doesNotMatch(read("sitemap.xml"), /keyfeel\/success/);
   assert.match(read("llms.txt"), /https:\/\/purplelink\.llc\/keyfeel\//);
   assert.ok(JSON.parse(read("search-index.json")).some((e) => e.u === "/keyfeel/"));
-  assert.match(read("products/index.html"), /<a class="catalog-card" href="\/keyfeel\/">/);
+  assert.match(read("products/index.html"), /<a class="catalog-card[^"]*" href="\/keyfeel\/">/);
   assert.match(read("products/index.html"), /"name": "Keyfeel", "url": "https:\/\/purplelink\.llc\/keyfeel\/"/);
   assert.match(read("pricing/index.html"), /Keyfeel for Mac/);
   assert.match(read("index.html"), /<li><a href="\/keyfeel\/">Keyfeel<\/a><\/li>/);
