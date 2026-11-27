@@ -687,6 +687,72 @@ def macupdate_summary(entry: dict | None, today: dt.date | None = None) -> dict 
     return out
 
 
+# --- Buddy (GitHub release downloads) --------------------------------------
+#
+# Buddy's download button and its Sparkle appcast both point at GitHub Releases (purplelink-llc/buddy, Buddy.zip),
+# so GitHub's per-asset download_count is the only download figure there is. It is a running total with no per-day
+# series: one reading a day is archived in history["buddyGithub"] and the daily figure is the difference between
+# today's reading and the one 7 or more days back, divided by the days between them. The count includes Sparkle
+# auto-update downloads, not only new installs, so it overstates new users.
+BUDDY_GH_REPO = "purplelink-llc/buddy"
+BUDDY_GH_ASSET = "Buddy.zip"
+BUDDY_GH_NOTE = "includes Sparkle auto-update downloads, not only new installs"
+BUDDY_GH_JQ = f'[.[].assets[] | select(.name == "{BUDDY_GH_ASSET}") | .download_count] | add // 0'
+
+
+def fetch_buddy_github_total(repo: str = BUDDY_GH_REPO) -> int | None:
+    """Sum of download_count over every Buddy.zip release asset, or None when GitHub could not be read.
+    Uses the gh CLI (paginated, one sum per page); falls back to the unauthenticated REST API."""
+    try:
+        out = subprocess.run(["gh", "api", "--paginate", f"repos/{repo}/releases", "--jq", BUDDY_GH_JQ],
+                             capture_output=True, text=True, timeout=60, check=True).stdout
+        return sum(int(x) for x in out.split())
+    except (OSError, subprocess.SubprocessError, ValueError):
+        pass
+    total, page = 0, 1
+    try:
+        while True:
+            req = urllib.request.Request(f"https://api.github.com/repos/{repo}/releases?per_page=100&page={page}",
+                                         headers={"Accept": "application/vnd.github+json", "User-Agent": "purplelink-dashboard"})
+            with urllib.request.urlopen(req, timeout=20) as r:
+                releases = json.loads(r.read().decode("utf-8"))
+            for rel in releases:
+                total += sum(int(a.get("download_count", 0) or 0) for a in rel.get("assets", [])
+                             if a.get("name") == BUDDY_GH_ASSET)
+            if len(releases) < 100:
+                return total
+            page += 1
+    except (OSError, http.client.HTTPException, ValueError) as exc:
+        print(f"  ! Buddy GitHub downloads unavailable: {str(exc)[:80]}", file=sys.stderr)
+        return None
+
+
+def merge_buddy_github(history: dict, total: int, today: str | None = None) -> dict:
+    entry = history.setdefault("buddyGithub", {"snapshots": {}})
+    entry["snapshots"][today or _utc_today()] = {"total": int(total)}
+    return entry
+
+
+def buddy_github_summary(entry: dict | None, today: dt.date | None = None) -> dict | None:
+    """Running total, and downloads per day from the latest reading 7 or more days old (perDay is None, with
+    `weekly_from` saying when it appears, until one exists). A total that goes down is floored at 0."""
+    snaps = (entry or {}).get("snapshots") or {}
+    if not snaps:
+        return None
+    today = today or dt.date.today()
+    days = sorted(snaps)
+    last_day = days[-1]
+    cutoff = (today - dt.timedelta(days=7)).isoformat()
+    base_day = max((d for d in days if d <= cutoff and d < last_day), default=None)
+    out = {"total": snaps[last_day]["total"], "asOf": last_day, "perDay": None, "since": None,
+           "weeklyFrom": (dt.date.fromisoformat(days[0]) + dt.timedelta(days=7)).isoformat()}
+    if base_day:
+        span = (dt.date.fromisoformat(last_day) - dt.date.fromisoformat(base_day)).days
+        out["perDay"] = max(0, snaps[last_day]["total"] - snaps[base_day]["total"]) / span
+        out["since"] = base_day
+    return out
+
+
 # Our own download counters per app (beacon trial clicks per day), for the all-sources view.
 SITE_DOWNLOAD_METRICS = {"moderntex": "trialDownloads", "outbound-veil": "ovTrialDownloads", "legroom": "lgTrialDownloads",
                          "keyfeel": "kfTrialDownloads", "tapefolio": "tfTrialDownloads", "lenscrib": "lcbTrialDownloads", "nee": "neeTrialDownloads", "lenses": "lensesTrialDownloads", "panely": "pnTrialDownloads",
@@ -713,6 +779,8 @@ def downloads_all_sources(history: dict, today: dt.date | None = None) -> list[d
     if asd:
         rows.append({"app": "GlobePin (App Store)", "site7": None, "mu": None,
                      "store7": sum(int((asd.get(d) or {}).get("downloads", 0) or 0) for d in last7)})
+    gh = buddy_github_summary(history.get("buddyGithub"), today)
+    rows.append({"app": "Buddy (GitHub)", "site7": None, "mu": None, "gh": gh, "note": BUDDY_GH_NOTE})
     return rows
 
 
@@ -726,6 +794,16 @@ def print_downloads_all_sources(history: dict) -> None:
     for r in rows:
         if "store7" in r:
             print(f"   {r['app']:<22} App Store first-time downloads {r['store7']:>3}")
+            continue
+        if "gh" in r:
+            g = r["gh"]
+            if not g:
+                figure = "n/a (no reading yet)"
+            elif g["perDay"] is None:
+                figure = f"n/a until 7 days of readings (from {g['weeklyFrom']}); {g['total']} all time"
+            else:
+                figure = f"{g['perDay']:.1f} a day over 7+ days since {g['since']}; {g['total']} all time"
+            print(f"   {r['app']:<22} GitHub release downloads {figure} ({r['note']})")
             continue
         m = r["mu"]
         tot_site += r["site7"]
@@ -7343,6 +7421,12 @@ def main() -> int:
             if reading is not None:
                 merge_macupdate(history, mu_key, reading)
                 print(f"  ok MacUpdate {mu_key}: {reading['downloads']} downloads all time, listing shows {reading['version']}")
+
+        # Buddy: GitHub release asset download_count (running total; one reading a day).
+        buddy_total = fetch_buddy_github_total()
+        if buddy_total is not None:
+            merge_buddy_github(history, buddy_total)
+            print(f"  ok Buddy GitHub releases: {buddy_total} Buddy.zip downloads all time")
 
         # Panely and Summonly: downloads served (public and buyer) and in-app updates by version.
         for app_key in APP_STATS_STORES:
