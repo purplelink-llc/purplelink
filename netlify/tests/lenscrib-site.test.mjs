@@ -267,7 +267,7 @@ test("the Privacy page says what Lenscrib sends and does not send, and names its
   assert.match(html, /<strong>Lenscrib<\/strong> has no account and no analytics/);
   assert.match(html, /does not upload your photos, their metadata or their locations/);
   assert.match(html, /Lenscrib trial emails<\/strong>/);
-  assert.match(html, /Tapefolio, Lenscrib, Née, Panely, Summonly, Mac Suite and kit purchases/);
+  assert.match(html, /Tapefolio, Lenscrib, Née, Panely, Summonly, ModernPaper, Mac Suite and kit purchases/);
 });
 
 test("nothing links to /lenscrib/ yet: no nav, footer, home, products, pricing, sitemap, search index or llms file", () => {

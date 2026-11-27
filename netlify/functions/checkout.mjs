@@ -36,7 +36,7 @@
  *   STRIPE_PRICE_RESUME_REVIEW             (resume-review, $5) — first non-academic product
  *   STRIPE_PRICE_VITAE_PLUS_MONTHLY        (vitae-plus-monthly, $2.99/month subscription, 7-day trial)
  *   STRIPE_PRICE_VITAE_PLUS_ANNUAL         (vitae-plus-annual, $23.99/year subscription, 7-day trial)
- *   STRIPE_PRICE_MODERNPAPER               (modernpaper, $79 one-time; no inline fallback, unset means checkout refuses)
+ *   STRIPE_PRICE_MODERNPAPER               (modernpaper, $49 one-time; optional, the inline amount is used when unset)
  *   STRIPE_SECRET_KEY (shared, sk_test_… or sk_live_…)
  */
 
@@ -143,13 +143,13 @@ const REFUND_TEXT = {
   "tapefolio": `${REFUND_EMAIL} the full $29.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "lenscrib": `${REFUND_EMAIL} the full $19.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "nee": `${REFUND_EMAIL} the full $14.99 to the original payment method. You don't need to give a reason. A refunded purchase's license key is no longer licensed for use.`,
-  "modernpaper": `${REFUND_EMAIL} the full $79 to the original payment method. You don't need to give a reason. A refunded purchase's license key is no longer licensed for use.`,
+  "modernpaper": `${REFUND_EMAIL} the full $49 to the original payment method. You don't need to give a reason. A refunded purchase's license key is no longer licensed for use.`,
   "lenses": `${REFUND_EMAIL} the full $4.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working and its license key is no longer licensed for use.`,
   "panely": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   "summonly": `${REFUND_EMAIL} the full $9.99 to the original payment method. You don't need to give a reason. A refunded purchase's download link stops working.`,
   // The annual Paper Review plan. Mirrors the "Refunds." sentence of its /terms/ auto-renewal section.
   "paper-review-annual": "Renews at $79 a year on the same date until you cancel. Cancel in one click from any plan email. We email you 30 and 7 days before each renewal. Unused reviews end with the year; cancelling stops the next charge and is not a refund for the current year.",
-  "app-suite": `${REFUND_EMAIL} the full amount you paid to the original payment method. You don't need to give a reason. A refunded Suite's download links stop working, and its ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and Lenses license keys and its Vitae Plus key are no longer licensed for use.`,
+  "app-suite": `${REFUND_EMAIL} the full amount you paid to the original payment method. You don't need to give a reason. A refunded Suite's download links stop working, and its ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née, Lenses and ModernPaper license keys and its Vitae Plus key are no longer licensed for use.`,
 };
 
 // Defense-in-depth: cap how many Checkout Sessions one IP can spin up per
@@ -253,23 +253,24 @@ export const PRODUCT_CATALOG = {
   // nee-files Blobs store; see nee-download.mjs. Product page and success page: /nee/ and /nee/success/.
   // See docs/products/nee.md.
   "nee":                { amount: 1499, name: "Née for macOS", successPath: "/nee/success/" },
-  // ModernPaper (PDF reader and editor for academics): $79 one-time. The Stripe Price STRIPE_PRICE_MODERNPAPER points at
-  // is the only source of the amount, on purpose: there is no inline fallback, so with the env var unset this product
-  // answers 500 "misconfigured" and nothing is charged. Licensed with PurplelinkLicenseV1 (MP1, netlify/lib/license.mjs).
-  // Launches hidden and unlisted: not in the Mac Suite or the custom bundles yet (`inSuite: false`). No download or Blobs
-  // store yet; the success page shows the key. Pages: /modernpaper/ and /modernpaper/success/. See docs/products/modernpaper.md.
-  "modernpaper":             { envKey: "STRIPE_PRICE_MODERNPAPER", successPath: "/modernpaper/success/" },
+  // ModernPaper (PDF reader and editor for academics): $49 one-time, priced inline (no Stripe Price to create). The Stripe
+  // Price STRIPE_PRICE_MODERNPAPER, if Ben ever sets it, wins over the inline amount; keep both equal to the copy on /modernpaper/.
+  // Licensed with PurplelinkLicenseV1 (MP1, netlify/lib/license.mjs). Public since 2026-11-27, and part of the Mac Suite and
+  // the custom bundles from then (the `inSuite` gate in license.mjs is open). Delivery is the session-gated DMG and the free trial
+  // download from the modernpaper-files Blobs store; see modernpaper-download.mjs. Pages: /modernpaper/ and /modernpaper/success/.
+  // See docs/products/modernpaper.md.
+  "modernpaper":             { envKey: "STRIPE_PRICE_MODERNPAPER", amount: 4900, name: "ModernPaper for macOS", successPath: "/modernpaper/success/" },
   // Panely (window manager) and Summonly (launcher and file search): $9.99 one-time each, priced inline like Keyfeel.
   // Delivery is the session-gated DMG from the panely-files / summonly-files Blobs stores. Pages: /panely/ and /summonly/.
   "panely":                { amount: 999, name: "Panely for macOS", successPath: "/panely/success/" },
   "summonly":                { amount: 999, name: "Summonly for macOS", successPath: "/summonly/success/" },
-  // Purplelink Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Panely + Summonly + Née + Lenses + Vitae Plus for life,
-  // $59.99 one-time (was $54.99 until 2026-10-12 and $54 until 2026-10-07; $49 with four apps, $39 before Legroom; Tapefolio
-  // joined 2026-10-09 at the same price, Panely and Summonly joined 2026-10-12 and Née at launch, Lenses joined 2026-11-06, all with this price). Priced inline (no Stripe
-  // Price to create). One session unlocks all ten: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and
-  // Lenses download functions accept it, and vitae-license.mjs signs a 100-year Vitae Plus key from it. See
+  // Purplelink Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Panely + Summonly + Née + Lenses + ModernPaper + Vitae Plus for life,
+  // $99.99 one-time since 2026-11-27, when ModernPaper joined (was $59.99 until then, $54.99 until 2026-10-12 and $54 until 2026-10-07; $49 with four apps, $39 before Legroom; Tapefolio
+  // joined 2026-10-09 at the same price, Panely and Summonly joined 2026-10-12 and Née at launch, Lenses joined 2026-11-06, all at $99.99). Priced inline (no Stripe
+  // Price to create). One session unlocks all eleven: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née, Lenses and
+  // ModernPaper download functions accept it, and vitae-license.mjs signs a 100-year Vitae Plus key from it. See
   // docs/products/app-suite.md.
-  "app-suite":               { amount: 5999, name: "Purplelink Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née, Lenses and Vitae Plus for life", successPath: "/suite/success/" },
+  "app-suite":               { amount: 9999, name: "Purplelink Mac Suite: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née, Lenses, ModernPaper and Vitae Plus for life", successPath: "/suite/success/" },
   // Custom bundles of the Mac Suite: any 2 parts for 25% off their combined price, any 3 for 40% off, whichever parts
   // are chosen. The client sends only `apps`; the amount is computed per request from netlify/lib/bundles.mjs
   // (bundleCents), so these entries carry no fixed `amount`. Delivery reuses /suite/success/ and the per-app

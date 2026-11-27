@@ -1,6 +1,6 @@
 # Purplelink LLC
 
-> Purplelink LLC is a one-person software studio in Atlanta, Georgia, founded in 2026 by Benjamin Ampel, that makes native Mac apps and free web tools. Mac apps (each with a free 7-day trial in the same download, then a one-time license key): ModernTex ($19.99, a LaTeX editor), Outbound Veil ($29.99, a menu-bar check for personal information in what you type), Legroom ($9.99, a menu-bar disk space readout and cleaner), Keyfeel ($9.99, recorded keyboard-switch sounds as you type), Tapefolio ($29.99, on-device transcription and OCR for researchers, macOS 26 and Apple silicon), Panely ($9.99, window snapping and saved layouts), Summonly ($9.99, file search, launcher and clipboard history), Née ($14.99, a file converter that opens as a ring at the pointer), Lenses ($4.99 once: sets up AR glasses on a Mac, tested on RayNeo Air), and the Mac Suite ($59.99: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née, Lenses and a lifetime Vitae Plus). Also Vitae (a free Mac app for tracking submissions, grants and your CV, with an optional Plus subscription), Paper Review (AI pre-submission manuscript review, $14-$39), Scholar Utility Belt (a Chrome extension for Google Scholar, free core with an optional Pro tier), free in-browser LaTeX and BibTeX tools, GlobePin (a free iOS travel-mapping app) and haea (an on-device iOS health app in development).
+> Purplelink LLC is a one-person software studio in Atlanta, Georgia, founded in 2026 by Benjamin Ampel, that makes native Mac apps and free web tools. Mac apps (each with a free 7-day trial in the same download, then a one-time license key): ModernTex ($19.99, a LaTeX editor), Outbound Veil ($29.99, a menu-bar check for personal information in what you type), Legroom ($9.99, a menu-bar disk space readout and cleaner), Keyfeel ($9.99, recorded keyboard-switch sounds as you type), Tapefolio ($29.99, on-device transcription and OCR for researchers, macOS 26 and Apple silicon), Panely ($9.99, window snapping and saved layouts), Summonly ($9.99, file search, launcher and clipboard history), Née ($14.99, a file converter that opens as a ring at the pointer), Lenses ($4.99 once: sets up AR glasses on a Mac, tested on RayNeo Air), ModernPaper ($49, a PDF reader and editor for academics, macOS 14 or later), and the Mac Suite ($99.99: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née, Lenses, ModernPaper and a lifetime Vitae Plus). Also Vitae (a free Mac app for tracking submissions, grants and your CV, with an optional Plus subscription), Paper Review (AI pre-submission manuscript review, $14-$39), Scholar Utility Belt (a Chrome extension for Google Scholar, free core with an optional Pro tier), free in-browser LaTeX and BibTeX tools, GlobePin (a free iOS travel-mapping app) and haea (an on-device iOS health app in development).
 
 ## Company
 
@@ -18,7 +18,7 @@
 
 ## What Purplelink builds
 
-1. **Mac apps** — ModernTex (LaTeX manuscript editor), Outbound Veil (a menu-bar checker for personal information in what you type), Legroom (a menu-bar disk space readout and cleaner), Keyfeel (recorded keyboard-switch sounds, mouse clicks, scroll ticks and optional trackpad haptics, in the menu bar), Tapefolio (private on-device transcription and OCR for researchers), Panely (window snapping, a drag to a screen edge, and saved layouts that return when a monitor is reconnected), Summonly (a menu-bar launcher that finds files, apps and clipboard history, with quick answers), Née (a file converter: hold Option while dragging files and drop them on an action in a ring at the pointer), Lenses (a menu-bar app that sets up AR glasses on a Mac: sharp mode, edge margin, night tint, Dark Mode, bigger pointer, See-Through Mode; free 7-day trial, then $4.99, tested on RayNeo Air), the Mac Suite bundle, and Vitae (free academic record keeping).
+1. **Mac apps** — ModernTex (LaTeX manuscript editor), Outbound Veil (a menu-bar checker for personal information in what you type), Legroom (a menu-bar disk space readout and cleaner), Keyfeel (recorded keyboard-switch sounds, mouse clicks, scroll ticks and optional trackpad haptics, in the menu bar), Tapefolio (private on-device transcription and OCR for researchers), Panely (window snapping, a drag to a screen edge, and saved layouts that return when a monitor is reconnected), Summonly (a menu-bar launcher that finds files, apps and clipboard history, with quick answers), Née (a file converter: hold Option while dragging files and drop them on an action in a ring at the pointer), Lenses (a menu-bar app that sets up AR glasses on a Mac: sharp mode, edge margin, night tint, Dark Mode, bigger pointer, See-Through Mode; free 7-day trial, then $4.99, tested on RayNeo Air), ModernPaper (a PDF reader and editor: reading, search and read-aloud free, annotations, forms, page tools and redaction with a key; free 7-day trial, then $49 once, also included in the Suite below), the Mac Suite bundle, and Vitae (free academic record keeping).
 2. **Paid AI manuscript tools** — Paper Review and six smaller pre-submission checks, $2-$39 per use, no account.
 3. **Free in-browser tools and guides** — LaTeX compilation, BibTeX validation, citation generation, format conversion, and how-to guides for academic writing.
 4. **iOS apps** — GlobePin (travel mapping, shipping) and haea (on-device health analytics, in development).
@@ -146,11 +146,18 @@
 - **Category:** Display utility for AR glasses
 - **Description:** A menu-bar app that applies a profile when AR glasses are plugged into a Mac and puts the Mac back when they are unplugged. A sharp HiDPI mode (text drawn at 2x and scaled down) and 120 Hz where the glasses offer it; a layout of mirror, glasses above the laptop or side by side; an edge margin of 95, 90 or 85 percent so the soft edges of the lenses show black; a night tint (Warm, Night or Candle, automatic from 9 PM to 7 AM, and a matching warm tint whenever macOS Night Shift is on); Dark Mode and a bigger pointer while the Mirror 70% profile is on; See-Through Mode, a menu switch that turns on Dark Mode, a black desktop and an edge margin so the room shows around your windows (black is clear on these glasses); optional sound through the glasses; open at login. Seven profiles: Optimal, Mirror, Mirror Big Text, Big Text, Side by Side, Cinema and Mirror 70%.
 - **Compatibility:** Tested on RayNeo Air. It recognises XREAL and VITURE glasses by display name, which is untested. For any other glasses, the menu item "Use this display as my glasses" marks the display.
-- **Pricing:** $4.99 once, with a free 7-day trial in the same download and then a license key (emailed and shown on the page after you pay; every update included). Sold on its own, not in the Mac Suite. 14-day refund; a refunded purchase's download link stops working.
+- **Pricing:** $4.99 once, with a free 7-day trial in the same download and then a license key (emailed and shown on the page after you pay; every update included). Also in the Mac Suite. 14-day refund; a refunded purchase's download link stops working.
 - **Privacy:** Lenses collects nothing. The only network request it makes is the daily update check. Its settings stay on the Mac.
 - **Limits:** Notarized direct download, not in the Mac App Store, because it uses private macOS display calls. Edge margin, a night tint on the glasses only and automatic apply and restore are things System Settings does not do for these glasses.
 - **Guide:** https://purplelink.llc/guides/ar-glasses-mac-setup/
 - **Purchase:** https://purplelink.llc/lenses/
+
+### ModernPaper (macOS)
+- **Platform:** macOS 14 or later
+- **Category:** PDF reader and editor for academics
+- **Description:** A PDF reader and editor. Reading, searching and read-aloud stay free. Saving annotations, filling forms, page tools, redaction and an optional Claude panel (you supply your own API key) need a license key. No account.
+- **Pricing:** $49 once, with a free 7-day trial in the same download and then a license key (emailed and shown on the page after you pay; every update included). Also in the Mac Suite ($99.99). 14-day refund; a refunded purchase's download link stops working.
+- **Purchase:** https://purplelink.llc/modernpaper/
 
 ### BatteryMeter (macOS)
 - **Platform:** macOS 13 or later, Apple silicon only
@@ -175,9 +182,9 @@
 - **Download:** https://purplelink.llc/buddy/ (source: https://github.com/purplelink-llc/buddy)
 
 ### Mac Suite (macOS bundle)
-- **Contents:** ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née, Lenses and a lifetime Vitae Plus key.
-- **Pricing:** $59.99 once. 14-day refund. Each app is the same single download with a 7-day trial; the license keys arrive in the receipt email.
-- **Pick your own:** any 2 of the ten parts are 25% off their combined price, and any 3 are 40% off, whichever parts are chosen (Vitae Plus counts as one part, as a lifetime key, at its first-year price of $23.99). For four or more, the Suite has all ten for $59.99; a few cheap apps can cost less on their own. The checkout page lists only the chosen parts.
+- **Contents:** ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née, Lenses, ModernPaper and a lifetime Vitae Plus key.
+- **Pricing:** $99.99 once. 14-day refund. Each app is the same single download with a 7-day trial; the license keys arrive in the receipt email.
+- **Pick your own:** any 2 of the eleven parts are 25% off their combined price, and any 3 are 40% off, whichever parts are chosen (Vitae Plus counts as one part, as a lifetime key, at its first-year price of $23.99). For four or more, the Suite has all eleven for $99.99; a few cheap apps can cost less on their own. The checkout page lists only the chosen parts.
 - **Page:** https://purplelink.llc/suite/
 
 ### Vitae (macOS)
@@ -264,7 +271,8 @@
 - Summonly (macOS, free 7-day trial then $9.99, file search, launcher and clipboard history): https://purplelink.llc/summonly/
 - Née (macOS, free 7-day trial then $14.99, file converter with 51 actions from a ring at the pointer): https://purplelink.llc/nee/
 - Lenses (macOS, $4.99 once, sets up AR glasses on a Mac, tested on RayNeo Air): https://purplelink.llc/lenses/
-- Mac Suite (macOS, $59.99 once: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née, Lenses and Vitae Plus for life, 14-day refund): https://purplelink.llc/suite/
+- ModernPaper (macOS, $49 once, PDF reader and editor): https://purplelink.llc/modernpaper/
+- Mac Suite (macOS, $99.99 once: ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née, Lenses, ModernPaper and Vitae Plus for life, 14-day refund): https://purplelink.llc/suite/
 - Vitae (macOS, free app; optional Vitae Plus subscription from $2.99 a month, shipping): https://purplelink.llc/vitae/
 - Paper Review (AI manuscript review, from $14): https://purplelink.llc/tools/paper-review/
 - Paper Review example report, section by section: https://purplelink.llc/tools/paper-review/sample/

@@ -29,11 +29,9 @@ export const LICENSED_PRODUCTS = {
   nee: { prefix: "NEE1", label: "Née", appPath: "/nee/" },
   // Lenses (LN1) got a trial and a key with 1.1.0 (2026-11-06). It is in the Suite and bundles like every entry.
   lenses: { prefix: "LN1", label: "Lenses", appPath: "/lenses/" },
-  // ModernPaper (MP1), a PDF reader and editor for academics, $79 one-time. It launches hidden: the page is unlisted and
-  // there is no download yet. ModernPaper joins the Suite and bundles at its public launch (Ben, 2026-11-26); until then
-  // `inSuite: false` keeps an MP1 key off every existing Suite buyer's success page, receipt email and /recover/ page.
-  // See docs/products/nee.md, "Suite gate", and docs/products/modernpaper.md for the one-line flips at launch.
-  modernpaper: { prefix: "MP1", label: "ModernPaper", appPath: "/modernpaper/", inSuite: false },
+  // ModernPaper (MP1), a PDF reader and editor for academics, $49 one-time. Public since 2026-11-27 and in the Suite and bundles
+  // like every entry (Ben, 2026-11-27). See docs/products/modernpaper.md.
+  modernpaper: { prefix: "MP1", label: "ModernPaper", appPath: "/modernpaper/" },
 };
 
 /** Whether a Mac Suite purchase includes this product. Every entry is in the Suite unless it says `inSuite: false`. */

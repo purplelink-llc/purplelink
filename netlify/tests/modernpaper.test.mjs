@@ -1,5 +1,5 @@
-// ModernPaper: PurplelinkLicenseV1 key (prefix MP1, slug "modernpaper"), checkout with the env Price only, and the
-// Suite gate (it launches hidden, so it is in neither the Suite nor the custom bundles yet).
+// ModernPaper: PurplelinkLicenseV1 key (prefix MP1, slug "modernpaper"), checkout at $49, and the
+// Suite and bundle membership (public since 2026-11-27, $49).
 // Run with: node --experimental-test-module-mocks --test netlify/tests/modernpaper.test.mjs
 
 import { test, mock, beforeEach } from "node:test";
@@ -42,22 +42,25 @@ test("a ModernPaper key has the MP1 shape, round-trips, and unlocks no other pro
   }
 });
 
-test("Suite gate: ModernPaper is not in the Suite or the bundles until launch", () => {
-  assert.equal(suiteIncludes("modernpaper"), false);
+test("Suite gate: ModernPaper is in the Suite and the bundles, with its own MP1 key", () => {
+  assert.equal(suiteIncludes("modernpaper"), true);
   assert.deepEqual(licensedSlugsFor("modernpaper"), ["modernpaper"]);
-  assert.ok(!licensedSlugsFor("app-suite").includes("modernpaper"), "a Suite buyer gets no MP1 key");
-  assert.ok(!BUNDLE_SLUGS.includes("modernpaper"));
-  assert.ok(!entitledParts("app-suite").has("modernpaper"));
+  assert.ok(licensedSlugsFor("app-suite").includes("modernpaper"), "a Suite buyer gets an MP1 key");
+  assert.ok(BUNDLE_SLUGS.includes("modernpaper"));
+  assert.ok(entitledParts("app-suite").has("modernpaper"));
+  assert.equal(LICENSED_PRODUCTS.modernpaper.inSuite, undefined);
 });
 
-test("a paid ModernPaper session is handed exactly one MP1 key; a Suite session is handed none", () => {
+test("a paid ModernPaper session is handed exactly one MP1 key; a Suite session is handed one too", () => {
   const prev = env.PURPLELINK_LICENSE_PRIVATE_KEY;
   env.PURPLELINK_LICENSE_PRIVATE_KEY = pair.seedB64;
   try {
     const keys = licenseKeysForSession("modernpaper", "cs_test_mp");
     assert.deepEqual(keys.map((k) => k.slug), ["modernpaper"]);
     assert.match(keys[0].key, /^MP1-/);
-    assert.ok(!licenseKeysForSession("app-suite", "cs_test_mp").some((k) => k.slug === "modernpaper"));
+    const suiteKey = licenseKeysForSession("app-suite", "cs_test_mp").find((k) => k.slug === "modernpaper");
+    assert.match(suiteKey.key, /^MP1-/);
+    assert.equal(suiteKey.key, keys[0].key, "same key whether bought alone or in the Suite");
   } finally { env.PURPLELINK_LICENSE_PRIVATE_KEY = prev; }
 });
 
@@ -82,11 +85,14 @@ const post = (body) => checkout(new Request("https://purplelink.llc/.netlify/fun
   method: "POST", headers: { "Content-Type": "application/json", "x-nf-client-connection-ip": `203.0.113.${10 + (ipN++ % 200)}` }, body: JSON.stringify(body),
 }));
 
-test("checkout with STRIPE_PRICE_MODERNPAPER unset fails cleanly and creates no session", async () => {
+test("checkout with STRIPE_PRICE_MODERNPAPER unset charges the inline $49", async () => {
   const r = await post({ product: "modernpaper" });
-  assert.equal(r.status, 500);
-  assert.equal((await r.json()).error, "misconfigured");
-  assert.equal(calls.filter((c) => c.url.includes("/checkout/sessions")).length, 0);
+  assert.equal(r.status, 200);
+  const c = calls.find((x) => x.url.includes("/checkout/sessions") && x.opts.method === "POST");
+  const p = new URLSearchParams(c.opts.body);
+  assert.equal(p.get("line_items[0][price_data][unit_amount]"), "4900");
+  assert.equal(p.get("metadata[product]"), "modernpaper");
+  assert.match(p.get("success_url"), /\/modernpaper\/success\/\?session_id=/);
 });
 
 test("checkout with the env Price set uses that Price and the success page", async () => {

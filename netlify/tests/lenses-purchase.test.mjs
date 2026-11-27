@@ -97,7 +97,7 @@ test("Lenses is a custom bundle part, and the Suite line names it", async () => 
   assert.equal(stripeParams().get("metadata[apps]"), "panely,lenses");
   calls.length = 0;
   await post({ product: "app-suite" });
-  assert.match(stripeParams().get("line_items[0][price_data][product_data][name]"), /Née, Lenses and Vitae Plus for life/);
+  assert.match(stripeParams().get("line_items[0][price_data][product_data][name]"), /Née, Lenses, ModernPaper and Vitae Plus for life/);
 });
 
 // ---- delivery ----
@@ -122,8 +122,8 @@ test("a paid Lenses order emails the page link and one note, with an LN1 license
 test("a paid Suite order names the Lenses download and a Lenses license key", async () => {
   await webhook(signed(paid({ product: "app-suite" }, 5999, "evt_su", "cs_live_su_abcdefghij")));
   const mail = mailOf();
-  assert.match(mail.text, /Née and Lenses downloads/);
-  assert.match(mail.html, /Née and Lenses downloads/);
+  assert.match(mail.text, /Née, Lenses and ModernPaper downloads/);
+  assert.match(mail.html, /Née, Lenses and ModernPaper downloads/);
   assert.match(mail.text, /LN1-/);
 });
 

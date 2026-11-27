@@ -221,7 +221,7 @@ test("the page claims nothing the app does not do, and uses none of the banned w
 test("the page says Née is in the Mac Suite, links the Suite, and no longer says it is sold on its own", () => {
   const html = read("nee/index.html");
   const main = html.slice(html.indexOf("<main"), html.indexOf("</main>"));
-  assert.match(main, /Also in the <a href="\/suite\/[^"]*">Mac Suite<\/a>: [^<]*\bNée[^<]*\$59\.99 once/);
+  assert.match(main, /Also in the <a href="\/suite\/[^"]*">Mac Suite<\/a>: [^<]*\bNée[^<]*\$99\.99 once/);
   assert.doesNotMatch(visibleText(html), /sold on its own|not (part of|in) the (Mac )?Suite/i);
 });
 
@@ -293,7 +293,7 @@ test("the Privacy page says what Née sends and does not send, and names its tri
   assert.match(html, /<strong>Née<\/strong> has no account and no analytics/);
   assert.match(html, /does not upload your files, their contents or their names/);
   assert.match(html, /Née trial emails<\/strong>/);
-  assert.match(html, /Lenscrib, Née, Panely, Summonly, Mac Suite and kit purchases/);
+  assert.match(html, /Lenscrib, Née, Panely, Summonly, ModernPaper, Mac Suite and kit purchases/);
 });
 
 test("Née is linked where the other live Mac apps are: nav, footer, home, products, pricing, Suite, sitemap, search index, llms files", () => {

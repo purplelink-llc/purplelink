@@ -1,4 +1,4 @@
-// ModernPaper delivery: buyer door (paid session of modernpaper; app-suite only once ModernPaper is in the Suite), public trial with a daily
+// ModernPaper delivery: buyer door (paid session of modernpaper; app-suite and bundles that name it), public trial with a daily
 // cap, and the token-gated update channel. Stripe and Netlify Blobs are stubbed.
 //
 // Run with: node --experimental-test-module-mocks --test netlify/tests/modernpaper-download.test.mjs
@@ -91,23 +91,25 @@ test("a paid session for another product is refused", async () => {
   }
 });
 
-test("a Mac Suite session is refused while ModernPaper is outside the Suite, and accepted once inSuite is removed", async () => {
+test("a Mac Suite session is accepted: ModernPaper is in the Suite", async () => {
   session.metadata.product = "app-suite";
-  const closed = await call(`session_id=${SESSION}`);
-  assert.equal(closed.status, 403);
-  assert.equal((await closed.json()).error, "not_entitled");
-  // The public-launch flip: delete `inSuite: false` from the modernpaper entry in netlify/lib/license.mjs.
-  const entry = LICENSED_PRODUCTS.modernpaper;
-  const was = entry.inSuite;
-  delete entry.inSuite;
-  try {
-    const list = await call(`session_id=${SESSION}`);
-    assert.equal(list.status, 200);
-    assert.equal((await list.json()).files[0].key, "ModernPaper-1.10.0.dmg");
-    assert.equal((await call(`session_id=${SESSION}&file=ModernPaper-1.0.0.dmg`)).status, 200);
-  } finally {
-    entry.inSuite = was;
-  }
+  const list = await call(`session_id=${SESSION}`);
+  assert.equal(list.status, 200);
+  assert.equal((await list.json()).files[0].key, "ModernPaper-1.10.0.dmg");
+  assert.equal((await call(`session_id=${SESSION}&file=ModernPaper-1.0.0.dmg`)).status, 200);
+  assert.equal(LICENSED_PRODUCTS.modernpaper.inSuite, undefined, "no inSuite:false switch is left on ModernPaper");
+});
+
+test("a custom bundle that names ModernPaper is accepted, and one that does not is refused", async () => {
+  session.metadata = { product: "bundle-2", apps: "legroom,modernpaper" };
+  assert.equal((await call(`session_id=${SESSION}`)).status, 200);
+  session.metadata = { product: "bundle-3", apps: "keyfeel,summonly,modernpaper" };
+  assert.equal((await call(`session_id=${SESSION}`)).status, 200);
+  assert.equal((await call(`session_id=${SESSION}&file=ModernPaper-1.0.0.dmg`)).status, 200);
+  session.metadata = { product: "bundle-2", apps: "legroom,keyfeel" };
+  const res = await call(`session_id=${SESSION}`);
+  assert.equal(res.status, 403);
+  assert.equal((await res.json()).error, "not_entitled");
 });
 
 test("a fully refunded or disputed order is refused, for the list and for the file", async () => {

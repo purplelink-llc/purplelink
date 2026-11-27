@@ -3,7 +3,7 @@
  *
  * There is ONE app. It runs free for 7 days and a license key (MP1-…, the shared PurplelinkLicenseV1 scheme in netlify/lib/license.mjs) keeps
  * it unlocked, the way ModernTex does. So the download is public and the same file serves trial users, buyers and
- * Sparkle.
+ * Sparkle. Part of the Mac Suite and the custom bundles (2026-11-27): a Suite session or a bundle that names ModernPaper unlocks the same download.
  *
  *   Public download (the trial; no session):
  *     GET /.netlify/functions/modernpaper-download?download=1   -> newest ModernPaper-x.y.z.dmg   (?trial=1 is the same, kept for old links)
@@ -30,7 +30,7 @@ import { getStore } from "@netlify/blobs";
 import { latestReleasedDmg } from "../lib/release-pick.mjs";
 import { bundleHasPart } from "../lib/bundles.mjs";
 import { SESSION_EXPAND, withAddons } from "../lib/addons.mjs";
-import { issueLicense, suiteIncludes } from "../lib/license.mjs";
+import { issueLicense } from "../lib/license.mjs";
 import { revocationFor, REVOKED_DETAIL } from "../lib/refunds.mjs";
 import { stripeFetchAny } from "../lib/stripe-account.mjs";
 
@@ -39,8 +39,6 @@ const FILE_STORE = "modernpaper-files";
 const STATS_STORE = "modernpaper-stats";
 const PRODUCT_KEY = "modernpaper";
 const SUITE_KEY = "app-suite";
-/** ModernPaper launches outside the Suite (`inSuite: false` in netlify/lib/license.mjs), so a Suite order is not entitled to it until that flag is removed at public launch. */
-const suiteEntitled = () => suiteIncludes(PRODUCT_KEY);
 const DMG_NAME = /^ModernPaper-\d+\.\d+\.\d+\.dmg$/;
 const TRIAL_DAILY_LIMIT = 20;
 
@@ -85,9 +83,9 @@ async function loadSession(sessionId) {
   if (session.payment_status !== "paid") return { error: json(403, { error: "not_paid", detail: "This order has not been paid." }) };
   // A fully refunded or disputed order no longer gets the file (netlify/lib/refunds.mjs).
   if (await revocationFor(session)) return { error: json(403, { error: "refunded", detail: REVOKED_DETAIL }) };
-  // The Mac Suite (once ModernPaper is in it), and a custom bundle that names this app, or a single-app order with it added at checkout, include it, so their sessions unlock the same download.
+  // The Mac Suite, and a custom bundle that names this app, or a single-app order with it added at checkout, include it, so their sessions unlock the same download.
   const bought = session.metadata?.product || "";
-  if (bought !== PRODUCT_KEY && !(bought === SUITE_KEY && suiteEntitled()) && !bundleHasPart(bought, session.metadata, "modernpaper")) {
+  if (bought !== PRODUCT_KEY && bought !== SUITE_KEY && !bundleHasPart(bought, session.metadata, "modernpaper")) {
     return { error: json(403, { error: "not_entitled", detail: "This order is for a different product." }) };
   }
   return { session };
