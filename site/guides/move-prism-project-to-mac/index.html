@@ -34,7 +34,7 @@
         "@id": "https://purplelink.llc/#organization"
       },
       "datePublished": "2026-10-25",
-      "dateModified": "2026-10-31",
+      "dateModified": "2026-11-27",
       "image": "https://purplelink.llc/assets/og/purplelink-card.png",
       "mainEntityOfPage": "https://purplelink.llc/guides/move-prism-project-to-mac/"
     },
@@ -137,7 +137,7 @@
       <div class="post-hero">
         <p class="post-date">How-to</p>
         <h1 class="post-title">Move a Prism project to a Mac before it shuts down</h1>
-        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-25">October 25, 2026</time></p>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-25">October 25, 2026</time>, updated <time datetime="2026-11-27">November 27, 2026</time></p>
         <p class="post-lede">OpenAI is retiring Prism and says all Prism data will be deleted after shutdown. Export each project as a zip now, then build it on your Mac. The zip holds your source, figures and bibliography. It does not hold history, comments or collaborators.</p>
       </div>
 
@@ -146,6 +146,17 @@
 
         <h2>What OpenAI says about the shutdown</h2>
         <p>The help centre says Prism is being retired and that after shutdown all Prism-related data will be deleted and cannot be recovered. The date is in <a href="https://openai.com/index/introducing-prism/" rel="noopener">OpenAI's Prism announcement</a>, which says Prism shuts down on January 1, 2027 (read October 31, 2026). Export before then and keep a backup.</p>
+        <p><strong>December update (checked November 27, 2026):</strong> OpenAI's announcement still gives January 1, 2027, and the migration guide still says the data cannot be recovered once it is deleted. Neither page gives an earlier cutoff, and the export steps below have not changed.</p>
+
+        <h2 id="checklist">A dated checklist for December</h2>
+        <p>OpenAI gives one date, January 1. The earlier dates below are my suggested schedule, set so that a failed export or a broken build still leaves time to fix it.</p>
+        <ol>
+          <li><strong>By December 5:</strong> run Export all projects, unzip the archive and keep one untouched copy. Check <code>export-errors.json</code> if anything is missing.</li>
+          <li><strong>By December 12:</strong> download the PDF of each important project from Prism. This is the reference you compare against.</li>
+          <li><strong>By December 19:</strong> build each project on your Mac (Step 2 below) and compare it with the Prism PDF. Fix missing packages, fonts and bibliography styles now, while Prism is still there to check against.</li>
+          <li><strong>By December 23:</strong> export again any project you or a co-author edited since the first export.</li>
+          <li><strong>By December 31:</strong> put the final zips and PDFs in a second place, such as an external drive or a cloud folder. After January 1 there is nothing left to download.</li>
+        </ol>
 
         <h2>Step 1: export your projects</h2>
         <ol>
