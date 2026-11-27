@@ -21,6 +21,7 @@ Usage:
 Config (never in this repo, which is public) at ~/.config/purplelink/traffic.env:
     PURPLELINK_STATS_TOKEN=...
     MUSCLEONGLP_STATS_TOKEN=...
+    ITCH_API_KEY=...                # optional: itch.io API key with profile:games (RubbleFront tab); not the butler key
     STRIPE_EXTPAY_KEY=rk_live_...   # optional: restricted read-only key (Charges, Subscriptions) for the Stripe account ExtensionPay charges through
 """
 from __future__ import annotations
@@ -3476,6 +3477,135 @@ def extension_stores_block(history: dict) -> str:
   <p class="sales-foot">Chrome: rounded installed users from the public listing. Firefox: average daily users from the
     public AMO API. Edge: active installs from the public product endpoint. One reading a day; a failed fetch leaves
     a gap rather than repeating the last value.</p>
+</section>"""
+
+
+# ---------------------------------------------------------------- itch.io (RubbleFront)
+#
+# itch's server API (GET /api/1/key/my-games) returns running totals per project: views, downloads, purchases and
+# earnings. It has no per-day series, so each run stores one reading per UTC day in history["itch"]["days"] and the
+# dashboard shows the change against earlier readings. The key needs the profile:games scope: the butler upload key
+# does not have it, so ITCH_API_KEY is a separate key made at itch.io/user/settings/api-keys, kept in traffic.env.
+ITCH_API_KEY_ENV = "ITCH_API_KEY"
+ITCH_MY_GAMES_URL = "https://itch.io/api/1/key/my-games"
+
+
+def fetch_itch_games(key: str) -> dict:
+    """{"games": [...]} with one row per project, or {"error": text}. Never raises."""
+    req = urllib.request.Request(ITCH_MY_GAMES_URL, headers={
+        "Authorization": f"Bearer {key}", "User-Agent": "purplelink-traffic-dashboard"})
+    try:
+        with urllib.request.urlopen(req, timeout=TIMEOUT, context=_ssl_context()) as resp:
+            payload = json.loads(resp.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        try:
+            detail = "; ".join(json.loads(exc.read().decode("utf-8")).get("errors") or [])
+        except Exception:  # noqa: BLE001
+            detail = ""
+        return {"error": f"HTTP {exc.code}" + (f": {detail}" if detail else "")}
+    except (OSError, http.client.HTTPException, json.JSONDecodeError) as exc:
+        return {"error": str(exc)[:120]}
+    if payload.get("errors"):
+        return {"error": "; ".join(payload["errors"])[:160]}
+    games = []
+    for g in payload.get("games") or []:
+        cents = sum(int(e.get("amount") or 0) for e in (g.get("earnings") or [])
+                    if (e.get("currency") or "USD").upper() == "USD")
+        games.append({"id": str(g.get("id")), "title": g.get("title") or "?", "url": g.get("url") or "",
+                      "published": bool(g.get("published")), "minPrice": int(g.get("min_price") or 0),
+                      "views": int(g.get("views_count") or 0), "downloads": int(g.get("downloads_count") or 0),
+                      "purchases": int(g.get("purchases_count") or 0), "earningsCents": cents})
+    return {"games": games}
+
+
+def record_itch(history: dict, result: dict, today: dt.date) -> None:
+    """Store today's reading (overwriting an earlier one from the same day) or the error, keeping older days."""
+    itch = history.setdefault("itch", {"days": {}})
+    if result.get("error"):
+        itch["error"] = result["error"]
+        return
+    itch.pop("error", None)
+    itch["games"] = {g["id"]: {k: g[k] for k in ("title", "url", "published", "minPrice")} for g in result["games"]}
+    itch["days"][today.isoformat()] = {g["id"]: {k: g[k] for k in ("views", "downloads", "purchases", "earningsCents")}
+                                       for g in result["games"]}
+
+
+ITCH_METRICS = ("views", "downloads", "purchases", "earningsCents")
+
+
+def itch_rows(itch: dict | None, today: dt.date) -> list[dict]:
+    """One row per project from the newest reading: totals, change since the previous reading, and change over the
+    last 7 days (against the newest reading at least 7 days old, else None)."""
+    days = sorted((itch or {}).get("days") or {})
+    if not days:
+        return []
+    latest = days[-1]
+    prev = days[-2] if len(days) > 1 else None
+    week_ago = (dt.date.fromisoformat(latest) - dt.timedelta(days=7)).isoformat()
+    base7 = max((d for d in days if d <= week_ago), default=None)
+    rows = []
+    for gid, now in itch["days"][latest].items():
+        meta = (itch.get("games") or {}).get(gid, {})
+        def diff(day):
+            if not day or gid not in itch["days"][day]:
+                return None
+            return {m: now.get(m, 0) - itch["days"][day][gid].get(m, 0) for m in ITCH_METRICS}
+        rows.append({"id": gid, "title": meta.get("title", gid), "url": meta.get("url", ""),
+                     "published": meta.get("published", True), "minPrice": meta.get("minPrice", 0),
+                     **{m: now.get(m, 0) for m in ITCH_METRICS},
+                     "sincePrev": diff(prev), "prevDay": prev, "last7": diff(base7), "asOf": latest})
+    rows.sort(key=lambda r: (-r["views"], r["title"]))
+    return rows
+
+
+def itch_block(itch: dict | None, today: dt.date | None = None) -> str:
+    """The itch.io card on the RubbleFront tab. Says plainly when the key is missing or the fetch failed."""
+    today = today or dt.date.today()
+    rows = itch_rows(itch, today)
+    note = ""
+    if (itch or {}).get("error"):
+        note = f"<p class='sales-foot'>Last fetch failed: {html.escape(itch['error'])}</p>"
+    if not rows:
+        msg = ((itch or {}).get("error") and "No reading yet; the last fetch failed (see below)."
+               or f"Not set up: add {ITCH_API_KEY_ENV} (an itch.io API key with profile:games, from "
+                  "itch.io/user/settings/api-keys) to ~/.config/purplelink/traffic.env.")
+        return (f"<section class='sales appstore'><h2>itch.io</h2><p class='sales-foot'>{html.escape(msg)}</p>"
+                f"{note}</section>")
+
+    def chg(d, m):
+        if d is None:
+            return "—"
+        v = d[m]
+        return f"{v / 100:+,.2f}" if m == "earningsCents" else f"{v:+,}"
+
+    body = []
+    for r in rows:
+        name = (f"<a href=\"{html.escape(r['url'])}\">{html.escape(r['title'])}</a>" if r["url"]
+                else html.escape(r["title"]))
+        price = "free" if not r["minPrice"] else f"${r['minPrice'] / 100:,.2f}"
+        if not r["published"]:
+            price += ", draft"
+        conv = (f"{100 * r['downloads'] / r['views']:.1f}%" if r["views"] else "—")
+        body.append(
+            f"<tr><td>{name} <span class='win'>({price})</span></td>"
+            f"<td>{r['views']:,}</td><td>{chg(r['sincePrev'], 'views')}</td><td>{chg(r['last7'], 'views')}</td>"
+            f"<td>{r['downloads']:,}</td><td>{chg(r['sincePrev'], 'downloads')}</td><td>{chg(r['last7'], 'downloads')}</td>"
+            f"<td>{conv}</td><td>{r['purchases']:,}</td><td>{chg(r['last7'], 'purchases')}</td>"
+            f"<td>${r['earningsCents'] / 100:,.2f}</td><td>{chg(r['last7'], 'earningsCents')}</td></tr>")
+    prev = rows[0]["prevDay"]
+    return f"""
+<section class="sales appstore">
+  <h2>itch.io · as of {html.escape(rows[0]['asOf'])}</h2>
+  <div class="sales-scroll"><table class="sales-list">
+    <thead><tr><th>Project</th><th>Views</th><th>Since {html.escape(prev or 'last')}</th><th>7 days</th>
+      <th>Downloads</th><th>Since {html.escape(prev or 'last')}</th><th>7 days</th><th>Downloads per view</th>
+      <th>Purchases</th><th>7 days</th><th>Earnings (USD, gross)</th><th>7 days</th></tr></thead>
+    <tbody>{''.join(body)}</tbody>
+  </table></div>
+  <p class="sales-foot">Running totals from the itch.io API, one reading a day; changes compare stored readings, so
+    they start the day after the first reading. Downloads count file downloads (one person can download several
+    files). Earnings are before itch's cut and payment fees.</p>
+  {note}
 </section>"""
 
 
@@ -6950,7 +7080,7 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
            profit: dict | None = None, channels: dict | None = None, tax: dict | None = None,
            marketplaces: dict | None = None, market_rows: list[dict] | None = None,
            ledger_rows: list[dict] | None = None, revenue_daily: dict | None = None,
-           extension_history: dict | None = None) -> str:
+           extension_history: dict | None = None, itch: dict | None = None) -> str:
     cards = "".join(site_card(s) for s in summaries)
     obs_html = "".join(f"<li>{html.escape(o)}</li>" for o in obs) or "<li>No data yet.</li>"
 
@@ -7010,7 +7140,8 @@ def render(summaries: list[dict], obs: list[str], generated: str, first_day: str
         n = per_site.get(s_["label"], {"notes": [], "footnotes": []})
         body = (f"<div class='grid'>{site_card(s_)}</div>"
                 f"{notes_block(s_['label'], n['notes'], n['footnotes'])}"
-                f"{site_tables[s_['label']]}")
+                f"{site_tables[s_['label']]}"
+                + (itch_block(itch) if s_.get("key") == "rubblefront" else ""))
         panels.append((key, s_["label"], body))
     for k_, t_, path_ in EMBEDS:
         panels.append((k_, t_, embed_panel(t_, path_)))
@@ -7312,6 +7443,18 @@ def main() -> int:
         except Exception as exc:  # noqa: BLE001 -- never let this sink the run
             print(f"  ! extension stores unavailable: {str(exc)[:100]}", file=sys.stderr)
 
+        # itch.io (RubbleFront): one reading of the running totals per UTC day.
+        itch_key = cfg.get(ITCH_API_KEY_ENV) or os.environ.get(ITCH_API_KEY_ENV)
+        if itch_key:
+            itch_res = fetch_itch_games(itch_key)
+            record_itch(history, itch_res, dt.datetime.now(dt.timezone.utc).date())
+            if itch_res.get("error"):
+                print(f"  ! itch.io unavailable: {itch_res['error']}", file=sys.stderr)
+            else:
+                print(f"  ok itch.io: {len(itch_res['games'])} projects")
+        else:
+            print(f"  - itch.io: no {ITCH_API_KEY_ENV} in traffic.env")
+
         stamp = dt.datetime.now(dt.timezone.utc).isoformat()
         month_ago = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=30)).isoformat()
         # Etsy, Gumroad, Payhip: after Stripe so merge_ledger's first-run logic is untouched.
@@ -7370,7 +7513,8 @@ def main() -> int:
         render(summaries, obs, generated, min(firsts) if firsts else None,
                sales, appstore, manual_ads, chrome_web_store, history.get("admob"), metrics,
                profit, channels, tax, marketplaces, market_rows,
-               list((history.get("ledger") or {}).values()), revenue_daily, history))
+               list((history.get("ledger") or {}).values()), revenue_daily, history,
+               history.get("itch")))
 
     # Terminal summary, so a manual run is useful without opening a browser.
     print_metrics(metrics)
