@@ -6,10 +6,10 @@
 // server's and to site/suite/bundle.js.
 (function () {
   var BUNDLE_PERCENT = {"2":25,"3":40};
-  var SUITE_CENTS = 5999;
+  var SUITE_CENTS = 9999;
   // What each part costs on its own today (Vitae Plus is its first year, as in the Suite's own price stack).
-  var PART_PRICE = {"moderntex":1999,"outbound-veil":2999,"legroom":999,"keyfeel":999,"tapefolio":2999,"panely":999,"summonly":999,"nee":1499,"lenses":499,"vitae-plus":2399};
-  var PART_NAME = {"moderntex":"ModernTex","outbound-veil":"Outbound Veil","legroom":"Legroom","keyfeel":"Keyfeel","tapefolio":"Tapefolio","panely":"Panely","summonly":"Summonly","nee":"Née","lenses":"Lenses","vitae-plus":"Vitae Plus"};
+  var PART_PRICE = {"moderntex":1999,"outbound-veil":2999,"legroom":999,"keyfeel":999,"tapefolio":2999,"panely":999,"summonly":999,"nee":1499,"lenses":499,"modernpaper":4900,"vitae-plus":2399};
+  var PART_NAME = {"moderntex":"ModernTex","outbound-veil":"Outbound Veil","legroom":"Legroom","keyfeel":"Keyfeel","tapefolio":"Tapefolio","panely":"Panely","summonly":"Summonly","nee":"Née","lenses":"Lenses","modernpaper":"ModernPaper","vitae-plus":"Vitae Plus"};
 
   var CHECKOUT_URL = "/.netlify/functions/checkout";
   var referralCode = new URLSearchParams(window.location.search).get("ref") || "";
@@ -110,7 +110,7 @@
       var tail = separate < SUITE_CENTS
         ? ", or buy these on their own for " + money(separate) + "."
         : ". Bought on their own, these would cost " + money(separate) + ".";
-      return { parts: ["For four or more, the Suite has all ten for " + money(SUITE_CENTS) + tail],
+      return { parts: ["For four or more, the Suite has all eleven for " + money(SUITE_CENTS) + tail],
                product: "app-suite", label: "Buy the Suite, " + money(SUITE_CENTS) };
     }
     var price = bundleCents(separate, n);

@@ -65,14 +65,14 @@ const bundle = (product, apps, over = {}) => ({ id: SID, status: "complete", pay
 
 // ---- the price table and the helper ----
 
-test("two percent tiers, and the ten parts are the Suite's ten", () => {
+test("two percent tiers, and the eleven parts are the Suite's eleven", () => {
   assert.deepEqual(lib.BUNDLES, { "bundle-2": { count: 2, percent: 25 }, "bundle-3": { count: 3, percent: 40 } });
   assert.ok(lib.BUNDLES["bundle-2"].percent < lib.BUNDLES["bundle-3"].percent);
-  assert.deepEqual(lib.BUNDLE_SLUGS, ["moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "panely", "summonly", "nee", "lenses", "vitae-plus"]);
+  assert.deepEqual(lib.BUNDLE_SLUGS, ["moderntex", "outbound-veil", "legroom", "keyfeel", "tapefolio", "panely", "summonly", "nee", "lenses", "modernpaper", "vitae-plus"]);
   assert.deepEqual(Object.keys(lib.PART_CENTS), lib.BUNDLE_SLUGS);
-  // The ten parts add up to the Suite's own first-year price stack ($163.90, shown as "$164+" on /suite/).
-  assert.equal(Object.values(lib.PART_CENTS).reduce((a, b) => a + b, 0), 16390);
-  assert.ok(Object.values(lib.PART_CENTS).reduce((a, b) => a + b, 0) > 5999, "the Suite is cheaper than the parts");
+  // The eleven parts add up to the Suite's own first-year price stack ($212.90, shown as "$213+" on /suite/).
+  assert.equal(Object.values(lib.PART_CENTS).reduce((a, b) => a + b, 0), 21290);
+  assert.ok(Object.values(lib.PART_CENTS).reduce((a, b) => a + b, 0) > 9999, "the Suite is cheaper than the parts");
 });
 
 test("bundleCents: a pair is 25% off the two prices, a triple 40% off the three", () => {
@@ -113,17 +113,17 @@ test("the page's tables are the server's", () => {
   const src = readFileSync(new URL("../../site/suite/bundle.js", import.meta.url), "utf8");
   const percent = JSON.parse(src.match(/var BUNDLE_PERCENT = (\{.*?\});/)[1]);
   assert.deepEqual(percent, { 2: lib.BUNDLES["bundle-2"].percent, 3: lib.BUNDLES["bundle-3"].percent });
-  assert.equal(Number(src.match(/var SUITE_CENTS = (\d+);/)[1]), 5999);
+  assert.equal(Number(src.match(/var SUITE_CENTS = (\d+);/)[1]), 9999);
   const parts = JSON.parse(src.match(/var PART_PRICE = (\{.*?\});/)[1]);
   assert.deepEqual(parts, lib.PART_CENTS);
   assert.deepEqual(Object.keys(parts), lib.BUNDLE_SLUGS);
   // The four-or-more message names the Suite's part count; it said "all six" after the Suite grew to eight.
-  const words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
+  const words = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven"];
   const said = src.match(/the Suite has all (\w+) for/)[1];
   assert.equal(said, words[lib.BUNDLE_SLUGS.length], `the Suite message says "all ${said}"`);
   const html = readFileSync(new URL("../../site/suite/index.html", import.meta.url), "utf8");
   for (const slug of lib.BUNDLE_SLUGS) assert.ok(html.includes(`name="apps" value="${slug}"`), `${slug} is a choice on the page`);
-  assert.ok(html.includes("Any 2:</strong> 25% off") && html.includes("Any 3:</strong> 40% off") && html.includes("$59.99"));
+  assert.ok(html.includes("Any 2:</strong> 25% off") && html.includes("Any 3:</strong> 40% off") && html.includes("$99.99"));
   assert.ok(!html.includes("$34.99") && !html.includes("$44.99"), "the old fixed prices are gone");
   const checkout = readFileSync(new URL("../functions/checkout.mjs", import.meta.url), "utf8");
   assert.match(checkout, /"bundle-2":\s+\{ bundle: true,/);
@@ -140,8 +140,8 @@ test("parsing: exactly the right number of different, known parts, in the canoni
   assert.equal(lib.parseBundleParts(["moderntex", "moderntex", "legroom"], 3), null, "a duplicate cannot pad the count");
 });
 
-test("entitlements: the Suite is all ten, a bundle its parts, a single app itself, a mismatched bundle nothing", () => {
-  assert.equal(lib.entitledParts("app-suite", {}).size, 10);
+test("entitlements: the Suite is all eleven, a bundle its parts, a single app itself, a mismatched bundle nothing", () => {
+  assert.equal(lib.entitledParts("app-suite", {}).size, 11);
   assert.deepEqual([...lib.entitledParts("bundle-2", { apps: "legroom,keyfeel" })], ["legroom", "keyfeel"]);
   assert.deepEqual([...lib.entitledParts("legroom", {})], ["legroom"]);
   assert.deepEqual([...lib.entitledParts("moderntex-seats", {})], ["moderntex"]);
@@ -209,7 +209,7 @@ test("checkout refuses a wrong count, a duplicate, an unknown part or no parts, 
 test("the Suite and the single apps are unchanged by bundles", async () => {
   await post({ product: "app-suite", apps: ["moderntex", "legroom"] }, "198.51.100.80");
   let p = stripeParams();
-  assert.equal(p.get("line_items[0][price_data][unit_amount]"), "5999");
+  assert.equal(p.get("line_items[0][price_data][unit_amount]"), "9999");
   assert.equal(p.get("metadata[apps]"), null);
   calls = [];
   await post({ product: "keyfeel", apps: ["moderntex", "legroom"] }, "198.51.100.81");
@@ -281,7 +281,7 @@ test("purchase-license returns a bundle's keys and its parts, and the Suite's ke
   session = { id: SID, payment_status: "paid", metadata: { product: "app-suite" } };
   body = await (await ask()).json();
   assert.equal(body.parts, undefined);
-  assert.equal(body.keys.length, 5, "ModernTex, Outbound Veil, Legroom, Née and Lenses");
+  assert.equal(body.keys.length, 6, "ModernTex, Outbound Veil, Legroom, Née, Lenses and ModernPaper");
   session = bundle("bundle-2", "moderntex,legroom,keyfeel");
   assert.equal((await ask()).status, 403, "a bundle with a bad parts list is refused");
 });
@@ -417,14 +417,14 @@ test("the picker: a triple shows 40% off and no further nudge", () => {
 });
 
 test("the picker: four or more offer the Suite, and say so honestly when the apps cost less on their own", async () => {
-  const dear = runPicker(["moderntex", "outbound-veil", "legroom", "tapefolio"]);
+  const dear = runPicker(["moderntex", "outbound-veil", "tapefolio", "modernpaper"]);
   assert.equal(dear.buy.disabled, false);
-  assert.equal(dear.buy.textContent, "Buy the Suite, $59.99");
-  assert.equal(dear.summary.textContent, "For four or more, the Suite has all ten for $59.99. Bought on their own, these would cost $89.96.");
+  assert.equal(dear.buy.textContent, "Buy the Suite, $99.99");
+  assert.equal(dear.summary.textContent, "For four or more, the Suite has all eleven for $99.99. Bought on their own, these would cost $128.97.");
   dear.click();
   await new Promise((r) => setTimeout(r, 5));
   assert.deepEqual(dear.sent[0], ["/.netlify/functions/checkout", { product: "app-suite", ref: "" }]);
   const cheap = runPicker(["legroom", "keyfeel", "panely", "summonly"]);
-  assert.equal(cheap.summary.textContent, "For four or more, the Suite has all ten for $59.99, or buy these on their own for $39.96.");
+  assert.equal(cheap.summary.textContent, "For four or more, the Suite has all eleven for $99.99, or buy these on their own for $39.96.");
   assert.doesNotMatch(cheap.summary.textContent, /cost more than the Suite/);
 });

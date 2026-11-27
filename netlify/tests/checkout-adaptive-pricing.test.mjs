@@ -35,7 +35,7 @@ const MAC_APPS = {
   "tapefolio": { body: {}, cents: 2999 },
   "panely": { body: {}, cents: 999 },
   "summonly": { body: {}, cents: 999 },
-  "app-suite": { body: {}, cents: 5999 },
+  "app-suite": { body: {}, cents: 9999 },
   "bundle-2": { body: { apps: ["moderntex", "keyfeel"] }, cents: bundleCents(["moderntex", "keyfeel"]) },
   "bundle-3": { body: { apps: ["moderntex", "keyfeel", "panely"] }, cents: bundleCents(["moderntex", "keyfeel", "panely"]) },
   "moderntex-seats": { body: { seats: 5 }, cents: seatUnitCents(5) },

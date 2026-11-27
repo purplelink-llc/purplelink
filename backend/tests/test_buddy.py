@@ -482,8 +482,8 @@ def test_deals_screen_lets_honest_price_and_trial_answers_through():
         "key unlocks it, and updates are free.",
         "The free 7-day trial is the full app. When it ends, you buy a license key on the product page; one key "
         "works on two Macs.",
-        "The Mac Suite is $59.99 and includes ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, "
-        "Summonly, Née and a lifetime Vitae Plus.",
+        "The Mac Suite is $99.99 and includes ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, "
+        "Summonly, Née, Lenses, ModernPaper and a lifetime Vitae Plus.",
         "It runs on macOS 14 or later, on Apple silicon and Intel Macs.",
     ):
         assert buddy.screen_reply(reply) == reply

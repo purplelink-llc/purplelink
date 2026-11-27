@@ -3,7 +3,7 @@
  * parts are chosen. One source of truth for checkout, delivery, keys and recovery; site/suite/bundle.js carries the
  * same tables for the live price display, and a test keeps them equal.
  *
- * The ten parts are the nine Mac apps and a lifetime Vitae Plus key. The whole Suite (all ten) stays its own
+ * The eleven parts are the ten Mac apps and a lifetime Vitae Plus key. The whole Suite (all eleven) stays its own
  * product, "app-suite", and is what four or more parts are sent to. The client chooses only WHICH parts; the price
  * is computed here from PART_CENTS and the tier, never taken from the request. A bundle's session carries
  * metadata.product ("bundle-2" or "bundle-3") and metadata.apps (the chosen part slugs, comma-separated, in the
@@ -22,6 +22,7 @@ export const BUNDLE_PARTS = [
   { slug: "summonly",      label: "Summonly" },
   { slug: "nee",           label: "Née" },
   { slug: "lenses",        label: "Lenses" },
+  { slug: "modernpaper",   label: "ModernPaper" },
   { slug: "vitae-plus",    label: "Vitae Plus for life" },
 ];
 export const BUNDLE_SLUGS = BUNDLE_PARTS.map((p) => p.slug);
@@ -29,7 +30,7 @@ export const BUNDLE_SLUGS = BUNDLE_PARTS.map((p) => p.slug);
 /** What each part costs on its own, in cents (Vitae Plus is its first year, as in the Suite's own price stack). */
 export const PART_CENTS = {
   "moderntex": 1999, "outbound-veil": 2999, "legroom": 999, "keyfeel": 999, "tapefolio": 2999,
-  "panely": 999, "summonly": 999, "nee": 1499, "lenses": 499, "vitae-plus": 2399,
+  "panely": 999, "summonly": 999, "nee": 1499, "lenses": 499, "modernpaper": 4900, "vitae-plus": 2399,
 };
 
 export const BUNDLES = {
@@ -86,7 +87,7 @@ export function bundlePartsOf(metadata) {
 }
 
 /**
- * The parts a purchase entitles, as a Set of slugs: the whole Suite is all ten, a bundle is its chosen parts,
+ * The parts a purchase entitles, as a Set of slugs: the whole Suite is all eleven, a bundle is its chosen parts,
  * a single app is itself (seat packs are ModernTex). Anything else entitles nothing.
  */
 export function entitledParts(product, metadata) {

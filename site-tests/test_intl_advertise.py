@@ -52,7 +52,8 @@ def known_prices():
     c = catalog()
     cents = [c["moderntex"], c["app-suite"], *c["seat-units"], *c["bundles"]]
     cents += [u * n for u, n in zip(c["seat-units"], (5, 10, 15, 20, 25))]  # the table's totals, "from" 25 seats
-    return {money(x) for x in cents}
+    # 59.99 was the Suite price until 2026-11-27; the changelog and terms history still state it.
+    return {money(x) for x in cents} | {"59.99"}
 
 
 def visible(url):

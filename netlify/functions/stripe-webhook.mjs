@@ -186,12 +186,13 @@ export const BLOB_DELIVERED_PRODUCTS = new Map([
   ["lenscrib",          { name: "Lenscrib for macOS",                successPath: "/lenscrib/success/" }],
   ["lenses",            { name: "Lenses for macOS",                  successPath: "/lenses/success/" }],
   ["nee",          { name: "Née for macOS",                successPath: "/nee/success/" }],
+  ["modernpaper",       { name: "ModernPaper for macOS",          successPath: "/modernpaper/success/" }],
   ["panely",          { name: "Panely for macOS",                successPath: "/panely/success/" }],
   ["summonly",          { name: "Summonly for macOS",                successPath: "/summonly/success/" }],
-  // Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Panely + Summonly + Née + Lenses + Vitae Plus for life. /suite/success/
-  // lists all nine downloads and asks vitae-license.mjs for the lifetime Vitae Plus key.
+  // Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Panely + Summonly + Née + Lenses + ModernPaper + Vitae Plus for life. /suite/success/
+  // lists all eleven downloads and asks vitae-license.mjs for the lifetime Vitae Plus key.
   ["app-suite",         { name: "the Purplelink Mac Suite",          successPath: "/suite/success/" }],
-  // Custom bundles: any 2 or any 3 of the ten Suite parts, one fixed price (netlify/lib/bundles.mjs). The same page
+  // Custom bundles: any 2 or any 3 of the eleven Suite parts, one fixed price (netlify/lib/bundles.mjs). The same page
   // lists only the chosen parts; each download function and vitae-license.mjs read metadata.apps back.
   ["bundle-2",          { name: "the Purplelink Mac Suite custom bundle", successPath: "/suite/success/" }],
   ["bundle-3",          { name: "the Purplelink Mac Suite custom bundle", successPath: "/suite/success/" }],
@@ -654,11 +655,11 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
   const reviewHtmlBlock = reviewApp ? `<p>${reviewAsk}</p>` : "";
   // Mac Suite: say what is on the page, since one link carries six things.
   const suiteText = isSuite
-    ? `That page has ten things: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and Lenses downloads, and your Vitae Plus key ` +
+    ? `That page has eleven things: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née, Lenses and ModernPaper downloads, and your Vitae Plus key ` +
       `(for life; in Vitae open Settings, then Vitae Plus, paste it and click Activate). Vitae itself is a free download from the same page.\n\n`
     : "";
   const suiteHtml = isSuite
-    ? `<p>That page has ten things: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née and Lenses downloads, and your Vitae Plus key ` +
+    ? `<p>That page has eleven things: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née, Lenses and ModernPaper downloads, and your Vitae Plus key ` +
       `(for life; in Vitae open Settings, then Vitae Plus, paste it and click Activate). Vitae itself is a free download from the same page.</p>`
     : "";
   // Custom bundle: name the chosen parts, and say that the page lists those and nothing else.
@@ -771,6 +772,13 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     "It needs no Accessibility or Input Monitoring permission. Transcription asks for Speech Recognition permission the first time, and runs on your Mac. Your files are not uploaded.";
   const neeText = isNee ? neeNote + "\n\n" : "";
   const neeHtml = isNee ? `<p>${neeNote}</p>` : "";
+  // ModernPaper: its key is in the generic keys block above (shared PurplelinkLicenseV1 scheme, MP1), so this is the one
+  // practical note. It goes to anyone whose purchase includes ModernPaper: the app itself, the Suite, or a custom bundle that has it.
+  const isModernPaper = productKey === "modernpaper" || parts.has("modernpaper");
+  const mpNote = "ModernPaper needs macOS 14 or later. It runs free for 7 days from the first time you open it. After that, reading, searching and read-aloud stay free, " +
+    "and saving annotations, forms, page tools, redaction and the Claude panel (which uses your own API key) need your key: choose Enter License Key and paste it.";
+  const mpText = isModernPaper ? mpNote + "\n\n" : "";
+  const mpHtml = isModernPaper ? `<p>${mpNote}</p>` : "";
   const text =
     `Thanks for buying ${entry.name}.\n\n` +
     `Your download page:\n${link}\n\n` +
@@ -782,6 +790,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     lenscribText +
     lensesText +
     neeText +
+    mpText +
     panelyText +
     summonlyText +
     licenseTextBlock +
@@ -805,6 +814,7 @@ async function emailDownloadLink(to, sessionId, productKey, { seats = 0, apps = 
     lenscribHtml +
     lensesHtml +
     neeHtml +
+    mpHtml +
     panelyHtml +
     summonlyHtml +
     licenseHtmlBlock +

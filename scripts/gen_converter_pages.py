@@ -196,7 +196,7 @@ PAGES = [
         "outputs": [("icns", "ICNS")],
         "opts": [("check", "iconset", "Include an .iconset folder of PNGs", False)],
         "features": ["Make a macOS .icns file from a PNG, JPG or WebP",
-                     "All ten icon entries, 16 to 1024 pixels, at 1x and 2x",
+                     "All eleven icon entries, 16 to 1024 pixels, at 1x and 2x",
                      "Optional .iconset folder named for iconutil",
                      "Built in the browser; images are never uploaded"],
         "how": [
@@ -219,7 +219,7 @@ PAGES = [
             "A picture that is not square is centered, with transparent space around it.",
             "Every size is drawn from the same picture. Icon designers often redraw 16 and 32 pixels by hand so they read at that size.",
             "SVG is not accepted. Export a 1024 pixel PNG from your drawing app first.",
-            "macOS 10.8 and later read all ten entry types.",
+            "macOS 10.8 and later read all eleven entry types.",
             "Needs Chrome or Edge 69, Firefox 105 or Safari 16.4, or later.",
         ],
         "faq": [
@@ -1736,8 +1736,8 @@ def suite_html(p: dict) -> str:
     """A line that convert-shell.js shows after the first file converts, naming the Mac Suite."""
     href = (f"/suite/?utm_source=purplelink&amp;utm_medium=tool&amp;utm_campaign=suite-placement"
             f"&amp;utm_content=converter-done-{p['slug']}")
-    return (f'      <p class="cv-app-link" id="cv-suite" hidden>Our ten Mac apps are also sold together in the '
-            f'<a href="{href}" data-track="offer_click" data-track-meta="suite">Mac Suite</a>, $59.99 once. Each has '
+    return (f'      <p class="cv-app-link" id="cv-suite" hidden>Our eleven Mac apps are also sold together in the '
+            f'<a href="{href}" data-track="offer_click" data-track-meta="suite">Mac Suite</a>, $99.99 once. Each has '
             f'a free trial or a free version.</p>\n')
 
 

@@ -140,3 +140,13 @@ Older bundle sales were the fixed prices; for a causal read, split on 2026-11-06
 - **Reading the ModernTex price checkpoint (2026-11-08):** a bundle that includes ModernTex is not a ModernTex order in `product_funnel.json`;
   count it as one when reading the checkpoint.
 - **Vitae Plus lifetime** is a standing commitment with no later revenue; the Suite already carries it.
+
+## ModernPaper joins (2026-11-27), Suite to $99.99
+
+- ModernPaper ($49 alone, key prefix MP1) is now a Suite and bundle part: eleven parts, parts total $212.90 (shown as "$213"), Suite
+  $99.99, "Save 53%" (`Math.floor(((sum - SUITE) / sum) * 100)` from `PART_CENTS`). Suite was $59.99 before; the price change applies
+  to new orders only.
+- Suite buyers get an MP1 key and a download button (receipt email, `/suite/success/`, `/recover/`), as Née does. The
+  `modernpaper-download` door accepts `app-suite` and any bundle naming `modernpaper`.
+- For a causal read, split Suite sales on 2026-11-27 (`scripts/log_change.py`).
+- Details: `docs/products/modernpaper.md`.

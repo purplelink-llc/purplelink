@@ -33,9 +33,10 @@ export const RECOVERY_PRODUCTS = Object.freeze({
   "lenscrib":                   { name: "Lenscrib", price: "$19.99", cents: 1999, kind: "app" },
   "lenses":                     { name: "Lenses", price: "$4.99", cents: 499, kind: "once" },
   "nee":                        { name: "Née", price: "$14.99", cents: 1499, kind: "app" },
+  "modernpaper":                { name: "ModernPaper", price: "$49.00", cents: 4900, kind: "app" },
   "panely":                     { name: "Panely", price: "$9.99", cents: 999, kind: "app" },
   "summonly":                   { name: "Summonly", price: "$9.99", cents: 999, kind: "app" },
-  "app-suite":                  { name: "the Purplelink Mac Suite", price: "$59.99", cents: 5999, kind: "app" },
+  "app-suite":                  { name: "the Purplelink Mac Suite", price: "$99.99", cents: 9999, kind: "app" },
   // A bundle's price depends on the apps chosen (netlify/lib/bundles.mjs), so it has no fixed price here: the email
   // states the session's own amount when it has one, else the percent off.
   "bundle-2":                   { name: "a custom bundle of two Purplelink Mac apps", short: "Purplelink bundle", percent: 25, kind: "app" },
