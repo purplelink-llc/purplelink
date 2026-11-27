@@ -266,7 +266,7 @@ export const PRODUCT_CATALOG = {
   "summonly":                { amount: 999, name: "Summonly for macOS", successPath: "/summonly/success/" },
   // Purplelink Mac Suite: ModernTex + Outbound Veil + Legroom + Keyfeel + Tapefolio + Panely + Summonly + Née + Lenses + ModernPaper + Vitae Plus for life,
   // $99.99 one-time since 2026-11-27, when ModernPaper joined (was $59.99 until then, $54.99 until 2026-10-12 and $54 until 2026-10-07; $49 with four apps, $39 before Legroom; Tapefolio
-  // joined 2026-10-09 at the same price, Panely and Summonly joined 2026-10-12 and Née at launch, Lenses joined 2026-11-06, all at $99.99). Priced inline (no Stripe
+  // joined 2026-10-09 at the same price, Panely and Summonly joined 2026-10-12 and Née at launch, Lenses joined 2026-11-06, all at $59.99). Priced inline (no Stripe
   // Price to create). One session unlocks all eleven: the ModernTex, Outbound Veil, Legroom, Keyfeel, Tapefolio, Panely, Summonly, Née, Lenses and
   // ModernPaper download functions accept it, and vitae-license.mjs signs a 100-year Vitae Plus key from it. See
   // docs/products/app-suite.md.

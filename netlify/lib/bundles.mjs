@@ -3,7 +3,7 @@
  * parts are chosen. One source of truth for checkout, delivery, keys and recovery; site/suite/bundle.js carries the
  * same tables for the live price display, and a test keeps them equal.
  *
- * The eleven parts are the eleven Mac apps and a lifetime Vitae Plus key. The whole Suite (all eleven) stays its own
+ * The eleven parts are the ten Mac apps and a lifetime Vitae Plus key. The whole Suite (all eleven) stays its own
  * product, "app-suite", and is what four or more parts are sent to. The client chooses only WHICH parts; the price
  * is computed here from PART_CENTS and the tier, never taken from the request. A bundle's session carries
  * metadata.product ("bundle-2" or "bundle-3") and metadata.apps (the chosen part slugs, comma-separated, in the
