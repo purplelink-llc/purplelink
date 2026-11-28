@@ -157,7 +157,7 @@
 - **Platform:** macOS 14 or later
 - **Category:** PDF reader and editor for academics
 - **Description:** A PDF reader and editor. Reading, searching and read-aloud stay free. Saving annotations, filling forms, page tools, redaction and an optional Claude panel (you supply your own API key) need a license key. No account.
-- **Pricing:** $49 once, with a free 7-day trial in the same download and then a license key (emailed and shown on the page after you pay; every update included). Also in the Mac Suite ($99.99). 14-day refund; a refunded purchase's download link stops working.
+- **Pricing:** $49 once, with a free 7-day trial in the same download and then a license key (emailed and shown on the page after you pay; every future version included, major versions too). Also in the Mac Suite ($99.99). 14-day refund.
 - **Purchase:** https://purplelink.llc/modernpaper/
 
 ### BatteryMeter (macOS)
@@ -545,6 +545,7 @@ Email ben@purplelink.llc for product inquiries, press, or general questions.
 - Get a Mac notification when Claude Code finishes or needs you: https://purplelink.llc/guides/claude-code-notifications-mac/ : two Claude Code hooks (Stop and Notification) in settings.json, osascript for the banner, afplay for a sound, the Script Editor permission fix, and Buddy as one optional app.
 - Fix TeX Live Utility "Listing Failed" on a Mac: https://purplelink.llc/guides/tex-live-utility-listing-failed-mac/ : the three usual causes (last year's TeX Live against this year's repository, a broken mirror, a damaged tlmgr), how to read the log, the fix for each, and how to update all packages except a few.
 - Best LaTeX editor for Mac in 2026: https://purplelink.llc/guides/best-mac-latex-editors/ — comparison of TeXShop, Texifier, Octree, VS Code, Overleaf, and ModernTex.
+- Best PDF apps for Mac for academics (2026): https://purplelink.llc/guides/best-pdf-apps-for-mac/ — Preview, Acrobat Reader, Acrobat Standard/Pro/Studio, PDF Expert, Skim, Highlights, Zotero and Purplelink's own ModernPaper ($49 once, disclosed) compared on price, minimum macOS and academic features, with a three-year cost table; prices read November 26 and 27, 2026.
 - GlobePin vs Polarsteps vs Visited: https://purplelink.llc/guides/globepin-vs-polarsteps/ — comparison of three iOS travel-mapping approaches.
 - Best health tracking apps that keep your data on your phone (2026): https://purplelink.llc/guides/best-on-device-health-apps/ — about 30 iPhone health apps compared by App Store privacy label, account, where the data lives and price, with haea (Purplelink's own, not yet released) disclosed.
 - Convert a LaTeX paper to Word: https://purplelink.llc/guides/latex-to-word/ — step-by-step .tex → .docx for journal submission.
