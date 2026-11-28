@@ -34,7 +34,7 @@
         "@id": "https://purplelink.llc/#organization"
       },
       "datePublished": "2026-10-11",
-      "dateModified": "2026-11-18",
+      "dateModified": "2026-11-25",
       "image": "https://purplelink.llc/assets/og/outbound-veil.png",
       "mainEntityOfPage": "https://purplelink.llc/guides/before-you-paste-client-notes-into-chatgpt/"
     },
@@ -107,6 +107,14 @@
     },
     {
       "@type": "Question",
+      "name": "Is Grammarly safe for client or patient information?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It depends on the plan and on your rules. Grammarly's support page says it can sign a business associate agreement (BAA) only for Grammarly for Business Enterprise plans, and that protected health information should not go into the service without one. Its privacy policy, effective November 16, 2026, says it uses collected information to train its AI models and offers a training control in account settings. If your employer manages the account, the policy says the organization's contract governs that content. For client information outside HIPAA, such as a lawyer's files, the question is your own confidentiality duty. Ask whoever sets the rules where you work. This is not legal advice. (Pages read November 25, 2026.)"
+      }
+    },
+    {
+      "@type": "Question",
       "name": "Does Apple Intelligence send my notes to ChatGPT?",
       "acceptedAnswer": {
         "@type": "Answer",
@@ -153,7 +161,7 @@
       <div class="post-hero">
         <p class="post-date">Checklist</p>
         <h1 class="post-title">Before you paste client notes into ChatGPT or Claude: a checklist for Mac users</h1>
-        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-11">October 11, 2026</time>, updated <time datetime="2026-11-18">November 18, 2026</time></p>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-10-11">October 11, 2026</time>, updated <time datetime="2026-11-25">November 25, 2026</time></p>
         <p class="post-lede">Pasting a note into a chatbot takes a second. These five checks take about two minutes. They cover what ChatGPT and Claude say they do with what you paste, what to remove first, and what to do if you already sent something you should not have.</p>
       </div>
 
@@ -200,6 +208,11 @@
         <p>On a Business or Enterprise workspace, an administrator decides first. OpenAI says members cannot turn it on until an admin grants access, and that the grant does not switch it on for anyone. If your role has no access, changing local settings does not enable it.</p>
         <p>To check it, open the app&#x27;s Settings, go to Integrations, and select Computer history. Turning it off stops future collection. You can also pause it from the macOS menu bar, and under Permissions you can exclude the app where you write notes. The History page can clear the last 10 minutes, hour or day, or everything, and OpenAI says a clear cannot be undone. OpenAI also advises turning it off during communications with other people unless you have their consent. Sources: <a href="https://developers.openai.com/codex/customization/computer-history" rel="noopener">OpenAI&#x27;s Computer History page</a> and the <a href="https://help.openai.com/en/articles/6825453-chatgpt-release-notes#computer-history-for-macos" rel="noopener">ChatGPT release notes</a>, both read on November 18, 2026.</p>
 
+        <h2 id="grammar-checkers">Grammar checkers read what you type too</h2>
+        <p>A writing assistant is another place your text goes. Grammarly&#x27;s privacy policy, which now sits on Superhuman&#x27;s site, says it processes your content to show you suggestions for writing. It also says, "We also use information we collect to train our AI models." The policy says you can change whether your content is used for training with the training controls in your account settings. If your employer or another organization manages the account, the policy says it does not cover that content, and the organization&#x27;s contract does.</p>
+        <p>For patient information, Grammarly&#x27;s support page on HIPAA says it can sign a business associate agreement (BAA, the contract HIPAA requires with a vendor that handles protected health information for you) only for Grammarly for Business Enterprise plans. The same page says users "should not store, transmit, or otherwise process" protected health information without a current BAA, and that Grammarly is working to extend HIPAA support to other customers. If you use a free or individual plan, nothing on that page makes it a place for patient notes. Check which plan you are on and ask your compliance officer before you decide.</p>
+        <p>Lawyers and other practices outside HIPAA face a different question. It is your own duty of confidentiality to the client, and a vendor&#x27;s privacy page does not answer it. For California attorneys, the <a href="#california-sb-574">SB 574 section above</a> covers what the law adds from January 1, 2027. I did not check how other assistants or Apple Writing Tools handle text, so I make no claim about them. Outbound Veil, which I make, marks personal details in what you type on your Mac. It does not make any workflow compliant, as the checks above say. (Grammarly pages read November 25, 2026: the <a href="https://support.grammarly.com/hc/en-us/articles/4403227220237-Is-Grammarly-HIPAA-compliant" rel="noopener">HIPAA support page</a> and the <a href="https://superhuman.com/legal/privacy-policy" rel="noopener">privacy policy</a>.)</p>
+
         <h2>4: a check as you type</h2>
         <p>A tired person misses things in their own notes. A checker that runs where you type catches some of them before you press send. Outbound Veil runs on your Mac, with the checking done locally and nothing you type stored or sent. It marks names, addresses, phone numbers, email addresses, Social Security, card, passport, driver's license, tax and bank numbers, dates of birth, medical record numbers and IBANs (International Bank Account Numbers). A Redact all command replaces them with placeholders.</p>
         <p>What I have tested is narrow. On October 3, 2026, I ran it on one Mac running macOS 26 with builds made before release 1.0.0. It found and redacted a made-up note in the ChatGPT prompt box and in the claude.ai prompt box in Chrome. I have not tested Safari or other browsers, and I have not run those tests again on later releases. The <a href="/outbound-veil/works-in/">compatibility page</a> records every app and field, including the ones that do not work. Since version 1.3.0 it also reads the body of a new message in Apple Mail, where it highlights details for you to edit by hand. It handles Latin-script names only. It also flags public figures' names, and it will miss some things. It is $29.99 once after a 7-day trial. The free options are in the comparison guide.</p>
@@ -220,6 +233,8 @@
         <h3>Does California&#x27;s SB 574 apply to me?</h3>
         <p>From January 1, 2027 its section 6068.1 applies to attorneys in California who use generative AI; other sections of the same law cover arbitrators and the courts. If you are not one of them, your own professional rules and your employer&#x27;s policy decide what you may paste. Read the enacted text or ask your bar. This is not legal advice. The <a href="#california-sb-574">section above</a> summarizes it.</p>
 
+        <h3>Is Grammarly safe for client or patient information?</h3>
+        <p>It depends on the plan and on your rules. Grammarly&#x27;s support page says it can sign a business associate agreement (BAA) only for Grammarly for Business Enterprise plans, and that protected health information should not go into the service without one. Its privacy policy, effective November 16, 2026, says it uses collected information to train its AI models and offers a training control in account settings. If your employer manages the account, the policy says the organization&#x27;s contract governs that content. For client information outside HIPAA, such as a lawyer&#x27;s files, the question is your own confidentiality duty. Ask whoever sets the rules where you work. This is not legal advice. (Pages read November 25, 2026.)</p>
         <h3>Does Apple Intelligence send my notes to ChatGPT?</h3>
         <p>Only through the ChatGPT extension. Apple says a request handed to ChatGPT goes to OpenAI with the text and any attachment. You can turn the extension off in System Settings, Siri. Apple&#x27;s own models run on the Mac or on its Private Cloud Compute servers, which it says do not store the request. The <a href="#apple-intelligence">section above</a> lists the settings.</p>
 
