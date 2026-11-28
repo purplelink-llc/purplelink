@@ -106,7 +106,8 @@ class Instagram(Adapter):
         images = item.images_for("instagram")
         video = item.video()
         if dry_run:
-            what = f"Reel {video.get('duration')} s" if video else f"{len(images)} image"
+            what = (f"Reel {video.get('duration')} s" if video else
+                    f"carousel of {len(images)} images" if len(images) > 1 else f"{len(images)} image")
             return Result(dry_run=True, detail=f"{len(caption)} chars, {what}")
         who = self.check_identity()
         uid = who["user_id"]
@@ -121,6 +122,19 @@ class Instagram(Adapter):
                     params["cover_url"] = media.ensure_hosted(cfg, _resolve(video["cover"], item.path.parent), self.http)
                 cid = self._create(uid, params)
                 self._wait(cid, tries=40, every=15)      # a Reel takes a few minutes to process
+            elif len(images) > 1:
+                # A carousel: one child container per image in the item's order (our app first), each with its own
+                # alt text and no caption; then the CAROUSEL parent carries the caption. All before the second
+                # identity check, so a failure here has published nothing and the item can simply be retried.
+                children = []
+                for im in images[:10]:
+                    url = media.ensure_hosted(cfg, image_path(item, im), self.http)
+                    child = self._create(uid, {"image_url": url, "is_carousel_item": "true",
+                                               "alt_text": str(im["alt"])})
+                    self._wait(child, tries=12, every=5)
+                    children.append(child)
+                cid = self._create(uid, {"media_type": "CAROUSEL", "children": ",".join(children), "caption": caption})
+                self._wait(cid, tries=12, every=5)
             elif images:
                 url = media.ensure_hosted(cfg, image_path(item, images[0]), self.http)
                 cid = self._create(uid, {"image_url": url, "caption": caption, "alt_text": str(images[0]["alt"])})

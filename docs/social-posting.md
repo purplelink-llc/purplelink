@@ -170,6 +170,16 @@ pipeline's or one Ben approved) gets one Instagram item: a 1080x1350 JPEG from `
 and title from the post's first line, e.g. "Release / Vitae 1.4.2", and its first fact sentence), alt text naming
 what the card shows, and the LinkedIn text without its link, plus "Link in bio." and up to 3 topic hashtags.
 
+**Carousels** (2026-11-28, Ben: comparison posts should be "multiple photos of all 8 apps that someone can scroll
+through, ours being first"): when the post links a `/guides/` page whose first table starts with an "App" or "Tool"
+column and marks exactly one row "(mine)", the companion is a carousel instead of one card (`guide_table` in
+`pipeline.py`). One 1080x1350 slide per app (at most 10), our app first with an "Our app" pill, the rest in table
+order. Each slide shows the app name, the guide title as kicker, "i of N", and up to 4 cells copied verbatim from the
+table (price first, then the longest-text columns, the limit column last; "Not stated", "n/a" and "-" are left off).
+Each slide has its own alt text, and every alt passes the voice and facts gates against the table. The adapter makes
+one child container per slide (with `alt_text`, no caption), then a `CAROUSEL` parent with the caption, then one
+publish. A guide with no marked row, or any other link, keeps the single card.
+
 **Gate** (`socialpost/instagram/pipeline.py vet`): the daily voice rules, the facts rule against the item's own
 source (YouTube title and description, or the LinkedIn text), alt text, the queue validator (JPEG, 1080x1920 Reel of
 3 to 180 s, hashtags, no caption link), the link answers 200, and no caption repeated within 21 days. A failure is
@@ -349,7 +359,7 @@ and the campaign name. `approve` refuses an item that fails validation or is mor
 | Threads | long-lived token (60 days), `threads_basic` + `threads_content_publish` | 500 | 20 in a carousel, JPEG or PNG, 8 MB, public URL | `alt_text` on each container |
 | Mastodon | app token, `read:accounts write:statuses write:media` | 500 (server's limit) | 4, 16 MB | `description` on `POST /api/v2/media` |
 | X | OAuth 2.0 user token, refresh token | 280 | 4, `POST /2/media/upload` | `POST /2/media/metadata` |
-| Instagram | long-lived token (60 days), `instagram_business_basic` + `instagram_business_content_publish` | 2,200, 5 hashtags, no links | 1 JPEG (8 MB) or 1 Reel, public URL | `alt_text` on images; none for Reels |
+| Instagram | long-lived token (60 days), `instagram_business_basic` + `instagram_business_content_publish` | 2,200, 5 hashtags, no links | 1 JPEG (8 MB), a carousel of 2 to 10 JPEGs, or 1 Reel, public URL | `alt_text` on images; none for Reels |
 
 - Threads publishes a container with `POST /{user-id}/threads`, waits for `FINISHED`, then `threads_publish`; 250
   posts a day per profile. The token is refreshed by `run-due` after 30 days (24 hours minimum age).

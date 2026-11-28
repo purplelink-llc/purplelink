@@ -72,6 +72,26 @@ def card(out: Path, title: str, kicker: str = "", sub: str = "", foot: str = "",
     return out
 
 
+def slide(out: Path, name: str, rows: list[tuple[str, str]], kicker: str = "", foot: str = "", ours: bool = False,
+          ours_label: str = "Our app", bg: str = "general", run=subprocess.run) -> Path:
+    """Render one 1080x1350 carousel slide for an app from a comparison guide: name, up to four label/value rows
+    (copied verbatim; the template shrinks the type to fit rather than cutting text) and the "Our app" tag."""
+    out.parent.mkdir(parents=True, exist_ok=True)
+    png = out.with_suffix(".png")
+    params = {"m": "app", "t": name, "k": kicker, "f": foot, "bg": bg}
+    if ours:
+        params.update({"o": "1", "ot": ours_label})
+    for i, (label, value) in enumerate(rows[:4], 1):
+        params[f"l{i}"], params[f"v{i}"] = label, value
+    _chrome_png(params, CARD, png, run)
+    im = Image.open(png).convert("RGB")
+    if im.size != CARD:
+        im = im.resize(CARD)
+    im.save(out, "JPEG", quality=88, optimize=True, progressive=True)
+    png.unlink(missing_ok=True)
+    return out
+
+
 # ---------------------------------------------------------------- video
 def probe(path: Path, run=subprocess.run) -> dict:
     """{"duration": s, "width": px, "height": px, "audio": bool} from ffprobe."""

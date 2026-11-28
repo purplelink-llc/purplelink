@@ -275,9 +275,9 @@ def _instagram_errors(item: Item, imgs: list[dict]) -> list[str]:
         out.append("instagram: a link in the caption is not clickable; say 'link in bio' instead")
     v = item.video()
     if v and imgs:
-        out.append("instagram: a post is either one image or one Reel, not both")
+        out.append("instagram: a post is either images or one Reel, not both")
     if not v and not imgs:
-        out.append("instagram: needs one image or a Reel (Instagram has no text-only post)")
+        out.append("instagram: needs an image, a carousel or a Reel (Instagram has no text-only post)")
     if v:
         out += _video_errors(item, "instagram")
     return out

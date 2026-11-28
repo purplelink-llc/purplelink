@@ -21,7 +21,9 @@ import json
 import re
 import shutil
 import subprocess
+from html.parser import HTMLParser
 from pathlib import Path
+from urllib.parse import urlparse
 from zoneinfo import ZoneInfo
 
 from .. import config as cfgmod
@@ -204,6 +206,114 @@ def companion_item(li: Item, card_path: Path, words: dict, when_iso: str) -> Ite
     return Item(_item_path(iid), meta, {"instagram": text}, f"Built by socialpost.instagram from {li.id}.")
 
 
+# ---------------------------------------------------------------- comparison-guide carousels
+SLIDE_WORDS = "Slide of Our app Purplelink card"   # template wording in slide alts, allowed by the facts check
+SKIP_VALUES = {"", "not stated", "n/a", "-"}
+
+
+class _Tables(HTMLParser):
+    """Collects the page <h1> and every <table> as rows of cell text (header row included)."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.h1, self.tables = "", []
+        self._in_h1 = self._cell = False
+        self._buf: list[str] = []
+        self._row: list[str] | None = None
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "h1" and not self.h1:
+            self._in_h1 = True
+        elif tag == "table":
+            self.tables.append([])
+        elif tag == "tr" and self.tables:
+            self._row = []
+        elif tag in ("td", "th") and self._row is not None:
+            self._cell, self._buf = True, []
+
+    def handle_endtag(self, tag):
+        if tag == "h1" and self._in_h1:
+            self._in_h1 = False
+        elif tag in ("td", "th") and self._cell:
+            self._cell = False
+            self._row.append(re.sub(r"\s+", " ", "".join(self._buf)).strip())
+        elif tag == "tr" and self._row is not None:
+            if self._row:
+                self.tables[-1].append(self._row)
+            self._row = None
+
+    def handle_data(self, data):
+        if self._in_h1:
+            self.h1 += data
+        if self._cell:
+            self._buf.append(data)
+
+
+def guide_table(link: str, root: Path | None = None) -> dict | None:
+    """The comparison table of a purplelink.llc guide, as slides: {"kicker", "apps": [{"name", "ours", "rows"}]}, our
+    app (the row marked "(mine)") first, then the others in page order, at most 10. None when the link is not a guide,
+    the page has no App/Tool table, no row is ours, or there are fewer than two apps; the companion then stays a single
+    card."""
+    u = urlparse(link or "")
+    if u.netloc not in ("", "purplelink.llc", "www.purplelink.llc") or not u.path.startswith("/guides/"):
+        return None
+    page = (root or paths.repo_root()) / "site" / u.path.strip("/") / "index.html"
+    if not page.is_file():
+        return None
+    p = _Tables()
+    p.feed(page.read_text(encoding="utf-8", errors="replace"))
+    table = next((t for t in p.tables if t and t[0] and t[0][0].lower() in ("app", "tool")), None)
+    if not table or len(table) < 3:
+        return None
+    head, body = table[0], [r for r in table[1:] if len(r) == len(table[0])]
+    cols = range(1, len(head))
+    price = next((i for i in cols if head[i].lower().startswith("price") or head[i].lower() == "cost"), None)
+    limit = next((i for i in cols if "limit" in head[i].lower()), None)
+    mean = {i: sum(len(r[i]) for r in body) / max(len(body), 1) for i in cols if i not in (price, limit)}
+    extra = sorted(mean, key=lambda i: -mean[i])[:4 - (price is not None) - (limit is not None)]
+    order = [i for i in [price, *sorted(extra), limit] if i is not None]
+    apps = []
+    for r in body:
+        ours = "(mine)" in r[0].lower()
+        name = re.sub(r"\s*\(mine\)\s*", " ", r[0], flags=re.I).strip()
+        rows = [(head[i], r[i]) for i in order if r[i].strip().lower() not in SKIP_VALUES]
+        if name:
+            apps.append({"name": name, "ours": ours, "rows": rows})
+    if sum(a["ours"] for a in apps) != 1 or len(apps) < 2:
+        return None
+    apps = [a for a in apps if a["ours"]] + [a for a in apps if not a["ours"]]
+    kicker = re.sub(r"\s+", " ", p.h1).strip().split(":")[0].strip()
+    return {"kicker": kicker, "apps": apps[:10]}
+
+
+def slide_alt(app: dict, i: int, n: int, kicker: str) -> str:
+    rows = " ".join(f"{label}: {value.rstrip('.')}." for label, value in app["rows"])
+    return (f"Slide {i} of {n} from {kicker}. {app['name']}" + (" (our app)." if app["ours"] else ".")
+            + (f" {rows}" if rows else ""))[:900]
+
+
+def table_source(table: dict) -> str:
+    """Everything a slide may say, for the facts check: the table cells, the guide title and the slide numbering."""
+    n = len(table["apps"])
+    cells = " ".join(f"{a['name']} " + " ".join(f"{l} {v}" for l, v in a["rows"]) for a in table["apps"])
+    return f"{table['kicker']} {cells} {SLIDE_WORDS} {' '.join(str(k) for k in range(1, n + 1))}"
+
+
+def build_carousel(li: Item, table: dict, words: dict, when_iso: str, render_slide=render.slide) -> Item:
+    """The companion as a carousel: one slide per app of the guide's table, ours first."""
+    n = len(table["apps"])
+    images = []
+    for i, app in enumerate(table["apps"], 1):
+        out = ig_dir() / "cards" / f"{li.id}-{i:02d}.jpg"
+        render_slide(out, app["name"], app["rows"], kicker=table["kicker"], foot=f"{i} of {n}",
+                     ours=app["ours"], ours_label="Our app", bg=words["bg"])
+        images.append({"path": str(out), "alt": slide_alt(app, i, n, table["kicker"])})
+    item = companion_item(li, Path(images[0]["path"]), words, when_iso)
+    item.meta["images"] = images
+    item.meta["instagram"]["carousel"] = n
+    return item
+
+
 def _app_tags(li: Item) -> list[str]:
     cand = str((li.meta.get("daily") or {}).get("candidate") or "")
     m = re.match(r"release:([a-z0-9-]+):", cand)
@@ -245,6 +355,11 @@ def vet(item: Item, source: str, http, state: dict, today: dt.date, cfg: dict, s
         reasons.append("alt: the Reel has no description")
     for why in vetmod.alt_problems(item):
         reasons.append(f"alt: {why}")
+    if len(item.meta.get("images") or []) > 1:   # carousel slides carry their own text: same voice and facts gate
+        for n, im in enumerate(item.meta["images"], 1):
+            alt = str(im.get("alt") or "")
+            reasons += [f"slide {n} voice: {why}" for why in vetmod.voice_problems(alt)]
+            reasons += [f"slide {n} facts: {why}" for why in vetmod.facts_problems(alt, src)]
     errors, _ = itemsmod.validate(item, cfg)
     reasons += [f"limits: {e}" for e in errors]
     reasons += tag_problems(item)
@@ -316,19 +431,25 @@ def pending(cfg: dict, when: dt.datetime, state: dict, s: dict) -> list[tuple[st
     return work
 
 
-def build(kind: str, obj, slot: dt.datetime, render_card=render.card) -> tuple[Item, str, str]:
-    """(item, source text for the facts check, state key) for one piece of work."""
+def build(kind: str, obj, slot: dt.datetime, render_card=render.card,
+          render_slide=render.slide) -> tuple[Item, str, str]:
+    """(item, source text for the facts check, state key) for one piece of work. A companion of a comparison guide
+    with our app in its table is a carousel (one slide per app, ours first); any other companion is one card."""
     if kind in ("reel", "fb_reel"):
         make = reel_item if kind == "reel" else fb_reel_item
         return make(obj, iso(slot)), f"{obj['title']} {obj.get('description', '')}", obj["youtube_id"]
     words = cap.card_words(obj.raw_text("linkedin"))
+    table = guide_table(obj.link)
+    if table:
+        item = build_carousel(obj, table, words, iso(slot), render_slide)
+        return item, f"{obj.raw_text('linkedin')} {table_source(table)}", str(obj.id)
     card_path = ig_dir() / "cards" / f"{obj.id}.jpg"
     render_card(card_path, words["title"], words["kicker"], words["sub"], "", words["bg"])
     return companion_item(obj, card_path, words, iso(slot)), obj.raw_text("linkedin"), str(obj.id)
 
 
 def run(http, cfg: dict | None = None, when: dt.datetime | None = None, dry_run: bool = False, say=print,
-        notify=None, render_card=render.card, link_check: bool = True) -> dict:
+        notify=None, render_card=render.card, link_check: bool = True, render_slide=render.slide) -> dict:
     """One pass: queue what is due under the standing approval. Returns {"queued", "skipped", "would_queue"}."""
     cfg = cfg or cfgmod.load()
     notify = notify or sysutil.notify
@@ -353,7 +474,7 @@ def run(http, cfg: dict | None = None, when: dt.datetime | None = None, dry_run:
                 full.add(plat)
             continue
         try:
-            item, source, key = build(kind, obj, slot, render_card)
+            item, source, key = build(kind, obj, slot, render_card, render_slide)
         except Exception as e:
             out["skipped"].append((str(getattr(obj, "id", "") or obj.get("youtube_id")), [f"build: {e}"]))
             say(f"instagram: could not build the {kind}: {e}")
