@@ -152,7 +152,7 @@ def test_registry_and_refresh_list_include_instagram():
 def test_validate_instagram_rules(env, cfg):
     it = ig_item(env)
     errs, _ = items.validate(it, cfg)
-    assert any("needs one image or a Reel" in e for e in errs)
+    assert any("needs an image, a carousel or a Reel" in e for e in errs)
     it.sections["instagram"] = "Text https://purplelink.llc/ #a #b #c #d #e #f"
     it.meta["images"] = [{"path": str(jpeg(env.tmp / "c.jpg")), "alt": "x"}]
     errs, _ = items.validate(it, cfg)
@@ -500,3 +500,96 @@ def test_setup_stores_nothing_for_a_rejected_or_wrong_token(env, monkeypatch, ca
 def test_app_tags_cover_latex_errors_and_tools():
     assert cap.app_tags_for_link("https://purplelink.llc/latex-errors/missing-dollar-inserted/") == ["latex"]
     assert cap.app_tags_for_link("https://purplelink.llc/tools/paper-review/") == ["academicwriting"]
+
+
+# ---------------------------------------------------------------- carousels (comparison guides)
+GUIDE_HTML = """<!doctype html><html><body><h1>Best PDF apps for Mac: 3 compared</h1>
+<table><thead><tr><th>App</th><th>Price</th><th>Highlight</th><th>Academic extra</th><th>Main limit</th></tr></thead>
+<tbody>
+<tr><td>Preview</td><td>Free, built in</td><td>Yes</td><td>Redaction and combine</td><td>Cannot edit text</td></tr>
+<tr><td>ModernPaper (mine)</td><td>$49 once</td><td>Yes</td><td>OCR and read-aloud</td><td>Cannot edit text</td></tr>
+<tr><td>Skim</td><td>Free, open source</td><td>Yes</td><td>SyncTeX with LaTeX</td><td>Not stated</td></tr>
+</tbody></table></body></html>"""
+
+
+def guide_site(root: Path, slug="pdf-apps", html=GUIDE_HTML) -> Path:
+    page = root / "site" / "guides" / slug / "index.html"
+    page.parent.mkdir(parents=True, exist_ok=True)
+    page.write_text(html, encoding="utf-8")
+    return root
+
+
+def test_guide_table_puts_our_app_first_and_drops_empty_cells(tmp_path):
+    t = igp.guide_table("https://purplelink.llc/guides/pdf-apps/", guide_site(tmp_path))
+    assert t["kicker"] == "Best PDF apps for Mac"
+    assert [a["name"] for a in t["apps"]] == ["ModernPaper", "Preview", "Skim"]   # ours first, "(mine)" stripped
+    assert [a["ours"] for a in t["apps"]] == [True, False, False]
+    labels = [l for l, _ in t["apps"][0]["rows"]]
+    assert labels[0] == "Price" and labels[-1] == "Main limit"
+    assert all(l != "Main limit" for l, _ in t["apps"][2]["rows"])          # "Not stated" is left off the slide
+
+
+def test_guide_table_is_none_without_a_marked_app_or_off_site(tmp_path):
+    guide_site(tmp_path, html=GUIDE_HTML.replace(" (mine)", ""))
+    assert igp.guide_table("https://purplelink.llc/guides/pdf-apps/", tmp_path) is None
+    assert igp.guide_table("https://example.com/guides/pdf-apps/", guide_site(tmp_path, "other")) is None
+    assert igp.guide_table("https://purplelink.llc/guides/missing/", tmp_path) is None
+    assert igp.guide_table("https://purplelink.llc/blog/pdf-apps/", tmp_path) is None
+
+
+def test_real_pdf_guide_parses_with_modernpaper_first():
+    t = igp.guide_table("https://purplelink.llc/guides/best-pdf-apps-for-mac/")
+    if t is None:
+        pytest.skip("guide not in this checkout")
+    assert t["apps"][0]["name"] == "ModernPaper" and t["apps"][0]["ours"] and len(t["apps"]) >= 2
+    src = igp.table_source(t)
+    for i, a in enumerate(t["apps"], 1):
+        assert not igp.vetmod.facts_problems(igp.slide_alt(a, i, len(t["apps"]), t["kicker"]), src)
+
+
+def test_carousel_post_sends_children_in_order_then_one_parent(env, cfg):
+    imgs = []
+    for n in range(3):
+        p = env.tmp / f"s{n}.jpg"
+        p.parent.mkdir(parents=True, exist_ok=True)
+        Image.new("RGB", (1080, 1350), (20 + n * 40, 10, 34)).save(p, "JPEG")
+        imgs.append({"path": str(p), "alt": f"Slide {n + 1}"})
+    it = ig_item(env, images=imgs)
+    h = FakeHttp([("GET", "/me?", me()), ("HEAD", "social-media", Resp(200, b"", {"Content-Type": "image/jpeg"})),
+                  ("POST", "/1784/media_publish", jresp({"id": "M9"})),
+                  ("POST", "/1784/media", [jresp({"id": "K1"}), jresp({"id": "K2"}), jresp({"id": "K3"}),
+                                           jresp({"id": "P1"})]),
+                  ("GET", "status_code", jresp({"status_code": "FINISHED"})),
+                  ("GET", "permalink", jresp({"permalink": "https://www.instagram.com/p/car/"}))])
+    r = adapter(cfg, h).post(it)
+    assert r.url.endswith("/p/car/")
+    forms = [c["form"] for c in h.posts_to("/1784/media") if "media_publish" not in c["url"]]
+    kids, parent = forms[:3], forms[3]
+    assert [k["alt_text"] for k in kids] == ["Slide 1", "Slide 2", "Slide 3"]
+    assert all(k["is_carousel_item"] == "true" and "caption" not in k for k in kids)
+    assert len({k["image_url"] for k in kids}) == 3
+    assert parent["media_type"] == "CAROUSEL" and parent["children"] == "K1,K2,K3" and "Link in bio." in parent["caption"]
+    pubs = h.posts_to("/1784/media_publish")
+    assert len(pubs) == 1 and pubs[0]["form"] == {"creation_id": "P1"}
+
+
+def fake_slide(out, name, rows, kicker="", foot="", ours=False, ours_label="", bg=""):
+    return jpeg(out)
+
+
+def test_companion_of_a_comparison_guide_is_a_carousel(env, cfg, tmp_path, monkeypatch):
+    root = guide_site(tmp_path / "repo")
+    real = igp.guide_table
+    monkeypatch.setattr(igp, "guide_table", lambda link, r=None: real(link, root))
+    li = items.create("li", ["linkedin"], "https://purplelink.llc/guides/pdf-apps/", "daily-guide")
+    li.sections = {"default": "New guide: Best PDF apps for Mac\n\nThe page compares 3 PDF apps for Mac on price "
+                              "and limits.\n\n{link}"}
+    li.meta.update(status="posted", results={"linkedin": {"status": "posted", "posted_at": items.iso(NOW)}})
+    li.save()
+    res = run_ig(cfg, render_slide=fake_slide)
+    assert res["status"] == "ok" and len(res["queued"]) == 1, res
+    it = items.find(res["queued"][0])
+    imgs = it.images_for("instagram")
+    assert len(imgs) == 3 and it.meta["instagram"]["carousel"] == 3
+    assert imgs[0]["alt"].startswith("Slide 1 of 3 from Best PDF apps for Mac. ModernPaper (our app).")
+    assert all(Path(i["path"]).exists() for i in imgs) and it.approval_valid()[0]

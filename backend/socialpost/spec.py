@@ -19,9 +19,10 @@ SPEC = {
     "x":        {"text": 280, "count": "x", "images": 4, "image_bytes": 5 * MB,
                  "formats": (".png", ".jpg", ".jpeg", ".gif", ".webp"), "alt": 1000, "document": False},
     # Instagram (read 2026-10-23, developers.facebook.com/docs/instagram-platform/content-publishing): JPEG only,
-    # caption 2,200 characters, at most 5 hashtags, alt_text on image posts only (not Reels). One image or one Reel
-    # per post here (carousels are not used). Links in a caption are not clickable, so the caption says "link in bio".
-    "instagram": {"text": 2200, "count": "chars", "images": 1, "image_bytes": 8 * MB,
+    # caption 2,200 characters, at most 5 hashtags, alt_text on image posts only (not Reels). A post is one image,
+    # a carousel of 2 to 10 images (each child carries its own alt_text; the caption sits on the parent, read
+    # 2026-11-28), or one Reel. Links in a caption are not clickable, so the caption says "link in bio".
+    "instagram": {"text": 2200, "count": "chars", "images": 10, "image_bytes": 8 * MB,
                   "formats": (".jpg", ".jpeg"), "alt": 1000, "document": False, "hashtags": 5},
 }
 
