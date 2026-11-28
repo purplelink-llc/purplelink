@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <title>Beamer Template: Slides and A0 Poster Skeletons | Purplelink</title>
+    <meta name="description" content="Compilable Beamer skeletons for 16:9 slides and an A0 portrait poster, with overlays, speaker notes, handout mode and the pitfalls that catch people.">
+    <link rel="canonical" href="https://purplelink.llc/templates/beamer/">
+    <meta property="og:title" content="Beamer template for slides and posters">
+    <meta property="og:description" content="Compilable Beamer skeletons for 16:9 slides and an A0 portrait poster, with overlays, speaker notes, handout mode and cited pitfalls.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://purplelink.llc/templates/beamer/">
+    <meta property="og:image" content="https://purplelink.llc/assets/og/templates.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Beamer template for slides and posters">
+    <meta name="twitter:description" content="Compilable Beamer skeletons for 16:9 slides and an A0 portrait poster, with overlays, speaker notes, handout mode and cited pitfalls.">
+    <meta name="twitter:image" content="https://purplelink.llc/assets/og/templates.png">
+    <meta name="twitter:image:alt" content="Beamer template for slides and posters">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "TechArticle",
+          "headline": "Beamer slides and poster template",
+          "description": "Compilable Beamer skeletons for 16:9 slides and an A0 portrait poster, with overlays, speaker notes, handout mode and cited pitfalls.",
+          "url": "https://purplelink.llc/templates/beamer/",
+          "mainEntityOfPage": "https://purplelink.llc/templates/beamer/",
+          "inLanguage": "en",
+          "author": {
+            "@id": "https://purplelink.llc/about/#person"
+          },
+          "publisher": {
+            "@id": "https://purplelink.llc/#organization"
+          },
+          "datePublished": "2026-11-26",
+          "dateModified": "2026-11-26",
+          "image": "https://purplelink.llc/assets/og/templates.png"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://purplelink.llc/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Templates",
+              "item": "https://purplelink.llc/templates/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Beamer",
+              "item": "https://purplelink.llc/templates/beamer/"
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+    <link rel="icon" href="/assets/purplelink-logo.png" type="image/png">
+    <meta name="theme-color" content="#19141d">
+    <link rel="preload" href="/assets/fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/assets/fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/motion.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6407975157274256" crossorigin="anonymous"></script>
+    <script src="/site.js" defer></script>
+    <script src="/motion.js" defer></script>
+    <script src="/buddy-chat/loader.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Purplelink home">
+        <img src="/assets/purplelink-logo.png" alt="" width="30" height="30">
+        <span>Purplelink</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="/products/">Products</a>
+        <a href="/publication-suite/">Publication suite</a>
+        <a href="/tools/">Tools</a>
+        <a href="/guides/" aria-current="page">Guides</a>
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <main id="main-content">
+      <a class="back-link" href="/templates/">← All templates</a>
+      <div class="post-hero">
+        <p class="post-date">LaTeX template</p>
+        <h1 class="post-title">Beamer slides and poster template</h1>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-11-26">November 26, 2026</time></p>
+        <p class="post-lede">Beamer is the LaTeX class for slides, and the <code>beamerposter</code> package turns the same class into a conference poster. This page has one skeleton of each, the options you will change first, and the pitfalls that the package documentation and TeX Stack Exchange describe.</p>
+      </div>
+
+      <article class="post-body">
+        <p>Both skeletons use packages that ship with TeX Live. The slides use the <a href="https://ctan.org/pkg/beamer" rel="noopener">beamer</a> class with the <a href="https://ctan.org/pkg/beamertheme-metropolis" rel="noopener">Metropolis</a> theme (CTAN package <code>beamertheme-metropolis</code>), and the poster uses <a href="https://ctan.org/pkg/beamerposter" rel="noopener">beamerposter</a>. We read all three CTAN pages on 2026-11-26. A full TeX Live (MacTeX) has them. A small distribution such as BasicTeX or TinyTeX may need <code>tlmgr install beamertheme-metropolis beamerposter</code> first.</p>
+
+        <h2>Minimal skeleton</h2>
+        <p>Save each file in its own folder, or keep both in one folder and build them by name. Neither needs a .bib file. Build with <code>latexmk -pdf slides.tex</code> and <code>latexmk -pdf poster.tex</code>.</p>
+        <p class="starter-dl"><a class="btn btn-primary" href="/templates/beamer/beamer-starter.zip" download data-track="template_download" data-track-meta="beamer">Download the starter (.zip)</a> <span>slides.tex, poster.tex and a README. Both files compile with pdfLaTeX, XeLaTeX and LuaLaTeX. Writing on a Mac? Open the folder in <a href="/moderntex/">ModernTex</a>.</span></p>
+
+        <h3>Slides, 16:9</h3>
+        <pre><code>% Beamer slides, 16:9, with overlays and speaker notes.
+% Build:  latexmk -pdf slides.tex
+% Handout: change the first line to \documentclass[aspectratio=169,handout]{beamer}
+\documentclass[aspectratio=169]{beamer}
+
+\usetheme{metropolis}   % ships with TeX Live; best with XeLaTeX or LuaLaTeX (Fira Sans)
+
+% Notes: uncomment ONE of these. Hidden by default.
+% \setbeameroption{show notes}                     % notes pages follow each slide
+% \setbeameroption{show notes on second screen}    % slide and notes side by side
+
+\title{Talk title}
+\author{First Author}
+\institute{Department, University}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{frame}{Outline}
+  \tableofcontents
+\end{frame}
+
+\section{Motivation}
+
+\begin{frame}{One claim per slide}
+  \begin{itemize}
+    \item First point appears first.
+    \pause
+    \item Second point appears on the next click.
+    \pause
+    \item Third point closes the slide.
+  \end{itemize}
+  \note{Say the number here. Spend about a minute on this slide.}
+\end{frame}
+
+\begin{frame}{Overlay specifications}
+  \only&lt;1&gt;{This text is on slide 1 only.}
+  \only&lt;2&gt;{This replaces it on slide 2.}
+
+  \uncover&lt;3-&gt;{This appears on slide 3 and stays.}
+  \note[item]{Slide 3 is the result. Pause before you show it.}
+\end{frame}
+
+\begin{frame}[fragile]{Code needs the fragile option}
+\begin{verbatim}
+latexmk -pdf slides.tex
+\end{verbatim}
+\end{frame}
+
+\begin{frame}[standout]
+  Questions?
+\end{frame}
+
+\end{document}</code></pre>
+        <p>To make the handout, add <code>handout</code> to the class options: <code>\documentclass[aspectratio=169,handout]{beamer}</code>. To see the notes, uncomment one of the two <code>\setbeameroption</code> lines.</p>
+
+        <h3>Poster, A0 portrait</h3>
+        <pre><code>% Conference poster, A0 portrait, with beamerposter.
+% Build:  latexmk -pdf poster.tex
+% If the type looks small, raise scale; if it overflows, lower it.
+\documentclass[final]{beamer}
+\usepackage[size=a0,orientation=portrait,scale=1.4]{beamerposter}
+\usepackage{graphicx}
+\usepackage{lmodern}   % scalable sans-serif fonts at poster sizes
+
+\usetheme{default}
+\setbeamertemplate{navigation symbols}{}
+\setbeamercolor{block title}{bg=black!70,fg=white}
+\setbeamercolor{block body}{bg=black!5,fg=black}
+
+\title{Poster title: the finding in one line}
+\author{First Author \and Second Author}
+\institute{Department, University}
+
+\begin{document}
+\begin{frame}[t]
+  \begin{center}
+    {\Huge\bfseries\inserttitle}\\[0.6em]
+    {\LARGE\insertauthor}\\[0.3em]
+    {\Large\insertinstitute}
+  \end{center}
+  \vfill
+  \begin{columns}[t]
+    \begin{column}{0.46\paperwidth}
+      \begin{block}{Question}
+        One or two sentences that state what you asked and why it matters.
+      \end{block}
+      \begin{block}{Method}
+        \begin{itemize}
+          \item Data and sample size.
+          \item The model or procedure.
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\paperwidth}
+      \begin{block}{Result}
+        The main figure goes here, at a readable size from two meters away.
+      \end{block}
+      \begin{block}{Conclusion}
+        Three short lines. Add a contact line or QR code below.
+      \end{block}
+    \end{column}
+  \end{columns}
+  \vfill
+\end{frame}
+\end{document}</code></pre>
+        <p>The two columns are sized from <code>\paperwidth</code>, so they follow the paper size you set in the package options. Replace the block text with your own and add figures with <code>\includegraphics</code> at a width such as <code>0.9\linewidth</code>.</p>
+
+        <h2>Key options</h2>
+        <ul>
+          <li><strong><code>aspectratio=169</code>:</strong> a 16:9 page, which matches most projectors and screens now. Beamer's default is 4:3.</li>
+          <li><strong><code>handout</code>:</strong> the class option that builds the handout version. Overlay steps collapse, so a frame with three <code>\pause</code> steps becomes one page. On our test build the slides skeleton is 11 pages as slides and 7 as a handout.</li>
+          <li><strong><code>\pause</code>, <code>\only&lt;2&gt;{...}</code> and <code>\uncover&lt;3-&gt;{...}</code>:</strong> <code>\pause</code> reveals the rest of the frame one step at a time. <code>\only</code> puts material on the listed slides and removes it elsewhere. <code>\uncover</code> reserves the space, so the layout does not jump.</li>
+          <li><strong><code>\note{...}</code> and <code>\setbeameroption</code>:</strong> notes are hidden by default. <code>show notes</code> interleaves note pages with the slides, and <code>show notes on second screen</code> builds a two-screen version of the talk.</li>
+          <li><strong><code>fragile</code> and <code>standout</code>:</strong> <code>[fragile]</code> lets a frame hold verbatim text, and Metropolis's <code>[standout]</code> makes a closing slide with one line on it.</li>
+          <li><strong><code>size=a0</code>, <code>orientation=portrait</code> and <code>scale=1.4</code>:</strong> the beamerposter package options. The package readme lists these options: page size, orientation and a font scale. Raise <code>scale</code> if the text looks small, and lower it if the columns overflow.</li>
+          <li><strong>Poster package choice:</strong> <a href="https://ctan.org/pkg/tikzposter" rel="noopener">tikzposter</a> is also in TeX Live, and CTAN lists it under the LaTeX Project Public License 1.2. We used beamerposter (LPPL and GPL on CTAN) because it extends the same beamer class as the slides, so blocks, columns, colours and themes work the way they do in a talk.</li>
+        </ul>
+
+        <h2>Common pitfalls</h2>
+        <ul>
+          <li><strong>Metropolis falls back to the default font under pdfLaTeX.</strong> The theme's <a href="https://mirrors.ctan.org/macros/latex/contrib/beamer-contrib/themes/metropolis/doc/metropolistheme.pdf" rel="noopener">manual</a> says to compile with XeLaTeX or LuaLaTeX to use the Fira fonts, and the package prints a warning if you do not. Run <code>latexmk -xelatex slides.tex</code> and install Fira Sans, as the <a href="https://github.com/matze/mtheme" rel="noopener">theme's readme</a> advises. If the log still says it could not find the fonts, they are not installed.</li>
+          <li><strong>Verbatim text needs <code>[fragile]</code>.</strong> The <a href="https://mirrors.ctan.org/macros/latex/contrib/beamer/doc/beameruserguide.pdf" rel="noopener">Beamer user guide</a> says a frame with <code>verbatim</code> or <code>lstlisting</code> must carry the <code>fragile</code> option. It adds that this means either no overlays in that frame or an external file written and read back, so plan a code slide as one step.</li>
+          <li><strong>Overlay commands in handout mode.</strong> The user guide explains that an overlay specification with no mode name, such as <code>\only&lt;3&gt;{Text}</code>, is treated as a <code>beamer</code> specification, so in handout mode that text shows on every slide. Give the handout its own specification, for example <code>\onslide&lt;2| handout:0&gt;</code>. To drop a whole frame from the handout, write <code>\begin{frame}&lt;handout:0&gt;</code>.</li>
+          <li><strong>Second-screen notes need a viewer that supports them.</strong> According to the user guide, <code>show notes on second screen</code> makes a superwide page, with the talk on the left half and the notes on the right, and not every presentation program supports it. The guide names PDF Presenter as one that does. Test it on the machine you will present from.</li>
+          <li><strong>Figure and table numbers.</strong> Beamer captions carry no number by default. The user guide recommends the <code>numbered</code> caption option only if the audience has a printed handout with the same numbering. If you turn numbers on and they seem to vanish, a theme may be setting the structure colour to white. A <a href="https://tex.stackexchange.com/questions/116054" rel="noopener">TeX.SE answer</a> traces this to the caption number using that colour and fixes it with <code>\setbeamercolor{caption name}{fg=...}</code>.</li>
+          <li><strong>Old advice for beamerposter and newer beamer.</strong> The beamerposter <a href="https://mirrors.ctan.org/macros/latex/contrib/beamerposter/README" rel="noopener">readme</a> says that with beamer 3.10 you must not use the option <code>hyperref={pdfpagelabels=false}</code>. Templates written before that version often still carry it, so delete it from an older poster.</li>
+        </ul>
+
+        <h2>Check before you present</h2>
+        <ul>
+          <li>Build from a clean folder with <code>latexmk -pdf</code>, with no leftover .aux or .nav files, and read the log for the Metropolis font warning and for overfull boxes.</li>
+          <li>Count the pages. The slides skeleton gives 11 with notes hidden, 7 as a handout and 17 with <code>show notes</code> on. If the file you project has more pages than slides, the notes are still on.</li>
+          <li>Step through every <code>\pause</code> in the PDF viewer you will present from, in full screen, on the projector's resolution if you can.</li>
+          <li>For the poster, check the page size in the PDF's document properties. In Preview, Tools and then Show Inspector lists it. The skeleton builds at 841 by 1189 mm, which is A0. Ask your print shop which size and bleed they want before you export.</li>
+          <li>Zoom the poster out until it is about the size of a letter page on your screen. If you cannot read the headings, the audience will not read them from a metre away.</li>
+          <li>The <a href="/latex-errors/overfull-hbox/">overfull hbox</a> page explains the warning you will see most often when a poster column is too narrow for its text.</li>
+        </ul>
+
+        <h2>Writing it on a Mac</h2>
+        <p>If you write on a Mac, <a href="/moderntex/">ModernTex</a> is our native LaTeX editor. It compiles with the TeX distribution you already have, such as MacTeX, so a Beamer file builds as it does anywhere else. The PDF preview stays in sync with the source. It has a 7-day free trial and then costs $19.99 once.</p>
+      </article>
+
+      <section class="deadline-remind" aria-labelledby="deadline-h">
+        <form class="deadline-form" data-deadline-signup novalidate>
+          <h2 id="deadline-h">A reminder a week before the deadline</h2>
+          <p class="deadline-lede">One email, seven days ahead, with the <a href="/tools/submission-checklist/">submission checklist</a> and the checks that fit in a week. Then nothing more.</p>
+          <div class="deadline-fields">
+            <div class="deadline-field">
+              <label for="dl-date">Deadline</label>
+              <input type="date" id="dl-date" name="deadline" required>
+            </div>
+            <div class="deadline-field">
+              <label for="dl-venue">Venue <span class="deadline-opt">(optional)</span></label>
+              <input type="text" id="dl-venue" name="venue" maxlength="80" autocomplete="off" placeholder="e.g. a conference">
+            </div>
+            <div class="deadline-field deadline-field-email">
+              <label for="dl-email">Email</label>
+              <input type="email" id="dl-email" name="email" autocomplete="email" placeholder="you@university.edu" required>
+            </div>
+            <input type="text" name="website" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <button type="submit" class="btn btn-primary">Remind me</button>
+          </div>
+          <p class="deadline-status" data-deadline-status aria-live="polite">The address is kept until that email goes out, then deleted 30 days later. <a href="/privacy/">Privacy</a>.</p>
+        </form>
+      </section>
+
+      <nav class="tool-related" aria-label="Related templates and guides">
+        <h2>Related</h2>
+        <ul>
+          <li><a href="/templates/">All LaTeX templates by venue</a></li>
+          <li><a href="/templates/latex-article-template/">Free LaTeX article template</a></li>
+          <li><a href="/latex-errors/">LaTeX error messages explained</a></li>
+          <li><a href="/latex-errors/overfull-hbox/">Overfull hbox</a></li>
+          <li><a href="/guides/fix-bibtex-errors/">Fix common BibTeX errors</a></li>
+          <li><a href="/guides/best-mac-latex-editors/">Best LaTeX editors for Mac, compared</a></li>
+        </ul>
+      </nav>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="footer-brand" href="/">
+            <img src="/assets/purplelink-mark.svg" alt="" width="26" height="26">
+            <span>Purplelink LLC</span>
+          </a>
+          <p class="footer-blurb">Apps and tools made by a one-person studio in Atlanta, Georgia.</p>
+          <a class="footer-mail" href="mailto:ben@purplelink.llc">ben@purplelink.llc</a>
+          <p class="footer-langs"><span>ModernTex in</span> <a href="/de/moderntex/" lang="de" hreflang="de">Deutsch</a> <a href="/fr/moderntex/" lang="fr" hreflang="fr">Français</a> <a href="/pt-br/moderntex/" lang="pt-BR" hreflang="pt-BR">Português</a> <a href="/ja/moderntex/" lang="ja" hreflang="ja">日本語</a> <a href="/zh-cn/moderntex/" lang="zh-Hans" hreflang="zh-Hans">简体中文</a></p>
+        </div>
+        <nav class="footer-col" aria-label="Products">
+          <p class="footer-head">Products</p>
+          <ul>
+            <li><a href="/moderntex/">ModernTex</a></li>
+            <li><a href="/outbound-veil/">Outbound Veil</a></li>
+            <li><a href="/vitae/">Vitae</a></li>
+            <li><a href="/legroom/">Legroom</a></li>
+            <li><a href="/keyfeel/">Keyfeel</a></li>
+            <li><a href="/tapefolio/">Tapefolio</a></li>
+            <li><a href="/panely/">Panely</a></li>
+            <li><a href="/summonly/">Summonly</a></li>
+            <li><a href="/nee/">Née</a></li>
+            <li><a href="/lenses/">Lenses</a></li>
+            <li><a href="/batterymeter/">BatteryMeter</a></li>
+            <li><a href="/publication-suite/">Publication suite</a></li>
+            <li><a href="/tools/paper-review/">Paper Review</a></li>
+            <li><a href="/scholar-utility-belt/">Scholar Utility Belt</a></li>
+            <li><a href="/suite/">Mac Suite</a></li>
+            <li><a href="/products/">All products</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Free tools">
+          <p class="footer-head">Free tools</p>
+          <ul>
+            <li><a href="/tools/latex-to-pdf/">LaTeX to PDF</a></li>
+            <li><a href="/tools/bib-validator/">BibTeX Validator</a></li>
+            <li><a href="/tools/citation-generator/">Citation Generator</a></li>
+            <li><a href="/tools/latex-diff/">LaTeX Diff</a></li>
+            <li><a href="/tools/word-counter/">Word Counter</a></li>
+            <li><a href="/games/">Daily games</a></li>
+            <li><a href="/tools/">All tools</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Learn">
+          <p class="footer-head">Learn</p>
+          <ul>
+            <li><a href="/guides/">Guides</a></li>
+            <li><a href="/guides/methodology-problems-peer-reviewers-flag/">Research methods</a></li>
+            <li><a href="/templates/">LaTeX templates</a></li>
+            <li><a href="/latex-errors/">LaTeX errors</a></li>
+            <li><a href="/format/">Reference formats</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/changelog/">Changelog</a></li>
+            <li><a href="/search/">Search</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-col" aria-label="Company">
+          <p class="footer-head">Company</p>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/pricing/">Pricing</a></li>
+            <li><a href="/press/">Press</a></li>
+            <li><a href="/photography/">Photography</a></li>
+            <li><a href="/support/">Support</a></li>
+            <li><a href="mailto:ben@purplelink.llc">Contact</a></li>
+            <li><a href="https://www.linkedin.com/company/purplelink-llc/" rel="noopener">LinkedIn</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/recover/">Find a purchase</a></li>
+            <li><a href="/labs/">For labs</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Purplelink LLC</span>
+        <span class="footer-loc">Atlanta, Georgia · Est. 2026</span>
+        <button type="button" class="theme-toggle" data-theme-toggle hidden>Use light theme</button>
+      </div>
+    </footer>
+  <!-- Cloudflare Web Analytics --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "cf4dd1d7290844b4ab9693930738cad4"}'></script><!-- End Cloudflare Web Analytics -->
+  <script src="/analytics.js" defer></script>
+</body>
+</html>
