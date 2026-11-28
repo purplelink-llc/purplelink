@@ -30,7 +30,7 @@
       "author": { "@id": "https://purplelink.llc/about/#person" },
       "publisher": { "@id": "https://purplelink.llc/#organization" },
       "datePublished": "2026-11-18",
-      "dateModified": "2026-11-18",
+      "dateModified": "2026-11-25",
       "image": "https://purplelink.llc/assets/og/cards/guides-pasted-password-or-api-key-into-chatgpt.jpg",
       "mainEntityOfPage": "https://purplelink.llc/guides/pasted-password-or-api-key-into-chatgpt/"
     },
@@ -40,6 +40,19 @@
         { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://purplelink.llc/" },
         { "@type": "ListItem", "position": 2, "name": "Guides", "item": "https://purplelink.llc/guides/" },
         { "@type": "ListItem", "position": 3, "name": "Pasted a password or API key into ChatGPT: what to do", "item": "https://purplelink.llc/guides/pasted-password-or-api-key-into-chatgpt/" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is it safe to paste code into ChatGPT?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It depends on what is in the code and who owns it. Before you send, replace .env values, database connection strings, Authorization headers, private key blocks and cloud keys with placeholders. A pasted key keeps working until you turn it off, and Token Security reported a GitHub token in an old ChatGPT conversation that was still valid after months. If the code belongs to your employer, read the policy where you work first, because this guide does not say what a policy allows."
+          }
+        }
       ]
     }
   ]
@@ -78,7 +91,7 @@
       <div class="post-hero">
         <p class="post-date">What to do</p>
         <h1 class="post-title">Pasted a password or API key into ChatGPT: what to do</h1>
-        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-11-18">November 18, 2026</time></p>
+        <p class="post-byline">By <a href="/about/" rel="author">Benjamin Ampel</a> · <time datetime="2026-11-18">November 18, 2026</time>, updated <time datetime="2026-11-25">November 25, 2026</time></p>
         <p class="post-lede">If you pasted a password or an API (application programming interface) key into ChatGPT, treat it as exposed. Do these five things in order, and do the first one before anything else.</p>
       </div>
 
@@ -119,6 +132,24 @@
         </ul>
         <p>I left out other providers, other key formats, and private keys, because I did not test them.</p>
         <p>The video <a href="https://www.youtube.com/watch?v=rKCGLG2nweo" rel="noopener">AWS access key in a config you paste into ChatGPT on Mac</a> shows how to find a key in a config file with <code>grep</code> and hide it with <code>sed</code> before you paste. Outbound Veil has its own <a href="/outbound-veil/">product page</a>, and the wider checklist, including what ChatGPT and Claude say they keep, is in the <a href="/guides/before-you-paste-client-notes-into-chatgpt/">client-notes guide</a>.</p>
+
+        <h2>Before you paste code</h2>
+        <p>Code carries secrets you did not mean to share. A config file, a stack trace or a copied terminal session can hold a live key a few lines from the part you wanted help with. Token Security reported a GitHub personal access token (a password-like string that grants the access of the account that made it) in an old ChatGPT conversation, inside a code snippet someone had pasted. It was still valid after months, and its owner had admin access to production repositories. This is Token Security's own account of what it found by scanning an organization's ChatGPT history (<a href="https://www.token.security/blog/from-a-chatgpt-slip-to-full-github-access-the-attack-path-no-one-detects" rel="noopener">From a ChatGPT Slip to Full GitHub Access</a>).</p>
+        <p>Read the snippet once before you send it, and replace these with placeholders such as <code>YOUR_API_KEY</code>:</p>
+        <ul>
+          <li><strong>.env and config values.</strong> Keep the variable names and replace everything after the <code>=</code>.</li>
+          <li><strong>Database connection strings.</strong> Replace the username and password inside the address.</li>
+          <li><strong>Authorization headers.</strong> Replace the token after <code>Bearer</code> or the credentials after <code>Basic</code>.</li>
+          <li><strong>Private key blocks.</strong> Remove everything between the BEGIN and END lines.</li>
+          <li><strong>Cloud keys.</strong> Check credentials files, Terraform files and CI settings for access key IDs and secret access keys.</li>
+        </ul>
+        <p>The code still shows its structure, so you can usually ask the same question. If a real value already went in, go back to step 1.</p>
+        <p><strong>Company code.</strong> Check your employer's policy before you paste any of it. This guide does not say what a policy allows, and I have not read yours. If you cannot find one, ask whoever sets the rules where you work.</p>
+        <p>Outbound Veil, which I disclosed above, checks what you type for API keys, tokens and passwords. It will miss some things, and the list in step 5 shows what it missed on my made-up values. It does not replace reading the snippet yourself.</p>
+
+        <h2>Frequently asked</h2>
+        <h3>Is it safe to paste code into ChatGPT?</h3>
+        <p>It depends on what is in the code and who owns it. Before you send, replace .env values, database connection strings, Authorization headers, private key blocks and cloud keys with placeholders. A pasted key keeps working until you turn it off, and Token Security reported a GitHub token in an old ChatGPT conversation that was still valid after months. If the code belongs to your employer, read the policy where you work first, because this guide does not say what a policy allows.</p>
 
         <h2>Related guides</h2>
         <ul>
